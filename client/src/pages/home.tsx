@@ -566,50 +566,50 @@ export default function Home() {
       {activeSection === "learning" && (
         <div className="bg-zinc-800/30 border-b border-zinc-800">
           <div className="max-w-6xl mx-auto px-4">
-            <div className="flex items-center gap-1 py-2">
+            <div className="flex items-center gap-1 py-2 flex-wrap">
               <Button
                 variant={learningSubTab === "basics" ? "secondary" : "ghost"}
                 size="sm"
                 onClick={() => setLearningSubTab("basics")}
-                className="text-sm"
+                className="text-xs px-2 py-1"
               >
-                <Lightbulb className="w-3 h-3 mr-2" />
-                Daily Facts
+                <Lightbulb className="w-3 h-3 mr-1" />
+                Facts
               </Button>
               <Button
                 variant={learningSubTab === "lesson" ? "secondary" : "ghost"}
                 size="sm"
                 onClick={() => setLearningSubTab("lesson")}
-                className="text-sm"
+                className="text-xs px-2 py-1"
               >
-                <BookOpen className="w-3 h-3 mr-2" />
+                <BookOpen className="w-3 h-3 mr-1" />
                 Lesson
               </Button>
               <Button
                 variant={learningSubTab === "quiz" ? "secondary" : "ghost"}
                 size="sm"
                 onClick={() => setLearningSubTab("quiz")}
-                className="text-sm"
+                className="text-xs px-2 py-1"
               >
-                <HelpCircle className="w-3 h-3 mr-2" />
+                <HelpCircle className="w-3 h-3 mr-1" />
                 Quiz
               </Button>
               <Button
                 variant={learningSubTab === "explore" ? "secondary" : "ghost"}
                 size="sm"
                 onClick={() => setLearningSubTab("explore")}
-                className="text-sm"
+                className="text-xs px-2 py-1"
               >
-                <Globe className="w-3 h-3 mr-2" />
+                <Globe className="w-3 h-3 mr-1" />
                 Explore
               </Button>
               <Button
                 variant={learningSubTab === "progress" ? "secondary" : "ghost"}
                 size="sm"
                 onClick={() => setLearningSubTab("progress")}
-                className="text-sm"
+                className="text-xs px-2 py-1"
               >
-                <TrendingUp className="w-3 h-3 mr-2" />
+                <TrendingUp className="w-3 h-3 mr-1" />
                 Progress
               </Button>
             </div>
