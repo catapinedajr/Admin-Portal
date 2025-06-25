@@ -28,6 +28,7 @@ import {
   Globe,
   Users,
   FileText,
+  Calendar,
   Flag,
   Network,
   ArrowRight,
@@ -403,7 +404,7 @@ const traditionalFinanceProblems = {
 };
 
 type MainSection = "foundation" | "practice" | "inspiration";
-type FoundationSubTab = "basics" | "lesson" | "quiz" | "explore" | "disruption" | "terms";
+type FoundationSubTab = "today" | "explore" | "disruption" | "terms";
 type PracticeSubTab = "mining" | "transactions" | "hodl" | "dca" | "halving";
 type InspirationSubTab = "stories" | "conviction";
 type DisruptionSubTab = "problems" | "solutions" | "comparison" | "future";
@@ -412,7 +413,7 @@ type ConvictionSubTab = "whitepaper" | "books" | "videos";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<MainSection>("foundation");
-  const [foundationSubTab, setFoundationSubTab] = useState<FoundationSubTab>("basics");
+  const [foundationSubTab, setFoundationSubTab] = useState<FoundationSubTab>("today");
   const [practiceSubTab, setPracticeSubTab] = useState<PracticeSubTab>("mining");
   const [inspirationSubTab, setInspirationSubTab] = useState<InspirationSubTab>("stories");
   const [disruptionSubTab, setDisruptionSubTab] = useState<DisruptionSubTab>("problems");
@@ -648,27 +649,27 @@ export default function Home() {
     <div className="min-h-screen bg-zinc-950 text-white">
       {/* Header */}
       <header className="border-b border-zinc-800 bg-zinc-900/30">
-        <div className="max-w-6xl mx-auto px-4 py-3">
+        <div className="max-w-6xl mx-auto px-2 sm:px-4 py-2 sm:py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-orange-600 rounded-lg">
-                <Bitcoin className="w-6 h-6 text-white" />
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+              <div className="p-1.5 sm:p-2 bg-orange-600 rounded-lg flex-shrink-0">
+                <Bitcoin className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <div>
-                <h1 className="text-lg font-bold text-white">Bitcoin Education</h1>
-                <p className="text-xs text-zinc-400">Build your conviction</p>
+              <div className="min-w-0">
+                <h1 className="text-sm sm:text-lg font-bold text-white truncate">Bitcoin Education</h1>
+                <p className="text-xs text-zinc-400 hidden sm:block">Build your conviction</p>
               </div>
             </div>
             
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowPriceChart(!showPriceChart)}
-                className="text-zinc-400 hover:text-white hover:bg-zinc-800"
+                className="text-zinc-400 hover:text-white hover:bg-zinc-800 px-2 sm:px-3"
               >
-                <Bitcoin className="w-4 h-4 mr-1" />
-                <span className="text-sm font-mono">
+                <Bitcoin className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                <span className="text-xs sm:text-sm font-mono">
                   ${bitcoinPrice?.priceUsd ? Number(bitcoinPrice.priceUsd).toLocaleString() : '...'}
                 </span>
               </Button>
@@ -679,34 +680,34 @@ export default function Home() {
 
       {/* Main Navigation */}
       <nav className="bg-zinc-900/50 border-b border-zinc-800">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center justify-center gap-8 py-3">
+        <div className="max-w-6xl mx-auto px-2 sm:px-4">
+          <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-6 py-2 sm:py-3">
             <Button
               variant={activeSection === "foundation" ? "default" : "ghost"}
-              size="lg"
+              size="sm"
               onClick={() => setActiveSection("foundation")}
-              className={`${activeSection === "foundation" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} px-6 py-3`}
+              className={`${activeSection === "foundation" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} px-3 sm:px-4 py-2 text-sm sm:text-base min-w-0 flex-shrink-0`}
             >
-              <GraduationCap className="w-5 h-5 mr-2" />
-              Learn
+              <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+              <span className="whitespace-nowrap">Learn</span>
             </Button>
             <Button
               variant={activeSection === "practice" ? "default" : "ghost"}
-              size="lg"
+              size="sm"
               onClick={() => setActiveSection("practice")}
-              className={`${activeSection === "practice" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} px-6 py-3`}
+              className={`${activeSection === "practice" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} px-3 sm:px-4 py-2 text-sm sm:text-base min-w-0 flex-shrink-0`}
             >
-              <Zap className="w-5 h-5 mr-2" />
-              Practice
+              <Zap className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+              <span className="whitespace-nowrap">Practice</span>
             </Button>
             <Button
               variant={activeSection === "inspiration" ? "default" : "ghost"}
-              size="lg"
+              size="sm"
               onClick={() => setActiveSection("inspiration")}
-              className={`${activeSection === "inspiration" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} px-6 py-3`}
+              className={`${activeSection === "inspiration" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} px-3 sm:px-4 py-2 text-sm sm:text-base min-w-0 flex-shrink-0`}
             >
-              <Heart className="w-5 h-5 mr-2" />
-              Inspo
+              <Heart className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+              <span className="whitespace-nowrap">Inspo</span>
             </Button>
           </div>
         </div>
@@ -718,31 +719,13 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-center gap-1 py-2 flex-wrap">
               <Button
-                variant={foundationSubTab === "basics" ? "secondary" : "ghost"}
+                variant={foundationSubTab === "today" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setFoundationSubTab("basics")}
+                onClick={() => setFoundationSubTab("today")}
                 className="text-xs px-2 py-1"
               >
-                <Lightbulb className="w-3 h-3 mr-1" />
-                Facts
-              </Button>
-              <Button
-                variant={foundationSubTab === "lesson" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setFoundationSubTab("lesson")}
-                className="text-xs px-2 py-1"
-              >
-                <BookOpen className="w-3 h-3 mr-1" />
-                Lesson
-              </Button>
-              <Button
-                variant={foundationSubTab === "quiz" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setFoundationSubTab("quiz")}
-                className="text-xs px-2 py-1"
-              >
-                <HelpCircle className="w-3 h-3 mr-1" />
-                Quiz
+                <Calendar className="w-3 h-3 mr-1" />
+                Today
               </Button>
               <Button
                 variant={foundationSubTab === "explore" ? "secondary" : "ghost"}
@@ -875,6 +858,169 @@ export default function Home() {
         {/* Foundation Section */}
         {activeSection === "foundation" && (
           <div className="space-y-6">
+            {foundationSubTab === "today" && (
+              <div className="space-y-6">
+                {/* Today's Learning Header */}
+                <div className="text-center space-y-2 mb-6">
+                  <h2 className="text-2xl font-bold text-white">Today's Bitcoin Learning</h2>
+                  <p className="text-zinc-400">Complete your daily facts, lesson, and quiz to build your Bitcoin conviction</p>
+                  <div className="flex items-center justify-center gap-4 mt-4">
+                    <Badge variant="outline" className="border-orange-600 text-orange-400">
+                      <Calendar className="w-3 h-3 mr-1" />
+                      Day {new Date().getDate()}
+                    </Badge>
+                    <Badge variant="outline" className="border-zinc-700 text-zinc-400">
+                      Streak: {user?.currentStreak || 0} days
+                    </Badge>
+                  </div>
+                </div>
+
+                {/* Daily Facts Section */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-orange-600/20 rounded-lg">
+                        <Lightbulb className="w-5 h-5 text-orange-400" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-white">Daily Facts</h3>
+                    </div>
+                    <div className="grid gap-4">
+                      {dailyFacts.map((fact, index) => (
+                        <div key={index} className="bg-zinc-800/50 rounded-lg p-4">
+                          <div className="flex items-start gap-3">
+                            <div className="p-2 bg-orange-600/20 rounded-lg flex-shrink-0">
+                              {(() => {
+                                const IconComponent = iconMap[fact.icon as keyof typeof iconMap];
+                                return IconComponent ? <IconComponent className="w-5 h-5 text-orange-400" /> : null;
+                              })()}
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-white mb-1">{fact.title}</h4>
+                              <p className="text-zinc-300 text-sm mb-2">{fact.content}</p>
+                              <div className="flex items-center justify-between">
+                                <Badge variant="outline" className="border-orange-600 text-orange-400 text-xs">
+                                  {fact.category}
+                                </Badge>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => toggleFactExpansion(index)}
+                                  className="text-orange-400 hover:text-orange-300 hover:bg-orange-600/20 text-xs"
+                                >
+                                  {expandedFacts.has(index) ? (
+                                    <>
+                                      <ChevronUp className="w-3 h-3 mr-1" />
+                                      Less
+                                    </>
+                                  ) : (
+                                    <>
+                                      <ChevronDown className="w-3 h-3 mr-1" />
+                                      More
+                                    </>
+                                  )}
+                                </Button>
+                              </div>
+                              
+                              {expandedFacts.has(index) && (
+                                <div className="mt-4 pt-4 border-t border-zinc-700">
+                                  {(() => {
+                                    const deepDive = getFactDeepDive(fact.title);
+                                    return (
+                                      <div className="space-y-3">
+                                        <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-3">
+                                          <h5 className="text-orange-400 font-medium text-sm mb-2">Detailed Explanation</h5>
+                                          <p className="text-zinc-300 text-sm">{deepDive.explanation}</p>
+                                        </div>
+                                        
+                                        <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-3">
+                                          <h5 className="text-blue-400 font-medium text-sm mb-2">Visual Description</h5>
+                                          <p className="text-zinc-300 text-sm">{deepDive.visualDescription}</p>
+                                        </div>
+                                        
+                                        <div className="bg-green-600/10 border border-green-600/20 rounded-lg p-3">
+                                          <h5 className="text-green-400 font-medium text-sm mb-2">Real Examples</h5>
+                                          <ul className="text-zinc-300 text-sm space-y-1">
+                                            {deepDive.examples.map((example, idx) => (
+                                              <li key={idx} className="flex items-start gap-2">
+                                                <span className="text-green-400 mt-1">•</span>
+                                                {example}
+                                              </li>
+                                            ))}
+                                          </ul>
+                                        </div>
+                                        
+                                        <div className="bg-purple-600/10 border border-purple-600/20 rounded-lg p-3">
+                                          <h5 className="text-purple-400 font-medium text-sm mb-2">Key Takeaways</h5>
+                                          <ul className="text-zinc-300 text-sm space-y-1">
+                                            {deepDive.keyTakeaways.map((takeaway, idx) => (
+                                              <li key={idx} className="flex items-start gap-2">
+                                                <CheckCircle className="w-3 h-3 text-purple-400 mt-1 flex-shrink-0" />
+                                                {takeaway}
+                                              </li>
+                                            ))}
+                                          </ul>
+                                        </div>
+                                      </div>
+                                    );
+                                  })()}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Daily Lesson Section */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-blue-600/20 rounded-lg">
+                        <BookOpen className="w-5 h-5 text-blue-400" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-white">Today's Lesson</h3>
+                      {lesson && (
+                        <Badge variant="outline" className="border-blue-600 text-blue-400 text-xs">
+                          {lesson.estimatedReadTime} read
+                        </Badge>
+                      )}
+                    </div>
+                    {lesson ? (
+                      <div className="space-y-4">
+                        <h4 className="text-xl font-bold text-white">{lesson.title}</h4>
+                        <p className="text-zinc-300 leading-relaxed">{lesson.content}</p>
+                        <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4">
+                          <h5 className="text-blue-400 font-medium mb-2">Summary</h5>
+                          <p className="text-zinc-300 text-sm">{lesson.summary}</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-zinc-500">Loading today's lesson...</p>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Daily Quiz Section */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-green-600/20 rounded-lg">
+                        <HelpCircle className="w-5 h-5 text-green-400" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-white">Daily Quiz</h3>
+                      <Badge variant="outline" className="border-green-600 text-green-400 text-xs">
+                        Test your knowledge
+                      </Badge>
+                    </div>
+                    <DailyQuiz />
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {/* Legacy Facts Section (kept for transition) */}
             {foundationSubTab === "basics" && (
               <div className="grid gap-6">
                 {dailyFacts.map((fact, index) => (
