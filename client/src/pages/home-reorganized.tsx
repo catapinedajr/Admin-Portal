@@ -420,6 +420,82 @@ export default function Home() {
   const [convictionSubTab, setConvictionSubTab] = useState<ConvictionSubTab>("whitepaper");
   const [showPriceChart, setShowPriceChart] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
+  const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
+
+  const toggleFactExpansion = (factId: number) => {
+    const newExpanded = new Set(expandedFacts);
+    if (newExpanded.has(factId)) {
+      newExpanded.delete(factId);
+    } else {
+      newExpanded.add(factId);
+    }
+    setExpandedFacts(newExpanded);
+  };
+
+  const getFactDeepDive = (factTitle: string) => {
+    const deepDives: Record<string, {
+      explanation: string;
+      examples: string[];
+      visualDescription: string;
+      keyTakeaways: string[];
+    }> = {
+      "Halving Events": {
+        explanation: "Bitcoin halving is a pre-programmed event that occurs approximately every 4 years (210,000 blocks) where the reward for mining new blocks is cut in half. This mechanism ensures Bitcoin's scarcity and controls inflation. The halving is hardcoded into Bitcoin's protocol and cannot be changed without consensus from the entire network.",
+        examples: [
+          "2012: Reward dropped from 50 BTC to 25 BTC per block",
+          "2016: Reward dropped from 25 BTC to 12.5 BTC per block", 
+          "2020: Reward dropped from 12.5 BTC to 6.25 BTC per block",
+          "2024: Reward dropped from 6.25 BTC to 3.125 BTC per block"
+        ],
+        visualDescription: "Imagine a giant digital clock counting down blocks. Every 210,000 blocks, an automated mechanism literally cuts the mining reward in half - like a vending machine that suddenly starts giving half portions while keeping the same price.",
+        keyTakeaways: [
+          "Reduces new Bitcoin supply entering the market",
+          "Creates predictable scarcity timeline",
+          "Often correlates with price increases due to supply shock",
+          "Demonstrates Bitcoin's deflationary monetary policy"
+        ]
+      },
+      "Energy Security": {
+        explanation: "Bitcoin mining requires significant energy to secure the network through proof-of-work. This energy consumption isn't waste - it's the cost of running the world's most secure financial network without any central authority. The energy creates an economic incentive structure that makes attacking Bitcoin prohibitively expensive.",
+        examples: [
+          "Bitcoin network uses ~150 TWh annually (similar to Argentina)",
+          "Miners increasingly use renewable energy sources (>50% renewable)",
+          "Stranded energy (unused power) becomes economically viable through mining",
+          "Energy usage scales with network value, not transaction volume"
+        ],
+        visualDescription: "Picture a fortress protected by an army of guards working 24/7. The energy cost is like paying these guards - the more valuable what's inside, the more security you need. Bitcoin's 'guards' are computers solving mathematical puzzles that become harder as more guards join.",
+        keyTakeaways: [
+          "Energy secures $1+ trillion in Bitcoin value",
+          "Incentivizes renewable energy development",
+          "Cost of attack grows with network security",
+          "Energy use is transparent and auditable"
+        ]
+      },
+      "Digital Scarcity": {
+        explanation: "Before Bitcoin, digital items could be copied infinitely at zero cost. Bitcoin solved the 'double-spending problem' using cryptographic proof and network consensus, creating the first truly scarce digital asset. Each bitcoin exists as a unique entry on the blockchain that cannot be duplicated or counterfeited.",
+        examples: [
+          "Only 21 million bitcoins will ever exist (hardcoded limit)",
+          "Each satoshi (0.00000001 BTC) is uniquely traceable",
+          "Lost bitcoins are permanently removed from circulation",
+          "No central authority can create more bitcoins"
+        ],
+        visualDescription: "Think of digital gold bars that can't be melted down and recast. Each bitcoin is like a unique serial number in a global ledger that everyone can verify but no one can forge. It's impossible to photocopy a bitcoin just like you can't photocopy a real diamond.",
+        keyTakeaways: [
+          "First solution to digital scarcity problem",
+          "Mathematically enforced supply cap",
+          "Cannot be inflated away by governments",
+          "Scarcity increases as adoption grows"
+        ]
+      }
+    };
+
+    return deepDives[factTitle] || {
+      explanation: "This fact represents a fundamental aspect of Bitcoin's design and operation that distinguishes it from traditional financial systems.",
+      examples: ["Bitcoin operates 24/7 without holidays", "No single point of failure", "Transparent and auditable"],
+      visualDescription: "Imagine a system that combines the transparency of a glass house with the security of a bank vault.",
+      keyTakeaways: ["Decentralized operation", "Cryptographic security", "Global accessibility"]
+    };
+  };
 
   const { data: user } = useQuery({
     queryKey: ["/api/user"],
@@ -712,9 +788,88 @@ export default function Home() {
                         <div className="flex-1">
                           <h3 className="text-xl font-bold text-white mb-2">{fact.title}</h3>
                           <p className="text-zinc-300 mb-4">{fact.content}</p>
-                          <Badge variant="outline" className="border-orange-600 text-orange-400">
-                            {fact.category}
-                          </Badge>
+                          
+                          <div className="flex items-center gap-3 mb-4">
+                            <Badge variant="outline" className="border-orange-600 text-orange-400">
+                              {fact.category}
+                            </Badge>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => toggleFactExpansion(index)}
+                              className="text-orange-400 hover:text-orange-300 hover:bg-orange-600/20 p-2"
+                            >
+                              {expandedFacts.has(index) ? (
+                                <>
+                                  <ChevronUp className="w-4 h-4 mr-1" />
+                                  Show Less
+                                </>
+                              ) : (
+                                <>
+                                  <ChevronDown className="w-4 h-4 mr-1" />
+                                  Dive Deeper
+                                </>
+                              )}
+                            </Button>
+                          </div>
+
+                          {expandedFacts.has(index) && (
+                            <div className="space-y-4 mt-4 p-4 bg-zinc-800/50 rounded-lg border border-zinc-700">
+                              {(() => {
+                                const deepDive = getFactDeepDive(fact.title);
+                                return (
+                                  <>
+                                    <div>
+                                      <h4 className="text-orange-300 font-semibold mb-2 flex items-center gap-2">
+                                        <BookOpen className="w-4 h-4" />
+                                        Deep Explanation
+                                      </h4>
+                                      <p className="text-zinc-300 text-sm leading-relaxed">{deepDive.explanation}</p>
+                                    </div>
+
+                                    <div>
+                                      <h4 className="text-blue-300 font-semibold mb-2 flex items-center gap-2">
+                                        <Lightbulb className="w-4 h-4" />
+                                        Visual Understanding
+                                      </h4>
+                                      <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-3">
+                                        <p className="text-blue-200 text-sm italic">{deepDive.visualDescription}</p>
+                                      </div>
+                                    </div>
+
+                                    <div>
+                                      <h4 className="text-green-300 font-semibold mb-2 flex items-center gap-2">
+                                        <FileText className="w-4 h-4" />
+                                        Real Examples
+                                      </h4>
+                                      <div className="space-y-2">
+                                        {deepDive.examples.map((example, exampleIndex) => (
+                                          <div key={exampleIndex} className="flex items-start gap-2">
+                                            <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                                            <span className="text-green-200 text-sm">{example}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+
+                                    <div>
+                                      <h4 className="text-purple-300 font-semibold mb-2 flex items-center gap-2">
+                                        <TrendingUp className="w-4 h-4" />
+                                        Key Takeaways
+                                      </h4>
+                                      <div className="grid gap-2">
+                                        {deepDive.keyTakeaways.map((takeaway, takeawayIndex) => (
+                                          <div key={takeawayIndex} className="bg-purple-600/10 border border-purple-600/20 rounded-lg p-2">
+                                            <span className="text-purple-200 text-sm font-medium">{takeaway}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </>
+                                );
+                              })()}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </CardContent>
