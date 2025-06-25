@@ -54,6 +54,354 @@ const iconMap = {
   "alert-triangle": AlertTriangle,
 };
 
+const bitcoinTerms = [
+  {
+    term: "Bitcoin",
+    definition: "A peer-to-peer electronic cash system that enables direct transactions without intermediaries like banks."
+  },
+  {
+    term: "Blockchain",
+    definition: "A distributed ledger technology that records transactions in blocks linked together chronologically."
+  },
+  {
+    term: "Mining",
+    definition: "The process of validating transactions and securing the Bitcoin network while earning new bitcoins as rewards."
+  },
+  {
+    term: "Wallet",
+    definition: "Software or hardware that stores your private keys and allows you to send and receive Bitcoin."
+  },
+  {
+    term: "Private Key",
+    definition: "A secret number that proves ownership of Bitcoin and allows you to spend it. Never share this with anyone."
+  },
+  {
+    term: "Satoshi",
+    definition: "The smallest unit of Bitcoin, named after its creator. One Bitcoin equals 100 million satoshis."
+  },
+  {
+    term: "Halving",
+    definition: "An event every 4 years where the mining reward is cut in half, reducing new Bitcoin creation."
+  },
+  {
+    term: "HODL",
+    definition: "A misspelling of 'hold' that became a strategy of keeping Bitcoin long-term regardless of price swings."
+  }
+];
+
+const userProfiles = {
+  individuals: [
+    {
+      name: "Sarah Chen",
+      role: "Software Engineer",
+      story: "Started buying Bitcoin in 2017 to protect savings from inflation. Now uses it for international remittances to family.",
+      reason: "Hedge against currency debasement and easier cross-border payments"
+    },
+    {
+      name: "Miguel Rodriguez", 
+      role: "Small Business Owner",
+      story: "Accepts Bitcoin payments at his restaurant to avoid high credit card fees and attract tech-savvy customers.",
+      reason: "Lower transaction fees and financial sovereignty"
+    },
+    {
+      name: "Dr. Amara Okafor",
+      role: "Medical Professional",
+      story: "Uses Bitcoin to send money to medical charities in countries with unstable banking systems.",
+      reason: "Reliable value transfer to underbanked regions"
+    }
+  ],
+  businesses: [
+    {
+      name: "Tesla",
+      role: "Electric Vehicle Manufacturer",
+      story: "Added $1.5 billion in Bitcoin to treasury in 2021, briefly accepted Bitcoin payments for vehicles.",
+      reason: "Treasury diversification and hedge against fiat currency inflation"
+    },
+    {
+      name: "Block (formerly Square)",
+      role: "Financial Services Company",
+      story: "Integrated Bitcoin into Cash App, purchased Bitcoin for corporate treasury, and invested in Bitcoin development.",
+      reason: "Believes Bitcoin will become the internet's native currency"
+    },
+    {
+      name: "MicroStrategy",
+      role: "Business Intelligence Company",
+      story: "Converted entire corporate treasury to Bitcoin, now holds over 190,000 BTC worth billions.",
+      reason: "Bitcoin as superior store of value compared to cash reserves"
+    }
+  ],
+  nations: [
+    {
+      name: "El Salvador",
+      role: "Central American Nation",
+      story: "First country to adopt Bitcoin as legal tender in 2021, built Bitcoin City powered by volcanic energy.",
+      reason: "Financial inclusion and reduced reliance on US dollar remittances"
+    },
+    {
+      name: "Central African Republic",
+      role: "African Nation",
+      story: "Second country to adopt Bitcoin as legal tender, launched Sango cryptocurrency project.",
+      reason: "Economic development and reduced dependency on traditional banking"
+    },
+    {
+      name: "Miami, Florida",
+      role: "US City Government",
+      story: "Explored paying city employees in Bitcoin, invested city funds in Bitcoin, and promoted crypto innovation.",
+      reason: "Attract tech talent and position as cryptocurrency hub"
+    }
+  ]
+};
+
+const convictionContent = {
+  quotes: [
+    {
+      text: "Bitcoin is a technological tour de force.",
+      author: "Bill Gates",
+      role: "Microsoft Co-founder",
+      context: "Acknowledging Bitcoin's technical innovation despite regulatory concerns"
+    },
+    {
+      text: "I think Bitcoin is digital gold.",
+      author: "Chamath Palihapitiya",
+      role: "Venture Capitalist",
+      context: "Comparing Bitcoin's store of value properties to gold"
+    },
+    {
+      text: "Bitcoin empowers people to be their own bank.",
+      author: "Andreas Antonopoulos",
+      role: "Bitcoin Educator",
+      context: "Explaining Bitcoin's potential for financial sovereignty"
+    }
+  ],
+  books: [
+    {
+      title: "The Bitcoin Standard",
+      author: "Saifedean Ammous",
+      difficulty: "Intermediate",
+      pages: 286,
+      description: "Explores Bitcoin's role as sound money and its potential to replace fiat currencies.",
+      keyTopics: ["Monetary history", "Sound money principles", "Bitcoin economics"]
+    },
+    {
+      title: "Mastering Bitcoin",
+      author: "Andreas Antonopoulos", 
+      difficulty: "Advanced",
+      pages: 415,
+      description: "Technical deep-dive into Bitcoin's underlying technology and cryptographic principles.",
+      keyTopics: ["Cryptography", "Blockchain technology", "Bitcoin protocol"]
+    },
+    {
+      title: "The Bullish Case for Bitcoin",
+      author: "Vijay Boyapati",
+      difficulty: "Beginner",
+      pages: 68,
+      description: "Concise explanation of why Bitcoin could become the world's reserve currency.",
+      keyTopics: ["Store of value", "Monetary properties", "Investment thesis"]
+    }
+  ],
+  videos: [
+    {
+      title: "Bitcoin: The End of Money as We Know It",
+      speaker: "Documentary",
+      duration: "60 minutes",
+      type: "Documentary",
+      description: "Comprehensive overview of money's evolution and Bitcoin's revolutionary potential.",
+      url: "https://www.youtube.com/watch?v=lUF6klWuB38"
+    },
+    {
+      title: "Why Bitcoin Matters",
+      speaker: "Andreas Antonopoulos",
+      duration: "45 minutes", 
+      type: "Educational Talk",
+      description: "Foundational explanation of Bitcoin's importance for financial freedom and inclusion.",
+      url: "https://www.youtube.com/watch?v=q0XxsabgJEI"
+    },
+    {
+      title: "The Network State",
+      speaker: "Balaji Srinivasan",
+      duration: "90 minutes",
+      type: "Presentation",
+      description: "Balaji explores how Bitcoin and crypto enable new forms of governance and social organization beyond traditional nation-states.",
+      url: "https://www.youtube.com/watch?v=P6vYyqHG_Po"
+    }
+  ]
+};
+
+const simulations = {
+  mining: {
+    title: "Bitcoin Mining Simulator",
+    description: "Experience the economics of Bitcoin mining with different hardware and electricity costs",
+    difficulty: "Intermediate",
+    estimatedTime: "10-15 minutes"
+  },
+  transactions: {
+    title: "Transaction Builder",
+    description: "Build and broadcast Bitcoin transactions, understand fees and confirmations",
+    difficulty: "Advanced", 
+    estimatedTime: "15-20 minutes"
+  },
+  hodl: {
+    title: "HODLing Strategy",
+    description: "Compare different Bitcoin accumulation and holding strategies over time",
+    difficulty: "Beginner",
+    estimatedTime: "5-10 minutes"
+  },
+  dca: {
+    title: "Dollar-Cost Averaging",
+    description: "Simulate regular Bitcoin purchases and see the impact of timing vs. consistency",
+    difficulty: "Beginner",
+    estimatedTime: "10-15 minutes"
+  },
+  halving: {
+    title: "Halving Impact",
+    description: "Explore how Bitcoin halving events affect supply, mining rewards, and price dynamics",
+    difficulty: "Intermediate",
+    estimatedTime: "10-15 minutes"
+  }
+};
+
+const traditionalFinanceProblems = {
+  problems: [
+    {
+      title: "Central Bank Money Printing",
+      description: "Central banks can create unlimited money, diluting your savings",
+      impact: "Since 1971, the US dollar has lost 85% of its purchasing power",
+      example: "The Fed printed 40% of all dollars in existence during 2020-2021",
+      icon: "💰"
+    },
+    {
+      title: "Banking Hours & Holidays",
+      description: "Banks control when you can access YOUR money",
+      impact: "No transactions on weekends, holidays, or after business hours",
+      example: "Try sending money internationally on a Sunday - impossible",
+      icon: "🏦"
+    },
+    {
+      title: "High Transaction Fees",
+      description: "Banks charge fees for using your own money",
+      impact: "International transfers cost $15-50 and take 3-5 business days",
+      example: "Western Union charges up to 10% for remittances",
+      icon: "💸"
+    },
+    {
+      title: "Account Freezing",
+      description: "Governments and banks can freeze your accounts instantly",
+      impact: "Your money becomes inaccessible without legal recourse",
+      example: "Canadian truckers had accounts frozen during 2022 protests",
+      icon: "🔒"
+    },
+    {
+      title: "Inflation Tax",
+      description: "Hidden tax through currency debasement",
+      impact: "Your purchasing power decreases even while saving",
+      example: "A $100 grocery bill in 2000 costs $175 today",
+      icon: "📉"
+    },
+    {
+      title: "Exclusion from System",
+      description: "2 billion people worldwide have no access to banking",
+      impact: "Unable to save, invest, or participate in global economy",
+      example: "Requires documentation, credit history, minimum balances",
+      icon: "🚫"
+    }
+  ],
+  solutions: [
+    {
+      problem: "Central Bank Money Printing",
+      solution: "Fixed Supply Cap",
+      description: "Bitcoin has a hard limit of 21 million coins - no one can print more",
+      benefit: "Your Bitcoin percentage of total supply never decreases"
+    },
+    {
+      problem: "Banking Hours & Holidays",
+      solution: "24/7/365 Operation",
+      description: "Bitcoin network never sleeps - transactions any time, anywhere",
+      benefit: "Send money globally on Christmas morning if you want"
+    },
+    {
+      problem: "High Transaction Fees",
+      solution: "Low-Cost Transactions",
+      description: "Bitcoin transactions cost $1-5, Lightning Network costs pennies",
+      benefit: "Send $1 million for the same fee as sending $10"
+    },
+    {
+      problem: "Account Freezing",
+      solution: "Self-Custody",
+      description: "You control your private keys, no one can freeze your Bitcoin",
+      benefit: "Truly own your money - 'Not your keys, not your coins'"
+    },
+    {
+      problem: "Inflation Tax",
+      solution: "Deflationary Money",
+      description: "Bitcoin becomes more scarce over time due to halving events",
+      benefit: "Store of value that appreciates instead of depreciates"
+    },
+    {
+      problem: "Exclusion from System",
+      solution: "Permissionless Access",
+      description: "Anyone with internet can use Bitcoin - no banks required",
+      benefit: "Financial inclusion for everyone, everywhere"
+    }
+  ],
+  comparison: {
+    traditional: {
+      title: "Traditional Finance",
+      characteristics: [
+        { aspect: "Control", value: "Central banks & governments", negative: true },
+        { aspect: "Supply", value: "Unlimited money printing", negative: true },
+        { aspect: "Access", value: "Banking hours only", negative: true },
+        { aspect: "Fees", value: "$15-50 international transfers", negative: true },
+        { aspect: "Speed", value: "3-5 business days", negative: true },
+        { aspect: "Censorship", value: "Accounts can be frozen", negative: true },
+        { aspect: "Inclusion", value: "2B people excluded", negative: true },
+        { aspect: "Transparency", value: "Opaque operations", negative: true }
+      ]
+    },
+    bitcoin: {
+      title: "Bitcoin",
+      characteristics: [
+        { aspect: "Control", value: "You control your money", negative: false },
+        { aspect: "Supply", value: "Fixed 21 million cap", negative: false },
+        { aspect: "Access", value: "24/7/365 availability", negative: false },
+        { aspect: "Fees", value: "$1-5 any amount", negative: false },
+        { aspect: "Speed", value: "10 minutes to 1 hour", negative: false },
+        { aspect: "Censorship", value: "Censorship resistant", negative: false },
+        { aspect: "Inclusion", value: "Open to everyone", negative: false },
+        { aspect: "Transparency", value: "Fully auditable blockchain", negative: false }
+      ]
+    }
+  },
+  future: [
+    {
+      timeframe: "2024-2026",
+      developments: [
+        "More countries adopt Bitcoin as legal tender (following El Salvador)",
+        "Major corporations add Bitcoin to treasury reserves",
+        "Bitcoin ETFs bring institutional investment",
+        "Lightning Network scales to millions of users"
+      ]
+    },
+    {
+      timeframe: "2026-2030", 
+      developments: [
+        "Central Bank Digital Currencies (CBDCs) increase surveillance concerns",
+        "Bitcoin becomes global reserve asset alongside gold",
+        "Hyperinflation in fiat currencies drives Bitcoin adoption",
+        "Bitcoin becomes standard for international trade settlements"
+      ]
+    },
+    {
+      timeframe: "2030+",
+      developments: [
+        "Bitcoin standard emerges as dominant monetary system",
+        "Traditional banks adapt or become obsolete",
+        "Financial sovereignty becomes basic human right",
+        "Global economic inequality decreases through Bitcoin access"
+      ]
+    }
+  ]
+};
+
 type MainSection = "foundation" | "practice" | "inspiration";
 type FoundationSubTab = "basics" | "lesson" | "quiz" | "explore" | "disruption" | "terms";
 type PracticeSubTab = "mining" | "transactions" | "hodl" | "dca" | "halving";
@@ -72,6 +420,51 @@ export default function Home() {
   const [convictionSubTab, setConvictionSubTab] = useState<ConvictionSubTab>("whitepaper");
   const [showPriceChart, setShowPriceChart] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
+
+  const { data: user } = useQuery({
+    queryKey: ["/api/user"],
+    queryFn: () => fetch("/api/user").then(res => res.json()) as Promise<User>
+  });
+
+  const { data: dailyFacts = [] } = useQuery({
+    queryKey: ["/api/daily-facts"],
+    queryFn: () => fetch("/api/daily-facts").then(res => res.json()) as Promise<DailyFact[]>
+  });
+
+  const { data: lesson } = useQuery({
+    queryKey: ["/api/lesson"],
+    queryFn: () => fetch("/api/lesson").then(res => res.json()) as Promise<Lesson>
+  });
+
+  const { data: conviction = [] } = useQuery({
+    queryKey: ["/api/conviction-content"],
+    queryFn: () => fetch("/api/conviction-content").then(res => res.json()) as Promise<ConvictionContent[]>
+  });
+
+  const { data: bitcoinPrice } = useQuery({
+    queryKey: ["/api/bitcoin-price"],
+    queryFn: () => fetch("/api/bitcoin-price").then(res => res.json()),
+    refetchInterval: 30000
+  });
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowSplash(false), 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (showSplash) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="p-4 bg-orange-600 rounded-full inline-block animate-pulse">
+            <Bitcoin className="w-12 h-12 text-white" />
+          </div>
+          <h1 className="text-2xl font-bold text-white">Loading your Conviction in Bitcoin</h1>
+          <p className="text-zinc-400">Building the future of money</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
@@ -98,7 +491,7 @@ export default function Home() {
               >
                 <Bitcoin className="w-4 h-4 mr-1" />
                 <span className="text-sm font-mono">
-                  $100,000
+                  ${bitcoinPrice?.priceUsd ? Number(bitcoinPrice.priceUsd).toLocaleString() : '...'}
                 </span>
               </Button>
             </div>
@@ -301,57 +694,596 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid gap-6">
-          {activeSection === "foundation" && (
-            <Card className="bg-zinc-900 border-zinc-800">
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold text-white mb-4">
-                  {foundationSubTab === "basics" && "Daily Bitcoin Facts"}
-                  {foundationSubTab === "lesson" && "Today's Lesson"}
-                  {foundationSubTab === "quiz" && "Test Your Knowledge"}
-                  {foundationSubTab === "explore" && "Advanced Topics"}
-                  {foundationSubTab === "disruption" && "Financial Disruption"}
-                  {foundationSubTab === "terms" && "Bitcoin Terms"}
-                </h3>
-                <p className="text-zinc-300">
-                  This section contains educational content based on the selected tab.
-                </p>
-              </CardContent>
-            </Card>
-          )}
+        {/* Foundation Section */}
+        {activeSection === "foundation" && (
+          <div className="space-y-6">
+            {foundationSubTab === "basics" && (
+              <div className="grid gap-6">
+                {dailyFacts.map((fact, index) => (
+                  <Card key={index} className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 bg-orange-600/20 rounded-lg">
+                          {(() => {
+                            const IconComponent = iconMap[fact.icon as keyof typeof iconMap];
+                            return IconComponent ? <IconComponent className="w-8 h-8 text-orange-400" /> : null;
+                          })()}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold text-white mb-2">{fact.title}</h3>
+                          <p className="text-zinc-300 mb-4">{fact.content}</p>
+                          <Badge variant="outline" className="border-orange-600 text-orange-400">
+                            {fact.category}
+                          </Badge>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
 
-          {activeSection === "practice" && (
-            <Card className="bg-zinc-900 border-zinc-800">
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold text-white mb-4">
-                  {practiceSubTab === "mining" && "Bitcoin Mining Simulator"}
-                  {practiceSubTab === "transactions" && "Transaction Builder"}
-                  {practiceSubTab === "hodl" && "HODLing Strategy"}
-                  {practiceSubTab === "dca" && "Dollar-Cost Averaging"}
-                  {practiceSubTab === "halving" && "Halving Impact"}
-                </h3>
-                <p className="text-zinc-300">
-                  Interactive simulation based on the selected practice area.
-                </p>
-              </CardContent>
-            </Card>
-          )}
+            {foundationSubTab === "lesson" && lesson && (
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-6">
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-2xl font-bold text-white">{lesson.title}</h2>
+                      <Badge variant="outline" className="border-blue-600 text-blue-400">
+                        {lesson.estimatedReadTime} min read
+                      </Badge>
+                    </div>
+                    <div className="text-zinc-300 prose prose-invert max-w-none">
+                      {lesson.content.split('\n').map((paragraph, index) => (
+                        <p key={index} className="mb-4">{paragraph}</p>
+                      ))}
+                    </div>
+                    <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4">
+                      <h4 className="text-blue-300 font-medium mb-2">Key Takeaway</h4>
+                      <p className="text-blue-200 text-sm">{lesson.summary}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
-          {activeSection === "inspiration" && (
-            <Card className="bg-zinc-900 border-zinc-800">
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold text-white mb-4">
-                  {inspirationSubTab === "stories" && "Bitcoin Stories"}
-                  {inspirationSubTab === "conviction" && "Build Conviction"}
-                </h3>
-                <p className="text-zinc-300">
-                  {inspirationSubTab === "stories" && "Real stories from Bitcoin users around the world"}
-                  {inspirationSubTab === "conviction" && "Resources to strengthen your Bitcoin conviction"}
-                </p>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+            {foundationSubTab === "quiz" && (
+              <div>
+                <DailyQuiz />
+              </div>
+            )}
+
+            {foundationSubTab === "explore" && (
+              <div className="grid gap-6">
+                {[
+                  {
+                    title: "Blockchain Technology",
+                    description: "Deep dive into how blockchain works, including cryptographic hashing, merkle trees, and consensus mechanisms.",
+                    topics: ["Cryptographic Hashing", "Merkle Trees", "Consensus Mechanisms", "Block Structure"],
+                    difficulty: "Advanced",
+                    icon: <Network className="w-8 h-8 text-blue-400" />
+                  },
+                  {
+                    title: "Proof of Work",
+                    description: "Understanding Bitcoin's security model through computational proof and mining economics.",
+                    topics: ["Mining Process", "Difficulty Adjustment", "Energy Usage", "Security Guarantees"],
+                    difficulty: "Intermediate",
+                    icon: <Zap className="w-8 h-8 text-yellow-400" />
+                  },
+                  {
+                    title: "Digital Signatures",
+                    description: "How Bitcoin ensures transaction authenticity through elliptic curve cryptography.",
+                    topics: ["ECDSA", "Public Key Cryptography", "Transaction Signing", "Key Management"],
+                    difficulty: "Advanced",
+                    icon: <Shield className="w-8 h-8 text-green-400" />
+                  },
+                  {
+                    title: "Lightning Network",
+                    description: "Bitcoin's layer 2 scaling solution for instant, low-cost payments.",
+                    topics: ["Payment Channels", "Routing", "Liquidity", "Channel Management"],
+                    difficulty: "Advanced",
+                    icon: <Zap className="w-8 h-8 text-purple-400" />
+                  },
+                  {
+                    title: "Fixed Supply",
+                    description: "Why Bitcoin's 21 million coin limit makes it unique among monetary systems.",
+                    topics: ["Halving Events", "Issuance Schedule", "Scarcity Economics", "Monetary Policy"],
+                    difficulty: "Beginner",
+                    icon: <Gem className="w-8 h-8 text-orange-400" />
+                  }
+                ].map((topic, index) => (
+                  <Card key={index} className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 bg-zinc-800 rounded-lg">
+                          {topic.icon}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="text-xl font-bold text-white">{topic.title}</h3>
+                            <Badge 
+                              variant="outline" 
+                              className={`${
+                                topic.difficulty === "Beginner" ? "border-green-600 text-green-400" :
+                                topic.difficulty === "Intermediate" ? "border-yellow-600 text-yellow-400" :
+                                "border-red-600 text-red-400"
+                              }`}
+                            >
+                              {topic.difficulty}
+                            </Badge>
+                          </div>
+                          <p className="text-zinc-300 mb-4">{topic.description}</p>
+                          <div className="space-y-2">
+                            <div className="text-zinc-400 text-sm font-medium">Key Topics:</div>
+                            <div className="flex flex-wrap gap-2">
+                              {topic.topics.map((topicItem, topicIndex) => (
+                                <Badge key={topicIndex} variant="secondary" className="bg-zinc-800 text-zinc-300">
+                                  {topicItem}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+
+            {foundationSubTab === "disruption" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-bold text-white">Financial Disruption</h2>
+                  <p className="text-zinc-400">How Bitcoin is transforming the global financial system</p>
+                </div>
+                
+                <div className="flex space-x-2 mb-6 justify-center flex-wrap gap-2">
+                  <Button
+                    variant={disruptionSubTab === "problems" ? "secondary" : "ghost"}
+                    size="sm"
+                    onClick={() => setDisruptionSubTab("problems")}
+                    className="text-sm"
+                  >
+                    <AlertTriangle className="w-3 h-3 mr-2" />
+                    Problems
+                  </Button>
+                  <Button
+                    variant={disruptionSubTab === "solutions" ? "secondary" : "ghost"}
+                    size="sm"
+                    onClick={() => setDisruptionSubTab("solutions")}
+                    className="text-sm"
+                  >
+                    <CheckCircle className="w-3 h-3 mr-2" />
+                    Solutions
+                  </Button>
+                  <Button
+                    variant={disruptionSubTab === "comparison" ? "secondary" : "ghost"}
+                    size="sm"
+                    onClick={() => setDisruptionSubTab("comparison")}
+                    className="text-sm"
+                  >
+                    <BarChart3 className="w-3 h-3 mr-2" />
+                    Compare
+                  </Button>
+                  <Button
+                    variant={disruptionSubTab === "future" ? "secondary" : "ghost"}
+                    size="sm"
+                    onClick={() => setDisruptionSubTab("future")}
+                    className="text-sm"
+                  >
+                    <Clock className="w-3 h-3 mr-2" />
+                    Future
+                  </Button>
+                </div>
+
+                {disruptionSubTab === "problems" && (
+                  <div className="grid gap-6">
+                    {traditionalFinanceProblems.problems.map((problem, index) => (
+                      <Card key={index} className="bg-zinc-900 border-zinc-800">
+                        <CardContent className="p-6">
+                          <div className="flex items-start gap-4">
+                            <div className="text-3xl">{problem.icon}</div>
+                            <div className="flex-1">
+                              <h4 className="text-lg font-bold text-white mb-2">{problem.title}</h4>
+                              <p className="text-zinc-300 mb-3">{problem.description}</p>
+                              <div className="space-y-2">
+                                <div className="bg-red-600/10 border border-red-600/20 rounded-lg p-3">
+                                  <div className="text-red-300 font-medium text-sm mb-1">Impact</div>
+                                  <div className="text-red-200 text-sm">{problem.impact}</div>
+                                </div>
+                                <div className="bg-zinc-800 rounded-lg p-3">
+                                  <div className="text-zinc-400 font-medium text-sm mb-1">Real Example</div>
+                                  <div className="text-zinc-300 text-sm">{problem.example}</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+
+                {disruptionSubTab === "solutions" && (
+                  <div className="grid gap-6">
+                    {traditionalFinanceProblems.solutions.map((solution, index) => (
+                      <Card key={index} className="bg-zinc-900 border-zinc-800">
+                        <CardContent className="p-6">
+                          <div className="space-y-4">
+                            <div className="flex items-center gap-3">
+                              <CheckCircle className="w-6 h-6 text-green-400" />
+                              <h4 className="text-lg font-bold text-white">{solution.solution}</h4>
+                            </div>
+                            
+                            <div className="bg-red-600/10 border border-red-600/20 rounded-lg p-3">
+                              <div className="text-red-300 font-medium text-sm mb-1">Traditional Problem</div>
+                              <div className="text-red-200 text-sm">{solution.problem}</div>
+                            </div>
+                            
+                            <p className="text-zinc-300">{solution.description}</p>
+                            
+                            <div className="bg-green-600/10 border border-green-600/20 rounded-lg p-3">
+                              <div className="text-green-300 font-medium text-sm mb-1">Bitcoin Benefit</div>
+                              <div className="text-green-200 text-sm">{solution.benefit}</div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+
+                {disruptionSubTab === "comparison" && (
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <Card className="bg-zinc-900 border-zinc-800">
+                      <CardContent className="p-6">
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                          <div className="w-4 h-4 bg-red-600 rounded-full"></div>
+                          {traditionalFinanceProblems.comparison.traditional.title}
+                        </h3>
+                        <div className="space-y-3">
+                          {traditionalFinanceProblems.comparison.traditional.characteristics.map((char, index) => (
+                            <div key={index} className="flex justify-between items-center p-3 bg-zinc-800 rounded-lg">
+                              <span className="text-zinc-300 font-medium">{char.aspect}</span>
+                              <span className="text-red-300 text-sm">{char.value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="bg-zinc-900 border-zinc-800">
+                      <CardContent className="p-6">
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                          <div className="w-4 h-4 bg-orange-600 rounded-full"></div>
+                          {traditionalFinanceProblems.comparison.bitcoin.title}
+                        </h3>
+                        <div className="space-y-3">
+                          {traditionalFinanceProblems.comparison.bitcoin.characteristics.map((char, index) => (
+                            <div key={index} className="flex justify-between items-center p-3 bg-zinc-800 rounded-lg">
+                              <span className="text-zinc-300 font-medium">{char.aspect}</span>
+                              <span className="text-green-300 text-sm">{char.value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+
+                {disruptionSubTab === "future" && (
+                  <div className="space-y-6">
+                    {traditionalFinanceProblems.future.map((period, index) => (
+                      <Card key={index} className="bg-zinc-900 border-zinc-800">
+                        <CardContent className="p-6">
+                          <div className="space-y-4">
+                            <div className="flex items-center gap-3">
+                              <Clock className="w-6 h-6 text-blue-400" />
+                              <h4 className="text-xl font-bold text-white">{period.timeframe}</h4>
+                            </div>
+                            
+                            <div className="grid gap-3">
+                              {period.developments.map((development, devIndex) => (
+                                <div key={devIndex} className="flex items-start gap-3 p-3 bg-zinc-800 rounded-lg">
+                                  <ArrowRight className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
+                                  <span className="text-zinc-300">{development}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {foundationSubTab === "terms" && (
+              <div className="grid gap-4">
+                {bitcoinTerms.map((term, index) => (
+                  <Card key={index} className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-4">
+                      <h3 className="text-lg font-bold text-white mb-2">{term.term}</h3>
+                      <p className="text-zinc-300">{term.definition}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Practice Section */}
+        {activeSection === "practice" && (
+          <div className="space-y-6">
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl font-bold text-white">Practice Bitcoin Concepts</h2>
+              <p className="text-zinc-400">Interactive simulations to deepen your understanding</p>
+            </div>
+
+            {Object.entries(simulations).map(([key, simulation]) => (
+              practiceSubTab === key && (
+                <Card key={key} className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="space-y-6">
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 bg-orange-600/20 rounded-lg">
+                          <Zap className="w-8 h-8 text-orange-400" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold text-white mb-2">{simulation.title}</h3>
+                          <p className="text-zinc-300 mb-4">{simulation.description}</p>
+                          <div className="flex items-center gap-4 mb-4">
+                            <Badge variant="outline" className="border-zinc-700 text-orange-400">
+                              {simulation.difficulty}
+                            </Badge>
+                            <span className="text-zinc-400 text-sm">{simulation.estimatedTime}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-4">
+                        <p className="text-orange-200 text-sm">Interactive simulation interface would be implemented here with real Bitcoin data and calculations.</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            ))}
+          </div>
+        )}
+
+        {/* Inspiration Section */}
+        {activeSection === "inspiration" && (
+          <div className="space-y-6">
+            {inspirationSubTab === "stories" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-bold text-white">Bitcoin Stories</h2>
+                  <p className="text-zinc-400">Real stories from Bitcoin users around the world</p>
+                </div>
+                
+                <div className="flex space-x-2 mb-6 justify-center flex-wrap gap-2">
+                  <Button
+                    variant={storiesSubTab === "individuals" ? "secondary" : "ghost"}
+                    size="sm"
+                    onClick={() => setStoriesSubTab("individuals")}
+                    className="text-sm"
+                  >
+                    <UserIcon className="w-3 h-3 mr-2" />
+                    Individuals
+                  </Button>
+                  <Button
+                    variant={storiesSubTab === "businesses" ? "secondary" : "ghost"}
+                    size="sm"
+                    onClick={() => setStoriesSubTab("businesses")}
+                    className="text-sm"
+                  >
+                    <Building2 className="w-3 h-3 mr-2" />
+                    Businesses
+                  </Button>
+                  <Button
+                    variant={storiesSubTab === "nations" ? "secondary" : "ghost"}
+                    size="sm"
+                    onClick={() => setStoriesSubTab("nations")}
+                    className="text-sm"
+                  >
+                    <Flag className="w-3 h-3 mr-2" />
+                    Nations
+                  </Button>
+                </div>
+
+                <div className="grid gap-6">
+                  {userProfiles[storiesSubTab].map((profile, index) => (
+                    <Card key={index} className="bg-zinc-900 border-zinc-800">
+                      <CardContent className="p-6">
+                        <div className="space-y-4">
+                          <div className="flex items-start gap-4">
+                            <div className="p-3 bg-blue-600/20 rounded-lg">
+                              {storiesSubTab === "individuals" && <UserIcon className="w-8 h-8 text-blue-400" />}
+                              {storiesSubTab === "businesses" && <Building2 className="w-8 h-8 text-blue-400" />}
+                              {storiesSubTab === "nations" && <Flag className="w-8 h-8 text-blue-400" />}
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="text-xl font-bold text-white">{profile.name}</h3>
+                              <p className="text-blue-400 font-medium">{profile.role}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-3">
+                            <div>
+                              <h4 className="text-white font-medium mb-2">Story</h4>
+                              <p className="text-zinc-300">{profile.story}</p>
+                            </div>
+                            
+                            <div className="bg-green-600/10 border border-green-600/20 rounded-lg p-4">
+                              <h4 className="text-green-300 font-medium mb-2">Why Bitcoin?</h4>
+                              <p className="text-green-200 text-sm">{profile.reason}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {inspirationSubTab === "conviction" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-bold text-white">Build Your Conviction</h2>
+                  <p className="text-zinc-400">Resources to strengthen your Bitcoin understanding</p>
+                </div>
+                
+                <div className="flex space-x-2 mb-6 justify-center flex-wrap gap-2">
+                  <Button
+                    variant={convictionSubTab === "whitepaper" ? "secondary" : "ghost"}
+                    size="sm"
+                    onClick={() => setConvictionSubTab("whitepaper")}
+                    className="text-sm"
+                  >
+                    <FileText className="w-3 h-3 mr-2" />
+                    White Paper
+                  </Button>
+                  <Button
+                    variant={convictionSubTab === "books" ? "secondary" : "ghost"}
+                    size="sm"
+                    onClick={() => setConvictionSubTab("books")}
+                    className="text-sm"
+                  >
+                    <BookOpen className="w-3 h-3 mr-2" />
+                    Books
+                  </Button>
+                  <Button
+                    variant={convictionSubTab === "videos" ? "secondary" : "ghost"}
+                    size="sm"
+                    onClick={() => setConvictionSubTab("videos")}
+                    className="text-sm"
+                  >
+                    <Play className="w-3 h-3 mr-2" />
+                    Videos
+                  </Button>
+                </div>
+
+                {convictionSubTab === "whitepaper" && (
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="space-y-6">
+                        <div className="flex items-center gap-4">
+                          <div className="p-3 bg-orange-600/20 rounded-lg">
+                            <FileText className="w-8 h-8 text-orange-400" />
+                          </div>
+                          <div>
+                            <h3 className="text-xl font-bold text-white">Bitcoin: A Peer-to-Peer Electronic Cash System</h3>
+                            <p className="text-zinc-400">By Satoshi Nakamoto • October 31, 2008</p>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-4">
+                          <p className="text-zinc-300">
+                            The original Bitcoin white paper that started the cryptocurrency revolution. This foundational document outlines the design of a purely peer-to-peer version of electronic cash.
+                          </p>
+                          
+                          <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4">
+                            <h4 className="text-blue-300 font-medium mb-3">Key Points</h4>
+                            <ul className="space-y-2 text-blue-200 text-sm">
+                              <li>• Eliminates the need for trusted third parties</li>
+                              <li>• Uses proof-of-work to prevent double-spending</li>
+                              <li>• Creates an immutable ledger through cryptographic hashing</li>
+                              <li>• Establishes consensus through the longest chain</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {convictionSubTab === "books" && (
+                  <div className="grid gap-6">
+                    {convictionContent.books.map((book, index) => (
+                      <Card key={index} className="bg-zinc-900 border-zinc-800">
+                        <CardContent className="p-6">
+                          <div className="space-y-4">
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <h3 className="text-xl font-bold text-white">{book.title}</h3>
+                                <p className="text-zinc-400">by {book.author}</p>
+                              </div>
+                              <div className="text-right">
+                                <Badge 
+                                  variant="outline" 
+                                  className={`${
+                                    book.difficulty === "Beginner" ? "border-green-600 text-green-400" :
+                                    book.difficulty === "Intermediate" ? "border-yellow-600 text-yellow-400" :
+                                    "border-red-600 text-red-400"
+                                  }`}
+                                >
+                                  {book.difficulty}
+                                </Badge>
+                                <p className="text-zinc-500 text-sm mt-1">{book.pages} pages</p>
+                              </div>
+                            </div>
+                            
+                            <p className="text-zinc-300">{book.description}</p>
+                            
+                            <div className="space-y-2">
+                              <div className="text-zinc-400 text-sm font-medium">Key Topics:</div>
+                              <div className="flex flex-wrap gap-2">
+                                {book.keyTopics.map((topic, topicIndex) => (
+                                  <Badge key={topicIndex} variant="secondary" className="bg-zinc-800 text-zinc-300">
+                                    {topic}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+
+                {convictionSubTab === "videos" && (
+                  <div className="grid gap-6">
+                    {convictionContent.videos.map((video, index) => (
+                      <Card key={index} className="bg-zinc-900 border-zinc-800">
+                        <CardContent className="p-6">
+                          <div className="space-y-4">
+                            <div className="flex items-start gap-4">
+                              <div className="p-3 bg-red-600/20 rounded-lg">
+                                <Play className="w-8 h-8 text-red-400" />
+                              </div>
+                              <div className="flex-1">
+                                <h3 className="text-xl font-bold text-white">{video.title}</h3>
+                                <p className="text-zinc-400">{video.speaker} • {video.duration}</p>
+                                <Badge variant="outline" className="border-zinc-700 text-zinc-400 mt-2">
+                                  {video.type}
+                                </Badge>
+                              </div>
+                            </div>
+                            
+                            <p className="text-zinc-300">{video.description}</p>
+                            
+                            <Button variant="outline" className="w-full" asChild>
+                              <a href={video.url} target="_blank" rel="noopener noreferrer">
+                                <ExternalLink className="w-4 h-4 mr-2" />
+                                Watch Video
+                              </a>
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </main>
     </div>
   );
