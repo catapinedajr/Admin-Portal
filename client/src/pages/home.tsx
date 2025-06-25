@@ -149,114 +149,99 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Header */}
-      <header className="border-b border-border bg-background">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-                <Bitcoin className="w-6 h-6 text-primary-foreground" />
-              </div>
-              <div>
-                <h1 className="text-xl font-semibold text-foreground">BitcoinEDU</h1>
-                <p className="text-sm text-muted-foreground">Daily Bitcoin Education</p>
-              </div>
+      {/* Simplified Header */}
+      <header className="bg-background">
+        <div className="max-w-2xl mx-auto px-4 py-8 text-center">
+          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Bitcoin className="w-8 h-8 text-primary" />
+          </div>
+          <h1 className="text-2xl font-medium text-foreground mb-2">Bitcoin Learning</h1>
+          <p className="text-muted-foreground mb-6">Daily knowledge for your Bitcoin journey</p>
+          
+          {/* Compact Bitcoin Price */}
+          {bitcoinPrice && (
+            <div 
+              className="bg-card border border-border rounded-lg p-4 cursor-pointer hover:bg-muted/50 transition-colors inline-block mb-6"
+              onClick={() => setShowPriceChart(true)}
+            >
+              <p className="text-xs text-muted-foreground mb-1">Bitcoin Price</p>
+              <p className="text-lg font-medium text-foreground">
+                ${parseFloat(bitcoinPrice.priceUsd).toLocaleString()}
+              </p>
+              <p className={`text-sm ${
+                parseFloat(bitcoinPrice.change24h) >= 0 ? 'text-green-600' : 'text-red-600'
+              }`}>
+                {parseFloat(bitcoinPrice.change24h) >= 0 ? '+' : ''}{bitcoinPrice.change24h}% today
+              </p>
             </div>
-            <div className="flex items-center space-x-3">
-              {/* Bitcoin Price Tracker */}
-              {bitcoinPrice && (
-                <Button
-                  variant="ghost"
-                  className="cyber-button p-2 border border-border hover:bg-primary/5"
-                  onClick={() => setShowPriceChart(true)}
-                >
-                  <div className="flex items-center space-x-2">
-                    <Bitcoin className="w-4 h-4 text-primary" />
-                    <div className="text-right">
-                      <p className="text-sm font-medium text-foreground">
-                        ${parseFloat(bitcoinPrice.priceUsd).toLocaleString()}
-                      </p>
-                      <p className={`text-xs ${
-                        parseFloat(bitcoinPrice.change24h) >= 0 ? 'text-green-600' : 'text-red-600'
-                      }`}>
-                        {parseFloat(bitcoinPrice.change24h) >= 0 ? '+' : ''}{bitcoinPrice.change24h}%
-                      </p>
-                    </div>
-                    <LineChart className="w-3 h-3 text-muted-foreground" />
-                  </div>
-                </Button>
-              )}
-              
-              <div className="text-right">
-                <p className="text-sm font-medium text-foreground">{user?.currentStreak || 0} Day Streak</p>
-                <p className="text-xs text-muted-foreground">Keep learning!</p>
-              </div>
-              <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center">
-                <UserIcon className="w-5 h-5 text-muted-foreground" />
-              </div>
-            </div>
+          )}
+          
+          {/* User Streak */}
+          <div className="text-center">
+            <p className="text-sm text-muted-foreground">Your Learning Streak</p>
+            <p className="text-lg font-medium text-foreground">{user?.currentStreak || 0} Days</p>
           </div>
         </div>
       </header>
 
-      {/* Main Section Navigation */}
-      <nav className="bg-muted/50 border-b border-border">
-        <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-3 gap-0">
+      {/* Clean Section Navigation */}
+      <nav className="bg-muted/30">
+        <div className="max-w-2xl mx-auto px-4">
+          <div className="flex justify-center space-x-1">
             <Button
               variant="ghost"
-              className={`py-3 flex flex-col items-center space-y-1 rounded-none border-b-2 transition-all ${
+              className={`px-6 py-3 rounded-lg transition-all ${
                 activeSection === "learning" 
-                  ? "text-primary border-primary bg-primary/5 font-medium" 
-                  : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5"
+                  ? "text-primary bg-primary/10 font-medium" 
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               }`}
               onClick={() => setActiveSection("learning")}
             >
-              <GraduationCap className="w-4 h-4" />
-              <span className="text-sm font-medium">Learning</span>
+              <GraduationCap className="w-4 h-4 mr-2" />
+              Learning
             </Button>
             <Button
               variant="ghost"
-              className={`py-3 flex flex-col items-center space-y-1 rounded-none border-b-2 transition-all ${
+              className={`px-6 py-3 rounded-lg transition-all ${
                 activeSection === "adoption" 
-                  ? "text-primary border-primary bg-primary/5 font-medium" 
-                  : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5"
+                  ? "text-primary bg-primary/10 font-medium" 
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               }`}
               onClick={() => setActiveSection("adoption")}
             >
-              <Globe className="w-4 h-4" />
-              <span className="text-sm font-medium">Adoption</span>
+              <Globe className="w-4 h-4 mr-2" />
+              Adoption
             </Button>
             <Button
               variant="ghost"
-              className={`py-3 flex flex-col items-center space-y-1 rounded-none border-b-2 transition-all ${
+              className={`px-6 py-3 rounded-lg transition-all ${
                 activeSection === "conviction" 
-                  ? "text-primary border-primary bg-primary/5 font-medium" 
-                  : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5"
+                  ? "text-primary bg-primary/10 font-medium" 
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               }`}
               onClick={() => setActiveSection("conviction")}
             >
-              <Heart className="w-4 h-4" />
-              <span className="text-sm font-medium">Conviction</span>
+              <Heart className="w-4 h-4 mr-2" />
+              Conviction
             </Button>
           </div>
         </div>
       </nav>
 
-      {/* Sub-section Navigation */}
+      {/* Simplified Sub-navigation */}
       {(activeSection === "learning" || activeSection === "adoption") && (
-        <nav className="bg-muted/30 border-b border-border">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex justify-center">
+        <nav className="bg-muted/20 py-3">
+          <div className="max-w-2xl mx-auto px-4">
+            <div className="flex justify-center space-x-2">
               {activeSection === "learning" && (
-                <div className="flex">
+                <>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className={`px-4 py-2 text-xs rounded-none border-b-2 transition-all ${
+                    className={`px-4 py-2 rounded-full transition-all ${
                       learningSubTab === "basics" 
-                        ? "text-primary border-primary bg-primary/5 font-medium" 
-                        : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5"
+                        ? "text-primary bg-primary/10 font-medium" 
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                     }`}
                     onClick={() => setLearningSubTab("basics")}
                   >
@@ -266,10 +251,10 @@ export default function Home() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className={`px-4 py-2 text-xs rounded-none border-b-2 transition-all ${
+                    className={`px-4 py-2 rounded-full transition-all ${
                       learningSubTab === "lesson" 
-                        ? "text-primary border-primary bg-primary/5 font-medium" 
-                        : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5"
+                        ? "text-primary bg-primary/10 font-medium" 
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                     }`}
                     onClick={() => setLearningSubTab("lesson")}
                   >
@@ -279,27 +264,27 @@ export default function Home() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className={`px-4 py-2 text-xs rounded-none border-b-2 transition-all ${
+                    className={`px-4 py-2 rounded-full transition-all ${
                       learningSubTab === "progress" 
-                        ? "text-primary border-primary bg-primary/5 font-medium" 
-                        : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5"
+                        ? "text-primary bg-primary/10 font-medium" 
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                     }`}
                     onClick={() => setLearningSubTab("progress")}
                   >
                     <TrendingUp className="w-3 h-3 mr-1" />
                     Progress
                   </Button>
-                </div>
+                </>
               )}
               {activeSection === "adoption" && (
-                <div className="flex">
+                <>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className={`px-4 py-2 text-xs rounded-none border-b-2 transition-all ${
+                    className={`px-4 py-2 rounded-full transition-all ${
                       adoptionSubTab === "companies" 
-                        ? "text-primary border-primary bg-primary/5 font-medium" 
-                        : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5"
+                        ? "text-primary bg-primary/10 font-medium" 
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                     }`}
                     onClick={() => setAdoptionSubTab("companies")}
                   >
@@ -309,10 +294,10 @@ export default function Home() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className={`px-4 py-2 text-xs rounded-none border-b-2 transition-all ${
+                    className={`px-4 py-2 rounded-full transition-all ${
                       adoptionSubTab === "countries" 
-                        ? "text-primary border-primary bg-primary/5 font-medium" 
-                        : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5"
+                        ? "text-primary bg-primary/10 font-medium" 
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                     }`}
                     onClick={() => setAdoptionSubTab("countries")}
                   >
@@ -322,24 +307,24 @@ export default function Home() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className={`px-4 py-2 text-xs rounded-none border-b-2 transition-all ${
+                    className={`px-4 py-2 rounded-full transition-all ${
                       adoptionSubTab === "network" 
-                        ? "text-primary border-primary bg-primary/5 font-medium" 
-                        : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5"
+                        ? "text-primary bg-primary/10 font-medium" 
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                     }`}
                     onClick={() => setAdoptionSubTab("network")}
                   >
                     <LineChart className="w-3 h-3 mr-1" />
                     Network
                   </Button>
-                </div>
+                </>
               )}
             </div>
           </div>
         </nav>
       )}
 
-      <main className="max-w-2xl mx-auto px-4 py-4">
+      <main className="max-w-2xl mx-auto px-4 py-6">
         {/* Learning Section */}
         {activeSection === "learning" && (
           <>

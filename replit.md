@@ -106,6 +106,7 @@ Comprehensive component library built on Radix UI primitives:
 - June 25, 2025. Updated treasury company data to use authentic holdings from SEC filings with live Bitcoin price calculations
 - June 25, 2025. Added Bitcoin Network Adoption section with real on-chain metrics from blockchain.info and bitnodes.io APIs
 - June 25, 2025. Implemented comprehensive beginner-friendly improvements: simplified navigation labels, tooltips for technical terms, welcoming introductions, and accessible explanations for Bitcoin newcomers
+- June 25, 2025. Applied ultra-soft earth tone color scheme with cream backgrounds and warm brown text for improved eye comfort, plus redesigned navigation to reduce visual clutter with centered layout and pill-shaped buttons
 
 ## User Preferences
 
