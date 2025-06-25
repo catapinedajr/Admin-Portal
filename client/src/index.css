@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 96%);
+  --foreground: hsl(0, 0%, 13%);
+  --muted: hsl(0, 0%, 96%);
+  --muted-foreground: hsl(0, 0%, 46%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(0, 0%, 13%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(0, 0%, 13%);
+  --border: hsl(0, 0%, 90%);
+  --input: hsl(0, 0%, 90%);
+  --primary: hsl(207, 76%, 42%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(36, 100%, 50%);
+  --secondary-foreground: hsl(0, 0%, 13%);
+  --accent: hsl(0, 0%, 96%);
+  --accent-foreground: hsl(0, 0%, 13%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --success: hsl(122, 39%, 49%);
+  --ring: hsl(0, 0%, 13%);
+  --radius: 0.75rem;
+  
+  /* Custom colors matching design */
+  --primary-dark: hsl(207, 100%, 32%);
+  --secondary-dark: hsl(36, 100%, 45%);
+  --surface: hsl(0, 0%, 100%);
+  --text-primary: hsl(0, 0%, 13%);
+  --text-secondary: hsl(0, 0%, 46%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 4%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 4%, 16%);
+  --muted-foreground: hsl(240, 5%, 65%);
+  --popover: hsl(240, 10%, 4%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 4%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 4%, 16%);
+  --input: hsl(240, 4%, 16%);
+  --primary: hsl(207, 76%, 42%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(240, 4%, 16%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 4%, 16%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 63%, 31%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 5%, 84%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+}
+
+@layer utilities {
+  .progress-circle {
+    transform: rotate(-90deg);
+  }
+  
+  .progress-circle circle {
+    transition: stroke-dashoffset 0.3s ease;
+  }
+  
+  .card-hover {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  }
+  
+  .tab-indicator {
+    transition: transform 0.3s ease;
+  }
+  
+  .fade-in {
+    animation: fadeIn 0.6s ease-in;
+  }
+  
+  @keyframes fadeIn {
+    from { 
+      opacity: 0; 
+      transform: translateY(20px); 
+    }
+    to { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+  }
+  
+  .pulse-animation {
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+  
+  .material-shadow-1 {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  }
+  
+  .material-shadow-2 {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  }
+  
+  .material-shadow-3 {
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  }
+}
