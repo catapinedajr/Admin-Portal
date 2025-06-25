@@ -154,39 +154,39 @@ export default function Home() {
           <div className="flex">
             <Button
               variant="ghost"
-              className={`flex-1 py-4 flex flex-col items-center space-y-1 rounded-none border-b-2 ${
+              className={`flex-1 py-4 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
                 activeTab === "facts" 
-                  ? "text-primary border-primary bg-primary/5" 
-                  : "text-muted-foreground border-transparent hover:text-foreground"
+                  ? "text-primary border-primary bg-primary/10 font-medium" 
+                  : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
               }`}
               onClick={() => setActiveTab("facts")}
             >
-              <Lightbulb className="w-4 h-4" />
-              <span className="text-sm">Today's Facts</span>
+              <Lightbulb className={`w-5 h-5 ${activeTab === "facts" ? "text-primary" : ""}`} />
+              <span className="text-sm font-medium">Today's Facts</span>
             </Button>
             <Button
               variant="ghost"
-              className={`flex-1 py-4 flex flex-col items-center space-y-1 rounded-none border-b-2 ${
+              className={`flex-1 py-4 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
                 activeTab === "lesson" 
-                  ? "text-primary border-primary bg-primary/5" 
-                  : "text-muted-foreground border-transparent hover:text-foreground"
+                  ? "text-primary border-primary bg-primary/10 font-medium" 
+                  : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
               }`}
               onClick={() => setActiveTab("lesson")}
             >
-              <BookOpen className="w-4 h-4" />
-              <span className="text-sm">Daily Lesson</span>
+              <BookOpen className={`w-5 h-5 ${activeTab === "lesson" ? "text-primary" : ""}`} />
+              <span className="text-sm font-medium">Daily Lesson</span>
             </Button>
             <Button
               variant="ghost"
-              className={`flex-1 py-4 flex flex-col items-center space-y-1 rounded-none border-b-2 ${
+              className={`flex-1 py-4 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
                 activeTab === "progress" 
-                  ? "text-primary border-primary bg-primary/5" 
-                  : "text-muted-foreground border-transparent hover:text-foreground"
+                  ? "text-primary border-primary bg-primary/10 font-medium" 
+                  : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
               }`}
               onClick={() => setActiveTab("progress")}
             >
-              <TrendingUp className="w-4 h-4" />
-              <span className="text-sm">Progress</span>
+              <TrendingUp className={`w-5 h-5 ${activeTab === "progress" ? "text-primary" : ""}`} />
+              <span className="text-sm font-medium">Progress</span>
             </Button>
           </div>
         </div>
