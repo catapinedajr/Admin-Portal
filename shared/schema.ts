@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, json } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, json, decimal, date, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -61,6 +61,41 @@ export const convictionContent = pgTable("conviction_content", {
   featured: boolean("featured").notNull().default(false), // for highlighting important content
 });
 
+export const treasuryCompanies = pgTable("treasury_companies", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  ticker: varchar("ticker", { length: 10 }),
+  industry: varchar("industry", { length: 100 }).notNull(),
+  bitcoinHoldings: decimal("bitcoin_holdings", { precision: 15, scale: 8 }).notNull(),
+  marketValue: decimal("market_value", { precision: 20, scale: 2 }),
+  acquisitionDate: date("acquisition_date"),
+  announcementDate: date("announcement_date").notNull(),
+  website: varchar("website", { length: 500 }),
+  description: text("description"),
+  ceoName: varchar("ceo_name", { length: 255 }),
+  country: varchar("country", { length: 100 }).notNull(),
+  isPublic: boolean("is_public").default(true),
+  lastUpdated: timestamp("last_updated").defaultNow(),
+});
+
+export const sovereignAdoption = pgTable("sovereign_adoption", {
+  id: serial("id").primaryKey(),
+  entityName: varchar("entity_name", { length: 255 }).notNull(),
+  entityType: varchar("entity_type", { length: 50 }).notNull(), // "country", "state", "province", "city"
+  adoptionType: varchar("adoption_type", { length: 100 }).notNull(), // "legal_tender", "treasury_reserve", "mining_friendly", "regulatory_clarity"
+  bitcoinHoldings: decimal("bitcoin_holdings", { precision: 15, scale: 8 }),
+  population: integer("population"),
+  announcementDate: date("announcement_date").notNull(),
+  implementationDate: date("implementation_date"),
+  description: text("description").notNull(),
+  keyOfficials: varchar("key_officials", { length: 500 }),
+  gdp: decimal("gdp", { precision: 20, scale: 2 }),
+  currency: varchar("currency", { length: 10 }),
+  region: varchar("region", { length: 100 }).notNull(),
+  status: varchar("status", { length: 50 }).notNull(), // "active", "proposed", "suspended"
+  lastUpdated: timestamp("last_updated").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -86,6 +121,16 @@ export const insertConvictionContentSchema = createInsertSchema(convictionConten
   id: true,
 });
 
+export const insertTreasuryCompanySchema = createInsertSchema(treasuryCompanies).omit({
+  id: true,
+  lastUpdated: true,
+});
+
+export const insertSovereignAdoptionSchema = createInsertSchema(sovereignAdoption).omit({
+  id: true,
+  lastUpdated: true,
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type DailyFact = typeof dailyFacts.$inferSelect;
@@ -98,3 +143,7 @@ export type KnowledgeArea = typeof knowledgeAreas.$inferSelect;
 export type InsertKnowledgeArea = z.infer<typeof insertKnowledgeAreaSchema>;
 export type ConvictionContent = typeof convictionContent.$inferSelect;
 export type InsertConvictionContent = z.infer<typeof insertConvictionContentSchema>;
+export type TreasuryCompany = typeof treasuryCompanies.$inferSelect;
+export type InsertTreasuryCompany = z.infer<typeof insertTreasuryCompanySchema>;
+export type SovereignAdoption = typeof sovereignAdoption.$inferSelect;
+export type InsertSovereignAdoption = z.infer<typeof insertSovereignAdoptionSchema>;

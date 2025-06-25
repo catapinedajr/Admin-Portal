@@ -35,7 +35,7 @@ import {
 } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { formatDate, getDayOfWeek, getWeekDates } from "@/lib/utils";
-import type { User, DailyFact, Lesson, UserProgress, KnowledgeArea, ConvictionContent } from "@shared/schema";
+import type { User, DailyFact, Lesson, UserProgress, KnowledgeArea, ConvictionContent, TreasuryCompany, SovereignAdoption } from "@shared/schema";
 
 const iconMap = {
   coins: Coins,
@@ -49,7 +49,7 @@ const iconMap = {
   "alert-triangle": AlertTriangle,
 };
 
-type TabType = "facts" | "lesson" | "progress" | "conviction";
+type TabType = "facts" | "lesson" | "progress" | "conviction" | "treasury" | "sovereign";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<TabType>("facts");
@@ -82,6 +82,14 @@ export default function Home() {
 
   const { data: convictionContent = [] } = useQuery<ConvictionContent[]>({
     queryKey: ["/api/conviction-content"],
+  });
+
+  const { data: treasuryCompanies = [] } = useQuery<TreasuryCompany[]>({
+    queryKey: ["/api/treasury-companies"],
+  });
+
+  const { data: sovereignAdoptions = [] } = useQuery<SovereignAdoption[]>({
+    queryKey: ["/api/sovereign-adoption"],
   });
 
   // Mutations
@@ -218,55 +226,79 @@ While mining consumes energy, it increasingly uses renewable sources and provide
 
       {/* Tab Navigation */}
       <nav className="bg-card border-b border-border relative">
-        <div className="max-w-md mx-auto">
-          <div className="flex">
+        <div className="max-w-4xl mx-auto">
+          <div className="grid grid-cols-6 gap-0">
             <Button
               variant="ghost"
-              className={`flex-1 py-3 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
+              className={`py-2 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
                 activeTab === "facts" 
-                  ? "text-primary border-primary bg-primary/10 font-medium" 
+                  ? "text-primary border-primary bg-primary/10 font-medium cyber-button" 
                   : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
               }`}
               onClick={() => setActiveTab("facts")}
             >
-              <Lightbulb className={`w-4 h-4 ${activeTab === "facts" ? "text-primary" : ""}`} />
-              <span className="text-xs font-medium">Facts</span>
+              <Lightbulb className={`w-3 h-3 ${activeTab === "facts" ? "text-primary glow-text" : ""}`} />
+              <span className="text-xs font-medium terminal-text">Facts</span>
             </Button>
             <Button
               variant="ghost"
-              className={`flex-1 py-3 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
+              className={`py-2 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
                 activeTab === "lesson" 
-                  ? "text-primary border-primary bg-primary/10 font-medium" 
+                  ? "text-primary border-primary bg-primary/10 font-medium cyber-button" 
                   : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
               }`}
               onClick={() => setActiveTab("lesson")}
             >
-              <BookOpen className={`w-4 h-4 ${activeTab === "lesson" ? "text-primary" : ""}`} />
-              <span className="text-xs font-medium">Lesson</span>
+              <BookOpen className={`w-3 h-3 ${activeTab === "lesson" ? "text-primary glow-text" : ""}`} />
+              <span className="text-xs font-medium terminal-text">Lesson</span>
             </Button>
             <Button
               variant="ghost"
-              className={`flex-1 py-3 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
+              className={`py-2 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
+                activeTab === "treasury" 
+                  ? "text-primary border-primary bg-primary/10 font-medium cyber-button" 
+                  : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
+              }`}
+              onClick={() => setActiveTab("treasury")}
+            >
+              <Building2 className={`w-3 h-3 ${activeTab === "treasury" ? "text-primary glow-text" : ""}`} />
+              <span className="text-xs font-medium terminal-text">Treasury</span>
+            </Button>
+            <Button
+              variant="ghost"
+              className={`py-2 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
+                activeTab === "sovereign" 
+                  ? "text-primary border-primary bg-primary/10 font-medium cyber-button" 
+                  : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
+              }`}
+              onClick={() => setActiveTab("sovereign")}
+            >
+              <Star className={`w-3 h-3 ${activeTab === "sovereign" ? "text-primary glow-text" : ""}`} />
+              <span className="text-xs font-medium terminal-text">Nations</span>
+            </Button>
+            <Button
+              variant="ghost"
+              className={`py-2 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
                 activeTab === "conviction" 
-                  ? "text-primary border-primary bg-primary/10 font-medium" 
+                  ? "text-primary border-primary bg-primary/10 font-medium cyber-button" 
                   : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
               }`}
               onClick={() => setActiveTab("conviction")}
             >
-              <Heart className={`w-4 h-4 ${activeTab === "conviction" ? "text-primary" : ""}`} />
-              <span className="text-xs font-medium">Conviction</span>
+              <Heart className={`w-3 h-3 ${activeTab === "conviction" ? "text-primary glow-text" : ""}`} />
+              <span className="text-xs font-medium terminal-text">Conviction</span>
             </Button>
             <Button
               variant="ghost"
-              className={`flex-1 py-3 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
+              className={`py-2 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
                 activeTab === "progress" 
-                  ? "text-primary border-primary bg-primary/10 font-medium" 
+                  ? "text-primary border-primary bg-primary/10 font-medium cyber-button" 
                   : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
               }`}
               onClick={() => setActiveTab("progress")}
             >
-              <TrendingUp className={`w-4 h-4 ${activeTab === "progress" ? "text-primary" : ""}`} />
-              <span className="text-xs font-medium">Progress</span>
+              <TrendingUp className={`w-3 h-3 ${activeTab === "progress" ? "text-primary glow-text" : ""}`} />
+              <span className="text-xs font-medium terminal-text">Progress</span>
             </Button>
           </div>
         </div>
@@ -620,6 +652,255 @@ While mining consumes energy, it increasingly uses renewable sources and provide
                     <Star className="mr-2 w-4 h-4" />
                     Save Favorite
                   </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Treasury Companies Tab */}
+        {activeTab === "treasury" && (
+          <div className="fade-in">
+            {/* Header */}
+            <div className="mt-6 mb-6">
+              <div className="text-center">
+                <h3 className="text-lg font-medium text-foreground flex items-center justify-center gap-2 glow-text">
+                  <Building2 className="w-5 h-5 text-primary" />
+                  Bitcoin Treasury Companies
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1 terminal-text">
+                  Corporate Bitcoin holdings and adoption tracker
+                </p>
+              </div>
+            </div>
+
+            {/* Treasury Companies Grid */}
+            <div className="grid gap-4">
+              {treasuryCompanies.map((company) => (
+                <Card key={company.id} className="cyber-card">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <h4 className="font-medium text-foreground terminal-text text-lg glow-text">
+                          {company.name}
+                          {company.ticker && (
+                            <span className="text-sm text-primary ml-2">({company.ticker})</span>
+                          )}
+                        </h4>
+                        <p className="text-sm text-muted-foreground terminal-text">{company.industry}</p>
+                      </div>
+                      <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+                        {company.country}
+                      </Badge>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div className="terminal-header p-3 rounded">
+                        <p className="text-xs text-muted-foreground terminal-text">Bitcoin Holdings</p>
+                        <p className="text-lg font-medium text-primary glow-text">
+                          {parseFloat(company.bitcoinHoldings).toLocaleString()} BTC
+                        </p>
+                      </div>
+                      <div className="terminal-header p-3 rounded">
+                        <p className="text-xs text-muted-foreground terminal-text">Market Value</p>
+                        <p className="text-lg font-medium text-primary glow-text">
+                          ${company.marketValue ? (parseFloat(company.marketValue) / 1000000).toFixed(0) + 'M' : 'N/A'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 mb-4">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-muted-foreground terminal-text">CEO:</span>
+                        <span className="text-sm text-foreground terminal-text">{company.ceoName || 'N/A'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-muted-foreground terminal-text">Announced:</span>
+                        <span className="text-sm text-foreground terminal-text">
+                          {new Date(company.announcementDate).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-4 terminal-text">
+                      {company.description}
+                    </p>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <div className={`w-2 h-2 rounded-full ${company.isPublic ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
+                        <span className="text-xs text-muted-foreground terminal-text">
+                          {company.isPublic ? 'Public Company' : 'Private Company'}
+                        </span>
+                      </div>
+                      {company.website && (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="cyber-button border-border hover:bg-primary/10 hover:border-primary/30"
+                          onClick={() => window.open(company.website!, '_blank')}
+                        >
+                          <ExternalLink className="mr-2 w-3 h-3" />
+                          Website
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Summary Card */}
+            <Card className="cyber-card mt-6">
+              <CardContent className="p-6 text-center">
+                <div className="mb-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3 bitcoin-glow">
+                    <Bitcoin className="w-6 h-6 text-primary" />
+                  </div>
+                  <h4 className="font-medium text-foreground glow-text">Corporate Bitcoin Adoption</h4>
+                  <p className="text-sm text-muted-foreground mt-2 terminal-text">
+                    Total Holdings: {treasuryCompanies.reduce((sum, company) => sum + parseFloat(company.bitcoinHoldings), 0).toLocaleString()} BTC
+                  </p>
+                </div>
+                
+                <div className="flex justify-center space-x-3">
+                  <Button variant="outline" size="sm" className="cyber-button border-border hover:bg-primary/10 hover:border-primary/30">
+                    <TrendingUp className="mr-2 w-4 h-4" />
+                    View Analytics
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Sovereign Adoption Tab */}
+        {activeTab === "sovereign" && (
+          <div className="fade-in">
+            {/* Header */}
+            <div className="mt-6 mb-6">
+              <div className="text-center">
+                <h3 className="text-lg font-medium text-foreground flex items-center justify-center gap-2 glow-text">
+                  <Star className="w-5 h-5 text-primary" />
+                  Bitcoin Nation Adoption
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1 terminal-text">
+                  Sovereign states and government Bitcoin adoption
+                </p>
+              </div>
+            </div>
+
+            {/* Sovereign Adoption Grid */}
+            <div className="grid gap-4">
+              {sovereignAdoptions.map((adoption) => (
+                <Card key={adoption.id} className="cyber-card">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <h4 className="font-medium text-foreground terminal-text text-lg glow-text">
+                          {adoption.entityName}
+                        </h4>
+                        <div className="flex items-center space-x-2 mt-1">
+                          <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+                            {adoption.entityType}
+                          </Badge>
+                          <Badge 
+                            variant={adoption.status === 'active' ? 'default' : 'secondary'}
+                            className={adoption.status === 'active' 
+                              ? "bg-green-500/10 text-green-400 border-green-500/20" 
+                              : "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
+                            }
+                          >
+                            {adoption.status}
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-muted-foreground terminal-text">{adoption.region}</p>
+                        {adoption.population && (
+                          <p className="text-xs text-muted-foreground terminal-text">
+                            Pop: {(adoption.population / 1000000).toFixed(1)}M
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="mb-4">
+                      <h5 className="text-sm font-medium text-foreground mb-2 terminal-text">Adoption Type</h5>
+                      <Badge 
+                        variant="outline" 
+                        className="bg-primary/10 text-primary border-primary/30 mb-2"
+                      >
+                        {adoption.adoptionType.replace('_', ' ').toUpperCase()}
+                      </Badge>
+                    </div>
+
+                    {adoption.bitcoinHoldings && (
+                      <div className="terminal-header p-3 rounded mb-4">
+                        <p className="text-xs text-muted-foreground terminal-text">Bitcoin Holdings</p>
+                        <p className="text-lg font-medium text-primary glow-text">
+                          {parseFloat(adoption.bitcoinHoldings).toLocaleString()} BTC
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="space-y-2 mb-4">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-muted-foreground terminal-text">Announced:</span>
+                        <span className="text-sm text-foreground terminal-text">
+                          {new Date(adoption.announcementDate).toLocaleDateString()}
+                        </span>
+                      </div>
+                      {adoption.implementationDate && (
+                        <div className="flex justify-between">
+                          <span className="text-sm text-muted-foreground terminal-text">Implemented:</span>
+                          <span className="text-sm text-foreground terminal-text">
+                            {new Date(adoption.implementationDate).toLocaleDateString()}
+                          </span>
+                        </div>
+                      )}
+                      {adoption.keyOfficials && (
+                        <div className="flex justify-between">
+                          <span className="text-sm text-muted-foreground terminal-text">Key Officials:</span>
+                          <span className="text-sm text-foreground terminal-text">{adoption.keyOfficials}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <p className="text-sm text-muted-foreground leading-relaxed terminal-text">
+                      {adoption.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Summary Card */}
+            <Card className="cyber-card mt-6">
+              <CardContent className="p-6 text-center">
+                <div className="mb-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3 bitcoin-glow">
+                    <Star className="w-6 h-6 text-primary" />
+                  </div>
+                  <h4 className="font-medium text-foreground glow-text">Global Bitcoin Adoption</h4>
+                  <p className="text-sm text-muted-foreground mt-2 terminal-text">
+                    {sovereignAdoptions.filter(a => a.status === 'active').length} Active Jurisdictions
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="terminal-header p-3 rounded">
+                    <p className="text-xs text-muted-foreground terminal-text">Legal Tender</p>
+                    <p className="text-lg font-medium text-primary glow-text">
+                      {sovereignAdoptions.filter(a => a.adoptionType === 'legal_tender').length}
+                    </p>
+                  </div>
+                  <div className="terminal-header p-3 rounded">
+                    <p className="text-xs text-muted-foreground terminal-text">Mining Friendly</p>
+                    <p className="text-lg font-medium text-primary glow-text">
+                      {sovereignAdoptions.filter(a => a.adoptionType === 'mining_friendly').length}
+                    </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>

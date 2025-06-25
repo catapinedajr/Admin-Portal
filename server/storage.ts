@@ -5,6 +5,8 @@ import {
   userProgress, 
   knowledgeAreas,
   convictionContent,
+  treasuryCompanies,
+  sovereignAdoption,
   type User, 
   type InsertUser, 
   type DailyFact, 
@@ -16,7 +18,11 @@ import {
   type KnowledgeArea,
   type InsertKnowledgeArea,
   type ConvictionContent,
-  type InsertConvictionContent
+  type InsertConvictionContent,
+  type TreasuryCompany,
+  type InsertTreasuryCompany,
+  type SovereignAdoption,
+  type InsertSovereignAdoption
 } from "@shared/schema";
 
 export interface IStorage {
@@ -50,6 +56,19 @@ export interface IStorage {
   getConvictionContent(dayIndex: number): Promise<ConvictionContent[]>;
   getAllConvictionContent(): Promise<ConvictionContent[]>;
   createConvictionContent(content: InsertConvictionContent): Promise<ConvictionContent>;
+
+  // Treasury companies methods
+  getTreasuryCompanies(): Promise<TreasuryCompany[]>;
+  getTreasuryCompanyById(id: number): Promise<TreasuryCompany | undefined>;
+  createTreasuryCompany(company: InsertTreasuryCompany): Promise<TreasuryCompany>;
+  updateTreasuryCompany(id: number, updates: Partial<InsertTreasuryCompany>): Promise<TreasuryCompany | undefined>;
+
+  // Sovereign adoption methods
+  getSovereignAdoptions(): Promise<SovereignAdoption[]>;
+  getSovereignAdoptionById(id: number): Promise<SovereignAdoption | undefined>;
+  getSovereignAdoptionsByType(adoptionType: string): Promise<SovereignAdoption[]>;
+  createSovereignAdoption(adoption: InsertSovereignAdoption): Promise<SovereignAdoption>;
+  updateSovereignAdoption(id: number, updates: Partial<InsertSovereignAdoption>): Promise<SovereignAdoption | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -59,12 +78,16 @@ export class MemStorage implements IStorage {
   private userProgress: Map<string, UserProgress>; // key: userId-date
   private knowledgeAreas: Map<number, KnowledgeArea>;
   private convictionContent: Map<number, ConvictionContent>;
+  private treasuryCompanies: Map<number, TreasuryCompany>;
+  private sovereignAdoptions: Map<number, SovereignAdoption>;
   private currentUserId: number;
   private currentFactId: number;
   private currentLessonId: number;
   private currentProgressId: number;
   private currentKnowledgeAreaId: number;
   private currentConvictionContentId: number;
+  private currentTreasuryCompanyId: number;
+  private currentSovereignAdoptionId: number;
 
   constructor() {
     this.users = new Map();
@@ -73,12 +96,16 @@ export class MemStorage implements IStorage {
     this.userProgress = new Map();
     this.knowledgeAreas = new Map();
     this.convictionContent = new Map();
+    this.treasuryCompanies = new Map();
+    this.sovereignAdoptions = new Map();
     this.currentUserId = 1;
     this.currentFactId = 1;
     this.currentLessonId = 1;
     this.currentProgressId = 1;
     this.currentKnowledgeAreaId = 1;
     this.currentConvictionContentId = 1;
+    this.currentTreasuryCompanyId = 1;
+    this.currentSovereignAdoptionId = 1;
 
     this.seedData();
   }
@@ -323,6 +350,148 @@ Mining serves two crucial purposes:
       this.convictionContent.set(newContent.id, newContent);
     });
 
+    // Seed treasury companies data
+    const treasuryData = [
+      {
+        name: "MicroStrategy",
+        ticker: "MSTR",
+        industry: "Business Intelligence",
+        bitcoinHoldings: "190000.00000000",
+        marketValue: "8500000000.00",
+        acquisitionDate: "2020-08-11",
+        announcementDate: "2020-08-11",
+        website: "https://microstrategy.com",
+        description: "Leading enterprise analytics company that made Bitcoin its primary treasury reserve asset under CEO Michael Saylor's leadership.",
+        ceoName: "Michael Saylor",
+        country: "United States",
+        isPublic: true
+      },
+      {
+        name: "Tesla",
+        ticker: "TSLA",
+        industry: "Electric Vehicles",
+        bitcoinHoldings: "9720.00000000",
+        marketValue: "435000000.00",
+        acquisitionDate: "2021-02-08",
+        announcementDate: "2021-02-08",
+        website: "https://tesla.com",
+        description: "Electric vehicle and clean energy company that added Bitcoin to its balance sheet and briefly accepted it as payment.",
+        ceoName: "Elon Musk",
+        country: "United States",
+        isPublic: true
+      },
+      {
+        name: "Block (Square)",
+        ticker: "SQ",
+        industry: "Financial Services",
+        bitcoinHoldings: "8027.00000000",
+        marketValue: "360000000.00",
+        acquisitionDate: "2020-10-08",
+        announcementDate: "2020-10-08",
+        website: "https://block.xyz",
+        description: "Payment company that allocated corporate funds to Bitcoin and builds Bitcoin infrastructure through its ecosystem.",
+        ceoName: "Jack Dorsey",
+        country: "United States",
+        isPublic: true
+      },
+      {
+        name: "Marathon Digital",
+        ticker: "MARA",
+        industry: "Bitcoin Mining",
+        bitcoinHoldings: "15174.00000000",
+        marketValue: "680000000.00",
+        acquisitionDate: "2020-12-01",
+        announcementDate: "2020-12-01",
+        website: "https://marathondigital.com",
+        description: "One of the largest Bitcoin mining companies in North America, holding mined Bitcoin as treasury assets.",
+        ceoName: "Fred Thiel",
+        country: "United States",
+        isPublic: true
+      }
+    ];
+
+    treasuryData.forEach(company => {
+      const newCompany: TreasuryCompany = { 
+        ...company, 
+        id: this.currentTreasuryCompanyId++,
+        lastUpdated: new Date()
+      };
+      this.treasuryCompanies.set(newCompany.id, newCompany);
+    });
+
+    // Seed sovereign adoption data
+    const sovereignData = [
+      {
+        entityName: "El Salvador",
+        entityType: "country",
+        adoptionType: "legal_tender",
+        bitcoinHoldings: "2381.00000000",
+        population: 6500000,
+        announcementDate: "2021-06-05",
+        implementationDate: "2021-09-07",
+        description: "First country to adopt Bitcoin as legal tender alongside the US dollar, led by President Nayib Bukele.",
+        keyOfficials: "President Nayib Bukele",
+        gdp: "28737000000.00",
+        currency: "USD",
+        region: "Central America",
+        status: "active"
+      },
+      {
+        entityName: "Central African Republic",
+        entityType: "country",
+        adoptionType: "legal_tender",
+        bitcoinHoldings: null,
+        population: 5500000,
+        announcementDate: "2022-04-27",
+        implementationDate: "2022-04-27",
+        description: "Second country to adopt Bitcoin as legal tender, though implementation has faced challenges.",
+        keyOfficials: "President Faustin Touadéra",
+        gdp: "2380000000.00",
+        currency: "XAF",
+        region: "Central Africa",
+        status: "active"
+      },
+      {
+        entityName: "Miami",
+        entityType: "city",
+        adoptionType: "treasury_reserve",
+        bitcoinHoldings: null,
+        population: 470000,
+        announcementDate: "2021-02-11",
+        implementationDate: "2021-05-01",
+        description: "Major US city exploring Bitcoin adoption for municipal treasury and accepting Bitcoin for city services.",
+        keyOfficials: "Mayor Francis Suarez",
+        gdp: null,
+        currency: "USD",
+        region: "North America",
+        status: "active"
+      },
+      {
+        entityName: "Wyoming",
+        entityType: "state",
+        adoptionType: "regulatory_clarity",
+        bitcoinHoldings: null,
+        population: 580000,
+        announcementDate: "2018-03-01",
+        implementationDate: "2019-07-01",
+        description: "US state that passed comprehensive blockchain and cryptocurrency legislation, creating a friendly regulatory environment.",
+        keyOfficials: "Governor Mark Gordon",
+        gdp: "40000000000.00",
+        currency: "USD",
+        region: "North America",
+        status: "active"
+      }
+    ];
+
+    sovereignData.forEach(adoption => {
+      const newAdoption: SovereignAdoption = { 
+        ...adoption, 
+        id: this.currentSovereignAdoptionId++,
+        lastUpdated: new Date()
+      };
+      this.sovereignAdoptions.set(newAdoption.id, newAdoption);
+    });
+
     // Create a default user
     const defaultUser: User = {
       id: this.currentUserId++,
@@ -500,6 +669,101 @@ Mining serves two crucial purposes:
     };
     this.convictionContent.set(content.id, content);
     return content;
+  }
+
+  // Treasury companies methods
+  async getTreasuryCompanies(): Promise<TreasuryCompany[]> {
+    return Array.from(this.treasuryCompanies.values());
+  }
+
+  async getTreasuryCompanyById(id: number): Promise<TreasuryCompany | undefined> {
+    return this.treasuryCompanies.get(id);
+  }
+
+  async createTreasuryCompany(insertCompany: InsertTreasuryCompany): Promise<TreasuryCompany> {
+    const company: TreasuryCompany = {
+      id: this.currentTreasuryCompanyId++,
+      name: insertCompany.name,
+      ticker: insertCompany.ticker || null,
+      industry: insertCompany.industry,
+      bitcoinHoldings: insertCompany.bitcoinHoldings,
+      marketValue: insertCompany.marketValue || null,
+      acquisitionDate: insertCompany.acquisitionDate || null,
+      announcementDate: insertCompany.announcementDate,
+      website: insertCompany.website || null,
+      description: insertCompany.description || null,
+      ceoName: insertCompany.ceoName || null,
+      country: insertCompany.country,
+      isPublic: insertCompany.isPublic || true,
+      lastUpdated: new Date()
+    };
+    this.treasuryCompanies.set(company.id, company);
+    return company;
+  }
+
+  async updateTreasuryCompany(id: number, updates: Partial<InsertTreasuryCompany>): Promise<TreasuryCompany | undefined> {
+    const company = this.treasuryCompanies.get(id);
+    if (company) {
+      const updated: TreasuryCompany = {
+        ...company,
+        ...updates,
+        id: company.id,
+        lastUpdated: new Date()
+      };
+      this.treasuryCompanies.set(id, updated);
+      return updated;
+    }
+    return undefined;
+  }
+
+  // Sovereign adoption methods
+  async getSovereignAdoptions(): Promise<SovereignAdoption[]> {
+    return Array.from(this.sovereignAdoptions.values());
+  }
+
+  async getSovereignAdoptionById(id: number): Promise<SovereignAdoption | undefined> {
+    return this.sovereignAdoptions.get(id);
+  }
+
+  async getSovereignAdoptionsByType(adoptionType: string): Promise<SovereignAdoption[]> {
+    return Array.from(this.sovereignAdoptions.values()).filter(adoption => adoption.adoptionType === adoptionType);
+  }
+
+  async createSovereignAdoption(insertAdoption: InsertSovereignAdoption): Promise<SovereignAdoption> {
+    const adoption: SovereignAdoption = {
+      id: this.currentSovereignAdoptionId++,
+      entityName: insertAdoption.entityName,
+      entityType: insertAdoption.entityType,
+      adoptionType: insertAdoption.adoptionType,
+      bitcoinHoldings: insertAdoption.bitcoinHoldings || null,
+      population: insertAdoption.population || null,
+      announcementDate: insertAdoption.announcementDate,
+      implementationDate: insertAdoption.implementationDate || null,
+      description: insertAdoption.description,
+      keyOfficials: insertAdoption.keyOfficials || null,
+      gdp: insertAdoption.gdp || null,
+      currency: insertAdoption.currency || null,
+      region: insertAdoption.region,
+      status: insertAdoption.status,
+      lastUpdated: new Date()
+    };
+    this.sovereignAdoptions.set(adoption.id, adoption);
+    return adoption;
+  }
+
+  async updateSovereignAdoption(id: number, updates: Partial<InsertSovereignAdoption>): Promise<SovereignAdoption | undefined> {
+    const adoption = this.sovereignAdoptions.get(id);
+    if (adoption) {
+      const updated: SovereignAdoption = {
+        ...adoption,
+        ...updates,
+        id: adoption.id,
+        lastUpdated: new Date()
+      };
+      this.sovereignAdoptions.set(id, updated);
+      return updated;
+    }
+    return undefined;
   }
 }
 

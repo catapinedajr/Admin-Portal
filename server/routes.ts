@@ -138,6 +138,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Treasury companies routes
+  app.get("/api/treasury-companies", async (req, res) => {
+    try {
+      const companies = await storage.getTreasuryCompanies();
+      res.json(companies);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get treasury companies" });
+    }
+  });
+
+  app.get("/api/treasury-companies/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const company = await storage.getTreasuryCompanyById(id);
+      if (!company) {
+        return res.status(404).json({ message: "Treasury company not found" });
+      }
+      res.json(company);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get treasury company" });
+    }
+  });
+
+  // Sovereign adoption routes
+  app.get("/api/sovereign-adoption", async (req, res) => {
+    try {
+      const adoptions = await storage.getSovereignAdoptions();
+      res.json(adoptions);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get sovereign adoptions" });
+    }
+  });
+
+  app.get("/api/sovereign-adoption/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const adoption = await storage.getSovereignAdoptionById(id);
+      if (!adoption) {
+        return res.status(404).json({ message: "Sovereign adoption not found" });
+      }
+      res.json(adoption);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get sovereign adoption" });
+    }
+  });
+
+  app.get("/api/sovereign-adoption/type/:type", async (req, res) => {
+    try {
+      const type = req.params.type;
+      const adoptions = await storage.getSovereignAdoptionsByType(type);
+      res.json(adoptions);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get sovereign adoptions by type" });
+    }
+  });
+
   // Mark lesson as complete
   app.post("/api/lesson/complete", async (req, res) => {
     try {

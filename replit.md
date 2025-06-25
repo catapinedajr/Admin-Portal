@@ -97,7 +97,11 @@ Comprehensive component library built on Radix UI primitives:
 ## Changelog
 
 - June 25, 2025. Initial setup with Bitcoin and blockchain education app
-- June 25, 2025. Added traditional finance educational content with structured fact ordering (Bitcoin Basics → Use Case → Traditional Finance comparison)
+- June 25, 2025. Added traditional finance educational content with structured fact ordering (Bitcoin Basics → Use Case → Traditional Finance comparison)  
+- June 25, 2025. Added Conviction Center with daily quotes and videos from Bitcoin industry leaders
+- June 25, 2025. Implemented cyberpunk/retro computer UI theme with Bitcoin orange accents and terminal aesthetics
+- June 25, 2025. Added Bitcoin Treasury Companies tracking with corporate holdings data (MicroStrategy, Tesla, Block, Marathon Digital)
+- June 25, 2025. Added Sovereign Adoption tracking for nations and governments (El Salvador, CAR, Miami, Wyoming)
 
 ## User Preferences
 

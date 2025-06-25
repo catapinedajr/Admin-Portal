@@ -1,39 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Orbitron:wght@400;700;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: hsl(240, 10%, 3.9%);
-  --foreground: hsl(0, 0%, 98%);
-  --muted: hsl(240, 3.7%, 15.9%);
-  --muted-foreground: hsl(240, 5%, 64.9%);
-  --popover: hsl(240, 10%, 3.9%);
-  --popover-foreground: hsl(0, 0%, 98%);
-  --card: hsl(240, 10%, 3.9%);
-  --card-foreground: hsl(0, 0%, 98%);
-  --border: hsl(240, 3.7%, 15.9%);
-  --input: hsl(240, 3.7%, 15.9%);
-  --primary: hsl(20.5, 90.2%, 48.2%);
-  --primary-foreground: hsl(60, 9.1%, 97.8%);
-  --secondary: hsl(240, 3.7%, 15.9%);
-  --secondary-foreground: hsl(0, 0%, 98%);
-  --accent: hsl(240, 3.7%, 15.9%);
-  --accent-foreground: hsl(0, 0%, 98%);
-  --destructive: hsl(0, 62.8%, 30.6%);
-  --destructive-foreground: hsl(0, 0%, 98%);
+  --background: hsl(220, 20%, 8%);
+  --foreground: hsl(50, 100%, 85%);
+  --muted: hsl(220, 15%, 18%);
+  --muted-foreground: hsl(50, 20%, 65%);
+  --popover: hsl(220, 25%, 12%);
+  --popover-foreground: hsl(50, 100%, 85%);
+  --card: hsl(220, 25%, 12%);
+  --card-foreground: hsl(50, 100%, 85%);
+  --border: hsl(33, 100%, 20%);
+  --input: hsl(220, 15%, 18%);
+  --primary: hsl(33, 100%, 50%);
+  --primary-foreground: hsl(220, 20%, 8%);
+  --secondary: hsl(220, 15%, 20%);
+  --secondary-foreground: hsl(50, 100%, 85%);
+  --accent: hsl(33, 100%, 50%);
+  --accent-foreground: hsl(220, 20%, 8%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(210, 40%, 98%);
   --success: hsl(122, 39%, 49%);
-  --ring: hsl(20.5, 90.2%, 48.2%);
-  --radius: 0.75rem;
+  --ring: hsl(33, 100%, 50%);
+  --radius: 0.25rem;
   
-  /* Custom dark theme colors with orange accents */
-  --primary-dark: hsl(20.5, 90.2%, 42%);
-  --secondary-dark: hsl(240, 3.7%, 11%);
-  --surface: hsl(240, 10%, 3.9%);
-  --text-primary: hsl(0, 0%, 98%);
-  --text-secondary: hsl(240, 5%, 64.9%);
-  --orange-accent: hsl(20.5, 90.2%, 48.2%);
-  --orange-accent-dark: hsl(20.5, 90.2%, 42%);
-  --orange-accent-light: hsl(20.5, 90.2%, 55%);
+  /* Bitcoin-themed cyber colors */
+  --bitcoin-orange: hsl(33, 100%, 50%);
+  --bitcoin-orange-dark: hsl(33, 100%, 40%);
+  --bitcoin-orange-light: hsl(33, 100%, 60%);
+  --cyber-bg: hsl(220, 20%, 8%);
+  --cyber-surface: hsl(220, 25%, 12%);
+  --terminal-green: hsl(120, 100%, 70%);
 }
 
 .dark {
@@ -64,70 +64,214 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'JetBrains Mono', monospace;
+    background-image: 
+      radial-gradient(circle at 1px 1px, rgba(255,165,0,0.15) 1px, transparent 0);
+    background-size: 20px 20px;
+    position: relative;
+  }
+  
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255,165,0,0.03) 50%,
+      transparent 100%
+    );
+    animation: scanlines 2s linear infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Orbitron', monospace;
+    text-shadow: 0 0 10px rgba(255,165,0,0.3);
+  }
+  
+  .terminal-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 400;
+  }
+  
+  .glow-text {
+    text-shadow: 0 0 10px rgba(255,165,0,0.6);
+  }
+  
+  .bitcoin-glow {
+    box-shadow: 0 0 20px rgba(255,165,0,0.2);
+  }
+}
+
+@layer components {
+  .cyber-card {
+    @apply bg-card border-2 border-border relative overflow-hidden;
+    background: linear-gradient(135deg, rgba(255,165,0,0.05) 0%, rgba(0,0,0,0.8) 100%);
+    border-color: rgba(255, 165, 0, 0.3);
+    box-shadow: 
+      0 0 20px rgba(255,165,0,0.1),
+      inset 0 1px 0 rgba(255,165,0,0.2);
+  }
+  
+  .cyber-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,165,0,0.1), transparent);
+    animation: shimmer 3s infinite;
+  }
+  
+  .cyber-button {
+    @apply relative overflow-hidden;
+    background: linear-gradient(45deg, #ff6b00, #ffaa00);
+    border: 1px solid #ff6b00;
+    text-shadow: 0 0 10px rgba(0,0,0,0.8);
+    transition: all 0.3s ease;
+  }
+  
+  .cyber-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(255,165,0,0.4);
+  }
+  
+  .cyber-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  .cyber-button:hover::before {
+    left: 100%;
+  }
+  
+  .terminal-header {
+    background: linear-gradient(90deg, rgba(26,26,26,0.8), rgba(42,42,42,0.8), rgba(26,26,26,0.8));
+    border: 1px solid rgba(255,107,0,0.5);
+    position: relative;
+  }
+  
+  .terminal-header::before {
+    content: '●●●';
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ff6b00;
+    font-size: 12px;
+    letter-spacing: 3px;
+  }
+  
+  .progress-bar {
+    background: linear-gradient(90deg, #ff6b00, #ffaa00);
+    box-shadow: 0 0 10px rgba(255,165,0,0.5);
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+  }
+  
+  .tab-active {
+    background: linear-gradient(45deg, rgba(255,107,0,0.2), rgba(255,170,0,0.1));
+    border-color: rgba(255,107,0,1);
+    box-shadow: 0 0 15px rgba(255,165,0,0.3);
   }
 }
 
 @layer utilities {
-  .progress-circle {
-    transform: rotate(-90deg);
-  }
-  
-  .progress-circle circle {
-    transition: stroke-dashoffset 0.3s ease;
-  }
-  
-  .card-hover {
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  }
-  
-  .card-hover:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-  }
-  
-  .tab-indicator {
-    transition: transform 0.3s ease;
-  }
-  
   .fade-in {
-    animation: fadeIn 0.6s ease-in;
-  }
-  
-  @keyframes fadeIn {
-    from { 
-      opacity: 0; 
-      transform: translateY(20px); 
-    }
-    to { 
-      opacity: 1; 
-      transform: translateY(0); 
-    }
-  }
-  
-  .pulse-animation {
-    animation: pulse 2s infinite;
-  }
-  
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-  }
-  
-  .material-shadow-1 {
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-  }
-  
-  .material-shadow-2 {
-    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-  }
-  
-  .material-shadow-3 {
-    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    animation: fadeIn 0.5s ease-in-out;
   }
   
   .border-b-3 {
     border-bottom-width: 3px;
   }
+  
+  .typing-effect {
+    overflow: hidden;
+    border-right: 2px solid #ff6b00;
+    white-space: nowrap;
+    animation: typing 2s steps(40) 1s forwards, blink 1s infinite;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scanlines {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 5px rgba(255,165,0,0.3);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(255,165,0,0.8);
+  }
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255,165,0,0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #ff6b00, #ffaa00);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #ffaa00, #ff6b00);
 }
