@@ -97,9 +97,7 @@ export default function Home() {
   });
 
   const completeLessonMutation = useMutation({
-    mutationFn: () => apiRequest("/api/progress/complete-lesson", {
-      method: "POST",
-    }),
+    mutationFn: () => apiRequest("/api/progress/complete-lesson", "POST"),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/progress/today"] });
       queryClient.invalidateQueries({ queryKey: ["/api/progress/week"] });
@@ -477,15 +475,7 @@ export default function Home() {
                       </div>
                     )}
 
-                    {content.tags && (
-                      <div className="flex flex-wrap gap-2 mt-4">
-                        {content.tags.map((tag, index) => (
-                          <Badge key={index} variant="secondary" className="text-xs bg-muted text-muted-foreground">
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
+
                   </CardContent>
                 </Card>
               ))}

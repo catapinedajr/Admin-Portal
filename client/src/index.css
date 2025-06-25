@@ -1,61 +1,62 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Orbitron:wght@400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: hsl(220, 20%, 8%);
-  --foreground: hsl(50, 100%, 85%);
-  --muted: hsl(220, 15%, 18%);
-  --muted-foreground: hsl(50, 20%, 65%);
-  --popover: hsl(220, 25%, 12%);
-  --popover-foreground: hsl(50, 100%, 85%);
-  --card: hsl(220, 25%, 12%);
-  --card-foreground: hsl(50, 100%, 85%);
-  --border: hsl(33, 100%, 20%);
-  --input: hsl(220, 15%, 18%);
-  --primary: hsl(33, 100%, 50%);
-  --primary-foreground: hsl(220, 20%, 8%);
-  --secondary: hsl(220, 15%, 20%);
-  --secondary-foreground: hsl(50, 100%, 85%);
-  --accent: hsl(33, 100%, 50%);
-  --accent-foreground: hsl(220, 20%, 8%);
-  --destructive: hsl(0, 84%, 60%);
-  --destructive-foreground: hsl(210, 40%, 98%);
-  --success: hsl(122, 39%, 49%);
-  --ring: hsl(33, 100%, 50%);
-  --radius: 0.25rem;
+  /* Light theme - easier on the eyes */
+  --background: hsl(0, 0%, 98%);
+  --foreground: hsl(210, 11%, 15%);
+  --muted: hsl(210, 11%, 93%);
+  --muted-foreground: hsl(210, 6%, 46%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(210, 11%, 15%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(210, 11%, 15%);
+  --border: hsl(210, 12%, 87%);
+  --input: hsl(210, 12%, 87%);
+  --primary: hsl(25, 85%, 50%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(210, 11%, 93%);
+  --secondary-foreground: hsl(210, 11%, 15%);
+  --accent: hsl(210, 11%, 93%);
+  --accent-foreground: hsl(210, 11%, 15%);
+  --destructive: hsl(0, 72%, 55%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --success: hsl(142, 71%, 45%);
+  --warning: hsl(45, 93%, 58%);
+  --ring: hsl(25, 85%, 50%);
+  --radius: 0.75rem;
   
-  /* Bitcoin-themed cyber colors */
-  --bitcoin-orange: hsl(33, 100%, 50%);
-  --bitcoin-orange-dark: hsl(33, 100%, 40%);
-  --bitcoin-orange-light: hsl(33, 100%, 60%);
-  --cyber-bg: hsl(220, 20%, 8%);
-  --cyber-surface: hsl(220, 25%, 12%);
-  --terminal-green: hsl(120, 100%, 70%);
+  /* Softer Bitcoin theme colors */
+  --bitcoin-orange: hsl(25, 85%, 50%);
+  --bitcoin-orange-light: hsl(25, 85%, 95%);
+  --bitcoin-orange-dark: hsl(25, 85%, 40%);
 }
 
 .dark {
-  --background: hsl(240, 10%, 4%);
-  --foreground: hsl(0, 0%, 98%);
-  --muted: hsl(240, 4%, 16%);
-  --muted-foreground: hsl(240, 5%, 65%);
-  --popover: hsl(240, 10%, 4%);
-  --popover-foreground: hsl(0, 0%, 98%);
-  --card: hsl(240, 10%, 4%);
-  --card-foreground: hsl(0, 0%, 98%);
-  --border: hsl(240, 4%, 16%);
-  --input: hsl(240, 4%, 16%);
-  --primary: hsl(207, 76%, 42%);
-  --primary-foreground: hsl(211, 100%, 99%);
-  --secondary: hsl(240, 4%, 16%);
-  --secondary-foreground: hsl(0, 0%, 98%);
-  --accent: hsl(240, 4%, 16%);
-  --accent-foreground: hsl(0, 0%, 98%);
-  --destructive: hsl(0, 63%, 31%);
+  --background: hsl(210, 11%, 6%);
+  --foreground: hsl(210, 11%, 93%);
+  --muted: hsl(210, 11%, 12%);
+  --muted-foreground: hsl(210, 6%, 64%);
+  --popover: hsl(210, 11%, 8%);
+  --popover-foreground: hsl(210, 11%, 93%);
+  --card: hsl(210, 11%, 8%);
+  --card-foreground: hsl(210, 11%, 93%);
+  --border: hsl(210, 12%, 18%);
+  --input: hsl(210, 12%, 18%);
+  --primary: hsl(25, 85%, 50%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(210, 11%, 12%);
+  --secondary-foreground: hsl(210, 11%, 93%);
+  --accent: hsl(210, 11%, 12%);
+  --accent-foreground: hsl(210, 11%, 93%);
+  --destructive: hsl(0, 72%, 55%);
   --destructive-foreground: hsl(0, 0%, 98%);
-  --ring: hsl(240, 5%, 84%);
+  --success: hsl(142, 71%, 45%);
+  --warning: hsl(45, 93%, 58%);
+  --ring: hsl(25, 85%, 50%);
 }
 
 @layer base {
@@ -65,150 +66,127 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'JetBrains Mono', monospace;
-    background-image: 
-      radial-gradient(circle at 1px 1px, rgba(255,165,0,0.15) 1px, transparent 0);
-    background-size: 20px 20px;
-    position: relative;
-  }
-  
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255,165,0,0.03) 50%,
-      transparent 100%
-    );
-    animation: scanlines 2s linear infinite;
-    pointer-events: none;
-    z-index: 1;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Orbitron', monospace;
-    text-shadow: 0 0 10px rgba(255,165,0,0.3);
+    font-weight: 600;
+    line-height: 1.3;
   }
   
   .terminal-text {
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 400;
+    font-family: 'JetBrains Mono', 'SF Mono', 'Monaco', monospace;
+    font-size: 0.9em;
+    letter-spacing: 0.025em;
   }
   
   .glow-text {
-    text-shadow: 0 0 10px rgba(255,165,0,0.6);
+    color: hsl(var(--primary));
+    font-weight: 600;
   }
   
   .bitcoin-glow {
-    box-shadow: 0 0 20px rgba(255,165,0,0.2);
+    box-shadow: 0 2px 8px hsla(var(--primary), 0.15);
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .bitcoin-glow:hover {
+    box-shadow: 0 4px 16px hsla(var(--primary), 0.25);
   }
 }
 
 @layer components {
   .cyber-card {
-    @apply bg-card border-2 border-border relative overflow-hidden;
-    background: linear-gradient(135deg, rgba(255,165,0,0.05) 0%, rgba(0,0,0,0.8) 100%);
-    border-color: rgba(255, 165, 0, 0.3);
+    @apply bg-card border border-border rounded-lg;
     box-shadow: 
-      0 0 20px rgba(255,165,0,0.1),
-      inset 0 1px 0 rgba(255,165,0,0.2);
+      0 1px 3px hsla(210, 11%, 15%, 0.08),
+      0 1px 2px hsla(210, 11%, 15%, 0.06);
+    transition: all 0.2s ease-in-out;
   }
   
-  .cyber-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,165,0,0.1), transparent);
-    animation: shimmer 3s infinite;
+  .cyber-card:hover {
+    box-shadow: 
+      0 4px 12px hsla(210, 11%, 15%, 0.12),
+      0 2px 4px hsla(210, 11%, 15%, 0.08);
+    border-color: hsla(var(--primary), 0.3);
+    transform: translateY(-1px);
   }
   
   .cyber-button {
-    @apply relative overflow-hidden;
-    background: linear-gradient(45deg, #ff6b00, #ffaa00);
-    border: 1px solid #ff6b00;
-    text-shadow: 0 0 10px rgba(0,0,0,0.8);
-    transition: all 0.3s ease;
+    @apply transition-all duration-200 ease-in-out;
+    border-radius: calc(var(--radius) - 2px);
   }
   
   .cyber-button:hover {
+    background: hsla(var(--primary), 0.08);
+    border-color: hsla(var(--primary), 0.3);
     transform: translateY(-1px);
-    box-shadow: 0 5px 15px rgba(255,165,0,0.4);
-  }
-  
-  .cyber-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s;
-  }
-  
-  .cyber-button:hover::before {
-    left: 100%;
   }
   
   .terminal-header {
-    background: linear-gradient(90deg, rgba(26,26,26,0.8), rgba(42,42,42,0.8), rgba(26,26,26,0.8));
-    border: 1px solid rgba(255,107,0,0.5);
-    position: relative;
-  }
-  
-  .terminal-header::before {
-    content: '●●●';
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #ff6b00;
-    font-size: 12px;
-    letter-spacing: 3px;
+    @apply bg-muted border border-border;
+    border-radius: calc(var(--radius) - 2px);
   }
   
   .progress-bar {
-    background: linear-gradient(90deg, #ff6b00, #ffaa00);
-    box-shadow: 0 0 10px rgba(255,165,0,0.5);
-    animation: pulse-glow 2s ease-in-out infinite alternate;
+    @apply bg-gradient-to-r from-primary to-primary;
+    border-radius: var(--radius);
   }
   
   .tab-active {
-    background: linear-gradient(45deg, rgba(255,107,0,0.2), rgba(255,170,0,0.1));
-    border-color: rgba(255,107,0,1);
-    box-shadow: 0 0 15px rgba(255,165,0,0.3);
+    @apply text-primary border-primary bg-primary/5 font-medium;
+  }
+  
+  .badge-soft {
+    background: hsla(var(--primary), 0.1);
+    color: hsl(var(--primary));
+    border: 1px solid hsla(var(--primary), 0.2);
+  }
+  
+  .status-active {
+    background: hsla(var(--success), 0.1);
+    color: hsl(var(--success));
+    border: 1px solid hsla(var(--success), 0.2);
+  }
+  
+  .status-pending {
+    background: hsla(var(--warning), 0.1);
+    color: hsl(var(--warning));
+    border: 1px solid hsla(var(--warning), 0.2);
   }
 }
 
 @layer utilities {
   .fade-in {
-    animation: fadeIn 0.5s ease-in-out;
+    animation: fadeIn 0.4s ease-out;
   }
   
   .border-b-3 {
     border-bottom-width: 3px;
   }
   
-  .typing-effect {
-    overflow: hidden;
-    border-right: 2px solid #ff6b00;
-    white-space: nowrap;
-    animation: typing 2s steps(40) 1s forwards, blink 1s infinite;
+  .hover-lift {
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-2px);
+  }
+  
+  .material-shadow-3 {
+    box-shadow: 
+      0 3px 6px hsla(210, 11%, 15%, 0.12),
+      0 2px 4px hsla(210, 11%, 15%, 0.08);
   }
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -216,62 +194,37 @@
   }
 }
 
-@keyframes scanlines {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
+/* Focus states for accessibility */
+.focus-visible:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
 }
 
-@keyframes shimmer {
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 100%;
-  }
-}
-
-@keyframes pulse-glow {
-  0% {
-    box-shadow: 0 0 5px rgba(255,165,0,0.3);
-  }
-  100% {
-    box-shadow: 0 0 20px rgba(255,165,0,0.8);
-  }
-}
-
-@keyframes typing {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-@keyframes blink {
-  50% {
-    border-color: transparent;
-  }
-}
-
-/* Custom scrollbar */
+/* Custom scrollbar - subtle */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(255,165,0,0.1);
+  background: hsl(var(--muted));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(45deg, #ff6b00, #ffaa00);
-  border-radius: 4px;
+  background: hsl(var(--border));
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(45deg, #ffaa00, #ff6b00);
+  background: hsl(var(--muted-foreground));
+}
+
+/* Remove jarring animations */
+* {
+  animation-duration: 0.3s !important;
+  animation-timing-function: ease-out !important;
+}
+
+/* Smooth transitions */
+button, a, .cyber-card, .cyber-button {
+  transition: all 0.2s ease-in-out;
 }
