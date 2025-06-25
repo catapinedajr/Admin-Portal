@@ -421,6 +421,11 @@ export default function Home() {
   const [showPriceChart, setShowPriceChart] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
+  const [simulatorInputs, setSimulatorInputs] = useState({
+    mining: { hashRate: 100, electricityCost: 0.12, bitcoinPrice: 100000 },
+    dca: { monthlyAmount: 100, duration: 12, startPrice: 50000 },
+    hodl: { initialAmount: 1000, years: 4, strategy: 'hodl' as 'hodl' | 'trading' }
+  });
 
   const toggleFactExpansion = (factId: number) => {
     const newExpanded = new Set(expandedFacts);
@@ -495,6 +500,103 @@ export default function Home() {
       visualDescription: "Imagine a system that combines the transparency of a glass house with the security of a bank vault.",
       keyTakeaways: ["Decentralized operation", "Cryptographic security", "Global accessibility"]
     };
+  };
+
+  const calculateMiningProfitability = (hashRate: number, electricityCost: number, bitcoinPrice: number) => {
+    const dailyBtc = (hashRate * 0.00000005) * 24; // Simplified calculation
+    const dailyRevenue = dailyBtc * bitcoinPrice;
+    const dailyElectricityCost = (hashRate * 0.0015) * electricityCost * 24; // ~1.5kW per 100 TH/s
+    const dailyProfit = dailyRevenue - dailyElectricityCost;
+    const monthlyProfit = dailyProfit * 30;
+    const yearlyProfit = dailyProfit * 365;
+    
+    return {
+      dailyBtc: dailyBtc.toFixed(8),
+      dailyRevenue: dailyRevenue.toFixed(2),
+      dailyElectricityCost: dailyElectricityCost.toFixed(2),
+      dailyProfit: dailyProfit.toFixed(2),
+      monthlyProfit: monthlyProfit.toFixed(2),
+      yearlyProfit: yearlyProfit.toFixed(2),
+      profitMargin: ((dailyProfit / dailyRevenue) * 100).toFixed(1)
+    };
+  };
+
+  const calculateDCA = (monthlyAmount: number, duration: number, startPrice: number) => {
+    let totalInvested = 0;
+    let totalBtc = 0;
+    const purchases = [];
+    
+    for (let month = 0; month < duration; month++) {
+      // Simulate price volatility (simplified)
+      const priceVariation = Math.sin(month * 0.5) * 0.2 + (Math.random() - 0.5) * 0.4;
+      const currentPrice = startPrice * (1 + priceVariation);
+      const btcPurchased = monthlyAmount / currentPrice;
+      
+      totalInvested += monthlyAmount;
+      totalBtc += btcPurchased;
+      
+      purchases.push({
+        month: month + 1,
+        price: currentPrice.toFixed(0),
+        btcPurchased: btcPurchased.toFixed(6),
+        totalBtc: totalBtc.toFixed(6)
+      });
+    }
+    
+    const finalPrice = startPrice * 1.8; // Assume 80% growth over period
+    const finalValue = totalBtc * finalPrice;
+    const totalReturn = finalValue - totalInvested;
+    const returnPercentage = (totalReturn / totalInvested) * 100;
+    
+    return {
+      totalInvested: totalInvested.toFixed(2),
+      totalBtc: totalBtc.toFixed(6),
+      finalValue: finalValue.toFixed(2),
+      totalReturn: totalReturn.toFixed(2),
+      returnPercentage: returnPercentage.toFixed(1),
+      averagePrice: (totalInvested / totalBtc).toFixed(0),
+      purchases: purchases.slice(-6) // Show last 6 months
+    };
+  };
+
+  const calculateHODL = (initialAmount: number, years: number, strategy: 'hodl' | 'trading') => {
+    const startPrice = 30000;
+    const initialBtc = initialAmount / startPrice;
+    
+    if (strategy === 'hodl') {
+      const finalPrice = startPrice * Math.pow(1.5, years); // 50% annual growth
+      const finalValue = initialBtc * finalPrice;
+      const totalReturn = finalValue - initialAmount;
+      const returnPercentage = (totalReturn / initialAmount) * 100;
+      
+      return {
+        strategy: 'HODLing',
+        initialBtc: initialBtc.toFixed(6),
+        finalValue: finalValue.toFixed(2),
+        totalReturn: totalReturn.toFixed(2),
+        returnPercentage: returnPercentage.toFixed(1),
+        trades: 0,
+        fees: 0
+      };
+    } else {
+      // Simulate trading with fees and taxes
+      const grossReturn = initialAmount * Math.pow(1.5, years);
+      const tradingFees = grossReturn * 0.05; // 5% in fees
+      const taxes = (grossReturn - initialAmount) * 0.25; // 25% capital gains
+      const finalValue = grossReturn - tradingFees - taxes;
+      const totalReturn = finalValue - initialAmount;
+      const returnPercentage = (totalReturn / initialAmount) * 100;
+      
+      return {
+        strategy: 'Active Trading',
+        initialBtc: initialBtc.toFixed(6),
+        finalValue: finalValue.toFixed(2),
+        totalReturn: totalReturn.toFixed(2),
+        returnPercentage: returnPercentage.toFixed(1),
+        trades: years * 12,
+        fees: tradingFees.toFixed(2)
+      };
+    }
   };
 
   const { data: user } = useQuery({
@@ -1178,35 +1280,360 @@ export default function Home() {
               <p className="text-zinc-400">Interactive simulations to deepen your understanding</p>
             </div>
 
-            {Object.entries(simulations).map(([key, simulation]) => (
-              practiceSubTab === key && (
-                <Card key={key} className="bg-zinc-900 border-zinc-800">
-                  <CardContent className="p-6">
-                    <div className="space-y-6">
-                      <div className="flex items-start gap-4">
-                        <div className="p-3 bg-orange-600/20 rounded-lg">
-                          <Zap className="w-8 h-8 text-orange-400" />
+            {practiceSubTab === "mining" && (
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-6">
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-orange-600/20 rounded-lg">
+                        <Zap className="w-8 h-8 text-orange-400" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-white mb-2">Bitcoin Mining Calculator</h3>
+                        <p className="text-zinc-300 mb-4">Calculate mining profitability based on hash rate, electricity costs, and Bitcoin price</p>
+                      </div>
+                    </div>
+                    
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <h4 className="text-white font-semibold">Mining Parameters</h4>
+                        
+                        <div>
+                          <label className="text-zinc-300 text-sm block mb-2">Hash Rate (TH/s)</label>
+                          <input
+                            type="number"
+                            value={simulatorInputs.mining.hashRate}
+                            onChange={(e) => setSimulatorInputs(prev => ({
+                              ...prev,
+                              mining: { ...prev.mining, hashRate: Number(e.target.value) }
+                            }))}
+                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                          />
                         </div>
-                        <div className="flex-1">
-                          <h3 className="text-xl font-bold text-white mb-2">{simulation.title}</h3>
-                          <p className="text-zinc-300 mb-4">{simulation.description}</p>
-                          <div className="flex items-center gap-4 mb-4">
-                            <Badge variant="outline" className="border-zinc-700 text-orange-400">
-                              {simulation.difficulty}
-                            </Badge>
-                            <span className="text-zinc-400 text-sm">{simulation.estimatedTime}</span>
-                          </div>
+                        
+                        <div>
+                          <label className="text-zinc-300 text-sm block mb-2">Electricity Cost ($/kWh)</label>
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={simulatorInputs.mining.electricityCost}
+                            onChange={(e) => setSimulatorInputs(prev => ({
+                              ...prev,
+                              mining: { ...prev.mining, electricityCost: Number(e.target.value) }
+                            }))}
+                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="text-zinc-300 text-sm block mb-2">Bitcoin Price ($)</label>
+                          <input
+                            type="number"
+                            value={simulatorInputs.mining.bitcoinPrice}
+                            onChange={(e) => setSimulatorInputs(prev => ({
+                              ...prev,
+                              mining: { ...prev.mining, bitcoinPrice: Number(e.target.value) }
+                            }))}
+                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                          />
                         </div>
                       </div>
                       
-                      <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-4">
-                        <p className="text-orange-200 text-sm">Interactive simulation interface would be implemented here with real Bitcoin data and calculations.</p>
+                      <div className="space-y-4">
+                        <h4 className="text-white font-semibold">Profitability Results</h4>
+                        {(() => {
+                          const results = calculateMiningProfitability(
+                            simulatorInputs.mining.hashRate,
+                            simulatorInputs.mining.electricityCost,
+                            simulatorInputs.mining.bitcoinPrice
+                          );
+                          return (
+                            <div className="space-y-3">
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">Daily Bitcoin Earned</div>
+                                <div className="text-orange-400 font-mono">{results.dailyBtc} BTC</div>
+                              </div>
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">Daily Revenue</div>
+                                <div className="text-green-400 font-mono">${results.dailyRevenue}</div>
+                              </div>
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">Daily Electricity Cost</div>
+                                <div className="text-red-400 font-mono">${results.dailyElectricityCost}</div>
+                              </div>
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">Daily Profit</div>
+                                <div className={`font-mono ${Number(results.dailyProfit) > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                  ${results.dailyProfit}
+                                </div>
+                              </div>
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">Monthly Profit</div>
+                                <div className={`font-mono ${Number(results.monthlyProfit) > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                  ${results.monthlyProfit}
+                                </div>
+                              </div>
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">Profit Margin</div>
+                                <div className="text-blue-400 font-mono">{results.profitMargin}%</div>
+                              </div>
+                            </div>
+                          );
+                        })()}
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              )
-            ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {practiceSubTab === "dca" && (
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-6">
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-blue-600/20 rounded-lg">
+                        <TrendingUp className="w-8 h-8 text-blue-400" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-white mb-2">Dollar-Cost Averaging Calculator</h3>
+                        <p className="text-zinc-300 mb-4">Simulate regular Bitcoin purchases over time to see the power of consistent investing</p>
+                      </div>
+                    </div>
+                    
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <h4 className="text-white font-semibold">DCA Parameters</h4>
+                        
+                        <div>
+                          <label className="text-zinc-300 text-sm block mb-2">Monthly Investment ($)</label>
+                          <input
+                            type="number"
+                            value={simulatorInputs.dca.monthlyAmount}
+                            onChange={(e) => setSimulatorInputs(prev => ({
+                              ...prev,
+                              dca: { ...prev.dca, monthlyAmount: Number(e.target.value) }
+                            }))}
+                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="text-zinc-300 text-sm block mb-2">Duration (Months)</label>
+                          <input
+                            type="number"
+                            value={simulatorInputs.dca.duration}
+                            onChange={(e) => setSimulatorInputs(prev => ({
+                              ...prev,
+                              dca: { ...prev.dca, duration: Number(e.target.value) }
+                            }))}
+                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="text-zinc-300 text-sm block mb-2">Starting Bitcoin Price ($)</label>
+                          <input
+                            type="number"
+                            value={simulatorInputs.dca.startPrice}
+                            onChange={(e) => setSimulatorInputs(prev => ({
+                              ...prev,
+                              dca: { ...prev.dca, startPrice: Number(e.target.value) }
+                            }))}
+                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <h4 className="text-white font-semibold">DCA Results</h4>
+                        {(() => {
+                          const results = calculateDCA(
+                            simulatorInputs.dca.monthlyAmount,
+                            simulatorInputs.dca.duration,
+                            simulatorInputs.dca.startPrice
+                          );
+                          return (
+                            <div className="space-y-3">
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">Total Invested</div>
+                                <div className="text-blue-400 font-mono">${results.totalInvested}</div>
+                              </div>
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">Bitcoin Accumulated</div>
+                                <div className="text-orange-400 font-mono">{results.totalBtc} BTC</div>
+                              </div>
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">Average Purchase Price</div>
+                                <div className="text-purple-400 font-mono">${results.averagePrice}</div>
+                              </div>
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">Final Portfolio Value</div>
+                                <div className="text-green-400 font-mono">${results.finalValue}</div>
+                              </div>
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">Total Return</div>
+                                <div className={`font-mono ${Number(results.totalReturn) > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                  ${results.totalReturn} ({results.returnPercentage}%)
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {practiceSubTab === "hodl" && (
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-6">
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-purple-600/20 rounded-lg">
+                        <Gem className="w-8 h-8 text-purple-400" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-white mb-2">HODLing vs Trading Strategy</h3>
+                        <p className="text-zinc-300 mb-4">Compare the long-term results of holding Bitcoin versus active trading</p>
+                      </div>
+                    </div>
+                    
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <h4 className="text-white font-semibold">Strategy Parameters</h4>
+                        
+                        <div>
+                          <label className="text-zinc-300 text-sm block mb-2">Initial Investment ($)</label>
+                          <input
+                            type="number"
+                            value={simulatorInputs.hodl.initialAmount}
+                            onChange={(e) => setSimulatorInputs(prev => ({
+                              ...prev,
+                              hodl: { ...prev.hodl, initialAmount: Number(e.target.value) }
+                            }))}
+                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="text-zinc-300 text-sm block mb-2">Time Period (Years)</label>
+                          <input
+                            type="number"
+                            value={simulatorInputs.hodl.years}
+                            onChange={(e) => setSimulatorInputs(prev => ({
+                              ...prev,
+                              hodl: { ...prev.hodl, years: Number(e.target.value) }
+                            }))}
+                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="text-zinc-300 text-sm block mb-2">Strategy</label>
+                          <select
+                            value={simulatorInputs.hodl.strategy}
+                            onChange={(e) => setSimulatorInputs(prev => ({
+                              ...prev,
+                              hodl: { ...prev.hodl, strategy: e.target.value as 'hodl' | 'trading' }
+                            }))}
+                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                          >
+                            <option value="hodl">HODL (Hold)</option>
+                            <option value="trading">Active Trading</option>
+                          </select>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <h4 className="text-white font-semibold">Strategy Results</h4>
+                        {(() => {
+                          const results = calculateHODL(
+                            simulatorInputs.hodl.initialAmount,
+                            simulatorInputs.hodl.years,
+                            simulatorInputs.hodl.strategy
+                          );
+                          return (
+                            <div className="space-y-3">
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">Strategy</div>
+                                <div className="text-purple-400 font-mono">{results.strategy}</div>
+                              </div>
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">Bitcoin Acquired</div>
+                                <div className="text-orange-400 font-mono">{results.initialBtc} BTC</div>
+                              </div>
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">Final Value</div>
+                                <div className="text-green-400 font-mono">${results.finalValue}</div>
+                              </div>
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">Total Return</div>
+                                <div className={`font-mono ${Number(results.totalReturn) > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                  ${results.totalReturn} ({results.returnPercentage}%)
+                                </div>
+                              </div>
+                              {Number(results.fees) > 0 && (
+                                <div className="bg-zinc-800 rounded-lg p-3">
+                                  <div className="text-zinc-400 text-sm">Trading Fees & Taxes</div>
+                                  <div className="text-red-400 font-mono">${results.fees}</div>
+                                </div>
+                              )}
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">Number of Trades</div>
+                                <div className="text-blue-400 font-mono">{results.trades}</div>
+                              </div>
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {(practiceSubTab === "transactions" || practiceSubTab === "halving") && (
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-6">
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-orange-600/20 rounded-lg">
+                        <Zap className="w-8 h-8 text-orange-400" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-white mb-2">
+                          {practiceSubTab === "transactions" ? "Transaction Builder" : "Halving Impact Simulator"}
+                        </h3>
+                        <p className="text-zinc-300 mb-4">
+                          {practiceSubTab === "transactions" 
+                            ? "Build and understand Bitcoin transactions with fees and confirmations" 
+                            : "Explore how Bitcoin halving events affect supply and mining rewards"
+                          }
+                        </p>
+                        <div className="flex items-center gap-4 mb-4">
+                          <Badge variant="outline" className="border-zinc-700 text-orange-400">
+                            {practiceSubTab === "transactions" ? "Advanced" : "Intermediate"}
+                          </Badge>
+                          <span className="text-zinc-400 text-sm">
+                            {practiceSubTab === "transactions" ? "15-20 minutes" : "10-15 minutes"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4">
+                      <p className="text-blue-200 text-sm">
+                        Advanced {practiceSubTab === "transactions" ? "transaction building" : "halving impact"} simulator 
+                        coming soon with interactive blockchain visualizations and real network data.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         )}
 

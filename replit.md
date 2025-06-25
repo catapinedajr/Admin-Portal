@@ -126,6 +126,7 @@ Comprehensive component library built on Radix UI primitives:
 - June 25, 2025. Reorganized navigation into three logical section groups: Foundation (learning, disruption, terms), Practice (simulations), and Inspiration (stories, conviction) for cleaner user experience and better content organization
 - June 25, 2025. Updated navigation labels: "Foundation" → "Learn", "Inspiration" → "Inspo" for more compact mobile-friendly design with centered menu alignment
 - June 25, 2025. Added "Dive Deeper" functionality to daily facts with expandable detailed explanations, visual descriptions, real-world examples, and key takeaways for enhanced learning experience
+- June 25, 2025. Implemented fully functional interactive simulators: Bitcoin Mining Calculator (hash rate, electricity costs, profitability), DCA Calculator (dollar-cost averaging with volatility simulation), and HODLing vs Trading Strategy Comparison (including fees and taxes)
 
 ## User Preferences
 
