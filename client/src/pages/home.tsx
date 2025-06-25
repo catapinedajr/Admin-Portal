@@ -375,6 +375,102 @@ export default function Home() {
         </div>
       </header>
 
+      {/* Sub-navigation tabs */}
+      {(activeSection === "learning" || activeSection === "adoption") && (
+        <div className="border-b border-border bg-background/50 backdrop-blur-sm sticky top-14 z-40">
+          <div className="px-4 py-2">
+            <div className="flex space-x-1 overflow-x-auto">
+              {activeSection === "learning" && (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`px-4 py-2 rounded-full whitespace-nowrap ${
+                      learningSubTab === "basics" 
+                        ? "bg-primary/10 text-primary" 
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                    onClick={() => setLearningSubTab("basics")}
+                  >
+                    <Lightbulb className="w-3 h-3 mr-1" />
+                    Basics
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`px-4 py-2 rounded-full whitespace-nowrap ${
+                      learningSubTab === "lesson" 
+                        ? "bg-primary/10 text-primary" 
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                    onClick={() => setLearningSubTab("lesson")}
+                  >
+                    <BookOpen className="w-3 h-3 mr-1" />
+                    Learn More
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`px-4 py-2 rounded-full whitespace-nowrap ${
+                      learningSubTab === "progress" 
+                        ? "bg-primary/10 text-primary" 
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                    onClick={() => setLearningSubTab("progress")}
+                  >
+                    <TrendingUp className="w-3 h-3 mr-1" />
+                    Progress
+                  </Button>
+                </>
+              )}
+              {activeSection === "adoption" && (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`px-4 py-2 rounded-full whitespace-nowrap ${
+                      adoptionSubTab === "companies" 
+                        ? "bg-primary/10 text-primary" 
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                    onClick={() => setAdoptionSubTab("companies")}
+                  >
+                    <Building2 className="w-3 h-3 mr-1" />
+                    Companies
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`px-4 py-2 rounded-full whitespace-nowrap ${
+                      adoptionSubTab === "countries" 
+                        ? "bg-primary/10 text-primary" 
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                    onClick={() => setAdoptionSubTab("countries")}
+                  >
+                    <Star className="w-3 h-3 mr-1" />
+                    Countries
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`px-4 py-2 rounded-full whitespace-nowrap ${
+                      adoptionSubTab === "network" 
+                        ? "bg-primary/10 text-primary" 
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                    onClick={() => setAdoptionSubTab("network")}
+                  >
+                    <LineChart className="w-3 h-3 mr-1" />
+                    Network
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       <main className="px-4 py-4">
         {/* Learning Section */}
         {activeSection === "learning" && (
