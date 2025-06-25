@@ -119,6 +119,66 @@ export default function Home() {
     completeLessonMutation.mutate();
   };
 
+  const handleLearnMore = (factId: number) => {
+    handleFactView();
+    // Could expand this to show detailed fact modal or navigate to expanded view
+  };
+
+  const nextLessonPage = () => {
+    setCurrentLessonPage(prev => Math.min(2, prev + 1));
+  };
+
+  const prevLessonPage = () => {
+    setCurrentLessonPage(prev => Math.max(0, prev - 1));
+  };
+
+  // Get current lesson page content
+  const getLessonPageContent = () => {
+    if (!lesson) return null;
+    
+    const lessonPages = [
+      {
+        title: lesson.title,
+        content: lesson.content
+      },
+      {
+        title: "Understanding Bitcoin Mining",
+        content: `Bitcoin mining is the process by which new bitcoins are created and transactions are verified and added to the blockchain ledger. This process is crucial for maintaining the security and integrity of the Bitcoin network.
+
+The Mining Process:
+Miners use specialized computer hardware to solve complex mathematical problems. These problems require significant computational power and energy to solve, but the solutions can be quickly verified by other network participants.
+
+Why Mining Matters:
+1. Transaction Verification: Miners confirm that transactions are legitimate
+2. Network Security: The computational work makes the network resistant to attacks
+3. New Bitcoin Creation: Successful miners are rewarded with newly created bitcoins
+4. Decentralization: Anyone can participate in mining, keeping the network distributed
+
+The mining process ensures that Bitcoin remains secure, decentralized, and trustworthy without requiring a central authority.`
+      },
+      {
+        title: "The Economics of Mining",
+        content: `Bitcoin mining operates on economic incentives that ensure network security while creating new bitcoins according to a predictable schedule.
+
+Mining Rewards:
+Miners receive two types of rewards for their work:
+- Block Reward: New bitcoins created with each block (currently 6.25 BTC)
+- Transaction Fees: Fees paid by users for including their transactions
+
+The Halving Event:
+Every 210,000 blocks (approximately 4 years), the block reward is cut in half. This ensures Bitcoin's maximum supply will never exceed 21 million coins.
+
+Mining Difficulty:
+The network automatically adjusts mining difficulty every 2,016 blocks to maintain an average block time of 10 minutes, regardless of how many miners participate.
+
+Energy and Sustainability:
+While mining consumes energy, it increasingly uses renewable sources and provides economic incentives for developing efficient energy infrastructure.`
+      }
+    ];
+
+    return lessonPages[currentLessonPage] || lessonPages[0];
+  };
+
   const progressPercentage = todayProgress?.progressPercentage || 0;
   const currentDate = formatDate(new Date());
 
@@ -287,7 +347,7 @@ export default function Home() {
                             variant="ghost" 
                             size="sm" 
                             className="text-primary hover:text-primary/80 hover:bg-primary/10"
-                            onClick={handleFactView}
+                            onClick={() => handleLearnMore(fact.id)}
                           >
                             Learn More
                           </Button>
@@ -359,26 +419,45 @@ export default function Home() {
                   </div>
                 )}
                 
-                <h2 className="text-xl font-medium text-foreground mb-4">{lesson.title}</h2>
+                <h2 className="text-xl font-medium text-foreground mb-4">
+                  {getLessonPageContent()?.title || lesson.title}
+                </h2>
                 
                 <div className="prose text-muted-foreground leading-relaxed space-y-4">
-                  {lesson.content.split('\n\n').map((paragraph, index) => (
+                  {(getLessonPageContent()?.content || lesson.content).split('\n\n').map((paragraph, index) => (
                     <p key={index} className="whitespace-pre-line">{paragraph}</p>
                   ))}
                 </div>
 
                 {/* Lesson Navigation */}
                 <div className="flex items-center justify-between mt-8 pt-6 border-t border-border">
-                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-muted-foreground hover:text-foreground"
+                    onClick={prevLessonPage}
+                    disabled={currentLessonPage === 0}
+                  >
                     <ChevronLeft className="mr-2 w-4 h-4" />
                     Previous
                   </Button>
                   <div className="flex space-x-2">
-                    <span className="w-2 h-2 bg-primary rounded-full"></span>
-                    <span className="w-2 h-2 bg-muted rounded-full"></span>
-                    <span className="w-2 h-2 bg-muted rounded-full"></span>
+                    {[0, 1, 2].map((page) => (
+                      <span 
+                        key={page}
+                        className={`w-2 h-2 rounded-full ${
+                          currentLessonPage === page ? "bg-primary" : "bg-muted"
+                        }`}
+                      ></span>
+                    ))}
                   </div>
-                  <Button variant="ghost" size="sm" className="text-primary font-medium hover:text-primary/80">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-primary font-medium hover:text-primary/80"
+                    onClick={nextLessonPage}
+                    disabled={currentLessonPage === 2}
+                  >
                     Next
                     <ChevronRight className="ml-2 w-4 h-4" />
                   </Button>
