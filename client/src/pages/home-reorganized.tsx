@@ -535,7 +535,7 @@ export default function Home() {
           <div className="p-4 bg-orange-600 rounded-full inline-block animate-pulse">
             <Bitcoin className="w-12 h-12 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-white">Loading your Conviction in Bitcoin</h1>
+          <h1 className="text-2xl font-bold text-white">Loading your Conviction</h1>
           <p className="text-zinc-400">Building the future of money</p>
         </div>
       </div>
