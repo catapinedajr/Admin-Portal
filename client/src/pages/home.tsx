@@ -41,6 +41,14 @@ import { queryClient, apiRequest } from "@/lib/queryClient";
 import { formatDate, getDayOfWeek, getWeekDates } from "@/lib/utils";
 import type { User, DailyFact, Lesson, UserProgress, KnowledgeArea, ConvictionContent, TreasuryCompany, SovereignAdoption } from "@shared/schema";
 
+interface NetworkMetric {
+  metric: string;
+  value: string;
+  change24h: string;
+  description: string;
+  icon: string;
+}
+
 const iconMap = {
   coins: Coins,
   cube: Box,
@@ -55,7 +63,7 @@ const iconMap = {
 
 type MainSection = "learning" | "adoption" | "conviction";
 type LearningSubTab = "facts" | "lesson" | "progress";
-type AdoptionSubTab = "treasury" | "sovereign";
+type AdoptionSubTab = "treasury" | "sovereign" | "network";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<MainSection>("learning");
@@ -309,6 +317,19 @@ export default function Home() {
                   >
                     <Star className="w-3 h-3 mr-1" />
                     Nations
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`px-4 py-2 text-xs rounded-none border-b-2 transition-all ${
+                      adoptionSubTab === "network" 
+                        ? "text-primary border-primary bg-primary/5 font-medium" 
+                        : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5"
+                    }`}
+                    onClick={() => setAdoptionSubTab("network")}
+                  >
+                    <LineChart className="w-3 h-3 mr-1" />
+                    Network
                   </Button>
                 </div>
               )}
@@ -815,6 +836,27 @@ export default function Home() {
                 </Card>
               </div>
             )}
+
+            {/* Network Adoption */}
+            {adoptionSubTab === "network" && (
+              <div className="fade-in">
+                {/* Header */}
+                <div className="mt-6 mb-6">
+                  <div className="text-center">
+                    <h3 className="text-lg font-medium text-foreground flex items-center justify-center gap-2 glow-text">
+                      <LineChart className="w-5 h-5 text-primary" />
+                      Bitcoin Network Adoption
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-1 terminal-text">
+                      On-chain metrics showing real Bitcoin network growth and usage
+                    </p>
+                  </div>
+                </div>
+
+                {/* Network Metrics */}
+                <NetworkMetricsDisplay />
+              </div>
+            )}
           </>
         )}
       </main>
@@ -930,5 +972,104 @@ export default function Home() {
         <HelpCircle className="w-5 h-5" />
       </Button>
     </div>
+  );
+}
+
+// Network Metrics Display Component
+function NetworkMetricsDisplay() {
+  const { data: networkMetrics, isLoading } = useQuery<NetworkMetric[]>({
+    queryKey: ["/api/network-metrics"],
+    refetchInterval: 300000, // Refresh every 5 minutes
+  });
+
+  if (isLoading) {
+    return (
+      <div className="grid gap-4">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <Card key={i} className="cyber-card">
+            <CardContent className="p-6">
+              <div className="animate-pulse">
+                <div className="h-4 bg-muted rounded w-1/3 mb-2"></div>
+                <div className="h-8 bg-muted rounded w-1/2 mb-2"></div>
+                <div className="h-3 bg-muted rounded w-2/3"></div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
+  const metrics = networkMetrics || [];
+
+  return (
+    <>
+      {/* Key Metrics Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {metrics.map((metric, index) => (
+          <Card key={index} className="cyber-card">
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center bitcoin-glow">
+                    {metric.icon === 'users' && <UserIcon className="w-4 h-4 text-primary" />}
+                    {metric.icon === 'trending-up' && <TrendingUp className="w-4 h-4 text-primary" />}
+                    {metric.icon === 'zap' && <Zap className="w-4 h-4 text-primary" />}
+                    {metric.icon === 'coins' && <Coins className="w-4 h-4 text-primary" />}
+                    {metric.icon === 'shield' && <Shield className="w-4 h-4 text-primary" />}
+                    {metric.icon === 'globe' && <Globe className="w-4 h-4 text-primary" />}
+                  </div>
+                  <h4 className="font-medium text-foreground terminal-text">{metric.metric}</h4>
+                </div>
+                <Badge 
+                  variant={metric.change24h.startsWith('+') ? 'default' : 'secondary'}
+                  className={metric.change24h.startsWith('+') 
+                    ? "bg-green-500/10 text-green-400 border-green-500/20" 
+                    : "bg-red-500/10 text-red-400 border-red-500/20"
+                  }
+                >
+                  {metric.change24h}
+                </Badge>
+              </div>
+              
+              <div className="mb-4">
+                <p className="text-2xl font-bold text-primary glow-text mb-1">
+                  {metric.value}
+                </p>
+                <p className="text-sm text-muted-foreground terminal-text">
+                  {metric.description}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Summary Card */}
+      <Card className="cyber-card mt-6">
+        <CardContent className="p-6 text-center">
+          <div className="mb-4">
+            <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3 bitcoin-glow">
+              <LineChart className="w-6 h-6 text-primary" />
+            </div>
+            <h4 className="font-medium text-foreground glow-text">Network Growth Summary</h4>
+            <p className="text-sm text-muted-foreground mt-2 terminal-text">
+              Bitcoin network showing strong adoption metrics across all indicators
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="terminal-header p-3 rounded">
+              <p className="text-xs text-muted-foreground terminal-text">Overall Health</p>
+              <p className="text-lg font-medium text-green-400 glow-text">Strong</p>
+            </div>
+            <div className="terminal-header p-3 rounded">
+              <p className="text-xs text-muted-foreground terminal-text">Adoption Trend</p>
+              <p className="text-lg font-medium text-primary glow-text">Growing</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </>
   );
 }
