@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { 
   Bitcoin, 
   Lightbulb, 
@@ -16,8 +18,15 @@ import {
   KeyRound,
   Gem,
   Zap,
+  Flame,
   GraduationCap,
+  Star,
+  ChevronLeft,
+  ChevronRight,
+  Check,
+  Share,
   HelpCircle,
+  ArrowRight,
   DollarSign,
   Building2,
   AlertTriangle,
@@ -26,11 +35,24 @@ import {
   Quote,
   ExternalLink,
   Globe,
+  LineChart,
+  X,
+  Home as HomeIcon,
   Users,
   FileText
 } from "lucide-react";
-import type { User, DailyFact, Lesson, UserProgress, ConvictionContent } from "@shared/schema";
+import { queryClient, apiRequest } from "@/lib/queryClient";
+import { formatDate, getDayOfWeek, getWeekDates } from "@/lib/utils";
+import type { User, DailyFact, Lesson, UserProgress, KnowledgeArea, ConvictionContent, TreasuryCompany, SovereignAdoption } from "@shared/schema";
 import DailyQuiz from "@/components/DailyQuiz";
+
+interface NetworkMetric {
+  metric: string;
+  value: string;
+  change24h: string;
+  description: string;
+  icon: string;
+}
 
 const iconMap = {
   coins: Coins,
@@ -70,6 +92,14 @@ const bitcoinTerms = [
     definition: "A secret number that proves ownership of Bitcoin and allows you to spend it. Never share this with anyone."
   },
   {
+    term: "Public Key",
+    definition: "A cryptographic key derived from your private key that others can use to send you Bitcoin."
+  },
+  {
+    term: "Hash Rate",
+    definition: "The total computational power securing the Bitcoin network, measured in hashes per second."
+  },
+  {
     term: "Satoshi",
     definition: "The smallest unit of Bitcoin, named after its creator. One Bitcoin equals 100 million satoshis."
   },
@@ -80,6 +110,14 @@ const bitcoinTerms = [
   {
     term: "HODL",
     definition: "A misspelling of 'hold' that became a strategy of keeping Bitcoin long-term regardless of price swings."
+  },
+  {
+    term: "Node",
+    definition: "A computer that validates transactions and maintains a copy of the entire Bitcoin blockchain."
+  },
+  {
+    term: "Fork",
+    definition: "A change to Bitcoin's protocol rules, which can be soft (backward compatible) or hard (not compatible)."
   }
 ];
 
@@ -87,19 +125,19 @@ const userProfiles = {
   individuals: [
     {
       name: "Sarah Chen",
-      role: "Software Engineer",
+      title: "Software Engineer",
       story: "Started buying Bitcoin in 2017 to protect savings from inflation. Now uses it for international remittances to family.",
       reason: "Hedge against currency debasement and easier cross-border payments"
     },
     {
       name: "Miguel Rodriguez", 
-      role: "Small Business Owner",
+      title: "Small Business Owner",
       story: "Accepts Bitcoin payments at his restaurant to avoid high credit card fees and attract tech-savvy customers.",
       reason: "Lower transaction fees and financial sovereignty"
     },
     {
       name: "Dr. Amara Okafor",
-      role: "Medical Professional",
+      title: "Medical Professional",
       story: "Uses Bitcoin to send money to medical charities in countries with unstable banking systems.",
       reason: "Reliable value transfer to underbanked regions"
     }
@@ -107,19 +145,19 @@ const userProfiles = {
   businesses: [
     {
       name: "MicroStrategy",
-      role: "Business Intelligence",
+      industry: "Business Intelligence",
       story: "CEO Michael Saylor led the company to adopt Bitcoin as treasury reserve, buying over 190,000 BTC since 2020.",
       reason: "Corporate treasury strategy and inflation hedge"
     },
     {
       name: "Tesla",
-      role: "Electric Vehicles", 
+      industry: "Electric Vehicles", 
       story: "Added Bitcoin to balance sheet and briefly accepted it for car purchases before focusing on environmental concerns.",
       reason: "Diversification and innovation in payments"
     },
     {
       name: "Strike",
-      role: "Financial Services",
+      industry: "Financial Services",
       story: "Built Lightning Network infrastructure to enable instant, low-cost Bitcoin payments globally.",
       reason: "Revolutionary payment rails and financial inclusion"
     }
@@ -127,19 +165,19 @@ const userProfiles = {
   nations: [
     {
       name: "El Salvador",
-      role: "President Nayib Bukele",
+      leader: "President Nayib Bukele",
       story: "First country to adopt Bitcoin as legal tender in 2021, aiming to increase financial inclusion and attract investment.",
       reason: "Financial inclusion and economic sovereignty"
     },
     {
       name: "Switzerland",
-      role: "Crypto Valley Initiative",
+      approach: "Crypto Valley",
       story: "Created favorable regulations in Zug, becoming a global hub for blockchain companies and Bitcoin adoption.",
       reason: "Innovation leadership and economic development"
     },
     {
       name: "Miami",
-      role: "Mayor Francis Suarez",
+      leader: "Mayor Francis Suarez",
       story: "Exploring Bitcoin for city treasury and employee salaries, positioning Miami as a Bitcoin-friendly city.",
       reason: "Economic innovation and talent attraction"
     }
@@ -150,6 +188,7 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState<MainSection>("learning");
   const [learningSubTab, setLearningSubTab] = useState<LearningSubTab>("basics");
   const [profilesSubTab, setProfilesSubTab] = useState<ProfilesSubTab>("individuals");
+  const [currentLessonPage, setCurrentLessonPage] = useState(0);
   const [showPriceChart, setShowPriceChart] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
 
@@ -160,6 +199,10 @@ export default function Home() {
     }, 2000);
     return () => clearTimeout(timer);
   }, []);
+
+  // Get current date for day-based content
+  const currentDate = new Date();
+  const dayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24)) % 365;
 
   // API Queries
   const { data: user } = useQuery({
@@ -175,6 +218,16 @@ export default function Home() {
   const { data: lesson } = useQuery({
     queryKey: ['/api/lesson'],
     queryFn: () => fetch('/api/lesson').then(res => res.json()) as Promise<Lesson>
+  });
+
+  const { data: progressToday } = useQuery({
+    queryKey: ['/api/progress/today'],
+    queryFn: () => fetch('/api/progress/today').then(res => res.json()) as Promise<UserProgress>
+  });
+
+  const { data: knowledgeAreas = [] } = useQuery({
+    queryKey: ['/api/knowledge-areas'],
+    queryFn: () => fetch('/api/knowledge-areas').then(res => res.json()) as Promise<KnowledgeArea[]>
   });
 
   const { data: convictionContent = [] } = useQuery({
@@ -493,7 +546,9 @@ export default function Home() {
                       <div className="flex items-start justify-between">
                         <div>
                           <h3 className="text-lg font-semibold text-white">{profile.name}</h3>
-                          <p className="text-orange-400 text-sm">{profile.role}</p>
+                          <p className="text-orange-400 text-sm">
+                            {profile.title || profile.industry || profile.leader || profile.approach}
+                          </p>
                         </div>
                         <Badge variant="outline" className="border-zinc-700 text-zinc-400">
                           {profilesSubTab === "individuals" ? "Individual" : 

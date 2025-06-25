@@ -682,6 +682,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Quiz routes
+  app.get('/api/quiz/daily/:dayIndex', async (req, res) => {
+    try {
+      const dayIndex = parseInt(req.params.dayIndex);
+      const questions = await storage.getDailyQuizQuestions(dayIndex);
+      res.json(questions);
+    } catch (error) {
+      console.error('Error fetching daily quiz questions:', error);
+      res.status(500).json({ message: "Failed to fetch quiz questions" });
+    }
+  });
+
+  app.post('/api/quiz/submit', async (req, res) => {
+    try {
+      const { userId, questionId, selectedAnswer, date } = req.body;
+      
+      // Get the question to check correct answer
+      const allQuestions = await storage.getAllQuizQuestions();
+      const question = allQuestions.find(q => q.id === questionId);
+      
+      if (!question) {
+        return res.status(404).json({ message: "Question not found" });
+      }
+
+      const isCorrect = selectedAnswer === question.correctAnswer;
+      
+      const answer = await storage.submitQuizAnswer({
+        userId,
+        questionId,
+        selectedAnswer,
+        isCorrect,
+        date
+      });
+
+      res.json({
+        ...answer,
+        isCorrect,
+        explanation: question.explanation
+      });
+    } catch (error) {
+      console.error('Error submitting quiz answer:', error);
+      res.status(500).json({ message: "Failed to submit answer" });
+    }
+  });
+
+  app.get('/api/quiz/score/:userId/:date', async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const date = req.params.date;
+      
+      const score = await storage.getUserQuizScore(userId, date);
+      res.json(score);
+    } catch (error) {
+      console.error('Error fetching quiz score:', error);
+      res.status(500).json({ message: "Failed to fetch quiz score" });
+    }
+  });
+
+  app.get('/api/quiz/answers/:userId/:date', async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const date = req.params.date;
+      
+      const answers = await storage.getUserQuizAnswers(userId, date);
+      res.json(answers);
+    } catch (error) {
+      console.error('Error fetching quiz answers:', error);
+      res.status(500).json({ message: "Failed to fetch quiz answers" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

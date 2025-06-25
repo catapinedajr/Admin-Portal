@@ -24,7 +24,11 @@ import {
   type SovereignAdoption,
   type InsertSovereignAdoption,
   type BitcoinPrice,
-  type InsertBitcoinPrice
+  type InsertBitcoinPrice,
+  type QuizQuestion,
+  type InsertQuizQuestion,
+  type UserQuizAnswer,
+  type InsertUserQuizAnswer
 } from "@shared/schema";
 
 export interface IStorage {
@@ -76,6 +80,14 @@ export interface IStorage {
   getCurrentBitcoinPrice(): Promise<BitcoinPrice | undefined>;
   getBitcoinPriceHistory(hours: number): Promise<BitcoinPrice[]>;
   createBitcoinPrice(price: InsertBitcoinPrice): Promise<BitcoinPrice>;
+
+  // Quiz methods
+  getDailyQuizQuestions(dayIndex: number): Promise<QuizQuestion[]>;
+  getAllQuizQuestions(): Promise<QuizQuestion[]>;
+  createQuizQuestion(question: InsertQuizQuestion): Promise<QuizQuestion>;
+  getUserQuizAnswers(userId: number, date: string): Promise<UserQuizAnswer[]>;
+  submitQuizAnswer(answer: InsertUserQuizAnswer): Promise<UserQuizAnswer>;
+  getUserQuizScore(userId: number, date: string): Promise<{ correct: number; total: number; percentage: number }>;
 }
 
 export class MemStorage implements IStorage {
@@ -88,6 +100,8 @@ export class MemStorage implements IStorage {
   private treasuryCompanies: Map<number, TreasuryCompany>;
   private sovereignAdoptions: Map<number, SovereignAdoption>;
   private bitcoinPrices: Map<number, BitcoinPrice>;
+  private quizQuestions: Map<number, QuizQuestion>;
+  private userQuizAnswers: Map<string, UserQuizAnswer>; // key: userId-questionId-date
   private currentUserId: number;
   private currentFactId: number;
   private currentLessonId: number;
@@ -97,6 +111,8 @@ export class MemStorage implements IStorage {
   private currentTreasuryCompanyId: number;
   private currentSovereignAdoptionId: number;
   private currentBitcoinPriceId: number;
+  private currentQuizQuestionId: number;
+  private currentQuizAnswerId: number;
 
   constructor() {
     this.users = new Map();
@@ -107,6 +123,8 @@ export class MemStorage implements IStorage {
     this.convictionContent = new Map();
     this.treasuryCompanies = new Map();
     this.sovereignAdoptions = new Map();
+    this.quizQuestions = new Map();
+    this.userQuizAnswers = new Map();
     this.currentUserId = 1;
     this.currentFactId = 1;
     this.currentLessonId = 1;
@@ -117,6 +135,8 @@ export class MemStorage implements IStorage {
     this.currentSovereignAdoptionId = 1;
     this.bitcoinPrices = new Map();
     this.currentBitcoinPriceId = 1;
+    this.currentQuizQuestionId = 1;
+    this.currentQuizAnswerId = 1;
 
     this.seedData();
   }
@@ -503,6 +523,51 @@ Mining serves two crucial purposes:
       this.sovereignAdoptions.set(newAdoption.id, newAdoption);
     });
 
+    // Seed quiz questions
+    const quizQuestions = [
+      {
+        dayIndex: 0,
+        question: "What is the maximum supply of Bitcoin that will ever exist?",
+        optionA: "21 million",
+        optionB: "100 million", 
+        optionC: "50 million",
+        optionD: "Unlimited",
+        correctAnswer: "A",
+        explanation: "Bitcoin has a hard cap of 21 million coins, making it scarce by design. This limit is built into the protocol and cannot be changed.",
+        category: "Bitcoin Basics",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 0,
+        question: "What happens to Bitcoin's mining reward approximately every 4 years?",
+        optionA: "It doubles",
+        optionB: "It gets cut in half",
+        optionC: "It stays the same",
+        optionD: "It becomes zero",
+        correctAnswer: "B",
+        explanation: "Bitcoin undergoes a 'halving' event every ~4 years where the mining reward is cut in half. This reduces the rate of new Bitcoin creation, increasing scarcity over time.",
+        category: "Bitcoin Basics",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 0,
+        question: "What makes Bitcoin different from traditional currencies?",
+        optionA: "It's controlled by banks",
+        optionB: "It's backed by gold",
+        optionC: "It's decentralized with no central authority",
+        optionD: "It can be printed unlimited amounts",
+        correctAnswer: "C",
+        explanation: "Bitcoin operates on a decentralized network with no central bank or government control. This peer-to-peer system is maintained by thousands of computers worldwide.",
+        category: "Bitcoin Basics",
+        difficulty: "beginner"
+      }
+    ];
+
+    quizQuestions.forEach(question => {
+      const newQuestion: QuizQuestion = { ...question, id: this.currentQuizQuestionId++ };
+      this.quizQuestions.set(newQuestion.id, newQuestion);
+    });
+
     // Create a default user
     const defaultUser: User = {
       id: this.currentUserId++,
@@ -775,6 +840,89 @@ Mining serves two crucial purposes:
       return updated;
     }
     return undefined;
+  }
+
+  // Bitcoin price methods
+  async getCurrentBitcoinPrice(): Promise<BitcoinPrice | undefined> {
+    const prices = Array.from(this.bitcoinPrices.values());
+    return prices.length > 0 ? prices[prices.length - 1] : undefined;
+  }
+
+  async getBitcoinPriceHistory(hours: number): Promise<BitcoinPrice[]> {
+    const cutoffTime = new Date(Date.now() - hours * 60 * 60 * 1000);
+    return Array.from(this.bitcoinPrices.values())
+      .filter(price => new Date(price.timestamp) >= cutoffTime)
+      .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+  }
+
+  async createBitcoinPrice(insertPrice: InsertBitcoinPrice): Promise<BitcoinPrice> {
+    const price: BitcoinPrice = {
+      id: this.currentBitcoinPriceId++,
+      timestamp: new Date(),
+      priceUsd: insertPrice.priceUsd,
+      marketCap: insertPrice.marketCap || null,
+      volume24h: insertPrice.volume24h || null,
+      change24h: insertPrice.change24h || null,
+      change7d: insertPrice.change7d || null,
+      dominance: insertPrice.dominance || null
+    };
+    this.bitcoinPrices.set(price.id, price);
+    return price;
+  }
+
+  // Quiz methods
+  async getDailyQuizQuestions(dayIndex: number): Promise<QuizQuestion[]> {
+    return Array.from(this.quizQuestions.values()).filter(question => question.dayIndex === dayIndex);
+  }
+
+  async getAllQuizQuestions(): Promise<QuizQuestion[]> {
+    return Array.from(this.quizQuestions.values());
+  }
+
+  async createQuizQuestion(insertQuestion: InsertQuizQuestion): Promise<QuizQuestion> {
+    const question: QuizQuestion = {
+      id: this.currentQuizQuestionId++,
+      dayIndex: insertQuestion.dayIndex,
+      question: insertQuestion.question,
+      optionA: insertQuestion.optionA,
+      optionB: insertQuestion.optionB,
+      optionC: insertQuestion.optionC,
+      optionD: insertQuestion.optionD,
+      correctAnswer: insertQuestion.correctAnswer,
+      explanation: insertQuestion.explanation,
+      category: insertQuestion.category,
+      difficulty: insertQuestion.difficulty
+    };
+    this.quizQuestions.set(question.id, question);
+    return question;
+  }
+
+  async getUserQuizAnswers(userId: number, date: string): Promise<UserQuizAnswer[]> {
+    return Array.from(this.userQuizAnswers.values())
+      .filter(answer => answer.userId === userId && answer.date === date);
+  }
+
+  async submitQuizAnswer(insertAnswer: InsertUserQuizAnswer): Promise<UserQuizAnswer> {
+    const key = `${insertAnswer.userId}-${insertAnswer.questionId}-${insertAnswer.date}`;
+    const answer: UserQuizAnswer = {
+      id: this.currentQuizAnswerId++,
+      userId: insertAnswer.userId,
+      questionId: insertAnswer.questionId,
+      selectedAnswer: insertAnswer.selectedAnswer,
+      isCorrect: insertAnswer.isCorrect,
+      answeredAt: new Date(),
+      date: insertAnswer.date
+    };
+    this.userQuizAnswers.set(key, answer);
+    return answer;
+  }
+
+  async getUserQuizScore(userId: number, date: string): Promise<{ correct: number; total: number; percentage: number }> {
+    const answers = await this.getUserQuizAnswers(userId, date);
+    const correct = answers.filter(answer => answer.isCorrect).length;
+    const total = answers.length;
+    const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
+    return { correct, total, percentage };
   }
 }
 

@@ -107,6 +107,30 @@ export const bitcoinPrice = pgTable("bitcoin_price", {
   dominance: decimal("dominance", { precision: 5, scale: 2 }),
 });
 
+export const quizQuestions = pgTable("quiz_questions", {
+  id: serial("id").primaryKey(),
+  dayIndex: integer("day_index").notNull(),
+  question: text("question").notNull(),
+  optionA: text("option_a").notNull(),
+  optionB: text("option_b").notNull(),
+  optionC: text("option_c").notNull(),
+  optionD: text("option_d").notNull(),
+  correctAnswer: text("correct_answer").notNull(), // 'A', 'B', 'C', or 'D'
+  explanation: text("explanation").notNull(),
+  category: text("category").notNull(),
+  difficulty: text("difficulty").notNull(), // 'beginner', 'intermediate', 'advanced'
+});
+
+export const userQuizAnswers = pgTable("user_quiz_answers", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  questionId: integer("question_id").notNull(),
+  selectedAnswer: text("selected_answer").notNull(), // 'A', 'B', 'C', or 'D'
+  isCorrect: boolean("is_correct").notNull(),
+  answeredAt: timestamp("answered_at").defaultNow().notNull(),
+  date: text("date").notNull(), // YYYY-MM-DD format
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -147,6 +171,15 @@ export const insertBitcoinPriceSchema = createInsertSchema(bitcoinPrice).omit({
   timestamp: true,
 });
 
+export const insertQuizQuestionSchema = createInsertSchema(quizQuestions).omit({
+  id: true,
+});
+
+export const insertUserQuizAnswerSchema = createInsertSchema(userQuizAnswers).omit({
+  id: true,
+  answeredAt: true,
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type DailyFact = typeof dailyFacts.$inferSelect;
@@ -165,3 +198,7 @@ export type SovereignAdoption = typeof sovereignAdoption.$inferSelect;
 export type InsertSovereignAdoption = z.infer<typeof insertSovereignAdoptionSchema>;
 export type BitcoinPrice = typeof bitcoinPrice.$inferSelect;
 export type InsertBitcoinPrice = z.infer<typeof insertBitcoinPriceSchema>;
+export type QuizQuestion = typeof quizQuestions.$inferSelect;
+export type InsertQuizQuestion = z.infer<typeof insertQuizQuestionSchema>;
+export type UserQuizAnswer = typeof userQuizAnswers.$inferSelect;
+export type InsertUserQuizAnswer = z.infer<typeof insertUserQuizAnswerSchema>;
