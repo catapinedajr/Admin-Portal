@@ -120,6 +120,7 @@ Comprehensive component library built on Radix UI primitives:
 - June 25, 2025. Updated all loading screens to display "Loading your Conviction in Bitcoin" to reinforce the app's educational mission and build user confidence
 - June 25, 2025. Expanded Conviction Center with three comprehensive subsections: White Paper (with original Bitcoin paper summary and key points), Books & Articles (featuring essential Bitcoin literature with difficulty levels), and Videos (curated collection of educational content from Bitcoin thought leaders)
 - June 25, 2025. Redesigned learning section navigation to be more compact with shorter button text, smaller sizing, and responsive wrapping to fit better on mobile and smaller screens
+- June 25, 2025. Added comprehensive Simulation Center with five interactive educational tools: Bitcoin Mining Economics, Transaction Builder, HODLing Strategy Comparison, Dollar-Cost Averaging Analysis, and Bitcoin Halving Impact visualization
 
 ## User Preferences
 

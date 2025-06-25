@@ -49,10 +49,11 @@ const iconMap = {
   "alert-triangle": AlertTriangle,
 };
 
-type MainSection = "learning" | "btcaction" | "conviction" | "terms";
+type MainSection = "learning" | "btcaction" | "conviction" | "terms" | "simulation";
 type LearningSubTab = "basics" | "lesson" | "progress" | "quiz" | "explore";
 type BtcActionSubTab = "individuals" | "businesses" | "nations";
 type ConvictionSubTab = "whitepaper" | "books" | "videos";
+type SimulationSubTab = "mining" | "transactions" | "hodl" | "dca" | "halving";
 
 const bitcoinTerms = [
   {
@@ -427,11 +428,45 @@ const convictionResources = {
   ]
 };
 
+const simulations = {
+  mining: {
+    title: "Bitcoin Mining Simulator",
+    description: "Experience the economics of Bitcoin mining with different hardware and electricity costs",
+    difficulty: "Intermediate",
+    estimatedTime: "10-15 minutes"
+  },
+  transactions: {
+    title: "Transaction Builder",
+    description: "Build and broadcast Bitcoin transactions, understand fees and confirmations",
+    difficulty: "Advanced", 
+    estimatedTime: "15-20 minutes"
+  },
+  hodl: {
+    title: "HODLing Strategy",
+    description: "Compare different Bitcoin accumulation and holding strategies over time",
+    difficulty: "Beginner",
+    estimatedTime: "5-10 minutes"
+  },
+  dca: {
+    title: "Dollar-Cost Averaging",
+    description: "Simulate regular Bitcoin purchases and see the impact of timing vs. consistency",
+    difficulty: "Beginner",
+    estimatedTime: "10-15 minutes"
+  },
+  halving: {
+    title: "Halving Impact",
+    description: "Explore how Bitcoin halving events affect supply, mining rewards, and price dynamics",
+    difficulty: "Intermediate",
+    estimatedTime: "10-15 minutes"
+  }
+};
+
 export default function Home() {
   const [activeSection, setActiveSection] = useState<MainSection>("learning");
   const [learningSubTab, setLearningSubTab] = useState<LearningSubTab>("basics");
   const [btcActionSubTab, setBtcActionSubTab] = useState<BtcActionSubTab>("individuals");
   const [convictionSubTab, setConvictionSubTab] = useState<ConvictionSubTab>("whitepaper");
+  const [simulationSubTab, setSimulationSubTab] = useState<SimulationSubTab>("mining");
   const [showPriceChart, setShowPriceChart] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
@@ -548,6 +583,15 @@ export default function Home() {
             >
               <Heart className="w-4 h-4 mr-2" />
               Conviction
+            </Button>
+            <Button
+              variant={activeSection === "simulation" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setActiveSection("simulation")}
+              className={activeSection === "simulation" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"}
+            >
+              <Zap className="w-4 h-4 mr-2" />
+              Simulations
             </Button>
             <Button
               variant={activeSection === "terms" ? "default" : "ghost"}
@@ -1192,6 +1236,434 @@ export default function Home() {
                     </Card>
                   ))}
                 </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Simulation Center Section */}
+        {activeSection === "simulation" && (
+          <div className="space-y-6">
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl font-bold text-white">Simulation Center</h2>
+              <p className="text-zinc-400">Interactive simulations to deepen your Bitcoin understanding</p>
+            </div>
+            
+            <div className="flex space-x-2 mb-6 justify-center flex-wrap gap-2">
+              <Button
+                variant={simulationSubTab === "mining" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setSimulationSubTab("mining")}
+                className="text-sm"
+              >
+                <Zap className="w-3 h-3 mr-2" />
+                Mining
+              </Button>
+              <Button
+                variant={simulationSubTab === "transactions" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setSimulationSubTab("transactions")}
+                className="text-sm"
+              >
+                <ArrowRight className="w-3 h-3 mr-2" />
+                Transactions
+              </Button>
+              <Button
+                variant={simulationSubTab === "hodl" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setSimulationSubTab("hodl")}
+                className="text-sm"
+              >
+                <Shield className="w-3 h-3 mr-2" />
+                HODLing
+              </Button>
+              <Button
+                variant={simulationSubTab === "dca" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setSimulationSubTab("dca")}
+                className="text-sm"
+              >
+                <TrendingUp className="w-3 h-3 mr-2" />
+                DCA
+              </Button>
+              <Button
+                variant={simulationSubTab === "halving" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setSimulationSubTab("halving")}
+                className="text-sm"
+              >
+                <Gem className="w-3 h-3 mr-2" />
+                Halving
+              </Button>
+            </div>
+
+            {simulationSubTab === "mining" && (
+              <div className="space-y-6">
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="space-y-6">
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 bg-yellow-600/20 rounded-lg">
+                          <Zap className="w-8 h-8 text-yellow-400" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold text-white mb-2">{simulations.mining.title}</h3>
+                          <p className="text-zinc-300 mb-4">{simulations.mining.description}</p>
+                          <div className="flex items-center gap-4 mb-4">
+                            <Badge variant="outline" className="border-zinc-700 text-yellow-400">
+                              {simulations.mining.difficulty}
+                            </Badge>
+                            <span className="text-zinc-400 text-sm">{simulations.mining.estimatedTime}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <h4 className="text-white font-medium">Mining Setup</h4>
+                          <div className="space-y-3">
+                            <div>
+                              <label className="text-zinc-300 text-sm block mb-1">Hash Rate (TH/s)</label>
+                              <div className="bg-zinc-800 rounded px-3 py-2 text-white">100</div>
+                            </div>
+                            <div>
+                              <label className="text-zinc-300 text-sm block mb-1">Power Consumption (W)</label>
+                              <div className="bg-zinc-800 rounded px-3 py-2 text-white">3,250</div>
+                            </div>
+                            <div>
+                              <label className="text-zinc-300 text-sm block mb-1">Electricity Cost ($/kWh)</label>
+                              <div className="bg-zinc-800 rounded px-3 py-2 text-white">0.12</div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-4">
+                          <h4 className="text-white font-medium">Mining Results</h4>
+                          <div className="bg-zinc-800 rounded-lg p-4 space-y-3">
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400">Daily Revenue:</span>
+                              <span className="text-green-400">$15.40</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400">Daily Electricity:</span>
+                              <span className="text-red-400">-$9.36</span>
+                            </div>
+                            <div className="flex justify-between font-medium">
+                              <span className="text-white">Daily Profit:</span>
+                              <span className="text-orange-400">$6.04</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400">Breakeven Time:</span>
+                              <span className="text-zinc-300">~18 months</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4">
+                        <h4 className="text-blue-300 font-medium mb-2">Learning Point</h4>
+                        <p className="text-blue-200 text-sm">Mining profitability depends on hash rate, electricity costs, and Bitcoin price. The network difficulty adjusts every 2016 blocks to maintain ~10 minute block times.</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {simulationSubTab === "transactions" && (
+              <div className="space-y-6">
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="space-y-6">
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 bg-green-600/20 rounded-lg">
+                          <ArrowRight className="w-8 h-8 text-green-400" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold text-white mb-2">{simulations.transactions.title}</h3>
+                          <p className="text-zinc-300 mb-4">{simulations.transactions.description}</p>
+                          <div className="flex items-center gap-4 mb-4">
+                            <Badge variant="outline" className="border-zinc-700 text-red-400">
+                              {simulations.transactions.difficulty}
+                            </Badge>
+                            <span className="text-zinc-400 text-sm">{simulations.transactions.estimatedTime}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <h4 className="text-white font-medium">Transaction Components</h4>
+                        <div className="grid gap-4">
+                          <div className="bg-zinc-800 rounded-lg p-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-zinc-300">Input (From)</span>
+                              <span className="text-orange-400 text-sm">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</span>
+                            </div>
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-zinc-300">Amount</span>
+                              <span className="text-white">0.01 BTC</span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-zinc-300">Fee</span>
+                              <span className="text-yellow-400">2,500 sats</span>
+                            </div>
+                          </div>
+                          
+                          <div className="text-center">
+                            <ArrowRight className="w-6 h-6 text-zinc-600 mx-auto" />
+                          </div>
+                          
+                          <div className="bg-zinc-800 rounded-lg p-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-zinc-300">Output (To)</span>
+                              <span className="text-orange-400 text-sm">3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy</span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-zinc-300">Amount Received</span>
+                              <span className="text-green-400">0.00997500 BTC</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-green-600/10 border border-green-600/20 rounded-lg p-4">
+                        <h4 className="text-green-300 font-medium mb-2">Learning Point</h4>
+                        <p className="text-green-200 text-sm">Bitcoin transactions consist of inputs and outputs. Fees incentivize miners to include your transaction in the next block. Higher fees = faster confirmation.</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {simulationSubTab === "hodl" && (
+              <div className="space-y-6">
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="space-y-6">
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 bg-purple-600/20 rounded-lg">
+                          <Shield className="w-8 h-8 text-purple-400" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold text-white mb-2">{simulations.hodl.title}</h3>
+                          <p className="text-zinc-300 mb-4">{simulations.hodl.description}</p>
+                          <div className="flex items-center gap-4 mb-4">
+                            <Badge variant="outline" className="border-zinc-700 text-green-400">
+                              {simulations.hodl.difficulty}
+                            </Badge>
+                            <span className="text-zinc-400 text-sm">{simulations.hodl.estimatedTime}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <h4 className="text-white font-medium">HODL Strategy A: Early Adopter</h4>
+                          <div className="bg-zinc-800 rounded-lg p-4 space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400">Initial Investment (2017):</span>
+                              <span className="text-white">$1,000</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400">Bitcoin Price:</span>
+                              <span className="text-zinc-300">$1,000</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400">Bitcoin Acquired:</span>
+                              <span className="text-orange-400">1.0 BTC</span>
+                            </div>
+                            <div className="flex justify-between font-medium">
+                              <span className="text-white">Current Value:</span>
+                              <span className="text-green-400">~$100,000</span>
+                            </div>
+                            <div className="flex justify-between font-medium">
+                              <span className="text-white">Return:</span>
+                              <span className="text-green-400">+9,900%</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-4">
+                          <h4 className="text-white font-medium">HODL Strategy B: Recent Adopter</h4>
+                          <div className="bg-zinc-800 rounded-lg p-4 space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400">Initial Investment (2022):</span>
+                              <span className="text-white">$1,000</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400">Bitcoin Price:</span>
+                              <span className="text-zinc-300">$50,000</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400">Bitcoin Acquired:</span>
+                              <span className="text-orange-400">0.02 BTC</span>
+                            </div>
+                            <div className="flex justify-between font-medium">
+                              <span className="text-white">Current Value:</span>
+                              <span className="text-green-400">~$2,000</span>
+                            </div>
+                            <div className="flex justify-between font-medium">
+                              <span className="text-white">Return:</span>
+                              <span className="text-green-400">+100%</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-purple-600/10 border border-purple-600/20 rounded-lg p-4">
+                        <h4 className="text-purple-300 font-medium mb-2">Learning Point</h4>
+                        <p className="text-purple-200 text-sm">HODLing (Hold On for Dear Life) emphasizes long-term conviction over short-term trading. Time in the market beats timing the market, but past performance doesn't guarantee future results.</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {simulationSubTab === "dca" && (
+              <div className="space-y-6">
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="space-y-6">
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 bg-blue-600/20 rounded-lg">
+                          <TrendingUp className="w-8 h-8 text-blue-400" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold text-white mb-2">{simulations.dca.title}</h3>
+                          <p className="text-zinc-300 mb-4">{simulations.dca.description}</p>
+                          <div className="flex items-center gap-4 mb-4">
+                            <Badge variant="outline" className="border-zinc-700 text-green-400">
+                              {simulations.dca.difficulty}
+                            </Badge>
+                            <span className="text-zinc-400 text-sm">{simulations.dca.estimatedTime}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <h4 className="text-white font-medium">DCA Simulation: $100/month for 2 years</h4>
+                        <div className="grid gap-4">
+                          <div className="bg-zinc-800 rounded-lg p-4">
+                            <div className="grid grid-cols-4 gap-4 text-sm">
+                              <div className="font-medium text-zinc-400">Month</div>
+                              <div className="font-medium text-zinc-400">Price</div>
+                              <div className="font-medium text-zinc-400">BTC Bought</div>
+                              <div className="font-medium text-zinc-400">Total BTC</div>
+                              
+                              <div className="text-zinc-300">Jan 2023</div>
+                              <div className="text-zinc-300">$16,500</div>
+                              <div className="text-orange-400">0.00606 BTC</div>
+                              <div className="text-orange-400">0.00606</div>
+                              
+                              <div className="text-zinc-300">Jul 2023</div>
+                              <div className="text-zinc-300">$30,000</div>
+                              <div className="text-orange-400">0.00333 BTC</div>
+                              <div className="text-orange-400">0.03939</div>
+                              
+                              <div className="text-zinc-300">Dec 2024</div>
+                              <div className="text-zinc-300">$100,000</div>
+                              <div className="text-orange-400">0.00100 BTC</div>
+                              <div className="text-orange-400">0.06239</div>
+                            </div>
+                          </div>
+                          
+                          <div className="bg-zinc-800 rounded-lg p-4 space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400">Total Invested:</span>
+                              <span className="text-white">$2,400</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400">Total Bitcoin:</span>
+                              <span className="text-orange-400">0.06239 BTC</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400">Average Price:</span>
+                              <span className="text-zinc-300">$38,461</span>
+                            </div>
+                            <div className="flex justify-between font-medium">
+                              <span className="text-white">Current Value:</span>
+                              <span className="text-green-400">$6,239</span>
+                            </div>
+                            <div className="flex justify-between font-medium">
+                              <span className="text-white">Total Return:</span>
+                              <span className="text-green-400">+160%</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4">
+                        <h4 className="text-blue-300 font-medium mb-2">Learning Point</h4>
+                        <p className="text-blue-200 text-sm">Dollar-Cost Averaging reduces the impact of volatility by spreading purchases over time. You buy more when prices are low and less when prices are high, smoothing out your average cost.</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {simulationSubTab === "halving" && (
+              <div className="space-y-6">
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="space-y-6">
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 bg-orange-600/20 rounded-lg">
+                          <Gem className="w-8 h-8 text-orange-400" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold text-white mb-2">{simulations.halving.title}</h3>
+                          <p className="text-zinc-300 mb-4">{simulations.halving.description}</p>
+                          <div className="flex items-center gap-4 mb-4">
+                            <Badge variant="outline" className="border-zinc-700 text-yellow-400">
+                              {simulations.halving.difficulty}
+                            </Badge>
+                            <span className="text-zinc-400 text-sm">{simulations.halving.estimatedTime}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <h4 className="text-white font-medium">Halving Timeline & Impact</h4>
+                        <div className="space-y-3">
+                          {[
+                            { period: "2016-2020", reward: "12.5 BTC", price: "$650 → $29,000", increase: "+4,365%" },
+                            { period: "2020-2024", reward: "6.25 BTC", price: "$8,600 → $100,000", increase: "+1,063%" },
+                            { period: "2024-2028", reward: "3.125 BTC", price: "$67,000 → $???", increase: "???" }
+                          ].map((halving, index) => (
+                            <div key={index} className="bg-zinc-800 rounded-lg p-4">
+                              <div className="grid md:grid-cols-4 gap-4 items-center">
+                                <div>
+                                  <div className="text-zinc-400 text-sm">Period</div>
+                                  <div className="text-white font-medium">{halving.period}</div>
+                                </div>
+                                <div>
+                                  <div className="text-zinc-400 text-sm">Block Reward</div>
+                                  <div className="text-orange-400 font-medium">{halving.reward}</div>
+                                </div>
+                                <div>
+                                  <div className="text-zinc-400 text-sm">Price Range</div>
+                                  <div className="text-zinc-300 font-medium">{halving.price}</div>
+                                </div>
+                                <div>
+                                  <div className="text-zinc-400 text-sm">Cycle Increase</div>
+                                  <div className="text-green-400 font-medium">{halving.increase}</div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-4">
+                        <h4 className="text-orange-300 font-medium mb-2">Learning Point</h4>
+                        <p className="text-orange-200 text-sm">Bitcoin halving reduces new supply by 50% every ~4 years. Historically, this supply shock has led to significant price increases, though past performance doesn't guarantee future results.</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             )}
           </div>
