@@ -27,7 +27,12 @@ import {
   ExternalLink,
   Globe,
   Users,
-  FileText
+  FileText,
+  Flag,
+  Network,
+  ArrowRight,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 import type { User, DailyFact, Lesson, UserProgress, ConvictionContent } from "@shared/schema";
 import DailyQuiz from "@/components/DailyQuiz";
@@ -44,9 +49,9 @@ const iconMap = {
   "alert-triangle": AlertTriangle,
 };
 
-type MainSection = "learning" | "profiles" | "conviction" | "terms";
-type LearningSubTab = "basics" | "lesson" | "progress" | "quiz";
-type ProfilesSubTab = "individuals" | "businesses" | "nations";
+type MainSection = "learning" | "btcaction" | "conviction" | "terms";
+type LearningSubTab = "basics" | "lesson" | "progress" | "quiz" | "explore";
+type BtcActionSubTab = "individuals" | "businesses" | "nations";
 
 const bitcoinTerms = [
   {
@@ -146,12 +151,147 @@ const userProfiles = {
   ]
 };
 
+const explorationTopics = [
+  {
+    id: 1,
+    title: "What is a Blockchain?",
+    description: "Understanding the distributed ledger technology that powers Bitcoin",
+    content: `A blockchain is like a digital ledger that's shared across thousands of computers worldwide. Instead of one central authority keeping records, everyone has a copy.
+
+## How It Works
+
+Think of it like a notebook that gets photocopied and distributed to thousands of people. When someone wants to add a new page:
+
+1. **Proposal**: They announce what they want to write
+2. **Verification**: The majority checks if it's valid
+3. **Addition**: If approved, everyone adds the same page
+4. **Synchronization**: All notebooks stay identical
+
+## Key Properties
+
+**Immutable**: Once written, pages can't be changed without everyone noticing
+**Transparent**: Everyone can read the entire history
+**Decentralized**: No single person controls the notebook
+**Secure**: Cryptography ensures only valid entries are accepted`,
+    visualAid: "blockchain-structure",
+    category: "Technology"
+  },
+  {
+    id: 2,
+    title: "What is Proof of Work?",
+    description: "The energy-intensive process that secures the Bitcoin network",
+    content: `Proof of Work is Bitcoin's security mechanism. Imagine a massive, ongoing puzzle competition where participants (miners) compete to solve complex mathematical problems.
+
+## The Process
+
+**1. Transaction Collection**: Miners gather pending transactions
+**2. Puzzle Solving**: They compete to solve a cryptographic puzzle
+**3. Winner Selection**: First to solve broadcasts their solution
+**4. Verification**: Others quickly check if the solution is correct
+**5. Block Addition**: The winner adds transactions to the blockchain
+
+## Why Energy?
+
+The energy expenditure isn't wasteful—it's the security feature. Just like a bank vault requires significant resources to build and maintain, Bitcoin's security requires computational work.
+
+**Energy → Security → Trust → Value**
+
+The more energy securing the network, the more expensive it becomes to attack, making Bitcoin more secure and trustworthy.`,
+    visualAid: "proof-of-work",
+    category: "Mining"
+  },
+  {
+    id: 3,
+    title: "Digital Signatures",
+    description: "How Bitcoin ensures only you can spend your coins",
+    content: `Digital signatures are Bitcoin's way of proving ownership without revealing secrets. It's like having a unique, unforgeable signature that only you can create.
+
+## The Magic
+
+**Private Key**: Your secret signing pen (never share this!)
+**Public Key**: Your signature verification stamp (safe to share)
+**Digital Signature**: Proof you authorized a transaction
+
+## How It Works
+
+1. **Sign**: Use your private key to "sign" a transaction
+2. **Broadcast**: Send the signed transaction to the network  
+3. **Verify**: Others use your public key to confirm your signature
+4. **Execute**: If valid, the transaction processes
+
+## Security
+
+Even if someone sees your signature on a transaction, they can't forge your signature for a different transaction. Each signature is unique to both your private key and the specific transaction data.`,
+    visualAid: "digital-signatures",
+    category: "Cryptography"
+  },
+  {
+    id: 4,
+    title: "The Lightning Network",
+    description: "Bitcoin's layer 2 solution for instant, low-cost payments",
+    content: `The Lightning Network is like opening a tab at your favorite coffee shop, but for Bitcoin. Instead of paying on-chain for every coffee, you open a payment channel and settle the final amount later.
+
+## How It Works
+
+**1. Channel Opening**: Two parties lock Bitcoin in a shared address
+**2. Off-Chain Transactions**: Exchange signed IOUs instantly
+**3. Channel Closing**: Final settlement publishes net result to blockchain
+
+## Network Effects
+
+Multiple channels create a network where you can pay anyone through connected paths, even without direct channels.
+
+**Alice ↔ Bob ↔ Carol ↔ Dave**
+
+Alice can pay Dave by routing through Bob and Carol, with cryptographic guarantees ensuring security.
+
+## Benefits
+
+✓ **Instant**: Payments in milliseconds
+✓ **Cheap**: Fees measured in satoshis  
+✓ **Private**: Individual payments aren't publicly recorded
+✓ **Scalable**: Millions of transactions per second possible`,
+    visualAid: "lightning-network",
+    category: "Scaling"
+  },
+  {
+    id: 5,
+    title: "Bitcoin's Fixed Supply",
+    description: "Why 21 million Bitcoin is a feature, not a limitation",
+    content: `Unlike traditional currencies that can be printed endlessly, Bitcoin has a hard cap of 21 million coins. This scarcity is programmed into the code and cannot be changed.
+
+## The Halving Schedule
+
+Every 210,000 blocks (roughly 4 years), the mining reward cuts in half:
+
+**2009-2012**: 50 BTC per block
+**2012-2016**: 25 BTC per block  
+**2016-2020**: 12.5 BTC per block
+**2020-2024**: 6.25 BTC per block
+**2024-2028**: 3.125 BTC per block
+
+## Why This Matters
+
+**Predictable Supply**: No surprises or inflation shocks
+**Digital Scarcity**: First time in history we have provably scarce digital asset
+**Store of Value**: Scarcity + utility = potential value preservation
+
+## Economic Impact
+
+As new Bitcoin creation slows, existing coins become more valuable if demand remains constant or grows. This encourages long-term thinking over short-term consumption.`,
+    visualAid: "bitcoin-supply",
+    category: "Economics"
+  }
+];
+
 export default function Home() {
   const [activeSection, setActiveSection] = useState<MainSection>("learning");
   const [learningSubTab, setLearningSubTab] = useState<LearningSubTab>("basics");
-  const [profilesSubTab, setProfilesSubTab] = useState<ProfilesSubTab>("individuals");
+  const [btcActionSubTab, setBtcActionSubTab] = useState<BtcActionSubTab>("individuals");
   const [showPriceChart, setShowPriceChart] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
+  const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
+  const [expandedTopics, setExpandedTopics] = useState<Set<number>>(new Set());
 
   // Splash screen effect
   useEffect(() => {
@@ -248,13 +388,13 @@ export default function Home() {
               Learning
             </Button>
             <Button
-              variant={activeSection === "profiles" ? "default" : "ghost"}
+              variant={activeSection === "btcaction" ? "default" : "ghost"}
               size="sm"
-              onClick={() => setActiveSection("profiles")}
-              className={activeSection === "profiles" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"}
+              onClick={() => setActiveSection("btcaction")}
+              className={activeSection === "btcaction" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"}
             >
               <Users className="w-4 h-4 mr-2" />
-              User Profiles
+              BTC In Action
             </Button>
             <Button
               variant={activeSection === "conviction" ? "default" : "ghost"}
@@ -311,6 +451,15 @@ export default function Home() {
                 Quiz
               </Button>
               <Button
+                variant={learningSubTab === "explore" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setLearningSubTab("explore")}
+                className="text-sm"
+              >
+                <Globe className="w-3 h-3 mr-2" />
+                Explore
+              </Button>
+              <Button
                 variant={learningSubTab === "progress" ? "secondary" : "ghost"}
                 size="sm"
                 onClick={() => setLearningSubTab("progress")}
@@ -324,41 +473,7 @@ export default function Home() {
         </div>
       )}
 
-      {activeSection === "profiles" && (
-        <div className="bg-zinc-800/30 border-b border-zinc-800">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="flex items-center gap-1 py-2">
-              <Button
-                variant={profilesSubTab === "individuals" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setProfilesSubTab("individuals")}
-                className="text-sm"
-              >
-                <UserIcon className="w-3 h-3 mr-2" />
-                Individuals
-              </Button>
-              <Button
-                variant={profilesSubTab === "businesses" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setProfilesSubTab("businesses")}
-                className="text-sm"
-              >
-                <Building2 className="w-3 h-3 mr-2" />
-                Businesses
-              </Button>
-              <Button
-                variant={profilesSubTab === "nations" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setProfilesSubTab("nations")}
-                className="text-sm"
-              >
-                <Globe className="w-3 h-3 mr-2" />
-                Nations
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-6">
@@ -437,6 +552,208 @@ export default function Home() {
               </div>
             )}
 
+            {learningSubTab === "explore" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-bold text-white">Explore Bitcoin</h2>
+                  <p className="text-zinc-400">Advanced topics for deeper understanding</p>
+                </div>
+                
+                <div className="grid gap-6">
+                  {explorationTopics.map((topic) => (
+                    <Card key={topic.id} className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors">
+                      <CardContent className="p-6">
+                        <div className="space-y-4">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-3 mb-2">
+                                <div className="p-2 bg-orange-600/20 rounded-lg">
+                                  {topic.category === "Technology" && <Network className="w-5 h-5 text-orange-400" />}
+                                  {topic.category === "Mining" && <Zap className="w-5 h-5 text-orange-400" />}
+                                  {topic.category === "Cryptography" && <Shield className="w-5 h-5 text-orange-400" />}
+                                  {topic.category === "Scaling" && <Globe className="w-5 h-5 text-orange-400" />}
+                                  {topic.category === "Economics" && <TrendingUp className="w-5 h-5 text-orange-400" />}
+                                </div>
+                                <div>
+                                  <h3 className="text-lg font-semibold text-white">{topic.title}</h3>
+                                  <p className="text-zinc-400 text-sm">{topic.description}</p>
+                                </div>
+                              </div>
+                              <Badge variant="outline" className="border-zinc-700 text-zinc-400">
+                                {topic.category}
+                              </Badge>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setSelectedTopic(selectedTopic === topic.id ? null : topic.id)}
+                              className="text-zinc-400 hover:text-white"
+                            >
+                              {selectedTopic === topic.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                            </Button>
+                          </div>
+                          
+                          {selectedTopic === topic.id && (
+                            <div className="space-y-4 pt-4 border-t border-zinc-800">
+                              {/* Visual Aid Component */}
+                              <div className="bg-zinc-800 rounded-lg p-4">
+                                {topic.visualAid === "blockchain-structure" && (
+                                  <div className="space-y-4">
+                                    <h4 className="text-white font-medium">Blockchain Structure</h4>
+                                    <div className="flex items-center space-x-2 overflow-x-auto">
+                                      {[1, 2, 3, 4].map((block) => (
+                                        <div key={block} className="flex items-center">
+                                          <div className="bg-orange-600/20 border border-orange-600/40 rounded-lg p-3 min-w-[80px]">
+                                            <div className="text-xs text-orange-400 text-center">Block {block}</div>
+                                            <div className="text-xs text-zinc-400 text-center mt-1">Hash: {block}abc...</div>
+                                          </div>
+                                          {block < 4 && <ArrowRight className="w-4 h-4 text-zinc-600 mx-1" />}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                                
+                                {topic.visualAid === "proof-of-work" && (
+                                  <div className="space-y-4">
+                                    <h4 className="text-white font-medium">Proof of Work Process</h4>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                      <div className="text-center space-y-2">
+                                        <div className="bg-blue-600/20 p-3 rounded-lg">
+                                          <FileText className="w-6 h-6 text-blue-400 mx-auto" />
+                                        </div>
+                                        <div className="text-xs text-zinc-400">Collect Transactions</div>
+                                      </div>
+                                      <div className="text-center space-y-2">
+                                        <div className="bg-yellow-600/20 p-3 rounded-lg">
+                                          <Zap className="w-6 h-6 text-yellow-400 mx-auto" />
+                                        </div>
+                                        <div className="text-xs text-zinc-400">Solve Puzzle</div>
+                                      </div>
+                                      <div className="text-center space-y-2">
+                                        <div className="bg-green-600/20 p-3 rounded-lg">
+                                          <Shield className="w-6 h-6 text-green-400 mx-auto" />
+                                        </div>
+                                        <div className="text-xs text-zinc-400">Verify Solution</div>
+                                      </div>
+                                      <div className="text-center space-y-2">
+                                        <div className="bg-purple-600/20 p-3 rounded-lg">
+                                          <Gem className="w-6 h-6 text-purple-400 mx-auto" />
+                                        </div>
+                                        <div className="text-xs text-zinc-400">Add Block</div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                                
+                                {topic.visualAid === "digital-signatures" && (
+                                  <div className="space-y-4">
+                                    <h4 className="text-white font-medium">Digital Signature Flow</h4>
+                                    <div className="flex items-center justify-between">
+                                      <div className="text-center">
+                                        <div className="bg-red-600/20 p-3 rounded-lg mb-2">
+                                          <KeyRound className="w-6 h-6 text-red-400 mx-auto" />
+                                        </div>
+                                        <div className="text-xs text-zinc-400">Private Key</div>
+                                        <div className="text-xs text-red-400">(Secret)</div>
+                                      </div>
+                                      <ArrowRight className="w-4 h-4 text-zinc-600" />
+                                      <div className="text-center">
+                                        <div className="bg-orange-600/20 p-3 rounded-lg mb-2">
+                                          <FileText className="w-6 h-6 text-orange-400 mx-auto" />
+                                        </div>
+                                        <div className="text-xs text-zinc-400">Sign Transaction</div>
+                                      </div>
+                                      <ArrowRight className="w-4 h-4 text-zinc-600" />
+                                      <div className="text-center">
+                                        <div className="bg-green-600/20 p-3 rounded-lg mb-2">
+                                          <Shield className="w-6 h-6 text-green-400 mx-auto" />
+                                        </div>
+                                        <div className="text-xs text-zinc-400">Public Verification</div>
+                                        <div className="text-xs text-green-400">(Safe to Share)</div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                                
+                                {topic.visualAid === "lightning-network" && (
+                                  <div className="space-y-4">
+                                    <h4 className="text-white font-medium">Lightning Network</h4>
+                                    <div className="flex items-center justify-center space-x-4">
+                                      <div className="text-center">
+                                        <div className="bg-blue-600/20 p-2 rounded-full mb-1">
+                                          <div className="w-3 h-3 bg-blue-400 rounded-full"></div>
+                                        </div>
+                                        <div className="text-xs text-zinc-400">Alice</div>
+                                      </div>
+                                      <div className="flex-1 border-t-2 border-dashed border-zinc-600 relative">
+                                        <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-zinc-900 px-2">
+                                          <Zap className="w-4 h-4 text-yellow-400" />
+                                        </div>
+                                      </div>
+                                      <div className="text-center">
+                                        <div className="bg-green-600/20 p-2 rounded-full mb-1">
+                                          <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                                        </div>
+                                        <div className="text-xs text-zinc-400">Bob</div>
+                                      </div>
+                                      <div className="flex-1 border-t-2 border-dashed border-zinc-600 relative">
+                                        <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-zinc-900 px-2">
+                                          <Zap className="w-4 h-4 text-yellow-400" />
+                                        </div>
+                                      </div>
+                                      <div className="text-center">
+                                        <div className="bg-purple-600/20 p-2 rounded-full mb-1">
+                                          <div className="w-3 h-3 bg-purple-400 rounded-full"></div>
+                                        </div>
+                                        <div className="text-xs text-zinc-400">Carol</div>
+                                      </div>
+                                    </div>
+                                    <div className="text-center text-xs text-zinc-400">Instant payments through connected channels</div>
+                                  </div>
+                                )}
+                                
+                                {topic.visualAid === "bitcoin-supply" && (
+                                  <div className="space-y-4">
+                                    <h4 className="text-white font-medium">Bitcoin Halving Schedule</h4>
+                                    <div className="space-y-2">
+                                      {[
+                                        { period: "2009-2012", reward: "50 BTC", width: 100 },
+                                        { period: "2012-2016", reward: "25 BTC", width: 50 },
+                                        { period: "2016-2020", reward: "12.5 BTC", width: 25 },
+                                        { period: "2020-2024", reward: "6.25 BTC", width: 12.5 },
+                                        { period: "2024-2028", reward: "3.125 BTC", width: 6.25 }
+                                      ].map((halving, index) => (
+                                        <div key={index} className="flex items-center space-x-4">
+                                          <div className="text-xs text-zinc-400 w-20">{halving.period}</div>
+                                          <div className="h-4 bg-zinc-700 rounded flex-1 relative overflow-hidden">
+                                            <div className="h-full bg-orange-600/60 rounded transition-all duration-1000" style={{ width: `${halving.width}%` }}></div>
+                                          </div>
+                                          <div className="text-xs text-zinc-400 w-16">{halving.reward}</div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                    <div className="text-center text-xs text-zinc-400">Supply decreases over time → Increased scarcity</div>
+                                  </div>
+                                )}
+                              </div>
+                              
+                              {/* Content */}
+                              <div className="prose prose-invert max-w-none">
+                                <div className="text-zinc-300 text-sm leading-relaxed whitespace-pre-line">
+                                  {topic.content}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {learningSubTab === "progress" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
@@ -477,16 +794,46 @@ export default function Home() {
           </div>
         )}
 
-        {/* User Profiles Section */}
-        {activeSection === "profiles" && (
+        {/* BTC In Action Section */}
+        {activeSection === "btcaction" && (
           <div className="space-y-6">
             <div className="text-center space-y-2">
-              <h2 className="text-2xl font-bold text-white">Why People Use Bitcoin</h2>
+              <h2 className="text-2xl font-bold text-white">Bitcoin In Action</h2>
               <p className="text-zinc-400">Real stories from individuals, businesses, and nations</p>
             </div>
             
+            <div className="flex space-x-2 mb-4 justify-center">
+              <Button
+                variant={btcActionSubTab === "individuals" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setBtcActionSubTab("individuals")}
+                className="text-sm"
+              >
+                <UserIcon className="w-3 h-3 mr-2" />
+                Individuals
+              </Button>
+              <Button
+                variant={btcActionSubTab === "businesses" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setBtcActionSubTab("businesses")}
+                className="text-sm"
+              >
+                <Building2 className="w-3 h-3 mr-2" />
+                Businesses
+              </Button>
+              <Button
+                variant={btcActionSubTab === "nations" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setBtcActionSubTab("nations")}
+                className="text-sm"
+              >
+                <Flag className="w-3 h-3 mr-2" />
+                Nations
+              </Button>
+            </div>
+            
             <div className="grid gap-6">
-              {userProfiles[profilesSubTab].map((profile, index) => (
+              {userProfiles[btcActionSubTab].map((profile, index) => (
                 <Card key={index} className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors">
                   <CardContent className="p-6">
                     <div className="space-y-4">
@@ -496,8 +843,8 @@ export default function Home() {
                           <p className="text-orange-400 text-sm">{profile.role}</p>
                         </div>
                         <Badge variant="outline" className="border-zinc-700 text-zinc-400">
-                          {profilesSubTab === "individuals" ? "Individual" : 
-                           profilesSubTab === "businesses" ? "Business" : "Nation"}
+                          {btcActionSubTab === "individuals" ? "Individual" : 
+                           btcActionSubTab === "businesses" ? "Business" : "Nation"}
                         </Badge>
                       </div>
                       

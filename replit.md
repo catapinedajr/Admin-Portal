@@ -114,6 +114,9 @@ Comprehensive component library built on Radix UI primitives:
 - June 25, 2025. Implemented daily quiz functionality with multiple choice questions and progress tracking to enhance learning engagement
 - June 25, 2025. Simplified Bitcoin price display to focus on education rather than trading, removing daily change indicators to discourage short-term speculation
 - June 25, 2025. Shortened financial disclaimer to be more concise while maintaining important educational focus messaging
+- June 25, 2025. Renamed "User Profiles" to "BTC In Action" section showing real-world Bitcoin usage stories from individuals, businesses, and nations
+- June 25, 2025. Added comprehensive "Explore" subsection in Learning with advanced topics: blockchain technology, proof of work, digital signatures, Lightning Network, and Bitcoin's fixed supply
+- June 25, 2025. Implemented extensive visual aids throughout educational areas including interactive diagrams, process flows, network visualizations, and progress charts to enhance learning storytelling
 
 ## User Preferences
 
