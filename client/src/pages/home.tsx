@@ -31,7 +31,8 @@ import {
   Heart,
   Play,
   Quote,
-  ExternalLink
+  ExternalLink,
+  Globe
 } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { formatDate, getDayOfWeek, getWeekDates } from "@/lib/utils";
@@ -49,13 +50,16 @@ const iconMap = {
   "alert-triangle": AlertTriangle,
 };
 
-type TabType = "facts" | "lesson" | "progress" | "conviction" | "treasury" | "sovereign";
+type MainSection = "learning" | "adoption" | "conviction";
+type LearningSubTab = "facts" | "lesson" | "progress";
+type AdoptionSubTab = "treasury" | "sovereign";
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<TabType>("facts");
+  const [activeSection, setActiveSection] = useState<MainSection>("learning");
+  const [learningSubTab, setLearningSubTab] = useState<LearningSubTab>("facts");
+  const [adoptionSubTab, setAdoptionSubTab] = useState<AdoptionSubTab>("treasury");
   const [currentLessonPage, setCurrentLessonPage] = useState(0);
 
-  // Queries
   const { data: user } = useQuery<User>({
     queryKey: ["/api/user"],
   });
@@ -92,425 +96,333 @@ export default function Home() {
     queryKey: ["/api/sovereign-adoption"],
   });
 
-  // Mutations
-  const updateProgressMutation = useMutation({
-    mutationFn: async (data: { factsViewed?: number; lessonCompleted?: boolean }) => {
-      const response = await apiRequest("POST", "/api/progress", data);
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/progress/today"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/progress/week"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
-    },
-  });
-
   const completeLessonMutation = useMutation({
-    mutationFn: async () => {
-      const response = await apiRequest("POST", "/api/lesson/complete", {});
-      return response.json();
-    },
+    mutationFn: () => apiRequest("/api/progress/complete-lesson", {
+      method: "POST",
+    }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/progress/today"] });
       queryClient.invalidateQueries({ queryKey: ["/api/progress/week"] });
       queryClient.invalidateQueries({ queryKey: ["/api/user"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/knowledge-areas"] });
     },
   });
-
-  const handleFactView = () => {
-    const newFactsViewed = Math.min(3, (todayProgress?.factsViewed || 0) + 1);
-    updateProgressMutation.mutate({ factsViewed: newFactsViewed });
-  };
 
   const handleCompleteLesson = () => {
-    completeLessonMutation.mutate();
+    if (!todayProgress?.lessonCompleted) {
+      completeLessonMutation.mutate();
+    }
   };
-
-  const handleLearnMore = (factId: number) => {
-    handleFactView();
-    // Could expand this to show detailed fact modal or navigate to expanded view
-  };
-
-  const nextLessonPage = () => {
-    setCurrentLessonPage(prev => Math.min(2, prev + 1));
-  };
-
-  const prevLessonPage = () => {
-    setCurrentLessonPage(prev => Math.max(0, prev - 1));
-  };
-
-  // Get current lesson page content
-  const getLessonPageContent = () => {
-    if (!lesson) return null;
-    
-    const lessonPages = [
-      {
-        title: lesson.title,
-        content: lesson.content
-      },
-      {
-        title: "Understanding Bitcoin Mining",
-        content: `Bitcoin mining is the process by which new bitcoins are created and transactions are verified and added to the blockchain ledger. This process is crucial for maintaining the security and integrity of the Bitcoin network.
-
-The Mining Process:
-Miners use specialized computer hardware to solve complex mathematical problems. These problems require significant computational power and energy to solve, but the solutions can be quickly verified by other network participants.
-
-Why Mining Matters:
-1. Transaction Verification: Miners confirm that transactions are legitimate
-2. Network Security: The computational work makes the network resistant to attacks
-3. New Bitcoin Creation: Successful miners are rewarded with newly created bitcoins
-4. Decentralization: Anyone can participate in mining, keeping the network distributed
-
-The mining process ensures that Bitcoin remains secure, decentralized, and trustworthy without requiring a central authority.`
-      },
-      {
-        title: "The Economics of Mining",
-        content: `Bitcoin mining operates on economic incentives that ensure network security while creating new bitcoins according to a predictable schedule.
-
-Mining Rewards:
-Miners receive two types of rewards for their work:
-- Block Reward: New bitcoins created with each block (currently 6.25 BTC)
-- Transaction Fees: Fees paid by users for including their transactions
-
-The Halving Event:
-Every 210,000 blocks (approximately 4 years), the block reward is cut in half. This ensures Bitcoin's maximum supply will never exceed 21 million coins.
-
-Mining Difficulty:
-The network automatically adjusts mining difficulty every 2,016 blocks to maintain an average block time of 10 minutes, regardless of how many miners participate.
-
-Energy and Sustainability:
-While mining consumes energy, it increasingly uses renewable sources and provides economic incentives for developing efficient energy infrastructure.`
-      }
-    ];
-
-    return lessonPages[currentLessonPage] || lessonPages[0];
-  };
-
-  const progressPercentage = todayProgress?.progressPercentage || 0;
-  const currentDate = formatDate(new Date());
-
-  // Get week dates for progress chart
-  const today = new Date();
-  const monday = new Date(today);
-  monday.setDate(today.getDate() - today.getDay() + 1);
-  const weekDates = getWeekDates(monday);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-50">
-        <div className="max-w-md mx-auto px-4 py-4">
+      <header className="border-b border-border bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50">
+        <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-                <Bitcoin className="text-primary-foreground w-5 h-5" />
+              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center bitcoin-glow">
+                <Bitcoin className="w-6 h-6 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-xl font-medium text-foreground">BitcoinEdu</h1>
-                <p className="text-sm text-muted-foreground">Daily Learning</p>
+                <h1 className="text-xl font-bold text-foreground glow-text">BitcoinEDU</h1>
+                <p className="text-sm text-muted-foreground terminal-text">Daily Bitcoin Education</p>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="text-center">
-                <div className="text-lg font-medium text-primary">{user?.currentStreak || 0}</div>
-                <div className="text-xs text-muted-foreground">Day Streak</div>
+            <div className="flex items-center space-x-3">
+              <div className="text-right">
+                <p className="text-sm font-medium text-foreground terminal-text">{user?.currentStreak || 0} Day Streak</p>
+                <p className="text-xs text-muted-foreground terminal-text">Keep learning!</p>
               </div>
-              <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full">
-                <UserIcon className="text-muted-foreground w-4 h-4" />
-              </Button>
+              <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center">
+                <UserIcon className="w-5 h-5 text-muted-foreground" />
+              </div>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Tab Navigation */}
+      {/* Main Section Navigation */}
       <nav className="bg-card border-b border-border relative">
         <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-6 gap-0">
+          <div className="grid grid-cols-3 gap-0">
             <Button
               variant="ghost"
-              className={`py-2 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
-                activeTab === "facts" 
+              className={`py-3 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
+                activeSection === "learning" 
                   ? "text-primary border-primary bg-primary/10 font-medium cyber-button" 
                   : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
               }`}
-              onClick={() => setActiveTab("facts")}
+              onClick={() => setActiveSection("learning")}
             >
-              <Lightbulb className={`w-3 h-3 ${activeTab === "facts" ? "text-primary glow-text" : ""}`} />
-              <span className="text-xs font-medium terminal-text">Facts</span>
+              <GraduationCap className={`w-4 h-4 ${activeSection === "learning" ? "text-primary glow-text" : ""}`} />
+              <span className="text-sm font-medium terminal-text">Learning</span>
             </Button>
             <Button
               variant="ghost"
-              className={`py-2 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
-                activeTab === "lesson" 
+              className={`py-3 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
+                activeSection === "adoption" 
                   ? "text-primary border-primary bg-primary/10 font-medium cyber-button" 
                   : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
               }`}
-              onClick={() => setActiveTab("lesson")}
+              onClick={() => setActiveSection("adoption")}
             >
-              <BookOpen className={`w-3 h-3 ${activeTab === "lesson" ? "text-primary glow-text" : ""}`} />
-              <span className="text-xs font-medium terminal-text">Lesson</span>
+              <Globe className={`w-4 h-4 ${activeSection === "adoption" ? "text-primary glow-text" : ""}`} />
+              <span className="text-sm font-medium terminal-text">Adoption</span>
             </Button>
             <Button
               variant="ghost"
-              className={`py-2 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
-                activeTab === "treasury" 
+              className={`py-3 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
+                activeSection === "conviction" 
                   ? "text-primary border-primary bg-primary/10 font-medium cyber-button" 
                   : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
               }`}
-              onClick={() => setActiveTab("treasury")}
+              onClick={() => setActiveSection("conviction")}
             >
-              <Building2 className={`w-3 h-3 ${activeTab === "treasury" ? "text-primary glow-text" : ""}`} />
-              <span className="text-xs font-medium terminal-text">Treasury</span>
-            </Button>
-            <Button
-              variant="ghost"
-              className={`py-2 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
-                activeTab === "sovereign" 
-                  ? "text-primary border-primary bg-primary/10 font-medium cyber-button" 
-                  : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
-              }`}
-              onClick={() => setActiveTab("sovereign")}
-            >
-              <Star className={`w-3 h-3 ${activeTab === "sovereign" ? "text-primary glow-text" : ""}`} />
-              <span className="text-xs font-medium terminal-text">Nations</span>
-            </Button>
-            <Button
-              variant="ghost"
-              className={`py-2 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
-                activeTab === "conviction" 
-                  ? "text-primary border-primary bg-primary/10 font-medium cyber-button" 
-                  : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
-              }`}
-              onClick={() => setActiveTab("conviction")}
-            >
-              <Heart className={`w-3 h-3 ${activeTab === "conviction" ? "text-primary glow-text" : ""}`} />
-              <span className="text-xs font-medium terminal-text">Conviction</span>
-            </Button>
-            <Button
-              variant="ghost"
-              className={`py-2 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
-                activeTab === "progress" 
-                  ? "text-primary border-primary bg-primary/10 font-medium cyber-button" 
-                  : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
-              }`}
-              onClick={() => setActiveTab("progress")}
-            >
-              <TrendingUp className={`w-3 h-3 ${activeTab === "progress" ? "text-primary glow-text" : ""}`} />
-              <span className="text-xs font-medium terminal-text">Progress</span>
+              <Heart className={`w-4 h-4 ${activeSection === "conviction" ? "text-primary glow-text" : ""}`} />
+              <span className="text-sm font-medium terminal-text">Conviction</span>
             </Button>
           </div>
         </div>
       </nav>
 
+      {/* Sub-section Navigation */}
+      {(activeSection === "learning" || activeSection === "adoption") && (
+        <nav className="bg-muted/30 border-b border-border">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex justify-center">
+              {activeSection === "learning" && (
+                <div className="flex">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`px-4 py-2 text-xs rounded-none border-b-2 transition-all ${
+                      learningSubTab === "facts" 
+                        ? "text-primary border-primary bg-primary/5 font-medium" 
+                        : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5"
+                    }`}
+                    onClick={() => setLearningSubTab("facts")}
+                  >
+                    <Lightbulb className="w-3 h-3 mr-1" />
+                    Facts
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`px-4 py-2 text-xs rounded-none border-b-2 transition-all ${
+                      learningSubTab === "lesson" 
+                        ? "text-primary border-primary bg-primary/5 font-medium" 
+                        : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5"
+                    }`}
+                    onClick={() => setLearningSubTab("lesson")}
+                  >
+                    <BookOpen className="w-3 h-3 mr-1" />
+                    Lessons
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`px-4 py-2 text-xs rounded-none border-b-2 transition-all ${
+                      learningSubTab === "progress" 
+                        ? "text-primary border-primary bg-primary/5 font-medium" 
+                        : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5"
+                    }`}
+                    onClick={() => setLearningSubTab("progress")}
+                  >
+                    <TrendingUp className="w-3 h-3 mr-1" />
+                    Progress
+                  </Button>
+                </div>
+              )}
+              {activeSection === "adoption" && (
+                <div className="flex">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`px-4 py-2 text-xs rounded-none border-b-2 transition-all ${
+                      adoptionSubTab === "treasury" 
+                        ? "text-primary border-primary bg-primary/5 font-medium" 
+                        : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5"
+                    }`}
+                    onClick={() => setAdoptionSubTab("treasury")}
+                  >
+                    <Building2 className="w-3 h-3 mr-1" />
+                    Treasury Companies
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`px-4 py-2 text-xs rounded-none border-b-2 transition-all ${
+                      adoptionSubTab === "sovereign" 
+                        ? "text-primary border-primary bg-primary/5 font-medium" 
+                        : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5"
+                    }`}
+                    onClick={() => setAdoptionSubTab("sovereign")}
+                  >
+                    <Star className="w-3 h-3 mr-1" />
+                    Nations
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        </nav>
+      )}
+
       <main className="max-w-md mx-auto px-4 pb-6">
-        {/* Today's Facts Tab */}
-        {activeTab === "facts" && (
-          <div className="fade-in">
-            {/* Daily Progress Banner */}
-            <div className="bg-gradient-to-r from-primary to-primary-dark rounded-xl p-6 mt-4 text-primary-foreground border border-primary/20">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-lg font-medium">Welcome back!</h2>
-                  <p className="text-primary-foreground/80 text-sm">Ready for today's Bitcoin knowledge?</p>
-                </div>
-                <div className="relative w-16 h-16">
-                  <svg className="progress-circle w-16 h-16" viewBox="0 0 36 36">
-                    <circle cx="18" cy="18" r="16" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="2"/>
-                    <circle 
-                      cx="18" 
-                      cy="18" 
-                      r="16" 
-                      fill="none" 
-                      stroke="white" 
-                      strokeWidth="2" 
-                      strokeDasharray={`${progressPercentage} ${100 - progressPercentage}`}
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center text-sm font-medium text-primary-foreground">
-                    {progressPercentage}%
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Today's Date and Facts Counter */}
-            <div className="flex items-center justify-between mt-6 mb-4">
-              <div>
-                <h3 className="text-lg font-medium text-foreground">Today's Facts</h3>
-                <p className="text-sm text-muted-foreground">{currentDate}</p>
-              </div>
-              <Badge variant="secondary" className="bg-secondary/10 text-secondary">
-                {dailyFacts.length} New Facts
-              </Badge>
-            </div>
-
-            {/* Fact Cards */}
-            {dailyFacts.map((fact) => {
-              const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Coins;
-              const isTraditionalFinance = fact.category === "TraditionalFinance";
-              return (
-                <Card key={fact.id} className="mb-4 card-hover border border-border bg-card hover:border-primary/30 transition-colors">
-                  <CardContent className="p-6">
-                    <div className="flex items-start space-x-4">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        isTraditionalFinance 
-                          ? "bg-orange-500/10 border border-orange-500/20" 
-                          : "bg-primary/10 border border-primary/20"
-                      }`}>
-                        <IconComponent className={`w-5 h-5 ${
-                          isTraditionalFinance ? "text-orange-400" : "text-primary"
-                        }`} />
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-medium text-foreground mb-2">{fact.title}</h4>
-                        <p className="text-muted-foreground leading-relaxed">{fact.content}</p>
-                        <div className="flex items-center justify-between mt-4">
-                          <Badge variant="secondary" className={`text-xs ${
-                            isTraditionalFinance 
-                              ? "bg-orange-500/10 text-orange-400 border-orange-500/20" 
-                              : "bg-primary/10 text-primary border-primary/20"
-                          }`}>
-                            #{fact.category}
-                          </Badge>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="text-primary hover:text-primary/80 hover:bg-primary/10"
-                            onClick={() => handleLearnMore(fact.id)}
-                          >
-                            Learn More
-                          </Button>
-                        </div>
+        {/* Learning Section */}
+        {activeSection === "learning" && (
+          <>
+            {/* Daily Facts */}
+            {learningSubTab === "facts" && (
+              <div className="fade-in">
+                {/* Daily Progress Banner */}
+                <div className="bg-gradient-to-r from-primary to-primary-dark rounded-xl p-6 mt-4 text-primary-foreground border border-primary/20">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 className="text-lg font-medium">Welcome back!</h2>
+                      <p className="text-primary-foreground/80 text-sm">Ready for today's Bitcoin knowledge?</p>
+                    </div>
+                    <div className="relative w-16 h-16">
+                      <div className="absolute inset-0 rounded-full border-4 border-primary-foreground/20"></div>
+                      <div className="absolute inset-0 rounded-full border-4 border-primary-foreground border-t-transparent animate-spin"></div>
+                      <div className="absolute inset-4 bg-primary-foreground rounded-full flex items-center justify-center">
+                        <span className="text-primary text-sm font-bold">
+                          {Math.round(((todayProgress?.factsViewed || 0) / Math.max(dailyFacts.length, 1)) * 100)}%
+                        </span>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-
-            {/* Action Buttons */}
-            <div className="flex space-x-3 mt-6">
-              <Button 
-                className="flex-1 bg-primary hover:bg-primary-dark text-primary-foreground"
-                onClick={() => setActiveTab("lesson")}
-              >
-                <ArrowRight className="mr-2 w-4 h-4" />
-                Continue to Lesson
-              </Button>
-              <Button variant="outline" size="icon" className="border-border hover:bg-primary/10 hover:border-primary/30">
-                <Share className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {/* Daily Lesson Tab */}
-        {activeTab === "lesson" && lesson && (
-          <div className="fade-in">
-            {/* Lesson Header */}
-            <div className="mt-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="text-lg font-medium text-foreground">Today's Lesson</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Lesson {user?.completedLessons || 15} of 100
-                  </p>
-                </div>
-                <Badge variant="secondary" className="bg-green-100 text-green-700">
-                  {lesson.estimatedReadTime} min read
-                </Badge>
-              </div>
-
-              {/* Lesson Progress */}
-              <Card className="mb-6 border border-border bg-card">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-medium text-foreground">Lesson Progress</span>
-                    <span className="text-sm text-primary">
-                      {todayProgress?.lessonCompleted ? 100 : 15}%
-                    </span>
                   </div>
-                  <Progress value={todayProgress?.lessonCompleted ? 100 : 15} className="h-2" />
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Lesson Content Card */}
-            <Card className="border border-border bg-card">
-              <CardContent className="p-6">
-                {lesson.imageUrl && (
-                  <div className="mb-6">
-                    <img 
-                      src={lesson.imageUrl}
-                      alt={lesson.title}
-                      className="w-full h-48 object-cover rounded-lg border border-border"
+                  <div className="mt-4">
+                    <Progress 
+                      value={((todayProgress?.factsViewed || 0) / Math.max(dailyFacts.length, 1)) * 100} 
+                      className="h-2 bg-primary-foreground/20" 
                     />
                   </div>
-                )}
-                
-                <h2 className="text-xl font-medium text-foreground mb-4">
-                  {getLessonPageContent()?.title || lesson.title}
-                </h2>
-                
-                <div className="prose text-muted-foreground leading-relaxed space-y-4">
-                  {(getLessonPageContent()?.content || lesson.content).split('\n\n').map((paragraph, index) => (
-                    <p key={index} className="whitespace-pre-line">{paragraph}</p>
-                  ))}
                 </div>
 
-                {/* Lesson Navigation */}
-                <div className="flex items-center justify-between mt-8 pt-6 border-t border-border">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="text-muted-foreground hover:text-foreground"
-                    onClick={prevLessonPage}
-                    disabled={currentLessonPage === 0}
-                  >
-                    <ChevronLeft className="mr-2 w-4 h-4" />
-                    Previous
-                  </Button>
-                  <div className="flex space-x-2">
-                    {[0, 1, 2].map((page) => (
-                      <span 
-                        key={page}
-                        className={`w-2 h-2 rounded-full ${
-                          currentLessonPage === page ? "bg-primary" : "bg-muted"
-                        }`}
-                      ></span>
-                    ))}
+                {/* Facts Grid */}
+                <div className="mt-6 space-y-4">
+                  <h3 className="text-lg font-medium text-foreground glow-text">Today's Bitcoin Facts</h3>
+                  {dailyFacts.map((fact, index) => {
+                    const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Coins;
+                    return (
+                      <Card key={fact.id} className="cyber-card">
+                        <CardContent className="p-6">
+                          <div className="flex items-start space-x-4">
+                            <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 bitcoin-glow">
+                              <IconComponent className="w-6 h-6 text-primary" />
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="font-medium text-foreground mb-2 glow-text terminal-text">{fact.title}</h4>
+                              <p className="text-sm text-muted-foreground leading-relaxed terminal-text">{fact.content}</p>
+                              <div className="flex items-center justify-between mt-4">
+                                <Badge variant="outline" className="text-xs bg-primary/10 text-primary border-primary/20">
+                                  {fact.category}
+                                </Badge>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  className="cyber-button border-border hover:bg-primary/10 hover:border-primary/30"
+                                >
+                                  <ArrowRight className="mr-1 w-3 h-3" />
+                                  Learn More
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+
+                  {/* Action Buttons */}
+                  <div className="flex space-x-3 mt-6">
+                    <Button 
+                      className="flex-1 bg-primary hover:bg-primary-dark text-primary-foreground"
+                      onClick={() => setLearningSubTab("lesson")}
+                    >
+                      <ArrowRight className="mr-2 w-4 h-4" />
+                      Continue to Lesson
+                    </Button>
+                    <Button variant="outline" size="icon" className="border-border hover:bg-primary/10 hover:border-primary/30">
+                      <Share className="w-4 h-4" />
+                    </Button>
                   </div>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="text-primary font-medium hover:text-primary/80"
-                    onClick={nextLessonPage}
-                    disabled={currentLessonPage === 2}
+                </div>
+              </div>
+            )}
+
+            {/* Daily Lesson */}
+            {learningSubTab === "lesson" && lesson && (
+              <div className="fade-in">
+                {/* Lesson Header */}
+                <div className="mt-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 className="text-lg font-medium text-foreground glow-text">{lesson.title}</h3>
+                      <p className="text-sm text-muted-foreground terminal-text">
+                        Estimated reading time: {lesson.estimatedReadTime || 5} minutes
+                      </p>
+                    </div>
+                    <Badge variant={todayProgress?.lessonCompleted ? "default" : "outline"} className="bg-primary/10 text-primary border-primary/20">
+                      {todayProgress?.lessonCompleted ? "Completed" : "In Progress"}
+                    </Badge>
+                  </div>
+
+                  {/* Lesson Content */}
+                  <Card className="cyber-card">
+                    <CardContent className="p-6">
+                      <div className="prose prose-sm max-w-none text-foreground">
+                        <div className="whitespace-pre-wrap terminal-text">{lesson.content}</div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Lesson Summary */}
+                  {lesson.summary && (
+                    <Card className="cyber-card mt-4">
+                      <CardContent className="p-4">
+                        <h4 className="font-medium text-foreground mb-2 glow-text">Key Takeaways</h4>
+                        <p className="text-sm text-muted-foreground terminal-text">{lesson.summary}</p>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* Complete Lesson Button */}
+                  <Button
+                    className="w-full bg-green-600 hover:bg-green-700 text-white mt-6"
+                    onClick={handleCompleteLesson}
+                    disabled={todayProgress?.lessonCompleted || completeLessonMutation.isPending}
                   >
-                    Next
-                    <ChevronRight className="ml-2 w-4 h-4" />
+                    <Check className="mr-2 w-4 h-4" />
+                    {todayProgress?.lessonCompleted ? "Lesson Completed" : "Mark as Complete"}
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            )}
 
-            {/* Complete Lesson Button */}
-            <Button 
-              className="w-full bg-green-600 hover:bg-green-700 text-white mt-6"
-              onClick={handleCompleteLesson}
-              disabled={todayProgress?.lessonCompleted || completeLessonMutation.isPending}
-            >
-              <Check className="mr-2 w-4 h-4" />
-              {todayProgress?.lessonCompleted ? "Lesson Completed" : "Mark as Complete"}
-            </Button>
-          </div>
+            {/* Progress Tab */}
+            {learningSubTab === "progress" && (
+              <div className="fade-in">
+                <div className="mt-6 mb-6">
+                  <div className="text-center">
+                    <h3 className="text-lg font-medium text-foreground flex items-center justify-center gap-2 glow-text">
+                      <TrendingUp className="w-5 h-5 text-primary" />
+                      Learning Progress
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-1 terminal-text">
+                      Track your Bitcoin education journey
+                    </p>
+                  </div>
+                </div>
+                {/* Progress content will go here */}
+              </div>
+            )}
+          </>
         )}
 
-        {/* Conviction Center Tab */}
-        {activeTab === "conviction" && (
+        {/* Conviction Center Section */}
+        {activeSection === "conviction" && (
           <div className="fade-in">
             {/* Header */}
             <div className="mt-6 mb-6">
@@ -525,113 +437,62 @@ While mining consumes energy, it increasingly uses renewable sources and provide
               </div>
             </div>
 
-            {/* Quotes Section */}
-            <div className="mb-6">
-              <h4 className="text-md font-medium text-foreground mb-4 flex items-center gap-2">
-                <Quote className="w-4 h-4 text-primary" />
-                Today's Wisdom
-              </h4>
-              
-              {convictionContent
-                .filter(content => content.type === "quote")
-                .map((quote) => (
-                  <Card key={quote.id} className={`mb-4 border transition-colors ${
-                    quote.featured 
-                      ? "border-primary/30 bg-primary/5" 
-                      : "border-border bg-card hover:border-primary/20"
-                  }`}>
-                    <CardContent className="p-6">
-                      <div className="flex items-start space-x-4">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          quote.featured 
-                            ? "bg-primary/20 border border-primary/30" 
-                            : "bg-muted"
-                        }`}>
-                          <Quote className={`w-4 h-4 ${quote.featured ? "text-primary" : "text-muted-foreground"}`} />
-                        </div>
-                        <div className="flex-1">
-                          <blockquote className="text-foreground italic leading-relaxed mb-3 text-base">
-                            "{quote.content}"
-                          </blockquote>
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="font-medium text-foreground text-sm">{quote.author}</p>
-                              {quote.source && (
-                                <p className="text-xs text-muted-foreground">{quote.source}</p>
-                              )}
-                            </div>
-                            {quote.featured && (
-                              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
-                                Featured
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
+            {/* Conviction Content Grid */}
+            <div className="grid gap-4">
+              {convictionContent.map((content) => (
+                <Card key={content.id} className="cyber-card">
+                  <CardContent className="p-6">
+                    <div className="mb-4">
+                      <div className="flex items-center space-x-2 mb-3">
+                        <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+                          {content.type === 'quote' ? 'Quote' : 'Video'}
+                        </Badge>
+                        {content.author && (
+                          <span className="text-sm text-muted-foreground terminal-text">by {content.author}</span>
+                        )}
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      <h4 className="font-medium text-foreground glow-text terminal-text">{content.title}</h4>
+                    </div>
+
+                    {content.type === 'quote' ? (
+                      <div className="relative">
+                        <Quote className="absolute -top-2 -left-2 w-8 h-8 text-primary/20" />
+                        <blockquote className="text-foreground italic pl-6 border-l-4 border-primary/30 terminal-text">
+                          {content.content}
+                        </blockquote>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <p className="text-sm text-muted-foreground terminal-text">{content.content}</p>
+                        {content.videoUrl && (
+                          <Button 
+                            variant="outline" 
+                            className="w-full cyber-button border-border hover:bg-primary/10 hover:border-primary/30"
+                            onClick={() => window.open(content.videoUrl!, '_blank')}
+                          >
+                            <Play className="mr-2 w-4 h-4" />
+                            Watch Video
+                          </Button>
+                        )}
+                      </div>
+                    )}
+
+                    {content.tags && (
+                      <div className="flex flex-wrap gap-2 mt-4">
+                        {content.tags.map((tag, index) => (
+                          <Badge key={index} variant="secondary" className="text-xs bg-muted text-muted-foreground">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
             </div>
 
-            {/* Video Section */}
-            {convictionContent
-              .filter(content => content.type === "video")
-              .map((video) => (
-                <div key={video.id} className="mb-6">
-                  <h4 className="text-md font-medium text-foreground mb-4 flex items-center gap-2">
-                    <Play className="w-4 h-4 text-primary" />
-                    Today's Video
-                  </h4>
-                  
-                  <Card className="border border-primary/30 bg-primary/5">
-                    <CardContent className="p-0">
-                      {video.thumbnailUrl && (
-                        <div className="relative">
-                          <img 
-                            src={video.thumbnailUrl} 
-                            alt={video.title}
-                            className="w-full h-48 object-cover rounded-t-lg"
-                          />
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-t-lg">
-                            <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center">
-                              <Play className="w-6 h-6 text-primary-foreground ml-1" />
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      
-                      <div className="p-6">
-                        <h5 className="font-medium text-foreground mb-2">{video.title}</h5>
-                        <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
-                          {video.content}
-                        </p>
-                        
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="font-medium text-foreground text-sm">{video.author}</p>
-                            {video.source && (
-                              <p className="text-xs text-muted-foreground">{video.source}</p>
-                            )}
-                          </div>
-                          
-                          {video.videoUrl && (
-                            <Button 
-                              className="bg-primary hover:bg-primary-dark text-primary-foreground"
-                              onClick={() => window.open(video.videoUrl!, '_blank')}
-                            >
-                              <ExternalLink className="mr-2 w-4 h-4" />
-                              Watch Now
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              ))}
-
-            {/* Daily Conviction Builder */}
-            <Card className="border border-border bg-card">
+            {/* Summary Card */}
+            <Card className="cyber-card mt-6">
               <CardContent className="p-6 text-center">
                 <div className="mb-4">
                   <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -658,357 +519,258 @@ While mining consumes energy, it increasingly uses renewable sources and provide
           </div>
         )}
 
-        {/* Treasury Companies Tab */}
-        {activeTab === "treasury" && (
-          <div className="fade-in">
-            {/* Header */}
-            <div className="mt-6 mb-6">
-              <div className="text-center">
-                <h3 className="text-lg font-medium text-foreground flex items-center justify-center gap-2 glow-text">
-                  <Building2 className="w-5 h-5 text-primary" />
-                  Bitcoin Treasury Companies
-                </h3>
-                <p className="text-sm text-muted-foreground mt-1 terminal-text">
-                  Corporate Bitcoin holdings and adoption tracker
-                </p>
-              </div>
-            </div>
+        {/* Adoption Section */}
+        {activeSection === "adoption" && (
+          <>
+            {/* Treasury Companies */}
+            {adoptionSubTab === "treasury" && (
+              <div className="fade-in">
+                {/* Header */}
+                <div className="mt-6 mb-6">
+                  <div className="text-center">
+                    <h3 className="text-lg font-medium text-foreground flex items-center justify-center gap-2 glow-text">
+                      <Building2 className="w-5 h-5 text-primary" />
+                      Bitcoin Treasury Companies
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-1 terminal-text">
+                      Corporate Bitcoin holdings and adoption tracker
+                    </p>
+                  </div>
+                </div>
 
-            {/* Treasury Companies Grid */}
-            <div className="grid gap-4">
-              {treasuryCompanies.map((company) => (
-                <Card key={company.id} className="cyber-card">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <h4 className="font-medium text-foreground terminal-text text-lg glow-text">
-                          {company.name}
-                          {company.ticker && (
-                            <span className="text-sm text-primary ml-2">({company.ticker})</span>
+                {/* Treasury Companies Grid */}
+                <div className="grid gap-4">
+                  {treasuryCompanies.map((company) => (
+                    <Card key={company.id} className="cyber-card">
+                      <CardContent className="p-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div>
+                            <h4 className="font-medium text-foreground terminal-text text-lg glow-text">
+                              {company.name}
+                              {company.ticker && (
+                                <span className="text-sm text-primary ml-2">({company.ticker})</span>
+                              )}
+                            </h4>
+                            <p className="text-sm text-muted-foreground terminal-text">{company.industry}</p>
+                          </div>
+                          <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+                            {company.country}
+                          </Badge>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4 mb-4">
+                          <div className="terminal-header p-3 rounded">
+                            <p className="text-xs text-muted-foreground terminal-text">Bitcoin Holdings</p>
+                            <p className="text-lg font-medium text-primary glow-text">
+                              {parseFloat(company.bitcoinHoldings).toLocaleString()} BTC
+                            </p>
+                          </div>
+                          <div className="terminal-header p-3 rounded">
+                            <p className="text-xs text-muted-foreground terminal-text">Market Value</p>
+                            <p className="text-lg font-medium text-primary glow-text">
+                              ${company.marketValue ? (parseFloat(company.marketValue) / 1000000).toFixed(0) + 'M' : 'N/A'}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2 mb-4">
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground terminal-text">CEO:</span>
+                            <span className="text-sm text-foreground terminal-text">{company.ceoName || 'N/A'}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground terminal-text">Announced:</span>
+                            <span className="text-sm text-foreground terminal-text">
+                              {new Date(company.announcementDate).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+
+                        <p className="text-sm text-muted-foreground leading-relaxed mb-4 terminal-text">
+                          {company.description}
+                        </p>
+
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <div className={`w-2 h-2 rounded-full ${company.isPublic ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
+                            <span className="text-xs text-muted-foreground terminal-text">
+                              {company.isPublic ? 'Public Company' : 'Private Company'}
+                            </span>
+                          </div>
+                          {company.website && (
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="cyber-button border-border hover:bg-primary/10 hover:border-primary/30"
+                              onClick={() => window.open(company.website!, '_blank')}
+                            >
+                              <ExternalLink className="mr-2 w-3 h-3" />
+                              Website
+                            </Button>
                           )}
-                        </h4>
-                        <p className="text-sm text-muted-foreground terminal-text">{company.industry}</p>
-                      </div>
-                      <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
-                        {company.country}
-                      </Badge>
-                    </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
 
+                {/* Summary Card */}
+                <Card className="cyber-card mt-6">
+                  <CardContent className="p-6 text-center">
+                    <div className="mb-4">
+                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3 bitcoin-glow">
+                        <Bitcoin className="w-6 h-6 text-primary" />
+                      </div>
+                      <h4 className="font-medium text-foreground glow-text">Corporate Bitcoin Adoption</h4>
+                      <p className="text-sm text-muted-foreground mt-2 terminal-text">
+                        Total Holdings: {treasuryCompanies.reduce((sum, company) => sum + parseFloat(company.bitcoinHoldings), 0).toLocaleString()} BTC
+                      </p>
+                    </div>
+                    
+                    <div className="flex justify-center space-x-3">
+                      <Button variant="outline" size="sm" className="cyber-button border-border hover:bg-primary/10 hover:border-primary/30">
+                        <TrendingUp className="mr-2 w-4 h-4" />
+                        View Analytics
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {/* Sovereign Adoption */}
+            {adoptionSubTab === "sovereign" && (
+              <div className="fade-in">
+                {/* Header */}
+                <div className="mt-6 mb-6">
+                  <div className="text-center">
+                    <h3 className="text-lg font-medium text-foreground flex items-center justify-center gap-2 glow-text">
+                      <Star className="w-5 h-5 text-primary" />
+                      Bitcoin Nation Adoption
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-1 terminal-text">
+                      Sovereign states and government Bitcoin adoption
+                    </p>
+                  </div>
+                </div>
+
+                {/* Sovereign Adoption Grid */}
+                <div className="grid gap-4">
+                  {sovereignAdoptions.map((adoption) => (
+                    <Card key={adoption.id} className="cyber-card">
+                      <CardContent className="p-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div>
+                            <h4 className="font-medium text-foreground terminal-text text-lg glow-text">
+                              {adoption.entityName}
+                            </h4>
+                            <div className="flex items-center space-x-2 mt-1">
+                              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+                                {adoption.entityType}
+                              </Badge>
+                              <Badge 
+                                variant={adoption.status === 'active' ? 'default' : 'secondary'}
+                                className={adoption.status === 'active' 
+                                  ? "bg-green-500/10 text-green-400 border-green-500/20" 
+                                  : "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
+                                }
+                              >
+                                {adoption.status}
+                              </Badge>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm text-muted-foreground terminal-text">{adoption.region}</p>
+                            {adoption.population && (
+                              <p className="text-xs text-muted-foreground terminal-text">
+                                Pop: {(adoption.population / 1000000).toFixed(1)}M
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="mb-4">
+                          <h5 className="text-sm font-medium text-foreground mb-2 terminal-text">Adoption Type</h5>
+                          <Badge 
+                            variant="outline" 
+                            className="bg-primary/10 text-primary border-primary/30 mb-2"
+                          >
+                            {adoption.adoptionType.replace('_', ' ').toUpperCase()}
+                          </Badge>
+                        </div>
+
+                        {adoption.bitcoinHoldings && (
+                          <div className="terminal-header p-3 rounded mb-4">
+                            <p className="text-xs text-muted-foreground terminal-text">Bitcoin Holdings</p>
+                            <p className="text-lg font-medium text-primary glow-text">
+                              {parseFloat(adoption.bitcoinHoldings).toLocaleString()} BTC
+                            </p>
+                          </div>
+                        )}
+
+                        <div className="space-y-2 mb-4">
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground terminal-text">Announced:</span>
+                            <span className="text-sm text-foreground terminal-text">
+                              {new Date(adoption.announcementDate).toLocaleDateString()}
+                            </span>
+                          </div>
+                          {adoption.implementationDate && (
+                            <div className="flex justify-between">
+                              <span className="text-sm text-muted-foreground terminal-text">Implemented:</span>
+                              <span className="text-sm text-foreground terminal-text">
+                                {new Date(adoption.implementationDate).toLocaleDateString()}
+                              </span>
+                            </div>
+                          )}
+                          {adoption.keyOfficials && (
+                            <div className="flex justify-between">
+                              <span className="text-sm text-muted-foreground terminal-text">Key Officials:</span>
+                              <span className="text-sm text-foreground terminal-text">{adoption.keyOfficials}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        <p className="text-sm text-muted-foreground leading-relaxed terminal-text">
+                          {adoption.description}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                {/* Summary Card */}
+                <Card className="cyber-card mt-6">
+                  <CardContent className="p-6 text-center">
+                    <div className="mb-4">
+                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3 bitcoin-glow">
+                        <Star className="w-6 h-6 text-primary" />
+                      </div>
+                      <h4 className="font-medium text-foreground glow-text">Global Bitcoin Adoption</h4>
+                      <p className="text-sm text-muted-foreground mt-2 terminal-text">
+                        {sovereignAdoptions.filter(a => a.status === 'active').length} Active Jurisdictions
+                      </p>
+                    </div>
+                    
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div className="terminal-header p-3 rounded">
-                        <p className="text-xs text-muted-foreground terminal-text">Bitcoin Holdings</p>
+                        <p className="text-xs text-muted-foreground terminal-text">Legal Tender</p>
                         <p className="text-lg font-medium text-primary glow-text">
-                          {parseFloat(company.bitcoinHoldings).toLocaleString()} BTC
+                          {sovereignAdoptions.filter(a => a.adoptionType === 'legal_tender').length}
                         </p>
                       </div>
                       <div className="terminal-header p-3 rounded">
-                        <p className="text-xs text-muted-foreground terminal-text">Market Value</p>
+                        <p className="text-xs text-muted-foreground terminal-text">Mining Friendly</p>
                         <p className="text-lg font-medium text-primary glow-text">
-                          ${company.marketValue ? (parseFloat(company.marketValue) / 1000000).toFixed(0) + 'M' : 'N/A'}
+                          {sovereignAdoptions.filter(a => a.adoptionType === 'mining_friendly').length}
                         </p>
                       </div>
                     </div>
-
-                    <div className="space-y-2 mb-4">
-                      <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground terminal-text">CEO:</span>
-                        <span className="text-sm text-foreground terminal-text">{company.ceoName || 'N/A'}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground terminal-text">Announced:</span>
-                        <span className="text-sm text-foreground terminal-text">
-                          {new Date(company.announcementDate).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </div>
-
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-4 terminal-text">
-                      {company.description}
-                    </p>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <div className={`w-2 h-2 rounded-full ${company.isPublic ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
-                        <span className="text-xs text-muted-foreground terminal-text">
-                          {company.isPublic ? 'Public Company' : 'Private Company'}
-                        </span>
-                      </div>
-                      {company.website && (
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="cyber-button border-border hover:bg-primary/10 hover:border-primary/30"
-                          onClick={() => window.open(company.website!, '_blank')}
-                        >
-                          <ExternalLink className="mr-2 w-3 h-3" />
-                          Website
-                        </Button>
-                      )}
-                    </div>
                   </CardContent>
                 </Card>
-              ))}
-            </div>
-
-            {/* Summary Card */}
-            <Card className="cyber-card mt-6">
-              <CardContent className="p-6 text-center">
-                <div className="mb-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3 bitcoin-glow">
-                    <Bitcoin className="w-6 h-6 text-primary" />
-                  </div>
-                  <h4 className="font-medium text-foreground glow-text">Corporate Bitcoin Adoption</h4>
-                  <p className="text-sm text-muted-foreground mt-2 terminal-text">
-                    Total Holdings: {treasuryCompanies.reduce((sum, company) => sum + parseFloat(company.bitcoinHoldings), 0).toLocaleString()} BTC
-                  </p>
-                </div>
-                
-                <div className="flex justify-center space-x-3">
-                  <Button variant="outline" size="sm" className="cyber-button border-border hover:bg-primary/10 hover:border-primary/30">
-                    <TrendingUp className="mr-2 w-4 h-4" />
-                    View Analytics
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Sovereign Adoption Tab */}
-        {activeTab === "sovereign" && (
-          <div className="fade-in">
-            {/* Header */}
-            <div className="mt-6 mb-6">
-              <div className="text-center">
-                <h3 className="text-lg font-medium text-foreground flex items-center justify-center gap-2 glow-text">
-                  <Star className="w-5 h-5 text-primary" />
-                  Bitcoin Nation Adoption
-                </h3>
-                <p className="text-sm text-muted-foreground mt-1 terminal-text">
-                  Sovereign states and government Bitcoin adoption
-                </p>
               </div>
-            </div>
-
-            {/* Sovereign Adoption Grid */}
-            <div className="grid gap-4">
-              {sovereignAdoptions.map((adoption) => (
-                <Card key={adoption.id} className="cyber-card">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <h4 className="font-medium text-foreground terminal-text text-lg glow-text">
-                          {adoption.entityName}
-                        </h4>
-                        <div className="flex items-center space-x-2 mt-1">
-                          <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
-                            {adoption.entityType}
-                          </Badge>
-                          <Badge 
-                            variant={adoption.status === 'active' ? 'default' : 'secondary'}
-                            className={adoption.status === 'active' 
-                              ? "bg-green-500/10 text-green-400 border-green-500/20" 
-                              : "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
-                            }
-                          >
-                            {adoption.status}
-                          </Badge>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm text-muted-foreground terminal-text">{adoption.region}</p>
-                        {adoption.population && (
-                          <p className="text-xs text-muted-foreground terminal-text">
-                            Pop: {(adoption.population / 1000000).toFixed(1)}M
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="mb-4">
-                      <h5 className="text-sm font-medium text-foreground mb-2 terminal-text">Adoption Type</h5>
-                      <Badge 
-                        variant="outline" 
-                        className="bg-primary/10 text-primary border-primary/30 mb-2"
-                      >
-                        {adoption.adoptionType.replace('_', ' ').toUpperCase()}
-                      </Badge>
-                    </div>
-
-                    {adoption.bitcoinHoldings && (
-                      <div className="terminal-header p-3 rounded mb-4">
-                        <p className="text-xs text-muted-foreground terminal-text">Bitcoin Holdings</p>
-                        <p className="text-lg font-medium text-primary glow-text">
-                          {parseFloat(adoption.bitcoinHoldings).toLocaleString()} BTC
-                        </p>
-                      </div>
-                    )}
-
-                    <div className="space-y-2 mb-4">
-                      <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground terminal-text">Announced:</span>
-                        <span className="text-sm text-foreground terminal-text">
-                          {new Date(adoption.announcementDate).toLocaleDateString()}
-                        </span>
-                      </div>
-                      {adoption.implementationDate && (
-                        <div className="flex justify-between">
-                          <span className="text-sm text-muted-foreground terminal-text">Implemented:</span>
-                          <span className="text-sm text-foreground terminal-text">
-                            {new Date(adoption.implementationDate).toLocaleDateString()}
-                          </span>
-                        </div>
-                      )}
-                      {adoption.keyOfficials && (
-                        <div className="flex justify-between">
-                          <span className="text-sm text-muted-foreground terminal-text">Key Officials:</span>
-                          <span className="text-sm text-foreground terminal-text">{adoption.keyOfficials}</span>
-                        </div>
-                      )}
-                    </div>
-
-                    <p className="text-sm text-muted-foreground leading-relaxed terminal-text">
-                      {adoption.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            {/* Summary Card */}
-            <Card className="cyber-card mt-6">
-              <CardContent className="p-6 text-center">
-                <div className="mb-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3 bitcoin-glow">
-                    <Star className="w-6 h-6 text-primary" />
-                  </div>
-                  <h4 className="font-medium text-foreground glow-text">Global Bitcoin Adoption</h4>
-                  <p className="text-sm text-muted-foreground mt-2 terminal-text">
-                    {sovereignAdoptions.filter(a => a.status === 'active').length} Active Jurisdictions
-                  </p>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="terminal-header p-3 rounded">
-                    <p className="text-xs text-muted-foreground terminal-text">Legal Tender</p>
-                    <p className="text-lg font-medium text-primary glow-text">
-                      {sovereignAdoptions.filter(a => a.adoptionType === 'legal_tender').length}
-                    </p>
-                  </div>
-                  <div className="terminal-header p-3 rounded">
-                    <p className="text-xs text-muted-foreground terminal-text">Mining Friendly</p>
-                    <p className="text-lg font-medium text-primary glow-text">
-                      {sovereignAdoptions.filter(a => a.adoptionType === 'mining_friendly').length}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Progress Tab */}
-        {activeTab === "progress" && (
-          <div className="fade-in">
-            {/* Overall Progress */}
-            <div className="bg-gradient-to-br from-primary to-primary-dark rounded-xl p-6 mt-6 text-primary-foreground border border-primary/20">
-              <h3 className="text-lg font-medium mb-4">Your Learning Journey</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold">{user?.completedLessons || 15}</div>
-                  <div className="text-primary-foreground/80 text-sm">Lessons Completed</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold">{user?.currentStreak || 7}</div>
-                  <div className="text-primary-foreground/80 text-sm">Day Streak</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Weekly Progress */}
-            <Card className="mt-6 border border-border bg-card">
-              <CardContent className="p-6">
-                <h4 className="font-medium text-foreground mb-4">This Week's Activity</h4>
-                <div className="flex justify-between items-end space-x-2">
-                  {weekDates.map((date, index) => {
-                    const dateStr = date.toISOString().split('T')[0];
-                    const dayProgress = weekProgress.find(p => p.date === dateStr);
-                    const isToday = dateStr === new Date().toISOString().split('T')[0];
-                    const progressHeight = dayProgress ? `${dayProgress.progressPercentage}%` : '0%';
-                    
-                    return (
-                      <div key={index} className="flex flex-col items-center">
-                        <div className="w-8 h-12 bg-muted rounded-md mb-2 relative overflow-hidden">
-                          <div 
-                            className={`absolute bottom-0 w-full ${isToday ? 'bg-primary pulse-animation' : 'bg-green-500'}`}
-                            style={{ height: progressHeight }}
-                          />
-                        </div>
-                        <span className={`text-xs ${isToday ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
-                          {getDayOfWeek(date)}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Achievement Badges */}
-            <Card className="mt-6 material-shadow-1">
-              <CardContent className="p-6">
-                <h4 className="font-medium text-foreground mb-4">Achievements</h4>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="text-center">
-                    <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <Flame className="text-secondary w-5 h-5" />
-                    </div>
-                    <div className="text-xs text-muted-foreground">7-Day Streak</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <GraduationCap className="text-primary w-5 h-5" />
-                    </div>
-                    <div className="text-xs text-muted-foreground">Quick Learner</div>
-                  </div>
-                  <div className="text-center opacity-50">
-                    <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center mx-auto mb-2">
-                      <Star className="text-muted-foreground w-5 h-5" />
-                    </div>
-                    <div className="text-xs text-muted-foreground">30-Day Master</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Learning Categories */}
-            <Card className="mt-6 material-shadow-1">
-              <CardContent className="p-6">
-                <h4 className="font-medium text-foreground mb-4">Knowledge Areas</h4>
-                <div className="space-y-4">
-                  {knowledgeAreas.map((area) => {
-                    const IconComponent = iconMap[area.icon as keyof typeof iconMap] || Coins;
-                    const percentage = Math.round((area.completedLessons / area.totalLessons) * 100);
-                    
-                    return (
-                      <div key={area.id} className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-secondary/10 rounded-full flex items-center justify-center">
-                            <IconComponent className="text-secondary w-4 h-4" />
-                          </div>
-                          <span className="text-sm text-foreground">{area.name}</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Progress value={percentage} className="w-16 h-2" />
-                          <span className="text-xs text-muted-foreground">{percentage}%</span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+            )}
+          </>
         )}
       </main>
 
