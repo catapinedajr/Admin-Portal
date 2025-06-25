@@ -118,6 +118,7 @@ Comprehensive component library built on Radix UI primitives:
 - June 25, 2025. Added comprehensive "Explore" subsection in Learning with advanced topics: blockchain technology, proof of work, digital signatures, Lightning Network, and Bitcoin's fixed supply
 - June 25, 2025. Implemented extensive visual aids throughout educational areas including interactive diagrams, process flows, network visualizations, and progress charts to enhance learning storytelling
 - June 25, 2025. Updated all loading screens to display "Loading your Conviction in Bitcoin" to reinforce the app's educational mission and build user confidence
+- June 25, 2025. Expanded Conviction Center with three comprehensive subsections: White Paper (with original Bitcoin paper summary and key points), Books & Articles (featuring essential Bitcoin literature with difficulty levels), and Videos (curated collection of educational content from Bitcoin thought leaders)
 
 ## User Preferences
 

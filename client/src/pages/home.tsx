@@ -52,6 +52,7 @@ const iconMap = {
 type MainSection = "learning" | "btcaction" | "conviction" | "terms";
 type LearningSubTab = "basics" | "lesson" | "progress" | "quiz" | "explore";
 type BtcActionSubTab = "individuals" | "businesses" | "nations";
+type ConvictionSubTab = "whitepaper" | "books" | "videos";
 
 const bitcoinTerms = [
   {
@@ -284,10 +285,153 @@ As new Bitcoin creation slows, existing coins become more valuable if demand rem
   }
 ];
 
+const convictionResources = {
+  whitepaper: {
+    title: "Bitcoin: A Peer-to-Peer Electronic Cash System",
+    author: "Satoshi Nakamoto",
+    date: "October 31, 2008",
+    url: "https://bitcoin.org/bitcoin.pdf",
+    summary: "The original Bitcoin white paper that started it all. In just 9 pages, Satoshi Nakamoto outlined a revolutionary peer-to-peer electronic cash system that would eliminate the need for trusted third parties. The paper introduces the concepts of digital signatures, proof-of-work, and the longest chain rule that form the foundation of Bitcoin.",
+    keyPoints: [
+      "Introduces the double-spending problem and its solution",
+      "Explains proof-of-work consensus mechanism",
+      "Details the structure of transactions and blocks",
+      "Describes the incentive system for miners",
+      "Calculates the probability of successful attacks",
+      "Outlines simplified payment verification (SPV)"
+    ]
+  },
+  books: [
+    {
+      title: "The Bitcoin Standard",
+      author: "Saifedean Ammous",
+      year: "2018",
+      description: "A comprehensive examination of Bitcoin's role as sound money and its potential to replace fiat currencies. Ammous explores the history of money, the properties of sound money, and why Bitcoin represents the best form of money humanity has ever had.",
+      keyTopics: ["Monetary history", "Sound money properties", "Austrian economics", "Time preference"],
+      difficulty: "Intermediate"
+    },
+    {
+      title: "Mastering Bitcoin",
+      author: "Andreas M. Antonopoulos",
+      year: "2017",
+      description: "The definitive technical guide to Bitcoin. Antonopoulos provides deep technical insights into how Bitcoin works, from basic concepts to advanced topics like payment channels and security.",
+      keyTopics: ["Technical implementation", "Cryptography", "Network protocol", "Programming"],
+      difficulty: "Advanced"
+    },
+    {
+      title: "The Bullish Case for Bitcoin",
+      author: "Vijay Boyapati",
+      year: "2019",
+      description: "Originally an article that became a book, this work presents the investment thesis for Bitcoin. Boyapati explains why Bitcoin is the ultimate store of value and compares it to gold and other assets.",
+      keyTopics: ["Store of value", "Monetary properties", "Investment thesis", "Market dynamics"],
+      difficulty: "Beginner"
+    },
+    {
+      title: "Sovereignty Through Mathematics",
+      author: "Knut Svanholm",
+      year: "2019",
+      description: "A philosophical exploration of Bitcoin's implications for individual sovereignty. Svanholm argues that Bitcoin represents true freedom through mathematical certainty rather than political promises.",
+      keyTopics: ["Individual sovereignty", "Philosophy", "Freedom", "Mathematical certainty"],
+      difficulty: "Intermediate"
+    },
+    {
+      title: "The Fiat Standard",
+      author: "Saifedean Ammous",
+      year: "2021",
+      description: "The follow-up to The Bitcoin Standard, examining the flaws of the current fiat monetary system and how it has corrupted various aspects of modern life, from academia to agriculture.",
+      keyTopics: ["Fiat currency critique", "Central banking", "Economic distortions", "Government overreach"],
+      difficulty: "Intermediate"
+    },
+    {
+      title: "Check Your Financial Privilege",
+      author: "Alex Gladstein",
+      year: "2022",
+      description: "Gladstein explores how Bitcoin serves as a tool for financial freedom, particularly for people living under authoritarian regimes or in countries with unstable currencies.",
+      keyTopics: ["Human rights", "Financial freedom", "Authoritarianism", "Global perspective"],
+      difficulty: "Beginner"
+    }
+  ],
+  videos: [
+    {
+      title: "Bitcoin: The End of Money as We Know It",
+      creator: "Torsten Hoffmann",
+      year: "2015",
+      duration: "60 minutes",
+      type: "Documentary",
+      description: "A comprehensive documentary exploring the history of money, the problems with the current financial system, and how Bitcoin offers a solution.",
+      url: "https://www.youtube.com/watch?v=lUF6klWuB38"
+    },
+    {
+      title: "The Stories We Tell About Money",
+      creator: "Andreas Antonopoulos",
+      year: "2019",
+      duration: "20 minutes",
+      type: "Talk",
+      description: "Antonopoulos explains how our stories about money shape our understanding and why Bitcoin represents a new narrative about what money can be.",
+      url: "https://www.youtube.com/watch?v=ONvg9SbauMg"
+    },
+    {
+      title: "Bitcoin and Human Rights",
+      creator: "Alex Gladstein",
+      year: "2021",
+      duration: "45 minutes",
+      type: "Presentation",
+      description: "Gladstein presents compelling cases of how Bitcoin is being used by people living under oppressive regimes to preserve their wealth and freedom.",
+      url: "https://www.youtube.com/watch?v=xLYYh4aPXAM"
+    },
+    {
+      title: "Michael Saylor on Bitcoin",
+      creator: "Lex Fridman Podcast",
+      year: "2021",
+      duration: "180 minutes",
+      type: "Interview",
+      description: "MicroStrategy CEO Michael Saylor explains his company's Bitcoin strategy and why he believes Bitcoin is the future of money and energy.",
+      url: "https://www.youtube.com/watch?v=mC43pZkpTec"
+    },
+    {
+      title: "The Bitcoin Standard Explained",
+      creator: "What Bitcoin Did",
+      year: "2020",
+      duration: "90 minutes",
+      type: "Interview",
+      description: "Author Saifedean Ammous discusses the key concepts from his book 'The Bitcoin Standard' and explains why Bitcoin is superior money.",
+      url: "https://www.youtube.com/watch?v=Zbm772vF-5M"
+    },
+    {
+      title: "How Bitcoin Fixes This",
+      creator: "Jimmy Song",
+      year: "2020",
+      duration: "30 minutes",
+      type: "Educational",
+      description: "Developer and educator Jimmy Song explains how Bitcoin addresses various problems in the current financial system.",
+      url: "https://www.youtube.com/watch?v=la0qLnpCjjE"
+    },
+    {
+      title: "Bitcoin vs Gold Debate",
+      creator: "Peter Schiff vs Erik Voorhees",
+      year: "2020",
+      duration: "60 minutes",
+      type: "Debate",
+      description: "A classic debate between gold advocate Peter Schiff and Bitcoin advocate Erik Voorhees about which is the better store of value.",
+      url: "https://www.youtube.com/watch?v=q8R71_tYkfk"
+    },
+    {
+      title: "The Network State",
+      creator: "Balaji Srinivasan",
+      year: "2022",
+      duration: "120 minutes",
+      type: "Presentation",
+      description: "Balaji explores how Bitcoin and crypto enable new forms of governance and social organization beyond traditional nation-states.",
+      url: "https://www.youtube.com/watch?v=P6vYyqHG_Po"
+    }
+  ]
+};
+
 export default function Home() {
   const [activeSection, setActiveSection] = useState<MainSection>("learning");
   const [learningSubTab, setLearningSubTab] = useState<LearningSubTab>("basics");
   const [btcActionSubTab, setBtcActionSubTab] = useState<BtcActionSubTab>("individuals");
+  const [convictionSubTab, setConvictionSubTab] = useState<ConvictionSubTab>("whitepaper");
   const [showPriceChart, setShowPriceChart] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
@@ -872,42 +1016,184 @@ export default function Home() {
           <div className="space-y-6">
             <div className="text-center space-y-2">
               <h2 className="text-2xl font-bold text-white">Conviction Center</h2>
-              <p className="text-zinc-400">Wisdom from Bitcoin leaders and advocates</p>
+              <p className="text-zinc-400">Essential resources to deepen your Bitcoin understanding</p>
             </div>
             
-            <div className="grid gap-4">
-              {convictionContent.map((content, index) => (
-                <Card key={content.id} className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors">
+            <div className="flex space-x-2 mb-6 justify-center">
+              <Button
+                variant={convictionSubTab === "whitepaper" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setConvictionSubTab("whitepaper")}
+                className="text-sm"
+              >
+                <FileText className="w-3 h-3 mr-2" />
+                White Paper
+              </Button>
+              <Button
+                variant={convictionSubTab === "books" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setConvictionSubTab("books")}
+                className="text-sm"
+              >
+                <BookOpen className="w-3 h-3 mr-2" />
+                Books & Articles
+              </Button>
+              <Button
+                variant={convictionSubTab === "videos" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setConvictionSubTab("videos")}
+                className="text-sm"
+              >
+                <Play className="w-3 h-3 mr-2" />
+                Videos
+              </Button>
+            </div>
+
+            {convictionSubTab === "whitepaper" && (
+              <div className="space-y-6">
+                <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
                     <div className="space-y-4">
-                      <div className="flex items-start gap-3">
-                        {content.type === "quote" ? (
-                          <Quote className="w-6 h-6 text-orange-500 flex-shrink-0 mt-1" />
-                        ) : (
-                          <Play className="w-6 h-6 text-orange-500 flex-shrink-0 mt-1" />
-                        )}
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 bg-orange-600/20 rounded-lg">
+                          <FileText className="w-8 h-8 text-orange-400" />
+                        </div>
                         <div className="flex-1">
-                          <h3 className="font-semibold text-white mb-2">{content.title}</h3>
-                          <p className="text-zinc-300 leading-relaxed mb-3">{content.content}</p>
-                          <div className="flex items-center justify-between">
-                            <div className="text-sm text-zinc-400">
-                              <span className="font-medium text-orange-400">{content.author}</span>
-                              {content.source && <span> • {content.source}</span>}
-                            </div>
-                            {content.videoUrl && (
-                              <Button variant="outline" size="sm" className="border-zinc-700 text-zinc-300 hover:bg-zinc-800">
-                                <ExternalLink className="w-3 h-3 mr-1" />
-                                Watch
-                              </Button>
-                            )}
+                          <h3 className="text-xl font-bold text-white mb-2">{convictionResources.whitepaper.title}</h3>
+                          <div className="flex items-center gap-4 mb-3 text-sm text-zinc-400">
+                            <span>By <span className="text-orange-400 font-medium">{convictionResources.whitepaper.author}</span></span>
+                            <span>•</span>
+                            <span>{convictionResources.whitepaper.date}</span>
+                          </div>
+                          <p className="text-zinc-300 leading-relaxed mb-4">{convictionResources.whitepaper.summary}</p>
+                          
+                          <div className="space-y-3">
+                            <h4 className="text-white font-medium">Key Points Covered:</h4>
+                            <ul className="space-y-2">
+                              {convictionResources.whitepaper.keyPoints.map((point, index) => (
+                                <li key={index} className="flex items-start gap-2 text-zinc-300 text-sm">
+                                  <div className="w-1.5 h-1.5 bg-orange-400 rounded-full mt-2 flex-shrink-0"></div>
+                                  {point}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                          
+                          <div className="mt-6">
+                            <Button 
+                              className="bg-orange-600 hover:bg-orange-700 text-white"
+                              onClick={() => window.open(convictionResources.whitepaper.url, '_blank')}
+                            >
+                              <ExternalLink className="w-4 h-4 mr-2" />
+                              Read the White Paper
+                            </Button>
                           </div>
                         </div>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
-              ))}
-            </div>
+              </div>
+            )}
+
+            {convictionSubTab === "books" && (
+              <div className="space-y-6">
+                <div className="grid gap-6">
+                  {convictionResources.books.map((book, index) => (
+                    <Card key={index} className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors">
+                      <CardContent className="p-6">
+                        <div className="space-y-4">
+                          <div className="flex items-start gap-4">
+                            <div className="p-3 bg-blue-600/20 rounded-lg">
+                              <BookOpen className="w-6 h-6 text-blue-400" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-start justify-between mb-2">
+                                <div>
+                                  <h3 className="text-lg font-bold text-white">{book.title}</h3>
+                                  <p className="text-orange-400 text-sm">by {book.author} • {book.year}</p>
+                                </div>
+                                <Badge 
+                                  variant="outline" 
+                                  className={`border-zinc-700 ${
+                                    book.difficulty === "Beginner" ? "text-green-400" :
+                                    book.difficulty === "Intermediate" ? "text-yellow-400" : "text-red-400"
+                                  }`}
+                                >
+                                  {book.difficulty}
+                                </Badge>
+                              </div>
+                              
+                              <p className="text-zinc-300 leading-relaxed mb-4">{book.description}</p>
+                              
+                              <div className="space-y-2">
+                                <h4 className="text-white font-medium text-sm">Key Topics:</h4>
+                                <div className="flex flex-wrap gap-2">
+                                  {book.keyTopics.map((topic, topicIndex) => (
+                                    <span 
+                                      key={topicIndex}
+                                      className="px-2 py-1 bg-zinc-800 text-zinc-300 text-xs rounded"
+                                    >
+                                      {topic}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {convictionSubTab === "videos" && (
+              <div className="space-y-6">
+                <div className="grid gap-6">
+                  {convictionResources.videos.map((video, index) => (
+                    <Card key={index} className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors">
+                      <CardContent className="p-6">
+                        <div className="space-y-4">
+                          <div className="flex items-start gap-4">
+                            <div className="p-3 bg-red-600/20 rounded-lg">
+                              <Play className="w-6 h-6 text-red-400" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-start justify-between mb-2">
+                                <div>
+                                  <h3 className="text-lg font-bold text-white">{video.title}</h3>
+                                  <p className="text-orange-400 text-sm">by {video.creator} • {video.year}</p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Badge variant="outline" className="border-zinc-700 text-zinc-400">
+                                    {video.type}
+                                  </Badge>
+                                  <span className="text-zinc-400 text-sm">{video.duration}</span>
+                                </div>
+                              </div>
+                              
+                              <p className="text-zinc-300 leading-relaxed mb-4">{video.description}</p>
+                              
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="border-zinc-700 text-zinc-300 hover:bg-zinc-800"
+                                onClick={() => window.open(video.url, '_blank')}
+                              >
+                                <ExternalLink className="w-3 h-3 mr-2" />
+                                Watch Video
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
