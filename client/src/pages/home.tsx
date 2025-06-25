@@ -337,7 +337,7 @@ export default function Home() {
             <Bitcoin className="w-12 h-12 text-orange-500 animate-pulse" />
             <h1 className="text-4xl font-bold text-white">Bitcoin Edu</h1>
           </div>
-          <p className="text-zinc-400 text-lg">Learn Bitcoin. Build conviction. Stack sats.</p>
+          <p className="text-zinc-400 text-lg">Loading your Conviction in Bitcoin</p>
           <div className="w-64 h-1 bg-zinc-800 rounded-full overflow-hidden">
             <div className="h-full bg-orange-500 rounded-full animate-pulse" style={{ width: '60%' }}></div>
           </div>

@@ -125,15 +125,18 @@ export default function DailyQuiz() {
     return (
       <Card className="bg-zinc-900 border-zinc-800">
         <CardContent className="p-6">
-          <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-zinc-800 rounded w-3/4"></div>
-            <div className="h-4 bg-zinc-800 rounded w-1/2"></div>
-            <div className="space-y-2">
-              <div className="h-10 bg-zinc-800 rounded"></div>
-              <div className="h-10 bg-zinc-800 rounded"></div>
-              <div className="h-10 bg-zinc-800 rounded"></div>
-              <div className="h-10 bg-zinc-800 rounded"></div>
+          <div className="text-center space-y-4">
+            <div className="animate-pulse space-y-4">
+              <div className="h-4 bg-zinc-800 rounded w-3/4 mx-auto"></div>
+              <div className="h-4 bg-zinc-800 rounded w-1/2 mx-auto"></div>
+              <div className="space-y-2">
+                <div className="h-10 bg-zinc-800 rounded"></div>
+                <div className="h-10 bg-zinc-800 rounded"></div>
+                <div className="h-10 bg-zinc-800 rounded"></div>
+                <div className="h-10 bg-zinc-800 rounded"></div>
+              </div>
             </div>
+            <p className="text-zinc-400 text-sm">Loading your Conviction in Bitcoin</p>
           </div>
         </CardContent>
       </Card>
