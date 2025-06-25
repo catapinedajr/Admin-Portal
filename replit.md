@@ -96,7 +96,8 @@ Comprehensive component library built on Radix UI primitives:
 
 ## Changelog
 
-- June 25, 2025. Initial setup
+- June 25, 2025. Initial setup with Bitcoin and blockchain education app
+- June 25, 2025. Added traditional finance educational content with structured fact ordering (Bitcoin Basics → Use Case → Traditional Finance comparison)
 
 ## User Preferences
 

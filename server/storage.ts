@@ -72,13 +72,21 @@ export class MemStorage implements IStorage {
   }
 
   private seedData() {
-    // Seed daily facts - including traditional finance comparisons
+    // Seed daily facts - structured as: Bitcoin Basics, Use Case, Traditional Finance comparison
     const facts = [
+      // Day 0 - Basics, Use Case, Traditional Finance
       {
         title: "Bitcoin's Total Supply",
         content: "Bitcoin has a maximum supply of 21 million coins. This fixed supply makes it deflationary, unlike traditional currencies that can be printed indefinitely.",
         category: "BitcoinBasics",
         icon: "coins",
+        dayIndex: 0
+      },
+      {
+        title: "Peer-to-Peer Money",
+        content: "Bitcoin allows you to send money directly to anyone, anywhere in the world, without needing a bank or payment processor as an intermediary.",
+        category: "UseCase",
+        icon: "user-secret",
         dayIndex: 0
       },
       {
@@ -88,38 +96,42 @@ export class MemStorage implements IStorage {
         icon: "bolt",
         dayIndex: 0
       },
+      
+      // Day 1 - Basics, Use Case, Traditional Finance
       {
-        title: "Block Time",
+        title: "Block Time Consistency",
         content: "A new Bitcoin block is mined approximately every 10 minutes. This consistent timing helps maintain network stability and predictable transaction processing.",
-        category: "Mining",
+        category: "BitcoinBasics",
         icon: "cube",
-        dayIndex: 0
-      },
-      {
-        title: "Satoshi Nakamoto",
-        content: "Bitcoin was created by an anonymous person or group using the pseudonym Satoshi Nakamoto. Their true identity remains unknown to this day.",
-        category: "History",
-        icon: "user-secret",
         dayIndex: 1
       },
       {
-        title: "Did You Know: Banking Hours",
-        content: "Traditional banks operate only during business hours and close on weekends and holidays. Bitcoin transactions happen 24/7/365, never stopping for any reason.",
-        category: "TraditionalFinance",
+        title: "24/7 Global Access",
+        content: "Bitcoin transactions happen 24/7/365, never stopping for weekends, holidays, or bank hours. True financial freedom that never sleeps.",
+        category: "UseCase",
         icon: "gem",
         dayIndex: 1
       },
       {
-        title: "Blockchain Security",
-        content: "Bitcoin's blockchain has never been successfully hacked in its 15+ year history. Its security comes from cryptographic hashing and distributed consensus.",
-        category: "Security",
-        icon: "shield-alt",
+        title: "Did You Know: Banking Hours",
+        content: "Traditional banks operate only during business hours and close on weekends and holidays. Need to send money on Sunday? You'll have to wait until Monday.",
+        category: "TraditionalFinance",
+        icon: "building",
         dayIndex: 1
       },
+      
+      // Day 2 - Basics, Use Case, Traditional Finance
       {
-        title: "Digital Scarcity",
-        content: "Bitcoin was the first digital asset to solve the double-spending problem without requiring a trusted third party, creating true digital scarcity.",
-        category: "Technology",
+        title: "Blockchain Security",
+        content: "Bitcoin's blockchain has never been successfully hacked in its 15+ year history. Its security comes from cryptographic hashing and distributed consensus.",
+        category: "BitcoinBasics",
+        icon: "shield-alt",
+        dayIndex: 2
+      },
+      {
+        title: "Borderless Payments",
+        content: "Send Bitcoin to anyone, anywhere in the world, for the same low fee. No currency exchanges, international wire fees, or waiting days for settlement.",
+        category: "UseCase",
         icon: "gem",
         dayIndex: 2
       },
@@ -127,56 +139,53 @@ export class MemStorage implements IStorage {
         title: "Did You Know: Currency Debasement",
         content: "Since 1971, when the US left the gold standard, the dollar has lost over 85% of its purchasing power. A cup of coffee that cost 25 cents then costs $5+ today.",
         category: "TraditionalFinance",
-        icon: "bolt",
+        icon: "dollar-sign",
         dayIndex: 2
       },
+      
+      // Day 3 - Basics, Use Case, Traditional Finance
       {
-        title: "Energy Consumption",
-        content: "Bitcoin mining uses energy equivalent to a small country, but much of this comes from renewable sources and helps stabilize power grids.",
-        category: "Environment",
-        icon: "bolt",
-        dayIndex: 2
+        title: "Digital Scarcity",
+        content: "Bitcoin was the first digital asset to solve the double-spending problem without requiring a trusted third party, creating true digital scarcity.",
+        category: "BitcoinBasics",
+        icon: "gem",
+        dayIndex: 3
+      },
+      {
+        title: "Financial Sovereignty",
+        content: "With Bitcoin, you truly own your money. No one can freeze your account, reverse your transactions, or tell you how to spend your funds.",
+        category: "UseCase",
+        icon: "shield-alt",
+        dayIndex: 3
       },
       {
         title: "Did You Know: Bank Bailouts",
         content: "In 2008, taxpayers bailed out major banks with $700+ billion. These same institutions caused the crisis through risky lending. Bitcoin eliminates the need for 'too big to fail' banks.",
         category: "TraditionalFinance",
-        icon: "shield-alt",
+        icon: "alert-triangle",
         dayIndex: 3
       },
-      {
-        title: "Peer-to-Peer Transactions",
-        content: "Bitcoin allows direct transactions between people anywhere in the world without needing banks or payment processors as intermediaries.",
-        category: "Technology",
-        icon: "user-secret",
-        dayIndex: 3
-      },
+      
+      // Day 4 - Basics, Use Case, Traditional Finance  
       {
         title: "Halving Events",
         content: "Every 4 years, Bitcoin's mining reward is cut in half, reducing the rate of new Bitcoin creation. This built-in scarcity mechanism is programmed into the code.",
-        category: "Economics",
+        category: "BitcoinBasics",
         icon: "coins",
-        dayIndex: 3
+        dayIndex: 4
+      },
+      {
+        title: "Store of Value",
+        content: "Bitcoin serves as 'digital gold' - a way to preserve purchasing power over time without relying on banks or government monetary policy.",
+        category: "UseCase",
+        icon: "gem",
+        dayIndex: 4
       },
       {
         title: "Did You Know: Inflation Tax",
         content: "When governments print money, it's essentially a hidden tax on savers. Your cash loses value while prices rise, transferring wealth from regular people to those who receive the new money first.",
         category: "TraditionalFinance",
         icon: "bolt",
-        dayIndex: 4
-      },
-      {
-        title: "Global Accessibility",
-        content: "Anyone with internet access can use Bitcoin, regardless of their country, credit score, or banking history. No permission required from any authority.",
-        category: "Accessibility",
-        icon: "gem",
-        dayIndex: 4
-      },
-      {
-        title: "Transaction Finality",
-        content: "Bitcoin transactions are irreversible once confirmed. No chargebacks, no freezing of funds by banks - true digital cash with final settlement.",
-        category: "Technology",
-        icon: "shield-alt",
         dayIndex: 4
       }
     ];

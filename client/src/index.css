@@ -3,34 +3,37 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(0, 0%, 96%);
-  --foreground: hsl(0, 0%, 13%);
-  --muted: hsl(0, 0%, 96%);
-  --muted-foreground: hsl(0, 0%, 46%);
-  --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(0, 0%, 13%);
-  --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(0, 0%, 13%);
-  --border: hsl(0, 0%, 90%);
-  --input: hsl(0, 0%, 90%);
-  --primary: hsl(207, 76%, 42%);
-  --primary-foreground: hsl(211, 100%, 99%);
-  --secondary: hsl(36, 100%, 50%);
-  --secondary-foreground: hsl(0, 0%, 13%);
-  --accent: hsl(0, 0%, 96%);
-  --accent-foreground: hsl(0, 0%, 13%);
-  --destructive: hsl(0, 84%, 60%);
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(20.5, 90.2%, 48.2%);
+  --primary-foreground: hsl(60, 9.1%, 97.8%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
   --destructive-foreground: hsl(0, 0%, 98%);
   --success: hsl(122, 39%, 49%);
-  --ring: hsl(0, 0%, 13%);
+  --ring: hsl(20.5, 90.2%, 48.2%);
   --radius: 0.75rem;
   
-  /* Custom colors matching design */
-  --primary-dark: hsl(207, 100%, 32%);
-  --secondary-dark: hsl(36, 100%, 45%);
-  --surface: hsl(0, 0%, 100%);
-  --text-primary: hsl(0, 0%, 13%);
-  --text-secondary: hsl(0, 0%, 46%);
+  /* Custom dark theme colors with orange accents */
+  --primary-dark: hsl(20.5, 90.2%, 42%);
+  --secondary-dark: hsl(240, 3.7%, 11%);
+  --surface: hsl(240, 10%, 3.9%);
+  --text-primary: hsl(0, 0%, 98%);
+  --text-secondary: hsl(240, 5%, 64.9%);
+  --orange-accent: hsl(20.5, 90.2%, 48.2%);
+  --orange-accent-dark: hsl(20.5, 90.2%, 42%);
+  --orange-accent-light: hsl(20.5, 90.2%, 55%);
 }
 
 .dark {

@@ -123,12 +123,12 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="bg-card shadow-lg sticky top-0 z-50">
+      <header className="bg-card border-b border-border sticky top-0 z-50">
         <div className="max-w-md mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center">
-                <Bitcoin className="text-white w-5 h-5" />
+              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                <Bitcoin className="text-primary-foreground w-5 h-5" />
               </div>
               <div>
                 <h1 className="text-xl font-medium text-foreground">BitcoinEdu</h1>
@@ -137,7 +137,7 @@ export default function Home() {
             </div>
             <div className="flex items-center space-x-4">
               <div className="text-center">
-                <div className="text-lg font-medium text-secondary">{user?.currentStreak || 0}</div>
+                <div className="text-lg font-medium text-primary">{user?.currentStreak || 0}</div>
                 <div className="text-xs text-muted-foreground">Day Streak</div>
               </div>
               <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full">
@@ -149,15 +149,15 @@ export default function Home() {
       </header>
 
       {/* Tab Navigation */}
-      <nav className="bg-card shadow-sm relative">
+      <nav className="bg-card border-b border-border relative">
         <div className="max-w-md mx-auto">
           <div className="flex">
             <Button
               variant="ghost"
               className={`flex-1 py-4 flex flex-col items-center space-y-1 rounded-none border-b-2 ${
                 activeTab === "facts" 
-                  ? "text-primary border-primary" 
-                  : "text-muted-foreground border-transparent"
+                  ? "text-primary border-primary bg-primary/5" 
+                  : "text-muted-foreground border-transparent hover:text-foreground"
               }`}
               onClick={() => setActiveTab("facts")}
             >
@@ -168,8 +168,8 @@ export default function Home() {
               variant="ghost"
               className={`flex-1 py-4 flex flex-col items-center space-y-1 rounded-none border-b-2 ${
                 activeTab === "lesson" 
-                  ? "text-primary border-primary" 
-                  : "text-muted-foreground border-transparent"
+                  ? "text-primary border-primary bg-primary/5" 
+                  : "text-muted-foreground border-transparent hover:text-foreground"
               }`}
               onClick={() => setActiveTab("lesson")}
             >
@@ -180,8 +180,8 @@ export default function Home() {
               variant="ghost"
               className={`flex-1 py-4 flex flex-col items-center space-y-1 rounded-none border-b-2 ${
                 activeTab === "progress" 
-                  ? "text-primary border-primary" 
-                  : "text-muted-foreground border-transparent"
+                  ? "text-primary border-primary bg-primary/5" 
+                  : "text-muted-foreground border-transparent hover:text-foreground"
               }`}
               onClick={() => setActiveTab("progress")}
             >
@@ -197,11 +197,11 @@ export default function Home() {
         {activeTab === "facts" && (
           <div className="fade-in">
             {/* Daily Progress Banner */}
-            <div className="bg-gradient-to-r from-primary to-primary-dark rounded-xl p-6 mt-4 text-white material-shadow-2">
+            <div className="bg-gradient-to-r from-primary to-primary-dark rounded-xl p-6 mt-4 text-primary-foreground border border-primary/20">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-lg font-medium">Welcome back!</h2>
-                  <p className="text-blue-100 text-sm">Ready for today's Bitcoin knowledge?</p>
+                  <p className="text-primary-foreground/80 text-sm">Ready for today's Bitcoin knowledge?</p>
                 </div>
                 <div className="relative w-16 h-16">
                   <svg className="progress-circle w-16 h-16" viewBox="0 0 36 36">
@@ -217,7 +217,7 @@ export default function Home() {
                       strokeLinecap="round"
                     />
                   </svg>
-                  <div className="absolute inset-0 flex items-center justify-center text-sm font-medium">
+                  <div className="absolute inset-0 flex items-center justify-center text-sm font-medium text-primary-foreground">
                     {progressPercentage}%
                   </div>
                 </div>
@@ -238,22 +238,35 @@ export default function Home() {
             {/* Fact Cards */}
             {dailyFacts.map((fact) => {
               const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Coins;
+              const isTraditionalFinance = fact.category === "TraditionalFinance";
               return (
-                <Card key={fact.id} className="mb-4 card-hover material-shadow-1">
+                <Card key={fact.id} className="mb-4 card-hover border border-border bg-card hover:border-primary/30 transition-colors">
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                        <IconComponent className="text-secondary w-5 h-5" />
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        isTraditionalFinance 
+                          ? "bg-orange-500/10 border border-orange-500/20" 
+                          : "bg-primary/10 border border-primary/20"
+                      }`}>
+                        <IconComponent className={`w-5 h-5 ${
+                          isTraditionalFinance ? "text-orange-400" : "text-primary"
+                        }`} />
                       </div>
                       <div className="flex-1">
                         <h4 className="font-medium text-foreground mb-2">{fact.title}</h4>
                         <p className="text-muted-foreground leading-relaxed">{fact.content}</p>
                         <div className="flex items-center justify-between mt-4">
-                          <span className="text-xs text-muted-foreground">#{fact.category}</span>
+                          <Badge variant="secondary" className={`text-xs ${
+                            isTraditionalFinance 
+                              ? "bg-orange-500/10 text-orange-400 border-orange-500/20" 
+                              : "bg-primary/10 text-primary border-primary/20"
+                          }`}>
+                            #{fact.category}
+                          </Badge>
                           <Button 
                             variant="ghost" 
                             size="sm" 
-                            className="text-primary hover:text-primary-dark"
+                            className="text-primary hover:text-primary/80 hover:bg-primary/10"
                             onClick={handleFactView}
                           >
                             Learn More
@@ -269,13 +282,13 @@ export default function Home() {
             {/* Action Buttons */}
             <div className="flex space-x-3 mt-6">
               <Button 
-                className="flex-1 bg-primary hover:bg-primary-dark text-white material-shadow-2"
+                className="flex-1 bg-primary hover:bg-primary-dark text-primary-foreground"
                 onClick={() => setActiveTab("lesson")}
               >
                 <ArrowRight className="mr-2 w-4 h-4" />
                 Continue to Lesson
               </Button>
-              <Button variant="outline" size="icon" className="material-shadow-1">
+              <Button variant="outline" size="icon" className="border-border hover:bg-primary/10 hover:border-primary/30">
                 <Share className="w-4 h-4" />
               </Button>
             </div>
@@ -300,11 +313,11 @@ export default function Home() {
               </div>
 
               {/* Lesson Progress */}
-              <Card className="mb-6 material-shadow-1">
+              <Card className="mb-6 border border-border bg-card">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-sm font-medium text-foreground">Lesson Progress</span>
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-sm text-primary">
                       {todayProgress?.lessonCompleted ? 100 : 15}%
                     </span>
                   </div>
@@ -314,14 +327,14 @@ export default function Home() {
             </div>
 
             {/* Lesson Content Card */}
-            <Card className="material-shadow-1">
+            <Card className="border border-border bg-card">
               <CardContent className="p-6">
                 {lesson.imageUrl && (
                   <div className="mb-6">
                     <img 
                       src={lesson.imageUrl}
                       alt={lesson.title}
-                      className="w-full h-48 object-cover rounded-lg"
+                      className="w-full h-48 object-cover rounded-lg border border-border"
                     />
                   </div>
                 )}
@@ -336,7 +349,7 @@ export default function Home() {
 
                 {/* Lesson Navigation */}
                 <div className="flex items-center justify-between mt-8 pt-6 border-t border-border">
-                  <Button variant="ghost" size="sm" className="text-muted-foreground">
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
                     <ChevronLeft className="mr-2 w-4 h-4" />
                     Previous
                   </Button>
@@ -345,7 +358,7 @@ export default function Home() {
                     <span className="w-2 h-2 bg-muted rounded-full"></span>
                     <span className="w-2 h-2 bg-muted rounded-full"></span>
                   </div>
-                  <Button variant="ghost" size="sm" className="text-primary font-medium">
+                  <Button variant="ghost" size="sm" className="text-primary font-medium hover:text-primary/80">
                     Next
                     <ChevronRight className="ml-2 w-4 h-4" />
                   </Button>
@@ -355,7 +368,7 @@ export default function Home() {
 
             {/* Complete Lesson Button */}
             <Button 
-              className="w-full bg-green-600 hover:bg-green-700 text-white material-shadow-2 mt-6"
+              className="w-full bg-green-600 hover:bg-green-700 text-white mt-6"
               onClick={handleCompleteLesson}
               disabled={todayProgress?.lessonCompleted || completeLessonMutation.isPending}
             >
@@ -369,22 +382,22 @@ export default function Home() {
         {activeTab === "progress" && (
           <div className="fade-in">
             {/* Overall Progress */}
-            <div className="bg-gradient-to-br from-primary to-primary-dark rounded-xl p-6 mt-6 text-white material-shadow-2">
+            <div className="bg-gradient-to-br from-primary to-primary-dark rounded-xl p-6 mt-6 text-primary-foreground border border-primary/20">
               <h3 className="text-lg font-medium mb-4">Your Learning Journey</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold">{user?.completedLessons || 15}</div>
-                  <div className="text-blue-100 text-sm">Lessons Completed</div>
+                  <div className="text-primary-foreground/80 text-sm">Lessons Completed</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold">{user?.currentStreak || 7}</div>
-                  <div className="text-blue-100 text-sm">Day Streak</div>
+                  <div className="text-primary-foreground/80 text-sm">Day Streak</div>
                 </div>
               </div>
             </div>
 
             {/* Weekly Progress */}
-            <Card className="mt-6 material-shadow-1">
+            <Card className="mt-6 border border-border bg-card">
               <CardContent className="p-6">
                 <h4 className="font-medium text-foreground mb-4">This Week's Activity</h4>
                 <div className="flex justify-between items-end space-x-2">
