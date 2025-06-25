@@ -141,16 +141,17 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50">
-        <div className="max-w-4xl mx-auto px-4 py-4">
+      <header className="border-b-4 border-primary/20 fun-gradient-bg relative overflow-hidden">
+        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm"></div>
+        <div className="relative max-w-4xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center bitcoin-glow">
-                <Bitcoin className="w-6 h-6 text-primary-foreground" />
+            <div className="flex items-center space-x-4 bounce-in">
+              <div className="w-14 h-14 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center bitcoin-glow pulse-rainbow shadow-lg">
+                <Bitcoin className="w-8 h-8 text-white wiggle" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-foreground glow-text">BitcoinEDU</h1>
-                <p className="text-sm text-muted-foreground terminal-text">Daily Bitcoin Education</p>
+                <h1 className="text-2xl font-bold text-foreground glow-text">🚀 BitcoinEDU</h1>
+                <p className="text-sm text-muted-foreground terminal-text">✨ Learn Bitcoin Every Day!</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -158,32 +159,32 @@ export default function Home() {
               {bitcoinPrice && (
                 <Button
                   variant="ghost"
-                  className="cyber-button p-3 hover:bg-primary/10"
+                  className="cyber-button p-3 bg-gradient-to-r from-primary/10 to-secondary/10 hover:from-primary/20 hover:to-secondary/20 border-2 border-primary/30 rounded-2xl"
                   onClick={() => setShowPriceChart(true)}
                 >
                   <div className="flex items-center space-x-2">
-                    <Bitcoin className="w-4 h-4 text-primary" />
+                    <Bitcoin className="w-5 h-5 text-primary animate-pulse" />
                     <div className="text-right">
-                      <p className="text-sm font-medium text-foreground terminal-text">
-                        ${parseFloat(bitcoinPrice.priceUsd).toLocaleString()}
+                      <p className="text-sm font-bold text-foreground terminal-text">
+                        💰 ${parseFloat(bitcoinPrice.priceUsd).toLocaleString()}
                       </p>
-                      <p className={`text-xs terminal-text ${
-                        parseFloat(bitcoinPrice.change24h) >= 0 ? 'text-green-400' : 'text-red-400'
+                      <p className={`text-xs font-semibold terminal-text ${
+                        parseFloat(bitcoinPrice.change24h) >= 0 ? 'text-green-500' : 'text-red-500'
                       }`}>
-                        {parseFloat(bitcoinPrice.change24h) >= 0 ? '+' : ''}{bitcoinPrice.change24h}%
+                        {parseFloat(bitcoinPrice.change24h) >= 0 ? '📈 +' : '📉 '}{bitcoinPrice.change24h}%
                       </p>
                     </div>
-                    <LineChart className="w-3 h-3 text-muted-foreground" />
+                    <LineChart className="w-4 h-4 text-primary" />
                   </div>
                 </Button>
               )}
               
-              <div className="text-right">
-                <p className="text-sm font-medium text-foreground terminal-text">{user?.currentStreak || 0} Day Streak</p>
-                <p className="text-xs text-muted-foreground terminal-text">Keep learning!</p>
+              <div className="text-right bg-gradient-to-r from-accent/10 to-success/10 p-3 rounded-2xl border-2 border-accent/30">
+                <p className="text-sm font-bold text-foreground terminal-text">🔥 {user?.currentStreak || 0} Day Streak</p>
+                <p className="text-xs text-muted-foreground terminal-text">You're on fire! 🚀</p>
               </div>
-              <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center">
-                <UserIcon className="w-5 h-5 text-muted-foreground" />
+              <div className="w-12 h-12 bg-gradient-to-br from-secondary to-accent rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+                <UserIcon className="w-6 h-6 text-white" />
               </div>
             </div>
           </div>
@@ -191,44 +192,44 @@ export default function Home() {
       </header>
 
       {/* Main Section Navigation */}
-      <nav className="bg-card border-b border-border relative">
+      <nav className="bg-gradient-to-r from-muted/50 to-muted/30 border-b-4 border-primary/20 relative">
         <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-3 gap-0">
+          <div className="grid grid-cols-3 gap-2 p-2">
             <Button
               variant="ghost"
-              className={`py-3 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
+              className={`py-4 flex flex-col items-center space-y-2 rounded-2xl border-2 transition-all hover:scale-105 ${
                 activeSection === "learning" 
-                  ? "text-primary border-primary bg-primary/10 font-medium cyber-button" 
-                  : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
+                  ? "bg-gradient-to-br from-primary to-secondary text-white border-primary shadow-lg transform scale-105" 
+                  : "text-muted-foreground border-border hover:border-primary/50 hover:bg-primary/10"
               }`}
               onClick={() => setActiveSection("learning")}
             >
-              <GraduationCap className={`w-4 h-4 ${activeSection === "learning" ? "text-primary glow-text" : ""}`} />
-              <span className="text-sm font-medium terminal-text">Learning</span>
+              <GraduationCap className={`w-6 h-6 ${activeSection === "learning" ? "text-white" : ""}`} />
+              <span className="text-sm font-bold">📚 Learning</span>
             </Button>
             <Button
               variant="ghost"
-              className={`py-3 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
+              className={`py-4 flex flex-col items-center space-y-2 rounded-2xl border-2 transition-all hover:scale-105 ${
                 activeSection === "adoption" 
-                  ? "text-primary border-primary bg-primary/10 font-medium cyber-button" 
-                  : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
+                  ? "bg-gradient-to-br from-accent to-success text-white border-accent shadow-lg transform scale-105" 
+                  : "text-muted-foreground border-border hover:border-accent/50 hover:bg-accent/10"
               }`}
               onClick={() => setActiveSection("adoption")}
             >
-              <Globe className={`w-4 h-4 ${activeSection === "adoption" ? "text-primary glow-text" : ""}`} />
-              <span className="text-sm font-medium terminal-text">Adoption</span>
+              <Globe className={`w-6 h-6 ${activeSection === "adoption" ? "text-white" : ""}`} />
+              <span className="text-sm font-bold">🌍 Adoption</span>
             </Button>
             <Button
               variant="ghost"
-              className={`py-3 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
+              className={`py-4 flex flex-col items-center space-y-2 rounded-2xl border-2 transition-all hover:scale-105 ${
                 activeSection === "conviction" 
-                  ? "text-primary border-primary bg-primary/10 font-medium cyber-button" 
-                  : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
+                  ? "bg-gradient-to-br from-secondary to-primary text-white border-secondary shadow-lg transform scale-105" 
+                  : "text-muted-foreground border-border hover:border-secondary/50 hover:bg-secondary/10"
               }`}
               onClick={() => setActiveSection("conviction")}
             >
-              <Heart className={`w-4 h-4 ${activeSection === "conviction" ? "text-primary glow-text" : ""}`} />
-              <span className="text-sm font-medium terminal-text">Conviction</span>
+              <Heart className={`w-6 h-6 ${activeSection === "conviction" ? "text-white" : ""}`} />
+              <span className="text-sm font-bold">💪 Conviction</span>
             </Button>
           </div>
         </div>
@@ -325,56 +326,68 @@ export default function Home() {
             {learningSubTab === "facts" && (
               <div className="fade-in">
                 {/* Daily Progress Banner */}
-                <div className="bg-gradient-to-r from-primary to-primary-dark rounded-xl p-6 mt-4 text-primary-foreground border border-primary/20">
+                <div className="bg-gradient-to-br from-primary via-secondary to-accent rounded-3xl p-8 mt-6 text-white border-4 border-white/20 shadow-2xl bounce-in">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 className="text-lg font-medium">Welcome back!</h2>
-                      <p className="text-primary-foreground/80 text-sm">Ready for today's Bitcoin knowledge?</p>
+                      <h2 className="text-2xl font-bold flex items-center gap-2">
+                        👋 Welcome back, Bitcoiner!
+                      </h2>
+                      <p className="text-white/90 text-lg mt-2">Ready to level up your Bitcoin knowledge? 🚀</p>
                     </div>
-                    <div className="relative w-16 h-16">
-                      <div className="absolute inset-0 rounded-full border-4 border-primary-foreground/20"></div>
-                      <div className="absolute inset-0 rounded-full border-4 border-primary-foreground border-t-transparent animate-spin"></div>
-                      <div className="absolute inset-4 bg-primary-foreground rounded-full flex items-center justify-center">
-                        <span className="text-primary text-sm font-bold">
+                    <div className="relative w-20 h-20">
+                      <div className="absolute inset-0 rounded-full border-4 border-white/30"></div>
+                      <div className="absolute inset-0 rounded-full border-4 border-white border-t-transparent animate-spin"></div>
+                      <div className="absolute inset-4 bg-white rounded-full flex items-center justify-center shadow-lg">
+                        <span className="text-primary text-lg font-bold">
                           {Math.round(((todayProgress?.factsViewed || 0) / Math.max(dailyFacts.length, 1)) * 100)}%
                         </span>
                       </div>
                     </div>
                   </div>
-                  <div className="mt-4">
+                  <div className="mt-6">
                     <Progress 
                       value={((todayProgress?.factsViewed || 0) / Math.max(dailyFacts.length, 1)) * 100} 
-                      className="h-2 bg-primary-foreground/20" 
+                      className="h-4 bg-white/20 rounded-full overflow-hidden" 
                     />
+                    <p className="text-white/80 text-sm mt-2 font-medium">
+                      🎯 {todayProgress?.factsViewed || 0} of {dailyFacts.length} facts learned today!
+                    </p>
                   </div>
                 </div>
 
                 {/* Facts Grid */}
-                <div className="mt-6 space-y-4">
-                  <h3 className="text-lg font-medium text-foreground glow-text">Today's Bitcoin Facts</h3>
+                <div className="mt-8 space-y-6">
+                  <h3 className="text-2xl font-bold text-foreground glow-text text-center">🧠 Today's Bitcoin Facts</h3>
                   {dailyFacts.map((fact, index) => {
                     const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Coins;
+                    const gradients = [
+                      'from-primary to-secondary',
+                      'from-accent to-success',
+                      'from-secondary to-primary',
+                      'from-success to-accent'
+                    ];
+                    const gradient = gradients[index % gradients.length];
+                    
                     return (
-                      <Card key={fact.id} className="cyber-card">
-                        <CardContent className="p-6">
-                          <div className="flex items-start space-x-4">
-                            <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 bitcoin-glow">
-                              <IconComponent className="w-6 h-6 text-primary" />
+                      <Card key={fact.id} className="cyber-card hover-lift">
+                        <CardContent className="p-8">
+                          <div className="flex items-start space-x-6">
+                            <div className={`w-16 h-16 bg-gradient-to-br ${gradient} rounded-2xl flex items-center justify-center flex-shrink-0 bitcoin-glow shadow-lg`}>
+                              <IconComponent className="w-8 h-8 text-white" />
                             </div>
                             <div className="flex-1">
-                              <h4 className="font-medium text-foreground mb-2 glow-text terminal-text">{fact.title}</h4>
-                              <p className="text-sm text-muted-foreground leading-relaxed terminal-text">{fact.content}</p>
-                              <div className="flex items-center justify-between mt-4">
-                                <Badge variant="outline" className="text-xs bg-primary/10 text-primary border-primary/20">
-                                  {fact.category}
+                              <h4 className="text-xl font-bold text-foreground mb-3 glow-text">{fact.title}</h4>
+                              <p className="text-base text-muted-foreground leading-relaxed">{fact.content}</p>
+                              <div className="flex items-center justify-between mt-6">
+                                <Badge className={`badge-soft text-sm font-semibold px-4 py-2`}>
+                                  ✨ {fact.category}
                                 </Badge>
                                 <Button 
-                                  variant="outline" 
-                                  size="sm" 
-                                  className="cyber-button border-border hover:bg-primary/10 hover:border-primary/30"
+                                  size="lg" 
+                                  className={`bg-gradient-to-r ${gradient} text-white border-none hover:scale-105 transition-transform rounded-xl font-bold shadow-lg`}
                                 >
-                                  <ArrowRight className="mr-1 w-3 h-3" />
-                                  Learn More
+                                  🚀 Explore More
+                                  <ArrowRight className="ml-2 w-4 h-4" />
                                 </Button>
                               </div>
                             </div>
@@ -385,16 +398,16 @@ export default function Home() {
                   })}
 
                   {/* Action Buttons */}
-                  <div className="flex space-x-3 mt-6">
+                  <div className="flex space-x-4 mt-8">
                     <Button 
-                      className="flex-1 bg-primary hover:bg-primary-dark text-primary-foreground"
+                      className="flex-1 bg-gradient-to-r from-primary to-secondary text-white text-lg font-bold py-4 px-8 rounded-2xl hover:scale-105 transition-transform shadow-lg"
                       onClick={() => setLearningSubTab("lesson")}
                     >
-                      <ArrowRight className="mr-2 w-4 h-4" />
-                      Continue to Lesson
+                      <ArrowRight className="mr-3 w-5 h-5" />
+                      🎓 Continue to Lesson
                     </Button>
-                    <Button variant="outline" size="icon" className="border-border hover:bg-primary/10 hover:border-primary/30">
-                      <Share className="w-4 h-4" />
+                    <Button className="bg-gradient-to-r from-accent to-success text-white p-4 rounded-2xl hover:scale-105 transition-transform shadow-lg">
+                      <Share className="w-5 h-5" />
                     </Button>
                   </div>
                 </div>
