@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { 
   Bitcoin, 
   Lightbulb, 
@@ -62,13 +63,13 @@ const iconMap = {
 };
 
 type MainSection = "learning" | "adoption" | "conviction";
-type LearningSubTab = "facts" | "lesson" | "progress";
-type AdoptionSubTab = "treasury" | "sovereign" | "network";
+type LearningSubTab = "basics" | "lesson" | "progress";
+type AdoptionSubTab = "companies" | "countries" | "network";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<MainSection>("learning");
-  const [learningSubTab, setLearningSubTab] = useState<LearningSubTab>("facts");
-  const [adoptionSubTab, setAdoptionSubTab] = useState<AdoptionSubTab>("treasury");
+  const [learningSubTab, setLearningSubTab] = useState<LearningSubTab>("basics");
+  const [adoptionSubTab, setAdoptionSubTab] = useState<AdoptionSubTab>("companies");
   const [currentLessonPage, setCurrentLessonPage] = useState(0);
   const [showPriceChart, setShowPriceChart] = useState(false);
 
@@ -253,14 +254,14 @@ export default function Home() {
                     variant="ghost"
                     size="sm"
                     className={`px-4 py-2 text-xs rounded-none border-b-2 transition-all ${
-                      learningSubTab === "facts" 
+                      learningSubTab === "basics" 
                         ? "text-primary border-primary bg-primary/5 font-medium" 
                         : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5"
                     }`}
-                    onClick={() => setLearningSubTab("facts")}
+                    onClick={() => setLearningSubTab("basics")}
                   >
                     <Lightbulb className="w-3 h-3 mr-1" />
-                    Facts
+                    Basics
                   </Button>
                   <Button
                     variant="ghost"
@@ -273,7 +274,7 @@ export default function Home() {
                     onClick={() => setLearningSubTab("lesson")}
                   >
                     <BookOpen className="w-3 h-3 mr-1" />
-                    Lessons
+                    Learn More
                   </Button>
                   <Button
                     variant="ghost"
@@ -296,27 +297,27 @@ export default function Home() {
                     variant="ghost"
                     size="sm"
                     className={`px-4 py-2 text-xs rounded-none border-b-2 transition-all ${
-                      adoptionSubTab === "treasury" 
+                      adoptionSubTab === "companies" 
                         ? "text-primary border-primary bg-primary/5 font-medium" 
                         : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5"
                     }`}
-                    onClick={() => setAdoptionSubTab("treasury")}
+                    onClick={() => setAdoptionSubTab("companies")}
                   >
                     <Building2 className="w-3 h-3 mr-1" />
-                    Treasury Companies
+                    Companies
                   </Button>
                   <Button
                     variant="ghost"
                     size="sm"
                     className={`px-4 py-2 text-xs rounded-none border-b-2 transition-all ${
-                      adoptionSubTab === "sovereign" 
+                      adoptionSubTab === "countries" 
                         ? "text-primary border-primary bg-primary/5 font-medium" 
                         : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5"
                     }`}
-                    onClick={() => setAdoptionSubTab("sovereign")}
+                    onClick={() => setAdoptionSubTab("countries")}
                   >
                     <Star className="w-3 h-3 mr-1" />
-                    Nations
+                    Countries
                   </Button>
                   <Button
                     variant="ghost"
@@ -342,15 +343,15 @@ export default function Home() {
         {/* Learning Section */}
         {activeSection === "learning" && (
           <>
-            {/* Daily Facts */}
-            {learningSubTab === "facts" && (
+            {/* Bitcoin Basics */}
+            {learningSubTab === "basics" && (
               <div className="fade-in">
                 {/* Daily Progress Banner */}
                 <div className="bg-primary rounded-lg p-4 mt-4 text-primary-foreground">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 className="text-lg font-semibold">Welcome back!</h2>
-                      <p className="text-primary-foreground/80 text-sm">Ready for today's Bitcoin knowledge?</p>
+                      <h2 className="text-lg font-semibold">New to Bitcoin?</h2>
+                      <p className="text-primary-foreground/80 text-sm">Start with these simple concepts to understand digital money</p>
                     </div>
                     <div className="relative w-12 h-12">
                       <div className="absolute inset-0 rounded-full border-2 border-primary-foreground/20"></div>
@@ -375,7 +376,12 @@ export default function Home() {
 
                 {/* Facts Grid */}
                 <div className="mt-4 space-y-3">
-                  <h3 className="text-lg font-semibold text-foreground">Today's Bitcoin Facts</h3>
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold text-foreground mb-2">Bitcoin Basics - Start Here</h3>
+                    <p className="text-sm text-muted-foreground">
+                      These simple explanations help you understand how Bitcoin works. Don't worry about memorizing everything - just get familiar with the concepts.
+                    </p>
+                  </div>
                   {dailyFacts.map((fact, index) => {
                     const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Coins;
                     
@@ -588,18 +594,18 @@ export default function Home() {
         {/* Adoption Section */}
         {activeSection === "adoption" && (
           <>
-            {/* Treasury Companies */}
-            {adoptionSubTab === "treasury" && (
+            {/* Companies Using Bitcoin */}
+            {adoptionSubTab === "companies" && (
               <div className="fade-in">
                 {/* Header */}
                 <div className="mt-6 mb-6">
                   <div className="text-center">
                     <h3 className="text-lg font-medium text-foreground flex items-center justify-center gap-2 glow-text">
                       <Building2 className="w-5 h-5 text-primary" />
-                      Bitcoin Treasury Companies
+                      Companies Using Bitcoin
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1 terminal-text">
-                      Corporate Bitcoin holdings and adoption tracker
+                      See which major companies have bought Bitcoin as an investment
                     </p>
                   </div>
                 </div>
@@ -704,8 +710,8 @@ export default function Home() {
               </div>
             )}
 
-            {/* Sovereign Adoption */}
-            {adoptionSubTab === "sovereign" && (
+            {/* Countries Using Bitcoin */}
+            {adoptionSubTab === "countries" && (
               <div className="fade-in">
                 {/* Header */}
                 <div className="mt-6 mb-6">
@@ -845,10 +851,10 @@ export default function Home() {
                   <div className="text-center">
                     <h3 className="text-lg font-medium text-foreground flex items-center justify-center gap-2 glow-text">
                       <LineChart className="w-5 h-5 text-primary" />
-                      Bitcoin Network Adoption
+                      How Popular is Bitcoin?
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1 terminal-text">
-                      On-chain metrics showing real Bitcoin network growth and usage
+                      Real numbers showing how many people are using Bitcoin around the world
                     </p>
                   </div>
                 </div>
@@ -1019,7 +1025,26 @@ function NetworkMetricsDisplay() {
                     {metric.icon === 'shield' && <Shield className="w-4 h-4 text-primary" />}
                     {metric.icon === 'globe' && <Globe className="w-4 h-4 text-primary" />}
                   </div>
-                  <h4 className="font-medium text-foreground terminal-text">{metric.metric}</h4>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <h4 className="font-medium text-foreground terminal-text cursor-help flex items-center gap-1">
+                          {metric.metric}
+                          <HelpCircle className="w-3 h-3 text-muted-foreground" />
+                        </h4>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs text-sm">
+                          {metric.metric === "Active Addresses" && "Number of unique Bitcoin wallets that sent or received Bitcoin today"}
+                          {metric.metric === "Hash Rate" && "Computing power protecting the Bitcoin network - higher means more secure"}
+                          {metric.metric === "Daily Transactions" && "Number of Bitcoin payments processed in the last 24 hours"}
+                          {metric.metric === "Network Nodes" && "Computers around the world that keep copies of all Bitcoin transactions"}
+                          {metric.metric === "Lightning Capacity" && "Bitcoin locked in the Lightning Network for faster, cheaper payments"}
+                          {metric.metric === "Circulating Supply" && "Total amount of Bitcoin that has been created and is available"}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
                 <Badge 
                   variant={metric.change24h.startsWith('+') ? 'default' : 'secondary'}
