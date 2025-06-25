@@ -236,6 +236,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Bitcoin price routes
+  app.get('/api/bitcoin-price', async (req, res) => {
+    try {
+      // Mock Bitcoin price data for demonstration
+      const mockPrice = {
+        id: 1,
+        timestamp: new Date(),
+        priceUsd: "67350.42",
+        marketCap: "1330000000000",
+        volume24h: "28500000000",
+        change24h: "2.45",
+        change7d: "-1.23",
+        dominance: "54.2",
+      };
+      res.json(mockPrice);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch Bitcoin price' });
+    }
+  });
+
+  app.get('/api/bitcoin-price/history', async (req, res) => {
+    try {
+      const hours = parseInt(req.query.hours as string) || 24;
+      // Generate mock historical data for chart
+      const basePrice = 67350;
+      const mockHistory = [];
+      
+      for (let i = hours; i >= 0; i--) {
+        const timestamp = new Date(Date.now() - i * 60 * 60 * 1000);
+        const variation = (Math.random() - 0.5) * 0.05; // ±2.5% variation
+        const price = basePrice * (1 + variation);
+        
+        mockHistory.push({
+          timestamp,
+          priceUsd: price.toFixed(2),
+          change24h: ((Math.random() - 0.5) * 10).toFixed(2),
+        });
+      }
+      
+      res.json(mockHistory);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch Bitcoin price history' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

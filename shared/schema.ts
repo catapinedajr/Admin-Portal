@@ -96,6 +96,17 @@ export const sovereignAdoption = pgTable("sovereign_adoption", {
   lastUpdated: timestamp("last_updated").defaultNow(),
 });
 
+export const bitcoinPrice = pgTable("bitcoin_price", {
+  id: serial("id").primaryKey(),
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+  priceUsd: decimal("price_usd", { precision: 12, scale: 2 }).notNull(),
+  marketCap: decimal("market_cap", { precision: 20, scale: 2 }),
+  volume24h: decimal("volume_24h", { precision: 20, scale: 2 }),
+  change24h: decimal("change_24h", { precision: 5, scale: 2 }),
+  change7d: decimal("change_7d", { precision: 5, scale: 2 }),
+  dominance: decimal("dominance", { precision: 5, scale: 2 }),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -131,6 +142,11 @@ export const insertSovereignAdoptionSchema = createInsertSchema(sovereignAdoptio
   lastUpdated: true,
 });
 
+export const insertBitcoinPriceSchema = createInsertSchema(bitcoinPrice).omit({
+  id: true,
+  timestamp: true,
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type DailyFact = typeof dailyFacts.$inferSelect;
@@ -147,3 +163,5 @@ export type TreasuryCompany = typeof treasuryCompanies.$inferSelect;
 export type InsertTreasuryCompany = z.infer<typeof insertTreasuryCompanySchema>;
 export type SovereignAdoption = typeof sovereignAdoption.$inferSelect;
 export type InsertSovereignAdoption = z.infer<typeof insertSovereignAdoptionSchema>;
+export type BitcoinPrice = typeof bitcoinPrice.$inferSelect;
+export type InsertBitcoinPrice = z.infer<typeof insertBitcoinPriceSchema>;

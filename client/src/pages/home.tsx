@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { 
   Bitcoin, 
   Lightbulb, 
@@ -32,7 +33,9 @@ import {
   Play,
   Quote,
   ExternalLink,
-  Globe
+  Globe,
+  LineChart,
+  X
 } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { formatDate, getDayOfWeek, getWeekDates } from "@/lib/utils";
@@ -59,6 +62,7 @@ export default function Home() {
   const [learningSubTab, setLearningSubTab] = useState<LearningSubTab>("facts");
   const [adoptionSubTab, setAdoptionSubTab] = useState<AdoptionSubTab>("treasury");
   const [currentLessonPage, setCurrentLessonPage] = useState(0);
+  const [showPriceChart, setShowPriceChart] = useState(false);
 
   const { data: user } = useQuery<User>({
     queryKey: ["/api/user"],
@@ -96,6 +100,29 @@ export default function Home() {
     queryKey: ["/api/sovereign-adoption"],
   });
 
+  const { data: bitcoinPrice } = useQuery<{
+    id: number;
+    timestamp: Date;
+    priceUsd: string;
+    marketCap: string;
+    volume24h: string;
+    change24h: string;
+    change7d: string;
+    dominance: string;
+  }>({
+    queryKey: ["/api/bitcoin-price"],
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
+
+  const { data: priceHistory = [] } = useQuery<Array<{
+    timestamp: Date;
+    priceUsd: string;
+    change24h: string;
+  }>>({
+    queryKey: ["/api/bitcoin-price/history"],
+    refetchInterval: 300000, // Refetch every 5 minutes
+  });
+
   const completeLessonMutation = useMutation({
     mutationFn: () => apiRequest("/api/progress/complete-lesson", "POST"),
     onSuccess: () => {
@@ -126,7 +153,31 @@ export default function Home() {
                 <p className="text-sm text-muted-foreground terminal-text">Daily Bitcoin Education</p>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-4">
+              {/* Bitcoin Price Tracker */}
+              {bitcoinPrice && (
+                <Button
+                  variant="ghost"
+                  className="cyber-button p-3 hover:bg-primary/10"
+                  onClick={() => setShowPriceChart(true)}
+                >
+                  <div className="flex items-center space-x-2">
+                    <Bitcoin className="w-4 h-4 text-primary" />
+                    <div className="text-right">
+                      <p className="text-sm font-medium text-foreground terminal-text">
+                        ${parseFloat(bitcoinPrice.priceUsd).toLocaleString()}
+                      </p>
+                      <p className={`text-xs terminal-text ${
+                        parseFloat(bitcoinPrice.change24h) >= 0 ? 'text-green-400' : 'text-red-400'
+                      }`}>
+                        {parseFloat(bitcoinPrice.change24h) >= 0 ? '+' : ''}{bitcoinPrice.change24h}%
+                      </p>
+                    </div>
+                    <LineChart className="w-3 h-3 text-muted-foreground" />
+                  </div>
+                </Button>
+              )}
+              
               <div className="text-right">
                 <p className="text-sm font-medium text-foreground terminal-text">{user?.currentStreak || 0} Day Streak</p>
                 <p className="text-xs text-muted-foreground terminal-text">Keep learning!</p>
@@ -763,6 +814,109 @@ export default function Home() {
           </>
         )}
       </main>
+
+      {/* Bitcoin Price Chart Modal */}
+      <Dialog open={showPriceChart} onOpenChange={setShowPriceChart}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center space-x-2">
+              <Bitcoin className="w-5 h-5 text-primary" />
+              <span>Bitcoin Price Chart</span>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="ml-auto"
+                onClick={() => setShowPriceChart(false)}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </DialogTitle>
+          </DialogHeader>
+          
+          {bitcoinPrice && (
+            <div className="space-y-6">
+              {/* Price Stats */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="cyber-card p-4">
+                  <p className="text-sm text-muted-foreground">Current Price</p>
+                  <p className="text-2xl font-bold text-primary">
+                    ${parseFloat(bitcoinPrice.priceUsd).toLocaleString()}
+                  </p>
+                </div>
+                <div className="cyber-card p-4">
+                  <p className="text-sm text-muted-foreground">24h Change</p>
+                  <p className={`text-xl font-semibold ${
+                    parseFloat(bitcoinPrice.change24h) >= 0 ? 'text-green-400' : 'text-red-400'
+                  }`}>
+                    {parseFloat(bitcoinPrice.change24h) >= 0 ? '+' : ''}{bitcoinPrice.change24h}%
+                  </p>
+                </div>
+                <div className="cyber-card p-4">
+                  <p className="text-sm text-muted-foreground">Market Cap</p>
+                  <p className="text-xl font-semibold text-foreground">
+                    ${(parseFloat(bitcoinPrice.marketCap) / 1000000000).toFixed(1)}B
+                  </p>
+                </div>
+                <div className="cyber-card p-4">
+                  <p className="text-sm text-muted-foreground">24h Volume</p>
+                  <p className="text-xl font-semibold text-foreground">
+                    ${(parseFloat(bitcoinPrice.volume24h) / 1000000000).toFixed(1)}B
+                  </p>
+                </div>
+              </div>
+
+              {/* Simple Price Chart */}
+              <div className="cyber-card p-6">
+                <h3 className="text-lg font-semibold mb-4">24 Hour Price Trend</h3>
+                <div className="h-64 flex items-end space-x-1">
+                  {priceHistory.slice(-24).map((point, index) => {
+                    const height = ((parseFloat(point.priceUsd) - 65000) / 5000) * 100;
+                    const isPositive = parseFloat(point.change24h) >= 0;
+                    return (
+                      <div
+                        key={index}
+                        className={`flex-1 rounded-t transition-all hover:opacity-80 ${
+                          isPositive ? 'bg-green-400' : 'bg-red-400'
+                        }`}
+                        style={{ height: `${Math.max(10, Math.min(100, height))}%` }}
+                        title={`$${parseFloat(point.priceUsd).toLocaleString()}`}
+                      />
+                    );
+                  })}
+                </div>
+                <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                  <span>24h ago</span>
+                  <span>Now</span>
+                </div>
+              </div>
+
+              {/* Market Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="cyber-card p-4">
+                  <h4 className="font-semibold mb-2">Market Dominance</h4>
+                  <div className="flex items-center space-x-2">
+                    <div className="flex-1 bg-muted rounded-full h-2">
+                      <div 
+                        className="bg-primary h-2 rounded-full"
+                        style={{ width: `${bitcoinPrice.dominance}%` }}
+                      />
+                    </div>
+                    <span className="text-sm font-medium">{bitcoinPrice.dominance}%</span>
+                  </div>
+                </div>
+                <div className="cyber-card p-4">
+                  <h4 className="font-semibold mb-2">7 Day Change</h4>
+                  <p className={`text-lg font-semibold ${
+                    parseFloat(bitcoinPrice.change7d) >= 0 ? 'text-green-400' : 'text-red-400'
+                  }`}>
+                    {parseFloat(bitcoinPrice.change7d) >= 0 ? '+' : ''}{bitcoinPrice.change7d}%
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Floating Action Button */}
       <Button 

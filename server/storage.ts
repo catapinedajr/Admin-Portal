@@ -22,7 +22,9 @@ import {
   type TreasuryCompany,
   type InsertTreasuryCompany,
   type SovereignAdoption,
-  type InsertSovereignAdoption
+  type InsertSovereignAdoption,
+  type BitcoinPrice,
+  type InsertBitcoinPrice
 } from "@shared/schema";
 
 export interface IStorage {
@@ -69,6 +71,11 @@ export interface IStorage {
   getSovereignAdoptionsByType(adoptionType: string): Promise<SovereignAdoption[]>;
   createSovereignAdoption(adoption: InsertSovereignAdoption): Promise<SovereignAdoption>;
   updateSovereignAdoption(id: number, updates: Partial<InsertSovereignAdoption>): Promise<SovereignAdoption | undefined>;
+
+  // Bitcoin price methods
+  getCurrentBitcoinPrice(): Promise<BitcoinPrice | undefined>;
+  getBitcoinPriceHistory(hours: number): Promise<BitcoinPrice[]>;
+  createBitcoinPrice(price: InsertBitcoinPrice): Promise<BitcoinPrice>;
 }
 
 export class MemStorage implements IStorage {
@@ -80,6 +87,7 @@ export class MemStorage implements IStorage {
   private convictionContent: Map<number, ConvictionContent>;
   private treasuryCompanies: Map<number, TreasuryCompany>;
   private sovereignAdoptions: Map<number, SovereignAdoption>;
+  private bitcoinPrices: Map<number, BitcoinPrice>;
   private currentUserId: number;
   private currentFactId: number;
   private currentLessonId: number;
@@ -88,6 +96,7 @@ export class MemStorage implements IStorage {
   private currentConvictionContentId: number;
   private currentTreasuryCompanyId: number;
   private currentSovereignAdoptionId: number;
+  private currentBitcoinPriceId: number;
 
   constructor() {
     this.users = new Map();
@@ -106,6 +115,8 @@ export class MemStorage implements IStorage {
     this.currentConvictionContentId = 1;
     this.currentTreasuryCompanyId = 1;
     this.currentSovereignAdoptionId = 1;
+    this.bitcoinPrices = new Map();
+    this.currentBitcoinPriceId = 1;
 
     this.seedData();
   }
