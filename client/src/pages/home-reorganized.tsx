@@ -510,7 +510,7 @@ export default function Home() {
               className={`${activeSection === "foundation" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} px-6 py-3`}
             >
               <GraduationCap className="w-5 h-5 mr-2" />
-              Foundation
+              Learn
             </Button>
             <Button
               variant={activeSection === "practice" ? "default" : "ghost"}
@@ -528,7 +528,7 @@ export default function Home() {
               className={`${activeSection === "inspiration" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} px-6 py-3`}
             >
               <Heart className="w-5 h-5 mr-2" />
-              Inspiration
+              Inspo
             </Button>
           </div>
         </div>
@@ -538,7 +538,7 @@ export default function Home() {
       {activeSection === "foundation" && (
         <div className="bg-zinc-800/30 border-b border-zinc-800">
           <div className="max-w-6xl mx-auto px-4">
-            <div className="flex items-center gap-1 py-2 flex-wrap">
+            <div className="flex items-center justify-center gap-1 py-2 flex-wrap">
               <Button
                 variant={foundationSubTab === "basics" ? "secondary" : "ghost"}
                 size="sm"
@@ -601,7 +601,7 @@ export default function Home() {
       {activeSection === "practice" && (
         <div className="bg-zinc-800/30 border-b border-zinc-800">
           <div className="max-w-6xl mx-auto px-4">
-            <div className="flex items-center gap-1 py-2 flex-wrap">
+            <div className="flex items-center justify-center gap-1 py-2 flex-wrap">
               <Button
                 variant={practiceSubTab === "mining" ? "secondary" : "ghost"}
                 size="sm"
@@ -655,7 +655,7 @@ export default function Home() {
       {activeSection === "inspiration" && (
         <div className="bg-zinc-800/30 border-b border-zinc-800">
           <div className="max-w-6xl mx-auto px-4">
-            <div className="flex items-center gap-1 py-2 flex-wrap">
+            <div className="flex items-center justify-center gap-1 py-2 flex-wrap">
               <Button
                 variant={inspirationSubTab === "stories" ? "secondary" : "ghost"}
                 size="sm"
