@@ -213,6 +213,55 @@ export default function Home() {
                     <GraduationCap className="w-4 h-4 mr-3" />
                     Learning
                   </Button>
+                  
+                  {/* Learning Sub-menu */}
+                  {activeSection === "learning" && (
+                    <div className="ml-6 space-y-1 border-l border-border pl-3">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className={`w-full justify-start text-xs ${
+                          learningSubTab === "basics" ? "bg-primary/10 text-primary" : "text-muted-foreground"
+                        }`}
+                        onClick={() => {
+                          setLearningSubTab("basics");
+                          setMenuOpen(false);
+                        }}
+                      >
+                        <Lightbulb className="w-3 h-3 mr-2" />
+                        Basics
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className={`w-full justify-start text-xs ${
+                          learningSubTab === "lesson" ? "bg-primary/10 text-primary" : "text-muted-foreground"
+                        }`}
+                        onClick={() => {
+                          setLearningSubTab("lesson");
+                          setMenuOpen(false);
+                        }}
+                      >
+                        <BookOpen className="w-3 h-3 mr-2" />
+                        Learn More
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className={`w-full justify-start text-xs ${
+                          learningSubTab === "progress" ? "bg-primary/10 text-primary" : "text-muted-foreground"
+                        }`}
+                        onClick={() => {
+                          setLearningSubTab("progress");
+                          setMenuOpen(false);
+                        }}
+                      >
+                        <TrendingUp className="w-3 h-3 mr-2" />
+                        Progress
+                      </Button>
+                    </div>
+                  )}
+                  
                   <Button
                     variant="ghost"
                     className={`w-full justify-start ${
@@ -226,6 +275,55 @@ export default function Home() {
                     <Globe className="w-4 h-4 mr-3" />
                     Adoption
                   </Button>
+                  
+                  {/* Adoption Sub-menu */}
+                  {activeSection === "adoption" && (
+                    <div className="ml-6 space-y-1 border-l border-border pl-3">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className={`w-full justify-start text-xs ${
+                          adoptionSubTab === "companies" ? "bg-primary/10 text-primary" : "text-muted-foreground"
+                        }`}
+                        onClick={() => {
+                          setAdoptionSubTab("companies");
+                          setMenuOpen(false);
+                        }}
+                      >
+                        <Building2 className="w-3 h-3 mr-2" />
+                        Companies
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className={`w-full justify-start text-xs ${
+                          adoptionSubTab === "countries" ? "bg-primary/10 text-primary" : "text-muted-foreground"
+                        }`}
+                        onClick={() => {
+                          setAdoptionSubTab("countries");
+                          setMenuOpen(false);
+                        }}
+                      >
+                        <Star className="w-3 h-3 mr-2" />
+                        Countries
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className={`w-full justify-start text-xs ${
+                          adoptionSubTab === "network" ? "bg-primary/10 text-primary" : "text-muted-foreground"
+                        }`}
+                        onClick={() => {
+                          setAdoptionSubTab("network");
+                          setMenuOpen(false);
+                        }}
+                      >
+                        <LineChart className="w-3 h-3 mr-2" />
+                        Network
+                      </Button>
+                    </div>
+                  )}
+                  
                   <Button
                     variant="ghost"
                     className={`w-full justify-start ${
@@ -277,7 +375,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="px-4 py-4 pb-20">
+      <main className="px-4 py-4">
         {/* Learning Section */}
         {activeSection === "learning" && (
           <>
@@ -911,19 +1009,17 @@ export default function Home() {
       </Dialog>
 
       {/* Financial Disclaimer */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border p-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-start space-x-3">
-            <AlertTriangle className="w-4 h-4 text-warning mt-0.5 flex-shrink-0" />
-            <div>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                <strong>Important:</strong> This app is for educational and entertainment purposes only. 
-                The information provided is not financial advice and should not be used as the basis for 
-                investment decisions. Bitcoin and cryptocurrency investments carry significant risk. 
-                Please consult with a qualified financial advisor before making any investment decisions. 
-                Past performance does not guarantee future results.
-              </p>
-            </div>
+      <div className="mt-8 bg-muted/30 border border-border rounded-lg p-4 mx-4">
+        <div className="flex items-start space-x-3">
+          <AlertTriangle className="w-4 h-4 text-warning mt-0.5 flex-shrink-0" />
+          <div>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              <strong>Important:</strong> This app is for educational and entertainment purposes only. 
+              The information provided is not financial advice and should not be used as the basis for 
+              investment decisions. Bitcoin and cryptocurrency investments carry significant risk. 
+              Please consult with a qualified financial advisor before making any investment decisions. 
+              Past performance does not guarantee future results.
+            </p>
           </div>
         </div>
       </div>
