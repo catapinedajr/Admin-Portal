@@ -27,11 +27,15 @@ import {
   ArrowRight,
   DollarSign,
   Building2,
-  AlertTriangle
+  AlertTriangle,
+  Heart,
+  Play,
+  Quote,
+  ExternalLink
 } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { formatDate, getDayOfWeek, getWeekDates } from "@/lib/utils";
-import type { User, DailyFact, Lesson, UserProgress, KnowledgeArea } from "@shared/schema";
+import type { User, DailyFact, Lesson, UserProgress, KnowledgeArea, ConvictionContent } from "@shared/schema";
 
 const iconMap = {
   coins: Coins,
@@ -45,7 +49,7 @@ const iconMap = {
   "alert-triangle": AlertTriangle,
 };
 
-type TabType = "facts" | "lesson" | "progress";
+type TabType = "facts" | "lesson" | "progress" | "conviction";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<TabType>("facts");
@@ -74,6 +78,10 @@ export default function Home() {
 
   const { data: knowledgeAreas = [] } = useQuery<KnowledgeArea[]>({
     queryKey: ["/api/knowledge-areas"],
+  });
+
+  const { data: convictionContent = [] } = useQuery<ConvictionContent[]>({
+    queryKey: ["/api/conviction-content"],
   });
 
   // Mutations
@@ -154,39 +162,51 @@ export default function Home() {
           <div className="flex">
             <Button
               variant="ghost"
-              className={`flex-1 py-4 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
+              className={`flex-1 py-3 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
                 activeTab === "facts" 
                   ? "text-primary border-primary bg-primary/10 font-medium" 
                   : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
               }`}
               onClick={() => setActiveTab("facts")}
             >
-              <Lightbulb className={`w-5 h-5 ${activeTab === "facts" ? "text-primary" : ""}`} />
-              <span className="text-sm font-medium">Today's Facts</span>
+              <Lightbulb className={`w-4 h-4 ${activeTab === "facts" ? "text-primary" : ""}`} />
+              <span className="text-xs font-medium">Facts</span>
             </Button>
             <Button
               variant="ghost"
-              className={`flex-1 py-4 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
+              className={`flex-1 py-3 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
                 activeTab === "lesson" 
                   ? "text-primary border-primary bg-primary/10 font-medium" 
                   : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
               }`}
               onClick={() => setActiveTab("lesson")}
             >
-              <BookOpen className={`w-5 h-5 ${activeTab === "lesson" ? "text-primary" : ""}`} />
-              <span className="text-sm font-medium">Daily Lesson</span>
+              <BookOpen className={`w-4 h-4 ${activeTab === "lesson" ? "text-primary" : ""}`} />
+              <span className="text-xs font-medium">Lesson</span>
             </Button>
             <Button
               variant="ghost"
-              className={`flex-1 py-4 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
+              className={`flex-1 py-3 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
+                activeTab === "conviction" 
+                  ? "text-primary border-primary bg-primary/10 font-medium" 
+                  : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
+              }`}
+              onClick={() => setActiveTab("conviction")}
+            >
+              <Heart className={`w-4 h-4 ${activeTab === "conviction" ? "text-primary" : ""}`} />
+              <span className="text-xs font-medium">Conviction</span>
+            </Button>
+            <Button
+              variant="ghost"
+              className={`flex-1 py-3 flex flex-col items-center space-y-1 rounded-none border-b-3 transition-all ${
                 activeTab === "progress" 
                   ? "text-primary border-primary bg-primary/10 font-medium" 
                   : "text-muted-foreground border-transparent hover:text-foreground hover:bg-primary/5 hover:border-primary/30"
               }`}
               onClick={() => setActiveTab("progress")}
             >
-              <TrendingUp className={`w-5 h-5 ${activeTab === "progress" ? "text-primary" : ""}`} />
-              <span className="text-sm font-medium">Progress</span>
+              <TrendingUp className={`w-4 h-4 ${activeTab === "progress" ? "text-primary" : ""}`} />
+              <span className="text-xs font-medium">Progress</span>
             </Button>
           </div>
         </div>
@@ -375,6 +395,155 @@ export default function Home() {
               <Check className="mr-2 w-4 h-4" />
               {todayProgress?.lessonCompleted ? "Lesson Completed" : "Mark as Complete"}
             </Button>
+          </div>
+        )}
+
+        {/* Conviction Center Tab */}
+        {activeTab === "conviction" && (
+          <div className="fade-in">
+            {/* Header */}
+            <div className="mt-6 mb-6">
+              <div className="text-center">
+                <h3 className="text-lg font-medium text-foreground flex items-center justify-center gap-2">
+                  <Heart className="w-5 h-5 text-primary" />
+                  Conviction Center
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Daily inspiration to strengthen your Bitcoin conviction
+                </p>
+              </div>
+            </div>
+
+            {/* Quotes Section */}
+            <div className="mb-6">
+              <h4 className="text-md font-medium text-foreground mb-4 flex items-center gap-2">
+                <Quote className="w-4 h-4 text-primary" />
+                Today's Wisdom
+              </h4>
+              
+              {convictionContent
+                .filter(content => content.type === "quote")
+                .map((quote) => (
+                  <Card key={quote.id} className={`mb-4 border transition-colors ${
+                    quote.featured 
+                      ? "border-primary/30 bg-primary/5" 
+                      : "border-border bg-card hover:border-primary/20"
+                  }`}>
+                    <CardContent className="p-6">
+                      <div className="flex items-start space-x-4">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                          quote.featured 
+                            ? "bg-primary/20 border border-primary/30" 
+                            : "bg-muted"
+                        }`}>
+                          <Quote className={`w-4 h-4 ${quote.featured ? "text-primary" : "text-muted-foreground"}`} />
+                        </div>
+                        <div className="flex-1">
+                          <blockquote className="text-foreground italic leading-relaxed mb-3 text-base">
+                            "{quote.content}"
+                          </blockquote>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="font-medium text-foreground text-sm">{quote.author}</p>
+                              {quote.source && (
+                                <p className="text-xs text-muted-foreground">{quote.source}</p>
+                              )}
+                            </div>
+                            {quote.featured && (
+                              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+                                Featured
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+            </div>
+
+            {/* Video Section */}
+            {convictionContent
+              .filter(content => content.type === "video")
+              .map((video) => (
+                <div key={video.id} className="mb-6">
+                  <h4 className="text-md font-medium text-foreground mb-4 flex items-center gap-2">
+                    <Play className="w-4 h-4 text-primary" />
+                    Today's Video
+                  </h4>
+                  
+                  <Card className="border border-primary/30 bg-primary/5">
+                    <CardContent className="p-0">
+                      {video.thumbnailUrl && (
+                        <div className="relative">
+                          <img 
+                            src={video.thumbnailUrl} 
+                            alt={video.title}
+                            className="w-full h-48 object-cover rounded-t-lg"
+                          />
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-t-lg">
+                            <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center">
+                              <Play className="w-6 h-6 text-primary-foreground ml-1" />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      
+                      <div className="p-6">
+                        <h5 className="font-medium text-foreground mb-2">{video.title}</h5>
+                        <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
+                          {video.content}
+                        </p>
+                        
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="font-medium text-foreground text-sm">{video.author}</p>
+                            {video.source && (
+                              <p className="text-xs text-muted-foreground">{video.source}</p>
+                            )}
+                          </div>
+                          
+                          {video.videoUrl && (
+                            <Button 
+                              className="bg-primary hover:bg-primary-dark text-primary-foreground"
+                              onClick={() => window.open(video.videoUrl!, '_blank')}
+                            >
+                              <ExternalLink className="mr-2 w-4 h-4" />
+                              Watch Now
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              ))}
+
+            {/* Daily Conviction Builder */}
+            <Card className="border border-border bg-card">
+              <CardContent className="p-6 text-center">
+                <div className="mb-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Heart className="w-6 h-6 text-primary" />
+                  </div>
+                  <h4 className="font-medium text-foreground">Building Conviction Daily</h4>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Knowledge and conviction grow stronger with each passing day. Stay the course.
+                  </p>
+                </div>
+                
+                <div className="flex justify-center space-x-3">
+                  <Button variant="outline" size="sm" className="border-border hover:bg-primary/10 hover:border-primary/30">
+                    <Share className="mr-2 w-4 h-4" />
+                    Share Quote
+                  </Button>
+                  <Button variant="outline" size="sm" className="border-border hover:bg-primary/10 hover:border-primary/30">
+                    <Star className="mr-2 w-4 h-4" />
+                    Save Favorite
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         )}
 

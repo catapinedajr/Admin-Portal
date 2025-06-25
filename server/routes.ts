@@ -126,6 +126,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get conviction content for today
+  app.get("/api/conviction-content", async (req, res) => {
+    try {
+      const today = new Date();
+      const dayIndex = Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 2; // Cycle through 2 days of content
+      const content = await storage.getConvictionContent(dayIndex);
+      res.json(content);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get conviction content" });
+    }
+  });
+
   // Mark lesson as complete
   app.post("/api/lesson/complete", async (req, res) => {
     try {

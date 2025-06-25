@@ -4,6 +4,7 @@ import {
   lessons, 
   userProgress, 
   knowledgeAreas,
+  convictionContent,
   type User, 
   type InsertUser, 
   type DailyFact, 
@@ -13,7 +14,9 @@ import {
   type UserProgress,
   type InsertUserProgress,
   type KnowledgeArea,
-  type InsertKnowledgeArea
+  type InsertKnowledgeArea,
+  type ConvictionContent,
+  type InsertConvictionContent
 } from "@shared/schema";
 
 export interface IStorage {
@@ -42,6 +45,11 @@ export interface IStorage {
   // Knowledge areas methods
   getKnowledgeAreas(): Promise<KnowledgeArea[]>;
   updateKnowledgeAreaProgress(areaId: number, completedLessons: number): Promise<void>;
+
+  // Conviction content methods
+  getConvictionContent(dayIndex: number): Promise<ConvictionContent[]>;
+  getAllConvictionContent(): Promise<ConvictionContent[]>;
+  createConvictionContent(content: InsertConvictionContent): Promise<ConvictionContent>;
 }
 
 export class MemStorage implements IStorage {
@@ -50,11 +58,13 @@ export class MemStorage implements IStorage {
   private lessons: Map<number, Lesson>;
   private userProgress: Map<string, UserProgress>; // key: userId-date
   private knowledgeAreas: Map<number, KnowledgeArea>;
+  private convictionContent: Map<number, ConvictionContent>;
   private currentUserId: number;
   private currentFactId: number;
   private currentLessonId: number;
   private currentProgressId: number;
   private currentKnowledgeAreaId: number;
+  private currentConvictionContentId: number;
 
   constructor() {
     this.users = new Map();
@@ -62,11 +72,13 @@ export class MemStorage implements IStorage {
     this.lessons = new Map();
     this.userProgress = new Map();
     this.knowledgeAreas = new Map();
+    this.convictionContent = new Map();
     this.currentUserId = 1;
     this.currentFactId = 1;
     this.currentLessonId = 1;
     this.currentProgressId = 1;
     this.currentKnowledgeAreaId = 1;
+    this.currentConvictionContentId = 1;
 
     this.seedData();
   }
@@ -233,6 +245,84 @@ Mining serves two crucial purposes:
       this.knowledgeAreas.set(newArea.id, newArea);
     });
 
+    // Seed conviction content - quotes and videos
+    const convictionData = [
+      // Day 0 - 2 quotes, 1 video
+      {
+        type: "quote",
+        title: "Sound Money Principle",
+        content: "Bitcoin is the first time in human history we have immutable, digital sound money. This is a once-in-a-species event.",
+        author: "Michael Saylor",
+        source: "MicroStrategy CEO",
+        videoUrl: null,
+        thumbnailUrl: null,
+        dayIndex: 0,
+        featured: true
+      },
+      {
+        type: "quote", 
+        title: "Network Effects",
+        content: "Every day Bitcoin doesn't die, it gets a little bit stronger. It's like a honey badger that just keeps going.",
+        author: "Andreas Antonopoulos",
+        source: "Bitcoin Educator",
+        videoUrl: null,
+        thumbnailUrl: null,
+        dayIndex: 0,
+        featured: false
+      },
+      {
+        type: "video",
+        title: "The Bitcoin Standard - Why Bitcoin Matters",
+        content: "Saifedean Ammous explains how Bitcoin's monetary properties make it superior to all forms of money that came before it.",
+        author: "Saifedean Ammous",
+        source: "What Bitcoin Did Podcast",
+        videoUrl: "https://www.youtube.com/watch?v=Zbm772vF-5M",
+        thumbnailUrl: "https://img.youtube.com/vi/Zbm772vF-5M/maxresdefault.jpg",
+        dayIndex: 0,
+        featured: true
+      },
+
+      // Day 1 - 2 quotes, 1 video
+      {
+        type: "quote",
+        title: "Store of Value",
+        content: "Bitcoin is the best store of value ever created by humans. It's better than gold, better than real estate, better than any government bond.",
+        author: "Jack Dorsey",
+        source: "Twitter/Block CEO",
+        videoUrl: null,
+        thumbnailUrl: null,
+        dayIndex: 1,
+        featured: true
+      },
+      {
+        type: "quote",
+        title: "Freedom Money",
+        content: "Bitcoin gives us, for the first time, a way for one Internet user to transfer a unique piece of digital property to another Internet user.",
+        author: "Marc Andreessen",
+        source: "Andreessen Horowitz",
+        videoUrl: null,
+        thumbnailUrl: null,
+        dayIndex: 1,
+        featured: false
+      },
+      {
+        type: "video",
+        title: "Why I'm Bullish on Bitcoin - Michael Saylor",
+        content: "MicroStrategy CEO explains his company's Bitcoin strategy and why he believes it's the ultimate store of value.",
+        author: "Michael Saylor",
+        source: "Lex Fridman Podcast",
+        videoUrl: "https://www.youtube.com/watch?v=mC43pZkpTec",
+        thumbnailUrl: "https://img.youtube.com/vi/mC43pZkpTec/maxresdefault.jpg",
+        dayIndex: 1,
+        featured: true
+      }
+    ];
+
+    convictionData.forEach(content => {
+      const newContent: ConvictionContent = { ...content, id: this.currentConvictionContentId++ };
+      this.convictionContent.set(newContent.id, newContent);
+    });
+
     // Create a default user
     const defaultUser: User = {
       id: this.currentUserId++,
@@ -385,6 +475,31 @@ Mining serves two crucial purposes:
       area.completedLessons = completedLessons;
       this.knowledgeAreas.set(areaId, area);
     }
+  }
+
+  async getConvictionContent(dayIndex: number): Promise<ConvictionContent[]> {
+    return Array.from(this.convictionContent.values()).filter(content => content.dayIndex === dayIndex);
+  }
+
+  async getAllConvictionContent(): Promise<ConvictionContent[]> {
+    return Array.from(this.convictionContent.values());
+  }
+
+  async createConvictionContent(insertContent: InsertConvictionContent): Promise<ConvictionContent> {
+    const content: ConvictionContent = {
+      id: this.currentConvictionContentId++,
+      type: insertContent.type,
+      title: insertContent.title,
+      content: insertContent.content,
+      author: insertContent.author,
+      source: insertContent.source || null,
+      videoUrl: insertContent.videoUrl || null,
+      thumbnailUrl: insertContent.thumbnailUrl || null,
+      dayIndex: insertContent.dayIndex,
+      featured: insertContent.featured || false
+    };
+    this.convictionContent.set(content.id, content);
+    return content;
   }
 }
 

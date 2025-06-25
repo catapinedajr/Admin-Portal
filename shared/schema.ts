@@ -48,6 +48,19 @@ export const knowledgeAreas = pgTable("knowledge_areas", {
   totalLessons: integer("total_lessons").notNull(),
 });
 
+export const convictionContent = pgTable("conviction_content", {
+  id: serial("id").primaryKey(),
+  type: text("type").notNull(), // 'quote' or 'video'
+  title: text("title").notNull(),
+  content: text("content").notNull(), // quote text or video description
+  author: text("author").notNull(), // quote author or speaker name
+  source: text("source"), // publication/event name
+  videoUrl: text("video_url"), // YouTube/video URL for video type
+  thumbnailUrl: text("thumbnail_url"), // video thumbnail
+  dayIndex: integer("day_index").notNull(),
+  featured: boolean("featured").notNull().default(false), // for highlighting important content
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -69,6 +82,10 @@ export const insertKnowledgeAreaSchema = createInsertSchema(knowledgeAreas).omit
   id: true,
 });
 
+export const insertConvictionContentSchema = createInsertSchema(convictionContent).omit({
+  id: true,
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type DailyFact = typeof dailyFacts.$inferSelect;
@@ -79,3 +96,5 @@ export type UserProgress = typeof userProgress.$inferSelect;
 export type InsertUserProgress = z.infer<typeof insertUserProgressSchema>;
 export type KnowledgeArea = typeof knowledgeAreas.$inferSelect;
 export type InsertKnowledgeArea = z.infer<typeof insertKnowledgeAreaSchema>;
+export type ConvictionContent = typeof convictionContent.$inferSelect;
+export type InsertConvictionContent = z.infer<typeof insertConvictionContentSchema>;
