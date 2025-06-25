@@ -556,51 +556,51 @@ export default function Home() {
       {/* Main Navigation */}
       <nav className="bg-zinc-900/50 border-b border-zinc-800">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center gap-1 py-2">
+          <div className="flex items-center gap-1 py-2 flex-wrap">
             <Button
               variant={activeSection === "learning" ? "default" : "ghost"}
               size="sm"
               onClick={() => setActiveSection("learning")}
-              className={activeSection === "learning" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"}
+              className={`${activeSection === "learning" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} text-xs px-2 py-1`}
             >
-              <GraduationCap className="w-4 h-4 mr-2" />
-              Learning
+              <GraduationCap className="w-3 h-3 mr-1" />
+              Learn
             </Button>
             <Button
               variant={activeSection === "btcaction" ? "default" : "ghost"}
               size="sm"
               onClick={() => setActiveSection("btcaction")}
-              className={activeSection === "btcaction" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"}
+              className={`${activeSection === "btcaction" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} text-xs px-2 py-1`}
             >
-              <Users className="w-4 h-4 mr-2" />
-              BTC In Action
+              <Users className="w-3 h-3 mr-1" />
+              Stories
             </Button>
             <Button
               variant={activeSection === "conviction" ? "default" : "ghost"}
               size="sm"
               onClick={() => setActiveSection("conviction")}
-              className={activeSection === "conviction" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"}
+              className={`${activeSection === "conviction" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} text-xs px-2 py-1`}
             >
-              <Heart className="w-4 h-4 mr-2" />
+              <Heart className="w-3 h-3 mr-1" />
               Conviction
             </Button>
             <Button
               variant={activeSection === "simulation" ? "default" : "ghost"}
               size="sm"
               onClick={() => setActiveSection("simulation")}
-              className={activeSection === "simulation" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"}
+              className={`${activeSection === "simulation" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} text-xs px-2 py-1`}
             >
-              <Zap className="w-4 h-4 mr-2" />
-              Simulations
+              <Zap className="w-3 h-3 mr-1" />
+              Simulate
             </Button>
             <Button
               variant={activeSection === "terms" ? "default" : "ghost"}
               size="sm"
               onClick={() => setActiveSection("terms")}
-              className={activeSection === "terms" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"}
+              className={`${activeSection === "terms" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} text-xs px-2 py-1`}
             >
-              <FileText className="w-4 h-4 mr-2" />
-              Bitcoin Terms
+              <FileText className="w-3 h-3 mr-1" />
+              Terms
             </Button>
           </div>
         </div>
