@@ -5,49 +5,49 @@
 @tailwind utilities;
 
 :root {
-  /* Clean, simple theme */
-  --background: hsl(0, 0%, 100%);
-  --foreground: hsl(222, 12%, 20%);
-  --muted: hsl(210, 40%, 96%);
-  --muted-foreground: hsl(215, 14%, 45%);
-  --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(222, 12%, 20%);
-  --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(222, 12%, 20%);
-  --border: hsl(214, 32%, 91%);
-  --input: hsl(214, 32%, 91%);
-  --primary: hsl(25, 85%, 50%);
-  --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(210, 40%, 93%);
-  --secondary-foreground: hsl(222, 12%, 20%);
-  --accent: hsl(210, 40%, 93%);
-  --accent-foreground: hsl(222, 12%, 20%);
-  --destructive: hsl(0, 84%, 60%);
-  --destructive-foreground: hsl(0, 0%, 98%);
-  --success: hsl(142, 76%, 36%);
-  --warning: hsl(38, 92%, 50%);
-  --ring: hsl(25, 85%, 50%);
+  /* Soft earth tone theme */
+  --background: hsl(45, 20%, 97%);
+  --foreground: hsl(30, 8%, 25%);
+  --muted: hsl(40, 15%, 92%);
+  --muted-foreground: hsl(35, 10%, 50%);
+  --popover: hsl(45, 20%, 97%);
+  --popover-foreground: hsl(30, 8%, 25%);
+  --card: hsl(45, 25%, 96%);
+  --card-foreground: hsl(30, 8%, 25%);
+  --border: hsl(40, 20%, 88%);
+  --input: hsl(40, 20%, 88%);
+  --primary: hsl(25, 70%, 55%);
+  --primary-foreground: hsl(45, 25%, 96%);
+  --secondary: hsl(35, 20%, 90%);
+  --secondary-foreground: hsl(30, 8%, 25%);
+  --accent: hsl(35, 20%, 90%);
+  --accent-foreground: hsl(30, 8%, 25%);
+  --destructive: hsl(0, 70%, 60%);
+  --destructive-foreground: hsl(45, 25%, 96%);
+  --success: hsl(120, 40%, 45%);
+  --warning: hsl(38, 80%, 60%);
+  --ring: hsl(25, 70%, 55%);
   --radius: 0.5rem;
 }
 
 .dark {
-  --background: hsl(210, 11%, 6%);
-  --foreground: hsl(210, 11%, 93%);
-  --muted: hsl(210, 11%, 12%);
-  --muted-foreground: hsl(210, 6%, 64%);
-  --popover: hsl(210, 11%, 8%);
-  --popover-foreground: hsl(210, 11%, 93%);
-  --card: hsl(210, 11%, 8%);
-  --card-foreground: hsl(210, 11%, 93%);
-  --border: hsl(210, 12%, 18%);
-  --input: hsl(210, 12%, 18%);
-  --primary: hsl(25, 85%, 50%);
-  --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(210, 11%, 12%);
-  --secondary-foreground: hsl(210, 11%, 93%);
-  --accent: hsl(210, 11%, 12%);
-  --accent-foreground: hsl(210, 11%, 93%);
-  --destructive: hsl(0, 72%, 55%);
+  --background: hsl(30, 15%, 8%);
+  --foreground: hsl(40, 20%, 88%);
+  --muted: hsl(30, 12%, 15%);
+  --muted-foreground: hsl(35, 8%, 60%);
+  --popover: hsl(30, 15%, 10%);
+  --popover-foreground: hsl(40, 20%, 88%);
+  --card: hsl(30, 15%, 10%);
+  --card-foreground: hsl(40, 20%, 88%);
+  --border: hsl(30, 10%, 20%);
+  --input: hsl(30, 10%, 20%);
+  --primary: hsl(25, 70%, 55%);
+  --primary-foreground: hsl(30, 15%, 8%);
+  --secondary: hsl(30, 12%, 15%);
+  --secondary-foreground: hsl(40, 20%, 88%);
+  --accent: hsl(30, 12%, 15%);
+  --accent-foreground: hsl(40, 20%, 88%);
+  --destructive: hsl(0, 70%, 60%);
   --destructive-foreground: hsl(0, 0%, 98%);
   --success: hsl(142, 71%, 45%);
   --warning: hsl(45, 93%, 58%);
@@ -61,21 +61,22 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    line-height: 1.3;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    line-height: 1.4;
   }
   
   .terminal-text {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 0.9em;
+    font-weight: 400;
   }
   
   .glow-text {
@@ -105,8 +106,8 @@
   .cyber-card:hover {
     transform: translateY(-1px);
     box-shadow: 
-      0 4px 6px rgba(0, 0, 0, 0.07),
-      0 1px 3px rgba(0, 0, 0, 0.06);
+      0 4px 12px hsla(30, 20%, 20%, 0.08),
+      0 2px 4px hsla(30, 20%, 20%, 0.04);
     border-color: hsl(var(--primary));
   }
   
