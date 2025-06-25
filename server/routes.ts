@@ -236,48 +236,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Bitcoin price routes
+  // Bitcoin price routes - using CoinGecko API
   app.get('/api/bitcoin-price', async (req, res) => {
     try {
-      // Mock Bitcoin price data for demonstration
-      const mockPrice = {
+      const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&include_last_updated_at=true');
+      
+      if (!response.ok) {
+        throw new Error(`CoinGecko API error: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      const bitcoin = data.bitcoin;
+      
+      // Get additional market data
+      const marketResponse = await fetch('https://api.coingecko.com/api/v3/global');
+      const marketData = await marketResponse.json();
+      const dominance = marketData.data?.market_cap_percentage?.btc || 0;
+      
+      const priceData = {
+        id: 1,
+        timestamp: new Date(bitcoin.last_updated_at * 1000),
+        priceUsd: bitcoin.usd.toString(),
+        marketCap: bitcoin.usd_market_cap.toString(),
+        volume24h: bitcoin.usd_24h_vol.toString(),
+        change24h: bitcoin.usd_24h_change?.toFixed(2) || "0.00",
+        change7d: "0.00", // Would need separate API call for 7d data
+        dominance: dominance.toFixed(1),
+      };
+      
+      res.json(priceData);
+    } catch (error) {
+      console.error('Error fetching Bitcoin price:', error);
+      // Fallback to basic mock data if API fails
+      res.json({
         id: 1,
         timestamp: new Date(),
-        priceUsd: "67350.42",
-        marketCap: "1330000000000",
-        volume24h: "28500000000",
-        change24h: "2.45",
-        change7d: "-1.23",
-        dominance: "54.2",
-      };
-      res.json(mockPrice);
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to fetch Bitcoin price' });
+        priceUsd: "0.00",
+        marketCap: "0",
+        volume24h: "0",
+        change24h: "0.00",
+        change7d: "0.00",
+        dominance: "0.0",
+        error: "Unable to fetch live price data"
+      });
     }
   });
 
   app.get('/api/bitcoin-price/history', async (req, res) => {
     try {
       const hours = parseInt(req.query.hours as string) || 24;
-      // Generate mock historical data for chart
-      const basePrice = 67350;
-      const mockHistory = [];
+      const days = Math.ceil(hours / 24);
       
-      for (let i = hours; i >= 0; i--) {
-        const timestamp = new Date(Date.now() - i * 60 * 60 * 1000);
-        const variation = (Math.random() - 0.5) * 0.05; // ±2.5% variation
-        const price = basePrice * (1 + variation);
-        
-        mockHistory.push({
-          timestamp,
-          priceUsd: price.toFixed(2),
-          change24h: ((Math.random() - 0.5) * 10).toFixed(2),
-        });
+      const response = await fetch(`https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=${days}`);
+      
+      if (!response.ok) {
+        throw new Error(`CoinGecko API error: ${response.status}`);
       }
       
-      res.json(mockHistory);
+      const data = await response.json();
+      const prices = data.prices || [];
+      
+      // Convert to our format and limit to requested hours
+      const history = prices.slice(-hours).map((price: [number, number]) => ({
+        timestamp: new Date(price[0]),
+        priceUsd: price[1].toFixed(2),
+        change24h: "0.00", // Could calculate from price differences
+      }));
+      
+      res.json(history);
     } catch (error) {
-      res.status(500).json({ error: 'Failed to fetch Bitcoin price history' });
+      console.error('Error fetching Bitcoin price history:', error);
+      res.json([]);
     }
   });
 
