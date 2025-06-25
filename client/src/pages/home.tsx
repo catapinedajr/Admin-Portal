@@ -32,7 +32,10 @@ import {
   Network,
   ArrowRight,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  CheckCircle,
+  BarChart3,
+  Clock
 } from "lucide-react";
 import type { User, DailyFact, Lesson, UserProgress, ConvictionContent } from "@shared/schema";
 import DailyQuiz from "@/components/DailyQuiz";
@@ -49,11 +52,12 @@ const iconMap = {
   "alert-triangle": AlertTriangle,
 };
 
-type MainSection = "learning" | "btcaction" | "conviction" | "terms" | "simulation";
+type MainSection = "learning" | "btcaction" | "conviction" | "terms" | "simulation" | "disruption";
 type LearningSubTab = "basics" | "lesson" | "progress" | "quiz" | "explore";
 type BtcActionSubTab = "individuals" | "businesses" | "nations";
 type ConvictionSubTab = "whitepaper" | "books" | "videos";
 type SimulationSubTab = "mining" | "transactions" | "hodl" | "dca" | "halving";
+type DisruptionSubTab = "problems" | "solutions" | "comparison" | "future";
 
 const bitcoinTerms = [
   {
@@ -461,12 +465,155 @@ const simulations = {
   }
 };
 
+const traditionalFinanceProblems = {
+  problems: [
+    {
+      title: "Central Bank Money Printing",
+      description: "Central banks can create unlimited money, diluting your savings",
+      impact: "Since 1971, the US dollar has lost 85% of its purchasing power",
+      example: "The Fed printed 40% of all dollars in existence during 2020-2021",
+      icon: "💰"
+    },
+    {
+      title: "Banking Hours & Holidays",
+      description: "Banks control when you can access YOUR money",
+      impact: "No transactions on weekends, holidays, or after business hours",
+      example: "Try sending money internationally on a Sunday - impossible",
+      icon: "🏦"
+    },
+    {
+      title: "High Transaction Fees",
+      description: "Banks charge fees for using your own money",
+      impact: "International transfers cost $15-50 and take 3-5 business days",
+      example: "Western Union charges up to 10% for remittances",
+      icon: "💸"
+    },
+    {
+      title: "Account Freezing",
+      description: "Governments and banks can freeze your accounts instantly",
+      impact: "Your money becomes inaccessible without legal recourse",
+      example: "Canadian truckers had accounts frozen during 2022 protests",
+      icon: "🔒"
+    },
+    {
+      title: "Inflation Tax",
+      description: "Hidden tax through currency debasement",
+      impact: "Your purchasing power decreases even while saving",
+      example: "A $100 grocery bill in 2000 costs $175 today",
+      icon: "📉"
+    },
+    {
+      title: "Exclusion from System",
+      description: "2 billion people worldwide have no access to banking",
+      impact: "Unable to save, invest, or participate in global economy",
+      example: "Requires documentation, credit history, minimum balances",
+      icon: "🚫"
+    }
+  ],
+  solutions: [
+    {
+      problem: "Central Bank Money Printing",
+      solution: "Fixed Supply Cap",
+      description: "Bitcoin has a hard limit of 21 million coins - no one can print more",
+      benefit: "Your Bitcoin percentage of total supply never decreases"
+    },
+    {
+      problem: "Banking Hours & Holidays",
+      solution: "24/7/365 Operation",
+      description: "Bitcoin network never sleeps - transactions any time, anywhere",
+      benefit: "Send money globally on Christmas morning if you want"
+    },
+    {
+      problem: "High Transaction Fees",
+      solution: "Low-Cost Transactions",
+      description: "Bitcoin transactions cost $1-5, Lightning Network costs pennies",
+      benefit: "Send $1 million for the same fee as sending $10"
+    },
+    {
+      problem: "Account Freezing",
+      solution: "Self-Custody",
+      description: "You control your private keys, no one can freeze your Bitcoin",
+      benefit: "Truly own your money - 'Not your keys, not your coins'"
+    },
+    {
+      problem: "Inflation Tax",
+      solution: "Deflationary Money",
+      description: "Bitcoin becomes more scarce over time due to halving events",
+      benefit: "Store of value that appreciates instead of depreciates"
+    },
+    {
+      problem: "Exclusion from System",
+      solution: "Permissionless Access",
+      description: "Anyone with internet can use Bitcoin - no banks required",
+      benefit: "Financial inclusion for everyone, everywhere"
+    }
+  ],
+  comparison: {
+    traditional: {
+      title: "Traditional Finance",
+      characteristics: [
+        { aspect: "Control", value: "Central banks & governments", negative: true },
+        { aspect: "Supply", value: "Unlimited money printing", negative: true },
+        { aspect: "Access", value: "Banking hours only", negative: true },
+        { aspect: "Fees", value: "$15-50 international transfers", negative: true },
+        { aspect: "Speed", value: "3-5 business days", negative: true },
+        { aspect: "Censorship", value: "Accounts can be frozen", negative: true },
+        { aspect: "Inclusion", value: "2B people excluded", negative: true },
+        { aspect: "Transparency", value: "Opaque operations", negative: true }
+      ]
+    },
+    bitcoin: {
+      title: "Bitcoin",
+      characteristics: [
+        { aspect: "Control", value: "You control your money", negative: false },
+        { aspect: "Supply", value: "Fixed 21 million cap", negative: false },
+        { aspect: "Access", value: "24/7/365 availability", negative: false },
+        { aspect: "Fees", value: "$1-5 any amount", negative: false },
+        { aspect: "Speed", value: "10 minutes to 1 hour", negative: false },
+        { aspect: "Censorship", value: "Censorship resistant", negative: false },
+        { aspect: "Inclusion", value: "Open to everyone", negative: false },
+        { aspect: "Transparency", value: "Fully auditable blockchain", negative: false }
+      ]
+    }
+  },
+  future: [
+    {
+      timeframe: "2024-2026",
+      developments: [
+        "More countries adopt Bitcoin as legal tender (following El Salvador)",
+        "Major corporations add Bitcoin to treasury reserves",
+        "Bitcoin ETFs bring institutional investment",
+        "Lightning Network scales to millions of users"
+      ]
+    },
+    {
+      timeframe: "2026-2030", 
+      developments: [
+        "Central Bank Digital Currencies (CBDCs) increase surveillance concerns",
+        "Bitcoin becomes global reserve asset alongside gold",
+        "Hyperinflation in fiat currencies drives Bitcoin adoption",
+        "Bitcoin becomes standard for international trade settlements"
+      ]
+    },
+    {
+      timeframe: "2030+",
+      developments: [
+        "Bitcoin standard emerges as dominant monetary system",
+        "Traditional banks adapt or become obsolete",
+        "Financial sovereignty becomes basic human right",
+        "Global economic inequality decreases through Bitcoin access"
+      ]
+    }
+  ]
+};
+
 export default function Home() {
   const [activeSection, setActiveSection] = useState<MainSection>("learning");
   const [learningSubTab, setLearningSubTab] = useState<LearningSubTab>("basics");
   const [btcActionSubTab, setBtcActionSubTab] = useState<BtcActionSubTab>("individuals");
   const [convictionSubTab, setConvictionSubTab] = useState<ConvictionSubTab>("whitepaper");
   const [simulationSubTab, setSimulationSubTab] = useState<SimulationSubTab>("mining");
+  const [disruptionSubTab, setDisruptionSubTab] = useState<DisruptionSubTab>("problems");
   const [showPriceChart, setShowPriceChart] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
@@ -592,6 +739,15 @@ export default function Home() {
             >
               <Zap className="w-3 h-3 mr-1" />
               Simulate
+            </Button>
+            <Button
+              variant={activeSection === "disruption" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setActiveSection("disruption")}
+              className={`${activeSection === "disruption" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} text-xs px-2 py-1`}
+            >
+              <AlertTriangle className="w-3 h-3 mr-1" />
+              Disruption
             </Button>
             <Button
               variant={activeSection === "terms" ? "default" : "ghost"}
@@ -1664,6 +1820,227 @@ export default function Home() {
                     </div>
                   </CardContent>
                 </Card>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Disruption Section */}
+        {activeSection === "disruption" && (
+          <div className="space-y-6">
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl font-bold text-white">Financial Disruption</h2>
+              <p className="text-zinc-400">How Bitcoin is transforming the global financial system</p>
+            </div>
+            
+            <div className="flex space-x-2 mb-6 justify-center flex-wrap gap-2">
+              <Button
+                variant={disruptionSubTab === "problems" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setDisruptionSubTab("problems")}
+                className="text-sm"
+              >
+                <AlertTriangle className="w-3 h-3 mr-2" />
+                Problems
+              </Button>
+              <Button
+                variant={disruptionSubTab === "solutions" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setDisruptionSubTab("solutions")}
+                className="text-sm"
+              >
+                <CheckCircle className="w-3 h-3 mr-2" />
+                Solutions
+              </Button>
+              <Button
+                variant={disruptionSubTab === "comparison" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setDisruptionSubTab("comparison")}
+                className="text-sm"
+              >
+                <BarChart3 className="w-3 h-3 mr-2" />
+                Compare
+              </Button>
+              <Button
+                variant={disruptionSubTab === "future" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setDisruptionSubTab("future")}
+                className="text-sm"
+              >
+                <Clock className="w-3 h-3 mr-2" />
+                Future
+              </Button>
+            </div>
+
+            {disruptionSubTab === "problems" && (
+              <div className="space-y-6">
+                <div className="text-center mb-6">
+                  <h3 className="text-xl font-bold text-white mb-2">Traditional Finance Problems</h3>
+                  <p className="text-zinc-400">Understanding what's broken in today's financial system</p>
+                </div>
+                
+                <div className="grid gap-6">
+                  {traditionalFinanceProblems.problems.map((problem, index) => (
+                    <Card key={index} className="bg-zinc-900 border-zinc-800">
+                      <CardContent className="p-6">
+                        <div className="flex items-start gap-4">
+                          <div className="text-3xl">{problem.icon}</div>
+                          <div className="flex-1">
+                            <h4 className="text-lg font-bold text-white mb-2">{problem.title}</h4>
+                            <p className="text-zinc-300 mb-3">{problem.description}</p>
+                            <div className="space-y-2">
+                              <div className="bg-red-600/10 border border-red-600/20 rounded-lg p-3">
+                                <div className="text-red-300 font-medium text-sm mb-1">Impact</div>
+                                <div className="text-red-200 text-sm">{problem.impact}</div>
+                              </div>
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 font-medium text-sm mb-1">Real Example</div>
+                                <div className="text-zinc-300 text-sm">{problem.example}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {disruptionSubTab === "solutions" && (
+              <div className="space-y-6">
+                <div className="text-center mb-6">
+                  <h3 className="text-xl font-bold text-white mb-2">Bitcoin Solutions</h3>
+                  <p className="text-zinc-400">How Bitcoin fixes each traditional finance problem</p>
+                </div>
+                
+                <div className="grid gap-6">
+                  {traditionalFinanceProblems.solutions.map((solution, index) => (
+                    <Card key={index} className="bg-zinc-900 border-zinc-800">
+                      <CardContent className="p-6">
+                        <div className="space-y-4">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-red-600/20 rounded-lg">
+                              <AlertTriangle className="w-5 h-5 text-red-400" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="text-red-300 font-medium">{solution.problem}</div>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-3">
+                            <ArrowRight className="w-6 h-6 text-zinc-600" />
+                          </div>
+                          
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-green-600/20 rounded-lg">
+                              <CheckCircle className="w-5 h-5 text-green-400" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="text-green-300 font-medium mb-2">{solution.solution}</div>
+                              <div className="text-zinc-300 text-sm mb-2">{solution.description}</div>
+                              <div className="bg-green-600/10 border border-green-600/20 rounded-lg p-3">
+                                <div className="text-green-300 font-medium text-sm mb-1">Benefit</div>
+                                <div className="text-green-200 text-sm">{solution.benefit}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {disruptionSubTab === "comparison" && (
+              <div className="space-y-6">
+                <div className="text-center mb-6">
+                  <h3 className="text-xl font-bold text-white mb-2">Side-by-Side Comparison</h3>
+                  <p className="text-zinc-400">Traditional finance vs Bitcoin - see the difference</p>
+                </div>
+                
+                <div className="grid md:grid-cols-2 gap-6">
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="text-center mb-4">
+                        <h4 className="text-lg font-bold text-red-300">{traditionalFinanceProblems.comparison.traditional.title}</h4>
+                      </div>
+                      <div className="space-y-3">
+                        {traditionalFinanceProblems.comparison.traditional.characteristics.map((char, index) => (
+                          <div key={index} className="flex items-center justify-between p-3 bg-red-600/10 border border-red-600/20 rounded-lg">
+                            <span className="text-zinc-400 font-medium">{char.aspect}</span>
+                            <span className="text-red-300 text-sm">{char.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="text-center mb-4">
+                        <h4 className="text-lg font-bold text-green-300">{traditionalFinanceProblems.comparison.bitcoin.title}</h4>
+                      </div>
+                      <div className="space-y-3">
+                        {traditionalFinanceProblems.comparison.bitcoin.characteristics.map((char, index) => (
+                          <div key={index} className="flex items-center justify-between p-3 bg-green-600/10 border border-green-600/20 rounded-lg">
+                            <span className="text-zinc-400 font-medium">{char.aspect}</span>
+                            <span className="text-green-300 text-sm">{char.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+                
+                <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-6">
+                  <h4 className="text-orange-300 font-bold mb-3">Key Takeaway</h4>
+                  <p className="text-orange-200">Bitcoin isn't just another payment method - it's a complete reimagining of money that puts control back in your hands. Every aspect of traditional finance that frustrates you has a Bitcoin solution.</p>
+                </div>
+              </div>
+            )}
+
+            {disruptionSubTab === "future" && (
+              <div className="space-y-6">
+                <div className="text-center mb-6">
+                  <h3 className="text-xl font-bold text-white mb-2">The Bitcoin Future</h3>
+                  <p className="text-zinc-400">Timeline of how Bitcoin will reshape global finance</p>
+                </div>
+                
+                <div className="space-y-6">
+                  {traditionalFinanceProblems.future.map((phase, index) => (
+                    <Card key={index} className="bg-zinc-900 border-zinc-800">
+                      <CardContent className="p-6">
+                        <div className="space-y-4">
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 bg-blue-600/20 rounded-lg">
+                              <Clock className="w-6 h-6 text-blue-400" />
+                            </div>
+                            <div>
+                              <h4 className="text-lg font-bold text-white">{phase.timeframe}</h4>
+                            </div>
+                          </div>
+                          
+                          <div className="grid gap-3">
+                            {phase.developments.map((development, devIndex) => (
+                              <div key={devIndex} className="flex items-start gap-3 p-3 bg-zinc-800 rounded-lg">
+                                <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                                <div className="text-zinc-300">{development}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+                
+                <div className="bg-gradient-to-r from-orange-600/20 to-yellow-600/20 border border-orange-600/30 rounded-lg p-6">
+                  <h4 className="text-orange-300 font-bold mb-3">The Bottom Line</h4>
+                  <p className="text-orange-200 mb-3">We're witnessing the largest monetary revolution in human history. Bitcoin isn't competing with traditional finance - it's replacing it.</p>
+                  <p className="text-orange-200">The question isn't IF this will happen, but WHEN. Those who understand and adopt Bitcoin early will benefit most from this historic transition.</p>
+                </div>
               </div>
             )}
           </div>
