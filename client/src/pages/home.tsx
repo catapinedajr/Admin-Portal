@@ -52,12 +52,13 @@ const iconMap = {
   "alert-triangle": AlertTriangle,
 };
 
-type MainSection = "learning" | "btcaction" | "conviction" | "terms" | "simulation" | "disruption";
-type LearningSubTab = "basics" | "lesson" | "progress" | "quiz" | "explore";
-type BtcActionSubTab = "individuals" | "businesses" | "nations";
-type ConvictionSubTab = "whitepaper" | "books" | "videos";
-type SimulationSubTab = "mining" | "transactions" | "hodl" | "dca" | "halving";
+type MainSection = "foundation" | "practice" | "inspiration";
+type FoundationSubTab = "basics" | "lesson" | "quiz" | "explore" | "disruption" | "terms";
+type PracticeSubTab = "mining" | "transactions" | "hodl" | "dca" | "halving";
+type InspirationSubTab = "stories" | "conviction";
 type DisruptionSubTab = "problems" | "solutions" | "comparison" | "future";
+type StoriesSubTab = "individuals" | "businesses" | "nations";
+type ConvictionSubTab = "whitepaper" | "books" | "videos";
 
 const bitcoinTerms = [
   {
@@ -608,12 +609,13 @@ const traditionalFinanceProblems = {
 };
 
 export default function Home() {
-  const [activeSection, setActiveSection] = useState<MainSection>("learning");
-  const [learningSubTab, setLearningSubTab] = useState<LearningSubTab>("basics");
-  const [btcActionSubTab, setBtcActionSubTab] = useState<BtcActionSubTab>("individuals");
-  const [convictionSubTab, setConvictionSubTab] = useState<ConvictionSubTab>("whitepaper");
-  const [simulationSubTab, setSimulationSubTab] = useState<SimulationSubTab>("mining");
+  const [activeSection, setActiveSection] = useState<MainSection>("foundation");
+  const [foundationSubTab, setFoundationSubTab] = useState<FoundationSubTab>("basics");
+  const [practiceSubTab, setPracticeSubTab] = useState<PracticeSubTab>("mining");
+  const [inspirationSubTab, setInspirationSubTab] = useState<InspirationSubTab>("stories");
   const [disruptionSubTab, setDisruptionSubTab] = useState<DisruptionSubTab>("problems");
+  const [storiesSubTab, setStoriesSubTab] = useState<StoriesSubTab>("individuals");
+  const [convictionSubTab, setConvictionSubTab] = useState<ConvictionSubTab>("whitepaper");
   const [showPriceChart, setShowPriceChart] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
@@ -703,114 +705,177 @@ export default function Home() {
       {/* Main Navigation */}
       <nav className="bg-zinc-900/50 border-b border-zinc-800">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center gap-1 py-2 flex-wrap">
+          <div className="flex items-center justify-center gap-8 py-3">
             <Button
-              variant={activeSection === "learning" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setActiveSection("learning")}
-              className={`${activeSection === "learning" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} text-xs px-2 py-1`}
+              variant={activeSection === "foundation" ? "default" : "ghost"}
+              size="lg"
+              onClick={() => setActiveSection("foundation")}
+              className={`${activeSection === "foundation" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} px-6 py-3`}
             >
-              <GraduationCap className="w-3 h-3 mr-1" />
-              Learn
+              <GraduationCap className="w-5 h-5 mr-2" />
+              Foundation
             </Button>
             <Button
-              variant={activeSection === "btcaction" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setActiveSection("btcaction")}
-              className={`${activeSection === "btcaction" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} text-xs px-2 py-1`}
+              variant={activeSection === "practice" ? "default" : "ghost"}
+              size="lg"
+              onClick={() => setActiveSection("practice")}
+              className={`${activeSection === "practice" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} px-6 py-3`}
             >
-              <Users className="w-3 h-3 mr-1" />
-              Stories
+              <Zap className="w-5 h-5 mr-2" />
+              Practice
             </Button>
             <Button
-              variant={activeSection === "conviction" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setActiveSection("conviction")}
-              className={`${activeSection === "conviction" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} text-xs px-2 py-1`}
+              variant={activeSection === "inspiration" ? "default" : "ghost"}
+              size="lg"
+              onClick={() => setActiveSection("inspiration")}
+              className={`${activeSection === "inspiration" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} px-6 py-3`}
             >
-              <Heart className="w-3 h-3 mr-1" />
-              Conviction
-            </Button>
-            <Button
-              variant={activeSection === "simulation" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setActiveSection("simulation")}
-              className={`${activeSection === "simulation" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} text-xs px-2 py-1`}
-            >
-              <Zap className="w-3 h-3 mr-1" />
-              Simulate
-            </Button>
-            <Button
-              variant={activeSection === "disruption" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setActiveSection("disruption")}
-              className={`${activeSection === "disruption" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} text-xs px-2 py-1`}
-            >
-              <AlertTriangle className="w-3 h-3 mr-1" />
-              Disruption
-            </Button>
-            <Button
-              variant={activeSection === "terms" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setActiveSection("terms")}
-              className={`${activeSection === "terms" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} text-xs px-2 py-1`}
-            >
-              <FileText className="w-3 h-3 mr-1" />
-              Terms
+              <Heart className="w-5 h-5 mr-2" />
+              Inspiration
             </Button>
           </div>
         </div>
       </nav>
 
       {/* Sub Navigation */}
-      {activeSection === "learning" && (
+      {activeSection === "foundation" && (
         <div className="bg-zinc-800/30 border-b border-zinc-800">
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center gap-1 py-2 flex-wrap">
               <Button
-                variant={learningSubTab === "basics" ? "secondary" : "ghost"}
+                variant={foundationSubTab === "basics" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setLearningSubTab("basics")}
+                onClick={() => setFoundationSubTab("basics")}
                 className="text-xs px-2 py-1"
               >
                 <Lightbulb className="w-3 h-3 mr-1" />
                 Facts
               </Button>
               <Button
-                variant={learningSubTab === "lesson" ? "secondary" : "ghost"}
+                variant={foundationSubTab === "lesson" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setLearningSubTab("lesson")}
+                onClick={() => setFoundationSubTab("lesson")}
                 className="text-xs px-2 py-1"
               >
                 <BookOpen className="w-3 h-3 mr-1" />
                 Lesson
               </Button>
               <Button
-                variant={learningSubTab === "quiz" ? "secondary" : "ghost"}
+                variant={foundationSubTab === "quiz" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setLearningSubTab("quiz")}
+                onClick={() => setFoundationSubTab("quiz")}
                 className="text-xs px-2 py-1"
               >
                 <HelpCircle className="w-3 h-3 mr-1" />
                 Quiz
               </Button>
               <Button
-                variant={learningSubTab === "explore" ? "secondary" : "ghost"}
+                variant={foundationSubTab === "explore" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setLearningSubTab("explore")}
+                onClick={() => setFoundationSubTab("explore")}
                 className="text-xs px-2 py-1"
               >
                 <Globe className="w-3 h-3 mr-1" />
                 Explore
               </Button>
               <Button
-                variant={learningSubTab === "progress" ? "secondary" : "ghost"}
+                variant={foundationSubTab === "disruption" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setLearningSubTab("progress")}
+                onClick={() => setFoundationSubTab("disruption")}
+                className="text-xs px-2 py-1"
+              >
+                <AlertTriangle className="w-3 h-3 mr-1" />
+                Why Bitcoin
+              </Button>
+              <Button
+                variant={foundationSubTab === "terms" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setFoundationSubTab("terms")}
+                className="text-xs px-2 py-1"
+              >
+                <FileText className="w-3 h-3 mr-1" />
+                Terms
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeSection === "practice" && (
+        <div className="bg-zinc-800/30 border-b border-zinc-800">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="flex items-center gap-1 py-2 flex-wrap">
+              <Button
+                variant={practiceSubTab === "mining" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setPracticeSubTab("mining")}
+                className="text-xs px-2 py-1"
+              >
+                <Zap className="w-3 h-3 mr-1" />
+                Mining
+              </Button>
+              <Button
+                variant={practiceSubTab === "transactions" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setPracticeSubTab("transactions")}
+                className="text-xs px-2 py-1"
+              >
+                <ArrowRight className="w-3 h-3 mr-1" />
+                Transactions
+              </Button>
+              <Button
+                variant={practiceSubTab === "hodl" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setPracticeSubTab("hodl")}
+                className="text-xs px-2 py-1"
+              >
+                <Shield className="w-3 h-3 mr-1" />
+                HODLing
+              </Button>
+              <Button
+                variant={practiceSubTab === "dca" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setPracticeSubTab("dca")}
                 className="text-xs px-2 py-1"
               >
                 <TrendingUp className="w-3 h-3 mr-1" />
-                Progress
+                DCA
+              </Button>
+              <Button
+                variant={practiceSubTab === "halving" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setPracticeSubTab("halving")}
+                className="text-xs px-2 py-1"
+              >
+                <Gem className="w-3 h-3 mr-1" />
+                Halving
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeSection === "inspiration" && (
+        <div className="bg-zinc-800/30 border-b border-zinc-800">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="flex items-center gap-1 py-2 flex-wrap">
+              <Button
+                variant={inspirationSubTab === "stories" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setInspirationSubTab("stories")}
+                className="text-xs px-2 py-1"
+              >
+                <Users className="w-3 h-3 mr-1" />
+                Stories
+              </Button>
+              <Button
+                variant={inspirationSubTab === "conviction" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setInspirationSubTab("conviction")}
+                className="text-xs px-2 py-1"
+              >
+                <Heart className="w-3 h-3 mr-1" />
+                Conviction
               </Button>
             </div>
           </div>

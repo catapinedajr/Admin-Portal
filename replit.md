@@ -123,6 +123,7 @@ Comprehensive component library built on Radix UI primitives:
 - June 25, 2025. Added comprehensive Simulation Center with five interactive educational tools: Bitcoin Mining Economics, Transaction Builder, HODLing Strategy Comparison, Dollar-Cost Averaging Analysis, and Bitcoin Halving Impact visualization
 - June 25, 2025. Optimized main navigation for mobile responsiveness with compact button text, smaller sizing, and flex-wrap to prevent menu overflow on smaller screens
 - June 25, 2025. Added comprehensive Financial Disruption section explaining traditional finance problems, Bitcoin solutions, side-by-side comparisons, and future timeline to help users understand Bitcoin's transformative potential
+- June 25, 2025. Reorganized navigation into three logical section groups: Foundation (learning, disruption, terms), Practice (simulations), and Inspiration (stories, conviction) for cleaner user experience and better content organization
 
 ## User Preferences
 
