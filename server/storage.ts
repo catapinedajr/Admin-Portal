@@ -1075,6 +1075,182 @@ This mirrors internet architecture:
           { title: "The Fiat Standard", url: "#", description: "Saifedean Ammous on fiat money's flaws" },
           { title: "Layered Money", url: "#", description: "Nik Bhatia on Bitcoin's place in monetary history" }
         ]
+      },
+      {
+        weekNumber: 3,
+        title: "Bitcoin Mining and Network Security",
+        description: "Understand how Bitcoin mining works, why it's essential for network security, and how proof-of-work creates the most secure financial network ever built.",
+        content: [
+          {
+            title: "What is Bitcoin Mining?",
+            content: "Bitcoin mining is the process by which new bitcoins are created and transactions are verified. Miners compete to solve complex mathematical puzzles using computational power. The first to solve the puzzle gets to add the next block to the blockchain and receives a reward. This process secures the network by making it extremely expensive to attack or manipulate.",
+            examples: ["SHA-256 hashing", "Mining difficulty adjustment", "Block rewards and halving"]
+          },
+          {
+            title: "Proof-of-Work Security Model",
+            content: "Proof-of-work creates security through energy expenditure. To attack Bitcoin, an adversary would need to control more computational power than the rest of the network combined - a feat requiring enormous energy costs. This makes Bitcoin's ledger immutable in practice, as the cost to attack exceeds any potential benefit.",
+            examples: ["51% attack economics", "Hash rate growth over time", "Energy consumption comparisons"]
+          },
+          {
+            title: "Mining Economics and Incentives",
+            content: "Bitcoin mining creates a self-regulating economic system. When the price rises, more miners join, increasing security. When it falls, inefficient miners drop out, maintaining balance. This competitive dynamic ensures the network remains secure regardless of external conditions, while creating a global market for the most efficient energy use.",
+            examples: ["Mining profitability calculators", "Geographic distribution", "Renewable energy adoption"]
+          },
+          {
+            title: "Environmental Considerations",
+            content: "Bitcoin mining incentivizes the development of the cheapest energy sources, often renewable energy that would otherwise be wasted. Mining operations frequently utilize stranded energy sources and can help stabilize electrical grids. The network's energy use secures a $1+ trillion network, making it one of the most efficient security systems per dollar protected.",
+            examples: ["Renewable energy mining farms", "Stranded gas utilization", "Grid stabilization services"]
+          }
+        ],
+        category: "Technical",
+        difficulty: "intermediate",
+        relatedDayIndex: 8,
+        keyTakeaways: [
+          "Mining creates the world's most secure financial network through energy expenditure",
+          "Proof-of-work economics naturally align security with network value",
+          "Bitcoin mining drives innovation in efficient and renewable energy use"
+        ],
+        practicalApplications: [
+          "Understand why Bitcoin transactions are irreversible",
+          "Evaluate mining investment opportunities",
+          "Assess network security during major events"
+        ],
+        furtherReading: [
+          { title: "Bitcoin Mining Council Reports", url: "#", description: "Latest data on mining sustainability" },
+          { title: "Unchained Capital Mining Analysis", url: "#", description: "Deep dive into mining economics" }
+        ]
+      },
+      {
+        weekNumber: 4,
+        title: "Bitcoin Wallets and Self-Custody",
+        description: "Master the fundamentals of Bitcoin storage, from private keys to hardware wallets, and learn why 'not your keys, not your coins' is Bitcoin's golden rule.",
+        content: [
+          {
+            title: "Understanding Private Keys and Addresses",
+            content: "Your Bitcoin isn't stored in a wallet - it exists on the blockchain. Wallets store private keys that prove ownership of Bitcoin addresses. A private key is a 256-bit number that must be kept secret. From this key, your wallet generates a public key and Bitcoin address. Anyone who controls the private key controls the Bitcoin.",
+            examples: ["Seed phrase generation", "Address derivation", "Public/private key cryptography"]
+          },
+          {
+            title: "Types of Bitcoin Wallets",
+            content: "Hardware wallets store private keys offline on dedicated devices, providing the highest security for significant amounts. Software wallets offer convenience for daily use but are connected to the internet. Paper wallets are physical storage but require careful handling. Each type serves different security and usability needs.",
+            examples: ["Ledger and Trezor devices", "Mobile wallet apps", "Paper wallet generation"]
+          },
+          {
+            title: "Security Best Practices",
+            content: "Never share your private keys or seed phrase with anyone. Use hardware wallets for long-term storage. Verify receive addresses on the device screen. Keep multiple backups of your seed phrase in secure, separate locations. Test your backup recovery process with small amounts before storing significant value.",
+            examples: ["Seed phrase backup strategies", "Multisig security", "Cold storage techniques"]
+          },
+          {
+            title: "Common Mistakes to Avoid",
+            content: "Don't store large amounts on exchanges - they control the private keys, not you. Avoid digital photos of seed phrases. Never enter your seed phrase into websites or software claiming to 'verify' it. Be aware of dust attacks and address reuse privacy implications. Understand that transactions are irreversible.",
+            examples: ["Exchange hacks in history", "Phishing attacks", "Irreversible transaction cases"]
+          }
+        ],
+        category: "Security",
+        difficulty: "beginner",
+        relatedDayIndex: 12,
+        keyTakeaways: [
+          "Private key control is the fundamental principle of Bitcoin ownership",
+          "Hardware wallets provide the best security for significant amounts",
+          "Proper backup and recovery procedures are essential for long-term storage"
+        ],
+        practicalApplications: [
+          "Set up secure Bitcoin storage solutions",
+          "Create robust backup and recovery procedures",
+          "Evaluate wallet security trade-offs for different use cases"
+        ],
+        furtherReading: [
+          { title: "Mastering Bitcoin", url: "#", description: "Andreas Antonopoulos on technical fundamentals" },
+          { title: "Glacier Protocol", url: "#", description: "Step-by-step cold storage guide" }
+        ]
+      },
+      {
+        weekNumber: 5,
+        title: "Lightning Network: Bitcoin's Payment Layer",
+        description: "Explore Bitcoin's Lightning Network, understanding how payment channels enable instant, low-cost transactions while maintaining Bitcoin's security guarantees.",
+        content: [
+          {
+            title: "Why Lightning Network Exists",
+            content: "Bitcoin's base layer prioritizes security and decentralization over speed, resulting in ~7 transactions per second globally. Lightning Network solves this by moving most transactions to a second layer, while still settling on Bitcoin's main chain. This enables millions of transactions per second with instant finality and minimal fees.",
+            examples: ["Base layer transaction limitations", "Payment channel concepts", "Layer 2 scaling solutions"]
+          },
+          {
+            title: "How Payment Channels Work",
+            content: "Two parties can open a payment channel by creating a multisig transaction on Bitcoin's main chain. They can then exchange unlimited transactions instantly between themselves, updating the channel balance. When finished, they close the channel and the final balance is settled on the main chain. This reduces one million transactions to just two on-chain transactions.",
+            examples: ["Channel opening process", "Off-chain balance updates", "Channel closing settlements"]
+          },
+          {
+            title: "Lightning Network Routing",
+            content: "You don't need direct channels with everyone. Lightning routes payments through the network of existing channels. If Alice wants to pay Charlie but only has a channel with Bob, and Bob has a channel with Charlie, the payment can route through Bob. This creates a global network where you can pay anyone with just a few well-connected channels.",
+            examples: ["Multi-hop payments", "Routing algorithms", "Network topology"]
+          },
+          {
+            title: "Lightning Applications and Use Cases",
+            content: "Lightning enables use cases impossible on the base layer: micropayments for content, streaming money, high-frequency trading, and instant retail payments. It's being used for podcasting tips, gaming rewards, social media monetization, and creating new business models around granular value exchange.",
+            examples: ["Podcasting 2.0 value streaming", "Lightning-enabled games", "Instant merchant payments"]
+          }
+        ],
+        category: "Technical",
+        difficulty: "intermediate",
+        relatedDayIndex: 20,
+        keyTakeaways: [
+          "Lightning Network scales Bitcoin to millions of transactions per second",
+          "Payment channels maintain Bitcoin's security while enabling instant payments",
+          "Lightning unlocks new use cases through micropayments and streaming money"
+        ],
+        practicalApplications: [
+          "Set up Lightning wallets and make instant payments",
+          "Understand when to use Lightning vs base layer",
+          "Explore Lightning-enabled applications and services"
+        ],
+        furtherReading: [
+          { title: "Lightning Network Paper", url: "#", description: "Original Lightning Network whitepaper" },
+          { title: "Lightning Labs Blog", url: "#", description: "Latest Lightning Network developments" }
+        ]
+      },
+      {
+        weekNumber: 6,
+        title: "Central Bank Digital Currencies vs Bitcoin",
+        description: "Compare CBDCs with Bitcoin, understanding the fundamental differences in design philosophy, privacy implications, and monetary sovereignty.",
+        content: [
+          {
+            title: "What Are CBDCs?",
+            content: "Central Bank Digital Currencies are digital versions of national currencies, issued and controlled by central banks. Unlike Bitcoin, CBDCs are centralized, programmable, and give governments unprecedented control over monetary transactions. They represent the digitization of existing fiat systems, not a new monetary paradigm.",
+            examples: ["China's digital yuan", "European Central Bank digital euro", "Federal Reserve research"]
+          },
+          {
+            title: "Programmable Money and Control",
+            content: "CBDCs can be programmed with expiration dates, spending restrictions, and automatic taxation. Governments could restrict what you buy, where you spend, or freeze your money instantly. This programmability, while offering some conveniences, fundamentally changes the nature of money from a tool of freedom to a tool of control.",
+            examples: ["Expiring stimulus payments", "Geographic spending restrictions", "Automatic tax collection"]
+          },
+          {
+            title: "Privacy and Surveillance Implications",
+            content: "CBDCs eliminate financial privacy entirely - every transaction is monitored, recorded, and analyzed by central authorities. Unlike cash, which provides anonymity, or Bitcoin, which offers pseudonymity, CBDCs create a complete surveillance system where your financial life is an open book to governments.",
+            examples: ["Social credit score integration", "Political dissent tracking", "Commercial surveillance"]
+          },
+          {
+            title: "Monetary Sovereignty Comparison",
+            content: "Bitcoin operates without central control - no one can stop you from using it, freeze your funds, or manipulate its supply. CBDCs represent the opposite: complete central control over monetary policy, individual accounts, and transaction approval. This distinction is fundamental to understanding why Bitcoin and CBDCs serve entirely different purposes.",
+            examples: ["Bitcoin censorship resistance", "CBDC account freezing", "Monetary policy differences"]
+          }
+        ],
+        category: "Economics",
+        difficulty: "intermediate",
+        relatedDayIndex: 25,
+        keyTakeaways: [
+          "CBDCs digitize government control over money, while Bitcoin eliminates it",
+          "Programmable money enables new forms of financial surveillance and control",
+          "Bitcoin and CBDCs represent opposing philosophies about monetary sovereignty"
+        ],
+        practicalApplications: [
+          "Evaluate the privacy implications of digital payment systems",
+          "Understand why Bitcoin offers unique value in an increasingly digital world",
+          "Make informed decisions about financial privacy and sovereignty"
+        ],
+        furtherReading: [
+          { title: "Bank for International Settlements CBDC Reports", url: "#", description: "Official central bank research on CBDCs" },
+          { title: "Broken Money", url: "#", description: "Lyn Alden on monetary systems and digital currencies" }
+        ]
       }
     ];
 
@@ -1474,12 +1650,23 @@ This mirrors internet architecture:
 
   // Weekly topics methods
   async getCurrentWeeklyTopic(): Promise<WeeklyTopic | undefined> {
+    // For development/demo purposes, cycle through available topics
     // Calculate current week number since app launch (assuming app launched Jan 1, 2025)
     const launchDate = new Date('2025-01-01');
     const currentDate = new Date();
     const weeksSinceLaunch = Math.floor((currentDate.getTime() - launchDate.getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1;
     
-    return Array.from(this.weeklyTopics.values()).find(topic => topic.weekNumber === weeksSinceLaunch);
+    // Get all available topics and cycle through them
+    const allTopics = Array.from(this.weeklyTopics.values()).sort((a, b) => a.weekNumber - b.weekNumber);
+    if (allTopics.length === 0) return undefined;
+    
+    // If we have the exact week, return it. Otherwise, cycle through available content
+    const exactWeek = allTopics.find(topic => topic.weekNumber === weeksSinceLaunch);
+    if (exactWeek) return exactWeek;
+    
+    // Cycle through available topics (currently 1-6)
+    const cycleWeek = ((weeksSinceLaunch - 1) % allTopics.length) + 1;
+    return allTopics.find(topic => topic.weekNumber === cycleWeek) || allTopics[0];
   }
 
   async getWeeklyTopic(weekNumber: number): Promise<WeeklyTopic | undefined> {

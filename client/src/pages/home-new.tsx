@@ -3150,13 +3150,82 @@ function WeeklySection() {
     refetchOnWindowFocus: false
   });
 
-  const { data: weeklyProgress } = useQuery({
+  const { data: weeklyProgress, refetch: refetchProgress } = useQuery({
     queryKey: ['/api/weekly/progress', currentWeeklyTopic?.weekNumber],
     enabled: !!currentWeeklyTopic?.weekNumber,
     refetchOnWindowFocus: false
   });
 
   const [expandedSection, setExpandedSection] = useState<number | null>(null);
+  const [completedSections, setCompletedSections] = useState<Set<number>>(new Set());
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
+  // Initialize completed sections from progress data
+  useEffect(() => {
+    if (weeklyProgress) {
+      const completed = new Set<number>();
+      for (let i = 0; i < weeklyProgress.currentSection; i++) {
+        completed.add(i);
+      }
+      setCompletedSections(completed);
+      setIsBookmarked(weeklyProgress.bookmarked || false);
+    }
+  }, [weeklyProgress]);
+
+  const markSectionComplete = async (sectionIndex: number) => {
+    if (!currentWeeklyTopic) return;
+
+    const newCompleted = new Set(completedSections);
+    newCompleted.add(sectionIndex);
+    setCompletedSections(newCompleted);
+
+    const newCurrentSection = Math.max(weeklyProgress?.currentSection || 0, sectionIndex + 1);
+    const contentSections = Array.isArray(currentWeeklyTopic.content) ? currentWeeklyTopic.content : [];
+    const newProgressPercentage = Math.round((newCompleted.size / contentSections.length) * 100);
+
+    try {
+      await fetch('/api/weekly/progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: 1,
+          weekNumber: currentWeeklyTopic.weekNumber,
+          currentSection: newCurrentSection,
+          totalSections: contentSections.length,
+          progressPercentage: newProgressPercentage,
+          bookmarked: isBookmarked
+        })
+      });
+      refetchProgress();
+    } catch (error) {
+      console.error('Failed to update progress:', error);
+    }
+  };
+
+  const toggleBookmark = async () => {
+    if (!currentWeeklyTopic) return;
+
+    const newBookmarked = !isBookmarked;
+    setIsBookmarked(newBookmarked);
+
+    try {
+      await fetch('/api/weekly/progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: 1,
+          weekNumber: currentWeeklyTopic.weekNumber,
+          currentSection: weeklyProgress?.currentSection || 0,
+          totalSections: Array.isArray(currentWeeklyTopic.content) ? currentWeeklyTopic.content.length : 0,
+          progressPercentage: weeklyProgress?.progressPercentage || 0,
+          bookmarked: newBookmarked
+        })
+      });
+      refetchProgress();
+    } catch (error) {
+      console.error('Failed to update bookmark:', error);
+    }
+  };
 
   if (isLoadingCurrent) {
     return (
@@ -3195,15 +3264,26 @@ function WeeklySection() {
                 <Calendar className="w-5 h-5 text-orange-400" />
                 <span className="text-sm text-orange-400 font-medium">Week {currentWeeklyTopic.weekNumber}</span>
                 <Badge variant="secondary" className="text-xs">{currentWeeklyTopic.difficulty}</Badge>
+                <Badge variant="outline" className="text-xs">{currentWeeklyTopic.category}</Badge>
               </div>
               <h2 className="text-2xl font-bold text-white mb-2">{currentWeeklyTopic.title}</h2>
               <p className="text-zinc-300 leading-relaxed">{currentWeeklyTopic.description}</p>
             </div>
-            <div className="flex flex-col items-center ml-6">
-              <Clock className="w-8 h-8 text-zinc-400 mb-2" />
-              <span className="text-sm text-zinc-400 text-center">
-                {currentWeeklyTopic.estimatedReadTime} min read
-              </span>
+            <div className="flex flex-col items-center ml-6 gap-3">
+              <div className="flex flex-col items-center">
+                <Clock className="w-8 h-8 text-zinc-400 mb-2" />
+                <span className="text-sm text-zinc-400 text-center">
+                  {currentWeeklyTopic.estimatedReadTime} min read
+                </span>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleBookmark}
+                className={`p-2 ${isBookmarked ? 'text-orange-400 hover:text-orange-500' : 'text-zinc-400 hover:text-white'}`}
+              >
+                <Heart className={`w-5 h-5 ${isBookmarked ? 'fill-current' : ''}`} />
+              </Button>
             </div>
           </div>
 
@@ -3233,11 +3313,11 @@ function WeeklySection() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                      index < currentSection ? 'bg-green-600' : 
+                      completedSections.has(index) ? 'bg-green-600' : 
                       index === currentSection ? 'bg-orange-600' : 
                       'bg-zinc-600'
                     }`}>
-                      {index < currentSection ? (
+                      {completedSections.has(index) ? (
                         <CheckCircle className="w-4 h-4 text-white" />
                       ) : (
                         <span className="text-white text-sm font-medium">{index + 1}</span>
@@ -3246,7 +3326,7 @@ function WeeklySection() {
                     <div>
                       <h3 className="text-lg font-semibold text-white">{section.title}</h3>
                       <p className="text-sm text-zinc-400">
-                        {index < currentSection ? 'Completed' : 
+                        {completedSections.has(index) ? 'Completed' : 
                          index === currentSection ? 'Current' : 
                          'Upcoming'}
                       </p>
@@ -3285,10 +3365,24 @@ function WeeklySection() {
                       <Badge variant="outline" className="text-xs">
                         Section {index + 1} of {contentSections.length}
                       </Badge>
-                      {index >= currentSection && (
-                        <Button size="sm" className="bg-orange-600 hover:bg-orange-700">
+                      {!completedSections.has(index) && (
+                        <Button 
+                          size="sm" 
+                          className="bg-orange-600 hover:bg-orange-700"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            markSectionComplete(index);
+                          }}
+                        >
+                          <CheckCircle className="w-4 h-4 mr-2" />
                           Mark Complete
                         </Button>
+                      )}
+                      {completedSections.has(index) && (
+                        <Badge variant="default" className="bg-green-600 text-white">
+                          <CheckCircle className="w-3 h-3 mr-1" />
+                          Completed
+                        </Badge>
                       )}
                     </div>
                   </div>
