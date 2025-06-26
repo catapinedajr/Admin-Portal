@@ -350,13 +350,16 @@ export class MemStorage implements IStorage {
         title: "Understanding Bitcoin: Digital Money Revolution",
         content: `Bitcoin represents the first successful attempt at creating digital money that works without banks, governments, or any central authority controlling it.
 
+
 What Makes Bitcoin Different?
 
 Unlike traditional money, Bitcoin exists purely as computer code. But this isn't just any digital money - it's programmable money with rules that cannot be changed arbitrarily.
 
+
 The Core Innovation
 
 Bitcoin solved the "double-spending problem" - how to prevent someone from copying digital money and spending it twice. Previous attempts at digital money failed because they required a central authority to prevent double-spending.
+
 
 Key Properties
 
@@ -365,6 +368,7 @@ Bitcoin has three fundamental properties:
 • Decentralized: No single point of control or failure
 • Scarce: Only 21 million will ever exist  
 • Permissionless: Anyone can use it without asking permission
+
 
 The Revolutionary Insight: Money can exist and function without requiring trust in any institution or government.`,
         summary: "Bitcoin is programmable, decentralized digital money that operates without central control, solving the double-spending problem through cryptographic innovation.",
@@ -534,6 +538,7 @@ Throughout history, the best forms of money have shared certain characteristics:
 • Divisibility: Can be broken into smaller units
 • Verifiability: Easy to authenticate as genuine
 
+
 How Bitcoin Compares to Gold
 
 Scarcity: ✅ Fixed 21 million supply vs. unknown gold reserves
@@ -541,6 +546,7 @@ Durability: ✅ Digital format vs. physical degradation
 Portability: ✅ Instant global transfer vs. physical transport
 Divisibility: ✅ 8 decimal places vs. difficult gold division
 Verifiability: ✅ Cryptographic proof vs. expensive testing
+
 
 Bitcoin's Monetary Advantages
 
@@ -551,6 +557,7 @@ Unlike gold, Bitcoin is:
 • Transparent: All transactions are publicly verifiable
 • Resistant to confiscation: Properly stored Bitcoin cannot be seized
 
+
 The Network Effect
 
 As more people recognize Bitcoin's superior monetary properties:
@@ -558,6 +565,7 @@ As more people recognize Bitcoin's superior monetary properties:
 • Demand increases while supply remains fixed
 • Price tends to increase over long time horizons
 • Network becomes more valuable and secure
+
 
 Investment Thesis: Bitcoin combines the scarcity of gold with the utility of digital technology, creating superior hard money for the internet age.`,
         summary: "Bitcoin serves as digital gold, combining scarcity with superior portability, divisibility, and verifiability compared to traditional stores of value.",

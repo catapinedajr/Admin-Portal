@@ -142,6 +142,7 @@ Comprehensive component library built on Radix UI primitives:
 - June 26, 2025. Enhanced DCA calculator with comprehensive dropdown interfaces: 17 investment amounts ($25-$10,000), 5 frequencies (daily to quarterly), 12 time periods (3 months to 10 years), 18 historical start dates (2019-2024), and realistic historical price simulation with authentic market volatility patterns for accurate backtesting
 - June 26, 2025. Completely redesigned lesson section in Today tab with engaging interactive elements: multi-section lesson format with visual progress tracking, learning objectives and quick overview, step-by-step content with numbered progression, interactive SVG diagrams and visual representations, real-world examples and practical applications, knowledge checkpoints throughout lessons, key takeaways with highlighted insights, and seamless integration to quiz and practice sections for comprehensive learning experience
 - June 26, 2025. Fixed text formatting issues in lesson content: removed markdown "##" headers and "-" bullet points, replaced with clean text headers and "•" bullet points for optimal readability and proper spacing
+- June 26, 2025. Enhanced lesson readability with improved section spacing: added proper line breaks between sections where markdown headers were removed to prevent cramped text appearance
 - June 26, 2025. Added missing expandable "Dive Deeper" content for "Why Bitcoin Matters" fact to ensure all daily facts have comprehensive expandable explanations, examples, and key takeaways
 
 ## User Preferences
