@@ -19,7 +19,6 @@ import {
   GraduationCap,
   HelpCircle,
   DollarSign,
-  Building2,
   AlertTriangle,
   Heart,
   Play,
@@ -36,7 +35,9 @@ import {
   ChevronUp,
   CheckCircle,
   BarChart3,
-  Clock
+  Clock,
+  CreditCard,
+  Building2
 } from "lucide-react";
 import type { User, DailyFact, Lesson, UserProgress, ConvictionContent } from "@shared/schema";
 import DailyQuiz from "@/components/DailyQuiz";
@@ -413,6 +414,7 @@ type InspirationSubTab = "stories" | "conviction" | "store";
 type DisruptionSubTab = "problems" | "solutions" | "comparison" | "future";
 type StoriesSubTab = "individuals" | "businesses" | "nations";
 type ConvictionSubTab = "whitepaper" | "books" | "videos";
+type ExploreSubTab = "overview" | "detail";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<MainSection>("foundation");
@@ -425,6 +427,7 @@ export default function Home() {
   const [showPriceChart, setShowPriceChart] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
+  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [simulatorInputs, setSimulatorInputs] = useState({
     mining: { hashRate: 100, electricityCost: 0.12, bitcoinPrice: 100000 },
     dca: { monthlyAmount: 100, duration: 12, startPrice: 50000 },
@@ -947,7 +950,7 @@ export default function Home() {
                         <div className="absolute inset-0 flex items-center justify-center">
                           <div className="text-center">
                             <div className="text-2xl font-bold text-white">{user?.currentStreak || 0}</div>
-                            <div className="text-xs text-zinc-400 -mt-1">day streak</div>
+                            <div className="text-xs text-zinc-400 -mt-1">streak</div>
                           </div>
                         </div>
                       </div>
@@ -958,7 +961,7 @@ export default function Home() {
                           <div className="w-4 h-4 rounded-full bg-green-500 flex-shrink-0"></div>
                           <div className="flex-1">
                             <div className="flex items-center justify-between">
-                              <span className="text-sm text-zinc-300 font-medium">Essential Facts</span>
+                              <span className="text-sm text-zinc-300 font-medium">Today's Bitcoin Facts</span>
                               <div className="flex items-center gap-1">
                                 <CheckCircle className="w-3 h-3 text-green-400" />
                                 <span className="text-xs text-green-400 font-semibold">85%</span>
@@ -971,7 +974,7 @@ export default function Home() {
                           <div className="w-4 h-4 rounded-full bg-blue-500 flex-shrink-0"></div>
                           <div className="flex-1">
                             <div className="flex items-center justify-between">
-                              <span className="text-sm text-zinc-300 font-medium">Deep Dive</span>
+                              <span className="text-sm text-zinc-300 font-medium">Today's Lesson</span>
                               <div className="flex items-center gap-1">
                                 <Play className="w-3 h-3 text-blue-400" />
                                 <span className="text-xs text-blue-400 font-semibold">75%</span>
@@ -1410,42 +1413,109 @@ export default function Home() {
             )}
 
             {foundationSubTab === "explore" && (
-              <div className="grid gap-6">
-                {[
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-bold text-white">Deep Dive Topics</h2>
+                  <p className="text-zinc-400">Explore comprehensive lessons on advanced Bitcoin concepts</p>
+                </div>
+                
+                <div className="grid gap-6">
+                  {[
+                    {
+                    title: "Why BTC and not Crypto?",
+                    description: "Understanding why Bitcoin stands apart from the thousands of other cryptocurrencies and digital assets.",
+                    topics: ["Network Effect", "Proof of Work Security", "Decentralization", "Store of Value"],
+                    difficulty: "Beginner",
+                    icon: <Gem className="w-8 h-8 text-orange-400" />,
+                    content: "Bitcoin is fundamentally different from other cryptocurrencies due to its unique combination of properties. Unlike altcoins that often focus on features like smart contracts or faster transactions, Bitcoin prioritizes security, decentralization, and monetary soundness above all else.\n\nBitcoin has the strongest network effect - it's the most recognized, widely adopted, and liquid cryptocurrency. Its proof-of-work consensus mechanism provides unmatched security through energy expenditure, making it nearly impossible to attack or manipulate.\n\nMost importantly, Bitcoin has no central authority, founder, or company controlling it. It operates as pure digital money with a fixed supply cap of 21 million coins, making it the hardest money ever created."
+                  },
+                  {
+                    title: "T+1 vs BTC Settlement",
+                    description: "Comparing traditional financial settlement times with Bitcoin's instant final settlement.",
+                    topics: ["Settlement Risk", "Counterparty Risk", "24/7 Operations", "Global Access"],
+                    difficulty: "Beginner",
+                    icon: <Clock className="w-8 h-8 text-blue-400" />,
+                    content: "Traditional financial systems operate on T+1 (trade date plus one day) or even T+2 settlement, meaning your transaction isn't truly final for days. During this time, you face counterparty risk - the possibility that the other party won't fulfill their obligation.\n\nBitcoin transactions achieve final settlement in 10 minutes on average, with additional confirmations providing exponentially increasing security. There's no counterparty risk because the transaction is cryptographically secured and recorded on an immutable ledger.\n\nWhile traditional markets close on weekends and holidays, Bitcoin operates 24/7/365, allowing instant global value transfer at any time. This represents a fundamental improvement in how money moves."
+                  },
+                  {
+                    title: "Bitcoin Safety & Security",
+                    description: "Essential security practices for safely storing and using Bitcoin without losing your funds.",
+                    topics: ["Private Key Management", "Hardware Wallets", "Backup Strategies", "Common Scams"],
+                    difficulty: "Beginner",
+                    icon: <Shield className="w-8 h-8 text-green-400" />,
+                    content: "Bitcoin security is entirely about controlling your private keys. 'Not your keys, not your coins' is the fundamental rule. Never share your private keys or seed phrases with anyone, and never store them digitally where they can be hacked.\n\nHardware wallets provide the best security by keeping your private keys offline. Always verify your seed phrase backup and test recovery before storing significant amounts. Use multiple backups stored in different secure locations.\n\nCommon scams include fake exchanges, phishing websites, and social engineering attacks. Always verify website URLs, never respond to unsolicited messages asking for your keys, and be extremely cautious of 'investment opportunities' promising guaranteed returns."
+                  },
+                  {
+                    title: "Why HODL?",
+                    description: "The investment philosophy behind holding Bitcoin long-term instead of trading.",
+                    topics: ["Time Preference", "Volatility Management", "Dollar-Cost Averaging", "Wealth Preservation"],
+                    difficulty: "Beginner",
+                    icon: <TrendingUp className="w-8 h-8 text-purple-400" />,
+                    content: "HODL (Hold On for Dear Life) represents a low time preference approach to Bitcoin investment. Rather than trying to time markets, HODLers focus on Bitcoin's long-term value proposition as digital gold and a hedge against monetary debasement.\n\nShort-term Bitcoin price movements are highly volatile and unpredictable. Professional traders often lose money trying to time markets. HODLing removes the stress and complexity of trading while allowing you to benefit from Bitcoin's long-term adoption trend.\n\nDollar-cost averaging (DCA) combined with HODLing helps smooth out volatility by buying consistently over time. This strategy has historically rewarded patient investors who understand Bitcoin's role as a superior store of value."
+                  },
+                  {
+                    title: "Understanding Exchanges and Wallets",
+                    description: "Key differences between custodial exchanges and self-custody wallets for Bitcoin storage.",
+                    topics: ["Custodial vs Non-Custodial", "Exchange Risks", "Wallet Types", "Best Practices"],
+                    difficulty: "Beginner",
+                    icon: <CreditCard className="w-8 h-8 text-yellow-400" />,
+                    content: "Exchanges are custodial services that hold your Bitcoin for you, similar to banks holding your dollars. While convenient for trading, they introduce counterparty risk - the exchange could be hacked, go bankrupt, or freeze your account.\n\nSelf-custody wallets give you direct control of your private keys. Software wallets (mobile/desktop apps) offer convenience, while hardware wallets provide maximum security by keeping keys offline. Paper wallets store keys on physical paper.\n\nBest practice is to use exchanges only for buying/selling, then immediately withdraw to your own wallet. For large amounts, hardware wallets are essential. Always research exchange reputation, security measures, and regulatory compliance before trusting them with your funds."
+                  },
                   {
                     title: "Blockchain Technology",
                     description: "Deep dive into how blockchain works, including cryptographic hashing, merkle trees, and consensus mechanisms.",
                     topics: ["Cryptographic Hashing", "Merkle Trees", "Consensus Mechanisms", "Block Structure"],
                     difficulty: "Advanced",
-                    icon: <Network className="w-8 h-8 text-blue-400" />
+                    icon: <Network className="w-8 h-8 text-blue-400" />,
+                    content: "Bitcoin's blockchain is a distributed ledger that maintains a continuously growing list of records (blocks) linked using cryptography. Each block contains a cryptographic hash of the previous block, timestamp, and transaction data.\n\nSHA-256 hashing ensures data integrity - any change to transaction data produces a completely different hash. Merkle trees efficiently summarize all transactions in a block, allowing quick verification without downloading the entire block.\n\nThe proof-of-work consensus mechanism ensures all network participants agree on transaction history without requiring trust in a central authority. Miners compete to solve cryptographic puzzles, with the winning miner adding the next block to the chain."
                   },
                   {
-                    title: "Proof of Work",
+                    title: "Proof of Work Mining",
                     description: "Understanding Bitcoin's security model through computational proof and mining economics.",
                     topics: ["Mining Process", "Difficulty Adjustment", "Energy Usage", "Security Guarantees"],
                     difficulty: "Intermediate",
-                    icon: <Zap className="w-8 h-8 text-yellow-400" />
+                    icon: <Zap className="w-8 h-8 text-yellow-400" />,
+                    content: "Bitcoin miners compete to solve cryptographic puzzles by finding a nonce that produces a hash with a specific number of leading zeros. This requires significant computational work, proving that energy was expended to secure the network.\n\nThe difficulty adjusts every 2016 blocks (approximately 2 weeks) to maintain a 10-minute average block time regardless of total network hash rate. This elegant mechanism ensures consistent block production as mining power fluctuates.\n\nEnergy consumption is a feature, not a bug - it makes Bitcoin attacks prohibitively expensive. The energy secures a monetary network worth over $1 trillion, comparable to the energy costs of traditional banking systems."
                   },
                   {
-                    title: "Digital Signatures",
+                    title: "Digital Signatures & Cryptography",
                     description: "How Bitcoin ensures transaction authenticity through elliptic curve cryptography.",
                     topics: ["ECDSA", "Public Key Cryptography", "Transaction Signing", "Key Management"],
                     difficulty: "Advanced",
-                    icon: <Shield className="w-8 h-8 text-green-400" />
+                    icon: <Shield className="w-8 h-8 text-green-400" />,
+                    content: "Bitcoin uses Elliptic Curve Digital Signature Algorithm (ECDSA) to prove ownership of funds without revealing private keys. Your private key generates a unique public key, which creates your Bitcoin address.\n\nWhen spending Bitcoin, you create a digital signature using your private key. Anyone can verify this signature using your public key, proving you authorized the transaction without exposing sensitive information.\n\nThis cryptographic system enables trustless transactions - no need to trust the other party or a third-party intermediary. The mathematics guarantees that only the private key holder can create valid signatures for their Bitcoin."
                   },
                   {
-                    title: "Lightning Network",
+                    title: "Lightning Network Scaling",
                     description: "Bitcoin's layer 2 scaling solution for instant, low-cost payments.",
                     topics: ["Payment Channels", "Routing", "Liquidity", "Channel Management"],
                     difficulty: "Advanced",
-                    icon: <Zap className="w-8 h-8 text-purple-400" />
+                    icon: <Zap className="w-8 h-8 text-purple-400" />,
+                    content: "The Lightning Network enables near-instant Bitcoin transactions by creating payment channels between parties. Instead of broadcasting every transaction to the blockchain, parties can transact privately and only settle the final balance on-chain.\n\nPayments can route through multiple channels, allowing you to pay anyone on the network even without a direct channel. This creates a network effect where more participants increase connectivity and reduce routing costs.\n\nLightning preserves Bitcoin's core properties while enabling microtransactions and improved privacy. It represents Bitcoin's path to global payment adoption without compromising the base layer's security and decentralization."
                   },
                   {
-                    title: "Fixed Supply",
+                    title: "Bitcoin's Fixed Supply",
                     description: "Why Bitcoin's 21 million coin limit makes it unique among monetary systems.",
                     topics: ["Halving Events", "Issuance Schedule", "Scarcity Economics", "Monetary Policy"],
                     difficulty: "Beginner",
-                    icon: <Gem className="w-8 h-8 text-orange-400" />
+                    icon: <Gem className="w-8 h-8 text-orange-400" />,
+                    content: "Bitcoin's monetary policy is coded into the protocol: only 21 million Bitcoin will ever exist. New Bitcoin is created through mining rewards that halve every 210,000 blocks (approximately 4 years), creating a predictable, disinflationary issuance schedule.\n\nThis fixed supply makes Bitcoin fundamentally different from fiat currencies, which can be printed without limit. As demand increases while supply remains capped, Bitcoin naturally appreciates in value over time.\n\nThe halving events reduce the rate of new Bitcoin creation, making existing Bitcoin more scarce. This scheduled scarcity, combined with growing adoption, creates powerful economic incentives for long-term value appreciation."
+                  },
+                  {
+                    title: "Bitcoin Economics & Incentives",
+                    description: "Understanding the economic game theory that makes Bitcoin work without central control.",
+                    topics: ["Game Theory", "Economic Incentives", "Network Effects", "Adoption Curves"],
+                    difficulty: "Intermediate",
+                    icon: <BarChart3 className="w-8 h-8 text-green-400" />,
+                    content: "Bitcoin's genius lies in aligning individual incentives with network security. Miners are rewarded for honest behavior and penalized for attacks through economic incentives rather than regulations or trust.\n\nNetwork effects make Bitcoin more valuable as more people use it. Each new user, merchant, or developer adds value to the entire network, creating a positive feedback loop that strengthens Bitcoin's position as digital money.\n\nThe adoption curve follows a predictable pattern: early adopters understand Bitcoin's technology, followed by investors recognizing its store of value properties, then mainstream adoption as it becomes easier to use and more widely accepted."
+                  },
+                  {
+                    title: "Bitcoin vs Traditional Banking",
+                    description: "Comparing Bitcoin's peer-to-peer system with traditional financial intermediaries.",
+                    topics: ["Intermediary Removal", "Censorship Resistance", "Global Access", "Permissionless Innovation"],
+                    difficulty: "Beginner",
+                    icon: <Building2 className="w-8 h-8 text-red-400" />,
+                    content: "Traditional banking requires trusted intermediaries for every transaction - banks, payment processors, and clearinghouses all take fees and add delays. Bitcoin enables direct peer-to-peer transactions without intermediaries.\n\nBanks can freeze accounts, reverse transactions, or deny service based on their policies or government pressure. Bitcoin transactions are censorship-resistant - no one can stop you from sending or receiving Bitcoin if you control your private keys.\n\nBitcoin provides financial services to anyone with internet access, regardless of location, credit history, or documentation. This financial inclusion is especially powerful for the unbanked population in developing countries."
                   }
                 ].map((topic, index) => (
                   <Card key={index} className="bg-zinc-900 border-zinc-800">
@@ -1484,6 +1554,7 @@ export default function Home() {
                     </CardContent>
                   </Card>
                 ))}
+                </div>
               </div>
             )}
 
