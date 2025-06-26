@@ -366,7 +366,9 @@ Key Properties
 Bitcoin has three fundamental properties:
 
 • Decentralized: No single point of control or failure
+
 • Scarce: Only 21 million will ever exist  
+
 • Permissionless: Anyone can use it without asking permission
 
 
@@ -533,9 +535,13 @@ Properties of Good Money
 Throughout history, the best forms of money have shared certain characteristics:
 
 • Scarcity: Limited supply maintains value
+
 • Durability: Doesn't degrade over time  
+
 • Portability: Easy to transport and transfer
+
 • Divisibility: Can be broken into smaller units
+
 • Verifiability: Easy to authenticate as genuine
 
 
@@ -553,8 +559,11 @@ Bitcoin's Monetary Advantages
 Unlike gold, Bitcoin is:
 
 • Programmable: Can be sent automatically based on conditions
+
 • Permissionless: No need for vaults or intermediaries
+
 • Transparent: All transactions are publicly verifiable
+
 • Resistant to confiscation: Properly stored Bitcoin cannot be seized
 
 
@@ -563,7 +572,9 @@ The Network Effect
 As more people recognize Bitcoin's superior monetary properties:
 
 • Demand increases while supply remains fixed
+
 • Price tends to increase over long time horizons
+
 • Network becomes more valuable and secure
 
 
