@@ -406,14 +406,8 @@ export default function Home() {
             title: "The Problems with Fiat Currency",
             paragraphs: [
               "Since 1971, when President Nixon ended the gold standard, most world currencies became 'fiat' money - backed only by government promises rather than tangible assets like gold. This fundamental shift has created several critical problems that affect everyone's financial security.",
-              "",
-              "The most obvious problem is **inflation by design**. Governments can create new money at will, which reduces the purchasing power of existing money. The US dollar has lost over 85% of its value since 1971, meaning what cost $1 then requires about $6.50 today.",
-              "",
-              "Beyond inflation, fiat systems concentrate enormous power in the hands of central authorities. Banks and governments can:",
-              "• Freeze your accounts without warning",
-              "• Reverse your transactions",  
-              "• Control who can send or receive money",
-              "• Devalue your savings through unlimited money printing"
+              "The most obvious problem is inflation by design. Governments can create new money at will, which reduces the purchasing power of existing money. The US dollar has lost over 85% of its value since 1971, meaning what cost $1 then requires about $6.50 today.",
+              "Beyond inflation, fiat systems concentrate enormous power in the hands of central authorities. Banks and governments can freeze your accounts without warning, reverse your transactions, control who can send or receive money, and devalue your savings through unlimited money printing. This level of control gives them unprecedented power over your financial life."
             ],
             keyPoints: [
               "Fiat currencies have no backing beyond government decree since 1971",
@@ -426,15 +420,9 @@ export default function Home() {
           {
             title: "Bitcoin's Revolutionary Solutions",
             paragraphs: [
-              "Bitcoin addresses each of these fundamental flaws through its innovative design. Most importantly, it has a **fixed supply schedule** - only 21 million bitcoins will ever exist, with this limit enforced by mathematics rather than political promises.",
-              "",
-              "Unlike fiat systems, Bitcoin is **permissionless**. You don't need permission from any bank, government, or institution to:",
-              "• Send Bitcoin anywhere in the world",
-              "• Receive Bitcoin from anyone",
-              "• Store Bitcoin without account minimums",
-              "• Participate regardless of location or citizenship",
-              "",
-              "Bitcoin transactions are also **censorship resistant**. The network operates according to mathematical rules, not human discretion, making it immune to political interference."
+              "Bitcoin addresses each of these fundamental flaws through its innovative design. Most importantly, it has a fixed supply schedule - only 21 million bitcoins will ever exist, with this limit enforced by mathematics rather than political promises.",
+              "Unlike fiat systems, Bitcoin is permissionless. You don't need permission from any bank, government, or institution to send Bitcoin anywhere in the world, receive Bitcoin from anyone, store Bitcoin without account minimums, or participate regardless of location or citizenship.",
+              "Bitcoin transactions are also censorship resistant. The network operates according to mathematical rules, not human discretion, making it immune to political interference."
             ],
             keyPoints: [
               "Fixed 21 million coin limit prevents monetary debasement",
@@ -447,18 +435,9 @@ export default function Home() {
           {
             title: "The Path to Financial Sovereignty",
             paragraphs: [
-              "Bitcoin represents more than just a new type of money - it's a return to **individual financial sovereignty**. For the first time in generations, people can store and transfer value without depending on institutions that may not have their best interests in mind.",
-              "",
-              "This shift is particularly important for the **2 billion people worldwide** who lack access to traditional banking services. Bitcoin provides them with:",
-              "• A path to participate in the global economy",
-              "• The ability to save for the future",
-              "• Direct peer-to-peer transactions with anyone, anywhere",
-              "",
-              "Even for those with access to traditional banking, Bitcoin offers protection against:",
-              "• Monetary debasement through inflation",
-              "• Capital controls and currency restrictions", 
-              "• Institutional failure and bank collapses",
-              "• Government interference in personal finances"
+              "Bitcoin represents more than just a new type of money - it's a return to individual financial sovereignty. For the first time in generations, people can store and transfer value without depending on institutions that may not have their best interests in mind.",
+              "This shift is particularly important for the 2 billion people worldwide who lack access to traditional banking services. Bitcoin provides them with a path to participate in the global economy, the ability to save for the future, and direct peer-to-peer transactions with anyone, anywhere.",
+              "Even for those with access to traditional banking, Bitcoin offers protection against monetary debasement through inflation, capital controls and currency restrictions, institutional failure and bank collapses, and government interference in personal finances."
             ],
             keyPoints: [
               "True ownership - you control your funds without intermediaries",
@@ -467,6 +446,51 @@ export default function Home() {
               "Financial inclusion for the unbanked and underbanked worldwide"
             ],
             realWorldExample: "In countries like Argentina and Turkey, where local currencies have lost significant value, citizens increasingly turn to Bitcoin as a way to preserve their wealth and protect against hyperinflation."
+          }
+        ];
+      case "Bitcoin as Digital Gold: Store of Value":
+        return [
+          {
+            title: "The Search for Perfect Money",
+            paragraphs: [
+              "Throughout history, humans have searched for the perfect form of money. We've used seashells, cattle, salt, and precious metals. Each had strengths and weaknesses. Gold emerged as the winner for thousands of years because it was scarce, durable, and couldn't be counterfeited easily.",
+              "But gold had problems. It was heavy to transport, difficult to divide precisely, and expensive to store securely. As societies grew more complex and global, these limitations became serious obstacles. Banks emerged partly to solve these problems, but they introduced new risks - counterparty risk, theft, and the need to trust institutions.",
+              "For the first time in human history, Bitcoin combines the best properties of gold with the convenience of digital technology. It's as scarce as gold but infinitely more portable. It's as durable as gold but easier to store securely. It maintains value like gold but can be transmitted instantly across the globe."
+            ],
+            keyPoints: [
+              "Gold served as money for millennia due to its scarcity and durability",
+              "Physical gold has limitations: weight, divisibility, storage costs",
+              "Bitcoin captures gold's benefits while eliminating its drawbacks",
+              "Digital scarcity creates 'digital gold' for the internet age"
+            ]
+          },
+          {
+            title: "Why Scarcity Matters",
+            paragraphs: [
+              "Imagine you're collecting baseball cards, and suddenly the card company announces they'll print unlimited copies of every card. What happens to the value of your collection? It plummets to zero. Scarcity is what gives anything its value - when something becomes abundant, its value disappears.",
+              "This is exactly what's happening to traditional currencies. Central banks around the world are printing money at unprecedented rates. In 2020 alone, the US Federal Reserve created more dollars than existed in the entire history of the United States prior to that year. This massive money printing dilutes the value of every dollar you hold.",
+              "Bitcoin is different. Its scarcity is not based on government promises or mining difficulty - it's hardcoded into the protocol itself. The 21 million coin limit cannot be changed without unanimous agreement from the entire network, which is practically impossible. This makes Bitcoin more scarce than gold, which continues to be mined and added to the supply."
+            ],
+            keyPoints: [
+              "Scarcity is fundamental to value - abundance destroys worth",
+              "Central banks are printing money at unprecedented rates",
+              "Bitcoin's 21 million limit is mathematically enforced",
+              "More predictably scarce than gold or any other asset"
+            ]
+          },
+          {
+            title: "Store of Value Across Time",
+            paragraphs: [
+              "The ultimate test of money is whether it preserves purchasing power over time. Your great-grandparents could buy a house for $3,000 and a car for $500. Those weren't different times - that was the purchasing power of money before decades of currency debasement.",
+              "Gold has maintained purchasing power remarkably well over centuries. An ounce of gold could buy a good suit of clothes in Roman times, just as it can today. But gold's performance has been inconsistent in modern times, partly due to government intervention and the complexity of storage and transport.",
+              "Bitcoin, despite its volatility, has shown remarkable long-term value preservation. Anyone who bought Bitcoin and held it for four years or more has never lost money. As more people recognize Bitcoin's properties as digital gold, its price stability is likely to improve while maintaining its long-term value appreciation."
+            ],
+            keyPoints: [
+              "Good money preserves purchasing power across decades",
+              "Gold maintained value for centuries but has modern limitations",
+              "Bitcoin's long-term holders have never lost money",
+              "Growing recognition as 'digital gold' increases stability"
+            ]
           }
         ];
       case "Understanding Bitcoin: Digital Money":
@@ -483,8 +507,7 @@ export default function Home() {
               "Transactions are verified by network consensus, not banks",
               "You maintain complete control over your funds",
               "The network operates globally without business hours or restrictions"
-            ],
-            realWorldExample: "In 2021, El Salvador's President Nayib Bukele demonstrated Bitcoin's efficiency by sending $30 worth of Bitcoin to students across the country in under 10 minutes - something that would have taken days through traditional banking and cost $15+ in fees per transaction."
+            ]
           },
           {
             title: "Cryptographic Security That You Can Trust",
@@ -498,8 +521,7 @@ export default function Home() {
               "Digital signatures prove authorization without revealing secrets",
               "Cryptographic security has never been broken in Bitcoin's history",
               "Your Bitcoin is secured by the same cryptography protecting national secrets"
-            ],
-            realWorldExample: "In 2022, when Canada froze bank accounts during the Freedom Convoy protests, Bitcoin donations continued flowing to protesters because no government can freeze or control Bitcoin private keys - only the holder of the private key can access those funds."
+            ]
           },
           {
             title: "Global Money That Never Sleeps", 
@@ -513,8 +535,7 @@ export default function Home() {
               "Transactions process 24/7 regardless of holidays or business hours", 
               "Lower fees compared to international wire transfers",
               "No permission required from banks or governments to transact"
-            ],
-            realWorldExample: "During Ukraine's 2022 conflict, when traditional payment systems were disrupted, Bitcoin donations reached defenders within hours while bank transfers were impossible. Ukrainian officials received over $100 million in Bitcoin donations because the network operates regardless of physical infrastructure damage."
+            ]
           }
         ];
       default:
