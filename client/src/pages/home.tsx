@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Progress } from "@/components/ui/progress";
 import { 
   Bitcoin, 
   Lightbulb, 
@@ -35,7 +36,13 @@ import {
   ChevronUp,
   CheckCircle,
   BarChart3,
-  Clock
+  Clock,
+  Star,
+  Trophy,
+  Target,
+  Flame,
+  Crown,
+  Lock
 } from "lucide-react";
 import type { User, DailyFact, Lesson, UserProgress, ConvictionContent } from "@shared/schema";
 import DailyQuiz from "@/components/DailyQuiz";
@@ -59,6 +66,118 @@ type InspirationSubTab = "stories" | "conviction";
 type DisruptionSubTab = "problems" | "solutions" | "comparison" | "future";
 type StoriesSubTab = "individuals" | "businesses" | "nations";
 type ConvictionSubTab = "whitepaper" | "books" | "videos";
+
+// User progression and gamification
+interface UserLevel {
+  level: number;
+  title: string;
+  minXP: number;
+  maxXP: number;
+  color: string;
+  icon: React.ReactNode;
+}
+
+interface Achievement {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  xp: number;
+  unlocked: boolean;
+  progress?: number;
+  maxProgress?: number;
+}
+
+interface UserStats {
+  xp: number;
+  level: UserLevel;
+  currentStreak: number;
+  longestStreak: number;
+  lessonsCompleted: number;
+  quizScore: number;
+  timeSpent: number; // minutes
+  achievementsUnlocked: number;
+  subscriptionTier: 'free' | 'premium' | 'premium_plus';
+}
+
+const userLevels: UserLevel[] = [
+  { level: 1, title: "Bitcoin Curious", minXP: 0, maxXP: 100, color: "zinc", icon: <Bitcoin className="w-4 h-4" /> },
+  { level: 2, title: "Satoshi Student", minXP: 100, maxXP: 300, color: "orange", icon: <GraduationCap className="w-4 h-4" /> },
+  { level: 3, title: "Crypto Cadet", minXP: 300, maxXP: 600, color: "yellow", icon: <Shield className="w-4 h-4" /> },
+  { level: 4, title: "Blockchain Builder", minXP: 600, maxXP: 1000, color: "blue", icon: <Box className="w-4 h-4" /> },
+  { level: 5, title: "Digital Pioneer", minXP: 1000, maxXP: 1500, color: "purple", icon: <Zap className="w-4 h-4" /> },
+  { level: 6, title: "Bitcoin Expert", minXP: 1500, maxXP: 2500, color: "green", icon: <Trophy className="w-4 h-4" /> },
+  { level: 7, title: "Crypto Master", minXP: 2500, maxXP: 5000, color: "red", icon: <Crown className="w-4 h-4" /> },
+];
+
+const achievements: Achievement[] = [
+  { id: "first_lesson", title: "First Steps", description: "Complete your first lesson", icon: <BookOpen className="w-4 h-4" />, xp: 25, unlocked: true },
+  { id: "week_streak", title: "Week Warrior", description: "Maintain a 7-day learning streak", icon: <Flame className="w-4 h-4" />, xp: 100, unlocked: true },
+  { id: "quiz_master", title: "Quiz Master", description: "Score 90%+ on 5 quizzes", icon: <Target className="w-4 h-4" />, xp: 150, unlocked: false, progress: 3, maxProgress: 5 },
+  { id: "explorer", title: "Bitcoin Explorer", description: "Complete all foundation topics", icon: <Globe className="w-4 h-4" />, xp: 200, unlocked: false, progress: 3, maxProgress: 6 },
+  { id: "simulator", title: "Hands-on Learner", description: "Try all simulation tools", icon: <BarChart3 className="w-4 h-4" />, xp: 75, unlocked: false, progress: 2, maxProgress: 5 },
+  { id: "conviction", title: "True Believer", description: "Read the Bitcoin whitepaper", icon: <Heart className="w-4 h-4" />, xp: 300, unlocked: false },
+];
+
+const subscriptionTiers = {
+  free: {
+    name: "Explorer",
+    price: "$0",
+    period: "forever",
+    features: [
+      "3 daily facts per day",
+      "1 lesson per week", 
+      "Basic quiz questions",
+      "Community access",
+      "Achievement tracking"
+    ],
+    limits: {
+      dailyFacts: 3,
+      weeklyLessons: 1,
+      simulators: 1,
+      premium: false
+    }
+  },
+  premium: {
+    name: "Scholar",
+    price: "$9.99",
+    period: "month",
+    features: [
+      "Unlimited daily content",
+      "All lessons & deep dives",
+      "Advanced simulations",
+      "Progress analytics",
+      "Priority support",
+      "Exclusive content"
+    ],
+    limits: {
+      dailyFacts: -1, // unlimited
+      weeklyLessons: -1,
+      simulators: -1,
+      premium: true
+    }
+  },
+  premium_plus: {
+    name: "Master",
+    price: "$19.99", 
+    period: "month",
+    features: [
+      "Everything in Scholar",
+      "1-on-1 expert sessions",
+      "Custom learning paths",
+      "Advanced portfolio tools",
+      "Early access features",
+      "Certificate program"
+    ],
+    limits: {
+      dailyFacts: -1,
+      weeklyLessons: -1,
+      simulators: -1,
+      premium: true,
+      expertSessions: true
+    }
+  }
+};
 
 const bitcoinTerms = [
   {
@@ -620,6 +739,21 @@ export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
   const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
   const [expandedTopics, setExpandedTopics] = useState<Set<number>>(new Set());
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [showProgressModal, setShowProgressModal] = useState(false);
+  
+  // Mock user stats (would come from backend in real app)
+  const [userStats, setUserStats] = useState<UserStats>({
+    xp: 450,
+    level: userLevels.find(l => 450 >= l.minXP && 450 < l.maxXP) || userLevels[0],
+    currentStreak: 7,
+    longestStreak: 12,
+    lessonsCompleted: 15,
+    quizScore: 85,
+    timeSpent: 240,
+    achievementsUnlocked: 8,
+    subscriptionTier: 'free'
+  });
 
   // Splash screen effect
   useEffect(() => {
@@ -686,6 +820,52 @@ export default function Home() {
             </div>
             
             <div className="flex items-center gap-2">
+              {/* User Progress Display */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowProgressModal(true)}
+                className="hidden sm:flex items-center gap-2 text-xs px-2 py-1 hover:bg-zinc-800"
+              >
+                <div className="flex items-center gap-1">
+                  {userStats.level.icon}
+                  <span className="text-orange-400">{userStats.level.title}</span>
+                </div>
+                <div className="w-16 h-1.5 bg-zinc-700 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-orange-400 transition-all duration-300"
+                    style={{ 
+                      width: `${((userStats.xp - userStats.level.minXP) / (userStats.level.maxXP - userStats.level.minXP)) * 100}%` 
+                    }}
+                  />
+                </div>
+                <span className="text-zinc-400">{userStats.xp} XP</span>
+              </Button>
+              
+              {/* Streak Counter */}
+              <div className="flex items-center gap-1 text-xs px-2 py-1 bg-zinc-800 rounded">
+                <Flame className="w-3 h-3 text-orange-500" />
+                <span className="text-orange-400">{userStats.currentStreak}</span>
+              </div>
+              
+              {/* Subscription Badge */}
+              {userStats.subscriptionTier === 'free' && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowUpgradeModal(true)}
+                  className="text-xs px-2 py-1 border-orange-500/30 text-orange-400 hover:bg-orange-500/10"
+                >
+                  Upgrade
+                </Button>
+              )}
+              
+              {userStats.subscriptionTier !== 'free' && (
+                <Badge variant="outline" className="border-green-500/30 text-green-400 text-xs px-2 py-1">
+                  {subscriptionTiers[userStats.subscriptionTier].name}
+                </Badge>
+              )}
+              
               <Button
                 variant="ghost"
                 size="sm"
@@ -900,6 +1080,34 @@ export default function Home() {
                   {dailyFacts.map((fact, index) => {
                     const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Lightbulb;
                     const isExpanded = expandedTopics.has(index);
+                    const isLocked = userStats.subscriptionTier === 'free' && index >= subscriptionTiers.free.limits.dailyFacts;
+                    
+                    if (isLocked) {
+                      return (
+                        <Card key={fact.id} className="bg-zinc-900/50 border-zinc-800 relative overflow-hidden">
+                          <CardContent className="p-6">
+                            <div className="flex items-start gap-4">
+                              <div className="flex-shrink-0 w-10 h-10 bg-zinc-600/10 rounded-lg flex items-center justify-center">
+                                <Lock className="w-5 h-5 text-zinc-500" />
+                              </div>
+                              <div className="flex-1">
+                                <h3 className="font-semibold text-zinc-400 mb-2">Premium Content</h3>
+                                <p className="text-zinc-500 leading-relaxed">Unlock unlimited daily facts with premium subscription</p>
+                                <Button
+                                  size="sm"
+                                  onClick={() => setShowUpgradeModal(true)}
+                                  className="mt-3 bg-orange-600 hover:bg-orange-700 text-white"
+                                >
+                                  <Crown className="w-4 h-4 mr-1" />
+                                  Upgrade to Premium
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    }
+                    
                     return (
                       <Card key={fact.id} className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors">
                         <CardContent className="p-6">
@@ -983,32 +1191,81 @@ export default function Home() {
               </div>
             )}
 
-            {foundationSubTab === "lesson" && lesson && (
+            {foundationSubTab === "lesson" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h2 className="text-2xl font-bold text-white">Today's Lesson</h2>
                   <p className="text-zinc-400">Deep dive into Bitcoin concepts</p>
                 </div>
                 
-                <Card className="bg-zinc-900 border-zinc-800">
-                  <CardContent className="p-6">
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-xl font-semibold text-white">{lesson.title}</h3>
-                        <Badge variant="outline" className="border-zinc-700 text-zinc-400">
-                          {lesson.estimatedReadTime} min read
-                        </Badge>
+                {/* Free tier weekly lesson limit */}
+                {userStats.subscriptionTier === 'free' && userStats.lessonsCompleted >= subscriptionTiers.free.limits.weeklyLessons && (
+                  <Card className="bg-zinc-900/50 border-zinc-800">
+                    <CardContent className="p-6 text-center">
+                      <div className="w-16 h-16 bg-zinc-600/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Lock className="w-8 h-8 text-zinc-500" />
                       </div>
-                      <div className="prose prose-invert max-w-none">
-                        {lesson.content.split('\n').map((paragraph, index) => (
-                          <p key={index} className="text-zinc-300 leading-relaxed mb-4">
-                            {paragraph}
-                          </p>
-                        ))}
+                      <h3 className="text-xl font-semibold text-zinc-400 mb-2">Weekly Lesson Limit Reached</h3>
+                      <p className="text-zinc-500 mb-4">
+                        Free users get {subscriptionTiers.free.limits.weeklyLessons} lesson per week. 
+                        Upgrade to premium for unlimited access to all lessons and deep dives.
+                      </p>
+                      <Button
+                        onClick={() => setShowUpgradeModal(true)}
+                        className="bg-orange-600 hover:bg-orange-700 text-white"
+                      >
+                        <Crown className="w-4 h-4 mr-2" />
+                        Upgrade to Premium
+                      </Button>
+                    </CardContent>
+                  </Card>
+                )}
+                
+                {lesson && (userStats.subscriptionTier !== 'free' || userStats.lessonsCompleted < subscriptionTiers.free.limits.weeklyLessons) && (
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-xl font-semibold text-white">{lesson.title}</h3>
+                          <Badge variant="outline" className="border-zinc-700 text-zinc-400">
+                            {lesson.estimatedReadTime} min read
+                          </Badge>
+                        </div>
+                        <div className="prose prose-invert max-w-none">
+                          {lesson.content.split('\n').map((paragraph, index) => (
+                            <p key={index} className="text-zinc-300 leading-relaxed mb-4">
+                              {paragraph}
+                            </p>
+                          ))}
+                        </div>
+                        
+                        {/* Progress tracking for premium features */}
+                        {userStats.subscriptionTier !== 'free' && (
+                          <div className="mt-4 p-3 bg-zinc-800/50 rounded-lg">
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-zinc-400">Lesson completed</span>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-green-400 border-green-500/30"
+                                onClick={() => {
+                                  setUserStats(prev => ({
+                                    ...prev,
+                                    lessonsCompleted: prev.lessonsCompleted + 1,
+                                    xp: prev.xp + 50
+                                  }));
+                                }}
+                              >
+                                <CheckCircle className="w-4 h-4 mr-1" />
+                                +50 XP
+                              </Button>
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             )}
 
@@ -2240,6 +2497,218 @@ export default function Home() {
           </p>
         </div>
       </main>
+
+      {/* User Progress Modal */}
+      <Dialog open={showProgressModal} onOpenChange={setShowProgressModal}>
+        <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-xl text-orange-400">Your Bitcoin Journey Progress</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-6">
+            {/* Level Progress */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {userStats.level.icon}
+                  <h3 className="text-lg font-semibold">{userStats.level.title}</h3>
+                  <Badge variant="outline" className="border-orange-500/30 text-orange-400">
+                    Level {userStats.level.level}
+                  </Badge>
+                </div>
+                <span className="text-zinc-400">{userStats.xp} / {userStats.level.maxXP} XP</span>
+              </div>
+              <Progress 
+                value={((userStats.xp - userStats.level.minXP) / (userStats.level.maxXP - userStats.level.minXP)) * 100} 
+                className="h-3 bg-zinc-800"
+              />
+              <p className="text-sm text-zinc-400">
+                {userStats.level.maxXP - userStats.xp} XP until next level
+              </p>
+            </div>
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-zinc-800/50 rounded-lg p-4 text-center">
+                <Flame className="w-6 h-6 text-orange-500 mx-auto mb-2" />
+                <div className="text-2xl font-bold text-orange-400">{userStats.currentStreak}</div>
+                <div className="text-sm text-zinc-400">Day Streak</div>
+              </div>
+              <div className="bg-zinc-800/50 rounded-lg p-4 text-center">
+                <BookOpen className="w-6 h-6 text-blue-500 mx-auto mb-2" />
+                <div className="text-2xl font-bold text-blue-400">{userStats.lessonsCompleted}</div>
+                <div className="text-sm text-zinc-400">Lessons</div>
+              </div>
+              <div className="bg-zinc-800/50 rounded-lg p-4 text-center">
+                <Target className="w-6 h-6 text-green-500 mx-auto mb-2" />
+                <div className="text-2xl font-bold text-green-400">{userStats.quizScore}%</div>
+                <div className="text-sm text-zinc-400">Quiz Score</div>
+              </div>
+              <div className="bg-zinc-800/50 rounded-lg p-4 text-center">
+                <Clock className="w-6 h-6 text-purple-500 mx-auto mb-2" />
+                <div className="text-2xl font-bold text-purple-400">{Math.floor(userStats.timeSpent / 60)}h</div>
+                <div className="text-sm text-zinc-400">Time Spent</div>
+              </div>
+            </div>
+
+            {/* Achievements */}
+            <div className="space-y-3">
+              <h3 className="text-lg font-semibold">Achievements</h3>
+              <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto">
+                {achievements.map((achievement) => (
+                  <div
+                    key={achievement.id}
+                    className={`flex items-center gap-3 p-3 rounded-lg ${
+                      achievement.unlocked 
+                        ? 'bg-green-900/20 border border-green-800/50' 
+                        : 'bg-zinc-800/30 border border-zinc-700/50'
+                    }`}
+                  >
+                    <div className={`p-2 rounded-lg ${
+                      achievement.unlocked ? 'bg-green-600/20' : 'bg-zinc-700'
+                    }`}>
+                      {achievement.unlocked ? achievement.icon : <Lock className="w-4 h-4" />}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <h4 className={`font-medium ${
+                          achievement.unlocked ? 'text-green-400' : 'text-zinc-400'
+                        }`}>
+                          {achievement.title}
+                        </h4>
+                        <Badge variant="outline" className="text-xs">
+                          +{achievement.xp} XP
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-zinc-500">{achievement.description}</p>
+                      {achievement.progress !== undefined && !achievement.unlocked && (
+                        <div className="mt-1">
+                          <Progress 
+                            value={(achievement.progress / achievement.maxProgress!) * 100} 
+                            className="h-1 bg-zinc-700"
+                          />
+                          <span className="text-xs text-zinc-500">
+                            {achievement.progress}/{achievement.maxProgress}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Upgrade Modal */}
+      <Dialog open={showUpgradeModal} onOpenChange={setShowUpgradeModal}>
+        <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl text-orange-400">Upgrade Your Bitcoin Journey</DialogTitle>
+            <p className="text-zinc-400">Unlock premium features and accelerate your learning</p>
+          </DialogHeader>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {Object.entries(subscriptionTiers).map(([tierKey, tier]) => (
+              <div
+                key={tierKey}
+                className={`border rounded-lg p-6 space-y-4 ${
+                  tierKey === 'premium' 
+                    ? 'border-orange-500 bg-orange-500/5' 
+                    : tierKey === 'premium_plus'
+                    ? 'border-purple-500 bg-purple-500/5'
+                    : 'border-zinc-700 bg-zinc-800/50'
+                }`}
+              >
+                <div className="text-center">
+                  {tierKey === 'premium' && <Crown className="w-8 h-8 text-orange-500 mx-auto mb-2" />}
+                  {tierKey === 'premium_plus' && <Trophy className="w-8 h-8 text-purple-500 mx-auto mb-2" />}
+                  {tierKey === 'free' && <Bitcoin className="w-8 h-8 text-zinc-500 mx-auto mb-2" />}
+                  
+                  <h3 className="text-xl font-bold">{tier.name}</h3>
+                  <div className="text-3xl font-bold">
+                    {tier.price}
+                    {tier.period !== 'forever' && (
+                      <span className="text-lg text-zinc-400">/{tier.period}</span>
+                    )}
+                  </div>
+                  
+                  {tierKey === 'premium' && (
+                    <Badge className="bg-orange-600 text-white">Most Popular</Badge>
+                  )}
+                  {tierKey === 'premium_plus' && (
+                    <Badge className="bg-purple-600 text-white">Best Value</Badge>
+                  )}
+                </div>
+
+                <ul className="space-y-2">
+                  {tier.features.map((feature, index) => (
+                    <li key={index} className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+
+                <Button
+                  className={`w-full ${
+                    tierKey === 'premium'
+                      ? 'bg-orange-600 hover:bg-orange-700'
+                      : tierKey === 'premium_plus'
+                      ? 'bg-purple-600 hover:bg-purple-700'
+                      : 'bg-zinc-700 hover:bg-zinc-600'
+                  }`}
+                  disabled={userStats.subscriptionTier === tierKey}
+                >
+                  {userStats.subscriptionTier === tierKey 
+                    ? 'Current Plan' 
+                    : tierKey === 'free' 
+                    ? 'Current Plan'
+                    : 'Upgrade Now'
+                  }
+                </Button>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-6 space-y-4">
+            <div className="bg-zinc-800/50 rounded-lg p-4">
+              <h4 className="font-semibold text-orange-400 mb-2">Why Upgrade?</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div className="flex items-start gap-2">
+                  <Star className="w-4 h-4 text-yellow-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <strong>Unlimited Learning:</strong> Access all daily content, lessons, and simulations without restrictions
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <BarChart3 className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <strong>Advanced Analytics:</strong> Track your progress with detailed insights and personalized recommendations
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Users className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <strong>Expert Sessions:</strong> 1-on-1 guidance from Bitcoin educators and industry professionals
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Zap className="w-4 h-4 text-purple-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <strong>Early Access:</strong> Be first to try new features and educational content
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="text-center text-sm text-zinc-500">
+              30-day money-back guarantee • Cancel anytime • Secure payment processing
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
