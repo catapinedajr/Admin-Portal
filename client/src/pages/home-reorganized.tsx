@@ -949,7 +949,7 @@ export default function Home() {
                             <div className="w-3 h-3 rounded-full bg-blue-500"></div>
                             <span className="text-sm text-zinc-300 min-w-[50px]">Lesson</span>
                             <div className="flex items-center gap-1">
-                              <PlayCircle className="w-3 h-3 text-blue-400" />
+                              <Play className="w-3 h-3 text-blue-400" />
                               <span className="text-xs text-blue-400">75%</span>
                             </div>
                           </div>
@@ -957,7 +957,7 @@ export default function Home() {
                             <div className="w-3 h-3 rounded-full bg-purple-500"></div>
                             <span className="text-sm text-zinc-300 min-w-[50px]">Quiz</span>
                             <div className="flex items-center gap-1">
-                              <Target className="w-3 h-3 text-purple-400" />
+                              <CheckCircle className="w-3 h-3 text-purple-400" />
                               <span className="text-xs text-purple-400">100%</span>
                             </div>
                           </div>

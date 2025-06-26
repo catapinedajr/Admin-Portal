@@ -135,6 +135,7 @@ Comprehensive component library built on Radix UI primitives:
 - June 26, 2025. Added comprehensive Wallet Safety section to Practice area with private key security rules, wallet type comparisons, common scam awareness, and interactive security checklist
 - June 26, 2025. Implemented affiliate revenue store in More section featuring hardware wallets (Ledger Nano X, Trezor Model T) and essential Bitcoin books (Lyn Alden's "Broken Money", "Bitcoin Standard", "Fiat Standard") with affiliate disclosure
 - June 26, 2025. Enhanced "Today" section in Learn area for maximum educational effectiveness: clear learning objectives, structured 3-step progression (Essential Facts → Deep Dive → Knowledge Test), interactive learning path visualization, motivational progress tracking, and completion celebration to improve engagement and knowledge retention
+- June 26, 2025. Redesigned "Today" section top area with Apple Activity tracker-inspired progress rings: condensed header with concentric progress circles showing completion status, streak counter prominently displayed in center, 50% smaller footprint while retaining all features for cleaner mobile-friendly design
 
 ## User Preferences
 
