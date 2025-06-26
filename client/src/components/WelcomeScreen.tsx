@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ArrowDown, BookOpen, Brain, Trophy, Compass, Bitcoin, ChevronDown } from 'lucide-react';
+import { ArrowDown, BookOpen, Brain, Trophy, Compass, Bitcoin, Sparkles, Star, TrendingUp } from 'lucide-react';
 
 interface WelcomeScreenProps {
   onComplete: () => void;
@@ -14,48 +14,60 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
   const steps = [
     {
       id: 'intro',
-      title: 'Welcome to Your BTC Journey',
-      content: 'Everyone goes on their own Bitcoin journey. At first, it seems overwhelming and hard to understand...',
-      bgGradient: 'from-slate-900 to-black'
+      title: 'Welcome to Your Bitcoin Journey',
+      subtitle: 'Transform Confusion into Clarity',
+      content: 'Every Bitcoin expert started exactly where you are now. What seems impossibly complex today becomes beautifully simple tomorrow.',
+      accentColor: 'purple',
+      gradient: 'from-purple-900/40 via-blue-900/30 to-black'
     },
     {
       id: 'problem',
-      title: 'The Challenge',
-      content: 'Complex terminology, technical concepts, and confusing explanations make Bitcoin feel impossible to learn.',
-      bgGradient: 'from-red-950/30 to-black'
+      title: 'The Bitcoin Learning Challenge',
+      subtitle: 'Why Traditional Approaches Fail',
+      content: 'Dense whitepapers, technical jargon, and fragmented information create barriers instead of bridges to understanding.',
+      accentColor: 'red',
+      gradient: 'from-red-900/40 via-orange-900/30 to-black'
     },
     {
       id: 'solution',
-      title: 'Why We Built This App',
-      content: 'We developed BTC Journey to help you learn Bitcoin in a fun, easy, and digestible way - one step at a time.',
-      bgGradient: 'from-orange-950/30 to-black'
+      title: 'Our Revolutionary Approach',
+      subtitle: 'Designed by Experts, Built for Beginners',
+      content: '₿ Journey transforms complex Bitcoin concepts into engaging, bite-sized lessons that build real understanding.',
+      accentColor: 'emerald',
+      gradient: 'from-emerald-900/40 via-teal-900/30 to-black'
     },
     {
       id: 'daily-learning',
-      title: 'Your Daily Learning',
-      content: 'Each day, discover new Bitcoin facts, complete interactive lessons, and test your knowledge with quizzes.',
-      bgGradient: 'from-blue-950/30 to-black',
+      title: 'Your Personalized Learning Experience',
+      subtitle: 'Progress at Your Perfect Pace',
+      content: 'Discover curated insights, master key concepts, and validate your knowledge through our scientifically-designed learning system.',
+      accentColor: 'blue',
+      gradient: 'from-blue-900/40 via-indigo-900/30 to-black',
       features: [
-        { icon: <BookOpen className="w-8 h-8" />, label: 'Daily Facts', color: 'bg-blue-600' },
-        { icon: <Brain className="w-8 h-8" />, label: 'Lessons', color: 'bg-purple-600' },
-        { icon: <Trophy className="w-8 h-8" />, label: 'Quizzes', color: 'bg-green-600' }
+        { icon: <Sparkles className="w-7 h-7" />, label: 'Daily Insights', color: 'bg-gradient-to-r from-blue-500 to-blue-600', description: 'Curated facts' },
+        { icon: <Brain className="w-7 h-7" />, label: 'Deep Lessons', color: 'bg-gradient-to-r from-purple-500 to-purple-600', description: 'Expert explanations' },
+        { icon: <Trophy className="w-7 h-7" />, label: 'Smart Quizzes', color: 'bg-gradient-to-r from-green-500 to-green-600', description: 'Test mastery' }
       ]
     },
     {
       id: 'explore',
-      title: 'Explore at Your Own Pace',
-      content: 'Want to dive deeper? Access our comprehensive glossary, simulations, and advanced topics whenever you\'re ready.',
-      bgGradient: 'from-purple-950/30 to-black',
+      title: 'Unlimited Exploration',
+      subtitle: 'Advanced Tools for Serious Learners',
+      content: 'Access professional-grade simulations, comprehensive glossaries, and cutting-edge analysis tools that power your Bitcoin expertise.',
+      accentColor: 'orange',
+      gradient: 'from-orange-900/40 via-amber-900/30 to-black',
       features: [
-        { icon: <Compass className="w-8 h-8" />, label: 'Self-Guided', color: 'bg-orange-600' },
-        { icon: <Bitcoin className="w-8 h-8" />, label: 'Advanced Topics', color: 'bg-amber-600' }
+        { icon: <TrendingUp className="w-7 h-7" />, label: 'Live Simulations', color: 'bg-gradient-to-r from-orange-500 to-orange-600', description: 'Interactive models' },
+        { icon: <Star className="w-7 h-7" />, label: 'Expert Content', color: 'bg-gradient-to-r from-amber-500 to-amber-600', description: 'Premium insights' }
       ]
     },
     {
       id: 'fork',
-      title: 'Choose Your Path',
-      content: 'Your Bitcoin journey starts here. Take the path toward understanding, financial sovereignty, and the future of money.',
-      bgGradient: 'from-orange-950/40 to-black'
+      title: 'Your Bitcoin Future Awaits',
+      subtitle: 'Choose Your Destiny',
+      content: 'This is where your transformation begins. Step onto the golden path toward Bitcoin mastery and financial sovereignty.',
+      accentColor: 'yellow',
+      gradient: 'from-yellow-900/40 via-orange-900/30 to-black'
     }
   ];
 
@@ -68,7 +80,7 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
       } else {
         setAutoScroll(false);
       }
-    }, 4000);
+    }, 6000);
 
     return () => clearTimeout(timer);
   }, [currentStep, autoScroll]);
@@ -80,198 +92,259 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-black text-white overflow-y-auto">
-      {/* Header - Fixed */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border-b border-orange-500/20">
-        <div className="flex items-center justify-center py-4">
-          <div className="flex items-center gap-3">
-            <div className="text-orange-400 text-3xl font-bold">₿</div>
-            <h1 className="text-2xl font-bold text-white">
-              BTC <span className="text-orange-400">Journey</span>
-            </h1>
-          </div>
-        </div>
-      </div>
-
-      {/* Road Path Visualization */}
-      <div className="fixed left-8 top-20 bottom-8 w-2 z-40">
-        <div className="relative h-full">
-          {/* Main path line */}
-          <div className="absolute left-0 top-0 w-1 h-full bg-gradient-to-b from-orange-600 via-orange-500 to-orange-400 rounded-full opacity-60" />
-          
-          {/* Progress indicator */}
-          <motion.div
-            className="absolute left-0 w-4 h-4 bg-orange-400 rounded-full border-2 border-white shadow-lg -ml-1.5"
-            initial={{ top: '0%' }}
-            animate={{ top: `${(currentStep / (steps.length - 1)) * 85}%` }}
-            transition={{ type: 'spring', damping: 20 }}
-          />
-          
-          {/* Step markers */}
+  const renderStepProgress = () => {
+    return (
+      <div className="flex justify-center mb-16">
+        <div className="flex items-center gap-4">
           {steps.map((_, index) => (
-            <div
+            <motion.div
               key={index}
-              className={`absolute w-3 h-3 rounded-full -ml-1 transition-all duration-300 ${
-                index <= currentStep 
-                  ? 'bg-orange-400 scale-110' 
-                  : 'bg-gray-600 scale-75'
+              className={`h-2 rounded-full transition-all duration-500 ${
+                index === currentStep
+                  ? 'w-12 bg-gradient-to-r from-orange-400 to-yellow-400'
+                  : index < currentStep
+                  ? 'w-8 bg-green-400'
+                  : 'w-6 bg-gray-600'
               }`}
-              style={{ top: `${(index / (steps.length - 1)) * 85}%` }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.1 }}
             />
           ))}
         </div>
       </div>
+    );
+  };
+
+  return (
+    <div className="min-h-screen bg-black text-white overflow-hidden relative">
+      {/* Premium background effects */}
+      <div className="fixed inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-950/20 via-blue-950/10 to-black" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(251,146,60,0.1),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(59,130,246,0.05),transparent_50%)]" />
+      </div>
+
+      {/* Header - Premium Design */}
+      <motion.div 
+        className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-xl border-b border-orange-500/20"
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
+        <div className="flex items-center justify-center py-6">
+          <motion.div 
+            className="flex items-center gap-4"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+          >
+            <motion.div 
+              className="text-orange-400 text-4xl font-bold"
+              animate={{ rotate: [0, 5, -5, 0] }}
+              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+            >
+              ₿
+            </motion.div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-orange-200 to-orange-400 bg-clip-text text-transparent">
+              Journey
+            </h1>
+          </motion.div>
+        </div>
+      </motion.div>
 
       {/* Content Sections */}
-      <div className="ml-20 pt-24">
-        {steps.map((step, index) => (
+      <div className="relative z-10 pt-24">
+        <AnimatePresence mode="wait">
           <motion.section
-            key={step.id}
-            className={`min-h-screen flex items-center justify-center relative bg-gradient-to-br ${step.bgGradient}`}
-            initial={{ opacity: 0.3 }}
-            animate={{ 
-              opacity: currentStep === index ? 1 : currentStep > index ? 0.5 : 0.3,
-              scale: currentStep === index ? 1 : 0.95
-            }}
-            transition={{ duration: 0.8 }}
+            key={currentStep}
+            className={`min-h-screen flex flex-col justify-center relative px-8 bg-gradient-to-br ${steps[currentStep].gradient}`}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.05 }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
           >
-            <div className="max-w-4xl mx-auto px-8 text-center space-y-8">
-              {/* Step number */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600/20 rounded-full border border-orange-500/30">
-                <span className="text-orange-300 text-sm font-medium">Step {index + 1} of {steps.length}</span>
-              </div>
+            {/* Simple Step Progress */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+            >
+              {renderStepProgress()}
+            </motion.div>
+            
+            <div className="max-w-5xl mx-auto text-center space-y-8">
+              {/* Premium step indicator */}
+              <motion.div 
+                className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-600/20 to-purple-600/20 rounded-full border border-orange-500/30 backdrop-blur-sm"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.4 }}
+              >
+                <Sparkles className="w-4 h-4 text-orange-400" />
+                <span className="text-orange-200 font-medium">Step {currentStep + 1} of {steps.length}</span>
+              </motion.div>
 
-              {/* Title */}
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                {step.title}
-              </h2>
+              {/* Premium Title */}
+              <motion.div
+                className="space-y-3"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6, duration: 0.8 }}
+              >
+                <h2 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-white via-orange-200 to-orange-400 bg-clip-text text-transparent leading-tight">
+                  {steps[currentStep].title}
+                </h2>
+                <h3 className="text-xl md:text-2xl text-orange-300/80 font-medium">
+                  {steps[currentStep].subtitle}
+                </h3>
+              </motion.div>
 
-              {/* Content */}
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8">
-                {step.content}
-              </p>
+              {/* Premium Content */}
+              <motion.p 
+                className="text-xl md:text-2xl text-gray-200 max-w-4xl mx-auto leading-relaxed font-light"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8, duration: 0.8 }}
+              >
+                {steps[currentStep].content}
+              </motion.p>
 
-              {/* Features (for relevant steps) */}
-              {step.features && (
-                <div className="flex justify-center gap-8 mt-12">
-                  {step.features.map((feature, featureIndex) => (
+              {/* Premium Features */}
+              {steps[currentStep].features && (
+                <motion.div 
+                  className="grid md:grid-cols-3 gap-8 mt-16"
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1, duration: 0.8 }}
+                >
+                  {steps[currentStep].features.map((feature, featureIndex) => (
                     <motion.div
                       key={featureIndex}
-                      className="flex flex-col items-center gap-3"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: currentStep === index ? 1 : 0, y: currentStep === index ? 0 : 20 }}
-                      transition={{ delay: 0.3 + featureIndex * 0.1 }}
+                      className="group relative"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 1.2 + featureIndex * 0.1, duration: 0.6 }}
+                      whileHover={{ scale: 1.05 }}
                     >
-                      <div className={`w-16 h-16 ${feature.color} rounded-full flex items-center justify-center text-white shadow-lg`}>
-                        {feature.icon}
+                      <div className="relative p-8 bg-gradient-to-br from-gray-900/50 to-gray-800/30 rounded-2xl border border-orange-500/20 backdrop-blur-sm group-hover:border-orange-400/40 transition-all duration-300">
+                        <div className={`w-16 h-16 ${feature.color} rounded-2xl flex items-center justify-center text-white shadow-2xl mb-4 mx-auto group-hover:scale-110 transition-transform duration-300`}>
+                          {feature.icon}
+                        </div>
+                        <h4 className="text-xl font-bold text-white mb-2">{feature.label}</h4>
+                        <p className="text-gray-400 text-sm">{feature.description}</p>
+                        
+                        {/* Premium glow effect */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-orange-600/5 to-purple-600/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       </div>
-                      <span className="text-gray-400 font-medium">{feature.label}</span>
                     </motion.div>
                   ))}
-                </div>
-              )}
-
-              {/* Fork in the road visual for final step */}
-              {step.id === 'fork' && (
-                <div className="relative mt-12">
-                  <svg className="w-80 h-40 mx-auto" viewBox="0 0 320 160">
-                    <defs>
-                      <linearGradient id="roadGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="rgb(107 114 128)" />
-                        <stop offset="100%" stopColor="rgb(251 146 60)" />
-                      </linearGradient>
-                    </defs>
-                    
-                    {/* Main road */}
-                    <path
-                      d="M 20 140 Q 160 120 200 80"
-                      stroke="url(#roadGradient)"
-                      strokeWidth="8"
-                      fill="none"
-                      className="opacity-80"
-                    />
-                    
-                    {/* Bitcoin path */}
-                    <path
-                      d="M 200 80 Q 240 50 300 20"
-                      stroke="rgb(251 146 60)"
-                      strokeWidth="10"
-                      fill="none"
-                      className="animate-pulse"
-                    />
-                    
-                    {/* Alternative path */}
-                    <path
-                      d="M 200 80 Q 240 110 300 140"
-                      stroke="rgb(107 114 128)"
-                      strokeWidth="6"
-                      fill="none"
-                      className="opacity-40"
-                    />
-                    
-                    {/* Bitcoin symbol */}
-                    <text x="280" y="30" fill="rgb(251 146 60)" fontSize="20" className="font-bold">₿</text>
-                    <text x="290" y="50" fill="rgb(251 146 60)" fontSize="10">Bitcoin</text>
-                  </svg>
-                </div>
-              )}
-
-              {/* Navigation hint for current step */}
-              {currentStep === index && index < steps.length - 1 && (
-                <motion.div
-                  className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer"
-                  onClick={scrollToNext}
-                  animate={{ y: [0, 10, 0] }}
-                  transition={{ repeat: Infinity, duration: 2 }}
-                >
-                  <span className="text-orange-300 text-sm">Continue</span>
-                  <ChevronDown className="w-6 h-6 text-orange-400" />
                 </motion.div>
               )}
 
-              {/* Final call to action */}
-              {currentStep === index && index === steps.length - 1 && (
-                <motion.div
-                  className="mt-12"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                >
-                  <Button
-                    onClick={onComplete}
-                    className="bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white px-12 py-4 text-lg font-semibold rounded-full shadow-lg transition-all duration-300 transform hover:scale-105"
+              {/* Premium Navigation */}
+              <motion.div
+                className="flex justify-center mt-16"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.4 }}
+              >
+                {currentStep < steps.length - 1 ? (
+                  <motion.button
+                    onClick={scrollToNext}
+                    className="group relative px-12 py-4 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white font-bold rounded-full shadow-2xl transition-all duration-300 overflow-hidden"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    Start Your Bitcoin Journey
-                    <ArrowDown className="w-5 h-5 ml-2" />
-                  </Button>
-                </motion.div>
-              )}
+                    <span className="relative z-10 flex items-center gap-3">
+                      Continue Your Journey
+                      <ArrowDown className="w-5 h-5 group-hover:translate-y-1 transition-transform duration-300" />
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-yellow-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+                  </motion.button>
+                ) : (
+                  <motion.button
+                    onClick={onComplete}
+                    className="group relative px-16 py-6 bg-gradient-to-r from-green-600 via-orange-500 to-yellow-500 hover:from-green-500 hover:via-orange-400 hover:to-yellow-400 text-white font-bold text-xl rounded-full shadow-2xl transition-all duration-500 overflow-hidden"
+                    whileHover={{ scale: 1.1, y: -4 }}
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.6 }}
+                  >
+                    <span className="relative z-10 flex items-center gap-4">
+                      <Sparkles className="w-6 h-6" />
+                      Begin Your Bitcoin Journey
+                      <Sparkles className="w-6 h-6" />
+                    </span>
+                    <motion.div 
+                      className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400"
+                      animate={{ x: ['-100%', '100%'] }}
+                      transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
+                      style={{ opacity: 0.3 }}
+                    />
+                  </motion.button>
+                )}
+              </motion.div>
             </div>
           </motion.section>
-        ))}
+        </AnimatePresence>
       </div>
 
-      {/* Progress bar at bottom */}
-      <div className="fixed bottom-0 left-0 right-0 h-1 bg-gray-800 z-50">
-        <motion.div
-          className="h-full bg-gradient-to-r from-orange-600 to-orange-400"
-          initial={{ width: '0%' }}
-          animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-          transition={{ duration: 0.8 }}
-        />
+      {/* Premium Progress Indicator */}
+      <div className="fixed right-8 top-1/2 transform -translate-y-1/2 z-40">
+        <div className="flex flex-col gap-4 p-4 bg-black/40 backdrop-blur-lg rounded-2xl border border-orange-500/20">
+          {steps.map((_, index) => (
+            <motion.button
+              key={index}
+              onClick={() => {
+                setCurrentStep(index);
+                setAutoScroll(false);
+              }}
+              className={`w-4 h-4 rounded-full transition-all duration-500 relative ${
+                index === currentStep
+                  ? 'bg-gradient-to-r from-orange-400 to-yellow-400 scale-150 shadow-lg shadow-orange-400/50'
+                  : index < currentStep
+                  ? 'bg-gradient-to-r from-green-400 to-emerald-400 scale-125'
+                  : 'bg-gray-600 scale-75 hover:scale-100'
+              }`}
+              whileHover={{ scale: index === currentStep ? 1.6 : 1.2 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              {index === currentStep && (
+                <motion.div
+                  className="absolute inset-0 bg-orange-400 rounded-full"
+                  animate={{ scale: [1, 1.5, 1], opacity: [1, 0, 1] }}
+                  transition={{ repeat: Infinity, duration: 2 }}
+                />
+              )}
+            </motion.button>
+          ))}
+        </div>
       </div>
 
-      {/* Auto-scroll controls */}
+      {/* Premium Auto-scroll Control */}
       {autoScroll && currentStep < steps.length - 1 && (
-        <div className="fixed top-24 right-4 z-50">
+        <motion.div 
+          className="fixed top-32 right-8 z-50"
+          initial={{ opacity: 0, x: 100 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 2 }}
+        >
           <button
             onClick={() => setAutoScroll(false)}
-            className="px-3 py-1 bg-orange-600/80 text-white text-xs rounded-full hover:bg-orange-700 transition-colors"
+            className="group px-4 py-2 bg-gradient-to-r from-gray-800/80 to-gray-700/80 backdrop-blur-lg text-white text-sm rounded-full border border-gray-600/50 hover:border-orange-400/50 transition-all duration-300"
           >
-            Pause Auto-Scroll
+            <span className="flex items-center gap-2">
+              <motion.div
+                className="w-2 h-2 bg-orange-400 rounded-full"
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ repeat: Infinity, duration: 1.5 }}
+              />
+              Auto-advancing... Click to pause
+            </span>
           </button>
-        </div>
+        </motion.div>
       )}
     </div>
   );
