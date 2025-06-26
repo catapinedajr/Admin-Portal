@@ -150,6 +150,9 @@ Comprehensive component library built on Radix UI primitives:
 - June 26, 2025. Simplified lesson section formatting: replaced complex ## markdown headers with clean **bold titles** for section divisions (Properties of Good Money, How Bitcoin Compares to Gold, Bitcoin's Monetary Advantages, The Network Effect) for cleaner, less cluttered text presentation
 - June 26, 2025. Added missing expandable "Dive Deeper" content for "Why Bitcoin Matters" fact to ensure all daily facts have comprehensive expandable explanations, examples, and key takeaways
 - June 26, 2025. Fixed DCA simulator chart X-axis display: added proper time labels (Start, midpoint months, end months) for better chart readability and simplified start date selection by removing noisy descriptive text, showing only clean "Jan 2019" format instead of "Jan 2019 (Post-Crash Recovery)"
+- June 26, 2025. Completely rebuilt DCA calculator from scratch with accurate Bitcoin price modeling and real purchase data visualization: orange line shows volatile Bitcoin prices, blue dashed line shows evolving average cost, green dots show actual purchase points with proper data scaling and authentic historical progression
+- June 26, 2025. Fixed DCA investment amount interface: removed misleading "/month" text from dropdown options and added "Per selected frequency below" clarification since users can select different frequencies (daily, weekly, monthly, etc.)
+- June 26, 2025. Transformed Today's lesson section from bullet-point format to engaging storytelling narratives: removed all technical bullet points, converted lists to flowing paragraphs, added complete "Bitcoin as Digital Gold" story, and enhanced readability by removing markdown formatting for much improved user experience
 
 ## User Preferences
 
