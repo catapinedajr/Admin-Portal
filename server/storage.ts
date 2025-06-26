@@ -548,9 +548,13 @@ Throughout history, the best forms of money have shared certain characteristics:
 How Bitcoin Compares to Gold
 
 Scarcity: ✅ Fixed 21 million supply vs. unknown gold reserves
+
 Durability: ✅ Digital format vs. physical degradation  
+
 Portability: ✅ Instant global transfer vs. physical transport
+
 Divisibility: ✅ 8 decimal places vs. difficult gold division
+
 Verifiability: ✅ Cryptographic proof vs. expensive testing
 
 
