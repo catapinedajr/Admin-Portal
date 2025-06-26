@@ -100,15 +100,15 @@ const userProfiles = {
   individuals: [
     {
       name: "Sarah Chen",
-      role: "Software Engineer",
-      story: "Started buying Bitcoin in 2017 to protect savings from inflation. Now uses it for international remittances to family.",
-      reason: "Hedge against currency debasement and easier cross-border payments"
+      role: "Software Engineer, San Francisco",
+      story: "Sarah's Bitcoin journey began in 2017 during a late-night coding session when she stumbled upon the Bitcoin whitepaper. As a software engineer, she immediately grasped the elegance of the peer-to-peer electronic cash system. What started as intellectual curiosity became a financial lifeline when her grandmother in rural China needed medical care. Traditional wire transfers took 5-7 days and cost $45 in fees for a $500 transfer. With Bitcoin, Sarah could send money in minutes for under $2. 'I realized this wasn't just code - it was freedom,' she recalls. Today, Sarah dollar-cost averages $200 monthly into Bitcoin and has helped onboard her entire extended family. When COVID lockdowns hit and her salary was cut 30%, her Bitcoin holdings provided the financial cushion she needed. She's now building Bitcoin payment solutions at her startup, combining her technical skills with her passion for financial sovereignty.",
+      reason: "Protection against inflation, instant global payments, and building the future of money"
     },
     {
       name: "Miguel Rodriguez", 
-      role: "Small Business Owner",
-      story: "Accepts Bitcoin payments at his restaurant to avoid high credit card fees and attract tech-savvy customers.",
-      reason: "Lower transaction fees and financial sovereignty"
+      role: "Restaurant Owner, Austin",
+      story: "Miguel built his taco truck empire from nothing, but credit card fees were eating 3-4% of every transaction. 'I was essentially giving away free tacos to Visa,' he laughs. After attending a Bitcoin meetup in 2020, Miguel became the first food truck in Austin to accept Lightning payments. The results were immediate: zero chargebacks, 1% processing fees, and settlement in minutes instead of days. Word spread quickly through the Bitcoin community, and his trucks became gathering spots for local Bitcoiners. During the 2021 Texas winter storm that knocked out power grids, Miguel's truck was one of the few businesses still operating because Bitcoin transactions worked even when traditional payment systems failed. He now owns three locations, has hired 15 employees, and estimates Bitcoin adoption has increased his profit margins by 4%. 'Bitcoin didn't just save my business - it made my business anti-fragile,' Miguel explains while showing off his new Lightning Network point-of-sale system.",
+      reason: "Lower fees, faster settlement, protection from chargebacks, and building a stronger business"
     },
     {
       name: "Dr. Amara Okafor",
@@ -410,15 +410,15 @@ const traditionalFinanceProblems = {
 };
 
 type MainSection = "learn" | "practice" | "more";
-type LearnSubTab = "today" | "deepdive" | "reference";
+type LearnSubTab = "today" | "deepdive" | "reference" | "stories";
 type PracticeSubTab = "safety" | "transactions" | "hodl" | "dca";
-type MoreSubTab = "stories" | "store";
+type MoreSubTab = "store";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<MainSection>("learn");
   const [learnSubTab, setLearnSubTab] = useState<LearnSubTab>("today");
   const [practiceSubTab, setPracticeSubTab] = useState<PracticeSubTab>("safety");
-  const [moreSubTab, setMoreSubTab] = useState<MoreSubTab>("stories");
+  const [moreSubTab, setMoreSubTab] = useState<MoreSubTab>("store");
   const [storiesSubTab, setStoriesSubTab] = useState<"individuals" | "businesses" | "nations">("individuals");
   const [convictionSubTab, setConvictionSubTab] = useState<"whitepaper" | "books" | "videos">("whitepaper");
   const [txStatus, setTxStatus] = useState('preview');
@@ -753,6 +753,15 @@ export default function Home() {
                 <FileText className="w-3 h-3 mr-1" />
                 Reference
               </Button>
+              <Button
+                variant={learnSubTab === "stories" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setLearnSubTab("stories")}
+                className="text-xs px-2 py-1"
+              >
+                <UserIcon className="w-3 h-3 mr-1" />
+                Stories
+              </Button>
             </div>
           </div>
         </div>
@@ -808,22 +817,13 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-center gap-1 py-2 flex-wrap">
               <Button
-                variant={moreSubTab === "stories" ? "secondary" : "ghost"}
+                variant={moreSubTab === "store" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setMoreSubTab("stories")}
+                onClick={() => setMoreSubTab("store")}
                 className="text-xs px-2 py-1"
               >
-                <Users className="w-3 h-3 mr-1" />
-                Stories
-              </Button>
-              <Button
-                variant={moreSubTab === "resources" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setMoreSubTab("resources")}
-                className="text-xs px-2 py-1"
-              >
-                <Heart className="w-3 h-3 mr-1" />
-                Resources
+                <ShoppingCart className="w-3 h-3 mr-1" />
+                Store
               </Button>
             </div>
           </div>
@@ -2419,6 +2419,87 @@ Banks hold your money and can restrict access. Bitcoin enables true ownership wh
                 </div>
               </div>
             )}
+
+            {learnSubTab === "stories" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-bold text-white">Real Bitcoin Stories</h2>
+                  <p className="text-zinc-400">Discover why real people, businesses, and nations choose Bitcoin</p>
+                </div>
+
+                {/* Category Navigation */}
+                <div className="bg-zinc-800/30 rounded-lg p-1 flex justify-center">
+                  <div className="flex gap-1">
+                    <Button
+                      variant={storiesSubTab === "individuals" ? "secondary" : "ghost"}
+                      size="sm"
+                      onClick={() => setStoriesSubTab("individuals")}
+                      className="text-xs px-3 py-1"
+                    >
+                      <UserIcon className="w-3 h-3 mr-1" />
+                      Individuals
+                    </Button>
+                    <Button
+                      variant={storiesSubTab === "businesses" ? "secondary" : "ghost"}
+                      size="sm"
+                      onClick={() => setStoriesSubTab("businesses")}
+                      className="text-xs px-3 py-1"
+                    >
+                      <Building2 className="w-3 h-3 mr-1" />
+                      Businesses
+                    </Button>
+                    <Button
+                      variant={storiesSubTab === "nations" ? "secondary" : "ghost"}
+                      size="sm"
+                      onClick={() => setStoriesSubTab("nations")}
+                      className="text-xs px-3 py-1"
+                    >
+                      <Globe className="w-3 h-3 mr-1" />
+                      Nations
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Stories Content */}
+                <div className="grid gap-6">
+                  {userProfiles[storiesSubTab].map((profile, index) => (
+                    <Card key={index} className="bg-zinc-900 border-zinc-800">
+                      <CardContent className="p-6">
+                        <div className="space-y-4">
+                          <div className="flex items-start gap-4">
+                            <div className="p-3 bg-orange-600/20 rounded-lg flex-shrink-0">
+                              {storiesSubTab === "individuals" && <UserIcon className="w-8 h-8 text-orange-400" />}
+                              {storiesSubTab === "businesses" && <Building2 className="w-8 h-8 text-orange-400" />}
+                              {storiesSubTab === "nations" && <Globe className="w-8 h-8 text-orange-400" />}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h3 className="text-xl font-bold text-white">{profile.name}</h3>
+                              <p className="text-orange-400 font-medium">{profile.role}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-3">
+                            <p className="text-zinc-300 leading-relaxed">{profile.story}</p>
+                            
+                            <div className="bg-zinc-800/50 rounded-lg p-4">
+                              <div className="flex items-start gap-3">
+                                <div className="p-2 bg-orange-600/20 rounded-lg flex-shrink-0">
+                                  <Lightbulb className="w-5 h-5 text-orange-400" />
+                                </div>
+                                <div>
+                                  <h4 className="text-orange-300 font-medium mb-1">Why Bitcoin?</h4>
+                                  <p className="text-orange-200 text-sm">{profile.reason}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -3458,107 +3539,11 @@ Banks hold your money and can restrict access. Bitcoin enables true ownership wh
         {/* More Section */}
         {activeSection === "more" && (
           <div className="space-y-6">
-            {/* More Navigation */}
-            <div className="flex space-x-2 justify-center flex-wrap gap-2">
-              <Button
-                variant={moreSubTab === "stories" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setMoreSubTab("stories")}
-                className="text-sm"
-              >
-                <UserIcon className="w-3 h-3 mr-2" />
-                Stories
-              </Button>
-              <Button
-                variant={moreSubTab === "store" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setMoreSubTab("store")}
-                className="text-sm"
-              >
-                <ShoppingCart className="w-3 h-3 mr-2" />
-                Store
-              </Button>
+
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl font-bold text-white">Bitcoin Store</h2>
+              <p className="text-zinc-400">Essential hardware, books, and gear for your Bitcoin journey</p>
             </div>
-
-            {moreSubTab === "stories" && (
-              <div className="space-y-6">
-                <div className="text-center space-y-2">
-                  <h2 className="text-2xl font-bold text-white">Bitcoin Stories</h2>
-                  <p className="text-zinc-400">Real stories from Bitcoin users around the world</p>
-                </div>
-                
-                <div className="flex space-x-2 mb-6 justify-center flex-wrap gap-2">
-                  <Button
-                    variant={storiesSubTab === "individuals" ? "secondary" : "ghost"}
-                    size="sm"
-                    onClick={() => setStoriesSubTab("individuals")}
-                    className="text-sm"
-                  >
-                    <UserIcon className="w-3 h-3 mr-2" />
-                    Individuals
-                  </Button>
-                  <Button
-                    variant={storiesSubTab === "businesses" ? "secondary" : "ghost"}
-                    size="sm"
-                    onClick={() => setStoriesSubTab("businesses")}
-                    className="text-sm"
-                  >
-                    <Building2 className="w-3 h-3 mr-2" />
-                    Businesses
-                  </Button>
-                  <Button
-                    variant={storiesSubTab === "nations" ? "secondary" : "ghost"}
-                    size="sm"
-                    onClick={() => setStoriesSubTab("nations")}
-                    className="text-sm"
-                  >
-                    <Flag className="w-3 h-3 mr-2" />
-                    Nations
-                  </Button>
-                </div>
-
-                <div className="grid gap-6">
-                  {userProfiles[storiesSubTab].map((profile, index) => (
-                    <Card key={index} className="bg-zinc-900 border-zinc-800">
-                      <CardContent className="p-6">
-                        <div className="space-y-4">
-                          <div className="flex items-start gap-4">
-                            <div className="p-3 bg-blue-600/20 rounded-lg">
-                              {storiesSubTab === "individuals" && <UserIcon className="w-8 h-8 text-blue-400" />}
-                              {storiesSubTab === "businesses" && <Building2 className="w-8 h-8 text-blue-400" />}
-                              {storiesSubTab === "nations" && <Flag className="w-8 h-8 text-blue-400" />}
-                            </div>
-                            <div className="flex-1">
-                              <h3 className="text-xl font-bold text-white">{profile.name}</h3>
-                              <p className="text-blue-400 font-medium">{profile.role}</p>
-                            </div>
-                          </div>
-                          
-                          <div className="space-y-3">
-                            <div>
-                              <h4 className="text-white font-medium mb-2">Story</h4>
-                              <p className="text-zinc-300">{profile.story}</p>
-                            </div>
-                            
-                            <div className="bg-green-600/10 border border-green-600/20 rounded-lg p-4">
-                              <h4 className="text-green-300 font-medium mb-2">Why Bitcoin?</h4>
-                              <p className="text-green-200 text-sm">{profile.reason}</p>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {moreSubTab === "store" && (
-              <div className="space-y-6">
-                <div className="text-center space-y-2">
-                  <h2 className="text-2xl font-bold text-white">Bitcoin Store</h2>
-                  <p className="text-zinc-400">Essential hardware, books, and gear for your Bitcoin journey</p>
-                </div>
                 
                 {/* Store Categories */}
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
