@@ -293,7 +293,7 @@ export default function Home() {
         {
           title: "What Makes Bitcoin Different?",
           content: "Unlike traditional digital payments that require banks to verify and process transactions, Bitcoin uses a decentralized network where thousands of computers work together to validate payments. This means no single entity can control, freeze, or reverse your transactions.",
-          example: "When you send Bitcoin to someone in another country, it travels directly from your wallet to theirs without going through banks, currency exchanges, or payment processors. The transaction is verified by the network within minutes, not days.",
+          example: "In 2021, El Salvador's President Nayib Bukele sent $30 worth of Bitcoin to students across the country in under 10 minutes - something that would have taken days through traditional banking and cost $15+ in fees per transaction.",
           checkpoint: "Can you explain why Bitcoin transactions don't need banks to work?",
           diagram: `<svg width="300" height="120" viewBox="0 0 300 120" className="mx-auto">
             <rect x="20" y="20" width="60" height="40" rx="8" fill="#3b82f6" opacity="0.3" stroke="#3b82f6"/>
@@ -311,13 +311,13 @@ export default function Home() {
         {
           title: "Cryptographic Security",
           content: "Bitcoin uses advanced cryptography to secure transactions. Each payment is digitally signed with your private key, proving you own the Bitcoin you're sending. The network verifies these signatures without revealing your private key, ensuring only you can spend your Bitcoin.",
-          example: "Think of your Bitcoin wallet like a safe deposit box. You have the only key (private key), and when you want to send Bitcoin, you use your key to digitally 'sign' the transaction. The network can verify your signature is authentic without ever seeing your actual key.",
+          example: "In 2022, when Canada froze bank accounts during the Freedom Convoy protests, Bitcoin donations continued flowing to protesters because no government can freeze or control Bitcoin private keys - only the holder of the private key can access those funds.",
           checkpoint: "Why is it important that only you know your private key?"
         },
         {
           title: "Global Accessibility",
           content: "Bitcoin works the same way everywhere in the world, 24/7/365. There are no business hours, no geographic restrictions, and no permission needed. Anyone with internet access can send or receive Bitcoin, making it truly borderless money.",
-          example: "A freelancer in Nigeria can receive payment from a client in Canada instantly, without worrying about banking hours, international wire fees, or currency conversion delays. The Bitcoin network processes transactions around the clock.",
+          example: "During Ukraine's 2022 conflict, when traditional payment systems were disrupted, Bitcoin donations reached defenders within hours while bank transfers were impossible. Ukrainian officials received over $100 million in Bitcoin donations because the network operates regardless of physical infrastructure damage.",
           checkpoint: "How does Bitcoin's global accessibility benefit people in countries with limited banking infrastructure?"
         }
       ],
@@ -1202,22 +1202,14 @@ export default function Home() {
                                     </div>
                                   )}
                                   
-                                  {/* Knowledge Checkpoint */}
+                                  {/* Think About This */}
                                   {section.checkpoint && (
                                     <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-4">
                                       <h6 className="text-orange-400 font-medium mb-2 flex items-center gap-2">
                                         <HelpCircle className="w-4 h-4" />
-                                        Knowledge Checkpoint
+                                        Think About This
                                       </h6>
-                                      <p className="text-zinc-300 text-sm mb-3">{section.checkpoint}</p>
-                                      <div className="flex gap-2">
-                                        <Button size="sm" variant="outline" className="border-orange-600/30 text-orange-400 hover:bg-orange-600/10">
-                                          I understand this
-                                        </Button>
-                                        <Button size="sm" variant="ghost" className="text-zinc-400 hover:text-zinc-300">
-                                          Review again
-                                        </Button>
-                                      </div>
+                                      <p className="text-zinc-300 text-sm italic">{section.checkpoint}</p>
                                     </div>
                                   )}
                                 </div>
@@ -1249,16 +1241,20 @@ export default function Home() {
                             Continue Your Learning Journey
                           </h5>
                           <p className="text-zinc-400 text-sm mb-3">
-                            Ready to test your understanding? Take today's quiz below, or explore related concepts in our Practice section.
+                            Ready to test your understanding? Take today's quiz below to reinforce what you've learned.
                           </p>
-                          <div className="flex gap-2">
-                            <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-                              Take Quiz
-                            </Button>
-                            <Button size="sm" variant="outline" className="border-zinc-600 text-zinc-400">
-                              Practice Simulations
-                            </Button>
-                          </div>
+                          <Button 
+                            size="sm" 
+                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                            onClick={() => {
+                              const quizElement = document.querySelector('[data-testid="daily-quiz"]');
+                              if (quizElement) {
+                                quizElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                              }
+                            }}
+                          >
+                            Take Quiz
+                          </Button>
                         </div>
                       </div>
                     </CardContent>
@@ -1266,7 +1262,9 @@ export default function Home() {
                 )}
 
                 {/* Daily Quiz */}
-                <DailyQuiz />
+                <div data-testid="daily-quiz">
+                  <DailyQuiz />
+                </div>
               </div>
             )}
 
