@@ -92,8 +92,6 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
     }
   };
 
-
-
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden relative">
       {/* Premium background effects */}
@@ -143,31 +141,6 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
             transition={{ duration: 0.8, ease: "easeInOut" }}
           >
             <div className="max-w-5xl mx-auto text-center space-y-8">
-              {/* Single Premium step indicator */}
-              <motion.div 
-                className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-600/20 to-purple-600/20 rounded-full border border-orange-500/30 backdrop-blur-sm"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 }}
-              >
-                <Sparkles className="w-4 h-4 text-orange-400" />
-                <span className="text-orange-200 font-medium">Step {currentStep + 1} of {steps.length}</span>
-                <div className="flex items-center gap-2 ml-4">
-                  {steps.map((_, index) => (
-                    <div
-                      key={index}
-                      className={`h-1.5 rounded-full transition-all duration-500 ${
-                        index === currentStep
-                          ? 'w-8 bg-gradient-to-r from-orange-400 to-yellow-400'
-                          : index < currentStep
-                          ? 'w-6 bg-green-400'
-                          : 'w-4 bg-gray-600'
-                      }`}
-                    />
-                  ))}
-                </div>
-              </motion.div>
-
               {/* Premium Title */}
               <motion.div
                 className="space-y-3"
@@ -270,11 +243,28 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
                 )}
               </motion.div>
             </div>
+
+            {/* Subtle scroll hint - only for non-final steps */}
+            {currentStep < steps.length - 1 && (
+              <motion.div
+                className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.4 }}
+                transition={{ delay: 2 }}
+              >
+                <motion.div
+                  className="flex flex-col items-center gap-1"
+                  animate={{ y: [0, 8, 0] }}
+                  transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                >
+                  <div className="w-0.5 h-6 bg-gradient-to-b from-transparent to-orange-400/60 rounded-full" />
+                  <ArrowDown className="w-4 h-4 text-orange-400/60" />
+                </motion.div>
+              </motion.div>
+            )}
           </motion.section>
         </AnimatePresence>
       </div>
-
-
 
       {/* Premium Auto-scroll Control */}
       {autoScroll && currentStep < steps.length - 1 && (
