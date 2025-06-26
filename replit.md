@@ -144,6 +144,7 @@ Comprehensive component library built on Radix UI primitives:
 - June 26, 2025. Fixed text formatting issues in lesson content: removed markdown "##" headers and "-" bullet points, replaced with clean text headers and "•" bullet points for optimal readability and proper spacing
 - June 26, 2025. Enhanced lesson readability with improved section spacing: added proper line breaks between sections where markdown headers were removed to prevent cramped text appearance
 - June 26, 2025. Fixed cramped bullet point lists in lessons: added individual line spacing between each bullet point item for much better readability and visual separation
+- June 26, 2025. Fixed lesson content rendering issue: updated getExpandedLessonContent default case to properly split content by double line breaks instead of dumping entire lesson as single paragraph, resolving cramped text display
 - June 26, 2025. Added missing expandable "Dive Deeper" content for "Why Bitcoin Matters" fact to ensure all daily facts have comprehensive expandable explanations, examples, and key takeaways
 
 ## User Preferences

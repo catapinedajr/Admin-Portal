@@ -508,13 +508,12 @@ export default function Home() {
           }
         ];
       default:
+        // Split content by double line breaks to preserve formatting
+        const paragraphs = content.split('\n\n').filter(p => p.trim().length > 0);
         return [
           {
             title: "Core Concepts",
-            paragraphs: [
-              content,
-              "Understanding these fundamentals provides the foundation for more advanced Bitcoin concepts and practical usage."
-            ],
+            paragraphs: paragraphs,
             keyPoints: [
               "Bitcoin operates on revolutionary principles",
               "Decentralization provides unprecedented financial freedom", 
