@@ -682,7 +682,7 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="text-orange-400 text-xl font-bold">₿</div>
-              <h1 className="text-lg font-semibold text-white">BTC <span className="text-orange-400">Journey</span></h1>
+              <h1 className="text-lg font-semibold text-white"><span className="text-orange-400">Journey</span></h1>
             </div>
             
             <div className="flex items-center gap-2">
@@ -741,7 +741,7 @@ export default function Home() {
       {activeSection === "foundation" && (
         <div className="bg-zinc-800/30 border-b border-zinc-800">
           <div className="max-w-6xl mx-auto px-4">
-            <div className="flex items-center gap-1 py-2 flex-wrap">
+            <div className="flex items-center justify-center gap-1 py-2 flex-wrap">
               <Button
                 variant={foundationSubTab === "basics" ? "secondary" : "ghost"}
                 size="sm"
@@ -804,7 +804,7 @@ export default function Home() {
       {activeSection === "practice" && (
         <div className="bg-zinc-800/30 border-b border-zinc-800">
           <div className="max-w-6xl mx-auto px-4">
-            <div className="flex items-center gap-1 py-2 flex-wrap">
+            <div className="flex items-center justify-center gap-1 py-2 flex-wrap">
               <Button
                 variant={practiceSubTab === "mining" ? "secondary" : "ghost"}
                 size="sm"
@@ -858,7 +858,7 @@ export default function Home() {
       {activeSection === "inspiration" && (
         <div className="bg-zinc-800/30 border-b border-zinc-800">
           <div className="max-w-6xl mx-auto px-4">
-            <div className="flex items-center gap-1 py-2 flex-wrap">
+            <div className="flex items-center justify-center gap-1 py-2 flex-wrap">
               <Button
                 variant={inspirationSubTab === "stories" ? "secondary" : "ghost"}
                 size="sm"
@@ -899,6 +899,7 @@ export default function Home() {
                 <div className="grid gap-4">
                   {dailyFacts.map((fact, index) => {
                     const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Lightbulb;
+                    const isExpanded = expandedTopics.has(index);
                     return (
                       <Card key={fact.id} className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors">
                         <CardContent className="p-6">
@@ -909,9 +910,69 @@ export default function Home() {
                             <div className="flex-1">
                               <h3 className="font-semibold text-white mb-2">{fact.title}</h3>
                               <p className="text-zinc-300 leading-relaxed">{fact.content}</p>
-                              <Badge variant="outline" className="mt-3 border-zinc-700 text-zinc-400">
-                                {fact.category}
-                              </Badge>
+                              
+                              {isExpanded && (
+                                <div className="mt-4 space-y-3 p-4 bg-zinc-800/50 rounded-lg border border-zinc-700">
+                                  <div>
+                                    <h4 className="text-orange-400 font-semibold mb-2">🔍 Detailed Explanation</h4>
+                                    <p className="text-zinc-300 text-sm leading-relaxed">
+                                      {fact.category === "Bitcoin Basics" && "Bitcoin represents a fundamental shift from traditional centralized monetary systems to a decentralized peer-to-peer network. Unlike conventional currencies controlled by governments and banks, Bitcoin operates on a distributed ledger called blockchain, where every transaction is verified by network participants called miners."}
+                                      {fact.category === "Use Cases" && "Bitcoin's use cases extend far beyond simple transactions. It serves as a store of value (digital gold), a medium of exchange for global commerce, a hedge against inflation, and a tool for financial inclusion in underbanked regions. Many institutions now hold Bitcoin as a treasury asset."}
+                                      {fact.category === "Traditional Finance" && "Traditional finance relies on intermediaries like banks, clearinghouses, and payment processors, creating single points of failure and control. Bitcoin eliminates these intermediaries through cryptographic proof, enabling direct peer-to-peer transactions with mathematical certainty instead of trust in institutions."}
+                                    </p>
+                                  </div>
+                                  
+                                  <div>
+                                    <h4 className="text-green-400 font-semibold mb-2">💡 Real-World Example</h4>
+                                    <p className="text-zinc-300 text-sm leading-relaxed">
+                                      {fact.category === "Bitcoin Basics" && "Imagine sending money to a family member in another country. With traditional banking, this requires multiple banks, takes 3-5 business days, costs $15-50 in fees, and requires bank accounts. With Bitcoin, you can send any amount directly in 10-60 minutes for $1-5, 24/7, with just internet access."}
+                                      {fact.category === "Use Cases" && "During Argentina's recent currency crisis, citizens used Bitcoin to preserve purchasing power as the peso lost over 50% of its value. Companies like MicroStrategy hold billions in Bitcoin as a hedge against dollar inflation, while El Salvador uses Bitcoin for remittances, saving citizens millions in Western Union fees."}
+                                      {fact.category === "Traditional Finance" && "When you swipe a credit card, your transaction goes through your bank, the merchant's bank, Visa/Mastercard networks, and clearinghouses - each taking fees and time. With Bitcoin, the transaction goes directly from your wallet to the recipient's wallet, verified by the global network in minutes."}
+                                    </p>
+                                  </div>
+                                  
+                                  <div>
+                                    <h4 className="text-blue-400 font-semibold mb-2">🎯 Key Takeaway</h4>
+                                    <p className="text-zinc-300 text-sm leading-relaxed font-medium">
+                                      {fact.category === "Bitcoin Basics" && "Bitcoin is programmable money that gives you the same control over your wealth that email gave you over communication - direct, global, and without intermediaries."}
+                                      {fact.category === "Use Cases" && "Bitcoin isn't just an investment; it's a monetary technology that solves real problems for individuals, businesses, and entire nations seeking financial sovereignty."}
+                                      {fact.category === "Traditional Finance" && "Bitcoin doesn't just improve the existing financial system - it replaces the need for much of it through cryptographic guarantees and mathematical consensus."}
+                                    </p>
+                                  </div>
+                                </div>
+                              )}
+                              
+                              <div className="flex items-center justify-between mt-3">
+                                <Badge variant="outline" className="border-zinc-700 text-zinc-400">
+                                  {fact.category}
+                                </Badge>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    const newExpanded = new Set(expandedTopics);
+                                    if (isExpanded) {
+                                      newExpanded.delete(index);
+                                    } else {
+                                      newExpanded.add(index);
+                                    }
+                                    setExpandedTopics(newExpanded);
+                                  }}
+                                  className="text-orange-400 hover:text-orange-300 hover:bg-orange-400/10"
+                                >
+                                  {isExpanded ? (
+                                    <>
+                                      <ChevronUp className="w-4 h-4 mr-1" />
+                                      Less Detail
+                                    </>
+                                  ) : (
+                                    <>
+                                      <ChevronDown className="w-4 h-4 mr-1" />
+                                      Dive Deeper
+                                    </>
+                                  )}
+                                </Button>
+                              </div>
                             </div>
                           </div>
                         </CardContent>
