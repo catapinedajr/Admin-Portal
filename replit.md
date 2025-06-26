@@ -134,6 +134,10 @@ Comprehensive component library built on Radix UI primitives:
 - June 26, 2025. Rebranded application to "₿ Journey" with Bitcoin symbol (₿) + "Journey" logo design throughout the interface, removing "BTC" letters for cleaner branding
 - June 26, 2025. Implemented premium welcome screen with sophisticated animations, elegant typography, and clean design focused on captivating users for subscription justification - removed complex illustrations in favor of premium step-by-step experience with gradient backgrounds and smooth transitions
 - June 26, 2025. Optimized welcome screen layout for better screen fitting: reduced typography sizes, adjusted spacing, compacted feature cards, and refined button sizes to ensure all content displays properly on various screen sizes while maintaining premium aesthetic
+- June 26, 2025. Restructured navigation: "Foundation" → "Learn", "Inspiration" → "More" for cleaner UX and revenue optimization
+- June 26, 2025. Implemented comprehensive affiliate store under "More" section with books, hardware wallets, courses, and tools for revenue generation through affiliate commissions
+- June 26, 2025. Added premium content restrictions for free users (3 daily facts, 1 lesson/week) with upgrade prompts to drive subscription conversions
+- June 26, 2025. Created complete gamification system with user levels (Bitcoin Curious → Crypto Master), achievement tracking with XP rewards, and subscription tier management (Explorer $0, Scholar $9.99, Master $19.99)
 
 ## User Preferences
 
