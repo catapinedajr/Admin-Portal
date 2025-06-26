@@ -2038,7 +2038,7 @@ export default function Home() {
                     <h4 className="text-lg font-bold text-white mb-4">Build Your Transaction</h4>
                     <div className="space-y-6">
                       {/* Input Fields */}
-                      <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-4">
                         <div className="space-y-2">
                           <label className="text-sm font-medium text-white">From Address</label>
                           <input
@@ -2049,6 +2049,7 @@ export default function Home() {
                             placeholder="Your Bitcoin address"
                           />
                         </div>
+                        
                         <div className="space-y-2">
                           <label className="text-sm font-medium text-white">To Address</label>
                           <div className="flex gap-2">
@@ -2063,23 +2064,32 @@ export default function Home() {
                               variant="outline"
                               size="sm"
                               onClick={simulatePasteFromClipboard}
-                              className="border-zinc-700 text-zinc-300 hover:border-orange-500 hover:text-orange-400 text-xs"
+                              className="border-zinc-700 text-zinc-300 hover:border-orange-500 hover:text-orange-400 text-xs px-3 whitespace-nowrap"
                               title="Paste from clipboard"
                             >
                               📋 Paste
                             </Button>
                           </div>
                         </div>
-                        <div className="space-y-2">
-                          <label className="text-sm font-medium text-white">Amount (BTC)</label>
-                          <input
-                            type="number"
-                            step="0.00000001"
-                            value={transactionInputs.amount}
-                            onChange={(e) => updateTransactionInput('amount', e.target.value)}
-                            className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white text-sm focus:border-orange-500 focus:outline-none"
-                            placeholder="0.001"
-                          />
+                        
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-white">Amount (BTC)</label>
+                            <input
+                              type="number"
+                              step="0.00000001"
+                              value={transactionInputs.amount}
+                              onChange={(e) => updateTransactionInput('amount', e.target.value)}
+                              className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white text-sm focus:border-orange-500 focus:outline-none"
+                              placeholder="0.001"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-white">USD Value</label>
+                            <div className="px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-green-400 text-sm">
+                              ${getUSDValue(transactionInputs.amount)}
+                            </div>
+                          </div>
                         </div>
 
                       </div>
