@@ -417,7 +417,7 @@ type ConvictionSubTab = "whitepaper" | "books" | "videos";
 export default function Home() {
   const [activeSection, setActiveSection] = useState<MainSection>("foundation");
   const [foundationSubTab, setFoundationSubTab] = useState<FoundationSubTab>("today");
-  const [practiceSubTab, setPracticeSubTab] = useState<PracticeSubTab>("mining");
+  const [practiceSubTab, setPracticeSubTab] = useState<PracticeSubTab>("dca");
   const [inspirationSubTab, setInspirationSubTab] = useState<InspirationSubTab>("stories");
   const [disruptionSubTab, setDisruptionSubTab] = useState<DisruptionSubTab>("problems");
   const [storiesSubTab, setStoriesSubTab] = useState<StoriesSubTab>("individuals");
@@ -767,22 +767,13 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-center gap-1 py-2 flex-wrap">
               <Button
-                variant={practiceSubTab === "mining" ? "secondary" : "ghost"}
+                variant={practiceSubTab === "dca" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setPracticeSubTab("mining")}
+                onClick={() => setPracticeSubTab("dca")}
                 className="text-xs px-2 py-1"
               >
-                <Zap className="w-3 h-3 mr-1" />
-                Mining
-              </Button>
-              <Button
-                variant={practiceSubTab === "transactions" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setPracticeSubTab("transactions")}
-                className="text-xs px-2 py-1"
-              >
-                <ArrowRight className="w-3 h-3 mr-1" />
-                Transactions
+                <TrendingUp className="w-3 h-3 mr-1" />
+                DCA
               </Button>
               <Button
                 variant={practiceSubTab === "hodl" ? "secondary" : "ghost"}
@@ -794,22 +785,13 @@ export default function Home() {
                 HODLing
               </Button>
               <Button
-                variant={practiceSubTab === "dca" ? "secondary" : "ghost"}
+                variant={practiceSubTab === "transactions" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setPracticeSubTab("dca")}
+                onClick={() => setPracticeSubTab("transactions")}
                 className="text-xs px-2 py-1"
               >
-                <TrendingUp className="w-3 h-3 mr-1" />
-                DCA
-              </Button>
-              <Button
-                variant={practiceSubTab === "halving" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setPracticeSubTab("halving")}
-                className="text-xs px-2 py-1"
-              >
-                <Gem className="w-3 h-3 mr-1" />
-                Halving
+                <ArrowRight className="w-3 h-3 mr-1" />
+                Transactions
               </Button>
               <Button
                 variant={practiceSubTab === "safety" ? "secondary" : "ghost"}
@@ -819,6 +801,24 @@ export default function Home() {
               >
                 <KeyRound className="w-3 h-3 mr-1" />
                 Wallet Safety
+              </Button>
+              <Button
+                variant={practiceSubTab === "mining" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setPracticeSubTab("mining")}
+                className="text-xs px-2 py-1"
+              >
+                <Zap className="w-3 h-3 mr-1" />
+                Mining
+              </Button>
+              <Button
+                variant={practiceSubTab === "halving" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setPracticeSubTab("halving")}
+                className="text-xs px-2 py-1"
+              >
+                <Gem className="w-3 h-3 mr-1" />
+                Halving
               </Button>
             </div>
           </div>
@@ -2204,40 +2204,281 @@ export default function Home() {
               </div>
             )}
 
-            {(practiceSubTab === "transactions" || practiceSubTab === "halving") && (
+            {practiceSubTab === "transactions" && (
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-6">
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-blue-600/20 rounded-lg">
+                        <ArrowRight className="w-8 h-8 text-blue-400" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-white mb-2">Bitcoin Transaction Builder</h3>
+                        <p className="text-zinc-300 mb-4">
+                          Learn how Bitcoin transactions work by building one step by step
+                        </p>
+                        <div className="flex items-center gap-4 mb-4">
+                          <Badge variant="outline" className="border-zinc-700 text-blue-400">
+                            Educational
+                          </Badge>
+                          <span className="text-zinc-400 text-sm">15-20 minutes</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Transaction Builder Interface */}
+                    <div className="grid md:grid-cols-2 gap-6">
+                      {/* Input Side */}
+                      <div className="space-y-4">
+                        <h4 className="text-white font-semibold">Transaction Inputs</h4>
+                        
+                        <div className="space-y-3">
+                          <label className="block text-zinc-300 text-sm">Sender Address</label>
+                          <input 
+                            type="text"
+                            value="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+                            readOnly
+                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-zinc-300 text-sm font-mono"
+                          />
+                        </div>
+
+                        <div className="space-y-3">
+                          <label className="block text-zinc-300 text-sm">Available Balance</label>
+                          <div className="bg-zinc-800 border border-zinc-700 rounded px-3 py-2">
+                            <span className="text-orange-400 font-mono">0.05000000 BTC</span>
+                            <span className="text-zinc-500 text-sm ml-2">($5,000)</span>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <label className="block text-zinc-300 text-sm">Recipient Address</label>
+                          <input 
+                            type="text"
+                            placeholder="Enter Bitcoin address..."
+                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-zinc-300 text-sm font-mono"
+                          />
+                        </div>
+
+                        <div className="space-y-3">
+                          <label className="block text-zinc-300 text-sm">Amount to Send (BTC)</label>
+                          <input 
+                            type="number"
+                            step="0.00000001"
+                            max="0.049"
+                            placeholder="0.00000000"
+                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-zinc-300 font-mono"
+                          />
+                        </div>
+
+                        <div className="space-y-3">
+                          <label className="block text-zinc-300 text-sm">Fee Rate (sats/vB)</label>
+                          <select className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-zinc-300">
+                            <option value="1">1 sat/vB - Low Priority (30+ min)</option>
+                            <option value="5">5 sat/vB - Normal (10-30 min)</option>
+                            <option value="20">20 sat/vB - High Priority (1-10 min)</option>
+                            <option value="50">50 sat/vB - Urgent (next block)</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Output Side */}
+                      <div className="space-y-4">
+                        <h4 className="text-white font-semibold">Transaction Details</h4>
+                        
+                        <div className="bg-zinc-800 rounded-lg p-4 space-y-3">
+                          <div className="flex justify-between">
+                            <span className="text-zinc-400">Transaction Size:</span>
+                            <span className="text-zinc-300 font-mono">225 vBytes</span>
+                          </div>
+                          
+                          <div className="flex justify-between">
+                            <span className="text-zinc-400">Estimated Fee:</span>
+                            <span className="text-orange-400 font-mono">0.00001125 BTC</span>
+                          </div>
+                          
+                          <div className="flex justify-between">
+                            <span className="text-zinc-400">Total Cost:</span>
+                            <span className="text-white font-mono">0.01001125 BTC</span>
+                          </div>
+                          
+                          <div className="flex justify-between">
+                            <span className="text-zinc-400">Remaining Balance:</span>
+                            <span className="text-green-400 font-mono">0.03998875 BTC</span>
+                          </div>
+                        </div>
+
+                        <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4">
+                          <h5 className="text-blue-300 font-medium mb-2">Transaction ID Preview</h5>
+                          <div className="font-mono text-xs text-blue-200 break-all">
+                            a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456
+                          </div>
+                        </div>
+
+                        <Button className="w-full bg-blue-600 hover:bg-blue-700" disabled>
+                          <ArrowRight className="w-4 h-4 mr-2" />
+                          Build Transaction (Demo)
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Educational Content */}
+                    <div className="border-t border-zinc-700 pt-6">
+                      <h4 className="text-white font-semibold mb-4">How Bitcoin Transactions Work</h4>
+                      <div className="grid md:grid-cols-3 gap-4">
+                        <div className="bg-zinc-800 rounded-lg p-4">
+                          <div className="text-center mb-3">
+                            <div className="w-12 h-12 bg-green-600/20 rounded-full flex items-center justify-center mx-auto">
+                              <span className="text-green-400 font-bold">1</span>
+                            </div>
+                          </div>
+                          <h5 className="text-white font-medium mb-2 text-center">Inputs</h5>
+                          <p className="text-zinc-300 text-sm text-center">
+                            Previous transaction outputs that prove you own the Bitcoin you want to spend
+                          </p>
+                        </div>
+
+                        <div className="bg-zinc-800 rounded-lg p-4">
+                          <div className="text-center mb-3">
+                            <div className="w-12 h-12 bg-orange-600/20 rounded-full flex items-center justify-center mx-auto">
+                              <span className="text-orange-400 font-bold">2</span>
+                            </div>
+                          </div>
+                          <h5 className="text-white font-medium mb-2 text-center">Outputs</h5>
+                          <p className="text-zinc-300 text-sm text-center">
+                            New ownership assignments that specify where the Bitcoin goes next
+                          </p>
+                        </div>
+
+                        <div className="bg-zinc-800 rounded-lg p-4">
+                          <div className="text-center mb-3">
+                            <div className="w-12 h-12 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto">
+                              <span className="text-blue-400 font-bold">3</span>
+                            </div>
+                          </div>
+                          <h5 className="text-white font-medium mb-2 text-center">Signatures</h5>
+                          <p className="text-zinc-300 text-sm text-center">
+                            <BitcoinTerm term="digital signature">Digital proofs</BitcoinTerm> that you authorized the transaction using your <BitcoinTerm term="private key">private key</BitcoinTerm>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {practiceSubTab === "halving" && (
               <Card className="bg-zinc-900 border-zinc-800">
                 <CardContent className="p-6">
                   <div className="space-y-6">
                     <div className="flex items-start gap-4">
                       <div className="p-3 bg-orange-600/20 rounded-lg">
-                        <Zap className="w-8 h-8 text-orange-400" />
+                        <Gem className="w-8 h-8 text-orange-400" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-xl font-bold text-white mb-2">
-                          {practiceSubTab === "transactions" ? "Transaction Builder" : "Halving Impact Simulator"}
-                        </h3>
+                        <h3 className="text-xl font-bold text-white mb-2">Bitcoin Halving Simulator</h3>
                         <p className="text-zinc-300 mb-4">
-                          {practiceSubTab === "transactions" 
-                            ? "Build and understand Bitcoin transactions with fees and confirmations" 
-                            : "Explore how Bitcoin halving events affect supply and mining rewards"
-                          }
+                          Explore how halving events affect Bitcoin's supply and mining economics
                         </p>
                         <div className="flex items-center gap-4 mb-4">
                           <Badge variant="outline" className="border-zinc-700 text-orange-400">
-                            {practiceSubTab === "transactions" ? "Advanced" : "Intermediate"}
+                            Historical
                           </Badge>
-                          <span className="text-zinc-400 text-sm">
-                            {practiceSubTab === "transactions" ? "15-20 minutes" : "10-15 minutes"}
-                          </span>
+                          <span className="text-zinc-400 text-sm">10-15 minutes</span>
                         </div>
                       </div>
                     </div>
-                    
-                    <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4">
-                      <p className="text-blue-200 text-sm">
-                        Advanced {practiceSubTab === "transactions" ? "transaction building" : "halving impact"} simulator 
-                        coming soon with interactive blockchain visualizations and real network data.
-                      </p>
+
+                    {/* Halving Timeline */}
+                    <div className="space-y-4">
+                      <h4 className="text-white font-semibold">Halving History & Future</h4>
+                      <div className="space-y-3">
+                        {[
+                          { date: "Jan 3, 2009", block: 0, reward: 50, status: "genesis" },
+                          { date: "Nov 28, 2012", block: 210000, reward: 25, status: "completed" },
+                          { date: "Jul 9, 2016", block: 420000, reward: 12.5, status: "completed" },
+                          { date: "May 11, 2020", block: 630000, reward: 6.25, status: "completed" },
+                          { date: "~Apr 2024", block: 840000, reward: 3.125, status: "completed" },
+                          { date: "~2028", block: 1050000, reward: 1.5625, status: "future" }
+                        ].map((halving, index) => (
+                          <div key={index} className={`border rounded-lg p-4 ${
+                            halving.status === "completed" ? "border-green-600/30 bg-green-600/5" :
+                            halving.status === "genesis" ? "border-orange-600/30 bg-orange-600/5" :
+                            "border-zinc-700 bg-zinc-800"
+                          }`}>
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <div className="text-white font-medium">{halving.date}</div>
+                                <div className="text-zinc-400 text-sm">Block #{halving.block.toLocaleString()}</div>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-orange-400 font-mono">{halving.reward} BTC</div>
+                                <div className="text-zinc-500 text-sm">per block</div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Impact Analysis */}
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <h4 className="text-white font-semibold">Supply Impact</h4>
+                        <div className="bg-zinc-800 rounded-lg p-4 space-y-3">
+                          <div className="flex justify-between">
+                            <span className="text-zinc-400">Current Supply:</span>
+                            <span className="text-orange-400 font-mono">19.8M BTC</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-zinc-400">Max Supply:</span>
+                            <span className="text-white font-mono">21M BTC</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-zinc-400">Remaining:</span>
+                            <span className="text-green-400 font-mono">1.2M BTC</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-zinc-400">Next Halving:</span>
+                            <span className="text-blue-400 font-mono">~2028</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <h4 className="text-white font-semibold">Mining Economics</h4>
+                        <div className="bg-zinc-800 rounded-lg p-4 space-y-3">
+                          <div className="flex justify-between">
+                            <span className="text-zinc-400">Current Reward:</span>
+                            <span className="text-orange-400 font-mono">3.125 BTC</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-zinc-400">Block Time:</span>
+                            <span className="text-white font-mono">~10 minutes</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-zinc-400">Daily New BTC:</span>
+                            <span className="text-green-400 font-mono">450 BTC</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-zinc-400">Annual Inflation:</span>
+                            <span className="text-blue-400 font-mono">~0.83%</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-4">
+                      <div className="flex items-start gap-3">
+                        <Gem className="w-5 h-5 text-orange-400 mt-0.5" />
+                        <div>
+                          <h5 className="text-orange-300 font-medium mb-2">Why Halving Matters</h5>
+                          <p className="text-orange-200 text-sm">
+                            Every ~4 years, Bitcoin's inflation rate is cut in half, making it increasingly scarce. 
+                            This predictable monetary policy is programmed into the protocol and cannot be changed by any authority.
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
