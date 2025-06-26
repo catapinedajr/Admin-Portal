@@ -92,29 +92,7 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
     }
   };
 
-  const renderStepProgress = () => {
-    return (
-      <div className="flex justify-center mb-16">
-        <div className="flex items-center gap-4">
-          {steps.map((_, index) => (
-            <motion.div
-              key={index}
-              className={`h-2 rounded-full transition-all duration-500 ${
-                index === currentStep
-                  ? 'w-12 bg-gradient-to-r from-orange-400 to-yellow-400'
-                  : index < currentStep
-                  ? 'w-8 bg-green-400'
-                  : 'w-6 bg-gray-600'
-              }`}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.1 }}
-            />
-          ))}
-        </div>
-      </div>
-    );
-  };
+
 
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden relative">
@@ -164,25 +142,30 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
             exit={{ opacity: 0, scale: 1.05 }}
             transition={{ duration: 0.8, ease: "easeInOut" }}
           >
-            {/* Simple Step Progress */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.8 }}
-            >
-              {renderStepProgress()}
-            </motion.div>
-            
             <div className="max-w-5xl mx-auto text-center space-y-8">
-              {/* Premium step indicator */}
+              {/* Single Premium step indicator */}
               <motion.div 
                 className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-600/20 to-purple-600/20 rounded-full border border-orange-500/30 backdrop-blur-sm"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.4 }}
+                transition={{ delay: 0.2 }}
               >
                 <Sparkles className="w-4 h-4 text-orange-400" />
                 <span className="text-orange-200 font-medium">Step {currentStep + 1} of {steps.length}</span>
+                <div className="flex items-center gap-2 ml-4">
+                  {steps.map((_, index) => (
+                    <div
+                      key={index}
+                      className={`h-1.5 rounded-full transition-all duration-500 ${
+                        index === currentStep
+                          ? 'w-8 bg-gradient-to-r from-orange-400 to-yellow-400'
+                          : index < currentStep
+                          ? 'w-6 bg-green-400'
+                          : 'w-4 bg-gray-600'
+                      }`}
+                    />
+                  ))}
+                </div>
               </motion.div>
 
               {/* Premium Title */}
@@ -291,37 +274,7 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
         </AnimatePresence>
       </div>
 
-      {/* Premium Progress Indicator */}
-      <div className="fixed right-8 top-1/2 transform -translate-y-1/2 z-40">
-        <div className="flex flex-col gap-4 p-4 bg-black/40 backdrop-blur-lg rounded-2xl border border-orange-500/20">
-          {steps.map((_, index) => (
-            <motion.button
-              key={index}
-              onClick={() => {
-                setCurrentStep(index);
-                setAutoScroll(false);
-              }}
-              className={`w-4 h-4 rounded-full transition-all duration-500 relative ${
-                index === currentStep
-                  ? 'bg-gradient-to-r from-orange-400 to-yellow-400 scale-150 shadow-lg shadow-orange-400/50'
-                  : index < currentStep
-                  ? 'bg-gradient-to-r from-green-400 to-emerald-400 scale-125'
-                  : 'bg-gray-600 scale-75 hover:scale-100'
-              }`}
-              whileHover={{ scale: index === currentStep ? 1.6 : 1.2 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              {index === currentStep && (
-                <motion.div
-                  className="absolute inset-0 bg-orange-400 rounded-full"
-                  animate={{ scale: [1, 1.5, 1], opacity: [1, 0, 1] }}
-                  transition={{ repeat: Infinity, duration: 2 }}
-                />
-              )}
-            </motion.button>
-          ))}
-        </div>
-      </div>
+
 
       {/* Premium Auto-scroll Control */}
       {autoScroll && currentStep < steps.length - 1 && (
