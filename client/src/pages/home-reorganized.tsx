@@ -434,8 +434,18 @@ export default function Home() {
     dca: { monthlyAmount: 100, duration: 24, startPrice: 50000 },
     hodl: { initialAmount: 5000, years: 4, volatilityLevel: 'medium' as 'low' | 'medium' | 'high' },
     transaction: { amount: 0.001, feeLevel: 'medium' as 'low' | 'medium' | 'high' },
-    safety: { walletType: 'hardware' as 'exchange' | 'hot' | 'hardware', amount: 1000 }
+    safety: { walletType: 'hardware' as 'exchange' | 'hot' | 'hardware', amount: 1000 },
+    investment: 10000,
+    years: 4,
+    tradingFeePercent: 0.25
   });
+  
+  const [hodlResults, setHodlResults] = useState<any>(null);
+  const [dcaResults, setDcaResults] = useState<any>(null);
+
+
+
+
 
   const toggleFactExpansion = (factId: number) => {
     const newExpanded = new Set(expandedFacts);
@@ -569,41 +579,16 @@ export default function Home() {
     };
   };
 
-  const calculateHODL = (initialAmount: number, years: number, volatilityLevel: 'low' | 'medium' | 'high') => {
-    const startPrice = 30000;
-    const initialBtc = initialAmount / startPrice;
+  // Calculate HODL vs Trading comparison
+  const calculateHODL = (investment: number, years: number, tradingFeePercent: number) => {
+    const btcGrowthRate = 0.55; // 55% average annual growth
+    const tradingLossRate = 0.15; // 15% typical trading losses
     
-    // Base growth rates adjusted for volatility
-    const growthRates = {
-      low: 1.3,    // 30% annual growth
-      medium: 1.5, // 50% annual growth  
-      high: 1.8    // 80% annual growth
-    };
+    const hodlValue = investment * Math.pow(1 + btcGrowthRate, years);
+    const tradingValue = investment * Math.pow(1 + btcGrowthRate - tradingLossRate - (tradingFeePercent / 100), years);
+    const hodlAdvantage = ((hodlValue - tradingValue) / tradingValue) * 100;
     
-    // HODLing strategy - simple buy and hold
-    const finalPrice = startPrice * Math.pow(growthRates[volatilityLevel], years);
-    const finalValue = initialBtc * finalPrice;
-    const totalReturn = finalValue - initialAmount;
-    const returnPercentage = (totalReturn / initialAmount) * 100;
-    
-    // Compare with traditional savings (2% annual)
-    const savingsValue = initialAmount * Math.pow(1.02, years);
-    const savingsReturn = savingsValue - initialAmount;
-    
-    return {
-      strategy: 'HODLing (Long-term Savings)',
-      initialBtc: initialBtc.toFixed(6),
-      finalValue: finalValue.toFixed(2),
-      totalReturn: totalReturn.toFixed(2),
-      returnPercentage: returnPercentage.toFixed(1),
-      savingsComparison: {
-        traditionalSavings: savingsValue.toFixed(2),
-        traditionalReturn: savingsReturn.toFixed(2),
-        btcAdvantage: (finalValue - savingsValue).toFixed(2)
-      },
-      volatilityImpact: volatilityLevel,
-      timeHorizon: years
-    };
+    return { hodlValue, tradingValue, hodlAdvantage };
   };
 
   const { data: user } = useQuery({
