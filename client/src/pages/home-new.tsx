@@ -230,6 +230,16 @@ export default function Home() {
     totalGain: number;
     percentageReturn: number;
     duration: number;
+    purchases?: Array<{
+      index: number;
+      timeProgress: number;
+      price: number;
+      amount: number;
+      bitcoinPurchased: number;
+      totalInvested: number;
+      totalBitcoin: number;
+      runningAvgCost: number;
+    }>;
   } | null>(null);
   
   const toggleFactExpansion = (factId: number) => {
@@ -893,47 +903,60 @@ export default function Home() {
                           frequency === 'quarterly' ? monthlyAmount * 3 :
                           monthlyAmount;
     
-    // Simulate historical Bitcoin prices with realistic volatility based on actual market history
-    const getPriceDataForPeriod = (startDate: string) => {
-      if (startDate.includes('2019-01')) return { basePrice: 3500, volatility: 0.4, trend: 2.5 };
-      if (startDate.includes('2019-07')) return { basePrice: 10000, volatility: 0.3, trend: 1.2 };
-      if (startDate.includes('2020-01')) return { basePrice: 7200, volatility: 0.5, trend: 6.0 };
-      if (startDate.includes('2020-03')) return { basePrice: 5000, volatility: 0.8, trend: 8.0 };
-      if (startDate.includes('2020-07')) return { basePrice: 9000, volatility: 0.4, trend: 5.0 };
-      if (startDate.includes('2020-10')) return { basePrice: 11000, volatility: 0.3, trend: 3.5 };
-      if (startDate.includes('2021-01')) return { basePrice: 30000, volatility: 0.4, trend: 2.2 };
-      if (startDate.includes('2021-05')) return { basePrice: 58000, volatility: 0.6, trend: -0.5 };
-      if (startDate.includes('2021-07')) return { basePrice: 30000, volatility: 0.5, trend: 2.0 };
-      if (startDate.includes('2021-10')) return { basePrice: 45000, volatility: 0.3, trend: 1.5 };
-      if (startDate.includes('2022-01')) return { basePrice: 47000, volatility: 0.4, trend: -1.8 };
-      if (startDate.includes('2022-06')) return { basePrice: 30000, volatility: 0.5, trend: -1.2 };
-      if (startDate.includes('2022-11')) return { basePrice: 16000, volatility: 0.6, trend: 0.8 };
-      if (startDate.includes('2023-01')) return { basePrice: 16500, volatility: 0.4, trend: 2.5 };
-      if (startDate.includes('2023-06')) return { basePrice: 25000, volatility: 0.3, trend: 1.8 };
-      if (startDate.includes('2023-10')) return { basePrice: 35000, volatility: 0.4, trend: 2.2 };
-      if (startDate.includes('2024-01')) return { basePrice: 42000, volatility: 0.3, trend: 1.5 };
-      if (startDate.includes('2024-06')) return { basePrice: 65000, volatility: 0.2, trend: 0.8 };
-      return { basePrice: 35000, volatility: 0.3, trend: 1.5 }; // Default
+    // Get historical starting price based on date
+    const getStartingPrice = (startDate: string) => {
+      if (startDate.includes('2019-01')) return 3500;
+      if (startDate.includes('2019-07')) return 10000;
+      if (startDate.includes('2020-01')) return 7200;
+      if (startDate.includes('2020-03')) return 5000;
+      if (startDate.includes('2020-07')) return 9000;
+      if (startDate.includes('2020-10')) return 11000;
+      if (startDate.includes('2021-01')) return 30000;
+      if (startDate.includes('2021-05')) return 58000;
+      if (startDate.includes('2021-07')) return 30000;
+      if (startDate.includes('2021-10')) return 45000;
+      if (startDate.includes('2022-01')) return 47000;
+      if (startDate.includes('2022-06')) return 30000;
+      if (startDate.includes('2022-11')) return 16000;
+      if (startDate.includes('2023-01')) return 16500;
+      if (startDate.includes('2023-06')) return 25000;
+      if (startDate.includes('2023-10')) return 35000;
+      if (startDate.includes('2024-01')) return 42000;
+      if (startDate.includes('2024-06')) return 65000;
+      return 35000; // Default
     };
     
-    const { basePrice, volatility: baseVolatility, trend: overallTrend } = getPriceDataForPeriod(startDate);
-    
+    const startingPrice = getStartingPrice(startDate);
+    const purchases = [];
     let totalInvested = 0;
     let totalBitcoin = 0;
     
-    // Simulate DCA purchases with varying Bitcoin prices
+    // Generate realistic Bitcoin price progression and track each purchase
     for (let i = 0; i < totalPurchases; i++) {
       const timeProgress = i / Math.max(totalPurchases - 1, 1);
       
-      // Apply realistic Bitcoin price volatility with market-specific patterns
-      const volatilityFactor = 1 + Math.sin(timeProgress * Math.PI * 6) * baseVolatility; // Market cycles
-      const trendFactor = 1 + (timeProgress * overallTrend / 100); // Historical trend
-      const randomFactor = 0.7 + Math.random() * 0.6; // ±30% random variation
-      const currentPrice = Math.max(1000, basePrice * trendFactor * volatilityFactor * randomFactor);
+      // Realistic Bitcoin price evolution over time
+      const longTermGrowth = Math.pow(1.15, timeProgress * (duration / 12)); // 15% annual growth trend
+      const marketCycles = 1 + Math.sin(timeProgress * 4 * Math.PI) * 0.3; // Market cycles
+      const volatility = 1 + (Math.random() - 0.5) * 0.4; // ±20% volatility
+      const crashRecovery = timeProgress < 0.3 ? (0.7 + timeProgress * 1.0) : 1; // Early period recovery
       
+      const currentPrice = Math.max(1000, startingPrice * longTermGrowth * marketCycles * volatility * crashRecovery);
       const bitcoinPurchased = purchaseAmount / currentPrice;
+      
       totalInvested += purchaseAmount;
       totalBitcoin += bitcoinPurchased;
+      
+      purchases.push({
+        index: i,
+        timeProgress,
+        price: Math.round(currentPrice),
+        amount: purchaseAmount,
+        bitcoinPurchased,
+        totalInvested,
+        totalBitcoin,
+        runningAvgCost: totalInvested / totalBitcoin
+      });
     }
     
     const averagePrice = totalInvested / totalBitcoin;
@@ -949,7 +972,8 @@ export default function Home() {
       currentValue,
       totalGain,
       percentageReturn,
-      duration
+      duration,
+      purchases // Include purchase data for accurate charting
     });
   };
 
@@ -3337,48 +3361,51 @@ export default function Home() {
                                 {dcaResults.duration}mo
                               </div>
                               
-                              {/* Realistic DCA Chart */}
+                              {/* Accurate DCA Chart using real purchase data */}
                               <svg className="w-full h-full" viewBox="0 0 400 200">
-                                {(() => {
-                                  const totalPoints = Math.min(dcaResults.duration, 24);
-                                  const chartWidth = 340;
+                                {dcaResults?.purchases && (() => {
+                                  const purchases = dcaResults.purchases;
+                                  const chartWidth = 360;
+                                  const chartHeight = 160;
                                   
-                                  // Generate realistic Bitcoin price data and DCA average cost
-                                  const data = [];
-                                  let totalInvested = 0;
-                                  let totalBTC = 0;
-                                  const investmentPerPeriod = dcaResults.totalInvested / totalPoints;
+                                  // Find price range for proper scaling
+                                  const minPrice = Math.min(...purchases.map(p => p.price));
+                                  const maxPrice = Math.max(...purchases.map(p => p.price));
+                                  const priceRange = maxPrice - minPrice;
                                   
-                                  for (let i = 0; i < totalPoints; i++) {
-                                    // Bitcoin price simulation (volatile movement)
-                                    const basePrice = 45000;
-                                    const trend = i * 150; // slight upward trend
-                                    const volatility = Math.sin(i * 0.4) * 7000 + Math.cos(i * 0.6) * 4000;
-                                    const randomness = (Math.random() - 0.5) * 6000;
-                                    const currentPrice = Math.max(25000, basePrice + trend + volatility + randomness);
+                                  // Find average cost range
+                                  const minAvg = Math.min(...purchases.map(p => p.runningAvgCost));
+                                  const maxAvg = Math.max(...purchases.map(p => p.runningAvgCost));
+                                  
+                                  // Calculate positions for each data point
+                                  const dataPoints = purchases.map((purchase, index) => {
+                                    const x = 20 + (index / (purchases.length - 1)) * chartWidth;
+                                    const priceY = 180 - ((purchase.price - minPrice) / priceRange) * chartHeight;
+                                    const avgY = 180 - ((purchase.runningAvgCost - minPrice) / priceRange) * chartHeight;
                                     
-                                    // DCA calculations - accumulative average
-                                    totalInvested += investmentPerPeriod;
-                                    totalBTC += investmentPerPeriod / currentPrice;
-                                    const avgCost = totalInvested / totalBTC;
-                                    
-                                    const x = 20 + (i / Math.max(totalPoints - 1, 1)) * chartWidth;
-                                    
-                                    data.push({
+                                    return {
                                       x,
-                                      bitcoinPriceY: 180 - ((currentPrice - 25000) / 50000) * 140,
-                                      avgCostY: 180 - ((avgCost - 25000) / 50000) * 140,
-                                      price: currentPrice,
-                                      avgCost
-                                    });
-                                  }
+                                      priceY,
+                                      avgY,
+                                      price: purchase.price,
+                                      avgCost: purchase.runningAvgCost
+                                    };
+                                  });
                                   
                                   return (
                                     <>
-                                      {/* Bitcoin actual price line (orange, volatile) */}
+                                      {/* Grid lines */}
+                                      <defs>
+                                        <pattern id="dcaGrid" width="40" height="30" patternUnits="userSpaceOnUse">
+                                          <path d="M 40 0 L 0 0 0 30" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.2"/>
+                                        </pattern>
+                                      </defs>
+                                      <rect width="100%" height="100%" fill="url(#dcaGrid)" />
+                                      
+                                      {/* Bitcoin price line (orange - actual market prices) */}
                                       <path
-                                        d={data.map((point, i) => 
-                                          `${i === 0 ? 'M' : 'L'} ${point.x},${point.bitcoinPriceY}`
+                                        d={dataPoints.map((point, i) => 
+                                          `${i === 0 ? 'M' : 'L'} ${point.x},${point.priceY}`
                                         ).join(' ')}
                                         stroke="#f97316"
                                         strokeWidth="3"
@@ -3386,34 +3413,55 @@ export default function Home() {
                                         className="drop-shadow-sm"
                                       />
                                       
-                                      {/* DCA average cost line (blue, smoothing over time) */}
+                                      {/* DCA running average cost line (blue - your evolving average) */}
                                       <path
-                                        d={data.map((point, i) => 
-                                          `${i === 0 ? 'M' : 'L'} ${point.x},${point.avgCostY}`
+                                        d={dataPoints.map((point, i) => 
+                                          `${i === 0 ? 'M' : 'L'} ${point.x},${point.avgY}`
                                         ).join(' ')}
                                         stroke="#3b82f6"
                                         strokeWidth="2"
-                                        strokeDasharray="4,4"
+                                        strokeDasharray="6,4"
                                         fill="none"
-                                        opacity="0.8"
+                                        opacity="0.9"
                                       />
                                       
-                                      {/* DCA purchase points (green dots on Bitcoin price line) */}
-                                      {data.map((point, i) => (
-                                        <circle
-                                          key={i}
-                                          cx={point.x}
-                                          cy={point.bitcoinPriceY}
-                                          r="3"
-                                          fill="#22c55e"
-                                          stroke="#1f2937"
-                                          strokeWidth="1"
-                                          className="drop-shadow-sm"
-                                        />
+                                      {/* Purchase points (green dots at actual buy prices) */}
+                                      {dataPoints.map((point, i) => (
+                                        <g key={i}>
+                                          <circle
+                                            cx={point.x}
+                                            cy={point.priceY}
+                                            r="4"
+                                            fill="#22c55e"
+                                            stroke="#1f2937"
+                                            strokeWidth="1"
+                                            className="drop-shadow-sm"
+                                          />
+                                        </g>
                                       ))}
+                                      
+                                      {/* Price labels */}
+                                      <text x="25" y="15" fill="#9ca3af" fontSize="11">
+                                        ${Math.round(maxPrice / 1000)}k
+                                      </text>
+                                      <text x="25" y="190" fill="#9ca3af" fontSize="11">
+                                        ${Math.round(minPrice / 1000)}k
+                                      </text>
+                                      
+                                      {/* Time labels */}
+                                      <text x="25" y="195" fill="#9ca3af" fontSize="10">Start</text>
+                                      <text x="350" y="195" fill="#9ca3af" fontSize="10">
+                                        {dcaResults.duration}mo
+                                      </text>
                                     </>
                                   );
                                 })()}
+                                
+                                {!dcaResults?.purchases && (
+                                  <text x="200" y="100" textAnchor="middle" fill="#9ca3af" fontSize="14">
+                                    Click "Calculate DCA" to see chart
+                                  </text>
+                                )}
                               </svg>
                               
                               {/* Legend */}
