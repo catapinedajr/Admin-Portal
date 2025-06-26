@@ -385,10 +385,8 @@ export default function Home() {
   };
 
   const calculateTransactionFee = () => {
-    const amount = parseFloat(transactionInputs.amount);
-    const feeRate = parseFloat(transactionInputs.feeRate);
-    const estimatedSize = 226; // bytes for typical transaction
-    return ((feeRate * estimatedSize) / 100000000).toFixed(8); // Convert sats to BTC
+    const currentFee = getCurrentFee();
+    return currentFee.cost;
   };
 
   const simulatePasteFromClipboard = () => {
@@ -444,13 +442,14 @@ export default function Home() {
   };
 
   const getTransactionTotal = () => {
-    const amount = parseFloat(transactionInputs.amount);
-    const fee = parseFloat(getCurrentFee().cost);
+    const amount = parseFloat(transactionInputs.amount) || 0;
+    const fee = parseFloat(getCurrentFee().cost) || 0;
     return (amount + fee).toFixed(8);
   };
 
   const getUSDValue = (btcAmount: string) => {
-    return (parseFloat(btcAmount) * 95000).toFixed(2);
+    const amount = parseFloat(btcAmount) || 0;
+    return (amount * 95000).toFixed(2);
   };
 
   const approveTransaction = () => {
@@ -2216,7 +2215,10 @@ export default function Home() {
                                             <p className="text-white font-medium">{option.priority}</p>
                                             <p className="text-zinc-400 text-xs">{option.rate} sat/vB • {option.time}</p>
                                           </div>
-                                          <p className="text-orange-400 font-mono">{option.cost} BTC</p>
+                                          <div className="text-right">
+                                            <p className="text-orange-400 font-mono">{option.cost} BTC</p>
+                                            <p className="text-zinc-500 text-xs">${getUSDValue(option.cost)}</p>
+                                          </div>
                                         </div>
                                       </div>
                                     ))}
@@ -2229,19 +2231,24 @@ export default function Home() {
                                   <div className="space-y-1 text-sm">
                                     <div className="flex justify-between">
                                       <span className="text-zinc-400">Amount:</span>
-                                      <span className="text-white font-mono">{transactionInputs.amount} BTC</span>
+                                      <div className="text-right">
+                                        <div className="text-white font-mono">{transactionInputs.amount} BTC</div>
+                                        <div className="text-zinc-500 text-xs">${getUSDValue(transactionInputs.amount)}</div>
+                                      </div>
                                     </div>
                                     <div className="flex justify-between">
                                       <span className="text-zinc-400">Network Fee:</span>
-                                      <span className="text-white font-mono">{getCurrentFee().cost} BTC</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                      <span className="text-zinc-400">USD Value:</span>
-                                      <span className="text-green-400">${getUSDValue(getTransactionTotal())}</span>
+                                      <div className="text-right">
+                                        <div className="text-white font-mono">{getCurrentFee().cost} BTC</div>
+                                        <div className="text-zinc-500 text-xs">${getUSDValue(getCurrentFee().cost)}</div>
+                                      </div>
                                     </div>
                                     <div className="border-t border-zinc-700 pt-2 flex justify-between font-medium">
                                       <span className="text-zinc-300">Total:</span>
-                                      <span className="text-orange-400 font-mono">{getTransactionTotal()} BTC</span>
+                                      <div className="text-right">
+                                        <div className="text-orange-400 font-mono">{getTransactionTotal()} BTC</div>
+                                        <div className="text-green-400 text-xs">${getUSDValue(getTransactionTotal())}</div>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
@@ -2455,15 +2462,24 @@ export default function Home() {
                                   </div>
                                   <div className="flex justify-between">
                                     <span className="text-zinc-400">Amount:</span>
-                                    <span className="text-orange-400 font-medium">{transactionInputs.amount} BTC</span>
+                                    <div className="text-right">
+                                      <div className="text-orange-400 font-medium">{transactionInputs.amount} BTC</div>
+                                      <div className="text-zinc-500 text-xs">${getUSDValue(transactionInputs.amount)}</div>
+                                    </div>
                                   </div>
                                   <div className="flex justify-between">
                                     <span className="text-zinc-400">Fee:</span>
-                                    <span className="text-white">{calculateTransactionFee()} BTC</span>
+                                    <div className="text-right">
+                                      <div className="text-white">{calculateTransactionFee()} BTC</div>
+                                      <div className="text-zinc-500 text-xs">${getUSDValue(calculateTransactionFee())}</div>
+                                    </div>
                                   </div>
                                   <div className="border-t border-zinc-700 pt-2 flex justify-between font-medium">
                                     <span className="text-zinc-300">Total:</span>
-                                    <span className="text-white">{(parseFloat(transactionInputs.amount) + parseFloat(calculateTransactionFee())).toFixed(8)} BTC</span>
+                                    <div className="text-right">
+                                      <div className="text-white">{getTransactionTotal()} BTC</div>
+                                      <div className="text-zinc-400 text-xs">${getUSDValue(getTransactionTotal())}</div>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
