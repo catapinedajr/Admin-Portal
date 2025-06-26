@@ -3154,7 +3154,8 @@ export default function Home() {
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                       {/* Investment Amount */}
                       <div className="space-y-3">
-                        <label className="text-sm font-medium text-white">Monthly Investment Amount</label>
+                        <label className="text-sm font-medium text-white">Investment Amount</label>
+                        <p className="text-xs text-zinc-400">Per selected frequency below</p>
                         <Select 
                           value={dcaInputs.monthlyAmount.toString()} 
                           onValueChange={(value) => setDcaInputs(prev => ({ ...prev, monthlyAmount: Number(value) }))}
@@ -3163,23 +3164,23 @@ export default function Home() {
                             <SelectValue placeholder="Select amount" />
                           </SelectTrigger>
                           <SelectContent className="bg-zinc-800 border-zinc-700">
-                            <SelectItem value="25">$25/month</SelectItem>
-                            <SelectItem value="50">$50/month</SelectItem>
-                            <SelectItem value="75">$75/month</SelectItem>
-                            <SelectItem value="100">$100/month</SelectItem>
-                            <SelectItem value="150">$150/month</SelectItem>
-                            <SelectItem value="200">$200/month</SelectItem>
-                            <SelectItem value="250">$250/month</SelectItem>
-                            <SelectItem value="300">$300/month</SelectItem>
-                            <SelectItem value="400">$400/month</SelectItem>
-                            <SelectItem value="500">$500/month</SelectItem>
-                            <SelectItem value="750">$750/month</SelectItem>
-                            <SelectItem value="1000">$1,000/month</SelectItem>
-                            <SelectItem value="1500">$1,500/month</SelectItem>
-                            <SelectItem value="2000">$2,000/month</SelectItem>
-                            <SelectItem value="2500">$2,500/month</SelectItem>
-                            <SelectItem value="5000">$5,000/month</SelectItem>
-                            <SelectItem value="10000">$10,000/month</SelectItem>
+                            <SelectItem value="25">$25</SelectItem>
+                            <SelectItem value="50">$50</SelectItem>
+                            <SelectItem value="75">$75</SelectItem>
+                            <SelectItem value="100">$100</SelectItem>
+                            <SelectItem value="150">$150</SelectItem>
+                            <SelectItem value="200">$200</SelectItem>
+                            <SelectItem value="250">$250</SelectItem>
+                            <SelectItem value="300">$300</SelectItem>
+                            <SelectItem value="400">$400</SelectItem>
+                            <SelectItem value="500">$500</SelectItem>
+                            <SelectItem value="750">$750</SelectItem>
+                            <SelectItem value="1000">$1,000</SelectItem>
+                            <SelectItem value="1500">$1,500</SelectItem>
+                            <SelectItem value="2000">$2,000</SelectItem>
+                            <SelectItem value="2500">$2,500</SelectItem>
+                            <SelectItem value="5000">$5,000</SelectItem>
+                            <SelectItem value="10000">$10,000</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
