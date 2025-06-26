@@ -1491,119 +1491,32 @@ export default function Home() {
             {learnSubTab === "deepdive" && (
               <WeeklyDeepDive />
             )}
-                            className="text-orange-400 hover:text-orange-300"
-                          >
-                            {expandedTopics.has("lightning") ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                          </Button>
-                        </div>
-                        <p className="text-zinc-300 text-sm">
-                          A "layer 2" payment protocol that operates on top of Bitcoin. It enables fast, low-cost transactions by creating payment channels between users.
-                        </p>
-                        {expandedTopics.has("lightning") && (
-                          <div className="space-y-4 border-t border-zinc-700 pt-4">
-                            <div className="space-y-2">
-                              <h5 className="font-medium text-orange-300">How It Works:</h5>
-                              <ul className="space-y-2 text-sm text-zinc-300">
-                                <li className="flex items-start gap-2">
-                                  <span className="text-orange-400 mt-1">1.</span>
-                                  <span>Two parties open a payment channel by creating a multi-signature Bitcoin transaction</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                  <span className="text-orange-400 mt-1">2.</span>
-                                  <span>They can now send unlimited payments to each other instantly and privately</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                  <span className="text-orange-400 mt-1">3.</span>
-                                  <span>Payments can route through multiple channels to reach anyone on the network</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                  <span className="text-orange-400 mt-1">4.</span>
-                                  <span>Channel is closed by broadcasting the final state to the Bitcoin blockchain</span>
-                                </li>
-                              </ul>
-                            </div>
-                            <div className="space-y-2">
-                              <h5 className="font-medium text-orange-300">Real-World Benefits:</h5>
-                              <div className="grid gap-2">
-                                <div className="p-2 bg-orange-600/10 rounded border border-orange-600/20 text-sm text-orange-100">
-                                  <span className="font-medium">Instant Coffee Purchase:</span> Buy coffee with Bitcoin instantly instead of waiting 10+ minutes for confirmation
-                                </div>
-                                <div className="p-2 bg-orange-600/10 rounded border border-orange-600/20 text-sm text-orange-100">
-                                  <span className="font-medium">Micropayments:</span> Pay fractions of a cent for content, impossible with traditional payment systems
-                                </div>
-                                <div className="p-2 bg-orange-600/10 rounded border border-orange-600/20 text-sm text-orange-100">
-                                  <span className="font-medium">Privacy:</span> Lightning transactions don't reveal details to the entire blockchain
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                        <div className="space-y-2">
-                          <h5 className="font-medium text-orange-300">Key Features:</h5>
-                          <ul className="space-y-1 text-sm text-zinc-400">
-                            <li>• Instant payments</li>
-                            <li>• Minimal fees (fractions of a cent)</li>
-                            <li>• Micropayment capability</li>
-                            <li>• Enhanced privacy</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
 
-                  <Card className="bg-zinc-900 border-zinc-800">
-                    <CardContent className="p-6">
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="p-2 bg-blue-600/20 rounded-lg">
-                              <Lock className="w-6 h-6 text-blue-400" />
-                            </div>
-                            <h4 className="text-lg font-bold text-white">Digital Signatures</h4>
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => toggleTopicExpansion("signatures")}
-                            className="text-blue-400 hover:text-blue-300"
-                          >
-                            {expandedTopics.has("signatures") ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                          </Button>
+            {/* Glossary Reference Section */}
+            {learnSubTab === "reference" && (
+              <div className="space-y-6">
+                <div className="text-center mb-8">
+                  <h3 className="text-2xl font-bold text-white mb-2">Bitcoin Glossary</h3>
+                  <p className="text-zinc-400">Essential terms to understand Bitcoin and blockchain technology</p>
+                </div>
+
+                <div className="grid gap-4">
+                  {bitcoinTerms.map((term, index) => (
+                    <Card key={index} className="bg-zinc-900 border-zinc-800">
+                      <CardContent className="p-6">
+                        <div className="space-y-3">
+                          <h4 className="text-lg font-bold text-orange-400">{term.term}</h4>
+                          <p className="text-zinc-300 leading-relaxed">{term.definition}</p>
                         </div>
-                        <p className="text-zinc-300 text-sm">
-                          Cryptographic proof that a transaction was created by the owner of a private key, without revealing the private key itself.
-                        </p>
-                        {expandedTopics.has("signatures") && (
-                          <div className="space-y-4 border-t border-zinc-700 pt-4">
-                            <div className="space-y-2">
-                              <h5 className="font-medium text-blue-300">Mathematical Foundation:</h5>
-                              <div className="p-3 bg-blue-600/10 border border-blue-600/20 rounded-lg">
-                                <p className="text-blue-100 text-sm">Bitcoin uses Elliptic Curve Digital Signature Algorithm (ECDSA) with the secp256k1 curve, the same cryptography that secures online banking and military communications.</p>
-                              </div>
-                            </div>
-                            <div className="space-y-2">
-                              <h5 className="font-medium text-blue-300">Step-by-Step Process:</h5>
-                              <ol className="space-y-2 text-sm text-zinc-300">
-                                <li className="flex items-start gap-2">
-                                  <span className="text-blue-400 mt-1">1.</span>
-                                  <span>Your wallet creates a transaction hash (summary) of the transaction data</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                  <span className="text-blue-400 mt-1">2.</span>
-                                  <span>Your private key mathematically transforms this hash into a unique signature</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                  <span className="text-blue-400 mt-1">3.</span>
-                                  <span>The signature is attached to the transaction and broadcast to the network</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                  <span className="text-blue-400 mt-1">4.</span>
-                                  <span>Network nodes use your public key to verify the signature matches the transaction</span>
-                                </li>
-                              </ol>
-                            </div>
-                            <div className="space-y-2">
-                              <h5 className="font-medium text-blue-300">Why It's Secure:</h5>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Stories Section */}
+            {learnSubTab === "stories" && (
                               <div className="grid gap-2">
                                 <div className="p-2 bg-blue-600/10 rounded border border-blue-600/20 text-sm text-blue-100">
                                   <span className="font-medium">One-Way Math:</span> Easy to create signature from private key, virtually impossible to reverse
