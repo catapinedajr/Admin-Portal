@@ -901,53 +901,85 @@ export default function Home() {
                       </div>
                     </div>
 
-                    {/* Activity Rings & Progress Section */}
+                    {/* Blockchain Progress Tracker */}
                     <div className="flex items-center justify-center gap-8 mb-6">
-                      {/* Activity Rings */}
+                      {/* Blockchain Visualization */}
                       <div className="relative">
-                        <svg className="w-24 h-24 transform -rotate-90">
-                          {/* Background circles */}
-                          <circle cx="48" cy="48" r="38" stroke="rgb(39, 39, 42)" strokeWidth="4" fill="none" />
-                          <circle cx="48" cy="48" r="30" stroke="rgb(39, 39, 42)" strokeWidth="3" fill="none" />
-                          <circle cx="48" cy="48" r="22" stroke="rgb(39, 39, 42)" strokeWidth="3" fill="none" />
-                          
-                          {/* Progress circles - Facts (Green, Outer) */}
-                          <circle 
-                            cx="48" cy="48" r="38" 
-                            stroke="rgb(34, 197, 94)" 
-                            strokeWidth="4" 
-                            fill="none"
-                            strokeLinecap="round"
-                            strokeDasharray={`${239 * 0.85} ${239 * 0.15}`}
-                            className="transition-all duration-1000"
-                          />
-                          {/* Lesson (Blue, Middle) */}
-                          <circle 
-                            cx="48" cy="48" r="30" 
-                            stroke="rgb(59, 130, 246)" 
-                            strokeWidth="3" 
-                            fill="none"
-                            strokeLinecap="round"
-                            strokeDasharray={`${188 * 0.75} ${188 * 0.25}`}
-                            className="transition-all duration-1000"
-                          />
-                          {/* Quiz (Purple, Inner) */}
-                          <circle 
-                            cx="48" cy="48" r="22" 
-                            stroke="rgb(168, 85, 247)" 
-                            strokeWidth="3" 
-                            fill="none"
-                            strokeLinecap="round"
-                            strokeDasharray={`${138 * 1.0} ${138 * 0.0}`}
-                            className="transition-all duration-1000"
-                          />
-                        </svg>
-                        
-                        {/* Center streak display */}
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="text-center">
-                            <div className="text-2xl font-bold text-white">{user?.currentStreak || 0}</div>
-                            <div className="text-xs text-zinc-400 -mt-1">day streak</div>
+                        <div className="flex flex-col gap-2">
+                          {/* Block 1: Essential Facts */}
+                          <div className="relative">
+                            <div className="w-20 h-16 border-2 border-green-600 rounded-lg bg-zinc-900 overflow-hidden">
+                              {/* Block header */}
+                              <div className="h-4 bg-green-600/20 border-b border-green-600/30 flex items-center justify-center">
+                                <span className="text-xs font-mono text-green-400">Block #1</span>
+                              </div>
+                              {/* Progress fill */}
+                              <div className="relative h-12">
+                                <div 
+                                  className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-green-500/60 to-green-400/40 transition-all duration-1000"
+                                  style={{ height: '85%' }}
+                                ></div>
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <span className="text-xs font-bold text-green-300">85%</span>
+                                </div>
+                              </div>
+                            </div>
+                            {/* Connection line to next block */}
+                            <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0.5 h-2 bg-green-500"></div>
+                          </div>
+
+                          {/* Block 2: Deep Dive */}
+                          <div className="relative">
+                            <div className="w-20 h-16 border-2 border-blue-600 rounded-lg bg-zinc-900 overflow-hidden">
+                              {/* Block header */}
+                              <div className="h-4 bg-blue-600/20 border-b border-blue-600/30 flex items-center justify-center">
+                                <span className="text-xs font-mono text-blue-400">Block #2</span>
+                              </div>
+                              {/* Progress fill */}
+                              <div className="relative h-12">
+                                <div 
+                                  className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-500/60 to-blue-400/40 transition-all duration-1000"
+                                  style={{ height: '75%' }}
+                                ></div>
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <span className="text-xs font-bold text-blue-300">75%</span>
+                                </div>
+                              </div>
+                            </div>
+                            {/* Connection line to next block */}
+                            <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0.5 h-2 bg-blue-500"></div>
+                          </div>
+
+                          {/* Block 3: Knowledge Test */}
+                          <div className="relative">
+                            <div className="w-20 h-16 border-2 border-purple-600 rounded-lg bg-zinc-900 overflow-hidden">
+                              {/* Block header */}
+                              <div className="h-4 bg-purple-600/20 border-b border-purple-600/30 flex items-center justify-center">
+                                <span className="text-xs font-mono text-purple-400">Block #3</span>
+                              </div>
+                              {/* Progress fill */}
+                              <div className="relative h-12">
+                                <div 
+                                  className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-purple-500/60 to-purple-400/40 transition-all duration-1000"
+                                  style={{ height: '100%' }}
+                                ></div>
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <span className="text-xs font-bold text-purple-300">100%</span>
+                                </div>
+                                {/* Completion checkmark */}
+                                <div className="absolute top-1 right-1">
+                                  <CheckCircle className="w-3 h-3 text-purple-300" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Streak counter positioned to the right */}
+                        <div className="absolute -right-16 top-1/2 transform -translate-y-1/2">
+                          <div className="text-center bg-zinc-800 border border-zinc-700 rounded-lg p-3">
+                            <div className="text-2xl font-bold text-orange-400">{user?.currentStreak || 0}</div>
+                            <div className="text-xs text-zinc-400">day streak</div>
                           </div>
                         </div>
                       </div>
