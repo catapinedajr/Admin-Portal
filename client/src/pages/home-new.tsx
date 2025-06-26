@@ -175,6 +175,14 @@ export default function Home() {
   const [convictionSubTab, setConvictionSubTab] = useState<"whitepaper" | "books" | "videos">("whitepaper");
   const [showSplash, setShowSplash] = useState(true);
   const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
+  const [expandedTopics, setExpandedTopics] = useState<Set<string>>(new Set());
+  const [safetyQuizScore, setSafetyQuizScore] = useState<number>(0);
+  const [transactionInputs, setTransactionInputs] = useState({
+    fromAddress: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+    toAddress: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+    amount: "0.001",
+    feeRate: "5"
+  });
   
   const toggleFactExpansion = (factId: number) => {
     const newExpanded = new Set(expandedFacts);
@@ -193,15 +201,31 @@ export default function Home() {
       visualDescription: string;
       keyTakeaways: string[];
     }> = {
+      "What is Bitcoin?": {
+        explanation: "Bitcoin is a revolutionary peer-to-peer electronic cash system that allows online payments to be sent directly between parties without going through a financial institution. It operates on a decentralized network maintained by thousands of computers worldwide.",
+        examples: [
+          "Send money anywhere in the world 24/7 without banks",
+          "No central authority can freeze or confiscate your Bitcoin",
+          "Every transaction is recorded on a public, unchangeable ledger",
+          "Uses cryptographic proof instead of trust in institutions"
+        ],
+        visualDescription: "Imagine a global digital cash system where every transaction is like writing in an unchangeable public notebook that thousands of people verify and keep copies of.",
+        keyTakeaways: [
+          "First successful digital currency without central control",
+          "Operates 24/7 globally without intermediaries",
+          "Transactions are irreversible and transparent",
+          "Powered by mathematical proof rather than institutional trust"
+        ]
+      },
       "Halving Events": {
-        explanation: "Bitcoin halving is a pre-programmed event that occurs approximately every 4 years (210,000 blocks) where the reward for mining new blocks is cut in half.",
+        explanation: "Bitcoin halving is a pre-programmed event that occurs approximately every 4 years (210,000 blocks) where the reward for mining new blocks is cut in half. This reduces the rate at which new bitcoins enter circulation.",
         examples: [
           "2012: Reward dropped from 50 BTC to 25 BTC per block",
           "2016: Reward dropped from 25 BTC to 12.5 BTC per block", 
           "2020: Reward dropped from 12.5 BTC to 6.25 BTC per block",
           "2024: Reward dropped from 6.25 BTC to 3.125 BTC per block"
         ],
-        visualDescription: "Imagine a giant digital clock counting down blocks. Every 210,000 blocks, an automated mechanism literally cuts the mining reward in half.",
+        visualDescription: "Imagine a giant digital clock counting down blocks. Every 210,000 blocks, an automated mechanism literally cuts the mining reward in half, like a factory automatically reducing production.",
         keyTakeaways: [
           "Reduces new Bitcoin supply entering the market",
           "Creates predictable scarcity timeline",
@@ -210,7 +234,7 @@ export default function Home() {
         ]
       },
       "Digital Scarcity": {
-        explanation: "Before Bitcoin, digital items could be copied infinitely at zero cost. Bitcoin solved the 'double-spending problem' using cryptographic proof and network consensus.",
+        explanation: "Before Bitcoin, digital items could be copied infinitely at zero cost. Bitcoin solved the 'double-spending problem' using cryptographic proof and network consensus, creating true digital scarcity.",
         examples: [
           "Only 21 million bitcoins will ever exist (hardcoded limit)",
           "Digital files can be copied, but Bitcoin cannot be duplicated",
@@ -224,10 +248,135 @@ export default function Home() {
           "Cannot be inflated away by central authorities",
           "Digital scarcity enables digital value storage"
         ]
+      },
+      "Peer-to-Peer Network": {
+        explanation: "Bitcoin operates on a decentralized network where thousands of computers (nodes) work together to validate transactions and maintain the blockchain without any central authority controlling the system.",
+        examples: [
+          "Over 15,000 nodes worldwide verify transactions",
+          "No single point of failure or control",
+          "Network becomes stronger as more nodes join",
+          "Anyone can run a node and participate in consensus"
+        ],
+        visualDescription: "Picture a massive web of interconnected computers around the world, each keeping an identical copy of Bitcoin's transaction history and working together like a global verification system.",
+        keyTakeaways: [
+          "Decentralized network with no central authority",
+          "Thousands of nodes provide security and redundancy",
+          "Permissionless participation strengthens the network",
+          "Resilient against censorship and shutdowns"
+        ]
+      },
+      "Decentralized Currency": {
+        explanation: "Unlike traditional currencies controlled by governments and central banks, Bitcoin operates without any central authority. The network rules are enforced by mathematics and consensus among participants.",
+        examples: [
+          "No central bank can print more bitcoins",
+          "No government can shut down the Bitcoin network",
+          "Monetary policy is transparent and unchangeable",
+          "Works the same way in every country"
+        ],
+        visualDescription: "Imagine money that operates like the internet - no single entity controls it, yet it works reliably through agreed-upon rules that everyone follows.",
+        keyTakeaways: [
+          "No central authority controls Bitcoin",
+          "Monetary policy is fixed and transparent",
+          "Resistant to government interference",
+          "Global currency with consistent rules everywhere"
+        ]
+      },
+      "Bitcoin Mining": {
+        explanation: "Mining is the process by which new bitcoins are created and transactions are verified. Miners use computational power to solve complex mathematical puzzles, securing the network and earning bitcoin rewards.",
+        examples: [
+          "Miners compete to solve cryptographic puzzles",
+          "Winner gets to add the next block and earn rewards",
+          "Mining difficulty adjusts every 2016 blocks",
+          "Energy consumption secures the network"
+        ],
+        visualDescription: "Think of mining like a global lottery where millions of computers race to solve a puzzle. The winner gets to write the next page in Bitcoin's ledger and receives newly created bitcoins as a prize.",
+        keyTakeaways: [
+          "Mining secures the Bitcoin network",
+          "Provides economic incentives for network participation", 
+          "Creates new bitcoins according to a fixed schedule",
+          "Difficulty adjusts to maintain 10-minute block times"
+        ]
+      },
+      "Store of Value": {
+        explanation: "Bitcoin serves as digital gold - a way to preserve wealth over time. Its fixed supply and decentralized nature make it resistant to inflation and monetary debasement by central authorities.",
+        examples: [
+          "Limited supply of 21 million coins maximum",
+          "Cannot be inflated away by governments",
+          "Portable across borders without confiscation risk",
+          "Divisible into 100 million satoshis per bitcoin"
+        ],
+        visualDescription: "Imagine digital gold that you can carry in your phone, send across the world instantly, and that no government can print more of or confiscate.",
+        keyTakeaways: [
+          "Fixed supply creates scarcity like precious metals",
+          "Immune to monetary inflation",
+          "Portable and divisible digital asset",
+          "Censorship-resistant wealth preservation"
+        ]
+      },
+      "Blockchain Technology": {
+        explanation: "The blockchain is Bitcoin's underlying technology - a chain of blocks containing transaction data, linked and secured using cryptography. Each block references the previous one, creating an unchangeable history.",
+        examples: [
+          "Each block contains a hash of the previous block",
+          "Tampering with any block breaks the chain",
+          "All nodes verify the complete chain",
+          "Longest valid chain is accepted as truth"
+        ],
+        visualDescription: "Picture a chain where each link contains transaction records and is mathematically connected to the previous link. Breaking any link would be obvious to everyone watching.",
+        keyTakeaways: [
+          "Creates immutable transaction history",
+          "Uses cryptographic hashing for security",
+          "Distributed across thousands of nodes",
+          "Transparent and verifiable by anyone"
+        ]
       }
     };
     return deepDives[factTitle];
   };
+
+  const toggleTopicExpansion = (topicId: string) => {
+    const newExpanded = new Set(expandedTopics);
+    if (newExpanded.has(topicId)) {
+      newExpanded.delete(topicId);
+    } else {
+      newExpanded.add(topicId);
+    }
+    setExpandedTopics(newExpanded);
+  };
+
+  const updateTransactionInput = (field: string, value: string) => {
+    setTransactionInputs(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const calculateTransactionFee = () => {
+    const amount = parseFloat(transactionInputs.amount);
+    const feeRate = parseFloat(transactionInputs.feeRate);
+    const estimatedSize = 226; // bytes for typical transaction
+    return ((feeRate * estimatedSize) / 100000000).toFixed(8); // Convert sats to BTC
+  };
+
+  const safetyQuestions = [
+    {
+      question: "What should you NEVER share with anyone?",
+      options: ["Your Bitcoin address", "Your private key", "Your transaction history", "Your wallet software"],
+      correct: 1,
+      explanation: "Your private key gives complete control over your Bitcoin. Never share it with anyone."
+    },
+    {
+      question: "What's the safest way to store large amounts of Bitcoin?",
+      options: ["Mobile wallet", "Exchange", "Hardware wallet", "Web wallet"],
+      correct: 2,
+      explanation: "Hardware wallets keep your private keys offline and are the most secure for large amounts."
+    },
+    {
+      question: "How should you backup your seed phrase?",
+      options: ["Take a photo", "Save in cloud storage", "Write on paper", "Email to yourself"],
+      correct: 2,
+      explanation: "Write your seed phrase on paper and store it in a secure physical location."
+    }
+  ];
 
   // API Queries
   const { data: dailyFacts } = useQuery({
@@ -582,15 +731,64 @@ export default function Home() {
                   <Card className="bg-zinc-900 border-zinc-800">
                     <CardContent className="p-6">
                       <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                          <div className="p-2 bg-orange-600/20 rounded-lg">
-                            <Network className="w-6 h-6 text-orange-400" />
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-orange-600/20 rounded-lg">
+                              <Network className="w-6 h-6 text-orange-400" />
+                            </div>
+                            <h4 className="text-lg font-bold text-white">Lightning Network</h4>
                           </div>
-                          <h4 className="text-lg font-bold text-white">Lightning Network</h4>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => toggleTopicExpansion("lightning")}
+                            className="text-orange-400 hover:text-orange-300"
+                          >
+                            {expandedTopics.has("lightning") ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                          </Button>
                         </div>
                         <p className="text-zinc-300 text-sm">
                           A "layer 2" payment protocol that operates on top of Bitcoin. It enables fast, low-cost transactions by creating payment channels between users.
                         </p>
+                        {expandedTopics.has("lightning") && (
+                          <div className="space-y-4 border-t border-zinc-700 pt-4">
+                            <div className="space-y-2">
+                              <h5 className="font-medium text-orange-300">How It Works:</h5>
+                              <ul className="space-y-2 text-sm text-zinc-300">
+                                <li className="flex items-start gap-2">
+                                  <span className="text-orange-400 mt-1">1.</span>
+                                  <span>Two parties open a payment channel by creating a multi-signature Bitcoin transaction</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                  <span className="text-orange-400 mt-1">2.</span>
+                                  <span>They can now send unlimited payments to each other instantly and privately</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                  <span className="text-orange-400 mt-1">3.</span>
+                                  <span>Payments can route through multiple channels to reach anyone on the network</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                  <span className="text-orange-400 mt-1">4.</span>
+                                  <span>Channel is closed by broadcasting the final state to the Bitcoin blockchain</span>
+                                </li>
+                              </ul>
+                            </div>
+                            <div className="space-y-2">
+                              <h5 className="font-medium text-orange-300">Real-World Benefits:</h5>
+                              <div className="grid gap-2">
+                                <div className="p-2 bg-orange-600/10 rounded border border-orange-600/20 text-sm text-orange-100">
+                                  <span className="font-medium">Instant Coffee Purchase:</span> Buy coffee with Bitcoin instantly instead of waiting 10+ minutes for confirmation
+                                </div>
+                                <div className="p-2 bg-orange-600/10 rounded border border-orange-600/20 text-sm text-orange-100">
+                                  <span className="font-medium">Micropayments:</span> Pay fractions of a cent for content, impossible with traditional payment systems
+                                </div>
+                                <div className="p-2 bg-orange-600/10 rounded border border-orange-600/20 text-sm text-orange-100">
+                                  <span className="font-medium">Privacy:</span> Lightning transactions don't reveal details to the entire blockchain
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                         <div className="space-y-2">
                           <h5 className="font-medium text-orange-300">Key Features:</h5>
                           <ul className="space-y-1 text-sm text-zinc-400">
@@ -946,6 +1144,56 @@ export default function Home() {
                     </div>
                   </CardContent>
                 </Card>
+
+                {/* Interactive Safety Quiz */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h4 className="text-lg font-bold text-white mb-4">Test Your Security Knowledge</h4>
+                    <div className="space-y-6">
+                      {safetyQuestions.map((q, index) => (
+                        <div key={index} className="space-y-3">
+                          <h5 className="font-medium text-white">{index + 1}. {q.question}</h5>
+                          <div className="grid gap-2">
+                            {q.options.map((option, optIndex) => (
+                              <Button
+                                key={optIndex}
+                                variant={safetyQuizScore > index && optIndex === q.correct ? "default" : "outline"}
+                                className={`justify-start text-left ${
+                                  safetyQuizScore > index 
+                                    ? optIndex === q.correct 
+                                      ? "bg-green-600 border-green-500 text-white" 
+                                      : "border-zinc-700 text-zinc-400"
+                                    : "border-zinc-700 text-zinc-300 hover:border-orange-500"
+                                }`}
+                                onClick={() => {
+                                  if (safetyQuizScore === index && optIndex === q.correct) {
+                                    setSafetyQuizScore(index + 1);
+                                  }
+                                }}
+                                disabled={safetyQuizScore > index}
+                              >
+                                {String.fromCharCode(65 + optIndex)}. {option}
+                              </Button>
+                            ))}
+                          </div>
+                          {safetyQuizScore > index && (
+                            <div className="p-3 bg-green-600/10 border border-green-600/20 rounded-lg">
+                              <p className="text-green-300 text-sm font-medium">Correct!</p>
+                              <p className="text-green-100 text-sm">{q.explanation}</p>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                      {safetyQuizScore === safetyQuestions.length && (
+                        <div className="p-4 bg-green-600/20 border border-green-500 rounded-lg text-center">
+                          <CheckCircle className="w-8 h-8 text-green-400 mx-auto mb-2" />
+                          <h5 className="font-bold text-green-300 mb-1">Perfect Score! 🎉</h5>
+                          <p className="text-green-100 text-sm">You've mastered Bitcoin security basics. Your funds will be safe!</p>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             )}
 
@@ -953,62 +1201,162 @@ export default function Home() {
             {practiceSubTab === "transactions" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
-                  <h3 className="text-xl font-bold text-white">Bitcoin Transaction Builder</h3>
-                  <p className="text-zinc-400">Learn how Bitcoin transactions work by building one step-by-step</p>
+                  <h3 className="text-xl font-bold text-white">Interactive Bitcoin Transaction Builder</h3>
+                  <p className="text-zinc-400">Build and customize a Bitcoin transaction step-by-step</p>
                 </div>
 
+                {/* Interactive Transaction Builder */}
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
+                    <h4 className="text-lg font-bold text-white mb-4">Build Your Transaction</h4>
                     <div className="space-y-6">
+                      {/* Input Fields */}
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-white">From Address</label>
+                          <input
+                            type="text"
+                            value={transactionInputs.fromAddress}
+                            onChange={(e) => updateTransactionInput('fromAddress', e.target.value)}
+                            className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white text-sm focus:border-orange-500 focus:outline-none"
+                            placeholder="Your Bitcoin address"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-white">To Address</label>
+                          <input
+                            type="text"
+                            value={transactionInputs.toAddress}
+                            onChange={(e) => updateTransactionInput('toAddress', e.target.value)}
+                            className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white text-sm focus:border-orange-500 focus:outline-none"
+                            placeholder="Recipient's Bitcoin address"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-white">Amount (BTC)</label>
+                          <input
+                            type="number"
+                            step="0.00000001"
+                            value={transactionInputs.amount}
+                            onChange={(e) => updateTransactionInput('amount', e.target.value)}
+                            className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white text-sm focus:border-orange-500 focus:outline-none"
+                            placeholder="0.001"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-white">Fee Rate (sat/vB)</label>
+                          <input
+                            type="number"
+                            value={transactionInputs.feeRate}
+                            onChange={(e) => updateTransactionInput('feeRate', e.target.value)}
+                            className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white text-sm focus:border-orange-500 focus:outline-none"
+                            placeholder="5"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Visual Transaction Flow */}
                       <div className="grid gap-4 md:grid-cols-3">
                         <div className="p-4 bg-zinc-800/50 rounded-lg text-center">
                           <Wallet className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-                          <h5 className="font-medium text-white mb-1">From Address</h5>
-                          <p className="text-zinc-400 text-xs">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</p>
+                          <h5 className="font-medium text-white mb-1">From</h5>
+                          <p className="text-zinc-400 text-xs break-all">{transactionInputs.fromAddress.slice(0, 20)}...</p>
                         </div>
                         <div className="p-4 bg-zinc-800/50 rounded-lg text-center">
                           <ArrowRight className="w-8 h-8 text-orange-400 mx-auto mb-2" />
                           <h5 className="font-medium text-white mb-1">Amount</h5>
-                          <p className="text-zinc-400 text-xs">0.001 BTC</p>
+                          <p className="text-orange-400 font-medium">{transactionInputs.amount} BTC</p>
                         </div>
                         <div className="p-4 bg-zinc-800/50 rounded-lg text-center">
                           <UserIcon className="w-8 h-8 text-green-400 mx-auto mb-2" />
-                          <h5 className="font-medium text-white mb-1">To Address</h5>
-                          <p className="text-zinc-400 text-xs">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</p>
+                          <h5 className="font-medium text-white mb-1">To</h5>
+                          <p className="text-zinc-400 text-xs break-all">{transactionInputs.toAddress.slice(0, 20)}...</p>
                         </div>
                       </div>
 
+                      {/* Calculated Transaction Details */}
                       <div className="space-y-4">
-                        <h5 className="font-medium text-white">Transaction Details</h5>
+                        <h5 className="font-medium text-white">Calculated Transaction Details</h5>
                         <div className="grid gap-3 md:grid-cols-2">
                           <div className="p-3 bg-zinc-800/30 rounded-lg">
                             <p className="text-zinc-400 text-sm">Network Fee</p>
-                            <p className="text-white font-medium">0.00002 BTC (~$1.30)</p>
+                            <p className="text-white font-medium">{calculateTransactionFee()} BTC</p>
                           </div>
                           <div className="p-3 bg-zinc-800/30 rounded-lg">
-                            <p className="text-zinc-400 text-sm">Confirmation Time</p>
-                            <p className="text-white font-medium">~10 minutes</p>
+                            <p className="text-zinc-400 text-sm">Total Cost</p>
+                            <p className="text-white font-medium">{(parseFloat(transactionInputs.amount) + parseFloat(calculateTransactionFee())).toFixed(8)} BTC</p>
                           </div>
                           <div className="p-3 bg-zinc-800/30 rounded-lg">
                             <p className="text-zinc-400 text-sm">Transaction Size</p>
                             <p className="text-white font-medium">226 bytes</p>
                           </div>
                           <div className="p-3 bg-zinc-800/30 rounded-lg">
-                            <p className="text-zinc-400 text-sm">Fee Rate</p>
-                            <p className="text-white font-medium">5.75 sat/vB</p>
+                            <p className="text-zinc-400 text-sm">Confirmation Time</p>
+                            <p className="text-white font-medium">
+                              {parseFloat(transactionInputs.feeRate) > 10 ? "~10 min" : 
+                               parseFloat(transactionInputs.feeRate) > 5 ? "~20 min" : "30+ min"}
+                            </p>
                           </div>
                         </div>
                       </div>
 
+                      {/* Fee Rate Guide */}
+                      <div className="p-4 bg-blue-600/10 border border-blue-600/20 rounded-lg">
+                        <h5 className="font-medium text-blue-300 mb-2">Fee Rate Guide:</h5>
+                        <div className="grid gap-2 md:grid-cols-3 text-sm">
+                          <div className="p-2 bg-red-600/10 rounded border border-red-600/20">
+                            <span className="text-red-300 font-medium">1-4 sat/vB:</span>
+                            <span className="text-red-100"> Slow (30+ min)</span>
+                          </div>
+                          <div className="p-2 bg-yellow-600/10 rounded border border-yellow-600/20">
+                            <span className="text-yellow-300 font-medium">5-10 sat/vB:</span>
+                            <span className="text-yellow-100"> Medium (10-20 min)</span>
+                          </div>
+                          <div className="p-2 bg-green-600/10 rounded border border-green-600/20">
+                            <span className="text-green-300 font-medium">10+ sat/vB:</span>
+                            <span className="text-green-100"> Fast (~10 min)</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Transaction Steps */}
                       <div className="p-4 bg-orange-600/10 border border-orange-600/20 rounded-lg">
                         <h5 className="font-medium text-orange-300 mb-2">How This Transaction Works:</h5>
-                        <ol className="space-y-1 text-zinc-300 text-sm">
-                          <li>1. Your wallet creates a transaction spending unspent outputs</li>
-                          <li>2. The transaction is signed with your private key</li>
-                          <li>3. It's broadcast to the Bitcoin network</li>
-                          <li>4. Miners include it in a block and confirm it</li>
+                        <ol className="space-y-2 text-zinc-300 text-sm">
+                          <li className="flex items-start gap-2">
+                            <span className="text-orange-400 font-medium mt-1">1.</span>
+                            <span>Your wallet selects unspent transaction outputs (UTXOs) that total at least {transactionInputs.amount} BTC</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-orange-400 font-medium mt-1">2.</span>
+                            <span>A transaction is created specifying inputs, outputs, and fee of {calculateTransactionFee()} BTC</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-orange-400 font-medium mt-1">3.</span>
+                            <span>Your private key creates a digital signature proving ownership of the inputs</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-orange-400 font-medium mt-1">4.</span>
+                            <span>The signed transaction is broadcast to the Bitcoin network for validation</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-orange-400 font-medium mt-1">5.</span>
+                            <span>Miners include it in a block, and it gets {parseFloat(transactionInputs.feeRate) > 10 ? "fast" : "standard"} confirmation</span>
+                          </li>
                         </ol>
                       </div>
+
+                      {/* Simulate Transaction Button */}
+                      <Button 
+                        className="w-full bg-orange-600 hover:bg-orange-700 text-white"
+                        onClick={() => {
+                          // This would simulate the transaction in a real app
+                          alert(`Transaction simulated!\n\nFrom: ${transactionInputs.fromAddress.slice(0, 20)}...\nTo: ${transactionInputs.toAddress.slice(0, 20)}...\nAmount: ${transactionInputs.amount} BTC\nFee: ${calculateTransactionFee()} BTC\nTotal: ${(parseFloat(transactionInputs.amount) + parseFloat(calculateTransactionFee())).toFixed(8)} BTC`);
+                        }}
+                      >
+                        <Zap className="w-4 h-4 mr-2" />
+                        Simulate Transaction
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
