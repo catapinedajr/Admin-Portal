@@ -37,7 +37,12 @@ interface QuizScore {
   percentage: number;
 }
 
-export default function DailyQuiz() {
+interface DailyQuizProps {
+  onCompletion?: () => void;
+  disabled?: boolean;
+}
+
+export default function DailyQuiz({ onCompletion, disabled = false }: DailyQuizProps) {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const [submittedAnswers, setSubmittedAnswers] = useState<Record<number, QuizAnswer>>({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -123,6 +128,11 @@ export default function DailyQuiz() {
   const nextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else {
+      // Quiz completed - trigger completion callback
+      if (onCompletion) {
+        onCompletion();
+      }
     }
   };
 

@@ -36,7 +36,9 @@ import {
   ChevronUp,
   CheckCircle,
   BarChart3,
-  Clock
+  Clock,
+  ShieldCheck,
+  Target as TargetIcon
 } from "lucide-react";
 import type { User, DailyFact, Lesson, UserProgress, ConvictionContent } from "@shared/schema";
 import DailyQuiz from "@/components/DailyQuiz";
@@ -420,16 +422,41 @@ export default function Home() {
   const [practiceSubTab, setPracticeSubTab] = useState<PracticeSubTab>("mining");
   const [inspirationSubTab, setInspirationSubTab] = useState<InspirationSubTab>("stories");
   const [disruptionSubTab, setDisruptionSubTab] = useState<DisruptionSubTab>("problems");
+  
+  // Progress tracking state
+  const [factsCompleted, setFactsCompleted] = useState(false);
+  const [lessonCompleted, setLessonCompleted] = useState(false);
+  const [quizCompleted, setQuizCompleted] = useState(false);
+  
+  // Completion handlers
+  const handleFactCompletion = () => {
+    if (!factsCompleted) {
+      setFactsCompleted(true);
+    }
+  };
+  
+  const handleLessonCompletion = () => {
+    if (factsCompleted && !lessonCompleted) {
+      setLessonCompleted(true);
+    }
+  };
+  
+  const handleQuizCompletion = () => {
+    if (lessonCompleted && !quizCompleted) {
+      setQuizCompleted(true);
+    }
+  };
+  
   const [storiesSubTab, setStoriesSubTab] = useState<StoriesSubTab>("individuals");
   const [convictionSubTab, setConvictionSubTab] = useState<ConvictionSubTab>("whitepaper");
   const [showPriceChart, setShowPriceChart] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
-  const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
   const [simulatorInputs, setSimulatorInputs] = useState({
     mining: { hashRate: 100, electricityCost: 0.12, bitcoinPrice: 100000 },
     dca: { monthlyAmount: 100, duration: 12, startPrice: 50000 },
     hodl: { initialAmount: 1000, years: 4, strategy: 'hodl' as 'hodl' | 'trading' }
   });
+  const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
 
   const toggleFactExpansion = (factId: number) => {
     const newExpanded = new Set(expandedFacts);
@@ -907,7 +934,9 @@ export default function Home() {
                       <div className="flex items-center gap-3">
                         {/* Block 1: Essential Facts */}
                         <div className="relative">
-                          <div className="w-20 h-16 border-2 border-green-600 rounded-lg bg-zinc-900 overflow-hidden shadow-lg">
+                          <div className={`w-20 h-16 border-2 rounded-lg bg-zinc-900 overflow-hidden shadow-lg transition-all duration-500 ${
+                            factsCompleted ? 'border-green-600 shadow-green-600/20' : 'border-green-600'
+                          }`}>
                             {/* Block header */}
                             <div className="h-4 bg-green-600/20 border-b border-green-600/30 flex items-center justify-center">
                               <span className="text-xs font-mono text-green-400 font-semibold">Facts</span>
@@ -916,82 +945,105 @@ export default function Home() {
                             <div className="relative h-12">
                               <div 
                                 className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-green-500/60 to-green-400/40 transition-all duration-1000"
-                                style={{ height: '85%' }}
+                                style={{ height: factsCompleted ? '100%' : '0%' }}
                               ></div>
                               <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="text-xs font-bold text-green-300">85%</span>
+                                {factsCompleted ? (
+                                  <CheckCircle className="w-4 h-4 text-green-300" />
+                                ) : (
+                                  <ShieldCheck className="w-4 h-4 text-zinc-500" />
+                                )}
                               </div>
                             </div>
                           </div>
                         </div>
 
                         {/* Connection line */}
-                        <div className="w-6 h-0.5 bg-gradient-to-r from-green-500 to-blue-500"></div>
+                        <div className={`w-6 h-0.5 transition-all duration-500 ${
+                          factsCompleted ? 'bg-gradient-to-r from-green-500 to-blue-500' : 'bg-zinc-700'
+                        }`}></div>
 
                         {/* Block 2: Deep Dive */}
                         <div className="relative">
-                          <div className="w-20 h-16 border-2 border-blue-600 rounded-lg bg-zinc-900 overflow-hidden shadow-lg">
+                          <div className={`w-20 h-16 border-2 rounded-lg bg-zinc-900 overflow-hidden shadow-lg transition-all duration-500 ${
+                            lessonCompleted 
+                              ? 'border-blue-600 shadow-blue-600/20' 
+                              : factsCompleted 
+                                ? 'border-blue-600' 
+                                : 'border-zinc-700'
+                          }`}>
                             {/* Block header */}
-                            <div className="h-4 bg-blue-600/20 border-b border-blue-600/30 flex items-center justify-center">
-                              <span className="text-xs font-mono text-blue-400 font-semibold">Dive</span>
+                            <div className={`h-4 border-b flex items-center justify-center ${
+                              factsCompleted ? 'bg-blue-600/20 border-blue-600/30' : 'bg-zinc-800 border-zinc-700'
+                            }`}>
+                              <span className={`text-xs font-mono font-semibold ${
+                                factsCompleted ? 'text-blue-400' : 'text-zinc-600'
+                              }`}>Dive</span>
                             </div>
                             {/* Progress fill */}
                             <div className="relative h-12">
                               <div 
                                 className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-500/60 to-blue-400/40 transition-all duration-1000"
-                                style={{ height: '75%' }}
+                                style={{ height: lessonCompleted ? '100%' : '0%' }}
                               ></div>
                               <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="text-xs font-bold text-blue-300">75%</span>
+                                {lessonCompleted ? (
+                                  <CheckCircle className="w-4 h-4 text-blue-300" />
+                                ) : factsCompleted ? (
+                                  <Play className="w-4 h-4 text-blue-400" />
+                                ) : (
+                                  <ShieldCheck className="w-4 h-4 text-zinc-500" />
+                                )}
                               </div>
                             </div>
                           </div>
                         </div>
 
                         {/* Connection line */}
-                        <div className="w-6 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+                        <div className={`w-6 h-0.5 transition-all duration-500 ${
+                          lessonCompleted ? 'bg-gradient-to-r from-blue-500 to-purple-500' : 'bg-zinc-700'
+                        }`}></div>
 
                         {/* Block 3: Knowledge Test */}
                         <div className="relative">
-                          <div className="w-20 h-16 border-2 border-purple-600 rounded-lg bg-zinc-900 overflow-hidden shadow-lg">
+                          <div className={`w-20 h-16 border-2 rounded-lg bg-zinc-900 overflow-hidden shadow-lg transition-all duration-500 ${
+                            quizCompleted 
+                              ? 'border-purple-600 shadow-purple-600/20' 
+                              : lessonCompleted 
+                                ? 'border-purple-600' 
+                                : 'border-zinc-700'
+                          }`}>
                             {/* Block header */}
-                            <div className="h-4 bg-purple-600/20 border-b border-purple-600/30 flex items-center justify-center">
-                              <span className="text-xs font-mono text-purple-400 font-semibold">Quiz</span>
+                            <div className={`h-4 border-b flex items-center justify-center ${
+                              lessonCompleted ? 'bg-purple-600/20 border-purple-600/30' : 'bg-zinc-800 border-zinc-700'
+                            }`}>
+                              <span className={`text-xs font-mono font-semibold ${
+                                lessonCompleted ? 'text-purple-400' : 'text-zinc-600'
+                              }`}>Quiz</span>
                             </div>
                             {/* Progress fill */}
                             <div className="relative h-12">
                               <div 
                                 className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-purple-500/60 to-purple-400/40 transition-all duration-1000"
-                                style={{ height: '100%' }}
+                                style={{ height: quizCompleted ? '100%' : '0%' }}
                               ></div>
                               <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="text-xs font-bold text-purple-300">100%</span>
-                              </div>
-                              {/* Completion checkmark */}
-                              <div className="absolute top-1 right-1">
-                                <CheckCircle className="w-3 h-3 text-purple-300" />
+                                {quizCompleted ? (
+                                  <CheckCircle className="w-4 h-4 text-purple-300" />
+                                ) : lessonCompleted ? (
+                                  <TargetIcon className="w-4 h-4 text-purple-400" />
+                                ) : (
+                                  <ShieldCheck className="w-4 h-4 text-zinc-500" />
+                                )}
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
 
-                      {/* Simplified Stats Row */}
-                      <div className="flex items-center justify-between w-full max-w-md">
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-orange-400">{user?.currentStreak || 0}</div>
-                          <div className="text-xs text-zinc-400">day streak</div>
-                        </div>
-                        
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-green-400">87%</div>
-                          <div className="text-xs text-zinc-400">complete</div>
-                        </div>
-                        
-                        <div className="text-center">
-                          <div className="text-sm font-bold text-blue-400">Beginner</div>
-                          <div className="text-xs text-zinc-400">level</div>
-                        </div>
+                      {/* Simplified Stats */}
+                      <div className="text-center">
+                        <div className="text-lg font-bold text-orange-400">{user?.currentStreak || 0} day streak</div>
                       </div>
                     </div>
 
@@ -1101,7 +1153,13 @@ export default function Home() {
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  onClick={() => toggleFactExpansion(index)}
+                                  onClick={() => {
+                                    toggleFactExpansion(index);
+                                    // Track completion when user expands facts
+                                    if (!expandedFacts.has(index)) {
+                                      handleFactCompletion();
+                                    }
+                                  }}
                                   className="text-orange-400 hover:text-orange-300 hover:bg-orange-600/20 text-xs"
                                 >
                                   {expandedFacts.has(index) ? (
@@ -1216,6 +1274,31 @@ export default function Home() {
                             <AutoGlossary>{lesson.summary}</AutoGlossary>
                           </p>
                         </div>
+                        
+                        {/* Completion Button */}
+                        <div className="flex justify-center pt-4">
+                          <Button
+                            onClick={handleLessonCompletion}
+                            disabled={!factsCompleted}
+                            className={`px-6 py-2 ${
+                              factsCompleted 
+                                ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                                : 'bg-zinc-700 text-zinc-400 cursor-not-allowed'
+                            }`}
+                          >
+                            {lessonCompleted ? (
+                              <>
+                                <CheckCircle className="w-4 h-4 mr-2" />
+                                Lesson Complete
+                              </>
+                            ) : (
+                              <>
+                                <BookOpen className="w-4 h-4 mr-2" />
+                                Mark as Read
+                              </>
+                            )}
+                          </Button>
+                        </div>
                       </div>
                     ) : (
                       <p className="text-zinc-500">Loading today's lesson...</p>
@@ -1254,7 +1337,10 @@ export default function Home() {
                       </ul>
                     </div>
 
-                    <DailyQuiz />
+                    <DailyQuiz 
+                      onCompletion={handleQuizCompletion}
+                      disabled={!lessonCompleted}
+                    />
 
                     {/* Completion celebration */}
                     <div className="mt-6 pt-4 border-t border-zinc-700">
