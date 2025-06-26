@@ -3268,7 +3268,7 @@ export default function Home() {
                         <CardContent className="p-4 text-center">
                           <DollarSign className="w-8 h-8 text-blue-400 mx-auto mb-2" />
                           <h5 className="font-medium text-white mb-1">Total Invested</h5>
-                          <p className="text-blue-400 font-bold text-lg">${dcaResults.totalInvested.toLocaleString()}</p>
+                          <p className="text-blue-400 font-bold text-lg">${Math.round(dcaResults.totalInvested).toLocaleString()}</p>
                         </CardContent>
                       </Card>
                       
@@ -3276,8 +3276,8 @@ export default function Home() {
                         <CardContent className="p-4 text-center">
                           <Coins className="w-8 h-8 text-orange-400 mx-auto mb-2" />
                           <h5 className="font-medium text-white mb-1">Bitcoin Accumulated</h5>
-                          <p className="text-orange-400 font-bold text-lg">{dcaResults.totalBitcoin.toFixed(6)} BTC</p>
-                          <p className="text-zinc-400 text-xs">{(dcaResults.totalBitcoin * 100000000).toFixed(0)} sats</p>
+                          <p className="text-orange-400 font-bold text-lg">{Math.round(dcaResults.totalBitcoin * 100000000).toLocaleString()} sats</p>
+                          <p className="text-zinc-400 text-xs">{dcaResults.totalBitcoin.toFixed(6)} BTC</p>
                         </CardContent>
                       </Card>
                       
@@ -3285,7 +3285,7 @@ export default function Home() {
                         <CardContent className="p-4 text-center">
                           <TrendingUp className="w-8 h-8 text-green-400 mx-auto mb-2" />
                           <h5 className="font-medium text-white mb-1">Current Value</h5>
-                          <p className="text-green-400 font-bold text-lg">${dcaResults.currentValue.toLocaleString()}</p>
+                          <p className="text-green-400 font-bold text-lg">${Math.round(dcaResults.currentValue).toLocaleString()}</p>
                         </CardContent>
                       </Card>
                       
@@ -3297,10 +3297,10 @@ export default function Home() {
                           }
                           <h5 className="font-medium text-white mb-1">Total Return</h5>
                           <p className={`font-bold text-lg ${dcaResults.totalGain >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                            {dcaResults.percentageReturn >= 0 ? '+' : ''}{dcaResults.percentageReturn.toFixed(1)}%
+                            {dcaResults.percentageReturn >= 0 ? '+' : ''}{Math.round(dcaResults.percentageReturn)}%
                           </p>
                           <p className={`text-xs ${dcaResults.totalGain >= 0 ? 'text-green-300' : 'text-red-300'}`}>
-                            ${dcaResults.totalGain >= 0 ? '+' : ''}{dcaResults.totalGain.toLocaleString()}
+                            ${dcaResults.totalGain >= 0 ? '+' : ''}${Math.round(Math.abs(dcaResults.totalGain)).toLocaleString()}
                           </p>
                         </CardContent>
                       </Card>
@@ -3348,26 +3348,32 @@ export default function Home() {
                                   className="drop-shadow-sm"
                                 />
                                 
-                                {/* DCA purchase points */}
-                                {Array.from({ length: Math.min(dcaResults.duration, 12) }, (_, i) => {
-                                  const x = 20 + (i * 340 / Math.max(dcaResults.duration - 1, 1));
-                                  const y = 160 - (Math.random() * 80 + 40); // Simulated varying prices
+                                {/* DCA purchase points distributed across timeline */}
+                                {Array.from({ length: Math.min(dcaResults.duration, 24) }, (_, i) => {
+                                  // Calculate proper X position distribution across the full chart width
+                                  const totalPoints = Math.min(dcaResults.duration, 24);
+                                  const chartWidth = 340; // 360 - 20
+                                  const x = 20 + (i / (totalPoints - 1)) * chartWidth;
+                                  
+                                  // Vary Y position to simulate realistic Bitcoin price movements
+                                  const priceVariation = Math.sin(i * 0.5) * 40 + (Math.random() - 0.5) * 20;
+                                  const y = 100 + priceVariation;
+                                  
                                   return (
                                     <g key={i}>
                                       <circle
                                         cx={x}
                                         cy={y}
-                                        r="4"
+                                        r="3"
                                         fill="#22c55e"
                                         className="drop-shadow-sm"
                                       />
                                       <circle
                                         cx={x}
                                         cy={y}
-                                        r="8"
+                                        r="6"
                                         fill="#22c55e"
-                                        fillOpacity="0.3"
-                                        className="animate-pulse"
+                                        fillOpacity="0.2"
                                       />
                                     </g>
                                   );
@@ -3407,7 +3413,7 @@ export default function Home() {
                           <div className="text-center p-3 bg-blue-900/20 rounded-lg">
                             <p className="text-blue-300 text-sm">
                               <Info className="w-4 h-4 inline mr-1" />
-                              Your average purchase price: <span className="font-medium">${dcaResults.averagePrice.toLocaleString()}</span> 
+                              Your average purchase price: <span className="font-medium">${Math.round(dcaResults.averagePrice).toLocaleString()}</span> 
                               {' '}vs current Bitcoin price: <span className="font-medium">$50,000</span>
                             </p>
                           </div>
@@ -3442,11 +3448,11 @@ export default function Home() {
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-zinc-400">Average Price</span>
-                                <span className="text-white">${dcaResults.averagePrice.toLocaleString()}</span>
+                                <span className="text-white">${Math.round(dcaResults.averagePrice).toLocaleString()}</span>
                               </div>
                               <div className="flex justify-between font-medium">
                                 <span className="text-zinc-300">Current Value</span>
-                                <span className="text-green-400">${dcaResults.currentValue.toLocaleString()}</span>
+                                <span className="text-green-400">${Math.round(dcaResults.currentValue).toLocaleString()}</span>
                               </div>
                             </div>
                           </div>
@@ -3468,15 +3474,15 @@ export default function Home() {
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-zinc-400">Bitcoin Acquired</span>
-                                <span className="text-white">{(dcaResults.totalInvested / (dcaResults.averagePrice * 0.7)).toFixed(6)} BTC</span>
+                                <span className="text-white">{Math.round((dcaResults.totalInvested / (dcaResults.averagePrice * 0.7)) * 100000000).toLocaleString()} sats</span>
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-zinc-400">Purchase Price</span>
-                                <span className="text-white">${(dcaResults.averagePrice * 0.7).toLocaleString()}</span>
+                                <span className="text-white">${Math.round(dcaResults.averagePrice * 0.7).toLocaleString()}</span>
                               </div>
                               <div className="flex justify-between font-medium">
                                 <span className="text-zinc-300">Current Value</span>
-                                <span className="text-orange-400">${((dcaResults.totalInvested / (dcaResults.averagePrice * 0.7)) * 50000).toLocaleString()}</span>
+                                <span className="text-orange-400">${Math.round((dcaResults.totalInvested / (dcaResults.averagePrice * 0.7)) * 50000).toLocaleString()}</span>
                               </div>
                             </div>
                           </div>
