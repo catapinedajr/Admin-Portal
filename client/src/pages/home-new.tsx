@@ -368,6 +368,20 @@ export default function Home() {
     ];
   };
 
+  // Helper function to clean markdown formatting
+  function cleanText(text: string): React.ReactNode {
+    // Split by **bold** markers and render appropriately
+    const parts = text.split(/\*\*(.*?)\*\*/g);
+    return parts.map((part, index) => {
+      // Even indices are regular text, odd indices are bold text
+      if (index % 2 === 0) {
+        return part;
+      } else {
+        return <strong key={index} className="font-semibold text-white">{part}</strong>;
+      }
+    });
+  }
+
   // Helper function for expanded lesson content
   function getExpandedLessonContent(title: string, content: string): Array<{
     title: string;
@@ -1205,7 +1219,7 @@ export default function Home() {
                               <div className="space-y-6 text-zinc-300 leading-relaxed text-base">
                                 {section.paragraphs.map((paragraph, pIdx) => (
                                   <p key={pIdx} className="text-zinc-300 leading-[1.8] text-base mb-4">
-                                    {paragraph}
+                                    {cleanText(paragraph)}
                                   </p>
                                 ))}
                               </div>
@@ -1217,7 +1231,7 @@ export default function Home() {
                                     {section.keyPoints.map((point, pointIdx) => (
                                       <li key={pointIdx} className="flex items-start gap-3 text-zinc-300 leading-[1.7]">
                                         <span className="text-blue-400 mt-1 text-lg">•</span>
-                                        <span className="text-base">{point}</span>
+                                        <span className="text-base">{cleanText(point)}</span>
                                       </li>
                                     ))}
                                   </ul>
@@ -1227,7 +1241,7 @@ export default function Home() {
                               {section.realWorldExample && (
                                 <div className="bg-green-600/10 border border-green-600/20 rounded-lg p-6 my-6">
                                   <h5 className="text-green-400 font-medium mb-3 text-base">Real-World Application:</h5>
-                                  <p className="text-zinc-300 text-base leading-[1.7]">{section.realWorldExample}</p>
+                                  <p className="text-zinc-300 text-base leading-[1.7]">{cleanText(section.realWorldExample)}</p>
                                 </div>
                               )}
                             </div>
@@ -1241,7 +1255,7 @@ export default function Home() {
                             {getLessonTakeaways((lesson as Lesson).title).map((takeaway, idx) => (
                               <div key={idx} className="flex items-start gap-4">
                                 <CheckCircle className="w-5 h-5 text-orange-400 mt-1 flex-shrink-0" />
-                                <span className="text-zinc-300 text-base leading-[1.7]">{takeaway}</span>
+                                <span className="text-zinc-300 text-base leading-[1.7]">{cleanText(takeaway)}</span>
                               </div>
                             ))}
                           </div>
