@@ -142,121 +142,190 @@ export class MemStorage implements IStorage {
   }
 
   private seedData() {
-    // Seed daily facts - structured as: Bitcoin Basics, Use Case, Traditional Finance comparison
+    // Comprehensive Bitcoin education facts - organized by learning progression
     const facts = [
-      // Day 0 - Basics, Use Case, Traditional Finance
+      // Week 1: Core Concepts
       {
-        title: "Bitcoin's Total Supply",
-        content: "Bitcoin has a maximum supply of 21 million coins. This fixed supply makes it deflationary, unlike traditional currencies that can be printed indefinitely.",
-        category: "BitcoinBasics",
+        title: "What is Bitcoin?",
+        content: "Bitcoin is digital money that works without banks or governments. It's the first successful cryptocurrency, created to give people financial freedom and control over their own money.",
+        category: "Fundamentals",
         icon: "coins",
         dayIndex: 0
       },
       {
-        title: "Peer-to-Peer Money",
-        content: "Bitcoin allows you to send money directly to anyone, anywhere in the world, without needing a bank or payment processor as an intermediary.",
-        category: "UseCase",
-        icon: "user-secret",
+        title: "Digital Scarcity",
+        content: "Bitcoin has a maximum supply of 21 million coins that will ever exist. This digital scarcity makes it like digital gold - rare and valuable because there's a limited amount.",
+        category: "Fundamentals",
+        icon: "gem",
         dayIndex: 0
       },
       {
-        title: "Did You Know: Money Printing",
-        content: "The Federal Reserve can create new dollars out of thin air through 'quantitative easing.' When they do this, it dilutes the value of dollars you hold, reducing your purchasing power over time.",
-        category: "TraditionalFinance",
-        icon: "bolt",
+        title: "Why Bitcoin Matters",
+        content: "Bitcoin gives you complete control over your money. No one can freeze your account, reverse your transactions, or stop you from sending money anywhere in the world.",
+        category: "Purpose",
+        icon: "shield-alt",
         dayIndex: 0
       },
-      
-      // Day 1 - Basics, Use Case, Traditional Finance
+
+      // Day 1: How Bitcoin Works
       {
-        title: "Block Time Consistency",
-        content: "A new Bitcoin block is mined approximately every 10 minutes. This consistent timing helps maintain network stability and predictable transaction processing.",
-        category: "BitcoinBasics",
+        title: "The Blockchain",
+        content: "Bitcoin transactions are recorded on a blockchain - a digital ledger that's shared across thousands of computers worldwide. This makes it impossible to fake or duplicate Bitcoin.",
+        category: "Technology",
         icon: "cube",
         dayIndex: 1
       },
       {
+        title: "Peer-to-Peer Network",
+        content: "Bitcoin works directly between people without middlemen. When you send Bitcoin, it goes straight from your wallet to theirs - no banks required.",
+        category: "Technology",
+        icon: "user-secret",
+        dayIndex: 1
+      },
+      {
+        title: "Cryptographic Security",
+        content: "Bitcoin uses advanced mathematics called cryptography to secure transactions. This makes it virtually impossible to hack or counterfeit Bitcoin.",
+        category: "Security",
+        icon: "lock",
+        dayIndex: 1
+      },
+
+      // Day 2: Bitcoin vs Traditional Money
+      {
+        title: "Inflation Protection",
+        content: "Unlike government currencies that lose value over time due to printing, Bitcoin's fixed supply protects against inflation. Your Bitcoin can't be devalued by money printing.",
+        category: "Economics",
+        icon: "trending-up",
+        dayIndex: 2
+      },
+      {
         title: "24/7 Global Access",
-        content: "Bitcoin transactions happen 24/7/365, never stopping for weekends, holidays, or bank hours. True financial freedom that never sleeps.",
-        category: "UseCase",
-        icon: "gem",
-        dayIndex: 1
-      },
-      {
-        title: "Did You Know: Banking Hours",
-        content: "Traditional banks operate only during business hours and close on weekends and holidays. Need to send money on Sunday? You'll have to wait until Monday.",
-        category: "TraditionalFinance",
-        icon: "building",
-        dayIndex: 1
-      },
-      
-      // Day 2 - Basics, Use Case, Traditional Finance
-      {
-        title: "Blockchain Security",
-        content: "Bitcoin's blockchain has never been successfully hacked in its 15+ year history. Its security comes from cryptographic hashing and distributed consensus.",
-        category: "BitcoinBasics",
-        icon: "shield-alt",
+        content: "Bitcoin never sleeps. You can send and receive Bitcoin 24/7, 365 days a year, anywhere in the world. No bank holidays, no business hours.",
+        category: "Accessibility",
+        icon: "globe",
         dayIndex: 2
       },
       {
-        title: "Borderless Payments",
-        content: "Send Bitcoin to anyone, anywhere in the world, for the same low fee. No currency exchanges, international wire fees, or waiting days for settlement.",
-        category: "UseCase",
-        icon: "gem",
+        title: "No Censorship",
+        content: "No government or corporation can stop Bitcoin transactions. Your money, your rules - Bitcoin gives you true financial sovereignty.",
+        category: "Freedom",
+        icon: "key",
         dayIndex: 2
       },
+
+      // Day 3: Bitcoin Mining & Security
       {
-        title: "Did You Know: Currency Debasement",
-        content: "Since 1971, when the US left the gold standard, the dollar has lost over 85% of its purchasing power. A cup of coffee that cost 25 cents then costs $5+ today.",
-        category: "TraditionalFinance",
-        icon: "dollar-sign",
-        dayIndex: 2
-      },
-      
-      // Day 3 - Basics, Use Case, Traditional Finance
-      {
-        title: "Digital Scarcity",
-        content: "Bitcoin was the first digital asset to solve the double-spending problem without requiring a trusted third party, creating true digital scarcity.",
-        category: "BitcoinBasics",
-        icon: "gem",
+        title: "Bitcoin Mining",
+        content: "Mining is how new Bitcoin is created and transactions are secured. Miners use computer power to solve mathematical puzzles, earning Bitcoin rewards for protecting the network.",
+        category: "Mining",
+        icon: "zap",
         dayIndex: 3
       },
       {
-        title: "Financial Sovereignty",
-        content: "With Bitcoin, you truly own your money. No one can freeze your account, reverse your transactions, or tell you how to spend your funds.",
-        category: "UseCase",
-        icon: "shield-alt",
+        title: "Proof of Work",
+        content: "Bitcoin uses proof of work to secure the network. Miners must prove they've done computational work to add new blocks, making the blockchain extremely difficult to attack.",
+        category: "Security",
+        icon: "shield",
         dayIndex: 3
       },
       {
-        title: "Did You Know: Bank Bailouts",
-        content: "In 2008, taxpayers bailed out major banks with $700+ billion. These same institutions caused the crisis through risky lending. Bitcoin eliminates the need for 'too big to fail' banks.",
-        category: "TraditionalFinance",
-        icon: "alert-triangle",
+        title: "Network Difficulty",
+        content: "Bitcoin automatically adjusts mining difficulty every 2 weeks to maintain 10-minute block times. This keeps the network stable regardless of how many miners participate.",
+        category: "Technology",
+        icon: "target",
         dayIndex: 3
       },
-      
-      // Day 4 - Basics, Use Case, Traditional Finance  
+
+      // Day 4: Bitcoin Wallets & Keys
       {
-        title: "Halving Events",
-        content: "Every 4 years, Bitcoin's mining reward is cut in half, reducing the rate of new Bitcoin creation. This built-in scarcity mechanism is programmed into the code.",
-        category: "BitcoinBasics",
-        icon: "coins",
+        title: "Bitcoin Wallets",
+        content: "A Bitcoin wallet stores your private keys, not your Bitcoin. Your Bitcoin exists on the blockchain; your wallet is like a key that proves you own it.",
+        category: "Wallets",
+        icon: "wallet",
         dayIndex: 4
+      },
+      {
+        title: "Private Keys",
+        content: "Your private key is a secret number that controls your Bitcoin. Anyone with your private key can spend your Bitcoin, so keep it secure and never share it.",
+        category: "Security",
+        icon: "key-round",
+        dayIndex: 4
+      },
+      {
+        title: "Not Your Keys, Not Your Coins",
+        content: "If you don't control the private keys to your Bitcoin, you don't truly own it. Bitcoin stored on exchanges is controlled by the exchange, not you.",
+        category: "Ownership",
+        icon: "alert-triangle",
+        dayIndex: 4
+      },
+
+      // Day 5: Bitcoin Transactions
+      {
+        title: "How Transactions Work",
+        content: "Bitcoin transactions send value from one address to another. Each transaction is digitally signed with your private key and recorded permanently on the blockchain.",
+        category: "Transactions",
+        icon: "arrow-right",
+        dayIndex: 5
+      },
+      {
+        title: "Transaction Fees",
+        content: "Bitcoin transaction fees go to miners who include your transaction in a block. Higher fees get faster confirmation during busy periods.",
+        category: "Economics",
+        icon: "dollar-sign",
+        dayIndex: 5
+      },
+      {
+        title: "Confirmation Times",
+        content: "Bitcoin transactions typically confirm in 10-60 minutes. More confirmations mean higher security, with 6 confirmations considered fully secure.",
+        category: "Technology",
+        icon: "clock",
+        dayIndex: 5
+      },
+
+      // Day 6: Bitcoin Halving & Monetary Policy
+      {
+        title: "Bitcoin Halving",
+        content: "Every 4 years, the Bitcoin reward for mining new blocks is cut in half. This programmed scarcity makes Bitcoin increasingly rare over time.",
+        category: "Monetary Policy",
+        icon: "scissors",
+        dayIndex: 6
+      },
+      {
+        title: "Fixed Supply Schedule",
+        content: "Bitcoin's supply increases predictably until reaching 21 million coins around 2140. No central authority can change this monetary policy.",
+        category: "Economics",
+        icon: "calendar",
+        dayIndex: 6
       },
       {
         title: "Store of Value",
-        content: "Bitcoin serves as 'digital gold' - a way to preserve purchasing power over time without relying on banks or government monetary policy.",
-        category: "UseCase",
-        icon: "gem",
-        dayIndex: 4
+        content: "Bitcoin's predictable supply and decentralized nature make it a superior store of value compared to currencies that can be printed endlessly.",
+        category: "Investment",
+        icon: "vault",
+        dayIndex: 6
+      },
+
+      // Day 7: Bitcoin vs Traditional Finance
+      {
+        title: "Fiat Currency Problems",
+        content: "Fiat currencies lose purchasing power over time due to inflation. The US dollar has lost over 96% of its value since 1913 due to money printing.",
+        category: "Traditional Finance",
+        icon: "trending-down",
+        dayIndex: 7
       },
       {
-        title: "Did You Know: Inflation Tax",
-        content: "When governments print money, it's essentially a hidden tax on savers. Your cash loses value while prices rise, transferring wealth from regular people to those who receive the new money first.",
-        category: "TraditionalFinance",
-        icon: "bolt",
-        dayIndex: 4
+        title: "Banking Intermediaries",
+        content: "Traditional banking requires trust in third parties who can freeze accounts, charge fees, and control your money. Bitcoin eliminates these intermediaries.",
+        category: "Banking",
+        icon: "building",
+        dayIndex: 7
+      },
+      {
+        title: "Financial Inclusion",
+        content: "2 billion people worldwide lack access to banking. Bitcoin only requires internet access, providing financial services to the unbanked globally.",
+        category: "Global Impact",
+        icon: "users",
+        dayIndex: 7
       }
     ];
 
@@ -265,31 +334,284 @@ export class MemStorage implements IStorage {
       this.dailyFacts.set(newFact.id, newFact);
     });
 
-    // Seed lessons
-    const lessonContent = `Bitcoin mining is the process by which new bitcoins are entered into circulation and how the Bitcoin network is secured. But what does this actually mean?
+    // Comprehensive lesson content covering all fundamental Bitcoin concepts
+    const lessons = [
+      // Week 1: Foundation Lessons
+      {
+        title: "Understanding Bitcoin: Digital Money Revolution",
+        content: `Bitcoin represents the first successful attempt at creating digital money that works without banks, governments, or any central authority controlling it.
+
+## What Makes Bitcoin Different?
+
+Unlike traditional money, Bitcoin exists purely as computer code. But this isn't just any digital money - it's **programmable money** with rules that cannot be changed arbitrarily.
+
+## The Core Innovation
+
+Bitcoin solved the "double-spending problem" - how to prevent someone from copying digital money and spending it twice. Previous attempts at digital money failed because they required a central authority to prevent double-spending.
+
+## Key Properties
+
+Bitcoin has three fundamental properties:
+- **Decentralized**: No single point of control or failure
+- **Scarce**: Only 21 million will ever exist
+- **Permissionless**: Anyone can use it without asking permission
+
+**The Revolutionary Insight:** Money can exist and function without requiring trust in any institution or government.`,
+        summary: "Bitcoin is programmable, decentralized digital money that operates without central control, solving the double-spending problem through cryptographic innovation.",
+        estimatedReadTime: 6,
+        dayIndex: 0
+      },
+
+      {
+        title: "How Bitcoin Works: The Blockchain Explained",
+        content: `The blockchain is Bitcoin's revolutionary innovation - a way to maintain a shared ledger without requiring trust in any central authority.
+
+## The Blockchain Concept
+
+Imagine a notebook that records every Bitcoin transaction. Now imagine this notebook is:
+- Copied to thousands of computers worldwide
+- Every new page (block) must be agreed upon by the majority
+- Once written, pages cannot be changed or removed
+
+## How Transactions Work
+
+1. **You send Bitcoin**: Your wallet creates a transaction and broadcasts it to the network
+2. **Miners collect transactions**: They gather pending transactions into a new block
+3. **Mining competition**: Miners compete to solve a mathematical puzzle
+4. **Winner adds block**: The first to solve it adds their block to the blockchain
+5. **Network validates**: Other computers verify the block is valid
+
+## Security Through Consensus
+
+The blockchain is secure because changing any transaction would require controlling more than half of all mining power - economically impossible at Bitcoin's scale.
+
+**Key Insight:** Trust is replaced by mathematical proof and economic incentives.`,
+        summary: "The blockchain is a distributed ledger maintained by thousands of computers, where transactions are secured through cryptographic proof rather than trust.",
+        estimatedReadTime: 7,
+        dayIndex: 1
+      },
+
+      {
+        title: "Bitcoin vs Traditional Money: Why It Matters",
+        content: `To understand Bitcoin's importance, we must first understand the problems with traditional money systems.
+
+## The Fiat Money System
+
+Since 1971, most currencies are "fiat" - backed only by government decree, not by gold or other assets. This system has several critical flaws:
+
+## Problem 1: Inflation by Design
+
+Governments can create new money at will, reducing the value of existing money. The purchasing power of the US dollar has declined over 85% since 1971.
+
+## Problem 2: Central Control
+
+Banks and governments can:
+- Freeze your accounts
+- Reverse your transactions  
+- Control who can send or receive money
+- Devalue your savings through money printing
+
+## Problem 3: Exclusion
+
+2 billion people worldwide lack access to basic banking services, excluded from the global economy.
+
+## Bitcoin's Solutions
+
+- **Fixed Supply**: Only 21 million Bitcoin will ever exist
+- **Permissionless**: Anyone with internet can participate
+- **Censorship Resistant**: No authority can stop valid transactions
+- **Global**: Same rules everywhere, no borders
+
+**The Bottom Line:** Bitcoin returns monetary sovereignty to individuals, protecting against both government overreach and institutional failure.`,
+        summary: "Bitcoin addresses critical flaws in traditional fiat currency systems: inflation, central control, and financial exclusion through fixed supply and decentralization.",
+        estimatedReadTime: 8,
+        dayIndex: 2
+      },
+
+      {
+        title: "Bitcoin Security: Wallets and Private Keys",
+        content: `Bitcoin security fundamentally differs from traditional account-based systems. Understanding this is crucial for safely using Bitcoin.
+
+## How Bitcoin Ownership Works
+
+Bitcoin doesn't exist in "accounts" like bank balances. Instead, ownership is proven through **private keys** - secret numbers that allow you to spend specific Bitcoin.
+
+## Your Wallet is Your Key Ring
+
+A Bitcoin wallet is like a digital keyring that:
+- Stores your private keys securely
+- Shows your Bitcoin balance
+- Creates transactions when you want to send Bitcoin
+- Generates new addresses for receiving Bitcoin
+
+## The Golden Rule
+
+**"Not your keys, not your coins"** - If you don't control the private keys, you don't truly own the Bitcoin. This is why keeping Bitcoin on exchanges long-term is risky.
+
+## Types of Wallets
+
+- **Hardware Wallets**: Physical devices storing keys offline (most secure)
+- **Software Wallets**: Apps on your phone or computer
+- **Paper Wallets**: Private keys written on paper
+- **Custodial Wallets**: Someone else controls your keys (exchanges)
+
+## Best Practices
+
+1. **Backup your seed phrase**: 12-24 words that can restore your entire wallet
+2. **Keep backups secure**: Store in multiple safe locations
+3. **Never share private keys**: Anyone with your keys can spend your Bitcoin
+4. **Start small**: Learn with small amounts before storing significant value
+
+**Critical Point:** With Bitcoin, you are your own bank. This brings both freedom and responsibility.`,
+        summary: "Bitcoin security is based on private key cryptography. Proper wallet management and understanding 'not your keys, not your coins' is essential for safe Bitcoin usage.",
+        estimatedReadTime: 9,
+        dayIndex: 3
+      },
+
+      {
+        title: "Bitcoin Mining: Securing the Network",
+        content: `Bitcoin mining is often misunderstood. It's not just about creating new Bitcoin - it's the process that keeps the entire network secure and decentralized.
+
+## What Mining Actually Does
+
+Mining serves three critical functions:
+1. **Validates transactions**: Ensures all transactions follow Bitcoin's rules
+2. **Secures the network**: Makes it extremely expensive to attack Bitcoin
+3. **Issues new Bitcoin**: Rewards miners for their security service
 
 ## The Mining Process
 
-Think of Bitcoin mining like a global competition. Thousands of computers around the world compete to solve complex mathematical puzzles. The first computer to solve the puzzle gets to add the next "block" of transactions to the blockchain and receives a reward in bitcoin.
+Miners compete to solve computational puzzles. This "proof of work" requires real energy expenditure, making attacks costly. The winner gets to:
+- Add the next block of transactions
+- Receive newly created Bitcoin (currently 6.25 BTC per block)
+- Collect transaction fees
 
-## Why Mining Matters
+## Why Energy Use is a Feature
 
-Mining serves two crucial purposes:
-- It validates and secures transactions on the network
-- It introduces new bitcoins into circulation in a controlled way
+Bitcoin's energy consumption is often criticized, but it serves a purpose:
+- **Security**: More energy = harder to attack
+- **Decentralization**: Anyone can mine with the right equipment
+- **Incentive alignment**: Miners are rewarded for securing the network
 
-**Key Takeaway:** Mining is what makes Bitcoin decentralized and secure. No single authority controls it – it's maintained by a network of miners worldwide.`;
+## The Halving Cycle
 
-    const lesson: Lesson = {
-      id: this.currentLessonId++,
-      title: "What is Bitcoin Mining?",
-      content: lessonContent,
-      summary: "Learn how Bitcoin mining secures the network and creates new bitcoins through a decentralized competition of computers solving mathematical puzzles.",
-      estimatedReadTime: 5,
-      dayIndex: 0,
-      imageUrl: "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=800&h=400&fit=crop"
-    };
-    this.lessons.set(lesson.id, lesson);
+Every 4 years (210,000 blocks), the mining reward is cut in half:
+- 2009-2012: 50 BTC per block
+- 2012-2016: 25 BTC per block  
+- 2016-2020: 12.5 BTC per block
+- 2020-2024: 6.25 BTC per block
+- 2024-2028: 3.125 BTC per block
+
+This ensures Bitcoin becomes increasingly scarce over time.
+
+**Key Understanding:** Mining isn't wasteful - it's Bitcoin's immune system, protecting the network from attack and manipulation.`,
+        summary: "Bitcoin mining secures the network through proof of work, validates transactions, and issues new Bitcoin on a predictable schedule that becomes increasingly scarce.",
+        estimatedReadTime: 10,
+        dayIndex: 4
+      },
+
+      {
+        title: "Bitcoin as Digital Gold: Store of Value",
+        content: `Bitcoin is often called "digital gold" because it shares many properties with gold while improving upon them for the digital age.
+
+## Properties of Good Money
+
+Throughout history, the best forms of money have shared certain characteristics:
+- **Scarcity**: Limited supply maintains value
+- **Durability**: Doesn't degrade over time
+- **Portability**: Easy to transport and transfer
+- **Divisibility**: Can be broken into smaller units
+- **Verifiability**: Easy to authenticate as genuine
+
+## How Bitcoin Compares to Gold
+
+**Scarcity**: ✅ Fixed 21 million supply vs. unknown gold reserves
+**Durability**: ✅ Digital format vs. physical degradation  
+**Portability**: ✅ Instant global transfer vs. physical transport
+**Divisibility**: ✅ 8 decimal places vs. difficult gold division
+**Verifiability**: ✅ Cryptographic proof vs. expensive testing
+
+## Bitcoin's Monetary Advantages
+
+Unlike gold, Bitcoin is:
+- **Programmable**: Can be sent automatically based on conditions
+- **Permissionless**: No need for vaults or intermediaries
+- **Transparent**: All transactions are publicly verifiable
+- **Resistant to confiscation**: Properly stored Bitcoin cannot be seized
+
+## The Network Effect
+
+As more people recognize Bitcoin's superior monetary properties:
+- Demand increases while supply remains fixed
+- Price tends to increase over long time horizons
+- Network becomes more valuable and secure
+
+**Investment Thesis:** Bitcoin combines the scarcity of gold with the utility of digital technology, creating superior hard money for the internet age.`,
+        summary: "Bitcoin serves as digital gold, combining scarcity with superior portability, divisibility, and verifiability compared to traditional stores of value.",
+        estimatedReadTime: 8,
+        dayIndex: 5
+      },
+
+      {
+        title: "The Lightning Network: Bitcoin's Second Layer",
+        content: `While Bitcoin's base layer prioritizes security and decentralization, the Lightning Network enables fast, cheap transactions for everyday payments.
+
+## Why Lightning Exists
+
+Bitcoin's base layer processes about 7 transactions per second globally. This is intentional - prioritizing security over speed. But for daily payments, we need something faster.
+
+## How Lightning Works
+
+Lightning creates "payment channels" between users:
+1. **Open channel**: Lock Bitcoin in a 2-of-2 multisig address
+2. **Transact freely**: Send payments back and forth instantly
+3. **Close channel**: Final balances are settled on Bitcoin's blockchain
+
+## Network Effects
+
+When many payment channels connect, they form a network. You can pay anyone in the network by routing payments through interconnected channels.
+
+## Lightning Benefits
+
+- **Instant payments**: Transactions confirm in milliseconds
+- **Low fees**: Often less than a penny per transaction
+- **Privacy**: Payments aren't recorded on the public blockchain
+- **Scalability**: Millions of transactions per second possible
+
+## Current Applications
+
+Lightning is already being used for:
+- Micropayments and tips online
+- Point-of-sale payments at merchants
+- Cross-border remittances
+- Gaming and digital content
+
+## The Layered Approach
+
+This mirrors internet architecture:
+- **Layer 1 (Bitcoin)**: Secure settlement layer
+- **Layer 2 (Lightning)**: Fast payment layer
+- **Future layers**: Additional functionality
+
+**Vision:** Lightning enables Bitcoin to serve both as a store of value (base layer) and medium of exchange (Lightning layer).`,
+        summary: "The Lightning Network is Bitcoin's second layer solution, enabling instant, low-cost payments while maintaining the security of Bitcoin's base layer.",
+        estimatedReadTime: 9,
+        dayIndex: 6
+      }
+    ];
+
+    lessons.forEach((lessonData, index) => {
+      const lesson: Lesson = {
+        id: this.currentLessonId++,
+        title: lessonData.title,
+        content: lessonData.content,
+        summary: lessonData.summary,
+        estimatedReadTime: lessonData.estimatedReadTime,
+        dayIndex: lessonData.dayIndex,
+        imageUrl: null
+      };
+      this.lessons.set(lesson.id, lesson);
+    });
 
     // Seed knowledge areas
     const areas = [

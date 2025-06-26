@@ -40,6 +40,9 @@ import {
 } from "lucide-react";
 import type { User, DailyFact, Lesson, UserProgress, ConvictionContent } from "@shared/schema";
 import DailyQuiz from "@/components/DailyQuiz";
+import { BitcoinTerm, AutoGlossary } from "@/components/BitcoinGlossary";
+import { ProgressIndicator, AchievementBadge, LearningAnalytics } from "@/components/ProgressIndicator";
+import AchievementSystem from "@/components/AchievementSystem";
 
 const iconMap = {
   coins: Coins,
@@ -863,7 +866,7 @@ export default function Home() {
                 {/* Today's Learning Header */}
                 <div className="text-center space-y-2 mb-6">
                   <h2 className="text-2xl font-bold text-white">Today's Bitcoin Learning</h2>
-                  <p className="text-zinc-400">Complete your daily facts, lesson, and quiz to build your Bitcoin conviction</p>
+                  <p className="text-zinc-400">Complete your daily facts, lesson, and quiz to build your <BitcoinTerm term="Bitcoin">Bitcoin</BitcoinTerm> conviction</p>
                   <div className="flex items-center justify-center gap-4 mt-4">
                     <Badge variant="outline" className="border-orange-600 text-orange-400">
                       <Calendar className="w-3 h-3 mr-1" />
@@ -874,6 +877,39 @@ export default function Home() {
                     </Badge>
                   </div>
                 </div>
+
+                {/* Learning Progress Indicator */}
+                <ProgressIndicator
+                  steps={[
+                    { id: "facts", title: "Daily Facts", status: "completed", estimatedTime: "2 min" },
+                    { id: "lesson", title: "Today's Lesson", status: "current", estimatedTime: "5 min" },
+                    { id: "quiz", title: "Knowledge Quiz", status: "pending", estimatedTime: "3 min" }
+                  ]}
+                  currentStep="lesson"
+                  completedSteps={["facts"]}
+                  className="mb-6"
+                />
+
+                {/* Learning Analytics */}
+                <LearningAnalytics
+                  totalTimeSpent={120}
+                  conceptsMastered={15}
+                  currentStreak={user?.currentStreak || 0}
+                  longestStreak={user?.longestStreak || 0}
+                  averageQuizScore={85}
+                  className="mb-6"
+                />
+
+                {/* Recent Achievement */}
+                {user?.currentStreak && user.currentStreak >= 7 && (
+                  <AchievementBadge
+                    title="Dedicated Learner"
+                    description="You've maintained a 7-day learning streak!"
+                    icon={<CheckCircle className="w-5 h-5" />}
+                    unlocked={true}
+                    className="mb-6"
+                  />
+                )}
 
                 {/* Daily Facts Section */}
                 <Card className="bg-zinc-900 border-zinc-800">
@@ -896,7 +932,9 @@ export default function Home() {
                             </div>
                             <div className="flex-1">
                               <h4 className="font-semibold text-white mb-1">{fact.title}</h4>
-                              <p className="text-zinc-300 text-sm mb-2">{fact.content}</p>
+                              <p className="text-zinc-300 text-sm mb-2">
+                                <AutoGlossary>{fact.content}</AutoGlossary>
+                              </p>
                               <div className="flex items-center justify-between">
                                 <Badge variant="outline" className="border-orange-600 text-orange-400 text-xs">
                                   {fact.category}
@@ -990,10 +1028,29 @@ export default function Home() {
                     {lesson ? (
                       <div className="space-y-4">
                         <h4 className="text-xl font-bold text-white">{lesson.title}</h4>
-                        <p className="text-zinc-300 leading-relaxed">{lesson.content}</p>
+                        <p className="text-zinc-300 leading-relaxed">
+                          <AutoGlossary>{lesson.content}</AutoGlossary>
+                        </p>
+                        
+                        {/* Why This Matters Section */}
+                        <div className="bg-green-600/10 border border-green-600/20 rounded-lg p-4">
+                          <h5 className="text-green-400 font-medium mb-2 flex items-center gap-2">
+                            <Lightbulb className="w-4 h-4" />
+                            Why This Matters Today
+                          </h5>
+                          <p className="text-zinc-300 text-sm">
+                            Understanding <BitcoinTerm term="mining">Bitcoin mining</BitcoinTerm> is crucial because it's the backbone of <BitcoinTerm term="Bitcoin">Bitcoin's</BitcoinTerm> security. 
+                            Every transaction you make is protected by this global network of <BitcoinTerm term="miners">miners</BitcoinTerm> who compete to validate transactions 
+                            and secure the <BitcoinTerm term="blockchain">blockchain</BitcoinTerm>. This process makes Bitcoin truly <BitcoinTerm term="decentralized">decentralized</BitcoinTerm> 
+                            and resistant to control by any single entity.
+                          </p>
+                        </div>
+                        
                         <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4">
                           <h5 className="text-blue-400 font-medium mb-2">Summary</h5>
-                          <p className="text-zinc-300 text-sm">{lesson.summary}</p>
+                          <p className="text-zinc-300 text-sm">
+                            <AutoGlossary>{lesson.summary}</AutoGlossary>
+                          </p>
                         </div>
                       </div>
                     ) : (
@@ -1897,37 +1954,99 @@ export default function Home() {
                 </div>
 
                 {convictionSubTab === "whitepaper" && (
-                  <Card className="bg-zinc-900 border-zinc-800">
-                    <CardContent className="p-6">
-                      <div className="space-y-6">
-                        <div className="flex items-center gap-4">
-                          <div className="p-3 bg-orange-600/20 rounded-lg">
-                            <FileText className="w-8 h-8 text-orange-400" />
+                  <div className="space-y-6">
+                    <Card className="bg-zinc-900 border-zinc-800">
+                      <CardContent className="p-6">
+                        <div className="space-y-6">
+                          <div className="flex items-center gap-4">
+                            <div className="p-3 bg-orange-600/20 rounded-lg">
+                              <FileText className="w-8 h-8 text-orange-400" />
+                            </div>
+                            <div>
+                              <h3 className="text-xl font-bold text-white">Bitcoin: A Peer-to-Peer Electronic Cash System</h3>
+                              <p className="text-zinc-400">By Satoshi Nakamoto • October 31, 2008</p>
+                            </div>
                           </div>
-                          <div>
-                            <h3 className="text-xl font-bold text-white">Bitcoin: A Peer-to-Peer Electronic Cash System</h3>
-                            <p className="text-zinc-400">By Satoshi Nakamoto • October 31, 2008</p>
-                          </div>
-                        </div>
-                        
-                        <div className="space-y-4">
-                          <p className="text-zinc-300">
-                            The original Bitcoin white paper that started the cryptocurrency revolution. This foundational document outlines the design of a purely peer-to-peer version of electronic cash.
-                          </p>
                           
-                          <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4">
-                            <h4 className="text-blue-300 font-medium mb-3">Key Points</h4>
-                            <ul className="space-y-2 text-blue-200 text-sm">
-                              <li>• Eliminates the need for trusted third parties</li>
-                              <li>• Uses proof-of-work to prevent double-spending</li>
-                              <li>• Creates an immutable ledger through cryptographic hashing</li>
-                              <li>• Establishes consensus through the longest chain</li>
-                            </ul>
+                          <div className="space-y-4">
+                            <p className="text-zinc-300">
+                              <AutoGlossary>The original Bitcoin white paper that started the cryptocurrency revolution. This foundational document outlines the design of a purely peer-to-peer version of electronic cash.</AutoGlossary>
+                            </p>
+                            
+                            <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4">
+                              <h4 className="text-blue-300 font-medium mb-3">Abstract</h4>
+                              <p className="text-blue-200 text-sm leading-relaxed">
+                                <AutoGlossary>A purely peer-to-peer version of electronic cash would allow online payments to be sent directly from one party to another without going through a financial institution. Digital signatures provide part of the solution, but the main benefits are lost if a trusted third party is still required to prevent double-spending. We propose a solution to the double-spending problem using a peer-to-peer network.</AutoGlossary>
+                              </p>
+                            </div>
+
+                            <div className="space-y-4">
+                              <h4 className="text-white font-semibold">1. Introduction</h4>
+                              <p className="text-zinc-300 text-sm leading-relaxed">
+                                <AutoGlossary>Commerce on the Internet has come to rely almost exclusively on financial institutions serving as trusted third parties to process electronic payments. While the system works well enough for most transactions, it still suffers from the inherent weaknesses of the trust based model. Completely non-reversible transactions are not really possible, since financial institutions cannot avoid mediating disputes.</AutoGlossary>
+                              </p>
+                              <p className="text-zinc-300 text-sm leading-relaxed">
+                                <AutoGlossary>What is needed is an electronic payment system based on cryptographic proof instead of trust, allowing any two willing parties to transact directly with each other without the need for a trusted third party. Transactions that are computationally impractical to reverse would protect sellers from fraud, and routine escrow mechanisms could easily be implemented to protect buyers.</AutoGlossary>
+                              </p>
+                            </div>
+
+                            <div className="space-y-4">
+                              <h4 className="text-white font-semibold">2. Transactions</h4>
+                              <p className="text-zinc-300 text-sm leading-relaxed">
+                                <AutoGlossary>We define an electronic coin as a chain of digital signatures. Each owner transfers the coin to the next by digitally signing a hash of the previous transaction and the public key of the next owner and adding these to the end of the coin. A payee can verify the signatures to verify the chain of ownership.</AutoGlossary>
+                              </p>
+                            </div>
+
+                            <div className="space-y-4">
+                              <h4 className="text-white font-semibold">3. Timestamp Server</h4>
+                              <p className="text-zinc-300 text-sm leading-relaxed">
+                                <AutoGlossary>The solution we propose begins with a timestamp server. A timestamp server works by taking a hash of a block of items to be timestamped and widely publishing the hash. The timestamp proves that the data must have existed at the time, obviously, in order to get into the hash.</AutoGlossary>
+                              </p>
+                            </div>
+
+                            <div className="space-y-4">
+                              <h4 className="text-white font-semibold">4. Proof-of-Work</h4>
+                              <p className="text-zinc-300 text-sm leading-relaxed">
+                                <AutoGlossary>To implement a distributed timestamp server on a peer-to-peer basis, we will need to use a proof-of-work system similar to Adam Back's Hashcash, rather than newspaper or Usenet posts. The proof-of-work involves scanning for a value that when hashed, such as with SHA-256, the hash begins with a number of zero bits.</AutoGlossary>
+                              </p>
+                            </div>
+
+                            <div className="space-y-4">
+                              <h4 className="text-white font-semibold">5. Network</h4>
+                              <p className="text-zinc-300 text-sm leading-relaxed">
+                                <AutoGlossary>The steps to run the network are as follows: 1) New transactions are broadcast to all nodes. 2) Each node collects new transactions into a block. 3) Each node works on finding a difficult proof-of-work for its block. 4) When a node finds a proof-of-work, it broadcasts the block to all nodes. 5) Nodes accept the block only if all transactions in it are valid and not already spent. 6) Nodes express their acceptance of the block by working on creating the next block in the chain, using the hash of the accepted block as the previous hash.</AutoGlossary>
+                              </p>
+                            </div>
+
+                            <div className="space-y-4">
+                              <h4 className="text-white font-semibold">6. Incentive</h4>
+                              <p className="text-zinc-300 text-sm leading-relaxed">
+                                <AutoGlossary>By convention, the first transaction in a block is a special transaction that starts a new coin owned by the creator of the block. This adds an incentive for nodes to support the network, and provides a way to initially distribute coins into circulation, since there is no central authority to issue them.</AutoGlossary>
+                              </p>
+                            </div>
+
+                            <div className="bg-green-600/10 border border-green-600/20 rounded-lg p-4">
+                              <h4 className="text-green-300 font-medium mb-3">Key Innovations</h4>
+                              <ul className="space-y-2 text-green-200 text-sm">
+                                <li>• <BitcoinTerm term="peer-to-peer">Peer-to-peer</BitcoinTerm> electronic cash without financial institutions</li>
+                                <li>• <BitcoinTerm term="digital signature">Digital signatures</BitcoinTerm> for secure ownership transfers</li>
+                                <li>• <BitcoinTerm term="proof of work">Proof-of-work</BitcoinTerm> to prevent <BitcoinTerm term="double spending">double-spending</BitcoinTerm></li>
+                                <li>• <BitcoinTerm term="consensus">Consensus</BitcoinTerm> through the longest chain of blocks</li>
+                                <li>• Economic incentives for <BitcoinTerm term="miners">miners</BitcoinTerm> to secure the network</li>
+                              </ul>
+                            </div>
+
+                            <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-4">
+                              <h4 className="text-orange-300 font-medium mb-3">Historical Significance</h4>
+                              <p className="text-orange-200 text-sm">
+                                This 9-page document solved the decades-old computer science problem of achieving consensus in a distributed system without a central authority. It launched the <BitcoinTerm term="cryptocurrency">cryptocurrency</BitcoinTerm> revolution and created the foundation for <BitcoinTerm term="decentralized">decentralized</BitcoinTerm> digital money.
+                              </p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
+                  </div>
                 )}
 
                 {convictionSubTab === "books" && (
