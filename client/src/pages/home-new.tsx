@@ -3337,59 +3337,83 @@ export default function Home() {
                                 {dcaResults.duration}mo
                               </div>
                               
-                              {/* Simulated Bitcoin price line */}
+                              {/* Realistic DCA Chart */}
                               <svg className="w-full h-full" viewBox="0 0 400 200">
-                                {/* Price curve - simulated historical data */}
-                                <path
-                                  d="M 20 160 Q 80 140 120 100 Q 160 80 200 120 Q 240 140 280 90 Q 320 70 360 60"
-                                  stroke="#f97316"
-                                  strokeWidth="3"
-                                  fill="none"
-                                  className="drop-shadow-sm"
-                                />
-                                
-                                {/* DCA purchase points distributed across timeline */}
-                                {Array.from({ length: Math.min(dcaResults.duration, 24) }, (_, i) => {
-                                  // Calculate proper X position distribution across the full chart width
+                                {(() => {
                                   const totalPoints = Math.min(dcaResults.duration, 24);
-                                  const chartWidth = 340; // 360 - 20
-                                  const x = 20 + (i / (totalPoints - 1)) * chartWidth;
+                                  const chartWidth = 340;
                                   
-                                  // Vary Y position to simulate realistic Bitcoin price movements
-                                  const priceVariation = Math.sin(i * 0.5) * 40 + (Math.random() - 0.5) * 20;
-                                  const y = 100 + priceVariation;
+                                  // Generate realistic Bitcoin price data and DCA average cost
+                                  const data = [];
+                                  let totalInvested = 0;
+                                  let totalBTC = 0;
+                                  const investmentPerPeriod = dcaResults.totalInvested / totalPoints;
+                                  
+                                  for (let i = 0; i < totalPoints; i++) {
+                                    // Bitcoin price simulation (volatile movement)
+                                    const basePrice = 45000;
+                                    const trend = i * 150; // slight upward trend
+                                    const volatility = Math.sin(i * 0.4) * 7000 + Math.cos(i * 0.6) * 4000;
+                                    const randomness = (Math.random() - 0.5) * 6000;
+                                    const currentPrice = Math.max(25000, basePrice + trend + volatility + randomness);
+                                    
+                                    // DCA calculations - accumulative average
+                                    totalInvested += investmentPerPeriod;
+                                    totalBTC += investmentPerPeriod / currentPrice;
+                                    const avgCost = totalInvested / totalBTC;
+                                    
+                                    const x = 20 + (i / Math.max(totalPoints - 1, 1)) * chartWidth;
+                                    
+                                    data.push({
+                                      x,
+                                      bitcoinPriceY: 180 - ((currentPrice - 25000) / 50000) * 140,
+                                      avgCostY: 180 - ((avgCost - 25000) / 50000) * 140,
+                                      price: currentPrice,
+                                      avgCost
+                                    });
+                                  }
                                   
                                   return (
-                                    <g key={i}>
-                                      <circle
-                                        cx={x}
-                                        cy={y}
-                                        r="3"
-                                        fill="#22c55e"
+                                    <>
+                                      {/* Bitcoin actual price line (orange, volatile) */}
+                                      <path
+                                        d={data.map((point, i) => 
+                                          `${i === 0 ? 'M' : 'L'} ${point.x},${point.bitcoinPriceY}`
+                                        ).join(' ')}
+                                        stroke="#f97316"
+                                        strokeWidth="3"
+                                        fill="none"
                                         className="drop-shadow-sm"
                                       />
-                                      <circle
-                                        cx={x}
-                                        cy={y}
-                                        r="6"
-                                        fill="#22c55e"
-                                        fillOpacity="0.2"
+                                      
+                                      {/* DCA average cost line (blue, smoothing over time) */}
+                                      <path
+                                        d={data.map((point, i) => 
+                                          `${i === 0 ? 'M' : 'L'} ${point.x},${point.avgCostY}`
+                                        ).join(' ')}
+                                        stroke="#3b82f6"
+                                        strokeWidth="2"
+                                        strokeDasharray="4,4"
+                                        fill="none"
+                                        opacity="0.8"
                                       />
-                                    </g>
+                                      
+                                      {/* DCA purchase points (green dots on Bitcoin price line) */}
+                                      {data.map((point, i) => (
+                                        <circle
+                                          key={i}
+                                          cx={point.x}
+                                          cy={point.bitcoinPriceY}
+                                          r="3"
+                                          fill="#22c55e"
+                                          stroke="#1f2937"
+                                          strokeWidth="1"
+                                          className="drop-shadow-sm"
+                                        />
+                                      ))}
+                                    </>
                                   );
-                                })}
-                                
-                                {/* Average cost line */}
-                                <line
-                                  x1="20"
-                                  y1="100"
-                                  x2="360"
-                                  y2="100"
-                                  stroke="#3b82f6"
-                                  strokeWidth="2"
-                                  strokeDasharray="5,5"
-                                  opacity="0.8"
-                                />
+                                })()}
                               </svg>
                               
                               {/* Legend */}
