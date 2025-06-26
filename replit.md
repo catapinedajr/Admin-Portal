@@ -131,6 +131,9 @@ Comprehensive component library built on Radix UI primitives:
 - June 25, 2025. Consolidated Facts, Lesson, and Quiz into unified "Today" section for improved gamified daily learning experience with progress tracking and cohesive content flow
 - June 26, 2025. Expanded Bitcoin glossary to 80+ comprehensive terms organized by category (Core Concepts, Wallets & Security, Network & Mining, Transactions & Blocks, Economics & Investment, Key Properties) with interactive tooltips throughout the app
 - June 26, 2025. Renamed "Terms" section to "Glossary" and created comprehensive reference guide with color-coded categories and complete Bitcoin whitepaper integration with interactive glossary tooltips
+- June 26, 2025. Rebranded app from "Daily Bitcoin Learning" to "BTC Journey" and renamed "Inspo" navigation to "More" section for better user experience
+- June 26, 2025. Added comprehensive Wallet Safety section to Practice area with private key security rules, wallet type comparisons, common scam awareness, and interactive security checklist
+- June 26, 2025. Implemented affiliate revenue store in More section featuring hardware wallets (Ledger Nano X, Trezor Model T) and essential Bitcoin books (Lyn Alden's "Broken Money", "Bitcoin Standard", "Fiat Standard") with affiliate disclosure
 
 ## User Preferences
 

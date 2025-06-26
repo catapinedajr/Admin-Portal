@@ -408,8 +408,8 @@ const traditionalFinanceProblems = {
 
 type MainSection = "foundation" | "practice" | "inspiration";
 type FoundationSubTab = "today" | "explore" | "disruption" | "terms";
-type PracticeSubTab = "mining" | "transactions" | "hodl" | "dca" | "halving";
-type InspirationSubTab = "stories" | "conviction";
+type PracticeSubTab = "mining" | "transactions" | "hodl" | "dca" | "halving" | "safety";
+type InspirationSubTab = "stories" | "conviction" | "store";
 type DisruptionSubTab = "problems" | "solutions" | "comparison" | "future";
 type StoriesSubTab = "individuals" | "businesses" | "nations";
 type ConvictionSubTab = "whitepaper" | "books" | "videos";
@@ -659,7 +659,7 @@ export default function Home() {
                 <Bitcoin className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <div className="min-w-0">
-                <h1 className="text-sm sm:text-lg font-bold text-white truncate">Bitcoin Education</h1>
+                <h1 className="text-sm sm:text-lg font-bold text-white truncate">BTC Journey</h1>
                 <p className="text-xs text-zinc-400 hidden sm:block">Build your conviction</p>
               </div>
             </div>
@@ -710,7 +710,7 @@ export default function Home() {
               className={`${activeSection === "inspiration" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} px-3 sm:px-4 py-2 text-sm sm:text-base min-w-0 flex-shrink-0`}
             >
               <Heart className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
-              <span className="whitespace-nowrap">Inspo</span>
+              <span className="whitespace-nowrap">More</span>
             </Button>
           </div>
         </div>
@@ -811,6 +811,15 @@ export default function Home() {
                 <Gem className="w-3 h-3 mr-1" />
                 Halving
               </Button>
+              <Button
+                variant={practiceSubTab === "safety" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setPracticeSubTab("safety")}
+                className="text-xs px-2 py-1"
+              >
+                <KeyRound className="w-3 h-3 mr-1" />
+                Wallet Safety
+              </Button>
             </div>
           </div>
         </div>
@@ -837,6 +846,15 @@ export default function Home() {
               >
                 <Heart className="w-3 h-3 mr-1" />
                 Conviction
+              </Button>
+              <Button
+                variant={inspirationSubTab === "store" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setInspirationSubTab("store")}
+                className="text-xs px-2 py-1"
+              >
+                <DollarSign className="w-3 h-3 mr-1" />
+                Store
               </Button>
             </div>
           </div>
@@ -1974,6 +1992,222 @@ export default function Home() {
               </Card>
             )}
 
+            {practiceSubTab === "safety" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-bold text-white">Wallet Safety Guide</h2>
+                  <p className="text-zinc-400">Essential security practices to protect your Bitcoin</p>
+                </div>
+
+                {/* Private Key Security */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                      <KeyRound className="w-5 h-5" />
+                      Private Key Security
+                    </h3>
+                    <div className="space-y-4">
+                      <div className="bg-red-600/10 border border-red-600/20 rounded-lg p-4">
+                        <h4 className="text-red-300 font-medium mb-3">⚠️ Critical Rules</h4>
+                        <ul className="space-y-2 text-red-200 text-sm">
+                          <li>• <BitcoinTerm term="private key">Never share your private keys</BitcoinTerm> with anyone, ever</li>
+                          <li>• <BitcoinTerm term="seed phrase">Never enter your seed phrase</BitcoinTerm> on any website or app</li>
+                          <li>• Never store private keys in cloud storage or email</li>
+                          <li>• Never take photos of your seed phrase</li>
+                          <li>• Not your keys, not your coins - always control your own keys</li>
+                        </ul>
+                      </div>
+
+                      <div className="grid gap-4">
+                        <div className="border border-zinc-700 rounded-lg p-4">
+                          <h4 className="text-white font-semibold mb-2">✅ Secure Storage Methods</h4>
+                          <ul className="space-y-2 text-zinc-300 text-sm">
+                            <li>• Write <BitcoinTerm term="seed phrase">seed phrases</BitcoinTerm> on metal backup plates</li>
+                            <li>• Use multiple physical locations for backups</li>
+                            <li>• Consider <BitcoinTerm term="multisig">multisig</BitcoinTerm> wallets for large amounts</li>
+                            <li>• Use <BitcoinTerm term="cold storage">hardware wallets</BitcoinTerm> for long-term storage</li>
+                          </ul>
+                        </div>
+
+                        <div className="border border-zinc-700 rounded-lg p-4">
+                          <h4 className="text-white font-semibold mb-2">❌ What NOT to Do</h4>
+                          <ul className="space-y-2 text-zinc-300 text-sm">
+                            <li>• Don't use brain wallets or simple passphrases</li>
+                            <li>• Don't generate keys on internet-connected devices</li>
+                            <li>• Don't use wallets from unknown developers</li>
+                            <li>• Don't store large amounts on <BitcoinTerm term="exchange">exchanges</BitcoinTerm></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Wallet Types */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                      <Shield className="w-5 h-5" />
+                      Wallet Types & Security Levels
+                    </h3>
+                    <div className="grid gap-4">
+                      <div className="border border-green-600/30 bg-green-600/5 rounded-lg p-4">
+                        <h4 className="text-green-300 font-semibold mb-2">🔒 Hardware Wallets (Most Secure)</h4>
+                        <p className="text-zinc-300 text-sm mb-2">Physical devices that store private keys offline</p>
+                        <ul className="space-y-1 text-zinc-400 text-sm">
+                          <li>• Examples: Ledger, Trezor, Coldcard</li>
+                          <li>• Best for: Long-term storage, large amounts</li>
+                          <li>• Pros: Offline storage, immune to malware</li>
+                          <li>• Cons: Cost, learning curve</li>
+                        </ul>
+                      </div>
+
+                      <div className="border border-yellow-600/30 bg-yellow-600/5 rounded-lg p-4">
+                        <h4 className="text-yellow-300 font-semibold mb-2">📱 Mobile Wallets (Medium Security)</h4>
+                        <p className="text-zinc-300 text-sm mb-2">Apps on your smartphone for daily use</p>
+                        <ul className="space-y-1 text-zinc-400 text-sm">
+                          <li>• Examples: Blue Wallet, Electrum, Phoenix</li>
+                          <li>• Best for: Small amounts, daily transactions</li>
+                          <li>• Pros: Convenient, quick access</li>
+                          <li>• Cons: Online, vulnerable to phone theft</li>
+                        </ul>
+                      </div>
+
+                      <div className="border border-red-600/30 bg-red-600/5 rounded-lg p-4">
+                        <h4 className="text-red-300 font-semibold mb-2">🌐 Exchange Wallets (Least Secure)</h4>
+                        <p className="text-zinc-300 text-sm mb-2">Wallets controlled by cryptocurrency exchanges</p>
+                        <ul className="space-y-1 text-zinc-400 text-sm">
+                          <li>• Examples: Coinbase, Binance, Kraken</li>
+                          <li>• Best for: Active trading only</li>
+                          <li>• Pros: Easy to use, integrated trading</li>
+                          <li>• Cons: You don't control keys, hacking risk</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Common Scams */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold text-orange-400 mb-4 flex items-center gap-2">
+                      <AlertTriangle className="w-5 h-5" />
+                      Common Bitcoin Scams to Avoid
+                    </h3>
+                    <div className="space-y-4">
+                      <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-4">
+                        <h4 className="text-orange-300 font-medium mb-3">🎣 Phishing Attacks</h4>
+                        <p className="text-orange-200 text-sm mb-2">Fake websites and emails trying to steal your credentials</p>
+                        <ul className="space-y-1 text-orange-200 text-sm">
+                          <li>• Always double-check website URLs</li>
+                          <li>• Bookmark legitimate wallet sites</li>
+                          <li>• Never click links in suspicious emails</li>
+                          <li>• Look for HTTPS and correct spelling</li>
+                        </ul>
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="border border-zinc-700 rounded-lg p-4">
+                          <h4 className="text-white font-semibold mb-2">💰 Fake Giveaways</h4>
+                          <p className="text-zinc-300 text-sm">
+                            "Send 1 BTC, get 2 BTC back!" - These are always scams. No legitimate person or company gives away free Bitcoin.
+                          </p>
+                        </div>
+
+                        <div className="border border-zinc-700 rounded-lg p-4">
+                          <h4 className="text-white font-semibold mb-2">💕 Romance Scams</h4>
+                          <p className="text-zinc-300 text-sm">
+                            Online dating profiles that eventually ask for Bitcoin. Real relationships don't involve cryptocurrency demands.
+                          </p>
+                        </div>
+
+                        <div className="border border-zinc-700 rounded-lg p-4">
+                          <h4 className="text-white font-semibold mb-2">🏦 Fake Support</h4>
+                          <p className="text-zinc-300 text-sm">
+                            Scammers impersonating wallet or exchange support. Real support never asks for private keys or seed phrases.
+                          </p>
+                        </div>
+
+                        <div className="border border-zinc-700 rounded-lg p-4">
+                          <h4 className="text-white font-semibold mb-2">💎 Ponzi Schemes</h4>
+                          <p className="text-zinc-300 text-sm">
+                            "Guaranteed returns" or "Bitcoin doubling" programs. Legitimate investments carry risk and don't guarantee profits.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Security Checklist */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5" />
+                      Bitcoin Security Checklist
+                    </h3>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <h4 className="text-white font-semibold">Wallet Security</h4>
+                        <div className="space-y-2">
+                          <label className="flex items-center gap-2 text-zinc-300">
+                            <input type="checkbox" className="rounded border-zinc-600 bg-zinc-800" />
+                            <span className="text-sm">Using a reputable wallet</span>
+                          </label>
+                          <label className="flex items-center gap-2 text-zinc-300">
+                            <input type="checkbox" className="rounded border-zinc-600 bg-zinc-800" />
+                            <span className="text-sm">Backed up seed phrase securely</span>
+                          </label>
+                          <label className="flex items-center gap-2 text-zinc-300">
+                            <input type="checkbox" className="rounded border-zinc-600 bg-zinc-800" />
+                            <span className="text-sm">Using strong, unique passwords</span>
+                          </label>
+                          <label className="flex items-center gap-2 text-zinc-300">
+                            <input type="checkbox" className="rounded border-zinc-600 bg-zinc-800" />
+                            <span className="text-sm">Enabled 2FA where possible</span>
+                          </label>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
+                        <h4 className="text-white font-semibold">General Security</h4>
+                        <div className="space-y-2">
+                          <label className="flex items-center gap-2 text-zinc-300">
+                            <input type="checkbox" className="rounded border-zinc-600 bg-zinc-800" />
+                            <span className="text-sm">Keep software updated</span>
+                          </label>
+                          <label className="flex items-center gap-2 text-zinc-300">
+                            <input type="checkbox" className="rounded border-zinc-600 bg-zinc-800" />
+                            <span className="text-sm">Using secure internet connections</span>
+                          </label>
+                          <label className="flex items-center gap-2 text-zinc-300">
+                            <input type="checkbox" className="rounded border-zinc-600 bg-zinc-800" />
+                            <span className="text-sm">Never sharing private information</span>
+                          </label>
+                          <label className="flex items-center gap-2 text-zinc-300">
+                            <input type="checkbox" className="rounded border-zinc-600 bg-zinc-800" />
+                            <span className="text-sm">Verifying all transactions</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <HelpCircle className="w-5 h-5 text-blue-400 mt-0.5" />
+                    <div>
+                      <h4 className="text-blue-300 font-medium mb-2">Remember: You Are Your Own Bank</h4>
+                      <p className="text-blue-200 text-sm">
+                        With Bitcoin, you have complete control over your money, but that also means complete responsibility for its security. Take time to learn proper security practices - your future self will thank you.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {(practiceSubTab === "transactions" || practiceSubTab === "halving") && (
               <Card className="bg-zinc-900 border-zinc-800">
                 <CardContent className="p-6">
@@ -2225,48 +2459,161 @@ export default function Home() {
                   </div>
                 )}
 
-                {convictionSubTab === "books" && (
-                  <div className="grid gap-6">
-                    {convictionContent.books.map((book, index) => (
-                      <Card key={index} className="bg-zinc-900 border-zinc-800">
-                        <CardContent className="p-6">
-                          <div className="space-y-4">
-                            <div className="flex items-start justify-between">
+                {inspirationSubTab === "store" && (
+                  <div className="space-y-6">
+                    <div className="text-center space-y-2">
+                      <h2 className="text-2xl font-bold text-white">BTC Journey Store</h2>
+                      <p className="text-zinc-400">Essential Bitcoin books and hardware for your journey</p>
+                    </div>
+
+                    {/* Hardware Wallets */}
+                    <Card className="bg-zinc-900 border-zinc-800">
+                      <CardContent className="p-6">
+                        <h3 className="text-xl font-bold text-orange-400 mb-4 flex items-center gap-2">
+                          <Shield className="w-5 h-5" />
+                          Hardware Wallets - Secure Your Bitcoin
+                        </h3>
+                        <div className="grid gap-6">
+                          <div className="border border-zinc-700 rounded-lg p-4">
+                            <div className="flex items-start justify-between mb-4">
                               <div>
-                                <h3 className="text-xl font-bold text-white">{book.title}</h3>
-                                <p className="text-zinc-400">by {book.author}</p>
+                                <h4 className="text-white font-semibold text-lg">Ledger Nano X</h4>
+                                <p className="text-zinc-400">Industry-leading hardware wallet</p>
                               </div>
                               <div className="text-right">
-                                <Badge 
-                                  variant="outline" 
-                                  className={`${
-                                    book.difficulty === "Beginner" ? "border-green-600 text-green-400" :
-                                    book.difficulty === "Intermediate" ? "border-yellow-600 text-yellow-400" :
-                                    "border-red-600 text-red-400"
-                                  }`}
-                                >
-                                  {book.difficulty}
-                                </Badge>
-                                <p className="text-zinc-500 text-sm mt-1">{book.pages} pages</p>
+                                <p className="text-orange-400 font-bold text-lg">$149</p>
+                                <p className="text-zinc-500 text-sm">Free shipping</p>
                               </div>
                             </div>
-                            
-                            <p className="text-zinc-300">{book.description}</p>
-                            
-                            <div className="space-y-2">
-                              <div className="text-zinc-400 text-sm font-medium">Key Topics:</div>
-                              <div className="flex flex-wrap gap-2">
-                                {book.keyTopics.map((topic, topicIndex) => (
-                                  <Badge key={topicIndex} variant="secondary" className="bg-zinc-800 text-zinc-300">
-                                    {topic}
-                                  </Badge>
-                                ))}
-                              </div>
+                            <p className="text-zinc-300 mb-4">Bluetooth-enabled hardware wallet supporting 5,500+ cryptocurrencies. Secure chip technology and mobile app integration.</p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              <Badge variant="secondary" className="bg-green-600/20 text-green-400">Bluetooth</Badge>
+                              <Badge variant="secondary" className="bg-blue-600/20 text-blue-400">Mobile App</Badge>
+                              <Badge variant="secondary" className="bg-purple-600/20 text-purple-400">5,500+ Coins</Badge>
                             </div>
+                            <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                              <ExternalLink className="w-4 h-4 mr-2" />
+                              Buy on Ledger (Affiliate Link)
+                            </Button>
                           </div>
-                        </CardContent>
-                      </Card>
-                    ))}
+
+                          <div className="border border-zinc-700 rounded-lg p-4">
+                            <div className="flex items-start justify-between mb-4">
+                              <div>
+                                <h4 className="text-white font-semibold text-lg">Trezor Model T</h4>
+                                <p className="text-zinc-400">Touchscreen hardware wallet</p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-orange-400 font-bold text-lg">$219</p>
+                                <p className="text-zinc-500 text-sm">Free shipping</p>
+                              </div>
+                            </div>
+                            <p className="text-zinc-300 mb-4">Premium hardware wallet with color touchscreen. Open-source firmware and advanced security features.</p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              <Badge variant="secondary" className="bg-green-600/20 text-green-400">Touchscreen</Badge>
+                              <Badge variant="secondary" className="bg-blue-600/20 text-blue-400">Open Source</Badge>
+                              <Badge variant="secondary" className="bg-purple-600/20 text-purple-400">1,000+ Coins</Badge>
+                            </div>
+                            <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                              <ExternalLink className="w-4 h-4 mr-2" />
+                              Buy on Trezor (Affiliate Link)
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Essential Books */}
+                    <Card className="bg-zinc-900 border-zinc-800">
+                      <CardContent className="p-6">
+                        <h3 className="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                          <BookOpen className="w-5 h-5" />
+                          Essential Bitcoin Books
+                        </h3>
+                        <div className="grid gap-6">
+                          <div className="border border-zinc-700 rounded-lg p-4">
+                            <div className="flex items-start justify-between mb-4">
+                              <div>
+                                <h4 className="text-white font-semibold text-lg">Broken Money by Lyn Alden</h4>
+                                <p className="text-zinc-400">Why Our Financial System is Failing Us</p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-orange-400 font-bold text-lg">$24.99</p>
+                                <Badge variant="outline" className="border-green-600 text-green-400 mt-1">Beginner</Badge>
+                              </div>
+                            </div>
+                            <p className="text-zinc-300 mb-4">Comprehensive analysis of monetary history and why Bitcoin represents a return to sound money principles. Perfect for understanding the "why" behind Bitcoin.</p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Monetary History</Badge>
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Economics</Badge>
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Sound Money</Badge>
+                            </div>
+                            <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                              <ExternalLink className="w-4 h-4 mr-2" />
+                              Buy on Amazon (Affiliate Link)
+                            </Button>
+                          </div>
+
+                          <div className="border border-zinc-700 rounded-lg p-4">
+                            <div className="flex items-start justify-between mb-4">
+                              <div>
+                                <h4 className="text-white font-semibold text-lg">The Bitcoin Standard by Saifedean Ammous</h4>
+                                <p className="text-zinc-400">The Decentralized Alternative to Central Banking</p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-orange-400 font-bold text-lg">$19.99</p>
+                                <Badge variant="outline" className="border-yellow-600 text-yellow-400 mt-1">Intermediate</Badge>
+                              </div>
+                            </div>
+                            <p className="text-zinc-300 mb-4">Classic introduction to Bitcoin's economic properties and historical context of money. Essential reading for understanding Bitcoin as digital gold.</p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Austrian Economics</Badge>
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Store of Value</Badge>
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">History</Badge>
+                            </div>
+                            <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                              <ExternalLink className="w-4 h-4 mr-2" />
+                              Buy on Amazon (Affiliate Link)
+                            </Button>
+                          </div>
+
+                          <div className="border border-zinc-700 rounded-lg p-4">
+                            <div className="flex items-start justify-between mb-4">
+                              <div>
+                                <h4 className="text-white font-semibold text-lg">The Fiat Standard by Saifedean Ammous</h4>
+                                <p className="text-zinc-400">The Debt Slavery Alternative to Human Civilization</p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-orange-400 font-bold text-lg">$22.99</p>
+                                <Badge variant="outline" className="border-red-600 text-red-400 mt-1">Advanced</Badge>
+                              </div>
+                            </div>
+                            <p className="text-zinc-300 mb-4">Deep dive into the problems with the current fiat monetary system and how it affects society, culture, and human flourishing.</p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Fiat Problems</Badge>
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Society</Badge>
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Civilization</Badge>
+                            </div>
+                            <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                              <ExternalLink className="w-4 h-4 mr-2" />
+                              Buy on Amazon (Affiliate Link)
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-4">
+                      <div className="flex items-start gap-3">
+                        <DollarSign className="w-5 h-5 text-orange-400 mt-0.5" />
+                        <div>
+                          <h4 className="text-orange-300 font-medium mb-2">Affiliate Disclosure</h4>
+                          <p className="text-orange-200 text-sm">
+                            As an Amazon Associate and affiliate partner, BTC Journey earns from qualifying purchases. This helps support our educational mission while providing you with the best Bitcoin resources.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
 
