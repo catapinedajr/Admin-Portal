@@ -3362,7 +3362,12 @@ function WeeklySection() {
                                     return (
                                       <div key={lineIndex} className="flex items-start gap-2 ml-4">
                                         <div className="w-1 h-1 bg-orange-400 rounded-full mt-3 flex-shrink-0" />
-                                        <span className="text-zinc-300">{line.replace('• ', '').replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')}</span>
+                                        <span 
+                                          className="text-zinc-300"
+                                          dangerouslySetInnerHTML={{
+                                            __html: line.replace('• ', '').replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
+                                          }}
+                                        />
                                       </div>
                                     );
                                   } else if (line.trim().length > 0) {

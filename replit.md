@@ -154,6 +154,7 @@ Comprehensive component library built on Radix UI primitives:
 - June 26, 2025. Fixed DCA investment amount interface: removed misleading "/month" text from dropdown options and added "Per selected frequency below" clarification since users can select different frequencies (daily, weekly, monthly, etc.)
 - June 26, 2025. Transformed Today's lesson section from bullet-point format to engaging storytelling narratives: removed all technical bullet points, converted lists to flowing paragraphs, added complete "Bitcoin as Digital Gold" story, and enhanced readability by removing markdown formatting for much improved user experience
 - June 26, 2025. Removed Deep Dive section from Learn tab navigation for cleaner user experience, simplifying focus to Today, Reference, and Stories subsections as requested
+- June 26, 2025. Fixed Weekly content formatting issues: implemented proper HTML rendering for bold text in bullet points, improved paragraph spacing and visual hierarchy, restructured backend content with better line breaks and bullet point formatting for enhanced readability of 65-minute university-level content
 
 ## User Preferences
 
