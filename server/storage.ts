@@ -534,55 +534,55 @@ Properties of Good Money
 
 Throughout history, the best forms of money have shared certain characteristics:
 
-• Scarcity: Limited supply maintains value
+• **Scarcity**: Limited supply maintains value
 
-• Durability: Doesn't degrade over time  
+• **Durability**: Doesn't degrade over time  
 
-• Portability: Easy to transport and transfer
+• **Portability**: Easy to transport and transfer
 
-• Divisibility: Can be broken into smaller units
+• **Divisibility**: Can be broken into smaller units
 
-• Verifiability: Easy to authenticate as genuine
+• **Verifiability**: Easy to authenticate as genuine
 
 
 How Bitcoin Compares to Gold
 
-Scarcity: ✅ Fixed 21 million supply vs. unknown gold reserves
+**Scarcity**: ✅ Fixed 21 million supply vs. unknown gold reserves
 
-Durability: ✅ Digital format vs. physical degradation  
+**Durability**: ✅ Digital format vs. physical degradation  
 
-Portability: ✅ Instant global transfer vs. physical transport
+**Portability**: ✅ Instant global transfer vs. physical transport
 
-Divisibility: ✅ 8 decimal places vs. difficult gold division
+**Divisibility**: ✅ 8 decimal places vs. difficult gold division
 
-Verifiability: ✅ Cryptographic proof vs. expensive testing
+**Verifiability**: ✅ Cryptographic proof vs. expensive testing
 
 
 Bitcoin's Monetary Advantages
 
 Unlike gold, Bitcoin is:
 
-• Programmable: Can be sent automatically based on conditions
+• **Programmable**: Can be sent automatically based on conditions
 
-• Permissionless: No need for vaults or intermediaries
+• **Permissionless**: No need for vaults or intermediaries
 
-• Transparent: All transactions are publicly verifiable
+• **Transparent**: All transactions are publicly verifiable
 
-• Resistant to confiscation: Properly stored Bitcoin cannot be seized
+• **Resistant to confiscation**: Properly stored Bitcoin cannot be seized
 
 
 The Network Effect
 
 As more people recognize Bitcoin's superior monetary properties:
 
-• Demand increases while supply remains fixed
+• **Demand increases** while supply remains fixed
 
-• Price tends to increase over long time horizons
+• **Price tends to increase** over long time horizons
 
-• Network becomes more valuable and secure
+• **Network becomes more valuable** and secure
 
 
-Investment Thesis: Bitcoin combines the scarcity of gold with the utility of digital technology, creating superior hard money for the internet age.`,
+**Investment Thesis**: Bitcoin combines the scarcity of gold with the utility of digital technology, creating superior hard money for the internet age.`,
         summary: "Bitcoin serves as digital gold, combining scarcity with superior portability, divisibility, and verifiability compared to traditional stores of value.",
         estimatedReadTime: 8,
         dayIndex: 5
