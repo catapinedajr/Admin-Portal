@@ -886,10 +886,10 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-6">
-        {/* Learning Section */}
-        {activeSection === "learning" && (
+        {/* Foundation Section */}
+        {activeSection === "foundation" && (
           <div className="space-y-6">
-            {learningSubTab === "basics" && (
+            {foundationSubTab === "basics" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h2 className="text-2xl font-bold text-white">Daily Bitcoin Facts</h2>
@@ -922,7 +922,7 @@ export default function Home() {
               </div>
             )}
 
-            {learningSubTab === "lesson" && lesson && (
+            {foundationSubTab === "lesson" && lesson && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h2 className="text-2xl font-bold text-white">Today's Lesson</h2>
@@ -951,7 +951,7 @@ export default function Home() {
               </div>
             )}
 
-            {learningSubTab === "quiz" && (
+            {foundationSubTab === "quiz" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h2 className="text-2xl font-bold text-white">Daily Quiz</h2>
@@ -961,7 +961,7 @@ export default function Home() {
               </div>
             )}
 
-            {learningSubTab === "explore" && (
+            {foundationSubTab === "explore" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h2 className="text-2xl font-bold text-white">Explore Bitcoin</h2>
@@ -1163,7 +1163,7 @@ export default function Home() {
               </div>
             )}
 
-            {learningSubTab === "progress" && (
+            {foundationSubTab === "terms" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h2 className="text-2xl font-bold text-white">Your Progress</h2>
@@ -1204,7 +1204,7 @@ export default function Home() {
         )}
 
         {/* BTC In Action Section */}
-        {activeSection === "btcaction" && (
+        {activeSection === "inspiration" && inspirationSubTab === "stories" && (
           <div className="space-y-6">
             <div className="text-center space-y-2">
               <h2 className="text-2xl font-bold text-white">Bitcoin In Action</h2>
@@ -1213,27 +1213,27 @@ export default function Home() {
             
             <div className="flex space-x-2 mb-4 justify-center">
               <Button
-                variant={btcActionSubTab === "individuals" ? "secondary" : "ghost"}
+                variant={storiesSubTab === "individuals" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setBtcActionSubTab("individuals")}
+                onClick={() => setStoriesSubTab("individuals")}
                 className="text-sm"
               >
                 <UserIcon className="w-3 h-3 mr-2" />
                 Individuals
               </Button>
               <Button
-                variant={btcActionSubTab === "businesses" ? "secondary" : "ghost"}
+                variant={storiesSubTab === "businesses" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setBtcActionSubTab("businesses")}
+                onClick={() => setStoriesSubTab("businesses")}
                 className="text-sm"
               >
                 <Building2 className="w-3 h-3 mr-2" />
                 Businesses
               </Button>
               <Button
-                variant={btcActionSubTab === "nations" ? "secondary" : "ghost"}
+                variant={storiesSubTab === "nations" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setBtcActionSubTab("nations")}
+                onClick={() => setStoriesSubTab("nations")}
                 className="text-sm"
               >
                 <Flag className="w-3 h-3 mr-2" />
@@ -1242,7 +1242,7 @@ export default function Home() {
             </div>
             
             <div className="grid gap-6">
-              {userProfiles[btcActionSubTab].map((profile, index) => (
+              {userProfiles[storiesSubTab].map((profile, index) => (
                 <Card key={index} className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors">
                   <CardContent className="p-6">
                     <div className="space-y-4">
@@ -1252,8 +1252,8 @@ export default function Home() {
                           <p className="text-orange-400 text-sm">{profile.role}</p>
                         </div>
                         <Badge variant="outline" className="border-zinc-700 text-zinc-400">
-                          {btcActionSubTab === "individuals" ? "Individual" : 
-                           btcActionSubTab === "businesses" ? "Business" : "Nation"}
+                          {storiesSubTab === "individuals" ? "Individual" : 
+                           storiesSubTab === "businesses" ? "Business" : "Nation"}
                         </Badge>
                       </div>
                       
@@ -1277,7 +1277,7 @@ export default function Home() {
         )}
 
         {/* Conviction Section */}
-        {activeSection === "conviction" && (
+        {activeSection === "inspiration" && inspirationSubTab === "conviction" && (
           <div className="space-y-6">
             <div className="text-center space-y-2">
               <h2 className="text-2xl font-bold text-white">Conviction Center</h2>
@@ -1462,8 +1462,8 @@ export default function Home() {
           </div>
         )}
 
-        {/* Simulation Center Section */}
-        {activeSection === "simulation" && (
+        {/* Practice Section */}
+        {activeSection === "practice" && (
           <div className="space-y-6">
             <div className="text-center space-y-2">
               <h2 className="text-2xl font-bold text-white">Simulation Center</h2>
@@ -1472,45 +1472,45 @@ export default function Home() {
             
             <div className="flex space-x-2 mb-6 justify-center flex-wrap gap-2">
               <Button
-                variant={simulationSubTab === "mining" ? "secondary" : "ghost"}
+                variant={practiceSubTab === "mining" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setSimulationSubTab("mining")}
+                onClick={() => setPracticeSubTab("mining")}
                 className="text-sm"
               >
                 <Zap className="w-3 h-3 mr-2" />
                 Mining
               </Button>
               <Button
-                variant={simulationSubTab === "transactions" ? "secondary" : "ghost"}
+                variant={practiceSubTab === "transactions" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setSimulationSubTab("transactions")}
+                onClick={() => setPracticeSubTab("transactions")}
                 className="text-sm"
               >
                 <ArrowRight className="w-3 h-3 mr-2" />
                 Transactions
               </Button>
               <Button
-                variant={simulationSubTab === "hodl" ? "secondary" : "ghost"}
+                variant={practiceSubTab === "hodl" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setSimulationSubTab("hodl")}
+                onClick={() => setPracticeSubTab("hodl")}
                 className="text-sm"
               >
                 <Shield className="w-3 h-3 mr-2" />
                 HODLing
               </Button>
               <Button
-                variant={simulationSubTab === "dca" ? "secondary" : "ghost"}
+                variant={practiceSubTab === "dca" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setSimulationSubTab("dca")}
+                onClick={() => setPracticeSubTab("dca")}
                 className="text-sm"
               >
                 <TrendingUp className="w-3 h-3 mr-2" />
                 DCA
               </Button>
               <Button
-                variant={simulationSubTab === "halving" ? "secondary" : "ghost"}
+                variant={practiceSubTab === "halving" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setSimulationSubTab("halving")}
+                onClick={() => setPracticeSubTab("halving")}
                 className="text-sm"
               >
                 <Gem className="w-3 h-3 mr-2" />
@@ -1518,7 +1518,7 @@ export default function Home() {
               </Button>
             </div>
 
-            {simulationSubTab === "mining" && (
+            {practiceSubTab === "mining" && (
               <div className="space-y-6">
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
@@ -1591,7 +1591,7 @@ export default function Home() {
               </div>
             )}
 
-            {simulationSubTab === "transactions" && (
+            {practiceSubTab === "transactions" && (
               <div className="space-y-6">
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
@@ -1657,7 +1657,7 @@ export default function Home() {
               </div>
             )}
 
-            {simulationSubTab === "hodl" && (
+            {practiceSubTab === "hodl" && (
               <div className="space-y-6">
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
@@ -1742,7 +1742,7 @@ export default function Home() {
               </div>
             )}
 
-            {simulationSubTab === "dca" && (
+            {practiceSubTab === "dca" && (
               <div className="space-y-6">
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
@@ -1825,7 +1825,7 @@ export default function Home() {
               </div>
             )}
 
-            {simulationSubTab === "halving" && (
+            {practiceSubTab === "halving" && (
               <div className="space-y-6">
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
@@ -1891,7 +1891,7 @@ export default function Home() {
         )}
 
         {/* Disruption Section */}
-        {activeSection === "disruption" && (
+        {activeSection === "foundation" && foundationSubTab === "disruption" && (
           <div className="space-y-6">
             <div className="text-center space-y-2">
               <h2 className="text-2xl font-bold text-white">Financial Disruption</h2>
@@ -2112,7 +2112,7 @@ export default function Home() {
         )}
 
         {/* Bitcoin Terms Section */}
-        {activeSection === "terms" && (
+        {activeSection === "foundation" && foundationSubTab === "terms" && (
           <div className="space-y-6">
             <div className="text-center space-y-2">
               <h2 className="text-2xl font-bold text-white">Bitcoin Terms</h2>
