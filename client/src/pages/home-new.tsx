@@ -702,6 +702,22 @@ export default function Home() {
           "Distributed across thousands of nodes",
           "Transparent and verifiable by anyone"
         ]
+      },
+      "Why Bitcoin Matters": {
+        explanation: "Bitcoin represents the first time in history that individuals can have complete sovereignty over their money without relying on banks, governments, or any third parties. It provides financial freedom through mathematical certainty rather than institutional trust.",
+        examples: [
+          "Send money internationally without bank approval or fees",
+          "Store wealth without risk of account freezing or seizure",
+          "Access financial services without meeting banking requirements",
+          "Preserve purchasing power against currency debasement"
+        ],
+        visualDescription: "Imagine carrying a bank in your pocket that works everywhere, never closes, can't be shut down by authorities, and gives you complete control over every transaction.",
+        keyTakeaways: [
+          "Financial sovereignty independent of institutions",
+          "Censorship-resistant money for global freedom",
+          "Accessible to anyone with internet connection",
+          "Protection against monetary inflation and debasement"
+        ]
       }
     };
     return deepDives[factTitle];
