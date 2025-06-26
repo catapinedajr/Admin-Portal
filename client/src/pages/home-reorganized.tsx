@@ -881,62 +881,141 @@ export default function Home() {
           <div className="space-y-6">
             {foundationSubTab === "today" && (
               <div className="space-y-6">
-                {/* Today's Learning Header */}
-                <div className="text-center space-y-2 mb-6">
-                  <h2 className="text-2xl font-bold text-white">Today's Bitcoin Learning</h2>
-                  <p className="text-zinc-400">Complete your daily facts, lesson, and quiz to build your <BitcoinTerm term="Bitcoin">Bitcoin</BitcoinTerm> conviction</p>
-                  <div className="flex items-center justify-center gap-4 mt-4">
-                    <Badge variant="outline" className="border-orange-600 text-orange-400">
-                      <Calendar className="w-3 h-3 mr-1" />
-                      Day {new Date().getDate()}
-                    </Badge>
-                    <Badge variant="outline" className="border-zinc-700 text-zinc-400">
-                      Streak: {user?.currentStreak || 0} days
-                    </Badge>
+                {/* Today's Learning Header with Clear Learning Objective */}
+                <div className="text-center space-y-4 mb-8">
+                  <div className="space-y-2">
+                    <h2 className="text-3xl font-bold text-white">Today's Bitcoin Journey</h2>
+                    <p className="text-lg text-zinc-300">Master the fundamentals of digital money in 10 minutes</p>
+                  </div>
+                  
+                  {/* Today's Learning Goal */}
+                  <div className="bg-gradient-to-r from-orange-600/20 to-yellow-600/20 border border-orange-600/30 rounded-lg p-4 max-w-2xl mx-auto">
+                    <h3 className="text-orange-300 font-semibold mb-2 flex items-center justify-center gap-2">
+                      <Gem className="w-4 h-4" />
+                      Today's Learning Goal
+                    </h3>
+                    <p className="text-zinc-300 text-sm">
+                      Understand how <BitcoinTerm term="Bitcoin">Bitcoin</BitcoinTerm> works as digital money and why it's different from traditional currencies
+                    </p>
+                  </div>
+                  
+                  <div className="flex items-center justify-center gap-6 mt-4">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-orange-400" />
+                      <span className="text-zinc-400">Day {new Date().getDate()}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className={`w-2 h-2 rounded-full ${user?.currentStreak && user.currentStreak > 0 ? 'bg-green-400' : 'bg-zinc-600'}`}></div>
+                      <span className="text-zinc-400">{user?.currentStreak || 0} day streak</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-blue-400" />
+                      <span className="text-zinc-400">~10 min</span>
+                    </div>
                   </div>
                 </div>
 
-                {/* Learning Progress Indicator */}
-                <ProgressIndicator
-                  steps={[
-                    { id: "facts", title: "Daily Facts", status: "completed", estimatedTime: "2 min" },
-                    { id: "lesson", title: "Today's Lesson", status: "current", estimatedTime: "5 min" },
-                    { id: "quiz", title: "Knowledge Quiz", status: "pending", estimatedTime: "3 min" }
-                  ]}
-                  currentStep="lesson"
-                  completedSteps={["facts"]}
-                  className="mb-6"
-                />
-
-                {/* Learning Analytics */}
-                <LearningAnalytics
-                  totalTimeSpent={120}
-                  conceptsMastered={15}
-                  currentStreak={user?.currentStreak || 0}
-                  longestStreak={user?.longestStreak || 0}
-                  averageQuizScore={85}
-                  className="mb-6"
-                />
-
-                {/* Recent Achievement */}
-                {user?.currentStreak && user.currentStreak >= 7 && (
-                  <AchievementBadge
-                    title="Dedicated Learner"
-                    description="You've maintained a 7-day learning streak!"
-                    icon={<CheckCircle className="w-5 h-5" />}
-                    unlocked={true}
-                    className="mb-6"
-                  />
-                )}
-
-                {/* Daily Facts Section */}
-                <Card className="bg-zinc-900 border-zinc-800">
+                {/* Interactive Learning Path */}
+                <Card className="bg-gradient-to-r from-zinc-900 to-zinc-800 border-zinc-700 mb-6">
                   <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-orange-600/20 rounded-lg">
-                        <Lightbulb className="w-5 h-5 text-orange-400" />
+                    <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
+                      <ArrowRight className="w-4 h-4 text-orange-400" />
+                      Your Learning Path
+                    </h3>
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="bg-green-600/20 border border-green-600/30 rounded-lg p-4 relative">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
+                            <CheckCircle className="w-4 h-4 text-white" />
+                          </div>
+                          <span className="font-medium text-green-300">Step 1: Core Facts</span>
+                        </div>
+                        <p className="text-zinc-300 text-sm">Learn fundamental Bitcoin concepts</p>
+                        <Badge variant="secondary" className="bg-green-600/20 text-green-400 text-xs mt-2">
+                          2-3 min • Essential
+                        </Badge>
                       </div>
-                      <h3 className="text-lg font-semibold text-white">Daily Facts</h3>
+                      
+                      <div className="bg-blue-600/20 border border-blue-600/30 rounded-lg p-4 relative">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                            2
+                          </div>
+                          <span className="font-medium text-blue-300">Step 2: Deep Dive</span>
+                        </div>
+                        <p className="text-zinc-300 text-sm">Understand how it all works</p>
+                        <Badge variant="secondary" className="bg-blue-600/20 text-blue-400 text-xs mt-2">
+                          4-5 min • Current
+                        </Badge>
+                      </div>
+                      
+                      <div className="bg-zinc-700/20 border border-zinc-600/30 rounded-lg p-4 relative">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-6 h-6 bg-zinc-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                            3
+                          </div>
+                          <span className="font-medium text-zinc-400">Step 3: Test Knowledge</span>
+                        </div>
+                        <p className="text-zinc-400 text-sm">Confirm your understanding</p>
+                        <Badge variant="secondary" className="bg-zinc-600/20 text-zinc-400 text-xs mt-2">
+                          2-3 min • Quiz
+                        </Badge>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Quick Stats & Motivation */}
+                <div className="grid md:grid-cols-2 gap-4 mb-6">
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-zinc-400 text-sm">Learning Streak</p>
+                          <p className="text-2xl font-bold text-orange-400">{user?.currentStreak || 0} days</p>
+                        </div>
+                        <div className="p-3 bg-orange-600/20 rounded-lg">
+                          <Zap className="w-6 h-6 text-orange-400" />
+                        </div>
+                      </div>
+                      {user?.currentStreak && user.currentStreak >= 7 && (
+                        <div className="mt-2 text-xs text-green-400">🔥 On fire! Keep it up!</div>
+                      )}
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-zinc-400 text-sm">Bitcoin Knowledge</p>
+                          <p className="text-2xl font-bold text-blue-400">Beginner</p>
+                        </div>
+                        <div className="p-3 bg-blue-600/20 rounded-lg">
+                          <GraduationCap className="w-6 h-6 text-blue-400" />
+                        </div>
+                      </div>
+                      <div className="mt-2 text-xs text-zinc-400">Complete 7 days to advance</div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Step 1: Essential Bitcoin Facts */}
+                <Card className="bg-zinc-900 border-zinc-800 border-l-4 border-l-green-600">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+                          <span className="text-white font-bold text-sm">1</span>
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-bold text-white">Essential Bitcoin Facts</h3>
+                          <p className="text-zinc-400 text-sm">Build your foundation with core concepts</p>
+                        </div>
+                      </div>
+                      <Badge variant="outline" className="border-green-600 text-green-400">
+                        2-3 min read
+                      </Badge>
                     </div>
                     <div className="grid gap-4">
                       {dailyFacts.map((fact, index) => (
@@ -1029,17 +1108,22 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                {/* Daily Lesson Section */}
-                <Card className="bg-zinc-900 border-zinc-800">
+                {/* Step 2: Deep Dive Lesson */}
+                <Card className="bg-zinc-900 border-zinc-800 border-l-4 border-l-blue-600">
                   <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-blue-600/20 rounded-lg">
-                        <BookOpen className="w-5 h-5 text-blue-400" />
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                          <span className="text-white font-bold text-sm">2</span>
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-bold text-white">Deep Dive: Understanding Bitcoin</h3>
+                          <p className="text-zinc-400 text-sm">Connect the concepts and see how it all works</p>
+                        </div>
                       </div>
-                      <h3 className="text-lg font-semibold text-white">Today's Lesson</h3>
                       {lesson && (
-                        <Badge variant="outline" className="border-blue-600 text-blue-400 text-xs">
-                          {lesson.estimatedReadTime} read
+                        <Badge variant="outline" className="border-blue-600 text-blue-400">
+                          {lesson.estimatedReadTime} • Step 2
                         </Badge>
                       )}
                     </div>
@@ -1077,19 +1161,51 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                {/* Daily Quiz Section */}
-                <Card className="bg-zinc-900 border-zinc-800">
+                {/* Step 3: Knowledge Test */}
+                <Card className="bg-zinc-900 border-zinc-800 border-l-4 border-l-purple-600">
                   <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-green-600/20 rounded-lg">
-                        <HelpCircle className="w-5 h-5 text-green-400" />
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                          <span className="text-white font-bold text-sm">3</span>
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-bold text-white">Test Your Knowledge</h3>
+                          <p className="text-zinc-400 text-sm">Confirm your understanding with interactive questions</p>
+                        </div>
                       </div>
-                      <h3 className="text-lg font-semibold text-white">Daily Quiz</h3>
-                      <Badge variant="outline" className="border-green-600 text-green-400 text-xs">
-                        Test your knowledge
+                      <Badge variant="outline" className="border-purple-600 text-purple-400">
+                        2-3 min • Final Step
                       </Badge>
                     </div>
+
+                    {/* Learning objective for quiz */}
+                    <div className="bg-purple-600/10 border border-purple-600/20 rounded-lg p-4 mb-6">
+                      <h4 className="text-purple-300 font-medium mb-2 flex items-center gap-2">
+                        <HelpCircle className="w-4 h-4" />
+                        What You'll Prove
+                      </h4>
+                      <ul className="text-zinc-300 text-sm space-y-1">
+                        <li>• You understand what Bitcoin is and how it's different</li>
+                        <li>• You can explain key Bitcoin concepts in your own words</li>
+                        <li>• You're ready to explore more advanced topics</li>
+                      </ul>
+                    </div>
+
                     <DailyQuiz />
+
+                    {/* Completion celebration */}
+                    <div className="mt-6 pt-4 border-t border-zinc-700">
+                      <div className="text-center space-y-3">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600/20 to-blue-600/20 border border-green-600/30 rounded-full">
+                          <CheckCircle className="w-4 h-4 text-green-400" />
+                          <span className="text-green-300 font-medium text-sm">Journey Complete for Today!</span>
+                        </div>
+                        <p className="text-zinc-400 text-sm">
+                          Come back tomorrow to continue building your Bitcoin knowledge
+                        </p>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
