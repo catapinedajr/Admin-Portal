@@ -534,6 +534,42 @@ export default function Home() {
         </div>
       )}
 
+      {activeSection === "practice" && (
+        <div className="bg-zinc-800/30 border-b border-zinc-800">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="flex items-center justify-center gap-1 py-2 flex-wrap">
+              <Button
+                variant={practiceSubTab === "mining" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setPracticeSubTab("mining")}
+                className="text-xs px-2 py-1"
+              >
+                <Coins className="w-3 h-3 mr-1" />
+                Mining
+              </Button>
+              <Button
+                variant={practiceSubTab === "dca" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setPracticeSubTab("dca")}
+                className="text-xs px-2 py-1"
+              >
+                <TrendingUp className="w-3 h-3 mr-1" />
+                DCA
+              </Button>
+              <Button
+                variant={practiceSubTab === "hodl" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setPracticeSubTab("hodl")}
+                className="text-xs px-2 py-1"
+              >
+                <Trophy className="w-3 h-3 mr-1" />
+                HODL vs Trade
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {activeSection === "more" && (
         <div className="bg-zinc-800/30 border-b border-zinc-800">
           <div className="max-w-6xl mx-auto px-4">
@@ -666,6 +702,36 @@ export default function Home() {
               </div>
             )}
 
+            {learnSubTab === "lesson" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-bold text-white">Today's Lesson</h2>
+                  <p className="text-zinc-400">Structured learning for deeper understanding</p>
+                </div>
+                {lesson ? (
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-xl font-bold text-white">{lesson.title}</h3>
+                          <Badge variant="outline" className="border-zinc-700 text-zinc-400">
+                            {lesson.estimatedReadTime} min read
+                          </Badge>
+                        </div>
+                        <div className="prose prose-invert max-w-none">
+                          <div className="text-zinc-300 leading-relaxed whitespace-pre-line">
+                            {lesson.content}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <div className="text-center text-zinc-400">Loading lesson...</div>
+                )}
+              </div>
+            )}
+
             {learnSubTab === "quiz" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
@@ -673,6 +739,482 @@ export default function Home() {
                   <p className="text-zinc-400">Test your Bitcoin knowledge</p>
                 </div>
                 <DailyQuiz />
+              </div>
+            )}
+
+            {learnSubTab === "explore" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-bold text-white">Explore Advanced Topics</h2>
+                  <p className="text-zinc-400">Deep dive into Bitcoin's technical foundations</p>
+                </div>
+                
+                <div className="grid gap-6 md:grid-cols-2">
+                  <Card className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0 w-10 h-10 bg-blue-600/10 rounded-lg flex items-center justify-center">
+                          <Network className="w-5 h-5 text-blue-500" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-white mb-2">Blockchain Technology</h3>
+                          <p className="text-zinc-400 text-sm mb-3">Understand how Bitcoin's distributed ledger works under the hood</p>
+                          <ul className="space-y-1 text-xs text-zinc-500">
+                            <li>• Hash functions and cryptographic security</li>
+                            <li>• Block structure and chain linking</li>
+                            <li>• Consensus mechanisms</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0 w-10 h-10 bg-green-600/10 rounded-lg flex items-center justify-center">
+                          <Zap className="w-5 h-5 text-green-500" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-white mb-2">Proof of Work</h3>
+                          <p className="text-zinc-400 text-sm mb-3">Learn how Bitcoin achieves security through computational work</p>
+                          <ul className="space-y-1 text-xs text-zinc-500">
+                            <li>• Mining process and difficulty adjustment</li>
+                            <li>• Energy usage and security trade-offs</li>
+                            <li>• Attack resistance and game theory</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0 w-10 h-10 bg-purple-600/10 rounded-lg flex items-center justify-center">
+                          <KeyRound className="w-5 h-5 text-purple-500" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-white mb-2">Digital Signatures</h3>
+                          <p className="text-zinc-400 text-sm mb-3">Understand how Bitcoin proves ownership without revealing secrets</p>
+                          <ul className="space-y-1 text-xs text-zinc-500">
+                            <li>• Public-private key cryptography</li>
+                            <li>• ECDSA signature scheme</li>
+                            <li>• Address generation and verification</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0 w-10 h-10 bg-yellow-600/10 rounded-lg flex items-center justify-center">
+                          <Coins className="w-5 h-5 text-yellow-500" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-white mb-2">Fixed Supply Economics</h3>
+                          <p className="text-zinc-400 text-sm mb-3">Explore Bitcoin's deflationary monetary policy and economic implications</p>
+                          <ul className="space-y-1 text-xs text-zinc-500">
+                            <li>• 21 million coin limit and halvings</li>
+                            <li>• Stock-to-flow ratio</li>
+                            <li>• Comparison with fiat inflation</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            )}
+
+            {learnSubTab === "disruption" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-bold text-white">Why Bitcoin Matters</h2>
+                  <p className="text-zinc-400">Understanding Bitcoin's role in financial transformation</p>
+                </div>
+
+                <div className="grid gap-6">
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0 w-10 h-10 bg-red-600/10 rounded-lg flex items-center justify-center">
+                          <AlertTriangle className="w-5 h-5 text-red-500" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-white mb-3">Problems with Traditional Finance</h3>
+                          <div className="grid md:grid-cols-2 gap-4 text-sm">
+                            <div className="space-y-2">
+                              <p className="text-zinc-300 font-medium">Inflation & Debasement</p>
+                              <p className="text-zinc-400">Central banks can print unlimited money, reducing purchasing power over time</p>
+                            </div>
+                            <div className="space-y-2">
+                              <p className="text-zinc-300 font-medium">Intermediary Risk</p>
+                              <p className="text-zinc-400">Banks can freeze accounts, reverse transactions, or fail entirely</p>
+                            </div>
+                            <div className="space-y-2">
+                              <p className="text-zinc-300 font-medium">Geographic Restrictions</p>
+                              <p className="text-zinc-400">Cross-border payments are slow, expensive, and often impossible</p>
+                            </div>
+                            <div className="space-y-2">
+                              <p className="text-zinc-300 font-medium">Privacy Erosion</p>
+                              <p className="text-zinc-400">Every transaction is monitored and can be used for surveillance</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0 w-10 h-10 bg-green-600/10 rounded-lg flex items-center justify-center">
+                          <CheckCircle className="w-5 h-5 text-green-500" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-white mb-3">Bitcoin's Solutions</h3>
+                          <div className="grid md:grid-cols-2 gap-4 text-sm">
+                            <div className="space-y-2">
+                              <p className="text-zinc-300 font-medium">Fixed Supply</p>
+                              <p className="text-zinc-400">Only 21 million Bitcoin will ever exist, protecting against inflation</p>
+                            </div>
+                            <div className="space-y-2">
+                              <p className="text-zinc-300 font-medium">Self-Custody</p>
+                              <p className="text-zinc-400">Be your own bank - no intermediaries can control your money</p>
+                            </div>
+                            <div className="space-y-2">
+                              <p className="text-zinc-300 font-medium">Global Access</p>
+                              <p className="text-zinc-400">Send value anywhere in the world, 24/7, with minimal fees</p>
+                            </div>
+                            <div className="space-y-2">
+                              <p className="text-zinc-300 font-medium">Pseudonymous</p>
+                              <p className="text-zinc-400">Transactions are public but identities remain private by default</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            )}
+
+            {learnSubTab === "terms" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-bold text-white">Bitcoin Glossary</h2>
+                  <p className="text-zinc-400">Essential terms for your Bitcoin journey</p>
+                </div>
+
+                <div className="grid gap-4">
+                  {Object.entries({
+                    "Core Concepts": ["Bitcoin", "blockchain", "cryptocurrency", "decentralized"],
+                    "Wallets & Security": ["wallet", "private key", "public key", "seed phrase", "cold storage"],
+                    "Network & Mining": ["mining", "miners", "node", "hash rate", "proof of work"],
+                    "Transactions": ["transaction", "confirmation", "fee", "UTXO"],
+                    "Economics": ["satoshi", "halving", "21 million", "store of value", "HODL"]
+                  }).map(([category, terms]) => (
+                    <Card key={category} className="bg-zinc-900 border-zinc-800">
+                      <CardContent className="p-6">
+                        <h3 className="font-semibold text-orange-400 mb-4">{category}</h3>
+                        <div className="grid gap-3 md:grid-cols-2">
+                          {terms.map(term => (
+                            <div key={term} className="space-y-1">
+                              <p className="font-medium text-white">{term}</p>
+                              <p className="text-sm text-zinc-400">Essential Bitcoin terminology</p>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Practice Section - Interactive Simulators */}
+        {activeSection === "practice" && (
+          <div className="space-y-6">
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl font-bold text-white">Practice & Simulations</h2>
+              <p className="text-zinc-400">Interactive tools to understand Bitcoin economics</p>
+            </div>
+
+            {practiceSubTab === "mining" && (
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold text-white mb-4">Bitcoin Mining Calculator</h3>
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">Hash Rate (TH/s)</label>
+                        <input type="number" defaultValue="100" className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">Power Consumption (W)</label>
+                        <input type="number" defaultValue="3250" className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">Electricity Cost ($/kWh)</label>
+                        <input type="number" step="0.01" defaultValue="0.12" className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white" />
+                      </div>
+                    </div>
+                    <div className="bg-zinc-800/50 rounded-lg p-4 space-y-3">
+                      <h4 className="font-medium text-orange-400">Mining Results</h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-zinc-400">Daily Revenue:</span>
+                          <span className="text-green-400">$24.50</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-zinc-400">Daily Electricity:</span>
+                          <span className="text-red-400">$9.36</span>
+                        </div>
+                        <div className="flex justify-between font-medium border-t border-zinc-700 pt-2">
+                          <span className="text-zinc-300">Daily Profit:</span>
+                          <span className="text-orange-400">$15.14</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {practiceSubTab === "dca" && (
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold text-white mb-4">Dollar-Cost Averaging Calculator</h3>
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">Weekly Investment ($)</label>
+                        <input type="number" defaultValue="100" className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">Investment Period (months)</label>
+                        <input type="number" defaultValue="12" className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">Starting Bitcoin Price ($)</label>
+                        <input type="number" defaultValue="50000" className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white" />
+                      </div>
+                    </div>
+                    <div className="bg-zinc-800/50 rounded-lg p-4 space-y-3">
+                      <h4 className="font-medium text-orange-400">DCA Results</h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-zinc-400">Total Invested:</span>
+                          <span className="text-white">$5,200</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-zinc-400">Bitcoin Accumulated:</span>
+                          <span className="text-orange-400">0.1248 BTC</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-zinc-400">Average Price:</span>
+                          <span className="text-white">$41,667</span>
+                        </div>
+                        <div className="flex justify-between font-medium border-t border-zinc-700 pt-2">
+                          <span className="text-zinc-300">Current Value:</span>
+                          <span className="text-green-400">$6,240</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {practiceSubTab === "hodl" && (
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold text-white mb-4">HODLing vs Trading Strategy</h3>
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <div className="bg-zinc-800/50 rounded-lg p-4">
+                      <h4 className="font-medium text-orange-400 mb-3">HODL Strategy</h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-zinc-400">Initial Investment:</span>
+                          <span className="text-white">$10,000</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-zinc-400">Buy & Hold 1 Year:</span>
+                          <span className="text-green-400">$18,500</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-zinc-400">Tax (Long-term):</span>
+                          <span className="text-red-400">$1,275</span>
+                        </div>
+                        <div className="flex justify-between font-medium border-t border-zinc-700 pt-2">
+                          <span className="text-zinc-300">Net Profit:</span>
+                          <span className="text-green-400">$7,225</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-zinc-800/50 rounded-lg p-4">
+                      <h4 className="font-medium text-blue-400 mb-3">Trading Strategy</h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-zinc-400">Initial Investment:</span>
+                          <span className="text-white">$10,000</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-zinc-400">Trading Gains:</span>
+                          <span className="text-green-400">$9,200</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-zinc-400">Trading Fees:</span>
+                          <span className="text-red-400">$460</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-zinc-400">Tax (Short-term):</span>
+                          <span className="text-red-400">$2,760</span>
+                        </div>
+                        <div className="flex justify-between font-medium border-t border-zinc-700 pt-2">
+                          <span className="text-zinc-300">Net Profit:</span>
+                          <span className="text-yellow-400">$5,980</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4 p-3 bg-orange-500/10 border border-orange-500/20 rounded-lg">
+                    <p className="text-orange-400 text-sm">
+                      <strong>Result:</strong> HODLing outperformed trading by $1,245 in this scenario, with less stress and time commitment.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        )}
+
+        {/* More Section Content */}
+        {activeSection === "more" && (
+          <div className="space-y-6">
+            {moreSubTab === "stories" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-bold text-white">BTC In Action</h2>
+                  <p className="text-zinc-400">Real stories from Bitcoin users worldwide</p>
+                </div>
+                
+                <div className="grid gap-6">
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0 w-10 h-10 bg-blue-600/10 rounded-lg flex items-center justify-center">
+                          <UserIcon className="w-5 h-5 text-blue-500" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-white mb-2">Sarah - Freelance Designer</h3>
+                          <p className="text-zinc-400 text-sm mb-3">
+                            "Bitcoin lets me receive payments from clients worldwide without expensive wire fees. 
+                            A client in Japan can pay me instantly, and I receive the full amount."
+                          </p>
+                          <Badge variant="outline" className="border-blue-500/30 text-blue-400 text-xs">
+                            Cross-border Payments
+                          </Badge>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0 w-10 h-10 bg-green-600/10 rounded-lg flex items-center justify-center">
+                          <Building2 className="w-5 h-5 text-green-500" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-white mb-2">MicroStrategy - Public Company</h3>
+                          <p className="text-zinc-400 text-sm mb-3">
+                            "We've added over 190,000 Bitcoin to our treasury as a hedge against inflation. 
+                            Bitcoin preserves our shareholder value better than cash."
+                          </p>
+                          <Badge variant="outline" className="border-green-500/30 text-green-400 text-xs">
+                            Corporate Treasury
+                          </Badge>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0 w-10 h-10 bg-orange-600/10 rounded-lg flex items-center justify-center">
+                          <Flag className="w-5 h-5 text-orange-500" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-white mb-2">El Salvador - Nation</h3>
+                          <p className="text-zinc-400 text-sm mb-3">
+                            "We made Bitcoin legal tender to provide financial inclusion for our unbanked population 
+                            and reduce dependence on the US dollar."
+                          </p>
+                          <Badge variant="outline" className="border-orange-500/30 text-orange-400 text-xs">
+                            Legal Tender
+                          </Badge>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            )}
+
+            {moreSubTab === "conviction" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-bold text-white">Conviction Center</h2>
+                  <p className="text-zinc-400">Wisdom from Bitcoin thought leaders</p>
+                </div>
+
+                <div className="grid gap-6">
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0 w-10 h-10 bg-orange-600/10 rounded-lg flex items-center justify-center">
+                          <Quote className="w-5 h-5 text-orange-500" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-white mb-2">Daily Inspiration</h3>
+                          <blockquote className="text-zinc-300 italic mb-3">
+                            "Bitcoin is the first time in human history we have immutable, digital sound money. 
+                            This is a once-in-a-species event."
+                          </blockquote>
+                          <p className="text-zinc-400 text-sm">— Michael Saylor, MicroStrategy CEO</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0 w-10 h-10 bg-purple-600/10 rounded-lg flex items-center justify-center">
+                          <FileText className="w-5 h-5 text-purple-500" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-white mb-2">Bitcoin Whitepaper</h3>
+                          <p className="text-zinc-400 text-sm mb-3">
+                            Read Satoshi Nakamoto's original paper that started the Bitcoin revolution. 
+                            "A Peer-to-Peer Electronic Cash System" - 9 pages that changed everything.
+                          </p>
+                          <Button size="sm" className="bg-purple-600 hover:bg-purple-700">
+                            <FileText className="w-4 h-4 mr-1" />
+                            Read Whitepaper
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
             )}
           </div>
