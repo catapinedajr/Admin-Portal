@@ -881,84 +881,130 @@ export default function Home() {
           <div className="space-y-6">
             {foundationSubTab === "today" && (
               <div className="space-y-6">
-                {/* Today's Learning Header with Clear Learning Objective */}
-                <div className="text-center space-y-4 mb-8">
-                  <div className="space-y-2">
-                    <h2 className="text-3xl font-bold text-white">Today's Bitcoin Journey</h2>
-                    <p className="text-lg text-zinc-300">Master the fundamentals of digital money in 10 minutes</p>
-                  </div>
-                  
-                  {/* Today's Learning Goal */}
-                  <div className="bg-gradient-to-r from-orange-600/20 to-yellow-600/20 border border-orange-600/30 rounded-lg p-4 max-w-2xl mx-auto">
-                    <h3 className="text-orange-300 font-semibold mb-2 flex items-center justify-center gap-2">
-                      <Gem className="w-4 h-4" />
-                      Today's Learning Goal
-                    </h3>
-                    <p className="text-zinc-300 text-sm">
-                      Understand how <BitcoinTerm term="Bitcoin">Bitcoin</BitcoinTerm> works as digital money and why it's different from traditional currencies
-                    </p>
-                  </div>
-                  
-                  <div className="flex items-center justify-center gap-6 mt-4">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-orange-400" />
-                      <span className="text-zinc-400">Day {new Date().getDate()}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${user?.currentStreak && user.currentStreak > 0 ? 'bg-green-400' : 'bg-zinc-600'}`}></div>
-                      <span className="text-zinc-400">{user?.currentStreak || 0} day streak</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-blue-400" />
-                      <span className="text-zinc-400">~10 min</span>
-                    </div>
-                  </div>
-                </div>
+                {/* Apple Activity-Inspired Condensed Header */}
+                <Card className="bg-zinc-900 border-zinc-800 mb-6">
+                  <CardContent className="p-5">
+                    <div className="flex items-center justify-between">
+                      {/* Left: Activity Rings */}
+                      <div className="flex items-center gap-6">
+                        <div className="relative">
+                          <svg className="w-20 h-20 transform -rotate-90">
+                            {/* Background circles */}
+                            <circle cx="40" cy="40" r="32" stroke="rgb(39, 39, 42)" strokeWidth="3" fill="none" />
+                            <circle cx="40" cy="40" r="25" stroke="rgb(39, 39, 42)" strokeWidth="3" fill="none" />
+                            <circle cx="40" cy="40" r="18" stroke="rgb(39, 39, 42)" strokeWidth="3" fill="none" />
+                            
+                            {/* Progress circles - Facts (Green, Outer) */}
+                            <circle 
+                              cx="40" cy="40" r="32" 
+                              stroke="rgb(34, 197, 94)" 
+                              strokeWidth="3" 
+                              fill="none"
+                              strokeLinecap="round"
+                              strokeDasharray={`${201 * 0.85} ${201 * 0.15}`}
+                              className="transition-all duration-1000"
+                            />
+                            {/* Lesson (Blue, Middle) */}
+                            <circle 
+                              cx="40" cy="40" r="25" 
+                              stroke="rgb(59, 130, 246)" 
+                              strokeWidth="3" 
+                              fill="none"
+                              strokeLinecap="round"
+                              strokeDasharray={`${157 * 0.75} ${157 * 0.25}`}
+                              className="transition-all duration-1000"
+                            />
+                            {/* Quiz (Purple, Inner) */}
+                            <circle 
+                              cx="40" cy="40" r="18" 
+                              stroke="rgb(168, 85, 247)" 
+                              strokeWidth="3" 
+                              fill="none"
+                              strokeLinecap="round"
+                              strokeDasharray={`${113 * 1.0} ${113 * 0.0}`}
+                              className="transition-all duration-1000"
+                            />
+                          </svg>
+                          
+                          {/* Center streak display */}
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="text-center">
+                              <div className="text-xl font-bold text-white">{user?.currentStreak || 0}</div>
+                              <div className="text-xs text-zinc-400 -mt-1">streak</div>
+                            </div>
+                          </div>
+                        </div>
 
-                {/* Interactive Learning Path */}
-                <Card className="bg-gradient-to-r from-zinc-900 to-zinc-800 border-zinc-700 mb-6">
-                  <CardContent className="p-6">
-                    <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-                      <ArrowRight className="w-4 h-4 text-orange-400" />
-                      Your Learning Path
-                    </h3>
-                    <div className="grid md:grid-cols-3 gap-4">
-                      <div className="bg-green-600/20 border border-green-600/30 rounded-lg p-4 relative">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
-                            <CheckCircle className="w-4 h-4 text-white" />
+                        {/* Ring Labels */}
+                        <div className="space-y-1.5">
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                            <span className="text-sm text-zinc-300 min-w-[50px]">Facts</span>
+                            <div className="flex items-center gap-1">
+                              <CheckCircle className="w-3 h-3 text-green-400" />
+                              <span className="text-xs text-green-400">85%</span>
+                            </div>
                           </div>
-                          <span className="font-medium text-green-300">Step 1: Core Facts</span>
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                            <span className="text-sm text-zinc-300 min-w-[50px]">Lesson</span>
+                            <div className="flex items-center gap-1">
+                              <PlayCircle className="w-3 h-3 text-blue-400" />
+                              <span className="text-xs text-blue-400">75%</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+                            <span className="text-sm text-zinc-300 min-w-[50px]">Quiz</span>
+                            <div className="flex items-center gap-1">
+                              <Target className="w-3 h-3 text-purple-400" />
+                              <span className="text-xs text-purple-400">100%</span>
+                            </div>
+                          </div>
                         </div>
-                        <p className="text-zinc-300 text-sm">Learn fundamental Bitcoin concepts</p>
-                        <Badge variant="secondary" className="bg-green-600/20 text-green-400 text-xs mt-2">
-                          2-3 min • Essential
-                        </Badge>
+                      </div>
+
+                      {/* Right: Today's Info */}
+                      <div className="text-right">
+                        <h2 className="text-xl font-bold text-white mb-1">Today's Journey</h2>
+                        <p className="text-sm text-zinc-400 mb-3">Build Bitcoin knowledge step by step</p>
+                        
+                        <div className="space-y-1 text-xs">
+                          <div className="flex items-center justify-end gap-2">
+                            <Calendar className="w-3 h-3 text-orange-400" />
+                            <span className="text-zinc-400">Day {((new Date().getTime() - new Date('2024-01-01').getTime()) / (1000 * 60 * 60 * 24)) % 190 + 1 | 0}</span>
+                          </div>
+                          <div className="flex items-center justify-end gap-2">
+                            <Clock className="w-3 h-3 text-blue-400" />
+                            <span className="text-zinc-400">~10 min total</span>
+                          </div>
+                          <div className="flex items-center justify-end gap-2">
+                            <GraduationCap className="w-3 h-3 text-green-400" />
+                            <span className="text-zinc-400">Beginner level</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Progress Summary & Learning Goal */}
+                    <div className="mt-4 pt-3 border-t border-zinc-800 space-y-3">
+                      <div className="bg-gradient-to-r from-orange-600/20 to-yellow-600/20 border border-orange-600/30 rounded-lg p-3">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Gem className="w-3 h-3 text-orange-400" />
+                          <span className="text-orange-300 font-medium text-sm">Today's Goal</span>
+                        </div>
+                        <p className="text-zinc-300 text-xs leading-relaxed">
+                          Understand how <BitcoinTerm term="Bitcoin">Bitcoin</BitcoinTerm> works as digital money and why it's different from traditional currencies
+                        </p>
                       </div>
                       
-                      <div className="bg-blue-600/20 border border-blue-600/30 rounded-lg p-4 relative">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                            2
-                          </div>
-                          <span className="font-medium text-blue-300">Step 2: Deep Dive</span>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <ArrowRight className="w-4 h-4 text-orange-400" />
+                          <span className="text-sm text-zinc-300">Continue with lesson and quiz</span>
                         </div>
-                        <p className="text-zinc-300 text-sm">Understand how it all works</p>
-                        <Badge variant="secondary" className="bg-blue-600/20 text-blue-400 text-xs mt-2">
-                          4-5 min • Current
-                        </Badge>
-                      </div>
-                      
-                      <div className="bg-zinc-700/20 border border-zinc-600/30 rounded-lg p-4 relative">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-6 h-6 bg-zinc-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                            3
-                          </div>
-                          <span className="font-medium text-zinc-400">Step 3: Test Knowledge</span>
-                        </div>
-                        <p className="text-zinc-400 text-sm">Confirm your understanding</p>
-                        <Badge variant="secondary" className="bg-zinc-600/20 text-zinc-400 text-xs mt-2">
-                          2-3 min • Quiz
+                        <Badge variant="outline" className="border-orange-600 text-orange-400 text-xs">
+                          87% complete
                         </Badge>
                       </div>
                     </div>

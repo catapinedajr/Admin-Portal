@@ -67,25 +67,34 @@ export default function DailyQuiz() {
   });
 
   // Submit answer mutation
-  const submitAnswerMutation = {
-    mutate: async (answer: { userId: number; questionId: number; selectedAnswer: string; date: string }) => {
-      try {
-        const response = await fetch('/api/quiz/submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(answer)
-        });
-        const data = await response.json();
-        setSubmittedAnswers(prev => ({
-          ...prev,
-          [answer.questionId]: data
-        }));
-      } catch (error) {
-        console.error('Failed to submit answer:', error);
+  const submitAnswerMutation = useMutation({
+    mutationFn: async (answer: { userId: number; questionId: number; selectedAnswer: string; date: string }) => {
+      const response = await fetch('/api/quiz/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(answer),
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+      
+      return await response.json() as QuizAnswer;
     },
-    isPending: false
-  };
+    onSuccess: (data, variables) => {
+      setSubmittedAnswers(prev => ({
+        ...prev,
+        [variables.questionId]: data
+      }));
+      // Invalidate queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ['/api/quiz/answers', userId, today] });
+      queryClient.invalidateQueries({ queryKey: ['/api/quiz/score', userId, today] });
+    },
+    onError: (error) => {
+      console.error('Failed to submit answer:', error);
+    }
+  });
 
   const currentQuestion = questions[currentQuestionIndex];
   const isAnswered = userAnswers.some(answer => answer.questionId === currentQuestion?.id);
@@ -108,6 +117,8 @@ export default function DailyQuiz() {
       date: today
     });
   };
+
+
 
   const nextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
@@ -268,26 +279,33 @@ export default function DailyQuiz() {
                   Previous
                 </Button>
 
-                {!isAnswered ? (
-                  <Button
-                    onClick={handleSubmitAnswer}
-                    disabled={!selectedAnswers[currentQuestion.id] || submitAnswerMutation.isPending}
-                    className="bg-orange-600 hover:bg-orange-700 text-white"
-                  >
-                    {submitAnswerMutation.isPending ? "Submitting..." : "Submit Answer"}
-                  </Button>
-                ) : currentQuestionIndex < questions.length - 1 ? (
-                  <Button
-                    onClick={nextQuestion}
-                    className="bg-orange-600 hover:bg-orange-700 text-white"
-                  >
-                    Next Question
-                  </Button>
-                ) : (
-                  <Badge variant="default" className="bg-green-900 text-green-100 px-4 py-2">
-                    Quiz Complete!
-                  </Badge>
-                )}
+                <div className="flex gap-3">
+                  {!isAnswered ? (
+                    <Button
+                      onClick={handleSubmitAnswer}
+                      disabled={!selectedAnswers[currentQuestion.id] || submitAnswerMutation.isPending}
+                      className="bg-orange-600 hover:bg-orange-700 text-white px-6"
+                    >
+                      {submitAnswerMutation.isPending ? "Submitting..." : "Submit Answer"}
+                    </Button>
+                  ) : (
+                    <>
+                      {currentQuestionIndex < questions.length - 1 ? (
+                        <Button
+                          onClick={nextQuestion}
+                          className="bg-green-600 hover:bg-green-700 text-white px-6"
+                        >
+                          Next Question →
+                        </Button>
+                      ) : (
+                        <div className="flex items-center gap-2 px-4 py-2 bg-green-900/30 border border-green-700 rounded-lg">
+                          <CheckCircle className="w-4 h-4 text-green-400" />
+                          <span className="text-green-300 font-medium">Quiz Complete!</span>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
             </>
           )}
