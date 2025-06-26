@@ -928,10 +928,11 @@ export default function Home() {
                       </div>
                     </div>
 
-                    {/* Blockchain Progress Tracker */}
-                    <div className="flex flex-col items-center gap-6 mb-6">
-                      {/* Horizontal Blockchain Visualization */}
-                      <div className="flex items-center gap-3">
+                    {/* Sticky Blockchain Progress Tracker */}
+                    <div className="sticky top-0 z-50 bg-zinc-950/95 backdrop-blur-sm border-b border-zinc-800 py-3 -mx-6 px-6 mb-6">
+                      <div className="flex flex-col items-center gap-3">
+                        <h3 className="text-lg font-semibold text-white">Your Bitcoin Journey Today</h3>
+                        <div className="flex items-center gap-3">
                         {/* Block 1: Essential Facts */}
                         <div className="relative">
                           <div className={`w-20 h-16 border-2 rounded-lg bg-zinc-900 overflow-hidden shadow-lg transition-all duration-500 ${
@@ -1041,14 +1042,50 @@ export default function Home() {
                         </div>
                       </div>
 
-                      {/* Simplified Stats */}
-                      <div className="text-center">
-                        <div className="text-lg font-bold text-orange-400">{user?.currentStreak || 0} day streak</div>
+                        {/* Simplified Stats */}
+                        <div className="text-center">
+                          <div className="text-lg font-bold text-orange-400">{user?.currentStreak || 0} day streak</div>
+                        </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
 
-                    {/* Quick Stats & Continue Action */}
-                    <div className="border-t border-zinc-800 pt-4">
+                {/* Quick Stats & Continue Action */}
+                <div className="border-t border-zinc-800 pt-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4 text-xs text-zinc-400">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3 text-orange-400" />
+                        <span>Day {((new Date().getTime() - new Date('2024-01-01').getTime()) / (1000 * 60 * 60 * 24)) % 190 + 1 | 0}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Clock className="w-3 h-3 text-blue-400" />
+                        <span>~10 min total</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <GraduationCap className="w-3 h-3 text-green-400" />
+                        <span>Beginner</span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
+                        <ArrowRight className="w-4 h-4 text-orange-400" />
+                        <span className="text-sm text-zinc-300">Continue learning</span>
+                      </div>
+                      <Badge variant="outline" className="border-orange-600 text-orange-400 text-xs">
+                        87% complete
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+          {/* Quick Stats & Motivation */}
+          <div className="grid md:grid-cols-2 gap-4 mb-6">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4 text-xs text-zinc-400">
                           <div className="flex items-center gap-1">
@@ -1078,9 +1115,10 @@ export default function Home() {
                     </div>
                   </CardContent>
                 </Card>
+              </div>
 
-                {/* Quick Stats & Motivation */}
-                <div className="grid md:grid-cols-2 gap-4 mb-6">
+              {/* Quick Stats & Motivation */}
+              <div className="grid md:grid-cols-2 gap-4 mb-6">
                   <Card className="bg-zinc-900 border-zinc-800">
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between">
