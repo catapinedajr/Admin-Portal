@@ -133,8 +133,7 @@ export const userQuizAnswers = pgTable("user_quiz_answers", {
 
 export const deepDiveTopics = pgTable("deep_dive_topics", {
   id: serial("id").primaryKey(),
-  weekIndex: integer("week_index").notNull(),
-  dayOfWeek: integer("day_of_week").notNull(), // 1-7 (Monday to Sunday)
+  dayIndex: integer("day_index").notNull(),
   title: text("title").notNull(),
   subtitle: text("subtitle").notNull(),
   estimatedReadTime: text("estimated_read_time").notNull(),
@@ -143,10 +142,6 @@ export const deepDiveTopics = pgTable("deep_dive_topics", {
   content: text("content").notNull(),
   keyTakeaways: text("key_takeaways").array().notNull(),
   furtherReading: text("further_reading").array().notNull(),
-  prerequisiteKnowledge: text("prerequisite_knowledge").array().notNull(),
-  learningObjectives: text("learning_objectives").array().notNull(),
-  practicalExercises: text("practical_exercises").array().notNull(),
-  isPremium: boolean("is_premium").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
