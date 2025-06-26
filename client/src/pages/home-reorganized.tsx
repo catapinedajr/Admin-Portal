@@ -1238,7 +1238,7 @@ export default function Home() {
             )}
 
             {/* Legacy Facts Section (kept for transition) */}
-            {foundationSubTab === "basics" && (
+            {learnSubTab === "today" && false && (
               <div className="grid gap-6">
                 {dailyFacts.map((fact, index) => (
                   <Card key={index} className="bg-zinc-900 border-zinc-800">
@@ -1343,7 +1343,7 @@ export default function Home() {
               </div>
             )}
 
-            {foundationSubTab === "lesson" && lesson && (
+            {false && lesson && (
               <Card className="bg-zinc-900 border-zinc-800">
                 <CardContent className="p-6">
                   <div className="space-y-6">
@@ -1616,7 +1616,7 @@ export default function Home() {
             )}
 
             {/* Selected Topic Detail View */}
-            {foundationSubTab === "explore" && selectedTopic && (
+            {learnSubTab === "deepdive" && selectedTopic && (
               <div className="space-y-6">
                 <div className="flex items-center gap-4 mb-6">
                   <Button 
@@ -2058,7 +2058,7 @@ Banks hold your money and can restrict access. Bitcoin enables true ownership wh
               </div>
             )}
 
-            {foundationSubTab === "disruption" && (
+            {false && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h2 className="text-2xl font-bold text-white">Financial Disruption</h2>
@@ -2227,7 +2227,7 @@ Banks hold your money and can restrict access. Bitcoin enables true ownership wh
               </div>
             )}
 
-            {foundationSubTab === "terms" && (
+            {false && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h2 className="text-2xl font-bold text-white">Bitcoin Glossary</h2>
@@ -3452,9 +3452,9 @@ Banks hold your money and can restrict access. Bitcoin enables true ownership wh
         )}
 
         {/* Inspiration Section */}
-        {activeSection === "inspiration" && (
+        {activeSection === "more" && (
           <div className="space-y-6">
-            {inspirationSubTab === "stories" && (
+            {moreSubTab === "stories" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h2 className="text-2xl font-bold text-white">Bitcoin Stories</h2>
@@ -3527,7 +3527,7 @@ Banks hold your money and can restrict access. Bitcoin enables true ownership wh
               </div>
             )}
 
-            {inspirationSubTab === "conviction" && (
+            {moreSubTab === "resources" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h2 className="text-2xl font-bold text-white">Build Your Conviction</h2>
