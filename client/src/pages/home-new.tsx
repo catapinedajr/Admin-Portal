@@ -2223,7 +2223,7 @@ export default function Home() {
                                         <div className="flex justify-between items-center">
                                           <div>
                                             <p className="text-white font-medium">{option.priority}</p>
-                                            <p className="text-zinc-400 text-xs">{option.rate} sat/vB • {option.time}</p>
+                                            <p className="text-zinc-400 text-xs">{option.rate} sat/vB • {option.time} confirmation time estimate</p>
                                           </div>
                                           <div className="text-right">
                                             <p className="text-orange-400 font-mono">{option.cost} BTC</p>
@@ -2394,6 +2394,20 @@ export default function Home() {
                                     TxID: {transactionId}
                                   </div>
                                 )}
+                                
+                                {/* Educational Content Based on Confirmation Count */}
+                                <div className="text-xs bg-blue-900/30 p-3 rounded border border-blue-800/50">
+                                  <div className="font-medium text-blue-300 mb-2">🎓 What's happening now:</div>
+                                  <div className="text-blue-200">
+                                    {confirmationCount === 0 && "Your transaction is waiting in the mempool - a pool of unconfirmed transactions that miners are selecting from."}
+                                    {confirmationCount === 1 && "First confirmation! A miner has included your transaction in a block. This provides basic security against double-spending."}
+                                    {confirmationCount === 2 && "Second confirmation means another block was added on top. Your transaction is becoming more secure with each block."}
+                                    {confirmationCount === 3 && "Three confirmations! Most merchants accept payments at this point as the chance of reversal is extremely low."}
+                                    {confirmationCount === 4 && "Four confirmations provide institutional-grade security. Large exchanges often require this many confirmations."}
+                                    {confirmationCount === 5 && "Five confirmations! Your transaction is now extremely secure. The computational cost to reverse it would be enormous."}
+                                    {confirmationCount === 6 && "Six confirmations is considered fully settled! Your Bitcoin is now permanently and irreversibly transferred."}
+                                  </div>
+                                </div>
                                 
                                 <div className="text-xs text-yellow-300 bg-yellow-900/20 p-2 rounded">
                                   <AlertTriangle className="w-3 h-3 inline mr-1" />
