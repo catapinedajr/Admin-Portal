@@ -581,14 +581,33 @@ export default function Home() {
 
   // Calculate HODL vs Trading comparison
   const calculateHODL = (investment: number, years: number, tradingFeePercent: number) => {
+    const startPrice = 30000;
+    const initialBtc = investment / startPrice;
     const btcGrowthRate = 0.55; // 55% average annual growth
-    const tradingLossRate = 0.15; // 15% typical trading losses
     
-    const hodlValue = investment * Math.pow(1 + btcGrowthRate, years);
-    const tradingValue = investment * Math.pow(1 + btcGrowthRate - tradingLossRate - (tradingFeePercent / 100), years);
-    const hodlAdvantage = ((hodlValue - tradingValue) / tradingValue) * 100;
+    const finalPrice = startPrice * Math.pow(1 + btcGrowthRate, years);
+    const finalValue = initialBtc * finalPrice;
+    const totalReturn = finalValue - investment;
+    const returnPercentage = (totalReturn / investment) * 100;
     
-    return { hodlValue, tradingValue, hodlAdvantage };
+    // Compare with traditional savings (2% annual)
+    const savingsValue = investment * Math.pow(1.02, years);
+    const savingsReturn = savingsValue - investment;
+    
+    return {
+      strategy: 'HODLing (Long-term Savings)',
+      initialBtc: initialBtc.toFixed(6),
+      finalValue: finalValue.toFixed(2),
+      totalReturn: totalReturn.toFixed(2),
+      returnPercentage: returnPercentage.toFixed(1),
+      savingsComparison: {
+        traditionalSavings: savingsValue.toFixed(2),
+        traditionalReturn: savingsReturn.toFixed(2),
+        btcAdvantage: (finalValue - savingsValue).toFixed(2)
+      },
+      volatilityImpact: 'medium',
+      timeHorizon: years
+    };
   };
 
   const { data: user } = useQuery({
@@ -3060,9 +3079,9 @@ Banks hold your money and can restrict access. Bitcoin enables true ownership wh
                         <h4 className="text-white font-semibold">Strategy Results</h4>
                         {(() => {
                           const results = calculateHODL(
-                            simulatorInputs.hodl.initialAmount,
-                            simulatorInputs.hodl.years,
-                            simulatorInputs.hodl.volatilityLevel
+                            Number(simulatorInputs.hodl.initialAmount),
+                            Number(simulatorInputs.hodl.years),
+                            0.25
                           );
                           return (
                             <div className="space-y-3">
