@@ -137,9 +137,6 @@ Comprehensive component library built on Radix UI primitives:
 - June 26, 2025. Enhanced "Today" section in Learn area for maximum educational effectiveness: clear learning objectives, structured 3-step progression (Essential Facts → Deep Dive → Knowledge Test), interactive learning path visualization, motivational progress tracking, and completion celebration to improve engagement and knowledge retention
 - June 26, 2025. Redesigned "Today" section top area with Apple Activity tracker-inspired progress rings: condensed header with concentric progress circles showing completion status, streak counter prominently displayed in center, 50% smaller footprint while retaining all features for cleaner mobile-friendly design
 - June 26, 2025. Enhanced Apple Activity tracker section aesthetics: restructured layout with text above circles, centered activity rings as focal point, improved visual hierarchy with clear header/progress/footer sections, and better formatted progress labels for optimal readability
-- June 26, 2025. Replaced activity rings with Bitcoin blockchain progress tracker: implemented three connected blocks showing completion status, monospace block headers, gradient progress fills, connection lines between blocks, and completion checkmarks to maintain Bitcoin education theme consistency
-- June 26, 2025. Cleaned up blockchain progress section with responsive 3-column grid layout: fixed streak widget positioning conflicts, enhanced block sizing with shadows, added background cards for progress indicators, and improved overall formatting for better visual clarity and mobile responsiveness
-- June 26, 2025. Reorganized blockchain tracker to horizontal left-to-right layout: simplified block headers to "Facts/Dive/Quiz", added gradient connection lines, removed redundant progress indicators, and created clean stats row with only essential metrics (streak, completion, level) for better visual flow
 
 ## User Preferences
 

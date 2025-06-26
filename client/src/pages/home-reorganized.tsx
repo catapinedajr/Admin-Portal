@@ -36,9 +36,7 @@ import {
   ChevronUp,
   CheckCircle,
   BarChart3,
-  Clock,
-  ShieldCheck,
-  Target as TargetIcon
+  Clock
 } from "lucide-react";
 import type { User, DailyFact, Lesson, UserProgress, ConvictionContent } from "@shared/schema";
 import DailyQuiz from "@/components/DailyQuiz";
@@ -422,41 +420,16 @@ export default function Home() {
   const [practiceSubTab, setPracticeSubTab] = useState<PracticeSubTab>("mining");
   const [inspirationSubTab, setInspirationSubTab] = useState<InspirationSubTab>("stories");
   const [disruptionSubTab, setDisruptionSubTab] = useState<DisruptionSubTab>("problems");
-  
-  // Progress tracking state
-  const [factsCompleted, setFactsCompleted] = useState(false);
-  const [lessonCompleted, setLessonCompleted] = useState(false);
-  const [quizCompleted, setQuizCompleted] = useState(false);
-  
-  // Completion handlers
-  const handleFactCompletion = () => {
-    if (!factsCompleted) {
-      setFactsCompleted(true);
-    }
-  };
-  
-  const handleLessonCompletion = () => {
-    if (factsCompleted && !lessonCompleted) {
-      setLessonCompleted(true);
-    }
-  };
-  
-  const handleQuizCompletion = () => {
-    if (lessonCompleted && !quizCompleted) {
-      setQuizCompleted(true);
-    }
-  };
-  
   const [storiesSubTab, setStoriesSubTab] = useState<StoriesSubTab>("individuals");
   const [convictionSubTab, setConvictionSubTab] = useState<ConvictionSubTab>("whitepaper");
   const [showPriceChart, setShowPriceChart] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
+  const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
   const [simulatorInputs, setSimulatorInputs] = useState({
     mining: { hashRate: 100, electricityCost: 0.12, bitcoinPrice: 100000 },
     dca: { monthlyAmount: 100, duration: 12, startPrice: 50000 },
     hodl: { initialAmount: 1000, years: 4, strategy: 'hodl' as 'hodl' | 'trading' }
   });
-  const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
 
   const toggleFactExpansion = (factId: number) => {
     const newExpanded = new Set(expandedFacts);
@@ -928,164 +901,102 @@ export default function Home() {
                       </div>
                     </div>
 
-                    {/* Sticky Blockchain Progress Tracker */}
-                    <div className="sticky top-0 z-50 bg-zinc-950/95 backdrop-blur-sm border-b border-zinc-800 py-3 -mx-6 px-6 mb-6">
-                      <div className="flex flex-col items-center gap-3">
-                        <h3 className="text-lg font-semibold text-white">Your Bitcoin Journey Today</h3>
+                    {/* Activity Rings & Progress Section */}
+                    <div className="flex items-center justify-center gap-8 mb-6">
+                      {/* Activity Rings */}
+                      <div className="relative">
+                        <svg className="w-24 h-24 transform -rotate-90">
+                          {/* Background circles */}
+                          <circle cx="48" cy="48" r="38" stroke="rgb(39, 39, 42)" strokeWidth="4" fill="none" />
+                          <circle cx="48" cy="48" r="30" stroke="rgb(39, 39, 42)" strokeWidth="3" fill="none" />
+                          <circle cx="48" cy="48" r="22" stroke="rgb(39, 39, 42)" strokeWidth="3" fill="none" />
+                          
+                          {/* Progress circles - Facts (Green, Outer) */}
+                          <circle 
+                            cx="48" cy="48" r="38" 
+                            stroke="rgb(34, 197, 94)" 
+                            strokeWidth="4" 
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeDasharray={`${239 * 0.85} ${239 * 0.15}`}
+                            className="transition-all duration-1000"
+                          />
+                          {/* Lesson (Blue, Middle) */}
+                          <circle 
+                            cx="48" cy="48" r="30" 
+                            stroke="rgb(59, 130, 246)" 
+                            strokeWidth="3" 
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeDasharray={`${188 * 0.75} ${188 * 0.25}`}
+                            className="transition-all duration-1000"
+                          />
+                          {/* Quiz (Purple, Inner) */}
+                          <circle 
+                            cx="48" cy="48" r="22" 
+                            stroke="rgb(168, 85, 247)" 
+                            strokeWidth="3" 
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeDasharray={`${138 * 1.0} ${138 * 0.0}`}
+                            className="transition-all duration-1000"
+                          />
+                        </svg>
+                        
+                        {/* Center streak display */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-white">{user?.currentStreak || 0}</div>
+                            <div className="text-xs text-zinc-400 -mt-1">day streak</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Ring Labels & Stats */}
+                      <div className="grid grid-cols-1 gap-3">
                         <div className="flex items-center gap-3">
-                        {/* Block 1: Essential Facts */}
-                        <div className="relative">
-                          <div className={`w-20 h-16 border-2 rounded-lg bg-zinc-900 overflow-hidden shadow-lg transition-all duration-500 ${
-                            factsCompleted ? 'border-green-600 shadow-green-600/20' : 'border-green-600'
-                          }`}>
-                            {/* Block header */}
-                            <div className="h-4 bg-green-600/20 border-b border-green-600/30 flex items-center justify-center">
-                              <span className="text-xs font-mono text-green-400 font-semibold">Facts</span>
-                            </div>
-                            {/* Progress fill */}
-                            <div className="relative h-12">
-                              <div 
-                                className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-green-500/60 to-green-400/40 transition-all duration-1000"
-                                style={{ height: factsCompleted ? '100%' : '0%' }}
-                              ></div>
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                {factsCompleted ? (
-                                  <CheckCircle className="w-4 h-4 text-green-300" />
-                                ) : (
-                                  <ShieldCheck className="w-4 h-4 text-zinc-500" />
-                                )}
+                          <div className="w-4 h-4 rounded-full bg-green-500 flex-shrink-0"></div>
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-zinc-300 font-medium">Essential Facts</span>
+                              <div className="flex items-center gap-1">
+                                <CheckCircle className="w-3 h-3 text-green-400" />
+                                <span className="text-xs text-green-400 font-semibold">85%</span>
                               </div>
                             </div>
                           </div>
                         </div>
-
-                        {/* Connection line */}
-                        <div className={`w-6 h-0.5 transition-all duration-500 ${
-                          factsCompleted ? 'bg-gradient-to-r from-green-500 to-blue-500' : 'bg-zinc-700'
-                        }`}></div>
-
-                        {/* Block 2: Deep Dive */}
-                        <div className="relative">
-                          <div className={`w-20 h-16 border-2 rounded-lg bg-zinc-900 overflow-hidden shadow-lg transition-all duration-500 ${
-                            lessonCompleted 
-                              ? 'border-blue-600 shadow-blue-600/20' 
-                              : factsCompleted 
-                                ? 'border-blue-600' 
-                                : 'border-zinc-700'
-                          }`}>
-                            {/* Block header */}
-                            <div className={`h-4 border-b flex items-center justify-center ${
-                              factsCompleted ? 'bg-blue-600/20 border-blue-600/30' : 'bg-zinc-800 border-zinc-700'
-                            }`}>
-                              <span className={`text-xs font-mono font-semibold ${
-                                factsCompleted ? 'text-blue-400' : 'text-zinc-600'
-                              }`}>Dive</span>
-                            </div>
-                            {/* Progress fill */}
-                            <div className="relative h-12">
-                              <div 
-                                className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-500/60 to-blue-400/40 transition-all duration-1000"
-                                style={{ height: lessonCompleted ? '100%' : '0%' }}
-                              ></div>
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                {lessonCompleted ? (
-                                  <CheckCircle className="w-4 h-4 text-blue-300" />
-                                ) : factsCompleted ? (
-                                  <Play className="w-4 h-4 text-blue-400" />
-                                ) : (
-                                  <ShieldCheck className="w-4 h-4 text-zinc-500" />
-                                )}
+                        
+                        <div className="flex items-center gap-3">
+                          <div className="w-4 h-4 rounded-full bg-blue-500 flex-shrink-0"></div>
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-zinc-300 font-medium">Deep Dive</span>
+                              <div className="flex items-center gap-1">
+                                <Play className="w-3 h-3 text-blue-400" />
+                                <span className="text-xs text-blue-400 font-semibold">75%</span>
                               </div>
                             </div>
                           </div>
                         </div>
-
-                        {/* Connection line */}
-                        <div className={`w-6 h-0.5 transition-all duration-500 ${
-                          lessonCompleted ? 'bg-gradient-to-r from-blue-500 to-purple-500' : 'bg-zinc-700'
-                        }`}></div>
-
-                        {/* Block 3: Knowledge Test */}
-                        <div className="relative">
-                          <div className={`w-20 h-16 border-2 rounded-lg bg-zinc-900 overflow-hidden shadow-lg transition-all duration-500 ${
-                            quizCompleted 
-                              ? 'border-purple-600 shadow-purple-600/20' 
-                              : lessonCompleted 
-                                ? 'border-purple-600' 
-                                : 'border-zinc-700'
-                          }`}>
-                            {/* Block header */}
-                            <div className={`h-4 border-b flex items-center justify-center ${
-                              lessonCompleted ? 'bg-purple-600/20 border-purple-600/30' : 'bg-zinc-800 border-zinc-700'
-                            }`}>
-                              <span className={`text-xs font-mono font-semibold ${
-                                lessonCompleted ? 'text-purple-400' : 'text-zinc-600'
-                              }`}>Quiz</span>
-                            </div>
-                            {/* Progress fill */}
-                            <div className="relative h-12">
-                              <div 
-                                className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-purple-500/60 to-purple-400/40 transition-all duration-1000"
-                                style={{ height: quizCompleted ? '100%' : '0%' }}
-                              ></div>
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                {quizCompleted ? (
-                                  <CheckCircle className="w-4 h-4 text-purple-300" />
-                                ) : lessonCompleted ? (
-                                  <TargetIcon className="w-4 h-4 text-purple-400" />
-                                ) : (
-                                  <ShieldCheck className="w-4 h-4 text-zinc-500" />
-                                )}
+                        
+                        <div className="flex items-center gap-3">
+                          <div className="w-4 h-4 rounded-full bg-purple-500 flex-shrink-0"></div>
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-zinc-300 font-medium">Knowledge Test</span>
+                              <div className="flex items-center gap-1">
+                                <CheckCircle className="w-3 h-3 text-purple-400" />
+                                <span className="text-xs text-purple-400 font-semibold">100%</span>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
-
-                        {/* Simplified Stats */}
-                        <div className="text-center">
-                          <div className="text-lg font-bold text-orange-400">{user?.currentStreak || 0} day streak</div>
-                        </div>
-                      </div>
                     </div>
-                  </div>
-                </div>
-              </div>
 
-                {/* Quick Stats & Continue Action */}
-                <div className="border-t border-zinc-800 pt-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4 text-xs text-zinc-400">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3 text-orange-400" />
-                        <span>Day {((new Date().getTime() - new Date('2024-01-01').getTime()) / (1000 * 60 * 60 * 24)) % 190 + 1 | 0}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-3 h-3 text-blue-400" />
-                        <span>~10 min total</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <GraduationCap className="w-3 h-3 text-green-400" />
-                        <span>Beginner</span>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-2">
-                        <ArrowRight className="w-4 h-4 text-orange-400" />
-                        <span className="text-sm text-zinc-300">Continue learning</span>
-                      </div>
-                      <Badge variant="outline" className="border-orange-600 text-orange-400 text-xs">
-                        87% complete
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-          {/* Quick Stats & Motivation */}
-          <div className="grid md:grid-cols-2 gap-4 mb-6">
+                    {/* Quick Stats & Continue Action */}
+                    <div className="border-t border-zinc-800 pt-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4 text-xs text-zinc-400">
                           <div className="flex items-center gap-1">
@@ -1115,10 +1026,9 @@ export default function Home() {
                     </div>
                   </CardContent>
                 </Card>
-              </div>
 
-              {/* Quick Stats & Motivation */}
-              <div className="grid md:grid-cols-2 gap-4 mb-6">
+                {/* Quick Stats & Motivation */}
+                <div className="grid md:grid-cols-2 gap-4 mb-6">
                   <Card className="bg-zinc-900 border-zinc-800">
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between">
@@ -1191,13 +1101,7 @@ export default function Home() {
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  onClick={() => {
-                                    toggleFactExpansion(index);
-                                    // Track completion when user expands facts
-                                    if (!expandedFacts.has(index)) {
-                                      handleFactCompletion();
-                                    }
-                                  }}
+                                  onClick={() => toggleFactExpansion(index)}
                                   className="text-orange-400 hover:text-orange-300 hover:bg-orange-600/20 text-xs"
                                 >
                                   {expandedFacts.has(index) ? (
@@ -1312,31 +1216,6 @@ export default function Home() {
                             <AutoGlossary>{lesson.summary}</AutoGlossary>
                           </p>
                         </div>
-                        
-                        {/* Completion Button */}
-                        <div className="flex justify-center pt-4">
-                          <Button
-                            onClick={handleLessonCompletion}
-                            disabled={!factsCompleted}
-                            className={`px-6 py-2 ${
-                              factsCompleted 
-                                ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-                                : 'bg-zinc-700 text-zinc-400 cursor-not-allowed'
-                            }`}
-                          >
-                            {lessonCompleted ? (
-                              <>
-                                <CheckCircle className="w-4 h-4 mr-2" />
-                                Lesson Complete
-                              </>
-                            ) : (
-                              <>
-                                <BookOpen className="w-4 h-4 mr-2" />
-                                Mark as Read
-                              </>
-                            )}
-                          </Button>
-                        </div>
                       </div>
                     ) : (
                       <p className="text-zinc-500">Loading today's lesson...</p>
@@ -1375,10 +1254,7 @@ export default function Home() {
                       </ul>
                     </div>
 
-                    <DailyQuiz 
-                      onCompletion={handleQuizCompletion}
-                      disabled={!lessonCompleted}
-                    />
+                    <DailyQuiz />
 
                     {/* Completion celebration */}
                     <div className="mt-6 pt-4 border-t border-zinc-700">
