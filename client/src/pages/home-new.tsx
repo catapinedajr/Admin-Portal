@@ -182,10 +182,20 @@ export default function Home() {
     fromAddress: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
     toAddress: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
     amount: "0.001",
-    feeRate: "5"
+    feeRate: "standard"
   });
-  const [transactionState, setTransactionState] = useState<"building" | "signing" | "broadcasting" | "confirming" | "confirmed">("building");
+  const [transactionState, setTransactionState] = useState<"building" | "preview" | "signing" | "broadcasting" | "confirming" | "confirmed">("building");
   const [showTransactionApproval, setShowTransactionApproval] = useState(false);
+  const [confirmationCount, setConfirmationCount] = useState(0);
+  const [timeRemaining, setTimeRemaining] = useState(120);
+  const [transactionId, setTransactionId] = useState("");
+
+  // Fee options with realistic data
+  const feeOptions = {
+    slow: { rate: "1-3", cost: "0.00001", time: "60+ min", priority: "Low Priority", satsPerByte: 2 },
+    standard: { rate: "4-8", cost: "0.00004", time: "10-30 min", priority: "Standard", satsPerByte: 6 },
+    fast: { rate: "9-15", cost: "0.00008", time: "1-10 min", priority: "High Priority", satsPerByte: 12 }
+  };
   
   // HODL Calculator State
   const [hodlInputs, setHodlInputs] = useState({
@@ -379,42 +389,89 @@ export default function Home() {
   };
 
   const generateNewAddress = () => {
-    // Generate a realistic-looking Bitcoin address for simulation
-    const prefixes = ['bc1q', '3', '1'];
-    const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    let address = prefix;
-    const length = prefix === 'bc1q' ? 39 : 30;
-    
-    for (let i = prefix.length; i < length; i++) {
-      address += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return address;
+    const addresses = [
+      "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+      "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4",
+      "bc1qrp33g8q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3",
+      "3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy",
+      "1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2"
+    ];
+    const randomAddress = addresses[Math.floor(Math.random() * addresses.length)];
+    setTransactionInputs(prev => ({ ...prev, toAddress: randomAddress }));
   };
 
-  const simulateTransactionProcess = () => {
+  const generateTransactionId = () => {
+    return Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+  };
+
+  const proceedToPreview = () => {
+    setTransactionState("preview");
+  };
+
+  const startSigning = () => {
     setTransactionState("signing");
     setShowTransactionApproval(true);
+  };
+
+  const cancelTransaction = () => {
+    setTransactionState("building");
+    setShowTransactionApproval(false);
+    setConfirmationCount(0);
+    setTimeRemaining(120);
+    setTransactionId("");
+  };
+
+  const getCurrentFee = () => {
+    const fee = feeOptions[transactionInputs.feeRate as keyof typeof feeOptions];
+    return fee || feeOptions.standard;
+  };
+
+  const getTransactionTotal = () => {
+    const amount = parseFloat(transactionInputs.amount);
+    const fee = parseFloat(getCurrentFee().cost);
+    return (amount + fee).toFixed(8);
+  };
+
+  const getUSDValue = (btcAmount: string) => {
+    return (parseFloat(btcAmount) * 95000).toFixed(2);
   };
 
   const approveTransaction = () => {
     setShowTransactionApproval(false);
     setTransactionState("broadcasting");
+    setTransactionId(generateTransactionId());
     
-    // Simulate broadcasting delay
+    // Simulate broadcasting delay (3-5 seconds)
     setTimeout(() => {
       setTransactionState("confirming");
+      setConfirmationCount(0);
+      setTimeRemaining(120); // 2 minutes
       
-      // Simulate confirmation delay
-      setTimeout(() => {
-        setTransactionState("confirmed");
+      // Simulate confirmation progression
+      const confirmationInterval = setInterval(() => {
+        setConfirmationCount(prev => {
+          const newCount = prev + 1;
+          if (newCount >= 6) {
+            clearInterval(confirmationInterval);
+            setTimeout(() => {
+              setTransactionState("confirmed");
+              
+              // Reset after showing final confirmation
+              setTimeout(() => {
+                setTransactionState("building");
+                setConfirmationCount(0);
+                setTimeRemaining(120);
+                setTransactionId("");
+              }, 5000);
+            }, 1000);
+          }
+          return newCount;
+        });
         
-        // Reset after showing confirmation
-        setTimeout(() => {
-          setTransactionState("building");
-        }, 3000);
-      }, 2000);
-    }, 1500);
+        setTimeRemaining(prev => Math.max(0, prev - 20));
+      }, 20000); // New confirmation every 20 seconds
+      
+    }, 3000);
   };
 
   const calculateHodlStrategy = () => {
@@ -2105,7 +2162,7 @@ export default function Home() {
                         {transactionState === "building" && (
                           <Button 
                             className="w-full bg-orange-600 hover:bg-orange-700 text-white"
-                            onClick={simulateTransactionProcess}
+                            onClick={proceedToPreview}
                           >
                             <Zap className="w-4 h-4 mr-2" />
                             Sign & Send Transaction
