@@ -3844,7 +3844,7 @@ Banks hold your money and can restrict access. Bitcoin enables true ownership wh
                   </div>
                 )}
 
-                {inspirationSubTab === "store" && (
+                {false && (
                   <div className="space-y-6">
                     <div className="text-center space-y-2">
                       <h2 className="text-2xl font-bold text-white">BTC Journey Store</h2>
