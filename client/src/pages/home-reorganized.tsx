@@ -1421,6 +1421,7 @@ export default function Home() {
                 <div className="grid gap-4">
                   {[
                     {
+                    id: "whybtc",
                     title: "Why BTC and not Crypto?",
                     description: "Understanding why Bitcoin stands apart from the thousands of other cryptocurrencies and digital assets.",
                     topics: ["Network Effect", "Proof of Work Security", "Decentralization", "Store of Value"],
