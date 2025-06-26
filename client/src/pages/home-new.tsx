@@ -3344,7 +3344,52 @@ function WeeklySection() {
                 <div className="px-6 pb-6 border-t border-zinc-700">
                   <div className="pt-4 space-y-4">
                     <div className="prose prose-invert max-w-none">
-                      <p className="text-zinc-300 leading-relaxed">{section.content}</p>
+                      <div className="text-zinc-300 leading-relaxed space-y-4">
+                        {section.content.split('\n\n').map((paragraph: string, paragraphIndex: number) => {
+                          if (paragraph.trim().startsWith('**') && paragraph.trim().endsWith('**:')) {
+                            // Handle section headers
+                            return (
+                              <h4 key={paragraphIndex} className="text-orange-400 font-semibold text-lg mt-6 mb-3">
+                                {paragraph.replace(/\*\*/g, '')}
+                              </h4>
+                            );
+                          } else if (paragraph.includes('**') || paragraph.includes('•')) {
+                            // Handle mixed content with bold text and bullet points
+                            return (
+                              <div key={paragraphIndex} className="space-y-2">
+                                {paragraph.split('\n').map((line: string, lineIndex: number) => {
+                                  if (line.trim().startsWith('•')) {
+                                    return (
+                                      <div key={lineIndex} className="flex items-start gap-2 ml-4">
+                                        <div className="w-1 h-1 bg-orange-400 rounded-full mt-3 flex-shrink-0" />
+                                        <span className="text-zinc-300">{line.replace('• ', '').replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')}</span>
+                                      </div>
+                                    );
+                                  } else if (line.trim().length > 0) {
+                                    return (
+                                      <p key={lineIndex} 
+                                         className="text-zinc-300"
+                                         dangerouslySetInnerHTML={{
+                                           __html: line.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
+                                         }}
+                                      />
+                                    );
+                                  }
+                                  return null;
+                                })}
+                              </div>
+                            );
+                          } else if (paragraph.trim().length > 0) {
+                            // Handle regular paragraphs
+                            return (
+                              <p key={paragraphIndex} className="text-zinc-300">
+                                {paragraph}
+                              </p>
+                            );
+                          }
+                          return null;
+                        })}
+                      </div>
                     </div>
                     
                     {section.examples && section.examples.length > 0 && (
