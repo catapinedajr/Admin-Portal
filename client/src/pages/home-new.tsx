@@ -48,7 +48,9 @@ import {
   ArrowLeft,
   Calculator,
   Info,
-  TrendingDown
+  TrendingDown,
+  Target,
+  Star
 } from "lucide-react";
 import type { User, DailyFact, Lesson, UserProgress, ConvictionContent } from "@shared/schema";
 import DailyQuiz from "@/components/DailyQuiz";
@@ -238,6 +240,167 @@ export default function Home() {
       newExpanded.add(factId);
     }
     setExpandedFacts(newExpanded);
+  };
+
+  const getLessonObjectives = (lessonTitle: string): string[] => {
+    const objectives: Record<string, string[]> = {
+      "Understanding Bitcoin: Digital Money": [
+        "How Bitcoin functions as peer-to-peer digital cash",
+        "Why Bitcoin doesn't need banks or intermediaries",
+        "The role of cryptography in securing transactions",
+        "How the blockchain maintains transaction history"
+      ],
+      "Bitcoin Mining: Securing the Network": [
+        "How mining secures the Bitcoin network",
+        "The relationship between energy and security",
+        "How mining difficulty adjusts automatically",
+        "Why miners are incentivized to be honest"
+      ],
+      "Digital Scarcity: Fixed Supply": [
+        "Why Bitcoin has a 21 million coin limit",
+        "How scarcity creates digital value",
+        "The halving mechanism and its effects",
+        "Comparing Bitcoin to traditional money printing"
+      ],
+      "Decentralized Network: No Central Control": [
+        "How thousands of nodes work together",
+        "Why decentralization prevents censorship",
+        "The consensus mechanism explained",
+        "Benefits of peer-to-peer architecture"
+      ]
+    };
+    return objectives[lessonTitle] || [
+      "Core concepts of this Bitcoin topic",
+      "Real-world applications and examples",
+      "How this connects to the broader ecosystem",
+      "Practical implications for users"
+    ];
+  };
+
+  const getLessonOverview = (lessonTitle: string): string => {
+    const overviews: Record<string, string> = {
+      "Understanding Bitcoin: Digital Money": "Bitcoin revolutionized money by creating the first successful digital currency that works without banks, governments, or any central authority. It's like having digital cash that you can send to anyone, anywhere, instantly.",
+      "Bitcoin Mining: Securing the Network": "Mining is Bitcoin's security system - a global network of computers competing to validate transactions and secure the blockchain. It's like having millions of digital guards protecting every Bitcoin transaction.",
+      "Digital Scarcity: Fixed Supply": "For the first time in history, we have truly scarce digital money. Bitcoin's 21 million coin limit is hardcoded into the system, creating digital scarcity similar to gold but with the benefits of digital technology.",
+      "Decentralized Network: No Central Control": "Bitcoin operates on a network of thousands of independent computers worldwide. No single entity controls it, making it resistant to censorship, seizure, and manipulation by governments or corporations."
+    };
+    return overviews[lessonTitle] || "This lesson explores fundamental Bitcoin concepts that form the foundation of understanding cryptocurrency and blockchain technology.";
+  };
+
+  const getLessonSections = (lessonTitle: string, content: string) => {
+    const sections: Record<string, any[]> = {
+      "Understanding Bitcoin: Digital Money": [
+        {
+          title: "What Makes Bitcoin Different?",
+          content: "Unlike traditional digital payments that require banks to verify and process transactions, Bitcoin uses a decentralized network where thousands of computers work together to validate payments. This means no single entity can control, freeze, or reverse your transactions.",
+          example: "When you send Bitcoin to someone in another country, it travels directly from your wallet to theirs without going through banks, currency exchanges, or payment processors. The transaction is verified by the network within minutes, not days.",
+          checkpoint: "Can you explain why Bitcoin transactions don't need banks to work?",
+          diagram: `<svg width="300" height="120" viewBox="0 0 300 120" className="mx-auto">
+            <rect x="20" y="20" width="60" height="40" rx="8" fill="#3b82f6" opacity="0.3" stroke="#3b82f6"/>
+            <text x="50" y="45" text-anchor="middle" fill="#3b82f6" fontSize="12">Your Wallet</text>
+            <rect x="220" y="20" width="60" height="40" rx="8" fill="#10b981" opacity="0.3" stroke="#10b981"/>
+            <text x="250" y="45" text-anchor="middle" fill="#10b981" fontSize="12">Friend's Wallet</text>
+            <path d="M 80 40 Q 150 20 220 40" stroke="#f59e0b" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
+            <text x="150" y="35" text-anchor="middle" fill="#f59e0b" fontSize="11">Direct Transfer</text>
+            <circle cx="150" cy="80" r="25" fill="#6366f1" opacity="0.2" stroke="#6366f1"/>
+            <text x="150" y="85" text-anchor="middle" fill="#6366f1" fontSize="10">Bitcoin Network</text>
+            <defs><marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#f59e0b"/></marker></defs>
+          </svg>`,
+          diagramCaption: "Bitcoin enables direct peer-to-peer transactions without intermediaries"
+        },
+        {
+          title: "Cryptographic Security",
+          content: "Bitcoin uses advanced cryptography to secure transactions. Each payment is digitally signed with your private key, proving you own the Bitcoin you're sending. The network verifies these signatures without revealing your private key, ensuring only you can spend your Bitcoin.",
+          example: "Think of your Bitcoin wallet like a safe deposit box. You have the only key (private key), and when you want to send Bitcoin, you use your key to digitally 'sign' the transaction. The network can verify your signature is authentic without ever seeing your actual key.",
+          checkpoint: "Why is it important that only you know your private key?"
+        },
+        {
+          title: "Global Accessibility",
+          content: "Bitcoin works the same way everywhere in the world, 24/7/365. There are no business hours, no geographic restrictions, and no permission needed. Anyone with internet access can send or receive Bitcoin, making it truly borderless money.",
+          example: "A freelancer in Nigeria can receive payment from a client in Canada instantly, without worrying about banking hours, international wire fees, or currency conversion delays. The Bitcoin network processes transactions around the clock.",
+          checkpoint: "How does Bitcoin's global accessibility benefit people in countries with limited banking infrastructure?"
+        }
+      ],
+      "Bitcoin Mining: Securing the Network": [
+        {
+          title: "How Mining Works",
+          content: "Mining is like a global lottery where computers compete to solve complex mathematical puzzles. The winner gets to add the next block of transactions to the blockchain and receives newly created Bitcoin as a reward. This process occurs approximately every 10 minutes.",
+          example: "Imagine millions of computers worldwide racing to solve the same puzzle. The first to solve it gets to write the next page in Bitcoin's transaction book and earns 3.125 Bitcoin (worth over $200,000 at current prices) as a reward.",
+          checkpoint: "Why do you think miners are willing to spend electricity to solve these puzzles?",
+          diagram: `<svg width="320" height="140" viewBox="0 0 320 140" className="mx-auto">
+            <rect x="20" y="20" width="50" height="30" rx="4" fill="#ef4444" opacity="0.3" stroke="#ef4444"/>
+            <text x="45" y="38" text-anchor="middle" fill="#ef4444" fontSize="10">Miner 1</text>
+            <rect x="90" y="20" width="50" height="30" rx="4" fill="#f59e0b" opacity="0.3" stroke="#f59e0b"/>
+            <text x="115" y="38" text-anchor="middle" fill="#f59e0b" fontSize="10">Miner 2</text>
+            <rect x="160" y="20" width="50" height="30" rx="4" fill="#10b981" opacity="0.3" stroke="#10b981"/>
+            <text x="185" y="38" text-anchor="middle" fill="#10b981" fontSize="10">Winner!</text>
+            <rect x="230" y="20" width="50" height="30" rx="4" fill="#6b7280" opacity="0.3" stroke="#6b7280"/>
+            <text x="255" y="38" text-anchor="middle" fill="#6b7280" fontSize="10">Miner N</text>
+            <rect x="120" y="80" width="80" height="40" rx="8" fill="#3b82f6" opacity="0.3" stroke="#3b82f6"/>
+            <text x="160" y="105" text-anchor="middle" fill="#3b82f6" fontSize="12">New Block Added</text>
+            <path d="M 185 50 L 180 80" stroke="#10b981" strokeWidth="3" markerEnd="url(#arrowhead2)"/>
+            <defs><marker id="arrowhead2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#10b981"/></marker></defs>
+          </svg>`,
+          diagramCaption: "Miners compete to solve puzzles and add new blocks to the blockchain"
+        },
+        {
+          title: "Energy and Security",
+          content: "The energy miners use to solve puzzles is what makes Bitcoin secure. The more energy (hash power) protecting the network, the more expensive it becomes for anyone to attack it. This energy expenditure creates an economic barrier that protects all Bitcoin users.",
+          example: "It would cost billions of dollars in electricity and specialized equipment to attempt to attack Bitcoin for even one hour. This makes Bitcoin one of the most secure payment networks ever created, protected by more computing power than the world's top supercomputers combined.",
+          checkpoint: "How does energy consumption contribute to Bitcoin's security?"
+        },
+        {
+          title: "Difficulty Adjustment",
+          content: "Bitcoin automatically adjusts how hard the mining puzzles are every 2016 blocks (about two weeks) to maintain a consistent 10-minute block time. If more miners join, puzzles get harder. If miners leave, puzzles get easier. This keeps Bitcoin running smoothly regardless of how many miners participate.",
+          example: "When Bitcoin's price rises and more miners join the network, the system automatically makes the puzzles harder to solve, ensuring blocks still come every 10 minutes instead of faster. This self-regulating mechanism has worked flawlessly for over 15 years.",
+          checkpoint: "Why is it important for Bitcoin blocks to come every 10 minutes rather than randomly?"
+        }
+      ]
+    };
+    
+    return sections[lessonTitle] || [
+      {
+        title: "Understanding the Basics",
+        content: content || "This lesson covers fundamental concepts that are essential for understanding Bitcoin and cryptocurrency technology.",
+        example: "Real-world applications demonstrate how these concepts work in practice.",
+        checkpoint: "Can you explain the main concept in your own words?"
+      }
+    ];
+  };
+
+  const getLessonTakeaways = (lessonTitle: string): string[] => {
+    const takeaways: Record<string, string[]> = {
+      "Understanding Bitcoin: Digital Money": [
+        "Bitcoin is the first successful peer-to-peer digital cash system that works without banks or central authorities",
+        "Cryptographic signatures ensure only you can spend your Bitcoin, providing security without revealing private keys",
+        "Bitcoin operates 24/7 globally, making it accessible to anyone with internet access regardless of location or banking status",
+        "The decentralized network means no single entity can control, freeze, or reverse your transactions"
+      ],
+      "Bitcoin Mining: Securing the Network": [
+        "Mining is a competitive process where computers solve puzzles to add new blocks and earn Bitcoin rewards",
+        "Energy consumption directly correlates with network security - more energy makes Bitcoin harder to attack",
+        "Difficulty adjustment every 2016 blocks ensures consistent 10-minute block times regardless of mining participation",
+        "The economic incentives align miners' interests with network security, creating a robust and self-sustaining system"
+      ],
+      "Digital Scarcity: Fixed Supply": [
+        "Bitcoin's 21 million coin limit is hardcoded and cannot be changed, creating true digital scarcity",
+        "Halving events every 4 years reduce new Bitcoin creation, increasing scarcity over time",
+        "Unlike fiat currencies, Bitcoin cannot be inflated away by central banks or governments",
+        "Digital scarcity combined with increasing demand creates long-term value preservation potential"
+      ],
+      "Decentralized Network: No Central Control": [
+        "Thousands of independent nodes worldwide maintain identical copies of Bitcoin's transaction history",
+        "No single entity can shut down or control the Bitcoin network due to its distributed nature",
+        "Consensus rules are enforced by mathematics and network agreement, not human authority",
+        "Decentralization provides censorship resistance and financial sovereignty to users globally"
+      ]
+    };
+    return takeaways[lessonTitle] || [
+      "This topic introduces fundamental concepts essential for understanding Bitcoin",
+      "Real-world applications demonstrate practical value and utility",
+      "Understanding this concept helps build comprehensive Bitcoin knowledge",
+      "These principles contribute to Bitcoin's unique properties and advantages"
+    ];
   };
 
   const getFactDeepDive = (factTitle: string) => {
@@ -942,19 +1105,160 @@ export default function Home() {
                   </Card>
                 )}
 
-                {/* Daily Lesson */}
+                {/* Enhanced Daily Lesson */}
                 {lesson && (
                   <Card className="bg-zinc-900 border-zinc-800">
                     <CardContent className="p-6">
-                      <h3 className="text-lg font-bold text-white mb-4">Today's Lesson</h3>
-                      <div className="space-y-4">
-                        <div>
-                          <h4 className="font-semibold text-white mb-2">{(lesson as Lesson).title}</h4>
-                          <p className="text-zinc-300">{(lesson as Lesson).content}</p>
+                      {/* Lesson Header */}
+                      <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-blue-600/20 rounded-lg">
+                            <BookOpen className="w-6 h-6 text-blue-400" />
+                          </div>
+                          <div>
+                            <h3 className="text-xl font-bold text-white">Today's Deep Dive</h3>
+                            <p className="text-zinc-400 text-sm">Comprehensive lesson with interactive elements</p>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-zinc-400">
-                          <Clock className="w-4 h-4" />
-                          <span>{(lesson as Lesson).estimatedReadTime || '5'} min read</span>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="border-blue-600 text-blue-400">
+                            <Clock className="w-3 h-3 mr-1" />
+                            {(lesson as Lesson).estimatedReadTime || '8'} min
+                          </Badge>
+                        </div>
+                      </div>
+
+                      {/* Learning Objectives */}
+                      <div className="bg-gradient-to-r from-blue-600/10 to-purple-600/10 border border-blue-600/30 rounded-lg p-4 mb-6">
+                        <h4 className="text-blue-300 font-medium mb-2 flex items-center gap-2">
+                          <Target className="w-4 h-4" />
+                          What You'll Learn
+                        </h4>
+                        <div className="grid gap-2">
+                          {getLessonObjectives((lesson as Lesson).title).map((objective, idx) => (
+                            <div key={idx} className="flex items-center gap-2 text-sm text-zinc-300">
+                              <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+                              <span>{objective}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Main Lesson Content */}
+                      <div className="space-y-8">
+                        <div className="space-y-4">
+                          <h4 className="text-2xl font-bold text-white">{(lesson as Lesson).title}</h4>
+                          
+                          {/* Visual Introduction */}
+                          <div className="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
+                            <div className="flex items-start gap-4">
+                              <div className="p-3 bg-orange-600/20 rounded-lg">
+                                <Lightbulb className="w-8 h-8 text-orange-400" />
+                              </div>
+                              <div className="flex-1">
+                                <h5 className="text-orange-300 font-medium mb-2">Quick Overview</h5>
+                                <p className="text-zinc-300 text-sm leading-relaxed">
+                                  {getLessonOverview((lesson as Lesson).title)}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Interactive Lesson Sections */}
+                          <div className="space-y-6">
+                            {getLessonSections((lesson as Lesson).title, (lesson as Lesson).content).map((section, idx) => (
+                              <div key={idx} className="space-y-4">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                                    <span className="text-white font-bold text-sm">{idx + 1}</span>
+                                  </div>
+                                  <h5 className="text-xl font-semibold text-white">{section.title}</h5>
+                                </div>
+                                
+                                <div className="ml-11 space-y-4">
+                                  <p className="text-zinc-300 leading-relaxed">{section.content}</p>
+                                  
+                                  {/* Visual Diagram */}
+                                  {section.diagram && (
+                                    <div className="bg-zinc-800/30 rounded-lg p-6 border border-zinc-700">
+                                      <div className="text-center space-y-3">
+                                        <div className="text-zinc-400 text-sm mb-3">Visual Representation</div>
+                                        <div className="flex justify-center">
+                                          <div dangerouslySetInnerHTML={{__html: section.diagram}} />
+                                        </div>
+                                        <p className="text-zinc-400 text-xs italic">{section.diagramCaption}</p>
+                                      </div>
+                                    </div>
+                                  )}
+                                  
+                                  {/* Real-World Example */}
+                                  {section.example && (
+                                    <div className="bg-green-600/10 border border-green-600/20 rounded-lg p-4">
+                                      <h6 className="text-green-400 font-medium mb-2 flex items-center gap-2">
+                                        <Zap className="w-4 h-4" />
+                                        Real-World Example
+                                      </h6>
+                                      <p className="text-zinc-300 text-sm">{section.example}</p>
+                                    </div>
+                                  )}
+                                  
+                                  {/* Knowledge Checkpoint */}
+                                  {section.checkpoint && (
+                                    <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-4">
+                                      <h6 className="text-orange-400 font-medium mb-2 flex items-center gap-2">
+                                        <HelpCircle className="w-4 h-4" />
+                                        Knowledge Checkpoint
+                                      </h6>
+                                      <p className="text-zinc-300 text-sm mb-3">{section.checkpoint}</p>
+                                      <div className="flex gap-2">
+                                        <Button size="sm" variant="outline" className="border-orange-600/30 text-orange-400 hover:bg-orange-600/10">
+                                          I understand this
+                                        </Button>
+                                        <Button size="sm" variant="ghost" className="text-zinc-400 hover:text-zinc-300">
+                                          Review again
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Key Takeaways */}
+                        <div className="bg-gradient-to-r from-purple-600/10 to-pink-600/10 border border-purple-600/30 rounded-lg p-6">
+                          <h5 className="text-purple-300 font-medium mb-4 flex items-center gap-2">
+                            <Star className="w-4 h-4" />
+                            Key Takeaways
+                          </h5>
+                          <div className="grid gap-3">
+                            {getLessonTakeaways((lesson as Lesson).title).map((takeaway, idx) => (
+                              <div key={idx} className="flex items-start gap-3 p-3 bg-purple-600/10 rounded-lg border border-purple-600/20">
+                                <CheckCircle className="w-5 h-5 text-purple-400 mt-0.5 flex-shrink-0" />
+                                <span className="text-zinc-200 text-sm">{takeaway}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* What's Next */}
+                        <div className="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
+                          <h5 className="text-zinc-300 font-medium mb-2 flex items-center gap-2">
+                            <ArrowRight className="w-4 h-4" />
+                            Continue Your Learning Journey
+                          </h5>
+                          <p className="text-zinc-400 text-sm mb-3">
+                            Ready to test your understanding? Take today's quiz below, or explore related concepts in our Practice section.
+                          </p>
+                          <div className="flex gap-2">
+                            <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
+                              Take Quiz
+                            </Button>
+                            <Button size="sm" variant="outline" className="border-zinc-600 text-zinc-400">
+                              Practice Simulations
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     </CardContent>
