@@ -171,7 +171,7 @@ const userProfiles = {
 };
 
 type MainSection = "learn" | "practice" | "more";
-type LearnSubTab = "today" | "reference" | "stories";
+type LearnSubTab = "today" | "weekly" | "reference" | "stories";
 type PracticeSubTab = "safety" | "transactions" | "hodl" | "dca";
 type MoreSubTab = "store";
 
@@ -1163,6 +1163,14 @@ export default function Home() {
                 Learn
               </Button>
               <Button
+                variant={activeSection === "weekly" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setActiveSection("weekly")}
+                className="text-sm px-4 py-2"
+              >
+                Weekly
+              </Button>
+              <Button
                 variant={activeSection === "practice" ? "secondary" : "ghost"}
                 size="sm"
                 onClick={() => setActiveSection("practice")}
@@ -1211,6 +1219,15 @@ export default function Home() {
                   className="text-xs px-3 py-1"
                 >
                   Today
+                </Button>
+
+                <Button
+                  variant={learnSubTab === "weekly" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setLearnSubTab("weekly")}
+                  className="text-xs px-3 py-1"
+                >
+                  Weekly
                 </Button>
 
                 <Button
@@ -1401,6 +1418,17 @@ export default function Home() {
               </div>
             )}
 
+            {/* Weekly Content */}
+            {learnSubTab === "weekly" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">Weekly Deep Dive</h3>
+                  <p className="text-zinc-400">30-minute advanced lessons that rotate Sunday mornings</p>
+                </div>
+                <WeeklySection />
+              </div>
+            )}
+
             {/* Stories Content */}
             {learnSubTab === "stories" && (
               <div className="space-y-6">
@@ -1579,6 +1607,8 @@ export default function Home() {
             )}
           </div>
         )}
+
+
 
         {/* Practice Section */}
         {activeSection === "practice" && (
@@ -3116,6 +3146,228 @@ export default function Home() {
           </div>
         )}
       </main>
+    </div>
+  );
+}
+
+// Weekly Section Component
+function WeeklySection() {
+  const { data: currentWeeklyTopic, isLoading: isLoadingCurrent } = useQuery({
+    queryKey: ['/api/weekly/current'],
+    refetchOnWindowFocus: false
+  });
+
+  const { data: weeklyProgress } = useQuery({
+    queryKey: ['/api/weekly/progress', currentWeeklyTopic?.weekNumber],
+    enabled: !!currentWeeklyTopic?.weekNumber,
+    refetchOnWindowFocus: false
+  });
+
+  const [expandedSection, setExpandedSection] = useState<number | null>(null);
+
+  if (isLoadingCurrent) {
+    return (
+      <div className="flex justify-center items-center py-12">
+        <div className="animate-spin w-8 h-8 border-2 border-orange-400 border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+
+  if (!currentWeeklyTopic) {
+    return (
+      <Card className="bg-zinc-800/50 border-zinc-700">
+        <CardContent className="p-8 text-center">
+          <Clock className="w-12 h-12 text-zinc-400 mx-auto mb-4" />
+          <h3 className="text-xl font-bold text-white mb-2">Coming Sunday</h3>
+          <p className="text-zinc-400">
+            New weekly topics are released every Sunday morning. Check back for your next 30-minute deep dive into Bitcoin!
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const contentSections = Array.isArray(currentWeeklyTopic.content) ? currentWeeklyTopic.content : [];
+  const progressPercentage = weeklyProgress?.progressPercentage || 0;
+  const currentSection = weeklyProgress?.currentSection || 0;
+
+  return (
+    <div className="space-y-6">
+      {/* Topic Overview */}
+      <Card className="bg-zinc-800/50 border-zinc-700">
+        <CardContent className="p-6">
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2">
+                <Calendar className="w-5 h-5 text-orange-400" />
+                <span className="text-sm text-orange-400 font-medium">Week {currentWeeklyTopic.weekNumber}</span>
+                <Badge variant="secondary" className="text-xs">{currentWeeklyTopic.difficulty}</Badge>
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-2">{currentWeeklyTopic.title}</h2>
+              <p className="text-zinc-300 leading-relaxed">{currentWeeklyTopic.description}</p>
+            </div>
+            <div className="flex flex-col items-center ml-6">
+              <Clock className="w-8 h-8 text-zinc-400 mb-2" />
+              <span className="text-sm text-zinc-400 text-center">
+                {currentWeeklyTopic.estimatedReadTime} min read
+              </span>
+            </div>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="bg-zinc-700 rounded-full h-2 mb-4">
+            <div 
+              className="bg-orange-400 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${progressPercentage}%` }}
+            />
+          </div>
+          <div className="flex items-center justify-between text-sm text-zinc-400">
+            <span>Progress: {progressPercentage}%</span>
+            <span>Section {currentSection} of {contentSections.length}</span>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Content Sections */}
+      <div className="space-y-4">
+        {contentSections.map((section: any, index: number) => (
+          <Card key={index} className="bg-zinc-800/50 border-zinc-700">
+            <CardContent className="p-0">
+              <button
+                onClick={() => setExpandedSection(expandedSection === index ? null : index)}
+                className="w-full p-6 text-left hover:bg-zinc-700/30 transition-colors"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      index < currentSection ? 'bg-green-600' : 
+                      index === currentSection ? 'bg-orange-600' : 
+                      'bg-zinc-600'
+                    }`}>
+                      {index < currentSection ? (
+                        <CheckCircle className="w-4 h-4 text-white" />
+                      ) : (
+                        <span className="text-white text-sm font-medium">{index + 1}</span>
+                      )}
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-white">{section.title}</h3>
+                      <p className="text-sm text-zinc-400">
+                        {index < currentSection ? 'Completed' : 
+                         index === currentSection ? 'Current' : 
+                         'Upcoming'}
+                      </p>
+                    </div>
+                  </div>
+                  {expandedSection === index ? (
+                    <ChevronUp className="w-5 h-5 text-zinc-400" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-zinc-400" />
+                  )}
+                </div>
+              </button>
+
+              {expandedSection === index && (
+                <div className="px-6 pb-6 border-t border-zinc-700">
+                  <div className="pt-4 space-y-4">
+                    <div className="prose prose-invert max-w-none">
+                      <p className="text-zinc-300 leading-relaxed">{section.content}</p>
+                    </div>
+                    
+                    {section.examples && section.examples.length > 0 && (
+                      <div>
+                        <h4 className="text-sm font-semibold text-orange-400 mb-2">Key Examples:</h4>
+                        <ul className="space-y-1">
+                          {section.examples.map((example: string, exampleIndex: number) => (
+                            <li key={exampleIndex} className="text-sm text-zinc-400 flex items-start gap-2">
+                              <div className="w-1 h-1 bg-orange-400 rounded-full mt-2 flex-shrink-0" />
+                              {example}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    <div className="flex justify-between items-center pt-4">
+                      <Badge variant="outline" className="text-xs">
+                        Section {index + 1} of {contentSections.length}
+                      </Badge>
+                      {index >= currentSection && (
+                        <Button size="sm" className="bg-orange-600 hover:bg-orange-700">
+                          Mark Complete
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Key Takeaways */}
+      <Card className="bg-zinc-800/50 border-zinc-700">
+        <CardContent className="p-6">
+          <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <Lightbulb className="w-5 h-5 text-orange-400" />
+            Key Takeaways
+          </h3>
+          <ul className="space-y-2">
+            {currentWeeklyTopic.keyTakeaways.map((takeaway: string, index: number) => (
+              <li key={index} className="text-zinc-300 flex items-start gap-3">
+                <div className="w-1.5 h-1.5 bg-orange-400 rounded-full mt-2 flex-shrink-0" />
+                {takeaway}
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
+
+      {/* Practical Applications */}
+      {currentWeeklyTopic.practicalApplications && currentWeeklyTopic.practicalApplications.length > 0 && (
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardContent className="p-6">
+            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <Zap className="w-5 h-5 text-green-400" />
+              Practical Applications
+            </h3>
+            <ul className="space-y-2">
+              {currentWeeklyTopic.practicalApplications.map((application: string, index: number) => (
+                <li key={index} className="text-zinc-300 flex items-start gap-3">
+                  <div className="w-1.5 h-1.5 bg-green-400 rounded-full mt-2 flex-shrink-0" />
+                  {application}
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Further Reading */}
+      {currentWeeklyTopic.furtherReading && currentWeeklyTopic.furtherReading.length > 0 && (
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardContent className="p-6">
+            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-blue-400" />
+              Further Reading
+            </h3>
+            <div className="space-y-3">
+              {currentWeeklyTopic.furtherReading.map((item: any, index: number) => (
+                <div key={index} className="border border-zinc-700 rounded-lg p-4 hover:bg-zinc-700/30 transition-colors">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-white mb-1">{item.title}</h4>
+                      <p className="text-sm text-zinc-400">{item.description}</p>
+                    </div>
+                    <ExternalLink className="w-4 h-4 text-zinc-400 ml-3 flex-shrink-0" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

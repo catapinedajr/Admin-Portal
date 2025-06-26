@@ -145,6 +145,34 @@ export const deepDiveTopics = pgTable("deep_dive_topics", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const weeklyTopics = pgTable("weekly_topics", {
+  id: serial("id").primaryKey(),
+  weekNumber: integer("week_number").notNull().unique(), // Week number since app launch
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  content: json("content").notNull(), // Array of sections with title, content, examples
+  estimatedReadTime: integer("estimated_read_time").notNull().default(30), // in minutes
+  relatedDayIndex: integer("related_day_index"), // Links to daily lesson topics
+  category: text("category").notNull(),
+  difficulty: text("difficulty").notNull().default("intermediate"),
+  keyTakeaways: text("key_takeaways").array().notNull(), // Array of strings
+  practicalApplications: text("practical_applications").array(), // Array of real-world examples
+  furtherReading: json("further_reading"), // Array of {title, url, description}
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const userWeeklyProgress = pgTable("user_weekly_progress", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  weekNumber: integer("week_number").notNull(),
+  startedAt: timestamp("started_at").notNull().defaultNow(),
+  completedAt: timestamp("completed_at"),
+  currentSection: integer("current_section").notNull().default(0), // Which section they're on
+  totalSections: integer("total_sections").notNull(),
+  progressPercentage: integer("progress_percentage").notNull().default(0),
+  bookmarked: boolean("bookmarked").notNull().default(false),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -199,6 +227,16 @@ export const insertDeepDiveTopicSchema = createInsertSchema(deepDiveTopics).omit
   createdAt: true,
 });
 
+export const insertWeeklyTopicSchema = createInsertSchema(weeklyTopics).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertUserWeeklyProgressSchema = createInsertSchema(userWeeklyProgress).omit({
+  id: true,
+  startedAt: true,
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type DailyFact = typeof dailyFacts.$inferSelect;
@@ -223,3 +261,7 @@ export type UserQuizAnswer = typeof userQuizAnswers.$inferSelect;
 export type InsertUserQuizAnswer = z.infer<typeof insertUserQuizAnswerSchema>;
 export type DeepDiveTopic = typeof deepDiveTopics.$inferSelect;
 export type InsertDeepDiveTopic = z.infer<typeof insertDeepDiveTopicSchema>;
+export type WeeklyTopic = typeof weeklyTopics.$inferSelect;
+export type InsertWeeklyTopic = z.infer<typeof insertWeeklyTopicSchema>;
+export type UserWeeklyProgress = typeof userWeeklyProgress.$inferSelect;
+export type InsertUserWeeklyProgress = z.infer<typeof insertUserWeeklyProgressSchema>;

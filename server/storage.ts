@@ -8,6 +8,8 @@ import {
   treasuryCompanies,
   sovereignAdoption,
   deepDiveTopics,
+  weeklyTopics,
+  userWeeklyProgress,
   type User, 
   type InsertUser, 
   type DailyFact, 
@@ -31,7 +33,11 @@ import {
   type UserQuizAnswer,
   type InsertUserQuizAnswer,
   type DeepDiveTopic,
-  type InsertDeepDiveTopic
+  type InsertDeepDiveTopic,
+  type WeeklyTopic,
+  type InsertWeeklyTopic,
+  type UserWeeklyProgress,
+  type InsertUserWeeklyProgress
 } from "@shared/schema";
 
 export interface IStorage {
@@ -96,6 +102,18 @@ export interface IStorage {
   getDailyDeepDive(dayIndex: number): Promise<DeepDiveTopic | undefined>;
   getAllDeepDiveTopics(): Promise<DeepDiveTopic[]>;
   createDeepDiveTopic(topic: InsertDeepDiveTopic): Promise<DeepDiveTopic>;
+
+  // Weekly topics methods
+  getCurrentWeeklyTopic(): Promise<WeeklyTopic | undefined>;
+  getWeeklyTopic(weekNumber: number): Promise<WeeklyTopic | undefined>;
+  getAllWeeklyTopics(): Promise<WeeklyTopic[]>;
+  createWeeklyTopic(topic: InsertWeeklyTopic): Promise<WeeklyTopic>;
+  
+  // User weekly progress methods
+  getUserWeeklyProgress(userId: number, weekNumber: number): Promise<UserWeeklyProgress | undefined>;
+  createOrUpdateWeeklyProgress(progress: InsertUserWeeklyProgress): Promise<UserWeeklyProgress>;
+  updateWeeklyProgress(userId: number, weekNumber: number, currentSection: number, progressPercentage: number): Promise<void>;
+  completeWeeklyTopic(userId: number, weekNumber: number): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -111,6 +129,8 @@ export class MemStorage implements IStorage {
   private quizQuestions: Map<number, QuizQuestion>;
   private userQuizAnswers: Map<string, UserQuizAnswer>; // key: userId-questionId-date
   private deepDiveTopics: Map<number, DeepDiveTopic>;
+  private weeklyTopics: Map<number, WeeklyTopic>;
+  private userWeeklyProgress: Map<string, UserWeeklyProgress>; // key: userId-weekNumber
   private currentUserId: number;
   private currentFactId: number;
   private currentLessonId: number;
@@ -122,6 +142,9 @@ export class MemStorage implements IStorage {
   private currentBitcoinPriceId: number;
   private currentQuizQuestionId: number;
   private currentQuizAnswerId: number;
+  private currentDeepDiveTopicId: number;
+  private currentWeeklyTopicId: number;
+  private currentWeeklyProgressId: number;
 
   constructor() {
     this.users = new Map();
@@ -134,6 +157,9 @@ export class MemStorage implements IStorage {
     this.sovereignAdoptions = new Map();
     this.quizQuestions = new Map();
     this.userQuizAnswers = new Map();
+    this.deepDiveTopics = new Map();
+    this.weeklyTopics = new Map();
+    this.userWeeklyProgress = new Map();
     this.currentUserId = 1;
     this.currentFactId = 1;
     this.currentLessonId = 1;
@@ -146,6 +172,9 @@ export class MemStorage implements IStorage {
     this.currentBitcoinPriceId = 1;
     this.currentQuizQuestionId = 1;
     this.currentQuizAnswerId = 1;
+    this.currentDeepDiveTopicId = 1;
+    this.currentWeeklyTopicId = 1;
+    this.currentWeeklyProgressId = 1;
 
     this.seedData();
   }
@@ -967,6 +996,98 @@ This mirrors internet architecture:
       this.quizQuestions.set(newQuestion.id, newQuestion);
     });
 
+    // Weekly topics seed data
+    const weeklyTopicsData = [
+      {
+        weekNumber: 1,
+        title: "Understanding Bitcoin's Foundation",
+        description: "Deep dive into the fundamental concepts that make Bitcoin revolutionary: decentralization, cryptography, and digital scarcity.",
+        content: [
+          {
+            title: "The Problem Bitcoin Solves",
+            content: "Before Bitcoin, digital money faced the 'double spending problem' - how do you prevent someone from spending the same digital coin twice? Traditional solutions required trusted third parties like banks. Bitcoin solved this through a revolutionary approach: a distributed ledger maintained by a network of computers, removing the need for any central authority.",
+            examples: ["Double spending attempts", "Traditional banking intermediaries", "Byzantine Generals Problem"]
+          },
+          {
+            title: "Cryptographic Security",
+            content: "Bitcoin uses military-grade cryptography to secure transactions. Each Bitcoin address is derived from a private key using elliptic curve cryptography. Only the person holding the private key can spend the Bitcoin at that address. This mathematical certainty provides security without relying on legal systems or trusted institutions.",
+            examples: ["Private/public key pairs", "Digital signatures", "Hash functions (SHA-256)"]
+          },
+          {
+            title: "Digital Scarcity",
+            content: "For the first time in history, we have truly scarce digital objects. Bitcoin's supply is mathematically limited to 21 million coins through its protocol rules. Unlike fiat currencies that can be printed at will, new Bitcoin can only be created through energy-intensive mining, following a predetermined schedule that halves every four years.",
+            examples: ["Mining difficulty adjustment", "Halving events", "Fixed supply cap"]
+          }
+        ],
+        category: "Fundamentals",
+        difficulty: "intermediate",
+        relatedDayIndex: 1,
+        keyTakeaways: [
+          "Bitcoin eliminates the need for trusted third parties in digital transactions",
+          "Cryptographic security provides mathematical certainty without legal enforcement",
+          "True digital scarcity is achieved through protocol-enforced supply limits"
+        ],
+        practicalApplications: [
+          "Store value without counterparty risk",
+          "Send money globally without banking intermediaries",
+          "Protect wealth from currency debasement"
+        ],
+        furtherReading: [
+          { title: "Bitcoin Whitepaper", url: "https://bitcoin.org/bitcoin.pdf", description: "Satoshi's original paper explaining Bitcoin" },
+          { title: "The Bitcoin Standard", url: "#", description: "Saifedean Ammous on Bitcoin's monetary properties" }
+        ]
+      },
+      {
+        weekNumber: 2,
+        title: "Bitcoin as Sound Money",
+        description: "Explore how Bitcoin compares to gold and fiat currencies as a store of value, examining its monetary properties through an Austrian economics lens.",
+        content: [
+          {
+            title: "Properties of Sound Money",
+            content: "Throughout history, the best forms of money shared common characteristics: durability, portability, divisibility, uniformity, limited supply, and acceptability. Gold dominated for millennia because it best embodied these properties. Bitcoin represents the digital evolution of sound money, improving on gold's limitations while maintaining its strengths.",
+            examples: ["Gold's monetary history", "Fiat currency failures", "Gresham's Law in action"]
+          },
+          {
+            title: "Stock-to-Flow and Monetary Inflation",
+            content: "Stock-to-flow ratio measures how many years of current production would be needed to double the existing supply. Gold has maintained the highest stock-to-flow ratio (around 60), making it resistant to inflation. Bitcoin's halving mechanism ensures its stock-to-flow ratio will eventually exceed gold's, making it potentially the hardest money ever created.",
+            examples: ["Gold mining annual production", "Bitcoin halving cycles", "Fiat currency printing"]
+          },
+          {
+            title: "Network Effects and Adoption",
+            content: "Money's value increases with the number of people using it - known as network effects. As more individuals, institutions, and nations adopt Bitcoin, its utility and value proposition strengthen. This creates a self-reinforcing cycle where adoption drives value, which drives more adoption.",
+            examples: ["Corporate treasury adoption", "Nation-state adoption", "Lightning Network growth"]
+          }
+        ],
+        category: "Economics",
+        difficulty: "intermediate",
+        relatedDayIndex: 15,
+        keyTakeaways: [
+          "Bitcoin improves on gold's monetary properties while eliminating physical limitations",
+          "Halving mechanism creates the hardest money in human history",
+          "Network effects create self-reinforcing adoption cycles"
+        ],
+        practicalApplications: [
+          "Hedge against monetary inflation",
+          "Preserve purchasing power across decades",
+          "Participate in a growing global monetary network"
+        ],
+        furtherReading: [
+          { title: "The Fiat Standard", url: "#", description: "Saifedean Ammous on fiat money's flaws" },
+          { title: "Layered Money", url: "#", description: "Nik Bhatia on Bitcoin's place in monetary history" }
+        ]
+      }
+    ];
+
+    weeklyTopicsData.forEach(topic => {
+      const newTopic: WeeklyTopic = { 
+        ...topic, 
+        id: this.currentWeeklyTopicId++,
+        estimatedReadTime: 30,
+        createdAt: new Date()
+      };
+      this.weeklyTopics.set(newTopic.id, newTopic);
+    });
+
     // Create a default user
     const defaultUser: User = {
       id: this.currentUserId++,
@@ -1322,6 +1443,129 @@ This mirrors internet architecture:
     const total = answers.length;
     const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
     return { correct, total, percentage };
+  }
+
+  // Deep dive topics methods
+  async getDailyDeepDive(dayIndex: number): Promise<DeepDiveTopic | undefined> {
+    return Array.from(this.deepDiveTopics.values()).find(topic => topic.dayIndex === dayIndex);
+  }
+
+  async getAllDeepDiveTopics(): Promise<DeepDiveTopic[]> {
+    return Array.from(this.deepDiveTopics.values());
+  }
+
+  async createDeepDiveTopic(insertTopic: InsertDeepDiveTopic): Promise<DeepDiveTopic> {
+    const topic: DeepDiveTopic = {
+      id: this.currentDeepDiveTopicId++,
+      dayIndex: insertTopic.dayIndex,
+      title: insertTopic.title,
+      subtitle: insertTopic.subtitle,
+      estimatedReadTime: insertTopic.estimatedReadTime,
+      difficulty: insertTopic.difficulty,
+      category: insertTopic.category,
+      content: insertTopic.content,
+      keyTakeaways: insertTopic.keyTakeaways,
+      furtherReading: insertTopic.furtherReading,
+      createdAt: new Date()
+    };
+    this.deepDiveTopics.set(topic.id, topic);
+    return topic;
+  }
+
+  // Weekly topics methods
+  async getCurrentWeeklyTopic(): Promise<WeeklyTopic | undefined> {
+    // Calculate current week number since app launch (assuming app launched Jan 1, 2025)
+    const launchDate = new Date('2025-01-01');
+    const currentDate = new Date();
+    const weeksSinceLaunch = Math.floor((currentDate.getTime() - launchDate.getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1;
+    
+    return Array.from(this.weeklyTopics.values()).find(topic => topic.weekNumber === weeksSinceLaunch);
+  }
+
+  async getWeeklyTopic(weekNumber: number): Promise<WeeklyTopic | undefined> {
+    return Array.from(this.weeklyTopics.values()).find(topic => topic.weekNumber === weekNumber);
+  }
+
+  async getAllWeeklyTopics(): Promise<WeeklyTopic[]> {
+    return Array.from(this.weeklyTopics.values()).sort((a, b) => a.weekNumber - b.weekNumber);
+  }
+
+  async createWeeklyTopic(insertTopic: InsertWeeklyTopic): Promise<WeeklyTopic> {
+    const topic: WeeklyTopic = {
+      id: this.currentWeeklyTopicId++,
+      weekNumber: insertTopic.weekNumber,
+      title: insertTopic.title,
+      description: insertTopic.description,
+      content: insertTopic.content,
+      estimatedReadTime: insertTopic.estimatedReadTime || 30,
+      relatedDayIndex: insertTopic.relatedDayIndex || null,
+      category: insertTopic.category,
+      difficulty: insertTopic.difficulty || "intermediate",
+      keyTakeaways: insertTopic.keyTakeaways,
+      practicalApplications: insertTopic.practicalApplications || null,
+      furtherReading: insertTopic.furtherReading || null,
+      createdAt: new Date()
+    };
+    this.weeklyTopics.set(topic.id, topic);
+    return topic;
+  }
+
+  // User weekly progress methods
+  async getUserWeeklyProgress(userId: number, weekNumber: number): Promise<UserWeeklyProgress | undefined> {
+    const key = `${userId}-${weekNumber}`;
+    return this.userWeeklyProgress.get(key);
+  }
+
+  async createOrUpdateWeeklyProgress(insertProgress: InsertUserWeeklyProgress): Promise<UserWeeklyProgress> {
+    const key = `${insertProgress.userId}-${insertProgress.weekNumber}`;
+    const existingProgress = this.userWeeklyProgress.get(key);
+    
+    if (existingProgress) {
+      const updated: UserWeeklyProgress = {
+        ...existingProgress,
+        currentSection: insertProgress.currentSection || existingProgress.currentSection,
+        totalSections: insertProgress.totalSections,
+        progressPercentage: insertProgress.progressPercentage || existingProgress.progressPercentage,
+        bookmarked: insertProgress.bookmarked !== undefined ? insertProgress.bookmarked : existingProgress.bookmarked,
+        completedAt: insertProgress.completedAt || existingProgress.completedAt
+      };
+      this.userWeeklyProgress.set(key, updated);
+      return updated;
+    }
+
+    const progress: UserWeeklyProgress = {
+      id: this.currentWeeklyProgressId++,
+      userId: insertProgress.userId,
+      weekNumber: insertProgress.weekNumber,
+      startedAt: new Date(),
+      completedAt: insertProgress.completedAt || null,
+      currentSection: insertProgress.currentSection || 0,
+      totalSections: insertProgress.totalSections,
+      progressPercentage: insertProgress.progressPercentage || 0,
+      bookmarked: insertProgress.bookmarked || false
+    };
+    this.userWeeklyProgress.set(key, progress);
+    return progress;
+  }
+
+  async updateWeeklyProgress(userId: number, weekNumber: number, currentSection: number, progressPercentage: number): Promise<void> {
+    const key = `${userId}-${weekNumber}`;
+    const progress = this.userWeeklyProgress.get(key);
+    if (progress) {
+      progress.currentSection = currentSection;
+      progress.progressPercentage = progressPercentage;
+      this.userWeeklyProgress.set(key, progress);
+    }
+  }
+
+  async completeWeeklyTopic(userId: number, weekNumber: number): Promise<void> {
+    const key = `${userId}-${weekNumber}`;
+    const progress = this.userWeeklyProgress.get(key);
+    if (progress) {
+      progress.completedAt = new Date();
+      progress.progressPercentage = 100;
+      this.userWeeklyProgress.set(key, progress);
+    }
   }
 }
 

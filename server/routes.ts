@@ -753,6 +753,111 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Weekly topics routes
+  app.get("/api/weekly/current", async (req, res) => {
+    try {
+      const weeklyTopic = await storage.getCurrentWeeklyTopic();
+      if (!weeklyTopic) {
+        return res.status(404).json({ message: "No current weekly topic found" });
+      }
+      res.json(weeklyTopic);
+    } catch (error) {
+      console.error('Error fetching current weekly topic:', error);
+      res.status(500).json({ message: "Failed to fetch current weekly topic" });
+    }
+  });
+
+  app.get("/api/weekly/:weekNumber", async (req, res) => {
+    try {
+      const weekNumber = parseInt(req.params.weekNumber);
+      if (isNaN(weekNumber)) {
+        return res.status(400).json({ message: "Invalid week number" });
+      }
+      
+      const weeklyTopic = await storage.getWeeklyTopic(weekNumber);
+      if (!weeklyTopic) {
+        return res.status(404).json({ message: "Weekly topic not found" });
+      }
+      res.json(weeklyTopic);
+    } catch (error) {
+      console.error('Error fetching weekly topic:', error);
+      res.status(500).json({ message: "Failed to fetch weekly topic" });
+    }
+  });
+
+  app.get("/api/weekly", async (req, res) => {
+    try {
+      const weeklyTopics = await storage.getAllWeeklyTopics();
+      res.json(weeklyTopics);
+    } catch (error) {
+      console.error('Error fetching weekly topics:', error);
+      res.status(500).json({ message: "Failed to fetch weekly topics" });
+    }
+  });
+
+  // User weekly progress routes
+  app.get("/api/weekly/progress/:weekNumber", async (req, res) => {
+    try {
+      const weekNumber = parseInt(req.params.weekNumber);
+      if (isNaN(weekNumber)) {
+        return res.status(400).json({ message: "Invalid week number" });
+      }
+      
+      const progress = await storage.getUserWeeklyProgress(1, weekNumber); // Default user ID
+      res.json(progress || null);
+    } catch (error) {
+      console.error('Error fetching weekly progress:', error);
+      res.status(500).json({ message: "Failed to fetch weekly progress" });
+    }
+  });
+
+  app.post("/api/weekly/progress", async (req, res) => {
+    try {
+      const { weekNumber, currentSection, totalSections, progressPercentage, bookmarked } = req.body;
+      
+      if (!weekNumber || !totalSections) {
+        return res.status(400).json({ message: "Week number and total sections are required" });
+      }
+
+      const progress = await storage.createOrUpdateWeeklyProgress({
+        userId: 1, // Default user ID
+        weekNumber,
+        currentSection: currentSection || 0,
+        totalSections,
+        progressPercentage: progressPercentage || 0,
+        bookmarked: bookmarked || false,
+        completedAt: progressPercentage === 100 ? new Date() : null
+      });
+
+      res.json(progress);
+    } catch (error) {
+      console.error('Error updating weekly progress:', error);
+      res.status(500).json({ message: "Failed to update weekly progress" });
+    }
+  });
+
+  app.put("/api/weekly/progress/:weekNumber", async (req, res) => {
+    try {
+      const weekNumber = parseInt(req.params.weekNumber);
+      const { currentSection, progressPercentage } = req.body;
+      
+      if (isNaN(weekNumber) || currentSection === undefined || progressPercentage === undefined) {
+        return res.status(400).json({ message: "Invalid parameters" });
+      }
+
+      await storage.updateWeeklyProgress(1, weekNumber, currentSection, progressPercentage);
+      
+      if (progressPercentage === 100) {
+        await storage.completeWeeklyTopic(1, weekNumber);
+      }
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error updating weekly progress:', error);
+      res.status(500).json({ message: "Failed to update weekly progress" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
