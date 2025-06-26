@@ -92,10 +92,12 @@ export interface IStorage {
   submitQuizAnswer(answer: InsertUserQuizAnswer): Promise<UserQuizAnswer>;
   getUserQuizScore(userId: number, date: string): Promise<{ correct: number; total: number; percentage: number }>;
 
-  // Deep dive topics methods
-  getDailyDeepDive(dayIndex: number): Promise<DeepDiveTopic | undefined>;
+  // Deep dive topics methods (weekly progression)
+  getWeeklyDeepDive(weekIndex: number, dayOfWeek: number): Promise<DeepDiveTopic | undefined>;
+  getCurrentWeekDeepDive(userLevel: 'beginner' | 'intermediate' | 'advanced'): Promise<DeepDiveTopic[]>;
   getAllDeepDiveTopics(): Promise<DeepDiveTopic[]>;
   createDeepDiveTopic(topic: InsertDeepDiveTopic): Promise<DeepDiveTopic>;
+  getUserLearningLevel(userId: number): Promise<'beginner' | 'intermediate' | 'advanced'>;
 }
 
 export class MemStorage implements IStorage {
@@ -122,6 +124,7 @@ export class MemStorage implements IStorage {
   private currentBitcoinPriceId: number;
   private currentQuizQuestionId: number;
   private currentQuizAnswerId: number;
+  private currentDeepDiveTopicId: number;
 
   constructor() {
     this.users = new Map();
@@ -132,8 +135,10 @@ export class MemStorage implements IStorage {
     this.convictionContent = new Map();
     this.treasuryCompanies = new Map();
     this.sovereignAdoptions = new Map();
+    this.bitcoinPrices = new Map();
     this.quizQuestions = new Map();
     this.userQuizAnswers = new Map();
+    this.deepDiveTopics = new Map();
     this.currentUserId = 1;
     this.currentFactId = 1;
     this.currentLessonId = 1;
@@ -146,6 +151,7 @@ export class MemStorage implements IStorage {
     this.currentBitcoinPriceId = 1;
     this.currentQuizQuestionId = 1;
     this.currentQuizAnswerId = 1;
+    this.currentDeepDiveTopicId = 1;
 
     this.seedData();
   }
@@ -967,6 +973,79 @@ This mirrors internet architecture:
       this.quizQuestions.set(newQuestion.id, newQuestion);
     });
 
+    // Weekly Deep Dive Topics - Aligned with Learning Progression
+    const weeklyDeepDiveTopics = [
+      // BEGINNER LEVEL WEEKS (1-12)
+      // Week 1: What is Bitcoin? (Beginner Foundation)
+      {
+        weekIndex: 1, dayOfWeek: 1, title: "Introduction to Digital Money", subtitle: "Understanding Bitcoin's revolutionary concept",
+        estimatedReadTime: "4 min", difficulty: "beginner", category: "Bitcoin Basics", isPremium: false,
+        content: "In 2009, a mysterious figure named Satoshi Nakamoto introduced Bitcoin to the world. But what exactly is Bitcoin? Think of it as digital cash that works without banks. Just like you can hand someone a $20 bill without needing permission from a bank, Bitcoin lets you send value directly to anyone, anywhere in the world. The key difference? Bitcoin exists entirely in the digital realm, secured by mathematics and maintained by a global network of computers.",
+        keyTakeaways: ["Bitcoin is digital cash without banks", "It works peer-to-peer like handing someone physical money", "Created by Satoshi Nakamoto in 2009"],
+        furtherReading: ["Bitcoin Whitepaper by Satoshi Nakamoto", "The Bitcoin Standard by Saifedean Ammous"],
+        prerequisiteKnowledge: ["Basic understanding of digital payments"],
+        learningObjectives: ["Understand what Bitcoin is", "Compare Bitcoin to traditional money"],
+        practicalExercises: ["Compare sending Bitcoin vs traditional wire transfer"]
+      },
+      {
+        weekIndex: 1, dayOfWeek: 2, title: "The Problem Bitcoin Solves", subtitle: "Why we needed a new form of money",
+        estimatedReadTime: "5 min", difficulty: "beginner", category: "Bitcoin Basics", isPremium: true,
+        content: "Before Bitcoin, all digital payments required a trusted third party - usually a bank. This created several problems: censorship (banks could block transactions), counterparty risk (banks could fail), and inflation (governments could print more money). Bitcoin solved these issues by creating a system where trust comes from mathematics and consensus, not institutions. It's like having a universal ledger that everyone can verify but no one can manipulate.",
+        keyTakeaways: ["Traditional money requires trusted intermediaries", "Bitcoin removes the need for trusted third parties", "Mathematics provides trust instead of institutions"],
+        furtherReading: ["Broken Money by Lyn Alden", "Debt: The First 5000 Years by David Graeber"],
+        prerequisiteKnowledge: ["Understanding of traditional banking"],
+        learningObjectives: ["Identify problems with traditional money", "Understand Bitcoin's solution"],
+        practicalExercises: ["List times when banks have failed or restricted access"]
+      },
+
+      // Week 2: How Bitcoin Works (Beginner Technical)
+      {
+        weekIndex: 2, dayOfWeek: 1, title: "The Blockchain Explained Simply", subtitle: "Bitcoin's foundational technology",
+        estimatedReadTime: "6 min", difficulty: "beginner", category: "Technology", isPremium: false,
+        content: "Imagine a ledger book that tracks every Bitcoin transaction ever made. Now imagine this book is copied across thousands of computers worldwide, and every 10 minutes, a new page is added. That's essentially the blockchain. Each 'block' contains a list of transactions, and they're chained together chronologically. The genius is that changing any past transaction would require changing every subsequent block on every computer - practically impossible. This creates an immutable record of all Bitcoin transactions.",
+        keyTakeaways: ["Blockchain is a global ledger of all Bitcoin transactions", "New blocks are added every 10 minutes", "Past transactions cannot be changed"],
+        furtherReading: ["Mastering Bitcoin by Andreas Antonopoulos", "Blockchain Basics by Daniel Drescher"],
+        prerequisiteKnowledge: ["Basic understanding of Bitcoin"],
+        learningObjectives: ["Understand blockchain structure", "Explain immutability concept"],
+        practicalExercises: ["Explore a Bitcoin block explorer website"]
+      },
+
+      // INTERMEDIATE LEVEL WEEKS (13-24)
+      // Week 13: Lightning Network Deep Dive
+      {
+        weekIndex: 13, dayOfWeek: 1, title: "Lightning Network: Bitcoin's Scaling Solution", subtitle: "Instant Bitcoin payments",
+        estimatedReadTime: "8 min", difficulty: "intermediate", category: "Layer 2", isPremium: false,
+        content: "The Lightning Network is like Bitcoin's express lane. While Bitcoin's base layer is like a highway with traffic lights (10-minute block times), Lightning creates private roads (payment channels) between users for instant transactions. Two parties can open a channel, conduct unlimited transactions between themselves instantly and cheaply, then settle the final balance on Bitcoin's main chain. It's revolutionary because it maintains Bitcoin's security while enabling instant micropayments.",
+        keyTakeaways: ["Lightning enables instant Bitcoin payments", "Payment channels allow unlimited transactions", "Maintains Bitcoin's security properties"],
+        furtherReading: ["Lightning Network Paper", "Strike: How Lightning Enables Global Payments"],
+        prerequisiteKnowledge: ["Understanding of Bitcoin basics", "Basic blockchain knowledge"],
+        learningObjectives: ["Understand payment channels", "Explain Lightning's benefits"],
+        practicalExercises: ["Set up a Lightning wallet and make a transaction"]
+      },
+
+      // ADVANCED LEVEL WEEKS (25-36)
+      // Week 25: Bitcoin Mining Economics
+      {
+        weekIndex: 25, dayOfWeek: 1, title: "The Economics of Bitcoin Mining", subtitle: "Understanding mining incentives and security",
+        estimatedReadTime: "12 min", difficulty: "advanced", category: "Mining", isPremium: false,
+        content: "Bitcoin mining is far more sophisticated than 'computers solving puzzles.' It's a global energy market where miners compete to secure the network by converting electricity into digital gold. The mining difficulty adjusts every 2016 blocks to maintain the 10-minute average block time. This creates a fascinating economic equilibrium: as Bitcoin's price rises, more miners join, increasing security but also difficulty. The result is a self-regulating system where security scales with value.",
+        keyTakeaways: ["Mining is a competitive energy market", "Difficulty adjusts to maintain 10-minute blocks", "Security scales with Bitcoin's value"],
+        furtherReading: ["The Bitcoin Mining Council Reports", "Hashrate Index Research"],
+        prerequisiteKnowledge: ["Understanding of Bitcoin basics", "Basic economics", "Energy markets"],
+        learningObjectives: ["Understand mining economics", "Explain difficulty adjustments"],
+        practicalExercises: ["Calculate mining profitability for different scenarios"]
+      }
+    ];
+
+    weeklyDeepDiveTopics.forEach(topic => {
+      const newTopic: DeepDiveTopic = { 
+        ...topic, 
+        id: this.currentDeepDiveTopicId++,
+        createdAt: new Date()
+      };
+      this.deepDiveTopics.set(newTopic.id, newTopic);
+    });
+
     // Create a default user
     const defaultUser: User = {
       id: this.currentUserId++,
@@ -1322,6 +1401,75 @@ This mirrors internet architecture:
     const total = answers.length;
     const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
     return { correct, total, percentage };
+  }
+
+  // Weekly Deep Dive methods (learning progression)
+  async getWeeklyDeepDive(weekIndex: number, dayOfWeek: number): Promise<DeepDiveTopic | undefined> {
+    return Array.from(this.deepDiveTopics.values()).find(
+      topic => topic.weekIndex === weekIndex && topic.dayOfWeek === dayOfWeek
+    );
+  }
+
+  async getCurrentWeekDeepDive(userLevel: 'beginner' | 'intermediate' | 'advanced'): Promise<DeepDiveTopic[]> {
+    // Calculate current week based on user's start date
+    const today = new Date();
+    const startOfYear = new Date(today.getFullYear(), 0, 1);
+    const weekNumber = Math.ceil(((today.getTime() - startOfYear.getTime()) / 86400000 + startOfYear.getDay() + 1) / 7);
+    
+    // Adjust week index based on user learning level for progressive difficulty
+    let adjustedWeekIndex = weekNumber;
+    if (userLevel === 'beginner') {
+      adjustedWeekIndex = Math.max(1, weekNumber % 12); // Cycle through basic topics
+    } else if (userLevel === 'intermediate') {
+      adjustedWeekIndex = Math.max(13, (weekNumber % 12) + 12); // Intermediate topics
+    } else {
+      adjustedWeekIndex = Math.max(25, (weekNumber % 12) + 24); // Advanced topics
+    }
+
+    return Array.from(this.deepDiveTopics.values())
+      .filter(topic => topic.weekIndex === adjustedWeekIndex)
+      .sort((a, b) => a.dayOfWeek - b.dayOfWeek);
+  }
+
+  async getAllDeepDiveTopics(): Promise<DeepDiveTopic[]> {
+    return Array.from(this.deepDiveTopics.values());
+  }
+
+  async createDeepDiveTopic(insertTopic: InsertDeepDiveTopic): Promise<DeepDiveTopic> {
+    const topic: DeepDiveTopic = {
+      id: this.currentDeepDiveTopicId++,
+      weekIndex: insertTopic.weekIndex,
+      dayOfWeek: insertTopic.dayOfWeek,
+      title: insertTopic.title,
+      subtitle: insertTopic.subtitle,
+      estimatedReadTime: insertTopic.estimatedReadTime,
+      difficulty: insertTopic.difficulty,
+      category: insertTopic.category,
+      content: insertTopic.content,
+      keyTakeaways: insertTopic.keyTakeaways,
+      furtherReading: insertTopic.furtherReading,
+      prerequisiteKnowledge: insertTopic.prerequisiteKnowledge,
+      learningObjectives: insertTopic.learningObjectives,
+      practicalExercises: insertTopic.practicalExercises,
+      isPremium: insertTopic.isPremium || false,
+      createdAt: new Date()
+    };
+    this.deepDiveTopics.set(topic.id, topic);
+    return topic;
+  }
+
+  async getUserLearningLevel(userId: number): Promise<'beginner' | 'intermediate' | 'advanced'> {
+    const user = await this.getUser(userId);
+    if (!user) return 'beginner';
+
+    // Calculate learning level based on user progress metrics
+    const streakPoints = user.currentStreak * 2;
+    const completionPoints = user.completedLessons * 3;
+    const totalPoints = streakPoints + completionPoints;
+
+    if (totalPoints >= 100) return 'advanced';
+    if (totalPoints >= 40) return 'intermediate';
+    return 'beginner';
   }
 }
 

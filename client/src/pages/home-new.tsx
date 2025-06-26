@@ -55,6 +55,7 @@ import {
 import type { User, DailyFact, Lesson, UserProgress, ConvictionContent } from "@shared/schema";
 import DailyQuiz from "@/components/DailyQuiz";
 import { BitcoinTerm, AutoGlossary } from "@/components/BitcoinGlossary";
+import { WeeklyDeepDive } from "@/components/WeeklyDeepDive";
 import { ProgressIndicator, AchievementBadge, LearningAnalytics } from "@/components/ProgressIndicator";
 import AchievementSystem from "@/components/AchievementSystem";
 
@@ -1486,30 +1487,10 @@ export default function Home() {
               </div>
             )}
 
-            {/* Deep Dive Section */}
+            {/* Weekly Deep Dive Section - Learning Progression */}
             {learnSubTab === "deepdive" && (
-              <div className="space-y-6">
-                <div className="text-center space-y-2">
-                  <h3 className="text-xl font-bold text-white">Advanced Bitcoin Concepts</h3>
-                  <p className="text-zinc-400">Explore complex topics with detailed explanations and interactive elements</p>
-                </div>
-
-                {/* Advanced Topics Grid */}
-                <div className="grid gap-6 md:grid-cols-2">
-                  <Card className="bg-zinc-900 border-zinc-800">
-                    <CardContent className="p-6">
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="p-2 bg-orange-600/20 rounded-lg">
-                              <Network className="w-6 h-6 text-orange-400" />
-                            </div>
-                            <h4 className="text-lg font-bold text-white">Lightning Network</h4>
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => toggleTopicExpansion("lightning")}
+              <WeeklyDeepDive />
+            )}
                             className="text-orange-400 hover:text-orange-300"
                           >
                             {expandedTopics.has("lightning") ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}

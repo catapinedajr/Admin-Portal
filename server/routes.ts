@@ -753,6 +753,127 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Weekly Deep Dive API endpoints - Learning progression aligned
+  app.get('/api/weekly-deepdive', async (req, res) => {
+    try {
+      const currentWeek = parseInt(req.query.currentWeek as string) || 1;
+      const userLevel = (req.query.userLevel as string) || 'beginner';
+      
+      // Get topics for the requested week and user level
+      const allTopics = await storage.getAllDeepDiveTopics();
+      const weekTopics = allTopics.filter(topic => 
+        topic.weekIndex === currentWeek && topic.difficulty === userLevel
+      ).sort((a, b) => a.dayOfWeek - b.dayOfWeek);
+      
+      res.json(weekTopics);
+    } catch (error) {
+      console.error('Error fetching weekly deep dive:', error);
+      res.status(500).json({ message: "Failed to fetch weekly deep dive" });
+    }
+  });
+
+  app.get('/api/user-level', async (req, res) => {
+    try {
+      const userId = 1; // Default user for demo
+      const level = await storage.getUserLearningLevel(userId);
+      res.json({ level });
+    } catch (error) {
+      console.error('Error fetching user level:', error);
+      res.status(500).json({ message: "Failed to fetch user level" });
+    }
+  });
+
+  app.get('/api/deep-dive/current', async (req, res) => {
+    try {
+      const userId = parseInt(req.query.userId as string) || 1;
+      const userLevel = await storage.getUserLearningLevel(userId);
+      const weeklyTopics = await storage.getCurrentWeekDeepDive(userLevel);
+      
+      // Add user progression context
+      const response = {
+        weeklyTopics,
+        userLevel,
+        totalTopics: weeklyTopics.length,
+        freeTopics: weeklyTopics.filter(topic => !topic.isPremium).length,
+        premiumTopics: weeklyTopics.filter(topic => topic.isPremium).length
+      };
+      
+      res.json(response);
+    } catch (error) {
+      console.error('Error fetching current week deep dive:', error);
+      res.status(500).json({ message: "Failed to fetch deep dive content" });
+    }
+  });
+
+  app.get('/api/deep-dive/week/:weekIndex', async (req, res) => {
+    try {
+      const weekIndex = parseInt(req.params.weekIndex);
+      const dayOfWeek = parseInt(req.query.day as string) || 1;
+      
+      const topic = await storage.getWeeklyDeepDive(weekIndex, dayOfWeek);
+      if (!topic) {
+        return res.status(404).json({ message: "Deep dive topic not found" });
+      }
+      
+      res.json(topic);
+    } catch (error) {
+      console.error('Error fetching weekly deep dive:', error);
+      res.status(500).json({ message: "Failed to fetch deep dive topic" });
+    }
+  });
+
+  app.get('/api/deep-dive/all', async (req, res) => {
+    try {
+      const topics = await storage.getAllDeepDiveTopics();
+      
+      // Group by week and difficulty for easier navigation
+      const groupedTopics = {
+        beginner: topics.filter(t => t.difficulty === 'beginner').sort((a, b) => a.weekIndex - b.weekIndex),
+        intermediate: topics.filter(t => t.difficulty === 'intermediate').sort((a, b) => a.weekIndex - b.weekIndex),
+        advanced: topics.filter(t => t.difficulty === 'advanced').sort((a, b) => a.weekIndex - b.weekIndex)
+      };
+      
+      res.json(groupedTopics);
+    } catch (error) {
+      console.error('Error fetching all deep dive topics:', error);
+      res.status(500).json({ message: "Failed to fetch deep dive topics" });
+    }
+  });
+
+  app.get('/api/user/:userId/learning-level', async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const level = await storage.getUserLearningLevel(userId);
+      
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Calculate progression metrics
+      const streakPoints = user.currentStreak * 2;
+      const completionPoints = user.completedLessons * 3;
+      const totalPoints = streakPoints + completionPoints;
+      
+      const response = {
+        level,
+        totalPoints,
+        streakPoints,
+        completionPoints,
+        progressToNext: {
+          beginner: { threshold: 40, current: Math.min(totalPoints, 40) },
+          intermediate: { threshold: 100, current: Math.min(Math.max(totalPoints - 40, 0), 60) },
+          advanced: { threshold: null, current: Math.max(totalPoints - 100, 0) }
+        }
+      };
+      
+      res.json(response);
+    } catch (error) {
+      console.error('Error fetching user learning level:', error);
+      res.status(500).json({ message: "Failed to fetch learning level" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
