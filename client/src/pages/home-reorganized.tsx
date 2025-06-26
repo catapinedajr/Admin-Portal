@@ -1730,6 +1730,234 @@ Self-custody requires learning new skills, but it's an investment in your financ
                         "Hot wallets for convenience, cold storage for security",
                         "Learning self-custody is an investment in financial independence"
                       ]
+                    },
+                    "blockchain": {
+                      title: "Blockchain Technology",
+                      subtitle: "Deep dive into how blockchain works and ensures security",
+                      content: `Bitcoin's blockchain is a revolutionary data structure that maintains a distributed ledger of all transactions without requiring trust in a central authority.
+
+**What is a Blockchain?**
+A blockchain is a chain of blocks, where each block contains a list of transactions. Blocks are linked together using cryptographic hashes, creating an immutable record that cannot be altered without detection.
+
+**Cryptographic Hashing with SHA-256**
+Bitcoin uses SHA-256 hashing to create unique digital fingerprints for each block. Any change to transaction data produces a completely different hash, making tampering immediately obvious to the network.
+
+**Merkle Trees for Efficiency**
+Bitcoin organizes transactions in each block using Merkle trees - a binary tree structure that allows efficient verification of any transaction without downloading the entire block. This enables lightweight clients to verify payments securely.
+
+**Consensus Through Proof of Work**
+The blockchain maintains consensus through proof of work mining. Miners compete to solve cryptographic puzzles, and the network accepts the longest valid chain as the truth. This prevents double-spending without central authority.
+
+**Immutability Through Cryptographic Links**
+Each block references the hash of the previous block, creating a chain where changing any historical transaction would require recalculating all subsequent blocks - computationally impossible due to the network's collective hash power.
+
+**Distributed Network Security**
+Bitcoin's blockchain is replicated across thousands of nodes worldwide. This distribution means there's no single point of failure, and the network remains operational even if many nodes go offline.`,
+                      keyPoints: [
+                        "Blockchain links blocks using cryptographic hashes for immutability",
+                        "SHA-256 hashing creates unique fingerprints that detect any tampering",
+                        "Merkle trees enable efficient transaction verification",
+                        "Proof of work consensus eliminates need for central authority",
+                        "Distributed across thousands of nodes prevents single points of failure"
+                      ]
+                    },
+                    "mining": {
+                      title: "Proof of Work Mining",
+                      subtitle: "Understanding Bitcoin's security model through computational proof",
+                      content: `Bitcoin mining is the process that secures the network and processes transactions. It's called "mining" because it releases new Bitcoin into circulation, similar to mining gold from the earth.
+
+**The Mining Process**
+Miners collect pending transactions into blocks and compete to solve a cryptographic puzzle. This puzzle requires finding a number (nonce) that, when combined with block data, produces a hash with a specific number of leading zeros.
+
+**Difficulty Adjustment Mechanism**
+Every 2016 blocks (approximately 2 weeks), Bitcoin automatically adjusts the mining difficulty to maintain a 10-minute average block time. If more miners join, difficulty increases. If miners leave, it decreases.
+
+**Energy as Security**
+The energy consumed in mining isn't waste - it's the cost of security. The more energy required to mine Bitcoin, the more expensive it becomes to attack the network. This energy creates Bitcoin's digital scarcity.
+
+**Mining Economics and Incentives**
+Miners are rewarded with newly minted Bitcoin plus transaction fees. This economic incentive ensures miners act honestly - attacking the network would be more expensive than supporting it.
+
+**Hash Rate and Network Security**
+Hash rate measures the total computational power securing Bitcoin. Higher hash rates mean greater security. Bitcoin's hash rate has grown exponentially, making it the most secure computer network ever created.
+
+**The Halving Schedule**
+Every 210,000 blocks (roughly 4 years), the mining reward halves. This programmed scarcity ensures Bitcoin's 21 million coin limit while gradually transitioning from inflation rewards to transaction fee incentives.`,
+                      keyPoints: [
+                        "Mining secures the network through computational proof of work",
+                        "Difficulty adjusts automatically to maintain 10-minute block times",
+                        "Energy consumption directly correlates to network security",
+                        "Economic incentives align miner behavior with network health",
+                        "Halving events gradually reduce inflation toward zero"
+                      ]
+                    },
+                    "cryptography": {
+                      title: "Digital Signatures & Cryptography",
+                      subtitle: "How Bitcoin ensures transaction authenticity without revealing secrets",
+                      content: `Bitcoin uses advanced cryptography to enable secure transactions between strangers without requiring trust or revealing sensitive information.
+
+**Public-Key Cryptography Basics**
+Bitcoin uses elliptic curve cryptography where each user has a private key (secret) and a public key (shareable). The private key can generate the public key, but the reverse is computationally impossible.
+
+**Elliptic Curve Digital Signature Algorithm (ECDSA)**
+When you send Bitcoin, you create a digital signature using your private key and the transaction details. This signature proves you authorized the transaction without revealing your private key.
+
+**Address Generation Process**
+Your Bitcoin address is derived from your public key through multiple hashing functions. This creates a shorter, more user-friendly identifier while maintaining security through one-way mathematical functions.
+
+**Transaction Signing and Verification**
+Every Bitcoin transaction includes digital signatures that can be verified by anyone using the sender's public key. This proves the transaction was authorized by the private key holder without exposing the private key.
+
+**Cryptographic Security Assumptions**
+Bitcoin's security relies on the discrete logarithm problem for elliptic curves being computationally infeasible. Even with quantum computers, breaking Bitcoin's cryptography would require machines far beyond current capabilities.
+
+**Hash Functions and Data Integrity**
+Bitcoin uses cryptographic hash functions (SHA-256) to create transaction IDs and link blocks. These functions are one-way, meaning you can't reverse them to find the original input, ensuring data integrity.`,
+                      keyPoints: [
+                        "Private keys enable spending, public keys enable verification",
+                        "ECDSA allows proving authorization without revealing secrets",
+                        "Bitcoin addresses are hashed public keys for user convenience",
+                        "Digital signatures provide mathematical proof of transaction validity",
+                        "Cryptographic assumptions ensure security against current and future attacks"
+                      ]
+                    },
+                    "lightning": {
+                      title: "Lightning Network Scaling",
+                      subtitle: "Bitcoin's layer 2 solution for instant, low-cost payments",
+                      content: `The Lightning Network is Bitcoin's solution for scaling to billions of users while maintaining the base layer's security and decentralization properties.
+
+**Payment Channels Concept**
+Lightning works by creating payment channels between two parties. They lock Bitcoin in a multi-signature address and can transact privately off-chain, only settling the final balance on Bitcoin's blockchain.
+
+**Network Routing and Connectivity**
+You don't need direct channels with everyone. Lightning routes payments through intermediate nodes, creating a network effect where connectivity improves as more participants join.
+
+**Instant Settlement Benefits**
+Lightning transactions settle instantly because they don't wait for blockchain confirmation. This enables micropayments, streaming money, and real-time value transfer previously impossible with traditional Bitcoin transactions.
+
+**Liquidity and Channel Management**
+Channels require liquidity on both sides to route payments in both directions. This creates a new economy of liquidity providers who earn fees for enabling payments across the network.
+
+**Security Model and Trade-offs**
+Lightning inherits Bitcoin's security while adding convenience. Channels are secured by Bitcoin's blockchain - if someone tries to cheat, the honest party can claim all channel funds using Bitcoin's smart contract capabilities.
+
+**Scaling Without Compromise**
+Lightning enables millions of transactions per second without increasing Bitcoin's base layer requirements. This preserves Bitcoin's decentralization while enabling global payment adoption.
+
+**Privacy Improvements**
+Lightning transactions are private by default. Only the sender, receiver, and routing nodes know payment details. This provides better privacy than on-chain Bitcoin transactions.`,
+                      keyPoints: [
+                        "Payment channels enable instant Bitcoin transactions off-chain",
+                        "Network routing connects users without direct channel relationships",
+                        "Micropayments become economical with minimal fees",
+                        "Bitcoin's security protects Lightning channels from fraud",
+                        "Scales to millions of transactions while preserving decentralization"
+                      ]
+                    },
+                    "supply": {
+                      title: "Bitcoin's Fixed Supply",
+                      subtitle: "Why 21 million coins creates unprecedented digital scarcity",
+                      content: `Bitcoin's fixed supply of 21 million coins represents a fundamental breakthrough in digital scarcity, creating the first truly limited digital asset in human history.
+
+**The 21 Million Limit**
+Bitcoin's protocol enforces a hard cap of 21 million coins. This limit is mathematically guaranteed by the code and cannot be changed without consensus from the entire network - something economically unlikely since it would devalue everyone's holdings.
+
+**Programmed Issuance Schedule**
+New Bitcoin is created through mining rewards that start at 50 BTC per block and halve every 210,000 blocks (approximately 4 years). This creates a predictable, disinflationary monetary policy coded into the protocol.
+
+**Halving Events and Scarcity**
+Each halving reduces the rate of new Bitcoin creation by 50%. This scheduled scarcity creates supply shocks that have historically driven price appreciation as demand continues growing while supply growth slows.
+
+**Digital Scarcity vs Physical Assets**
+Unlike gold or other scarce resources, Bitcoin's scarcity is mathematically provable and impossible to circumvent. You can't discover new Bitcoin deposits or increase production - the rules are fixed permanently.
+
+**Monetary Policy Comparison**
+Fiat currencies can be printed without limit, leading to inflation and wealth confiscation. Bitcoin's fixed supply makes it deflationary by design - as adoption grows, each unit becomes more valuable rather than less.
+
+**Economic Incentives and HODLing**
+Fixed supply creates powerful economic incentives for long-term holding. Unlike currencies that lose value over time, Bitcoin rewards patience and savings, encouraging low time preference behavior.
+
+**Unit of Account Evolution**
+As Bitcoin becomes scarcer, smaller units become more valuable. This drives the adoption of satoshis (1/100,000,000 BTC) as the standard unit, similar to how we measure gold in grams rather than kilograms.`,
+                      keyPoints: [
+                        "21 million coin limit is mathematically enforced by the protocol",
+                        "Halving events create scheduled scarcity every four years",
+                        "Digital scarcity is provable and impossible to circumvent",
+                        "Fixed supply rewards saving rather than punishing it",
+                        "Deflationary design contrasts sharply with inflationary fiat currencies"
+                      ]
+                    },
+                    "economics": {
+                      title: "Bitcoin Economics & Incentives",
+                      subtitle: "Game theory that makes Bitcoin work without central control",
+                      content: `Bitcoin's genius lies in its economic design that aligns individual incentives with network security and growth, creating a self-reinforcing system that strengthens over time.
+
+**Game Theory and Nash Equilibrium**
+Bitcoin creates a Nash equilibrium where the most profitable strategy for each participant (miners, users, developers) is to act honestly and support the network. Attacking Bitcoin costs more than supporting it.
+
+**Miners' Economic Incentives**
+Miners invest in expensive hardware and electricity to earn Bitcoin rewards. This investment aligns them with Bitcoin's success - if they attack the network, they destroy the value of their own rewards and equipment.
+
+**Network Effects and Metcalfe's Law**
+Bitcoin's value increases exponentially with the number of users (following Metcalfe's Law). Each new user, merchant, or service provider adds value to the entire network, creating positive feedback loops.
+
+**Stock-to-Flow and Scarcity Value**
+Bitcoin's stock-to-flow ratio (total supply divided by annual production) increases over time due to halvings. This growing scarcity, combined with increasing demand, creates upward pressure on price.
+
+**Lindy Effect and Time Preference**
+The longer Bitcoin survives, the longer it's expected to survive (Lindy Effect). This encourages long-term thinking and lower time preference behavior among participants.
+
+**Adoption Curves and Network Growth**
+Bitcoin follows predictable adoption curves seen in previous technologies. Early adopters understand the technology, followed by investors recognizing value, then mainstream adoption as usability improves.
+
+**Economic Sovereignty Benefits**
+Bitcoin enables individuals to opt out of traditional monetary systems. This creates economic incentives for adoption in countries with high inflation, capital controls, or political instability.
+
+**Fee Market Development**
+As block rewards decrease through halvings, transaction fees become increasingly important for miner incentives. This creates a fee market that ensures long-term network security.`,
+                      keyPoints: [
+                        "Game theory aligns individual incentives with network security",
+                        "Network effects make Bitcoin more valuable as adoption grows",
+                        "Stock-to-flow dynamics create increasing scarcity over time",
+                        "Lindy Effect strengthens confidence as Bitcoin ages",
+                        "Fee markets ensure long-term miner incentives beyond block rewards"
+                      ]
+                    },
+                    "banking": {
+                      title: "Bitcoin vs Traditional Banking",
+                      subtitle: "Comparing peer-to-peer money with intermediary-based finance",
+                      content: `Bitcoin represents a fundamental shift from intermediary-based finance to peer-to-peer value transfer, eliminating many problems inherent in traditional banking.
+
+**Intermediary Removal Benefits**
+Traditional payments require multiple intermediaries: banks, payment processors, clearinghouses, and correspondent banks. Each adds fees, delays, and potential failure points. Bitcoin enables direct peer-to-peer transactions.
+
+**24/7 Global Operation**
+Banks operate on business hours and close on weekends and holidays. Bitcoin operates 24/7/365, allowing global commerce to continue regardless of local banking schedules or time zones.
+
+**Censorship Resistance**
+Banks can freeze accounts, reverse transactions, or deny service based on policies or government pressure. Bitcoin transactions are censorship-resistant - no one can prevent you from sending or receiving Bitcoin.
+
+**Financial Inclusion**
+Traditional banking requires documentation, credit history, and minimum balances that exclude billions globally. Bitcoin only requires internet access, providing financial services to the unbanked.
+
+**Permissionless Innovation**
+Building on traditional banking requires regulatory approval and partnerships with existing institutions. Bitcoin enables permissionless innovation - anyone can build services without asking permission.
+
+**Settlement Speed Comparison**
+Bank wire transfers can take days and only work during business hours. Bitcoin transactions settle in minutes regardless of amount, distance, or time of day.
+
+**Cost Structure Differences**
+Traditional banking has high infrastructure costs passed to customers through fees. Bitcoin's decentralized structure eliminates many overhead costs, enabling lower-cost financial services.
+
+**Sovereignty and Self-Custody**
+Banks hold your money and can restrict access. Bitcoin enables true ownership where you control your funds directly through private keys, eliminating counterparty risk.`,
+                      keyPoints: [
+                        "Eliminates intermediaries and their associated fees and delays",
+                        "Operates 24/7 globally without banking hour restrictions",
+                        "Provides censorship-resistant transactions and financial sovereignty",
+                        "Enables financial inclusion for the globally unbanked",
+                        "Allows permissionless innovation without regulatory approval"
+                      ]
                     }
                   };
 
