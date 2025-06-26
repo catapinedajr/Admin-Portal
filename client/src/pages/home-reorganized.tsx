@@ -2581,15 +2581,6 @@ export default function Home() {
                     White Paper
                   </Button>
                   <Button
-                    variant={convictionSubTab === "books" ? "secondary" : "ghost"}
-                    size="sm"
-                    onClick={() => setConvictionSubTab("books")}
-                    className="text-sm"
-                  >
-                    <BookOpen className="w-3 h-3 mr-2" />
-                    Books
-                  </Button>
-                  <Button
                     variant={convictionSubTab === "videos" ? "secondary" : "ghost"}
                     size="sm"
                     onClick={() => setConvictionSubTab("videos")}
@@ -2696,43 +2687,43 @@ export default function Home() {
                   </div>
                 )}
 
-                {inspirationSubTab === "store" && (
-                  <div className="space-y-6">
-                    <div className="text-center space-y-2">
-                      <h2 className="text-2xl font-bold text-white">BTC Journey Store</h2>
-                      <p className="text-zinc-400">Essential Bitcoin books and hardware for your journey</p>
-                    </div>
+            {inspirationSubTab === "store" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-bold text-white">BTC Journey Store</h2>
+                  <p className="text-zinc-400">Essential Bitcoin books and hardware for your journey</p>
+                </div>
 
-                    {/* Hardware Wallets */}
-                    <Card className="bg-zinc-900 border-zinc-800">
-                      <CardContent className="p-6">
-                        <h3 className="text-xl font-bold text-orange-400 mb-4 flex items-center gap-2">
-                          <Shield className="w-5 h-5" />
-                          Hardware Wallets - Secure Your Bitcoin
-                        </h3>
-                        <div className="grid gap-6">
-                          <div className="border border-zinc-700 rounded-lg p-4">
-                            <div className="flex items-start justify-between mb-4">
-                              <div>
-                                <h4 className="text-white font-semibold text-lg">Ledger Nano X</h4>
-                                <p className="text-zinc-400">Bluetooth-enabled with mobile app</p>
-                              </div>
-                              <div className="text-right">
-                                <p className="text-orange-400 font-bold text-lg">$149</p>
-                                <p className="text-zinc-500 text-sm">Free shipping</p>
-                              </div>
-                            </div>
-                            <p className="text-zinc-300 mb-4">Industry-leading hardware wallet with Bluetooth connectivity and support for 5,500+ cryptocurrencies. Secure element chip and mobile app integration for on-the-go management.</p>
-                            <div className="flex flex-wrap gap-2 mb-4">
-                              <Badge variant="secondary" className="bg-green-600/20 text-green-400">Bluetooth</Badge>
-                              <Badge variant="secondary" className="bg-blue-600/20 text-blue-400">Mobile App</Badge>
-                              <Badge variant="secondary" className="bg-purple-600/20 text-purple-400">5,500+ Assets</Badge>
-                            </div>
-                            <Button className="w-full bg-orange-600 hover:bg-orange-700">
-                              <ExternalLink className="w-4 h-4 mr-2" />
-                              Buy on Ledger.com (Affiliate Link)
-                            </Button>
+                {/* Hardware Wallets */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold text-orange-400 mb-4 flex items-center gap-2">
+                      <Shield className="w-5 h-5" />
+                      Hardware Wallets - Secure Your Bitcoin
+                    </h3>
+                    <div className="grid gap-6">
+                      <div className="border border-zinc-700 rounded-lg p-4">
+                        <div className="flex items-start justify-between mb-4">
+                          <div>
+                            <h4 className="text-white font-semibold text-lg">Ledger Nano X</h4>
+                            <p className="text-zinc-400">Bluetooth-enabled with mobile app</p>
                           </div>
+                          <div className="text-right">
+                            <p className="text-orange-400 font-bold text-lg">$149</p>
+                            <p className="text-zinc-500 text-sm">Free shipping</p>
+                          </div>
+                        </div>
+                        <p className="text-zinc-300 mb-4">Industry-leading hardware wallet with Bluetooth connectivity and support for 5,500+ cryptocurrencies. Secure element chip and mobile app integration for on-the-go management.</p>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          <Badge variant="secondary" className="bg-green-600/20 text-green-400">Bluetooth</Badge>
+                          <Badge variant="secondary" className="bg-blue-600/20 text-blue-400">Mobile App</Badge>
+                          <Badge variant="secondary" className="bg-purple-600/20 text-purple-400">5,500+ Assets</Badge>
+                        </div>
+                        <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                          <ExternalLink className="w-4 h-4 mr-2" />
+                          Buy on Ledger.com (Affiliate Link)
+                        </Button>
+                      </div>
 
                           <div className="border border-zinc-700 rounded-lg p-4">
                             <div className="flex items-start justify-between mb-4">
@@ -2806,39 +2797,39 @@ export default function Home() {
                       </CardContent>
                     </Card>
 
-                    {/* Essential Books */}
-                    <Card className="bg-zinc-900 border-zinc-800">
-                      <CardContent className="p-6">
-                        <h3 className="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
-                          <BookOpen className="w-5 h-5" />
-                          Essential Bitcoin Books
-                        </h3>
-                        <div className="grid gap-6">
-                          <div className="border border-zinc-700 rounded-lg p-4">
-                            <div className="flex items-start justify-between mb-4">
-                              <div>
-                                <h4 className="text-white font-semibold text-lg">Broken Money by Lyn Alden</h4>
-                                <p className="text-zinc-400">Why Our Financial System is Failing Us</p>
-                              </div>
-                              <div className="text-right">
-                                <p className="text-orange-400 font-bold text-lg">$24.99</p>
-                                <Badge variant="outline" className="border-green-600 text-green-400 mt-1">Beginner</Badge>
-                              </div>
-                            </div>
-                            <p className="text-zinc-300 mb-4">Comprehensive analysis of monetary history and why Bitcoin represents a return to sound money principles. Perfect for understanding the "why" behind Bitcoin from one of the most respected voices in the space.</p>
-                            <div className="flex flex-wrap gap-2 mb-4">
-                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Monetary History</Badge>
-                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Economics</Badge>
-                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Sound Money</Badge>
-                              <Badge variant="secondary" className="bg-green-600/20 text-green-400">Highly Recommended</Badge>
-                            </div>
-                            <Button className="w-full bg-orange-600 hover:bg-orange-700">
-                              <ExternalLink className="w-4 h-4 mr-2" />
-                              Buy on Amazon (Affiliate Link)
-                            </Button>
+                {/* Essential Books */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                      <BookOpen className="w-5 h-5" />
+                      Essential Bitcoin Books
+                    </h3>
+                    <div className="grid gap-6">
+                      <div className="border border-zinc-700 rounded-lg p-4">
+                        <div className="flex items-start justify-between mb-4">
+                          <div>
+                            <h4 className="text-white font-semibold text-lg">Broken Money by Lyn Alden</h4>
+                            <p className="text-zinc-400">Why Our Financial System is Failing Us</p>
                           </div>
+                          <div className="text-right">
+                            <p className="text-orange-400 font-bold text-lg">$24.99</p>
+                            <Badge variant="outline" className="border-green-600 text-green-400 mt-1">Beginner</Badge>
+                          </div>
+                        </div>
+                        <p className="text-zinc-300 mb-4">Comprehensive analysis of monetary history and why Bitcoin represents a return to sound money principles. Perfect for understanding the "why" behind Bitcoin from one of the most respected voices in the space.</p>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Monetary History</Badge>
+                          <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Economics</Badge>
+                          <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Sound Money</Badge>
+                          <Badge variant="secondary" className="bg-green-600/20 text-green-400">Highly Recommended</Badge>
+                        </div>
+                        <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                          <ExternalLink className="w-4 h-4 mr-2" />
+                          Buy on Amazon (Affiliate Link)
+                        </Button>
+                      </div>
 
-                          <div className="border border-zinc-700 rounded-lg p-4">
+                      <div className="border border-zinc-700 rounded-lg p-4">
                             <div className="flex items-start justify-between mb-4">
                               <div>
                                 <h4 className="text-white font-semibold text-lg">The Bitcoin Standard by Saifedean Ammous</h4>
@@ -2991,9 +2982,9 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-                )}
+              )}
 
-                {convictionSubTab === "videos" && (
+              {convictionSubTab === "videos" && (
                   <div className="grid gap-6">
                     {convictionContent.videos.map((video, index) => (
                       <Card key={index} className="bg-zinc-900 border-zinc-800">
