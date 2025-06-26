@@ -131,6 +131,20 @@ export const userQuizAnswers = pgTable("user_quiz_answers", {
   date: text("date").notNull(), // YYYY-MM-DD format
 });
 
+export const deepDiveTopics = pgTable("deep_dive_topics", {
+  id: serial("id").primaryKey(),
+  dayIndex: integer("day_index").notNull(),
+  title: text("title").notNull(),
+  subtitle: text("subtitle").notNull(),
+  estimatedReadTime: text("estimated_read_time").notNull(),
+  difficulty: text("difficulty").notNull(), // beginner, intermediate, advanced
+  category: text("category").notNull(),
+  content: text("content").notNull(),
+  keyTakeaways: text("key_takeaways").array().notNull(),
+  furtherReading: text("further_reading").array().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -180,6 +194,11 @@ export const insertUserQuizAnswerSchema = createInsertSchema(userQuizAnswers).om
   answeredAt: true,
 });
 
+export const insertDeepDiveTopicSchema = createInsertSchema(deepDiveTopics).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type DailyFact = typeof dailyFacts.$inferSelect;
@@ -202,3 +221,5 @@ export type QuizQuestion = typeof quizQuestions.$inferSelect;
 export type InsertQuizQuestion = z.infer<typeof insertQuizQuestionSchema>;
 export type UserQuizAnswer = typeof userQuizAnswers.$inferSelect;
 export type InsertUserQuizAnswer = z.infer<typeof insertUserQuizAnswerSchema>;
+export type DeepDiveTopic = typeof deepDiveTopics.$inferSelect;
+export type InsertDeepDiveTopic = z.infer<typeof insertDeepDiveTopicSchema>;

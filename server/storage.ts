@@ -7,6 +7,7 @@ import {
   convictionContent,
   treasuryCompanies,
   sovereignAdoption,
+  deepDiveTopics,
   type User, 
   type InsertUser, 
   type DailyFact, 
@@ -28,7 +29,9 @@ import {
   type QuizQuestion,
   type InsertQuizQuestion,
   type UserQuizAnswer,
-  type InsertUserQuizAnswer
+  type InsertUserQuizAnswer,
+  type DeepDiveTopic,
+  type InsertDeepDiveTopic
 } from "@shared/schema";
 
 export interface IStorage {
@@ -88,6 +91,11 @@ export interface IStorage {
   getUserQuizAnswers(userId: number, date: string): Promise<UserQuizAnswer[]>;
   submitQuizAnswer(answer: InsertUserQuizAnswer): Promise<UserQuizAnswer>;
   getUserQuizScore(userId: number, date: string): Promise<{ correct: number; total: number; percentage: number }>;
+
+  // Deep dive topics methods
+  getDailyDeepDive(dayIndex: number): Promise<DeepDiveTopic | undefined>;
+  getAllDeepDiveTopics(): Promise<DeepDiveTopic[]>;
+  createDeepDiveTopic(topic: InsertDeepDiveTopic): Promise<DeepDiveTopic>;
 }
 
 export class MemStorage implements IStorage {
@@ -102,6 +110,7 @@ export class MemStorage implements IStorage {
   private bitcoinPrices: Map<number, BitcoinPrice>;
   private quizQuestions: Map<number, QuizQuestion>;
   private userQuizAnswers: Map<string, UserQuizAnswer>; // key: userId-questionId-date
+  private deepDiveTopics: Map<number, DeepDiveTopic>;
   private currentUserId: number;
   private currentFactId: number;
   private currentLessonId: number;

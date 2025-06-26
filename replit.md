@@ -145,3 +145,9 @@ Comprehensive component library built on Radix UI primitives:
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+
+Educational Content Enhancement Preferences:
+- **Expandable Facts**: Each daily fact should always have expandable "Learn More" content with deeper explanations, examples, and takeaways
+- **Daily Deep Dive**: The Deep Dive section should rotate daily with substantial long-form topics rather than static content, providing comprehensive exploration of advanced Bitcoin concepts
+- **Content Quality Focus**: Prioritize substantial, well-formatted educational content with proper spacing and clear text presentation over complex visual widgets
+- **Text Formatting**: Emphasize clean line breaks, bullet points for lists, and proper spacing between paragraphs for optimal readability
