@@ -368,6 +368,81 @@ export default function Home() {
     ];
   };
 
+  // Helper function for expanded lesson content
+  function getExpandedLessonContent(title: string, content: string): Array<{
+    title: string;
+    paragraphs: string[];
+    keyPoints?: string[];
+    realWorldExample?: string;
+  }> {
+    switch (title) {
+      case "Understanding Bitcoin: Digital Money":
+        return [
+          {
+            title: "What Makes Bitcoin Revolutionary",
+            paragraphs: [
+              "Bitcoin represents the first successful implementation of decentralized digital money. Unlike traditional digital payments that require banks, credit card companies, or payment processors to verify and complete transactions, Bitcoin operates on a peer-to-peer network where thousands of computers worldwide work together to validate payments.",
+              "This fundamental difference means that no single entity can control, freeze, or reverse your Bitcoin transactions. When you send Bitcoin, you're not asking permission from a bank or waiting for business hours - you're participating in a global financial network that operates 24/7/365.",
+              "The implications are profound: Bitcoin provides financial sovereignty, meaning you have complete control over your money without depending on traditional financial institutions."
+            ],
+            keyPoints: [
+              "No central authority controls Bitcoin - it's truly decentralized",
+              "Transactions are verified by network consensus, not banks",
+              "You maintain complete control over your funds",
+              "The network operates globally without business hours or restrictions"
+            ],
+            realWorldExample: "In 2021, El Salvador's President Nayib Bukele demonstrated Bitcoin's efficiency by sending $30 worth of Bitcoin to students across the country in under 10 minutes - something that would have taken days through traditional banking and cost $15+ in fees per transaction."
+          },
+          {
+            title: "Cryptographic Security That You Can Trust",
+            paragraphs: [
+              "Bitcoin's security model relies on advanced cryptography that has been battle-tested for over a decade. Every Bitcoin transaction is protected by the same cryptographic principles used by banks, governments, and militaries worldwide.",
+              "When you own Bitcoin, you control a private key - essentially a secret number that proves ownership of your Bitcoin. This private key generates a unique digital signature for each transaction, proving you authorized the payment without revealing the key itself.",
+              "The beauty of this system is that the Bitcoin network can verify your signature is authentic without ever seeing your private key. This means only you can spend your Bitcoin, even if the entire world can see the transaction on the blockchain."
+            ],
+            keyPoints: [
+              "Private keys provide mathematical proof of ownership",
+              "Digital signatures prove authorization without revealing secrets",
+              "Cryptographic security has never been broken in Bitcoin's history",
+              "Your Bitcoin is secured by the same cryptography protecting national secrets"
+            ],
+            realWorldExample: "In 2022, when Canada froze bank accounts during the Freedom Convoy protests, Bitcoin donations continued flowing to protesters because no government can freeze or control Bitcoin private keys - only the holder of the private key can access those funds."
+          },
+          {
+            title: "Global Money That Never Sleeps", 
+            paragraphs: [
+              "Bitcoin operates as truly global money, working identically everywhere in the world without borders, time zones, or currency conversions. Whether you're in New York or Nigeria, Tokyo or Toronto, Bitcoin functions the same way with the same level of security and accessibility.",
+              "Traditional international payments can take days, cost significant fees, and require multiple intermediaries. Bitcoin transactions typically confirm within 10-60 minutes regardless of distance, with fees that are often a fraction of traditional wire transfers.",
+              "This global accessibility becomes crucial during emergencies, political upheaval, or in regions with limited banking infrastructure. Bitcoin provides a financial lifeline when traditional systems fail or are inaccessible."
+            ],
+            keyPoints: [
+              "Bitcoin works identically worldwide - no currency conversion needed",
+              "Transactions process 24/7 regardless of holidays or business hours", 
+              "Lower fees compared to international wire transfers",
+              "No permission required from banks or governments to transact"
+            ],
+            realWorldExample: "During Ukraine's 2022 conflict, when traditional payment systems were disrupted, Bitcoin donations reached defenders within hours while bank transfers were impossible. Ukrainian officials received over $100 million in Bitcoin donations because the network operates regardless of physical infrastructure damage."
+          }
+        ];
+      default:
+        return [
+          {
+            title: "Core Concepts",
+            paragraphs: [
+              content,
+              "Understanding these fundamentals provides the foundation for more advanced Bitcoin concepts and practical usage."
+            ],
+            keyPoints: [
+              "Bitcoin operates on revolutionary principles",
+              "Decentralization provides unprecedented financial freedom", 
+              "Cryptographic security ensures your funds remain safe",
+              "Global accessibility opens new possibilities for financial inclusion"
+            ]
+          }
+        ];
+    }
+  }
+
   const getLessonTakeaways = (lessonTitle: string): string[] => {
     const takeaways: Record<string, string[]> = {
       "Understanding Bitcoin: Digital Money": [
@@ -1109,152 +1184,67 @@ export default function Home() {
                 {lesson && (
                   <Card className="bg-zinc-900 border-zinc-800">
                     <CardContent className="p-6">
-                      {/* Lesson Header */}
-                      <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center gap-3">
-                          <div className="p-2 bg-blue-600/20 rounded-lg">
-                            <BookOpen className="w-6 h-6 text-blue-400" />
-                          </div>
-                          <div>
-                            <h3 className="text-xl font-bold text-white">Today's Deep Dive</h3>
-                            <p className="text-zinc-400 text-sm">Comprehensive lesson with interactive elements</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="border-blue-600 text-blue-400">
+                      <div className="space-y-6">
+                        {/* Lesson Header */}
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-xl font-bold text-white">{(lesson as Lesson).title}</h3>
+                          <Badge variant="outline" className="border-zinc-700 text-zinc-400">
                             <Clock className="w-3 h-3 mr-1" />
-                            {(lesson as Lesson).estimatedReadTime || '8'} min
+                            {(lesson as Lesson).estimatedReadTime || '8'} min read
                           </Badge>
                         </div>
-                      </div>
-
-                      {/* Learning Objectives */}
-                      <div className="bg-gradient-to-r from-blue-600/10 to-purple-600/10 border border-blue-600/30 rounded-lg p-4 mb-6">
-                        <h4 className="text-blue-300 font-medium mb-2 flex items-center gap-2">
-                          <Target className="w-4 h-4" />
-                          What You'll Learn
-                        </h4>
-                        <div className="grid gap-2">
-                          {getLessonObjectives((lesson as Lesson).title).map((objective, idx) => (
-                            <div key={idx} className="flex items-center gap-2 text-sm text-zinc-300">
-                              <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
-                              <span>{objective}</span>
+                        
+                        {/* Expanded Lesson Content */}
+                        <div className="prose prose-invert max-w-none space-y-6">
+                          {getExpandedLessonContent((lesson as Lesson).title, (lesson as Lesson).content).map((section, idx) => (
+                            <div key={idx} className="space-y-4">
+                              <h4 className="text-lg font-semibold text-white border-l-4 border-orange-500 pl-4 mb-3">
+                                {section.title}
+                              </h4>
+                              
+                              <div className="space-y-4 text-zinc-300 leading-relaxed">
+                                {section.paragraphs.map((paragraph, pIdx) => (
+                                  <p key={pIdx} className="text-zinc-300 leading-relaxed">
+                                    {paragraph}
+                                  </p>
+                                ))}
+                              </div>
+                              
+                              {section.keyPoints && (
+                                <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4 my-4">
+                                  <h5 className="text-blue-400 font-medium mb-3">Key Points:</h5>
+                                  <ul className="space-y-2">
+                                    {section.keyPoints.map((point, pointIdx) => (
+                                      <li key={pointIdx} className="flex items-start gap-2 text-sm text-zinc-300">
+                                        <span className="text-blue-400 mt-1">•</span>
+                                        <span>{point}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                              
+                              {section.realWorldExample && (
+                                <div className="bg-green-600/10 border border-green-600/20 rounded-lg p-4 my-4">
+                                  <h5 className="text-green-400 font-medium mb-2">Real-World Application:</h5>
+                                  <p className="text-zinc-300 text-sm leading-relaxed">{section.realWorldExample}</p>
+                                </div>
+                              )}
                             </div>
                           ))}
                         </div>
-                      </div>
 
-                      {/* Main Lesson Content */}
-                      <div className="space-y-8">
-                        <div className="space-y-4">
-                          <h4 className="text-2xl font-bold text-white">{(lesson as Lesson).title}</h4>
-                          
-                          {/* Visual Introduction */}
-                          <div className="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
-                            <div className="flex items-start gap-4">
-                              <div className="p-3 bg-orange-600/20 rounded-lg">
-                                <Lightbulb className="w-8 h-8 text-orange-400" />
-                              </div>
-                              <div className="flex-1">
-                                <h5 className="text-orange-300 font-medium mb-2">Quick Overview</h5>
-                                <p className="text-zinc-300 text-sm leading-relaxed">
-                                  {getLessonOverview((lesson as Lesson).title)}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Interactive Lesson Sections */}
-                          <div className="space-y-6">
-                            {getLessonSections((lesson as Lesson).title, (lesson as Lesson).content).map((section, idx) => (
-                              <div key={idx} className="space-y-4">
-                                <div className="flex items-center gap-3">
-                                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                                    <span className="text-white font-bold text-sm">{idx + 1}</span>
-                                  </div>
-                                  <h5 className="text-xl font-semibold text-white">{section.title}</h5>
-                                </div>
-                                
-                                <div className="ml-11 space-y-4">
-                                  <p className="text-zinc-300 leading-relaxed">{section.content}</p>
-                                  
-                                  {/* Visual Diagram */}
-                                  {section.diagram && (
-                                    <div className="bg-zinc-800/30 rounded-lg p-6 border border-zinc-700">
-                                      <div className="text-center space-y-3">
-                                        <div className="text-zinc-400 text-sm mb-3">Visual Representation</div>
-                                        <div className="flex justify-center">
-                                          <div dangerouslySetInnerHTML={{__html: section.diagram}} />
-                                        </div>
-                                        <p className="text-zinc-400 text-xs italic">{section.diagramCaption}</p>
-                                      </div>
-                                    </div>
-                                  )}
-                                  
-                                  {/* Real-World Example */}
-                                  {section.example && (
-                                    <div className="bg-green-600/10 border border-green-600/20 rounded-lg p-4">
-                                      <h6 className="text-green-400 font-medium mb-2 flex items-center gap-2">
-                                        <Zap className="w-4 h-4" />
-                                        Real-World Example
-                                      </h6>
-                                      <p className="text-zinc-300 text-sm">{section.example}</p>
-                                    </div>
-                                  )}
-                                  
-                                  {/* Think About This */}
-                                  {section.checkpoint && (
-                                    <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-4">
-                                      <h6 className="text-orange-400 font-medium mb-2 flex items-center gap-2">
-                                        <HelpCircle className="w-4 h-4" />
-                                        Think About This
-                                      </h6>
-                                      <p className="text-zinc-300 text-sm italic">{section.checkpoint}</p>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Key Takeaways */}
-                        <div className="bg-gradient-to-r from-purple-600/10 to-pink-600/10 border border-purple-600/30 rounded-lg p-6">
-                          <h5 className="text-purple-300 font-medium mb-4 flex items-center gap-2">
-                            <Star className="w-4 h-4" />
-                            Key Takeaways
-                          </h5>
-                          <div className="grid gap-3">
+                        {/* Essential Takeaways */}
+                        <div className="bg-zinc-800/50 rounded-lg p-5 border border-zinc-700">
+                          <h4 className="text-white font-semibold mb-4">Why This Matters</h4>
+                          <div className="space-y-3">
                             {getLessonTakeaways((lesson as Lesson).title).map((takeaway, idx) => (
-                              <div key={idx} className="flex items-start gap-3 p-3 bg-purple-600/10 rounded-lg border border-purple-600/20">
-                                <CheckCircle className="w-5 h-5 text-purple-400 mt-0.5 flex-shrink-0" />
-                                <span className="text-zinc-200 text-sm">{takeaway}</span>
+                              <div key={idx} className="flex items-start gap-3">
+                                <CheckCircle className="w-5 h-5 text-orange-400 mt-0.5 flex-shrink-0" />
+                                <span className="text-zinc-300 text-sm leading-relaxed">{takeaway}</span>
                               </div>
                             ))}
                           </div>
-                        </div>
-
-                        {/* What's Next */}
-                        <div className="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
-                          <h5 className="text-zinc-300 font-medium mb-2 flex items-center gap-2">
-                            <ArrowRight className="w-4 h-4" />
-                            Continue Your Learning Journey
-                          </h5>
-                          <p className="text-zinc-400 text-sm mb-3">
-                            Ready to test your understanding? Take today's quiz below to reinforce what you've learned.
-                          </p>
-                          <Button 
-                            size="sm" 
-                            className="bg-blue-600 hover:bg-blue-700 text-white"
-                            onClick={() => {
-                              const quizElement = document.querySelector('[data-testid="daily-quiz"]');
-                              if (quizElement) {
-                                quizElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                              }
-                            }}
-                          >
-                            Take Quiz
-                          </Button>
                         </div>
                       </div>
                     </CardContent>
