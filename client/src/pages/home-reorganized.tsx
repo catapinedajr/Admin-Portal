@@ -23,6 +23,7 @@ import {
   Heart,
   Plus,
   Play,
+  ShoppingCart,
   Quote,
   ExternalLink,
   Globe,
@@ -411,7 +412,7 @@ const traditionalFinanceProblems = {
 type MainSection = "learn" | "practice" | "more";
 type LearnSubTab = "today" | "deepdive" | "reference";
 type PracticeSubTab = "safety" | "transactions" | "hodl" | "dca";
-type MoreSubTab = "stories" | "resources";
+type MoreSubTab = "stories" | "store";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<MainSection>("learn");
@@ -419,6 +420,7 @@ export default function Home() {
   const [practiceSubTab, setPracticeSubTab] = useState<PracticeSubTab>("safety");
   const [moreSubTab, setMoreSubTab] = useState<MoreSubTab>("stories");
   const [storiesSubTab, setStoriesSubTab] = useState<"individuals" | "businesses" | "nations">("individuals");
+  const [convictionSubTab, setConvictionSubTab] = useState<"whitepaper" | "books" | "videos">("whitepaper");
   const [txStatus, setTxStatus] = useState('preview');
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -3468,13 +3470,13 @@ Banks hold your money and can restrict access. Bitcoin enables true ownership wh
                 Stories
               </Button>
               <Button
-                variant={moreSubTab === "resources" ? "secondary" : "ghost"}
+                variant={moreSubTab === "store" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setMoreSubTab("resources")}
+                onClick={() => setMoreSubTab("store")}
                 className="text-sm"
               >
-                <BookOpen className="w-3 h-3 mr-2" />
-                Resources
+                <ShoppingCart className="w-3 h-3 mr-2" />
+                Store
               </Button>
             </div>
 
@@ -3551,11 +3553,169 @@ Banks hold your money and can restrict access. Bitcoin enables true ownership wh
               </div>
             )}
 
-            {moreSubTab === "resources" && (
+            {moreSubTab === "store" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
-                  <h2 className="text-2xl font-bold text-white">Build Your Conviction</h2>
-                  <p className="text-zinc-400">Resources to strengthen your Bitcoin understanding</p>
+                  <h2 className="text-2xl font-bold text-white">Bitcoin Store</h2>
+                  <p className="text-zinc-400">Essential hardware, books, and gear for your Bitcoin journey</p>
+                </div>
+                
+                {/* Store Categories */}
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  
+                  {/* Hardware Wallets */}
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-orange-600/20 rounded-lg">
+                            <Shield className="w-6 h-6 text-orange-400" />
+                          </div>
+                          <h3 className="text-lg font-bold text-white">Hardware Wallets</h3>
+                        </div>
+                        
+                        <div className="space-y-4">
+                          <div className="border border-zinc-700 rounded-lg p-4">
+                            <div className="flex justify-between items-start mb-2">
+                              <h4 className="font-semibold text-white">Ledger Nano X</h4>
+                              <span className="text-orange-400 font-bold">$149</span>
+                            </div>
+                            <p className="text-zinc-400 text-sm mb-3">Bluetooth-enabled hardware wallet with mobile app support. Store 100+ cryptocurrencies securely.</p>
+                            <Button 
+                              size="sm" 
+                              className="w-full bg-orange-600 hover:bg-orange-700"
+                              onClick={() => window.open('https://shop.ledger.com/products/ledger-nano-x?r=btcjourney', '_blank')}
+                            >
+                              <ExternalLink className="w-3 h-3 mr-2" />
+                              Buy Now
+                            </Button>
+                          </div>
+                          
+                          <div className="border border-zinc-700 rounded-lg p-4">
+                            <div className="flex justify-between items-start mb-2">
+                              <h4 className="font-semibold text-white">Trezor Model T</h4>
+                              <span className="text-orange-400 font-bold">$219</span>
+                            </div>
+                            <p className="text-zinc-400 text-sm mb-3">Premium hardware wallet with touchscreen interface. Open-source and highly secure.</p>
+                            <Button 
+                              size="sm" 
+                              className="w-full bg-orange-600 hover:bg-orange-700"
+                              onClick={() => window.open('https://trezor.io/trezor-model-t?offer_id=35&aff_id=10388', '_blank')}
+                            >
+                              <ExternalLink className="w-3 h-3 mr-2" />
+                              Buy Now
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Books */}
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-blue-600/20 rounded-lg">
+                            <BookOpen className="w-6 h-6 text-blue-400" />
+                          </div>
+                          <h3 className="text-lg font-bold text-white">Essential Books</h3>
+                        </div>
+                        
+                        <div className="space-y-4">
+                          <div className="border border-zinc-700 rounded-lg p-4">
+                            <div className="flex justify-between items-start mb-2">
+                              <h4 className="font-semibold text-white">Broken Money</h4>
+                              <span className="text-orange-400 font-bold">$18</span>
+                            </div>
+                            <p className="text-zinc-400 text-sm mb-1">by Lyn Alden</p>
+                            <p className="text-zinc-400 text-sm mb-3">Deep dive into monetary history and Bitcoin's role in fixing our broken financial system.</p>
+                            <Button 
+                              size="sm" 
+                              className="w-full bg-orange-600 hover:bg-orange-700"
+                              onClick={() => window.open('https://amzn.to/3broken-money-lyn-alden', '_blank')}
+                            >
+                              <ExternalLink className="w-3 h-3 mr-2" />
+                              Buy Now
+                            </Button>
+                          </div>
+                          
+                          <div className="border border-zinc-700 rounded-lg p-4">
+                            <div className="flex justify-between items-start mb-2">
+                              <h4 className="font-semibold text-white">The Bitcoin Standard</h4>
+                              <span className="text-orange-400 font-bold">$15</span>
+                            </div>
+                            <p className="text-zinc-400 text-sm mb-1">by Saifedean Ammous</p>
+                            <p className="text-zinc-400 text-sm mb-3">The definitive book on Bitcoin's economic properties and sound money principles.</p>
+                            <Button 
+                              size="sm" 
+                              className="w-full bg-orange-600 hover:bg-orange-700"
+                              onClick={() => window.open('https://amzn.to/bitcoin-standard-ammous', '_blank')}
+                            >
+                              <ExternalLink className="w-3 h-3 mr-2" />
+                              Buy Now
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Merchandise & Gear */}
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-green-600/20 rounded-lg">
+                            <ShoppingCart className="w-6 h-6 text-green-400" />
+                          </div>
+                          <h3 className="text-lg font-bold text-white">Bitcoin Gear</h3>
+                        </div>
+                        
+                        <div className="space-y-4">
+                          <div className="border border-zinc-700 rounded-lg p-4">
+                            <div className="flex justify-between items-start mb-2">
+                              <h4 className="font-semibold text-white">Bitcoin Logo T-Shirt</h4>
+                              <span className="text-orange-400 font-bold">$25</span>
+                            </div>
+                            <p className="text-zinc-400 text-sm mb-3">Premium cotton tee with classic Bitcoin logo. Available in multiple colors and sizes.</p>
+                            <Button 
+                              size="sm" 
+                              className="w-full bg-orange-600 hover:bg-orange-700"
+                              onClick={() => window.open('https://shop.bitcoin.com/btc-t-shirt?ref=btcjourney', '_blank')}
+                            >
+                              <ExternalLink className="w-3 h-3 mr-2" />
+                              Buy Now
+                            </Button>
+                          </div>
+                          
+                          <div className="border border-zinc-700 rounded-lg p-4">
+                            <div className="flex justify-between items-start mb-2">
+                              <h4 className="font-semibold text-white">Cold Storage Kit</h4>
+                              <span className="text-orange-400 font-bold">$39</span>
+                            </div>
+                            <p className="text-zinc-400 text-sm mb-3">Complete kit for offline Bitcoin storage with steel plates and engraving tools.</p>
+                            <Button 
+                              size="sm" 
+                              className="w-full bg-orange-600 hover:bg-orange-700"
+                              onClick={() => window.open('https://coldbitcoin.com/storage-kit?affiliate=btcjourney', '_blank')}
+                            >
+                              <ExternalLink className="w-3 h-3 mr-2" />
+                              Buy Now
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Affiliate Disclosure */}
+                <div className="bg-zinc-800/50 border border-zinc-700 rounded-lg p-4 text-center">
+                  <p className="text-zinc-400 text-sm">
+                    <AlertTriangle className="w-4 h-4 inline mr-2" />
+                    As an Amazon Associate and affiliate partner, BTC Journey earns from qualifying purchases. This helps support our educational mission while providing you with the best Bitcoin resources.
+                  </p>
                 </div>
                 
                 <div className="flex space-x-2 mb-6 justify-center flex-wrap gap-2">
