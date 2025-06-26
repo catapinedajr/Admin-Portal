@@ -1195,29 +1195,29 @@ export default function Home() {
                         </div>
                         
                         {/* Expanded Lesson Content */}
-                        <div className="prose prose-invert max-w-none space-y-6">
+                        <div className="prose prose-invert max-w-none space-y-10">
                           {getExpandedLessonContent((lesson as Lesson).title, (lesson as Lesson).content).map((section, idx) => (
-                            <div key={idx} className="space-y-4">
-                              <h4 className="text-lg font-semibold text-white border-l-4 border-orange-500 pl-4 mb-3">
+                            <div key={idx} className="space-y-6">
+                              <h4 className="text-xl font-semibold text-white border-l-4 border-orange-500 pl-4 mb-6">
                                 {section.title}
                               </h4>
                               
-                              <div className="space-y-4 text-zinc-300 leading-relaxed">
+                              <div className="space-y-6 text-zinc-300 leading-relaxed text-base">
                                 {section.paragraphs.map((paragraph, pIdx) => (
-                                  <p key={pIdx} className="text-zinc-300 leading-relaxed">
+                                  <p key={pIdx} className="text-zinc-300 leading-[1.8] text-base mb-4">
                                     {paragraph}
                                   </p>
                                 ))}
                               </div>
                               
                               {section.keyPoints && (
-                                <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4 my-4">
-                                  <h5 className="text-blue-400 font-medium mb-3">Key Points:</h5>
-                                  <ul className="space-y-2">
+                                <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-6 my-6">
+                                  <h5 className="text-blue-400 font-medium mb-4 text-base">Key Points:</h5>
+                                  <ul className="space-y-3">
                                     {section.keyPoints.map((point, pointIdx) => (
-                                      <li key={pointIdx} className="flex items-start gap-2 text-sm text-zinc-300">
-                                        <span className="text-blue-400 mt-1">•</span>
-                                        <span>{point}</span>
+                                      <li key={pointIdx} className="flex items-start gap-3 text-zinc-300 leading-[1.7]">
+                                        <span className="text-blue-400 mt-1 text-lg">•</span>
+                                        <span className="text-base">{point}</span>
                                       </li>
                                     ))}
                                   </ul>
@@ -1225,9 +1225,9 @@ export default function Home() {
                               )}
                               
                               {section.realWorldExample && (
-                                <div className="bg-green-600/10 border border-green-600/20 rounded-lg p-4 my-4">
-                                  <h5 className="text-green-400 font-medium mb-2">Real-World Application:</h5>
-                                  <p className="text-zinc-300 text-sm leading-relaxed">{section.realWorldExample}</p>
+                                <div className="bg-green-600/10 border border-green-600/20 rounded-lg p-6 my-6">
+                                  <h5 className="text-green-400 font-medium mb-3 text-base">Real-World Application:</h5>
+                                  <p className="text-zinc-300 text-base leading-[1.7]">{section.realWorldExample}</p>
                                 </div>
                               )}
                             </div>
@@ -1235,13 +1235,13 @@ export default function Home() {
                         </div>
 
                         {/* Essential Takeaways */}
-                        <div className="bg-zinc-800/50 rounded-lg p-5 border border-zinc-700">
-                          <h4 className="text-white font-semibold mb-4">Why This Matters</h4>
-                          <div className="space-y-3">
+                        <div className="bg-zinc-800/50 rounded-lg p-6 border border-zinc-700 mt-8">
+                          <h4 className="text-white font-semibold mb-6 text-lg">Why This Matters</h4>
+                          <div className="space-y-4">
                             {getLessonTakeaways((lesson as Lesson).title).map((takeaway, idx) => (
-                              <div key={idx} className="flex items-start gap-3">
-                                <CheckCircle className="w-5 h-5 text-orange-400 mt-0.5 flex-shrink-0" />
-                                <span className="text-zinc-300 text-sm leading-relaxed">{takeaway}</span>
+                              <div key={idx} className="flex items-start gap-4">
+                                <CheckCircle className="w-5 h-5 text-orange-400 mt-1 flex-shrink-0" />
+                                <span className="text-zinc-300 text-base leading-[1.7]">{takeaway}</span>
                               </div>
                             ))}
                           </div>
