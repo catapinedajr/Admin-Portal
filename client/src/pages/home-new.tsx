@@ -1162,14 +1162,7 @@ export default function Home() {
               >
                 Learn
               </Button>
-              <Button
-                variant={activeSection === "weekly" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setActiveSection("weekly")}
-                className="text-sm px-4 py-2"
-              >
-                Weekly
-              </Button>
+
               <Button
                 variant={activeSection === "practice" ? "secondary" : "ghost"}
                 size="sm"
