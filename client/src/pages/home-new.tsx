@@ -190,7 +190,7 @@ function WeeklyQuiz({ questions, weekNumber }: WeeklyQuizProps) {
               }`}
             >
               <div className="flex items-center gap-3">
-                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
                   selectedAnswers[currentQuestion] === index
                     ? 'border-orange-400 bg-orange-400'
                     : 'border-zinc-600'
@@ -199,7 +199,7 @@ function WeeklyQuiz({ questions, weekNumber }: WeeklyQuizProps) {
                     <div className="w-3 h-3 bg-white rounded-full" />
                   )}
                 </div>
-                <span>{option}</span>
+                <span className="flex-1">{option}</span>
               </div>
             </button>
           ))}
