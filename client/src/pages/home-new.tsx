@@ -42,7 +42,9 @@ import {
   Building2,
   Lock,
   Wallet,
-  RefreshCw
+  RefreshCw,
+  Eye,
+  ArrowLeft
 } from "lucide-react";
 import type { User, DailyFact, Lesson, UserProgress, ConvictionContent } from "@shared/schema";
 import DailyQuiz from "@/components/DailyQuiz";
@@ -2164,33 +2166,174 @@ export default function Home() {
                             className="w-full bg-orange-600 hover:bg-orange-700 text-white"
                             onClick={proceedToPreview}
                           >
-                            <Zap className="w-4 h-4 mr-2" />
-                            Sign & Send Transaction
+                            <Eye className="w-4 h-4 mr-2" />
+                            Review Transaction
                           </Button>
                         )}
 
-                        {transactionState === "broadcasting" && (
-                          <div className="p-4 bg-blue-600/20 border border-blue-500 rounded-lg text-center">
-                            <div className="animate-spin w-6 h-6 border-2 border-blue-400 border-t-transparent rounded-full mx-auto mb-2"></div>
-                            <h5 className="font-bold text-blue-300 mb-1">Broadcasting Transaction</h5>
-                            <p className="text-blue-100 text-sm">Sending to Bitcoin network...</p>
+                        {transactionState === "preview" && (
+                          <div className="space-y-4">
+                            <Card className="bg-zinc-800 border-zinc-700">
+                              <CardContent className="p-4">
+                                <h5 className="font-bold text-white mb-3 flex items-center">
+                                  <Eye className="w-5 h-5 mr-2 text-blue-400" />
+                                  Transaction Preview
+                                </h5>
+                                
+                                {/* Fee Priority Selection */}
+                                <div className="space-y-3 mb-4">
+                                  <label className="text-sm font-medium text-zinc-300">Fee Priority</label>
+                                  <div className="grid gap-2">
+                                    {Object.entries(feeOptions).map(([key, option]) => (
+                                      <div
+                                        key={key}
+                                        className={`p-3 rounded-lg border cursor-pointer transition-colors ${
+                                          transactionInputs.feeRate === key
+                                            ? 'bg-orange-600/20 border-orange-500'
+                                            : 'bg-zinc-800/50 border-zinc-700 hover:border-zinc-600'
+                                        }`}
+                                        onClick={() => setTransactionInputs(prev => ({ ...prev, feeRate: key }))}
+                                      >
+                                        <div className="flex justify-between items-center">
+                                          <div>
+                                            <p className="text-white font-medium">{option.priority}</p>
+                                            <p className="text-zinc-400 text-xs">{option.rate} sat/vB • {option.time}</p>
+                                          </div>
+                                          <p className="text-orange-400 font-mono">{option.cost} BTC</p>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+
+                                {/* Transaction Summary */}
+                                <div className="p-4 bg-zinc-900/50 rounded-lg space-y-2">
+                                  <h6 className="font-medium text-white">Transaction Summary</h6>
+                                  <div className="space-y-1 text-sm">
+                                    <div className="flex justify-between">
+                                      <span className="text-zinc-400">Amount:</span>
+                                      <span className="text-white font-mono">{transactionInputs.amount} BTC</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-zinc-400">Network Fee:</span>
+                                      <span className="text-white font-mono">{getCurrentFee().cost} BTC</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-zinc-400">USD Value:</span>
+                                      <span className="text-green-400">${getUSDValue(getTransactionTotal())}</span>
+                                    </div>
+                                    <div className="border-t border-zinc-700 pt-2 flex justify-between font-medium">
+                                      <span className="text-zinc-300">Total:</span>
+                                      <span className="text-orange-400 font-mono">{getTransactionTotal()} BTC</span>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="flex gap-3 mt-4">
+                                  <Button
+                                    variant="outline"
+                                    className="flex-1 border-zinc-700 text-zinc-300"
+                                    onClick={() => setTransactionState("building")}
+                                  >
+                                    <ArrowLeft className="w-4 h-4 mr-2" />
+                                    Back
+                                  </Button>
+                                  <Button
+                                    className="flex-1 bg-orange-600 hover:bg-orange-700 text-white"
+                                    onClick={startSigning}
+                                  >
+                                    <Shield className="w-4 h-4 mr-2" />
+                                    Sign Transaction
+                                  </Button>
+                                </div>
+                              </CardContent>
+                            </Card>
                           </div>
+                        )}
+
+                        {transactionState === "broadcasting" && (
+                          <Card className="bg-blue-900/20 border-blue-800">
+                            <CardContent className="p-4 text-center">
+                              <div className="animate-spin w-8 h-8 border-2 border-blue-400 border-t-transparent rounded-full mx-auto mb-3"></div>
+                              <h5 className="font-bold text-blue-300 mb-2">Broadcasting Transaction</h5>
+                              <p className="text-blue-100 text-sm mb-3">Sending to Bitcoin network mempool...</p>
+                              {transactionId && (
+                                <div className="text-xs text-blue-200 font-mono bg-blue-900/30 p-2 rounded">
+                                  TxID: {transactionId.slice(0, 16)}...
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
                         )}
 
                         {transactionState === "confirming" && (
-                          <div className="p-4 bg-yellow-600/20 border border-yellow-500 rounded-lg text-center">
-                            <Clock className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
-                            <h5 className="font-bold text-yellow-300 mb-1">Confirming Transaction</h5>
-                            <p className="text-yellow-100 text-sm">Waiting for miners to include in block...</p>
-                          </div>
+                          <Card className="bg-yellow-900/20 border-yellow-800">
+                            <CardContent className="p-4">
+                              <div className="text-center mb-4">
+                                <Clock className="w-8 h-8 text-yellow-400 mx-auto mb-2" />
+                                <h5 className="font-bold text-yellow-300 mb-1">Confirming Transaction</h5>
+                                <p className="text-yellow-100 text-sm">Waiting for network confirmations...</p>
+                              </div>
+
+                              {/* Confirmation Progress */}
+                              <div className="space-y-3">
+                                <div className="flex justify-between text-sm">
+                                  <span className="text-yellow-200">Confirmations: {confirmationCount}/6</span>
+                                  <span className="text-yellow-200">Time remaining: ~{Math.floor(timeRemaining/60)}m {timeRemaining%60}s</span>
+                                </div>
+                                
+                                <div className="w-full bg-yellow-900/30 rounded-full h-2">
+                                  <div 
+                                    className="bg-yellow-400 h-2 rounded-full transition-all duration-1000"
+                                    style={{ width: `${(confirmationCount / 6) * 100}%` }}
+                                  ></div>
+                                </div>
+
+                                <div className="grid grid-cols-6 gap-1">
+                                  {[...Array(6)].map((_, i) => (
+                                    <div
+                                      key={i}
+                                      className={`h-3 rounded-sm transition-colors ${
+                                        i < confirmationCount 
+                                          ? 'bg-yellow-400' 
+                                          : 'bg-yellow-900/50'
+                                      }`}
+                                    ></div>
+                                  ))}
+                                </div>
+
+                                {transactionId && (
+                                  <div className="text-xs text-yellow-200 font-mono bg-yellow-900/30 p-2 rounded break-all">
+                                    TxID: {transactionId}
+                                  </div>
+                                )}
+                                
+                                <div className="text-xs text-yellow-300 bg-yellow-900/20 p-2 rounded">
+                                  <AlertTriangle className="w-3 h-3 inline mr-1" />
+                                  Real transactions typically take 10-60 minutes. This simulation is accelerated for learning.
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
                         )}
 
                         {transactionState === "confirmed" && (
-                          <div className="p-4 bg-green-600/20 border border-green-500 rounded-lg text-center">
-                            <CheckCircle className="w-6 h-6 text-green-400 mx-auto mb-2" />
-                            <h5 className="font-bold text-green-300 mb-1">Transaction Confirmed! 🎉</h5>
-                            <p className="text-green-100 text-sm">Successfully sent {transactionInputs.amount} BTC</p>
-                          </div>
+                          <Card className="bg-green-900/20 border-green-800">
+                            <CardContent className="p-4 text-center">
+                              <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-3" />
+                              <h5 className="font-bold text-green-300 mb-2 text-lg">Transaction Confirmed!</h5>
+                              <p className="text-green-100 text-sm mb-4">Successfully sent {transactionInputs.amount} BTC with 6 confirmations</p>
+                              
+                              <div className="space-y-2 text-xs">
+                                <div className="bg-green-900/30 p-3 rounded">
+                                  <p className="text-green-200 font-mono">Final TxID: {transactionId}</p>
+                                </div>
+                                <p className="text-green-300">
+                                  ✓ Transaction is now permanently recorded on the Bitcoin blockchain
+                                </p>
+                              </div>
+                            </CardContent>
+                          </Card>
                         )}
                       </div>
 
