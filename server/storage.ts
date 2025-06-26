@@ -845,10 +845,9 @@ This mirrors internet architecture:
       this.sovereignAdoptions.set(newAdoption.id, newAdoption);
     });
 
-    // Seed quiz questions
-    const quizQuestions = [
+    // Seed quiz questions - create questions for multiple day indices to ensure availability
+    const baseQuestions = [
       {
-        dayIndex: 0,
         question: "What is the maximum supply of Bitcoin that will ever exist?",
         optionA: "21 million",
         optionB: "100 million", 
@@ -860,7 +859,6 @@ This mirrors internet architecture:
         difficulty: "beginner"
       },
       {
-        dayIndex: 0,
         question: "What happens to Bitcoin's mining reward approximately every 4 years?",
         optionA: "It doubles",
         optionB: "It gets cut in half",
@@ -872,7 +870,6 @@ This mirrors internet architecture:
         difficulty: "beginner"
       },
       {
-        dayIndex: 0,
         question: "What makes Bitcoin different from traditional currencies?",
         optionA: "It's controlled by banks",
         optionB: "It's backed by gold",
@@ -882,8 +879,52 @@ This mirrors internet architecture:
         explanation: "Bitcoin operates on a decentralized network with no central bank or government control. This peer-to-peer system is maintained by thousands of computers worldwide.",
         category: "Bitcoin Basics",
         difficulty: "beginner"
+      },
+      {
+        question: "Who is the creator of Bitcoin?",
+        optionA: "Elon Musk",
+        optionB: "Satoshi Nakamoto",
+        optionC: "Vitalik Buterin",
+        optionD: "Mark Zuckerberg",
+        correctAnswer: "B",
+        explanation: "Satoshi Nakamoto is the pseudonymous creator of Bitcoin. Their true identity remains unknown, and they disappeared from public view in 2011.",
+        category: "Bitcoin History",
+        difficulty: "beginner"
+      },
+      {
+        question: "What is a Bitcoin wallet?",
+        optionA: "A physical device that stores Bitcoin",
+        optionB: "Software that manages private keys",
+        optionC: "A bank account for Bitcoin",
+        optionD: "A mining device",
+        correctAnswer: "B",
+        explanation: "A Bitcoin wallet is software that manages your private keys, which are needed to access and spend your Bitcoin. The Bitcoin itself exists on the blockchain.",
+        category: "Wallets & Security",
+        difficulty: "beginner"
+      },
+      {
+        question: "What is Bitcoin mining?",
+        optionA: "Digging for Bitcoin underground",
+        optionB: "Creating new Bitcoin out of thin air",
+        optionC: "Validating transactions and securing the network",
+        optionD: "Trading Bitcoin for profit",
+        correctAnswer: "C",
+        explanation: "Bitcoin mining involves using computational power to validate transactions, secure the network, and add new blocks to the blockchain. Miners are rewarded with new Bitcoin for this work.",
+        category: "Network & Mining",
+        difficulty: "beginner"
       }
     ];
+
+    // Create quiz questions for multiple day indices (current day could be 190+ based on date calculation)
+    const quizQuestions = [];
+    for (let day = 0; day < 400; day++) {
+      baseQuestions.forEach((baseQuestion, index) => {
+        quizQuestions.push({
+          dayIndex: day,
+          ...baseQuestion
+        });
+      });
+    }
 
     quizQuestions.forEach(question => {
       const newQuestion: QuizQuestion = { ...question, id: this.currentQuizQuestionId++ };
