@@ -883,113 +883,15 @@ export default function Home() {
               <div className="space-y-6">
                 {/* Apple Activity-Inspired Condensed Header */}
                 <Card className="bg-zinc-900 border-zinc-800 mb-6">
-                  <CardContent className="p-5">
-                    <div className="flex items-center justify-between">
-                      {/* Left: Activity Rings */}
-                      <div className="flex items-center gap-6">
-                        <div className="relative">
-                          <svg className="w-20 h-20 transform -rotate-90">
-                            {/* Background circles */}
-                            <circle cx="40" cy="40" r="32" stroke="rgb(39, 39, 42)" strokeWidth="3" fill="none" />
-                            <circle cx="40" cy="40" r="25" stroke="rgb(39, 39, 42)" strokeWidth="3" fill="none" />
-                            <circle cx="40" cy="40" r="18" stroke="rgb(39, 39, 42)" strokeWidth="3" fill="none" />
-                            
-                            {/* Progress circles - Facts (Green, Outer) */}
-                            <circle 
-                              cx="40" cy="40" r="32" 
-                              stroke="rgb(34, 197, 94)" 
-                              strokeWidth="3" 
-                              fill="none"
-                              strokeLinecap="round"
-                              strokeDasharray={`${201 * 0.85} ${201 * 0.15}`}
-                              className="transition-all duration-1000"
-                            />
-                            {/* Lesson (Blue, Middle) */}
-                            <circle 
-                              cx="40" cy="40" r="25" 
-                              stroke="rgb(59, 130, 246)" 
-                              strokeWidth="3" 
-                              fill="none"
-                              strokeLinecap="round"
-                              strokeDasharray={`${157 * 0.75} ${157 * 0.25}`}
-                              className="transition-all duration-1000"
-                            />
-                            {/* Quiz (Purple, Inner) */}
-                            <circle 
-                              cx="40" cy="40" r="18" 
-                              stroke="rgb(168, 85, 247)" 
-                              strokeWidth="3" 
-                              fill="none"
-                              strokeLinecap="round"
-                              strokeDasharray={`${113 * 1.0} ${113 * 0.0}`}
-                              className="transition-all duration-1000"
-                            />
-                          </svg>
-                          
-                          {/* Center streak display */}
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="text-center">
-                              <div className="text-xl font-bold text-white">{user?.currentStreak || 0}</div>
-                              <div className="text-xs text-zinc-400 -mt-1">streak</div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Ring Labels */}
-                        <div className="space-y-1.5">
-                          <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                            <span className="text-sm text-zinc-300 min-w-[50px]">Facts</span>
-                            <div className="flex items-center gap-1">
-                              <CheckCircle className="w-3 h-3 text-green-400" />
-                              <span className="text-xs text-green-400">85%</span>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                            <span className="text-sm text-zinc-300 min-w-[50px]">Lesson</span>
-                            <div className="flex items-center gap-1">
-                              <Play className="w-3 h-3 text-blue-400" />
-                              <span className="text-xs text-blue-400">75%</span>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-                            <span className="text-sm text-zinc-300 min-w-[50px]">Quiz</span>
-                            <div className="flex items-center gap-1">
-                              <CheckCircle className="w-3 h-3 text-purple-400" />
-                              <span className="text-xs text-purple-400">100%</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Right: Today's Info */}
-                      <div className="text-right">
-                        <h2 className="text-xl font-bold text-white mb-1">Today's Journey</h2>
-                        <p className="text-sm text-zinc-400 mb-3">Build Bitcoin knowledge step by step</p>
-                        
-                        <div className="space-y-1 text-xs">
-                          <div className="flex items-center justify-end gap-2">
-                            <Calendar className="w-3 h-3 text-orange-400" />
-                            <span className="text-zinc-400">Day {((new Date().getTime() - new Date('2024-01-01').getTime()) / (1000 * 60 * 60 * 24)) % 190 + 1 | 0}</span>
-                          </div>
-                          <div className="flex items-center justify-end gap-2">
-                            <Clock className="w-3 h-3 text-blue-400" />
-                            <span className="text-zinc-400">~10 min total</span>
-                          </div>
-                          <div className="flex items-center justify-end gap-2">
-                            <GraduationCap className="w-3 h-3 text-green-400" />
-                            <span className="text-zinc-400">Beginner level</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Progress Summary & Learning Goal */}
-                    <div className="mt-4 pt-3 border-t border-zinc-800 space-y-3">
-                      <div className="bg-gradient-to-r from-orange-600/20 to-yellow-600/20 border border-orange-600/30 rounded-lg p-3">
-                        <div className="flex items-center gap-2 mb-1">
+                  <CardContent className="p-6">
+                    {/* Header Section */}
+                    <div className="text-center mb-6">
+                      <h2 className="text-2xl font-bold text-white mb-1">Today's Journey</h2>
+                      <p className="text-zinc-400 mb-4">Build Bitcoin knowledge step by step</p>
+                      
+                      {/* Today's Goal */}
+                      <div className="bg-gradient-to-r from-orange-600/20 to-yellow-600/20 border border-orange-600/30 rounded-lg p-3 max-w-md mx-auto">
+                        <div className="flex items-center justify-center gap-2 mb-1">
                           <Gem className="w-3 h-3 text-orange-400" />
                           <span className="text-orange-300 font-medium text-sm">Today's Goal</span>
                         </div>
@@ -997,15 +899,129 @@ export default function Home() {
                           Understand how <BitcoinTerm term="Bitcoin">Bitcoin</BitcoinTerm> works as digital money and why it's different from traditional currencies
                         </p>
                       </div>
-                      
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <ArrowRight className="w-4 h-4 text-orange-400" />
-                          <span className="text-sm text-zinc-300">Continue with lesson and quiz</span>
+                    </div>
+
+                    {/* Activity Rings & Progress Section */}
+                    <div className="flex items-center justify-center gap-8 mb-6">
+                      {/* Activity Rings */}
+                      <div className="relative">
+                        <svg className="w-24 h-24 transform -rotate-90">
+                          {/* Background circles */}
+                          <circle cx="48" cy="48" r="38" stroke="rgb(39, 39, 42)" strokeWidth="4" fill="none" />
+                          <circle cx="48" cy="48" r="30" stroke="rgb(39, 39, 42)" strokeWidth="3" fill="none" />
+                          <circle cx="48" cy="48" r="22" stroke="rgb(39, 39, 42)" strokeWidth="3" fill="none" />
+                          
+                          {/* Progress circles - Facts (Green, Outer) */}
+                          <circle 
+                            cx="48" cy="48" r="38" 
+                            stroke="rgb(34, 197, 94)" 
+                            strokeWidth="4" 
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeDasharray={`${239 * 0.85} ${239 * 0.15}`}
+                            className="transition-all duration-1000"
+                          />
+                          {/* Lesson (Blue, Middle) */}
+                          <circle 
+                            cx="48" cy="48" r="30" 
+                            stroke="rgb(59, 130, 246)" 
+                            strokeWidth="3" 
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeDasharray={`${188 * 0.75} ${188 * 0.25}`}
+                            className="transition-all duration-1000"
+                          />
+                          {/* Quiz (Purple, Inner) */}
+                          <circle 
+                            cx="48" cy="48" r="22" 
+                            stroke="rgb(168, 85, 247)" 
+                            strokeWidth="3" 
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeDasharray={`${138 * 1.0} ${138 * 0.0}`}
+                            className="transition-all duration-1000"
+                          />
+                        </svg>
+                        
+                        {/* Center streak display */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-white">{user?.currentStreak || 0}</div>
+                            <div className="text-xs text-zinc-400 -mt-1">day streak</div>
+                          </div>
                         </div>
-                        <Badge variant="outline" className="border-orange-600 text-orange-400 text-xs">
-                          87% complete
-                        </Badge>
+                      </div>
+
+                      {/* Ring Labels & Stats */}
+                      <div className="grid grid-cols-1 gap-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-4 h-4 rounded-full bg-green-500 flex-shrink-0"></div>
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-zinc-300 font-medium">Essential Facts</span>
+                              <div className="flex items-center gap-1">
+                                <CheckCircle className="w-3 h-3 text-green-400" />
+                                <span className="text-xs text-green-400 font-semibold">85%</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-3">
+                          <div className="w-4 h-4 rounded-full bg-blue-500 flex-shrink-0"></div>
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-zinc-300 font-medium">Deep Dive</span>
+                              <div className="flex items-center gap-1">
+                                <Play className="w-3 h-3 text-blue-400" />
+                                <span className="text-xs text-blue-400 font-semibold">75%</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-3">
+                          <div className="w-4 h-4 rounded-full bg-purple-500 flex-shrink-0"></div>
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-zinc-300 font-medium">Knowledge Test</span>
+                              <div className="flex items-center gap-1">
+                                <CheckCircle className="w-3 h-3 text-purple-400" />
+                                <span className="text-xs text-purple-400 font-semibold">100%</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Quick Stats & Continue Action */}
+                    <div className="border-t border-zinc-800 pt-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4 text-xs text-zinc-400">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-3 h-3 text-orange-400" />
+                            <span>Day {((new Date().getTime() - new Date('2024-01-01').getTime()) / (1000 * 60 * 60 * 24)) % 190 + 1 | 0}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-3 h-3 text-blue-400" />
+                            <span>~10 min total</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <GraduationCap className="w-3 h-3 text-green-400" />
+                            <span>Beginner</span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-2">
+                            <ArrowRight className="w-4 h-4 text-orange-400" />
+                            <span className="text-sm text-zinc-300">Continue learning</span>
+                          </div>
+                          <Badge variant="outline" className="border-orange-600 text-orange-400 text-xs">
+                            87% complete
+                          </Badge>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
