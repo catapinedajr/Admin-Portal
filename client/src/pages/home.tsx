@@ -662,10 +662,10 @@ export default function Home() {
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center space-y-6 animate-fade-in">
           <div className="flex items-center justify-center gap-3">
-            <Bitcoin className="w-12 h-12 text-orange-500 animate-pulse" />
-            <h1 className="text-4xl font-bold text-white">Bitcoin Edu</h1>
+            <div className="text-orange-400 text-5xl font-bold">₿</div>
+            <h1 className="text-4xl font-bold text-white">BTC <span className="text-orange-400">Journey</span></h1>
           </div>
-          <p className="text-zinc-400 text-lg">Loading your Conviction in Bitcoin</p>
+          <p className="text-zinc-400 text-lg">Loading your Bitcoin Journey</p>
           <div className="w-64 h-1 bg-zinc-800 rounded-full overflow-hidden">
             <div className="h-full bg-orange-500 rounded-full animate-pulse" style={{ width: '60%' }}></div>
           </div>
@@ -681,8 +681,8 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Bitcoin className="w-6 h-6 text-orange-500" />
-              <h1 className="text-lg font-semibold text-white">Bitcoin Education</h1>
+              <div className="text-orange-400 text-xl font-bold">₿</div>
+              <h1 className="text-lg font-semibold text-white">BTC <span className="text-orange-400">Journey</span></h1>
             </div>
             
             <div className="flex items-center gap-2">
