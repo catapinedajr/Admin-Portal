@@ -41,7 +41,8 @@ import {
   CreditCard,
   Building2,
   Lock,
-  Wallet
+  Wallet,
+  RefreshCw
 } from "lucide-react";
 import type { User, DailyFact, Lesson, UserProgress, ConvictionContent } from "@shared/schema";
 import DailyQuiz from "@/components/DailyQuiz";
@@ -185,6 +186,24 @@ export default function Home() {
   });
   const [transactionState, setTransactionState] = useState<"building" | "signing" | "broadcasting" | "confirming" | "confirmed">("building");
   const [showTransactionApproval, setShowTransactionApproval] = useState(false);
+  
+  // HODL Calculator State
+  const [hodlInputs, setHodlInputs] = useState({
+    initialAmount: 10000,
+    years: 4,
+    startPrice: 30000,
+    endPrice: 95000
+  });
+  const [hodlResults, setHodlResults] = useState<any>(null);
+
+  // DCA Calculator State
+  const [dcaInputs, setDcaInputs] = useState({
+    monthlyAmount: 500,
+    duration: 24,
+    startPrice: 30000,
+    endPrice: 95000
+  });
+  const [dcaResults, setDcaResults] = useState<any>(null);
   
   const toggleFactExpansion = (factId: number) => {
     const newExpanded = new Set(expandedFacts);
@@ -357,6 +376,94 @@ export default function Home() {
     const feeRate = parseFloat(transactionInputs.feeRate);
     const estimatedSize = 226; // bytes for typical transaction
     return ((feeRate * estimatedSize) / 100000000).toFixed(8); // Convert sats to BTC
+  };
+
+  const generateNewAddress = () => {
+    // Generate a realistic-looking Bitcoin address for simulation
+    const prefixes = ['bc1q', '3', '1'];
+    const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    let address = prefix;
+    const length = prefix === 'bc1q' ? 39 : 30;
+    
+    for (let i = prefix.length; i < length; i++) {
+      address += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return address;
+  };
+
+  const simulateTransactionProcess = () => {
+    setTransactionState("signing");
+    setShowTransactionApproval(true);
+  };
+
+  const approveTransaction = () => {
+    setShowTransactionApproval(false);
+    setTransactionState("broadcasting");
+    
+    // Simulate broadcasting delay
+    setTimeout(() => {
+      setTransactionState("confirming");
+      
+      // Simulate confirmation delay
+      setTimeout(() => {
+        setTransactionState("confirmed");
+        
+        // Reset after showing confirmation
+        setTimeout(() => {
+          setTransactionState("building");
+        }, 3000);
+      }, 2000);
+    }, 1500);
+  };
+
+  const calculateHodlStrategy = () => {
+    const bitcoinAmount = hodlInputs.initialAmount / hodlInputs.startPrice;
+    const currentValue = bitcoinAmount * hodlInputs.endPrice;
+    const totalGain = currentValue - hodlInputs.initialAmount;
+    const percentageReturn = (totalGain / hodlInputs.initialAmount) * 100;
+    const annualReturn = Math.pow(hodlInputs.endPrice / hodlInputs.startPrice, 1/hodlInputs.years) - 1;
+
+    setHodlResults({
+      initialInvestment: hodlInputs.initialAmount,
+      bitcoinAmount,
+      startPrice: hodlInputs.startPrice,
+      endPrice: hodlInputs.endPrice,
+      currentValue,
+      totalGain,
+      percentageReturn,
+      annualReturn: annualReturn * 100
+    });
+  };
+
+  const calculateDcaStrategy = () => {
+    const totalInvested = dcaInputs.monthlyAmount * dcaInputs.duration;
+    const priceRange = dcaInputs.endPrice - dcaInputs.startPrice;
+    const monthlyPriceIncrease = priceRange / dcaInputs.duration;
+    
+    let totalBitcoin = 0;
+    let currentPrice = dcaInputs.startPrice;
+    
+    for (let i = 0; i < dcaInputs.duration; i++) {
+      totalBitcoin += dcaInputs.monthlyAmount / currentPrice;
+      currentPrice += monthlyPriceIncrease;
+    }
+    
+    const currentValue = totalBitcoin * dcaInputs.endPrice;
+    const totalGain = currentValue - totalInvested;
+    const percentageReturn = (totalGain / totalInvested) * 100;
+    const averagePrice = totalInvested / totalBitcoin;
+
+    setDcaResults({
+      totalInvested,
+      totalBitcoin,
+      averagePrice,
+      currentValue,
+      totalGain,
+      percentageReturn,
+      monthlyAmount: dcaInputs.monthlyAmount,
+      duration: dcaInputs.duration
+    });
   };
 
   const [selectedWalletType, setSelectedWalletType] = useState<string | null>(null);
@@ -1861,13 +1968,23 @@ export default function Home() {
                         </div>
                         <div className="space-y-2">
                           <label className="text-sm font-medium text-white">To Address</label>
-                          <input
-                            type="text"
-                            value={transactionInputs.toAddress}
-                            onChange={(e) => updateTransactionInput('toAddress', e.target.value)}
-                            className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white text-sm focus:border-orange-500 focus:outline-none"
-                            placeholder="Recipient's Bitcoin address"
-                          />
+                          <div className="flex gap-2">
+                            <input
+                              type="text"
+                              value={transactionInputs.toAddress}
+                              onChange={(e) => updateTransactionInput('toAddress', e.target.value)}
+                              className="flex-1 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white text-sm focus:border-orange-500 focus:outline-none"
+                              placeholder="Recipient's Bitcoin address"
+                            />
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => updateTransactionInput('toAddress', generateNewAddress())}
+                              className="border-zinc-700 text-zinc-300 hover:border-orange-500 hover:text-orange-400"
+                            >
+                              <RefreshCw className="w-4 h-4" />
+                            </Button>
+                          </div>
                         </div>
                         <div className="space-y-2">
                           <label className="text-sm font-medium text-white">Amount (BTC)</label>
@@ -1983,17 +2100,105 @@ export default function Home() {
                         </ol>
                       </div>
 
-                      {/* Simulate Transaction Button */}
-                      <Button 
-                        className="w-full bg-orange-600 hover:bg-orange-700 text-white"
-                        onClick={() => {
-                          // This would simulate the transaction in a real app
-                          alert(`Transaction simulated!\n\nFrom: ${transactionInputs.fromAddress.slice(0, 20)}...\nTo: ${transactionInputs.toAddress.slice(0, 20)}...\nAmount: ${transactionInputs.amount} BTC\nFee: ${calculateTransactionFee()} BTC\nTotal: ${(parseFloat(transactionInputs.amount) + parseFloat(calculateTransactionFee())).toFixed(8)} BTC`);
-                        }}
-                      >
-                        <Zap className="w-4 h-4 mr-2" />
-                        Simulate Transaction
-                      </Button>
+                      {/* Transaction Status and Controls */}
+                      <div className="space-y-4">
+                        {transactionState === "building" && (
+                          <Button 
+                            className="w-full bg-orange-600 hover:bg-orange-700 text-white"
+                            onClick={simulateTransactionProcess}
+                          >
+                            <Zap className="w-4 h-4 mr-2" />
+                            Sign & Send Transaction
+                          </Button>
+                        )}
+
+                        {transactionState === "broadcasting" && (
+                          <div className="p-4 bg-blue-600/20 border border-blue-500 rounded-lg text-center">
+                            <div className="animate-spin w-6 h-6 border-2 border-blue-400 border-t-transparent rounded-full mx-auto mb-2"></div>
+                            <h5 className="font-bold text-blue-300 mb-1">Broadcasting Transaction</h5>
+                            <p className="text-blue-100 text-sm">Sending to Bitcoin network...</p>
+                          </div>
+                        )}
+
+                        {transactionState === "confirming" && (
+                          <div className="p-4 bg-yellow-600/20 border border-yellow-500 rounded-lg text-center">
+                            <Clock className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
+                            <h5 className="font-bold text-yellow-300 mb-1">Confirming Transaction</h5>
+                            <p className="text-yellow-100 text-sm">Waiting for miners to include in block...</p>
+                          </div>
+                        )}
+
+                        {transactionState === "confirmed" && (
+                          <div className="p-4 bg-green-600/20 border border-green-500 rounded-lg text-center">
+                            <CheckCircle className="w-6 h-6 text-green-400 mx-auto mb-2" />
+                            <h5 className="font-bold text-green-300 mb-1">Transaction Confirmed! 🎉</h5>
+                            <p className="text-green-100 text-sm">Successfully sent {transactionInputs.amount} BTC</p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Transaction Approval Modal */}
+                      {showTransactionApproval && (
+                        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
+                          <div className="bg-zinc-900 border border-zinc-700 rounded-lg p-6 max-w-md w-full">
+                            <h4 className="text-lg font-bold text-white mb-4">Confirm Transaction</h4>
+                            <div className="space-y-4">
+                              <div className="p-4 bg-zinc-800/50 rounded-lg">
+                                <h5 className="font-medium text-white mb-3">Transaction Details</h5>
+                                <div className="space-y-2 text-sm">
+                                  <div className="flex justify-between">
+                                    <span className="text-zinc-400">From:</span>
+                                    <span className="text-white font-mono">{transactionInputs.fromAddress.slice(0, 15)}...</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-zinc-400">To:</span>
+                                    <span className="text-white font-mono">{transactionInputs.toAddress.slice(0, 15)}...</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-zinc-400">Amount:</span>
+                                    <span className="text-orange-400 font-medium">{transactionInputs.amount} BTC</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-zinc-400">Fee:</span>
+                                    <span className="text-white">{calculateTransactionFee()} BTC</span>
+                                  </div>
+                                  <div className="border-t border-zinc-700 pt-2 flex justify-between font-medium">
+                                    <span className="text-zinc-300">Total:</span>
+                                    <span className="text-white">{(parseFloat(transactionInputs.amount) + parseFloat(calculateTransactionFee())).toFixed(8)} BTC</span>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <div className="p-3 bg-orange-600/10 border border-orange-600/20 rounded-lg">
+                                <p className="text-orange-200 text-sm">
+                                  <AlertTriangle className="w-4 h-4 inline mr-1" />
+                                  This is a simulation. No real Bitcoin will be sent.
+                                </p>
+                              </div>
+
+                              <div className="flex gap-3">
+                                <Button
+                                  variant="outline"
+                                  className="flex-1 border-zinc-700 text-zinc-300 hover:border-zinc-600"
+                                  onClick={() => {
+                                    setShowTransactionApproval(false);
+                                    setTransactionState("building");
+                                  }}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  className="flex-1 bg-orange-600 hover:bg-orange-700 text-white"
+                                  onClick={approveTransaction}
+                                >
+                                  <CheckCircle className="w-4 h-4 mr-2" />
+                                  Approve
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -2004,8 +2209,8 @@ export default function Home() {
             {practiceSubTab === "hodl" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
-                  <h3 className="text-xl font-bold text-white">HODLing vs Trading Comparison</h3>
-                  <p className="text-zinc-400">Compare long-term holding against active trading strategies</p>
+                  <h3 className="text-xl font-bold text-white">Interactive HODL Calculator</h3>
+                  <p className="text-zinc-400">Explore the power of long-term holding with adjustable parameters</p>
                 </div>
 
                 <div className="grid gap-6 md:grid-cols-2">
