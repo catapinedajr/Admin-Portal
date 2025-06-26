@@ -1220,6 +1220,63 @@ This mirrors internet architecture:
           "Recognize Cantillon Effect implications when central banks announce monetary policy changes",
           "Compare Bitcoin's monetary properties to traditional assets in portfolio allocation decisions"
         ],
+        quizQuestions: [
+          {
+            question: "According to Austrian economic theory, what is the regression theorem and how does Bitcoin relate to it?",
+            options: [
+              "Money must be backed by government decree; Bitcoin violates this by being decentralized",
+              "Money must start as a commodity with non-monetary value before becoming accepted as money; Bitcoin represents a new category emerging from superior monetary properties",
+              "Money must be physical to have value; Bitcoin fails because it's digital",
+              "Money must be inflationary to encourage spending; Bitcoin's deflationary nature is problematic"
+            ],
+            correctAnswer: 1,
+            explanation: "Carl Menger's regression theorem states that money must start as a commodity with non-monetary use. Bitcoin appears to violate this but actually represents a new category: money that emerges from its superior monetary properties rather than commodity value."
+          },
+          {
+            question: "What is the stock-to-flow ratio and why is Bitcoin's trajectory significant?",
+            options: [
+              "It measures price volatility; Bitcoin's high volatility makes it unsuitable as money",
+              "It compares existing supply to annual production; Bitcoin's ratio increases with each halving, eventually exceeding gold's to become the hardest money in history",
+              "It measures transaction speed; Bitcoin's slow transactions limit its monetary use",
+              "It compares market cap to trading volume; Bitcoin's low ratio indicates poor liquidity"
+            ],
+            correctAnswer: 1,
+            explanation: "Stock-to-flow measures monetary hardness by comparing existing supply to new production. Bitcoin's halving mechanism increases this ratio every four years, making it progressively harder money than gold."
+          },
+          {
+            question: "Which monetary property does Bitcoin improve most significantly compared to gold?",
+            options: [
+              "Durability - Bitcoin lasts longer than gold",
+              "Scarcity - Bitcoin has absolute mathematical scarcity while gold's scarcity depends on mining discoveries",
+              "Recognition - Bitcoin is more widely recognized than gold",
+              "Uniformity - Bitcoin pieces are more identical than gold pieces"
+            ],
+            correctAnswer: 1,
+            explanation: "While Bitcoin improves on multiple properties, its most significant advantage is absolute mathematical scarcity. Only 21 million bitcoin will ever exist, unlike gold where new deposits can be discovered or asteroid mining could theoretically flood the market."
+          },
+          {
+            question: "How do network effects apply to Bitcoin's monetization process?",
+            options: [
+              "More miners joining the network increases Bitcoin's value",
+              "More users adopting Bitcoin increases its utility and value proposition, creating self-reinforcing adoption cycles",
+              "More exchanges listing Bitcoin improves its price stability",
+              "More developers working on Bitcoin increases its technical capabilities"
+            ],
+            correctAnswer: 1,
+            explanation: "Network effects in money mean that value increases with the number of users. As more individuals, institutions, and nations adopt Bitcoin, its utility grows, which drives more adoption in a self-reinforcing cycle."
+          },
+          {
+            question: "What is the key insight from Austrian time preference theory regarding Bitcoin?",
+            options: [
+              "People prefer to spend Bitcoin immediately rather than save it",
+              "Sound money like Bitcoin allows people to defer consumption and save for the future without losing purchasing power to inflation",
+              "Bitcoin's volatility makes it unsuitable for long-term planning",
+              "Time preference only applies to physical commodities, not digital assets"
+            ],
+            correctAnswer: 1,
+            explanation: "Austrian time preference theory explains that individuals prefer present goods to future goods. Sound money like Bitcoin enables people to save and defer consumption without losing purchasing power to inflation, unlike fiat currencies."
+          }
+        ],
         furtherReading: [
           { title: "The Fiat Standard", url: "#", description: "Saifedean Ammous on fiat money's systematic flaws and Bitcoin's Austrian properties" },
           { title: "Layered Money", url: "#", description: "Nik Bhatia on Bitcoin's place in monetary history and layer theory" },
@@ -1316,6 +1373,52 @@ This mirrors internet architecture:
           "Understand why Bitcoin transactions are irreversible",
           "Evaluate mining investment opportunities",
           "Assess network security during major events"
+        ],
+        quizQuestions: [
+          {
+            question: "What is the primary purpose of Bitcoin mining?",
+            options: [
+              "To create new bitcoins for profit",
+              "To secure the network, process transactions, and reach consensus without central authority",
+              "To make transactions faster and cheaper",
+              "To reduce Bitcoin's energy consumption"
+            ],
+            correctAnswer: 1,
+            explanation: "Mining serves multiple critical functions: securing the network through energy expenditure, processing and validating transactions, and achieving distributed consensus without central authority. Creating new bitcoins is just one aspect of the mining reward system."
+          },
+          {
+            question: "How does Bitcoin's difficulty adjustment mechanism work?",
+            options: [
+              "It increases difficulty when Bitcoin price goes up",
+              "It adjusts every block based on transaction volume",
+              "It automatically adjusts every 2,016 blocks to maintain 10-minute average block times regardless of hash rate changes",
+              "It decreases difficulty during high fee periods"
+            ],
+            correctAnswer: 2,
+            explanation: "Bitcoin's difficulty adjusts every 2,016 blocks (approximately every two weeks) to maintain the 10-minute average block time. This self-regulating mechanism ensures predictable block times and bitcoin issuance regardless of how many miners join or leave the network."
+          },
+          {
+            question: "Why is proof-of-work considered more secure than other consensus mechanisms?",
+            options: [
+              "It uses less energy than alternatives",
+              "It requires real-world energy expenditure to propose blocks, making attacks expensive and verifiable",
+              "It allows faster transaction processing",
+              "It permits more democratic governance decisions"
+            ],
+            correctAnswer: 1,
+            explanation: "Proof-of-work's security comes from requiring real-world energy expenditure to propose new blocks. This makes attacks expensive and easily verifiable by the network. The energy cost creates an objective, external anchor for consensus that doesn't rely on subjective stake or governance."
+          },
+          {
+            question: "What happens to mining economics after all 21 million bitcoins are mined around 2140?",
+            options: [
+              "Mining will stop because there are no more rewards",
+              "The network will switch to proof-of-stake",
+              "Miners will be compensated entirely through transaction fees, requiring development of robust fee markets",
+              "Block rewards will reset and start over"
+            ],
+            correctAnswer: 2,
+            explanation: "After 2140, when the last bitcoin is mined, mining will continue but be compensated entirely through transaction fees. This requires developing robust fee markets and potentially increased Layer 2 usage to generate sufficient fees to maintain network security."
+          }
         ],
         furtherReading: [
           { title: "Bitcoin Mining Council Reports", url: "#", description: "Latest data on mining sustainability" },

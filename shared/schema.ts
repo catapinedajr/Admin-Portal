@@ -157,6 +157,7 @@ export const weeklyTopics = pgTable("weekly_topics", {
   difficulty: text("difficulty").notNull().default("intermediate"),
   keyTakeaways: text("key_takeaways").array().notNull(), // Array of strings
   practicalApplications: text("practical_applications").array(), // Array of real-world examples
+  quizQuestions: json("quiz_questions"), // Array of {question, options, correctAnswer, explanation}
   furtherReading: json("further_reading"), // Array of {title, url, description}
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
