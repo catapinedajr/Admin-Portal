@@ -391,16 +391,30 @@ export default function Home() {
     return ((feeRate * estimatedSize) / 100000000).toFixed(8); // Convert sats to BTC
   };
 
-  const generateNewAddress = () => {
-    const addresses = [
-      "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
-      "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4",
-      "bc1qrp33g8q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3",
-      "3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy",
-      "1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2"
+  const simulatePasteFromClipboard = () => {
+    const clipboardSources = [
+      { source: "Mobile Wallet", address: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh" },
+      { source: "Hardware Wallet", address: "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4" },
+      { source: "Exchange Withdrawal", address: "bc1qrp33g8q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3" },
+      { source: "Lightning Address", address: "3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy" },
+      { source: "Friend's Wallet", address: "1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2" }
     ];
-    const randomAddress = addresses[Math.floor(Math.random() * addresses.length)];
-    setTransactionInputs(prev => ({ ...prev, toAddress: randomAddress }));
+    const randomClipboard = clipboardSources[Math.floor(Math.random() * clipboardSources.length)];
+    
+    // Simulate realistic paste behavior with brief delay
+    setTimeout(() => {
+      setTransactionInputs(prev => ({ ...prev, toAddress: randomClipboard.address }));
+      // Show a brief toast-like notification
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-4 right-4 bg-green-800 text-green-100 px-4 py-2 rounded-lg text-sm z-50 transition-opacity';
+      notification.textContent = `Pasted from ${randomClipboard.source}`;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => document.body.removeChild(notification), 300);
+      }, 2000);
+    }, 100);
   };
 
   const generateTransactionId = () => {
@@ -2049,10 +2063,11 @@ export default function Home() {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => updateTransactionInput('toAddress', generateNewAddress())}
-                              className="border-zinc-700 text-zinc-300 hover:border-orange-500 hover:text-orange-400"
+                              onClick={simulatePasteFromClipboard}
+                              className="border-zinc-700 text-zinc-300 hover:border-orange-500 hover:text-orange-400 text-xs"
+                              title="Paste from clipboard"
                             >
-                              <RefreshCw className="w-4 h-4" />
+                              📋 Paste
                             </Button>
                           </div>
                         </div>
