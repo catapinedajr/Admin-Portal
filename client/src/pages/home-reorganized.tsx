@@ -21,6 +21,7 @@ import {
   DollarSign,
   AlertTriangle,
   Heart,
+  Plus,
   Play,
   Quote,
   ExternalLink,
@@ -417,6 +418,7 @@ export default function Home() {
   const [learnSubTab, setLearnSubTab] = useState<LearnSubTab>("today");
   const [practiceSubTab, setPracticeSubTab] = useState<PracticeSubTab>("safety");
   const [moreSubTab, setMoreSubTab] = useState<MoreSubTab>("stories");
+  const [storiesSubTab, setStoriesSubTab] = useState<"individuals" | "businesses" | "nations">("individuals");
   const [txStatus, setTxStatus] = useState('preview');
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -710,7 +712,7 @@ export default function Home() {
               onClick={() => setActiveSection("more")}
               className={`${activeSection === "more" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} px-3 sm:px-4 py-2 text-sm sm:text-base min-w-0 flex-shrink-0`}
             >
-              <Heart className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+              <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
               <span className="whitespace-nowrap">More</span>
             </Button>
           </div>
@@ -3451,9 +3453,31 @@ Banks hold your money and can restrict access. Bitcoin enables true ownership wh
           </div>
         )}
 
-        {/* Inspiration Section */}
+        {/* More Section */}
         {activeSection === "more" && (
           <div className="space-y-6">
+            {/* More Navigation */}
+            <div className="flex space-x-2 justify-center flex-wrap gap-2">
+              <Button
+                variant={moreSubTab === "stories" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setMoreSubTab("stories")}
+                className="text-sm"
+              >
+                <UserIcon className="w-3 h-3 mr-2" />
+                Stories
+              </Button>
+              <Button
+                variant={moreSubTab === "resources" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setMoreSubTab("resources")}
+                className="text-sm"
+              >
+                <BookOpen className="w-3 h-3 mr-2" />
+                Resources
+              </Button>
+            </div>
+
             {moreSubTab === "stories" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
