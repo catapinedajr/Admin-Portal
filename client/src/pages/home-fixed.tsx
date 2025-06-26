@@ -1,64 +1,127 @@
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useQuery } from "@tanstack/react-query";
 import { 
-  Activity, 
+  Bitcoin, 
+  Lightbulb, 
+  BookOpen, 
   TrendingUp, 
-  Calendar, 
+  User as UserIcon, 
+  Coins, 
+  Box, 
+  Shield, 
+  KeyRound,
+  Gem,
+  Zap,
+  GraduationCap,
+  HelpCircle,
+  DollarSign,
+  AlertTriangle,
+  Heart,
+  Plus,
+  Play,
+  ShoppingCart,
+  Quote,
+  ExternalLink,
+  Globe,
+  Users,
+  FileText,
+  Calendar,
+  Flag,
+  Network,
+  ArrowRight,
+  ChevronDown,
+  ChevronUp,
+  CheckCircle,
+  BarChart3,
+  Clock,
+  CreditCard,
+  Building2,
+  Activity, 
   Trophy, 
   Star, 
-  Zap, 
   Target, 
-  BookOpen, 
-  Play, 
-  ExternalLink,
-  User as UserIcon, 
-  Building2, 
-  Globe,
-  Flag,
-  ArrowRight,
-  Shield,
   Smartphone,
   Wallet,
-  DollarSign,
-  Clock,
   ChevronRight,
   Cpu,
   Info,
   RefreshCw,
-  AlertTriangle,
-  CheckCircle,
   Gift,
-  ShoppingCart,
-  Heart,
-  Plus,
   Award,
-  Users,
   Factory,
-  Coins,
   PiggyBank,
   Calculator,
   Gamepad2,
-  Lightbulb,
   Brain,
   Rocket,
   Mountain,
   ChartLine,
   Lock
 } from "lucide-react";
-
-import { ProgressIndicator, AchievementBadge, LearningAnalytics } from "@/components/ProgressIndicator";
-import { AchievementSystem } from "@/components/AchievementSystem";
+import type { User, DailyFact, Lesson, UserProgress, ConvictionContent } from "@shared/schema";
 import DailyQuiz from "@/components/DailyQuiz";
-import { AutoGlossary, BitcoinTerm } from "@/components/BitcoinGlossary";
+import { BitcoinTerm, AutoGlossary } from "@/components/BitcoinGlossary";
+import { ProgressIndicator, AchievementBadge, LearningAnalytics } from "@/components/ProgressIndicator";
+import AchievementSystem from "@/components/AchievementSystem";
+
+const iconMap = {
+  coins: Coins,
+  cube: Box,
+  "shield-alt": Shield,
+  "user-secret": KeyRound,
+  gem: Gem,
+  zap: Zap,
+  "graduation-cap": GraduationCap,
+  "help-circle": HelpCircle,
+  "dollar-sign": DollarSign,
+  building: Building2,
+  "alert-triangle": AlertTriangle,
+};
+
+const bitcoinTerms = [
+  {
+    term: "Bitcoin",
+    definition: "A peer-to-peer electronic cash system that enables direct transactions without intermediaries like banks."
+  },
+  {
+    term: "Blockchain",
+    definition: "A distributed ledger technology that records transactions in blocks linked together chronologically."
+  },
+  {
+    term: "Mining",
+    definition: "The process of validating transactions and securing the Bitcoin network while earning new bitcoins as rewards."
+  },
+  {
+    term: "Wallet",
+    definition: "Software or hardware that stores your private keys and allows you to send and receive Bitcoin."
+  },
+  {
+    term: "Private Key",
+    definition: "A secret number that proves ownership of Bitcoin and allows you to spend it. Never share this with anyone."
+  },
+  {
+    term: "Satoshi",
+    definition: "The smallest unit of Bitcoin, named after its creator. One Bitcoin equals 100 million satoshis."
+  },
+  {
+    term: "Halving",
+    definition: "An event every 4 years where the mining reward is cut in half, reducing new Bitcoin creation."
+  },
+  {
+    term: "HODL",
+    definition: "A misspelling of 'hold' that became a strategy of keeping Bitcoin long-term regardless of price swings."
+  }
+];
 
 type MainSection = "learn" | "practice" | "more";
 type LearnSubTab = "today" | "deepdive" | "reference" | "stories";
@@ -101,6 +164,86 @@ export default function Home() {
       newExpanded.add(factId);
     }
     setExpandedFacts(newExpanded);
+  };
+
+  // API Queries
+  const { data: dailyFacts } = useQuery({
+    queryKey: ['/api/daily-facts'],
+  });
+
+  const { data: lesson } = useQuery({
+    queryKey: ['/api/lesson'],
+  });
+
+  const { data: user } = useQuery({
+    queryKey: ['/api/user'],
+  });
+
+  const { data: userProgress } = useQuery({
+    queryKey: ['/api/user-progress'],
+  });
+
+  const { data: convictionContent } = useQuery({
+    queryKey: ['/api/conviction-content'],
+  });
+
+  const getFactDeepDive = (factTitle: string) => {
+    const deepDives: Record<string, {
+      explanation: string;
+      examples: string[];
+      visualDescription: string;
+      keyTakeaways: string[];
+    }> = {
+      "Halving Events": {
+        explanation: "Bitcoin halving is a pre-programmed event that occurs approximately every 4 years (210,000 blocks) where the reward for mining new blocks is cut in half. This mechanism ensures Bitcoin's scarcity and controls inflation.",
+        examples: [
+          "2012: Reward dropped from 50 BTC to 25 BTC per block",
+          "2016: Reward dropped from 25 BTC to 12.5 BTC per block", 
+          "2020: Reward dropped from 12.5 BTC to 6.25 BTC per block",
+          "2024: Reward dropped from 6.25 BTC to 3.125 BTC per block"
+        ],
+        visualDescription: "Imagine a giant digital clock counting down blocks. Every 210,000 blocks, an automated mechanism literally cuts the mining reward in half.",
+        keyTakeaways: [
+          "Reduces new Bitcoin supply entering the market",
+          "Creates predictable scarcity timeline",
+          "Often correlates with price increases due to supply shock",
+          "Demonstrates Bitcoin's deflationary monetary policy"
+        ]
+      },
+      "Energy Security": {
+        explanation: "Bitcoin mining requires significant energy to secure the network through proof-of-work. This energy consumption isn't waste - it's the cost of running the world's most secure financial network.",
+        examples: [
+          "Bitcoin network uses ~150 TWh annually (similar to Argentina)",
+          "Miners increasingly use renewable energy sources (>50% renewable)",
+          "Stranded energy becomes economically viable through mining",
+          "Energy usage scales with network value, not transaction volume"
+        ],
+        visualDescription: "Picture a fortress protected by an army of guards working 24/7. The energy cost is like paying these guards - the more valuable what's inside, the more security you need.",
+        keyTakeaways: [
+          "Energy secures $1+ trillion in Bitcoin value",
+          "Incentivizes renewable energy development", 
+          "Cost of attack grows with network security",
+          "Energy use is transparent and auditable"
+        ]
+      },
+      "Digital Scarcity": {
+        explanation: "Before Bitcoin, digital items could be copied infinitely at zero cost. Bitcoin solved the 'double-spending problem' using cryptographic proof and network consensus.",
+        examples: [
+          "Only 21 million bitcoins will ever exist (hardcoded limit)",
+          "Digital files can be copied, but Bitcoin cannot be duplicated",
+          "Each bitcoin exists as unique blockchain entry",
+          "Scarcity is enforced by mathematics and consensus"
+        ],
+        visualDescription: "Think of Bitcoin like rare digital trading cards that cannot be photocopied. The blockchain acts like an unchangeable ledger that tracks who owns each unique card.",
+        keyTakeaways: [
+          "First truly scarce digital asset in history",
+          "Scarcity is mathematically guaranteed",
+          "Cannot be inflated away by central authorities",
+          "Digital scarcity enables digital value storage"
+        ]
+      }
+    };
+    return deepDives[factTitle];
   };
 
   // User Profiles Data for Stories section

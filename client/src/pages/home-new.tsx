@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { 
   Bitcoin, 
   Lightbulb, 
@@ -18,41 +16,38 @@ import {
   KeyRound,
   Gem,
   Zap,
-  Flame,
   GraduationCap,
-  Star,
-  ChevronLeft,
-  ChevronRight,
-  Check,
-  Share,
   HelpCircle,
-  ArrowRight,
   DollarSign,
-  Building2,
   AlertTriangle,
   Heart,
+  Plus,
   Play,
+  ShoppingCart,
   Quote,
   ExternalLink,
   Globe,
-  LineChart,
-  X,
-  Home as HomeIcon,
   Users,
-  FileText
+  FileText,
+  Calendar,
+  Flag,
+  Network,
+  ArrowRight,
+  ChevronDown,
+  ChevronUp,
+  CheckCircle,
+  BarChart3,
+  Clock,
+  CreditCard,
+  Building2,
+  Lock,
+  Wallet
 } from "lucide-react";
-import { queryClient, apiRequest } from "@/lib/queryClient";
-import { formatDate, getDayOfWeek, getWeekDates } from "@/lib/utils";
-import type { User, DailyFact, Lesson, UserProgress, KnowledgeArea, ConvictionContent, TreasuryCompany, SovereignAdoption } from "@shared/schema";
+import type { User, DailyFact, Lesson, UserProgress, ConvictionContent } from "@shared/schema";
 import DailyQuiz from "@/components/DailyQuiz";
-
-interface NetworkMetric {
-  metric: string;
-  value: string;
-  change24h: string;
-  description: string;
-  icon: string;
-}
+import { BitcoinTerm, AutoGlossary } from "@/components/BitcoinGlossary";
+import { ProgressIndicator, AchievementBadge, LearningAnalytics } from "@/components/ProgressIndicator";
+import AchievementSystem from "@/components/AchievementSystem";
 
 const iconMap = {
   coins: Coins,
@@ -60,15 +55,13 @@ const iconMap = {
   "shield-alt": Shield,
   "user-secret": KeyRound,
   gem: Gem,
-  bolt: Zap,
+  zap: Zap,
+  "graduation-cap": GraduationCap,
+  "help-circle": HelpCircle,
   "dollar-sign": DollarSign,
   building: Building2,
   "alert-triangle": AlertTriangle,
 };
-
-type MainSection = "learning" | "profiles" | "conviction" | "terms";
-type LearningSubTab = "basics" | "lesson" | "progress" | "quiz";
-type ProfilesSubTab = "individuals" | "businesses" | "nations";
 
 const bitcoinTerms = [
   {
@@ -92,14 +85,6 @@ const bitcoinTerms = [
     definition: "A secret number that proves ownership of Bitcoin and allows you to spend it. Never share this with anyone."
   },
   {
-    term: "Public Key",
-    definition: "A cryptographic key derived from your private key that others can use to send you Bitcoin."
-  },
-  {
-    term: "Hash Rate",
-    definition: "The total computational power securing the Bitcoin network, measured in hashes per second."
-  },
-  {
     term: "Satoshi",
     definition: "The smallest unit of Bitcoin, named after its creator. One Bitcoin equals 100 million satoshis."
   },
@@ -110,14 +95,6 @@ const bitcoinTerms = [
   {
     term: "HODL",
     definition: "A misspelling of 'hold' that became a strategy of keeping Bitcoin long-term regardless of price swings."
-  },
-  {
-    term: "Node",
-    definition: "A computer that validates transactions and maintains a copy of the entire Bitcoin blockchain."
-  },
-  {
-    term: "Fork",
-    definition: "A change to Bitcoin's protocol rules, which can be soft (backward compatible) or hard (not compatible)."
   }
 ];
 
@@ -125,74 +102,147 @@ const userProfiles = {
   individuals: [
     {
       name: "Sarah Chen",
-      title: "Software Engineer",
-      story: "Started buying Bitcoin in 2017 to protect savings from inflation. Now uses it for international remittances to family.",
-      reason: "Hedge against currency debasement and easier cross-border payments"
+      role: "Software Engineer & Bitcoin HODLer",
+      story: "Started buying Bitcoin in 2018 after realizing traditional savings accounts weren't keeping up with inflation. Now uses Bitcoin as her primary savings vehicle and has built a substantial position through consistent dollar-cost averaging.",
+      reason: "Bitcoin gives me control over my money and protects my purchasing power better than any bank ever could."
     },
     {
-      name: "Miguel Rodriguez", 
-      title: "Small Business Owner",
-      story: "Accepts Bitcoin payments at his restaurant to avoid high credit card fees and attract tech-savvy customers.",
-      reason: "Lower transaction fees and financial sovereignty"
+      name: "Marcus Rodriguez", 
+      role: "Small Business Owner",
+      story: "Owns a coffee shop in Miami and started accepting Bitcoin payments in 2021. Now keeps 30% of business reserves in Bitcoin and has seen significant growth in his savings despite economic uncertainty.",
+      reason: "Bitcoin allows me to serve customers globally and protects my business from currency debasement."
     },
     {
-      name: "Dr. Amara Okafor",
-      title: "Medical Professional",
-      story: "Uses Bitcoin to send money to medical charities in countries with unstable banking systems.",
-      reason: "Reliable value transfer to underbanked regions"
+      name: "Elena Petrov",
+      role: "Teacher & DCA Investor", 
+      story: "A high school mathematics teacher who began learning about Bitcoin during the 2020 pandemic. She now dedicates $200 monthly to Bitcoin purchases and teaches her students about digital currency concepts.",
+      reason: "Bitcoin represents financial education and freedom - something I want to pass on to the next generation."
     }
   ],
   businesses: [
     {
-      name: "MicroStrategy",
-      industry: "Business Intelligence",
-      story: "CEO Michael Saylor led the company to adopt Bitcoin as treasury reserve, buying over 190,000 BTC since 2020.",
-      reason: "Corporate treasury strategy and inflation hedge"
+      name: "MicroStrategy", 
+      role: "Business Intelligence Company",
+      story: "Led by Michael Saylor, MicroStrategy was the first major public company to adopt Bitcoin as its primary treasury reserve asset. They've accumulated over 130,000 Bitcoin since 2020, fundamentally changing how corporations think about cash management.",
+      reason: "Bitcoin is superior to cash as a store of value and provides shareholders with exposure to the digital transformation of the global economy."
     },
     {
       name: "Tesla",
-      industry: "Electric Vehicles", 
-      story: "Added Bitcoin to balance sheet and briefly accepted it for car purchases before focusing on environmental concerns.",
-      reason: "Diversification and innovation in payments"
+      role: "Electric Vehicle Manufacturer", 
+      story: "Under Elon Musk's leadership, Tesla invested $1.5 billion in Bitcoin in early 2021 and briefly accepted Bitcoin payments for vehicles. Though they scaled back vehicle purchases due to environmental concerns, they maintained their Bitcoin holdings.",
+      reason: "Bitcoin diversifies our cash position and provides long-term value storage as we transition to sustainable energy."
     },
     {
       name: "Strike",
-      industry: "Financial Services",
-      story: "Built Lightning Network infrastructure to enable instant, low-cost Bitcoin payments globally.",
-      reason: "Revolutionary payment rails and financial inclusion"
+      role: "Bitcoin Payment Platform",
+      story: "Founded by Jack Mallers, Strike built the Lightning Network infrastructure that enabled El Salvador's Bitcoin adoption. They've revolutionized cross-border payments by using Bitcoin rails to settle transactions instantly and cheaply.",
+      reason: "Bitcoin's Lightning Network enables instant, low-cost global payments that traditional banking simply cannot match."
     }
   ],
   nations: [
     {
       name: "El Salvador",
-      leader: "President Nayib Bukele",
-      story: "First country to adopt Bitcoin as legal tender in 2021, aiming to increase financial inclusion and attract investment.",
-      reason: "Financial inclusion and economic sovereignty"
+      role: "First Nation to Adopt Bitcoin as Legal Tender",
+      story: "Under President Nayib Bukele's leadership, El Salvador became the first country to make Bitcoin legal tender in September 2021. They've purchased over 2,600 Bitcoin for their national treasury and built Bitcoin education programs for citizens.",
+      reason: "Bitcoin provides financial inclusion for our unbanked population and reduces our dependence on the US dollar."
     },
     {
-      name: "Switzerland",
-      approach: "Crypto Valley",
-      story: "Created favorable regulations in Zug, becoming a global hub for blockchain companies and Bitcoin adoption.",
-      reason: "Innovation leadership and economic development"
+      name: "Central African Republic", 
+      role: "Second Country to Adopt Bitcoin",
+      story: "Following El Salvador's lead, CAR adopted Bitcoin as legal tender in 2022. Despite economic challenges, they've embraced Bitcoin as a tool for financial sovereignty and to attract international investment in their resource-rich economy.",
+      reason: "Bitcoin offers us monetary independence and connects our economy directly to the global digital financial system."
     },
     {
-      name: "Miami",
-      leader: "Mayor Francis Suarez",
-      story: "Exploring Bitcoin for city treasury and employee salaries, positioning Miami as a Bitcoin-friendly city.",
-      reason: "Economic innovation and talent attraction"
+      name: "Miami, Florida",
+      role: "Bitcoin-Friendly City",
+      story: "Mayor Francis Suarez has transformed Miami into America's Bitcoin capital, exploring Bitcoin for city finances, hosting major Bitcoin conferences, and attracting crypto companies with progressive policies. Miami was among the first cities to explore paying employees in Bitcoin.",
+      reason: "Bitcoin positions Miami as the financial technology capital of America and attracts innovative businesses to our city."
     }
   ]
 };
 
-export default function Home() {
-  const [activeSection, setActiveSection] = useState<MainSection>("learning");
-  const [learningSubTab, setLearningSubTab] = useState<LearningSubTab>("basics");
-  const [profilesSubTab, setProfilesSubTab] = useState<ProfilesSubTab>("individuals");
-  const [currentLessonPage, setCurrentLessonPage] = useState(0);
-  const [showPriceChart, setShowPriceChart] = useState(false);
-  const [showSplash, setShowSplash] = useState(true);
+type MainSection = "learn" | "practice" | "more";
+type LearnSubTab = "today" | "deepdive" | "reference" | "stories";
+type PracticeSubTab = "safety" | "transactions" | "hodl" | "dca";
+type MoreSubTab = "store";
 
-  // Splash screen effect
+export default function Home() {
+  const [activeSection, setActiveSection] = useState<MainSection>("learn");
+  const [learnSubTab, setLearnSubTab] = useState<LearnSubTab>("today");
+  const [practiceSubTab, setPracticeSubTab] = useState<PracticeSubTab>("safety");
+  const [moreSubTab, setMoreSubTab] = useState<MoreSubTab>("store");
+  const [storiesSubTab, setStoriesSubTab] = useState<"individuals" | "businesses" | "nations">("individuals");
+  const [convictionSubTab, setConvictionSubTab] = useState<"whitepaper" | "books" | "videos">("whitepaper");
+  const [showSplash, setShowSplash] = useState(true);
+  const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
+  
+  const toggleFactExpansion = (factId: number) => {
+    const newExpanded = new Set(expandedFacts);
+    if (newExpanded.has(factId)) {
+      newExpanded.delete(factId);
+    } else {
+      newExpanded.add(factId);
+    }
+    setExpandedFacts(newExpanded);
+  };
+
+  const getFactDeepDive = (factTitle: string) => {
+    const deepDives: Record<string, {
+      explanation: string;
+      examples: string[];
+      visualDescription: string;
+      keyTakeaways: string[];
+    }> = {
+      "Halving Events": {
+        explanation: "Bitcoin halving is a pre-programmed event that occurs approximately every 4 years (210,000 blocks) where the reward for mining new blocks is cut in half.",
+        examples: [
+          "2012: Reward dropped from 50 BTC to 25 BTC per block",
+          "2016: Reward dropped from 25 BTC to 12.5 BTC per block", 
+          "2020: Reward dropped from 12.5 BTC to 6.25 BTC per block",
+          "2024: Reward dropped from 6.25 BTC to 3.125 BTC per block"
+        ],
+        visualDescription: "Imagine a giant digital clock counting down blocks. Every 210,000 blocks, an automated mechanism literally cuts the mining reward in half.",
+        keyTakeaways: [
+          "Reduces new Bitcoin supply entering the market",
+          "Creates predictable scarcity timeline",
+          "Often correlates with price increases due to supply shock",
+          "Demonstrates Bitcoin's deflationary monetary policy"
+        ]
+      },
+      "Digital Scarcity": {
+        explanation: "Before Bitcoin, digital items could be copied infinitely at zero cost. Bitcoin solved the 'double-spending problem' using cryptographic proof and network consensus.",
+        examples: [
+          "Only 21 million bitcoins will ever exist (hardcoded limit)",
+          "Digital files can be copied, but Bitcoin cannot be duplicated",
+          "Each bitcoin exists as unique blockchain entry",
+          "Scarcity is enforced by mathematics and consensus"
+        ],
+        visualDescription: "Think of Bitcoin like rare digital trading cards that cannot be photocopied. The blockchain acts like an unchangeable ledger that tracks who owns each unique card.",
+        keyTakeaways: [
+          "First truly scarce digital asset in history",
+          "Scarcity is mathematically guaranteed",
+          "Cannot be inflated away by central authorities",
+          "Digital scarcity enables digital value storage"
+        ]
+      }
+    };
+    return deepDives[factTitle];
+  };
+
+  // API Queries
+  const { data: dailyFacts } = useQuery({
+    queryKey: ['/api/daily-facts'],
+  });
+
+  const { data: lesson } = useQuery({
+    queryKey: ['/api/lesson'],
+  });
+
+  const { data: user } = useQuery({
+    queryKey: ['/api/user'],
+  });
+
+  // Hide splash screen after delay
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowSplash(false);
@@ -200,59 +250,20 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Get current date for day-based content
-  const currentDate = new Date();
-  const dayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24)) % 365;
-
-  // API Queries
-  const { data: user } = useQuery({
-    queryKey: ['/api/user'],
-    queryFn: () => fetch('/api/user').then(res => res.json()) as Promise<User>
-  });
-
-  const { data: dailyFacts = [] } = useQuery({
-    queryKey: ['/api/daily-facts'],
-    queryFn: () => fetch('/api/daily-facts').then(res => res.json()) as Promise<DailyFact[]>
-  });
-
-  const { data: lesson } = useQuery({
-    queryKey: ['/api/lesson'],
-    queryFn: () => fetch('/api/lesson').then(res => res.json()) as Promise<Lesson>
-  });
-
-  const { data: progressToday } = useQuery({
-    queryKey: ['/api/progress/today'],
-    queryFn: () => fetch('/api/progress/today').then(res => res.json()) as Promise<UserProgress>
-  });
-
-  const { data: knowledgeAreas = [] } = useQuery({
-    queryKey: ['/api/knowledge-areas'],
-    queryFn: () => fetch('/api/knowledge-areas').then(res => res.json()) as Promise<KnowledgeArea[]>
-  });
-
-  const { data: convictionContent = [] } = useQuery({
-    queryKey: ['/api/conviction-content'],
-    queryFn: () => fetch('/api/conviction-content').then(res => res.json()) as Promise<ConvictionContent[]>
-  });
-
-  const { data: bitcoinPrice } = useQuery({
-    queryKey: ['/api/bitcoin-price'],
-    queryFn: () => fetch('/api/bitcoin-price').then(res => res.json()),
-    refetchInterval: 30000
-  });
-
   // Splash Screen
   if (showSplash) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-center space-y-6 animate-fade-in">
-          <div className="flex items-center justify-center gap-3">
-            <Bitcoin className="w-12 h-12 text-orange-500 animate-pulse" />
-            <h1 className="text-4xl font-bold text-white">Bitcoin Edu</h1>
+        <div className="text-center space-y-6">
+          <div className="relative">
+            <div className="w-20 h-20 mx-auto bg-gradient-to-r from-orange-400 to-orange-600 rounded-full flex items-center justify-center mb-6">
+              <Coins className="w-10 h-10 text-white" />
+            </div>
+            <div className="absolute -inset-4 bg-orange-400/20 rounded-full animate-ping"></div>
           </div>
-          <p className="text-zinc-400 text-lg">Learn Bitcoin. Build conviction. Stack sats.</p>
-          <div className="w-64 h-1 bg-zinc-800 rounded-full overflow-hidden">
-            <div className="h-full bg-orange-500 rounded-full animate-pulse" style={{ width: '60%' }}></div>
+          <div className="space-y-2">
+            <h1 className="text-4xl font-bold text-white">BTC Journey</h1>
+            <p className="text-zinc-400">Loading your conviction...</p>
           </div>
         </div>
       </div>
@@ -262,430 +273,1096 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-black/95 backdrop-blur-sm border-b border-zinc-800">
-        <div className="max-w-6xl mx-auto px-4 py-3">
+      <header className="border-b border-zinc-800 bg-black/50 backdrop-blur-lg sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Bitcoin className="w-6 h-6 text-orange-500" />
-              <h1 className="text-lg font-semibold text-white">Bitcoin Education</h1>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowPriceChart(!showPriceChart)}
-                className="text-zinc-400 hover:text-white hover:bg-zinc-800"
-              >
-                <Bitcoin className="w-4 h-4 mr-1" />
-                <span className="text-sm font-mono">
-                  ${bitcoinPrice?.priceUsd ? Number(bitcoinPrice.priceUsd).toLocaleString() : '...'}
-                </span>
-              </Button>
+              <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
+                <Plus className="w-5 h-5 text-white" />
+              </div>
+              <h1 className="text-xl font-bold text-white">BTC Journey</h1>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Main Navigation */}
-      <nav className="bg-zinc-900/50 border-b border-zinc-800">
+      {/* Navigation */}
+      <nav className="border-b border-zinc-800 bg-zinc-900/50">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center gap-1 py-2">
-            <Button
-              variant={activeSection === "learning" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setActiveSection("learning")}
-              className={activeSection === "learning" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"}
-            >
-              <GraduationCap className="w-4 h-4 mr-2" />
-              Learning
-            </Button>
-            <Button
-              variant={activeSection === "profiles" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setActiveSection("profiles")}
-              className={activeSection === "profiles" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"}
-            >
-              <Users className="w-4 h-4 mr-2" />
-              User Profiles
-            </Button>
-            <Button
-              variant={activeSection === "conviction" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setActiveSection("conviction")}
-              className={activeSection === "conviction" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"}
-            >
-              <Heart className="w-4 h-4 mr-2" />
-              Conviction
-            </Button>
-            <Button
-              variant={activeSection === "terms" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setActiveSection("terms")}
-              className={activeSection === "terms" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"}
-            >
-              <FileText className="w-4 h-4 mr-2" />
-              Bitcoin Terms
-            </Button>
+          <div className="flex justify-center py-4">
+            <div className="flex space-x-1 bg-zinc-800/50 rounded-lg p-1">
+              <Button
+                variant={activeSection === "learn" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setActiveSection("learn")}
+                className="text-sm px-4 py-2"
+              >
+                Learn
+              </Button>
+              <Button
+                variant={activeSection === "practice" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setActiveSection("practice")}
+                className="text-sm px-4 py-2"
+              >
+                Practice
+              </Button>
+              <Button
+                variant={activeSection === "more" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setActiveSection("more")}
+                className="text-sm px-4 py-2"
+              >
+                More
+              </Button>
+            </div>
           </div>
         </div>
       </nav>
 
-      {/* Sub Navigation */}
-      {activeSection === "learning" && (
-        <div className="bg-zinc-800/30 border-b border-zinc-800">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="flex items-center gap-1 py-2">
-              <Button
-                variant={learningSubTab === "basics" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setLearningSubTab("basics")}
-                className="text-sm"
-              >
-                <Lightbulb className="w-3 h-3 mr-2" />
-                Daily Facts
-              </Button>
-              <Button
-                variant={learningSubTab === "lesson" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setLearningSubTab("lesson")}
-                className="text-sm"
-              >
-                <BookOpen className="w-3 h-3 mr-2" />
-                Lesson
-              </Button>
-              <Button
-                variant={learningSubTab === "quiz" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setLearningSubTab("quiz")}
-                className="text-sm"
-              >
-                <HelpCircle className="w-3 h-3 mr-2" />
-                Quiz
-              </Button>
-              <Button
-                variant={learningSubTab === "progress" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setLearningSubTab("progress")}
-                className="text-sm"
-              >
-                <TrendingUp className="w-3 h-3 mr-2" />
-                Progress
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {activeSection === "profiles" && (
-        <div className="bg-zinc-800/30 border-b border-zinc-800">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="flex items-center gap-1 py-2">
-              <Button
-                variant={profilesSubTab === "individuals" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setProfilesSubTab("individuals")}
-                className="text-sm"
-              >
-                <UserIcon className="w-3 h-3 mr-2" />
-                Individuals
-              </Button>
-              <Button
-                variant={profilesSubTab === "businesses" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setProfilesSubTab("businesses")}
-                className="text-sm"
-              >
-                <Building2 className="w-3 h-3 mr-2" />
-                Businesses
-              </Button>
-              <Button
-                variant={profilesSubTab === "nations" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setProfilesSubTab("nations")}
-                className="text-sm"
-              >
-                <Globe className="w-3 h-3 mr-2" />
-                Nations
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-6">
-        {/* Learning Section */}
-        {activeSection === "learning" && (
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-bold text-white mb-2">
+            {activeSection === "learn" && "Build Your Bitcoin Foundation"}
+            {activeSection === "practice" && "Practice Bitcoin Concepts"}
+            {activeSection === "more" && "Discover More About Bitcoin"}
+          </h2>
+          <p className="text-zinc-400">
+            {activeSection === "learn" && "Learn the fundamentals and understand why Bitcoin matters"}
+            {activeSection === "practice" && "Interactive simulations to deepen your understanding"}
+            {activeSection === "more" && "Real stories and conviction-building content"}
+          </p>
+        </div>
+
+        {/* Learn Section */}
+        {activeSection === "learn" && (
           <div className="space-y-6">
-            {learningSubTab === "basics" && (
-              <div className="space-y-6">
-                <div className="text-center space-y-2">
-                  <h2 className="text-2xl font-bold text-white">Daily Bitcoin Facts</h2>
-                  <p className="text-zinc-400">Learn something new about Bitcoin every day</p>
-                </div>
-                
-                <div className="grid gap-4">
-                  {dailyFacts.map((fact, index) => {
-                    const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Lightbulb;
-                    return (
-                      <Card key={fact.id} className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors">
-                        <CardContent className="p-6">
-                          <div className="flex items-start gap-4">
-                            <div className="flex-shrink-0 w-10 h-10 bg-orange-600/10 rounded-lg flex items-center justify-center">
-                              <IconComponent className="w-5 h-5 text-orange-500" />
-                            </div>
-                            <div className="flex-1">
-                              <h3 className="font-semibold text-white mb-2">{fact.title}</h3>
-                              <p className="text-zinc-300 leading-relaxed">{fact.content}</p>
-                              <Badge variant="outline" className="mt-3 border-zinc-700 text-zinc-400">
-                                {fact.category}
-                              </Badge>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-                </div>
+            {/* Learn Sub-navigation */}
+            <div className="flex justify-center">
+              <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2">
+                <Button
+                  variant={learnSubTab === "today" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setLearnSubTab("today")}
+                  className="text-xs px-3 py-1"
+                >
+                  Today
+                </Button>
+                <Button
+                  variant={learnSubTab === "deepdive" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setLearnSubTab("deepdive")}
+                  className="text-xs px-3 py-1"
+                >
+                  Deep Dive
+                </Button>
+                <Button
+                  variant={learnSubTab === "reference" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setLearnSubTab("reference")}
+                  className="text-xs px-3 py-1"
+                >
+                  Reference
+                </Button>
+                <Button
+                  variant={learnSubTab === "stories" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setLearnSubTab("stories")}
+                  className="text-xs px-3 py-1"
+                >
+                  Stories
+                </Button>
               </div>
-            )}
+            </div>
 
-            {learningSubTab === "lesson" && lesson && (
+            {/* Today's Learning */}
+            {learnSubTab === "today" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
-                  <h2 className="text-2xl font-bold text-white">Today's Lesson</h2>
-                  <p className="text-zinc-400">Deep dive into Bitcoin concepts</p>
+                  <h3 className="text-xl font-bold text-white">Today's Bitcoin Learning</h3>
+                  <p className="text-zinc-400">Daily facts, lessons, and knowledge tests</p>
                 </div>
-                
-                <Card className="bg-zinc-900 border-zinc-800">
-                  <CardContent className="p-6">
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-xl font-semibold text-white">{lesson.title}</h3>
-                        <Badge variant="outline" className="border-zinc-700 text-zinc-400">
-                          {lesson.estimatedReadTime} min read
-                        </Badge>
-                      </div>
-                      <div className="prose prose-invert max-w-none">
-                        {lesson.content.split('\n').map((paragraph, index) => (
-                          <p key={index} className="text-zinc-300 leading-relaxed mb-4">
-                            {paragraph}
-                          </p>
-                        ))}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
 
-            {learningSubTab === "quiz" && (
-              <div className="space-y-6">
-                <div className="text-center space-y-2">
-                  <h2 className="text-2xl font-bold text-white">Daily Quiz</h2>
-                  <p className="text-zinc-400">Test your Bitcoin knowledge</p>
-                </div>
+                {/* Daily Facts */}
+                {dailyFacts && Array.isArray(dailyFacts) && dailyFacts.length > 0 && (
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <h3 className="text-lg font-bold text-white mb-4">Essential Bitcoin Facts</h3>
+                      <div className="space-y-4">
+                        {(dailyFacts as DailyFact[]).map((fact: DailyFact) => {
+                          const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Coins;
+                          const deepDive = getFactDeepDive(fact.title);
+                          const isExpanded = expandedFacts.has(fact.id);
+                          
+                          return (
+                            <div key={fact.id} className="bg-zinc-800/50 rounded-lg overflow-hidden">
+                              <div className="flex items-start gap-4 p-4">
+                                <div className="p-2 bg-orange-600/20 rounded-lg">
+                                  <IconComponent className="w-5 h-5 text-orange-400" />
+                                </div>
+                                <div className="flex-1">
+                                  <div className="flex items-center justify-between mb-2">
+                                    <h4 className="font-semibold text-white">{fact.title}</h4>
+                                    {deepDive && (
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => toggleFactExpansion(fact.id)}
+                                        className="text-orange-400 hover:text-orange-300 px-2"
+                                      >
+                                        {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                                        Dive Deeper
+                                      </Button>
+                                    )}
+                                  </div>
+                                  <p className="text-zinc-300 text-sm">{fact.content}</p>
+                                </div>
+                              </div>
+                              
+                              {isExpanded && deepDive && (
+                                <div className="border-t border-zinc-700 p-4 bg-zinc-900/50">
+                                  <div className="space-y-4">
+                                    <div>
+                                      <h5 className="font-medium text-orange-300 mb-2">Deep Explanation</h5>
+                                      <p className="text-zinc-300 text-sm leading-relaxed">{deepDive.explanation}</p>
+                                    </div>
+                                    
+                                    <div>
+                                      <h5 className="font-medium text-orange-300 mb-2">Visual Description</h5>
+                                      <p className="text-zinc-300 text-sm italic">{deepDive.visualDescription}</p>
+                                    </div>
+                                    
+                                    <div>
+                                      <h5 className="font-medium text-orange-300 mb-2">Real Examples</h5>
+                                      <ul className="space-y-1">
+                                        {deepDive.examples.map((example, idx) => (
+                                          <li key={idx} className="text-zinc-300 text-sm flex items-start gap-2">
+                                            <span className="text-orange-400 mt-1">•</span>
+                                            <span>{example}</span>
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                    
+                                    <div>
+                                      <h5 className="font-medium text-orange-300 mb-2">Key Takeaways</h5>
+                                      <div className="grid gap-2">
+                                        {deepDive.keyTakeaways.map((takeaway, idx) => (
+                                          <div key={idx} className="flex items-start gap-2 p-2 bg-orange-600/10 rounded-lg border border-orange-600/20">
+                                            <CheckCircle className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
+                                            <span className="text-orange-100 text-sm">{takeaway}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Daily Lesson */}
+                {lesson && (
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <h3 className="text-lg font-bold text-white mb-4">Today's Lesson</h3>
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="font-semibold text-white mb-2">{(lesson as Lesson).title}</h4>
+                          <p className="text-zinc-300">{(lesson as Lesson).content}</p>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-zinc-400">
+                          <Clock className="w-4 h-4" />
+                          <span>{(lesson as Lesson).estimatedReadTime || '5'} min read</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Daily Quiz */}
                 <DailyQuiz />
               </div>
             )}
 
-            {learningSubTab === "progress" && (
+            {/* Stories Content */}
+            {learnSubTab === "stories" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
-                  <h2 className="text-2xl font-bold text-white">Your Progress</h2>
-                  <p className="text-zinc-400">Track your Bitcoin learning journey</p>
+                  <h3 className="text-xl font-bold text-white">Real Bitcoin Stories</h3>
+                  <p className="text-zinc-400">See how individuals, businesses, and nations are using Bitcoin</p>
                 </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                {/* Stories Sub-navigation */}
+                <div className="flex justify-center">
+                  <div className="flex space-x-2 mb-6 justify-center flex-wrap gap-2">
+                    <Button
+                      variant={storiesSubTab === "individuals" ? "secondary" : "ghost"}
+                      size="sm"
+                      onClick={() => setStoriesSubTab("individuals")}
+                      className="text-xs px-3 py-1"
+                    >
+                      <UserIcon className="w-3 h-3 mr-1" />
+                      Individuals
+                    </Button>
+                    <Button
+                      variant={storiesSubTab === "businesses" ? "secondary" : "ghost"}
+                      size="sm"
+                      onClick={() => setStoriesSubTab("businesses")}
+                      className="text-xs px-3 py-1"
+                    >
+                      <Building2 className="w-3 h-3 mr-1" />
+                      Businesses
+                    </Button>
+                    <Button
+                      variant={storiesSubTab === "nations" ? "secondary" : "ghost"}
+                      size="sm"
+                      onClick={() => setStoriesSubTab("nations")}
+                      className="text-xs px-3 py-1"
+                    >
+                      <Globe className="w-3 h-3 mr-1" />
+                      Nations
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Stories Content */}
+                <div className="grid gap-6">
+                  {userProfiles[storiesSubTab].map((profile, index) => (
+                    <Card key={index} className="bg-zinc-900 border-zinc-800">
+                      <CardContent className="p-6">
+                        <div className="space-y-4">
+                          <div className="flex items-start gap-4">
+                            <div className="p-3 bg-orange-600/20 rounded-lg">
+                              {storiesSubTab === "individuals" && <UserIcon className="w-8 h-8 text-orange-400" />}
+                              {storiesSubTab === "businesses" && <Building2 className="w-8 h-8 text-orange-400" />}
+                              {storiesSubTab === "nations" && <Globe className="w-8 h-8 text-orange-400" />}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h3 className="text-xl font-bold text-white">{profile.name}</h3>
+                              <p className="text-orange-400 font-medium">{profile.role}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-3">
+                            <p className="text-zinc-300 leading-relaxed">{profile.story}</p>
+                            
+                            <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-4">
+                              <h4 className="text-orange-300 font-medium mb-2 flex items-center gap-2">
+                                <Quote className="w-4 h-4" />
+                                Why Bitcoin?
+                              </h4>
+                              <p className="text-orange-100 text-sm italic">"{profile.reason}"</p>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Deep Dive Section */}
+            {learnSubTab === "deepdive" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">Advanced Bitcoin Concepts</h3>
+                  <p className="text-zinc-400">Explore complex topics with detailed explanations and interactive elements</p>
+                </div>
+
+                {/* Advanced Topics Grid */}
+                <div className="grid gap-6 md:grid-cols-2">
                   <Card className="bg-zinc-900 border-zinc-800">
                     <CardContent className="p-6">
-                      <div className="text-center space-y-2">
-                        <div className="text-2xl font-bold text-white">{user?.currentStreak || 0}</div>
-                        <div className="text-sm text-zinc-400">Day Streak</div>
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-orange-600/20 rounded-lg">
+                            <Network className="w-6 h-6 text-orange-400" />
+                          </div>
+                          <h4 className="text-lg font-bold text-white">Lightning Network</h4>
+                        </div>
+                        <p className="text-zinc-300 text-sm">
+                          A "layer 2" payment protocol that operates on top of Bitcoin. It enables fast, low-cost transactions by creating payment channels between users.
+                        </p>
+                        <div className="space-y-2">
+                          <h5 className="font-medium text-orange-300">Key Features:</h5>
+                          <ul className="space-y-1 text-sm text-zinc-400">
+                            <li>• Instant payments</li>
+                            <li>• Minimal fees (fractions of a cent)</li>
+                            <li>• Micropayment capability</li>
+                            <li>• Enhanced privacy</li>
+                          </ul>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
-                  
+
                   <Card className="bg-zinc-900 border-zinc-800">
                     <CardContent className="p-6">
-                      <div className="text-center space-y-2">
-                        <div className="text-2xl font-bold text-white">{user?.completedLessons || 0}</div>
-                        <div className="text-sm text-zinc-400">Lessons Completed</div>
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-blue-600/20 rounded-lg">
+                            <Lock className="w-6 h-6 text-blue-400" />
+                          </div>
+                          <h4 className="text-lg font-bold text-white">Digital Signatures</h4>
+                        </div>
+                        <p className="text-zinc-300 text-sm">
+                          Cryptographic proof that a transaction was created by the owner of a private key, without revealing the private key itself.
+                        </p>
+                        <div className="space-y-2">
+                          <h5 className="font-medium text-blue-300">How It Works:</h5>
+                          <ul className="space-y-1 text-sm text-zinc-400">
+                            <li>• Private key creates signature</li>
+                            <li>• Public key verifies signature</li>
+                            <li>• Mathematically impossible to forge</li>
+                            <li>• Proves ownership without revealing secrets</li>
+                          </ul>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
-                  
+
                   <Card className="bg-zinc-900 border-zinc-800">
                     <CardContent className="p-6">
-                      <div className="text-center space-y-2">
-                        <div className="text-2xl font-bold text-white">{user?.longestStreak || 0}</div>
-                        <div className="text-sm text-zinc-400">Longest Streak</div>
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-green-600/20 rounded-lg">
+                            <Zap className="w-6 h-6 text-green-400" />
+                          </div>
+                          <h4 className="text-lg font-bold text-white">Proof of Work</h4>
+                        </div>
+                        <p className="text-zinc-300 text-sm">
+                          The consensus mechanism that secures Bitcoin. Miners compete to solve computational puzzles, with the winner adding the next block to the blockchain.
+                        </p>
+                        <div className="space-y-2">
+                          <h5 className="font-medium text-green-300">Security Benefits:</h5>
+                          <ul className="space-y-1 text-sm text-zinc-400">
+                            <li>• Immutable transaction history</li>
+                            <li>• Decentralized consensus</li>
+                            <li>• Attack resistance grows with network</li>
+                            <li>• No central point of failure</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-purple-600/20 rounded-lg">
+                            <Coins className="w-6 h-6 text-purple-400" />
+                          </div>
+                          <h4 className="text-lg font-bold text-white">Fixed Supply</h4>
+                        </div>
+                        <p className="text-zinc-300 text-sm">
+                          Bitcoin has a maximum supply of 21 million coins, hardcoded into the protocol. This scarcity model is fundamental to Bitcoin's value proposition.
+                        </p>
+                        <div className="space-y-2">
+                          <h5 className="font-medium text-purple-300">Supply Schedule:</h5>
+                          <ul className="space-y-1 text-sm text-zinc-400">
+                            <li>• ~19.8 million already mined</li>
+                            <li>• Halving every 4 years</li>
+                            <li>• Final coin mined ~2140</li>
+                            <li>• Deflationary monetary policy</li>
+                          </ul>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
                 </div>
               </div>
             )}
-          </div>
-        )}
 
-        {/* User Profiles Section */}
-        {activeSection === "profiles" && (
-          <div className="space-y-6">
-            <div className="text-center space-y-2">
-              <h2 className="text-2xl font-bold text-white">Why People Use Bitcoin</h2>
-              <p className="text-zinc-400">Real stories from individuals, businesses, and nations</p>
-            </div>
-            
-            <div className="grid gap-6">
-              {userProfiles[profilesSubTab].map((profile, index) => (
-                <Card key={index} className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors">
+            {/* Reference Section */}
+            {learnSubTab === "reference" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">Bitcoin Reference Guide</h3>
+                  <p className="text-zinc-400">Essential terminology and concepts for understanding Bitcoin</p>
+                </div>
+
+                {/* Glossary Categories */}
+                <div className="grid gap-6">
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <Coins className="w-5 h-5 text-orange-400" />
+                        Core Concepts
+                      </h4>
+                      <div className="grid gap-4 md:grid-cols-2">
+                        {bitcoinTerms.slice(0, 4).map((term, index) => (
+                          <div key={index} className="p-3 bg-zinc-800/50 rounded-lg">
+                            <h5 className="font-semibold text-orange-300 mb-1">{term.term}</h5>
+                            <p className="text-zinc-300 text-sm">{term.definition}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <Shield className="w-5 h-5 text-blue-400" />
+                        Security & Storage
+                      </h4>
+                      <div className="grid gap-4 md:grid-cols-2">
+                        {bitcoinTerms.slice(4, 8).map((term, index) => (
+                          <div key={index} className="p-3 bg-zinc-800/50 rounded-lg">
+                            <h5 className="font-semibold text-blue-300 mb-1">{term.term}</h5>
+                            <p className="text-zinc-300 text-sm">{term.definition}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Bitcoin Whitepaper Section */}
+                <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
                     <div className="space-y-4">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <h3 className="text-lg font-semibold text-white">{profile.name}</h3>
-                          <p className="text-orange-400 text-sm">
-                            {profile.title || profile.industry || profile.leader || profile.approach}
-                          </p>
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-orange-600/20 rounded-lg">
+                          <FileText className="w-6 h-6 text-orange-400" />
                         </div>
-                        <Badge variant="outline" className="border-zinc-700 text-zinc-400">
-                          {profilesSubTab === "individuals" ? "Individual" : 
-                           profilesSubTab === "businesses" ? "Business" : "Nation"}
-                        </Badge>
+                        <div>
+                          <h4 className="text-lg font-bold text-white">Bitcoin Whitepaper</h4>
+                          <p className="text-zinc-400 text-sm">Original paper by Satoshi Nakamoto (October 31, 2008)</p>
+                        </div>
                       </div>
                       
-                      <div className="space-y-3">
-                        <div>
-                          <h4 className="text-sm font-medium text-zinc-300 mb-1">Story</h4>
-                          <p className="text-zinc-400 text-sm leading-relaxed">{profile.story}</p>
+                      <div className="p-4 bg-zinc-800/50 rounded-lg border-l-4 border-orange-500">
+                        <h5 className="font-semibold text-orange-300 mb-2">Abstract</h5>
+                        <p className="text-zinc-300 text-sm italic leading-relaxed">
+                          "A purely peer-to-peer version of electronic cash would allow online payments to be sent directly from one party to another without going through a financial institution."
+                        </p>
+                      </div>
+                      
+                      <div className="grid gap-3 md:grid-cols-3">
+                        <div className="p-3 bg-zinc-800/30 rounded-lg text-center">
+                          <FileText className="w-8 h-8 text-orange-400 mx-auto mb-2" />
+                          <h6 className="font-medium text-white text-sm">9 Pages</h6>
+                          <p className="text-zinc-400 text-xs">Original length</p>
                         </div>
-                        
-                        <div>
-                          <h4 className="text-sm font-medium text-zinc-300 mb-1">Why Bitcoin?</h4>
-                          <p className="text-green-400 text-sm font-medium">{profile.reason}</p>
+                        <div className="p-3 bg-zinc-800/30 rounded-lg text-center">
+                          <Calendar className="w-8 h-8 text-orange-400 mx-auto mb-2" />
+                          <h6 className="font-medium text-white text-sm">2008</h6>
+                          <p className="text-zinc-400 text-xs">Publication year</p>
+                        </div>
+                        <div className="p-3 bg-zinc-800/30 rounded-lg text-center">
+                          <Users className="w-8 h-8 text-orange-400 mx-auto mb-2" />
+                          <h6 className="font-medium text-white text-sm">Satoshi</h6>
+                          <p className="text-zinc-400 text-xs">Anonymous author</p>
                         </div>
                       </div>
+                      
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => window.open('https://bitcoin.org/bitcoin.pdf', '_blank')}
+                      >
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        Read Full Whitepaper
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
-              ))}
-            </div>
+              </div>
+            )}
           </div>
         )}
 
-        {/* Conviction Section */}
-        {activeSection === "conviction" && (
+        {/* Practice Section */}
+        {activeSection === "practice" && (
           <div className="space-y-6">
-            <div className="text-center space-y-2">
-              <h2 className="text-2xl font-bold text-white">Conviction Center</h2>
-              <p className="text-zinc-400">Wisdom from Bitcoin leaders and advocates</p>
+            {/* Practice Sub-navigation */}
+            <div className="flex justify-center">
+              <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2">
+                <Button
+                  variant={practiceSubTab === "safety" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setPracticeSubTab("safety")}
+                  className="text-xs px-3 py-1"
+                >
+                  <Shield className="w-3 h-3 mr-1" />
+                  Safety
+                </Button>
+                <Button
+                  variant={practiceSubTab === "transactions" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setPracticeSubTab("transactions")}
+                  className="text-xs px-3 py-1"
+                >
+                  <CreditCard className="w-3 h-3 mr-1" />
+                  Transactions
+                </Button>
+                <Button
+                  variant={practiceSubTab === "hodl" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setPracticeSubTab("hodl")}
+                  className="text-xs px-3 py-1"
+                >
+                  <TrendingUp className="w-3 h-3 mr-1" />
+                  HODL
+                </Button>
+                <Button
+                  variant={practiceSubTab === "dca" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setPracticeSubTab("dca")}
+                  className="text-xs px-3 py-1"
+                >
+                  <BarChart3 className="w-3 h-3 mr-1" />
+                  DCA
+                </Button>
+              </div>
             </div>
-            
-            <div className="grid gap-4">
-              {convictionContent.map((content, index) => (
-                <Card key={content.id} className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors">
-                  <CardContent className="p-6">
-                    <div className="space-y-4">
-                      <div className="flex items-start gap-3">
-                        {content.type === "quote" ? (
-                          <Quote className="w-6 h-6 text-orange-500 flex-shrink-0 mt-1" />
-                        ) : (
-                          <Play className="w-6 h-6 text-orange-500 flex-shrink-0 mt-1" />
-                        )}
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-white mb-2">{content.title}</h3>
-                          <p className="text-zinc-300 leading-relaxed mb-3">{content.content}</p>
-                          <div className="flex items-center justify-between">
-                            <div className="text-sm text-zinc-400">
-                              <span className="font-medium text-orange-400">{content.author}</span>
-                              {content.source && <span> • {content.source}</span>}
+
+            {/* Safety Training */}
+            {practiceSubTab === "safety" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">Bitcoin Security Best Practices</h3>
+                  <p className="text-zinc-400">Learn essential security measures to protect your Bitcoin</p>
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-2">
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-green-600/20 rounded-lg">
+                            <Shield className="w-6 h-6 text-green-400" />
+                          </div>
+                          <h4 className="text-lg font-bold text-white">Wallet Security Rules</h4>
+                        </div>
+                        <div className="space-y-3">
+                          <div className="flex items-start gap-2">
+                            <CheckCircle className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
+                            <div>
+                              <p className="text-white text-sm font-medium">Never share your private keys</p>
+                              <p className="text-zinc-400 text-xs">Anyone with your private key can steal your Bitcoin</p>
                             </div>
-                            {content.videoUrl && (
-                              <Button variant="outline" size="sm" className="border-zinc-700 text-zinc-300 hover:bg-zinc-800">
-                                <ExternalLink className="w-3 h-3 mr-1" />
-                                Watch
-                              </Button>
-                            )}
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <CheckCircle className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
+                            <div>
+                              <p className="text-white text-sm font-medium">Use hardware wallets for large amounts</p>
+                              <p className="text-zinc-400 text-xs">Hardware wallets keep keys offline and secure</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <CheckCircle className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
+                            <div>
+                              <p className="text-white text-sm font-medium">Write down your seed phrase</p>
+                              <p className="text-zinc-400 text-xs">Store backup in a safe, physical location</p>
+                            </div>
                           </div>
                         </div>
                       </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-red-600/20 rounded-lg">
+                            <AlertTriangle className="w-6 h-6 text-red-400" />
+                          </div>
+                          <h4 className="text-lg font-bold text-white">Common Scams to Avoid</h4>
+                        </div>
+                        <div className="space-y-3">
+                          <div className="flex items-start gap-2">
+                            <AlertTriangle className="w-4 h-4 text-red-400 mt-1 flex-shrink-0" />
+                            <div>
+                              <p className="text-white text-sm font-medium">Fake websites and apps</p>
+                              <p className="text-zinc-400 text-xs">Always verify URLs and download from official sources</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <AlertTriangle className="w-4 h-4 text-red-400 mt-1 flex-shrink-0" />
+                            <div>
+                              <p className="text-white text-sm font-medium">Phishing emails</p>
+                              <p className="text-zinc-400 text-xs">Never click links asking for private keys or passwords</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <AlertTriangle className="w-4 h-4 text-red-400 mt-1 flex-shrink-0" />
+                            <div>
+                              <p className="text-white text-sm font-medium">Too-good-to-be-true offers</p>
+                              <p className="text-zinc-400 text-xs">No legitimate service promises guaranteed returns</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h4 className="text-lg font-bold text-white mb-4">Wallet Type Comparison</h4>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-zinc-700">
+                            <th className="text-left text-white p-2">Wallet Type</th>
+                            <th className="text-left text-white p-2">Security</th>
+                            <th className="text-left text-white p-2">Convenience</th>
+                            <th className="text-left text-white p-2">Best For</th>
+                          </tr>
+                        </thead>
+                        <tbody className="text-zinc-300">
+                          <tr className="border-b border-zinc-800">
+                            <td className="p-2 font-medium">Hardware Wallet</td>
+                            <td className="p-2 text-green-400">Highest</td>
+                            <td className="p-2 text-yellow-400">Medium</td>
+                            <td className="p-2">Long-term storage</td>
+                          </tr>
+                          <tr className="border-b border-zinc-800">
+                            <td className="p-2 font-medium">Mobile Wallet</td>
+                            <td className="p-2 text-yellow-400">Medium</td>
+                            <td className="p-2 text-green-400">Highest</td>
+                            <td className="p-2">Daily transactions</td>
+                          </tr>
+                          <tr className="border-b border-zinc-800">
+                            <td className="p-2 font-medium">Exchange</td>
+                            <td className="p-2 text-red-400">Lowest</td>
+                            <td className="p-2 text-green-400">Highest</td>
+                            <td className="p-2">Trading only</td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </CardContent>
                 </Card>
-              ))}
-            </div>
+              </div>
+            )}
+
+            {/* Transaction Simulator */}
+            {practiceSubTab === "transactions" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">Bitcoin Transaction Builder</h3>
+                  <p className="text-zinc-400">Learn how Bitcoin transactions work by building one step-by-step</p>
+                </div>
+
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="space-y-6">
+                      <div className="grid gap-4 md:grid-cols-3">
+                        <div className="p-4 bg-zinc-800/50 rounded-lg text-center">
+                          <Wallet className="w-8 h-8 text-blue-400 mx-auto mb-2" />
+                          <h5 className="font-medium text-white mb-1">From Address</h5>
+                          <p className="text-zinc-400 text-xs">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</p>
+                        </div>
+                        <div className="p-4 bg-zinc-800/50 rounded-lg text-center">
+                          <ArrowRight className="w-8 h-8 text-orange-400 mx-auto mb-2" />
+                          <h5 className="font-medium text-white mb-1">Amount</h5>
+                          <p className="text-zinc-400 text-xs">0.001 BTC</p>
+                        </div>
+                        <div className="p-4 bg-zinc-800/50 rounded-lg text-center">
+                          <UserIcon className="w-8 h-8 text-green-400 mx-auto mb-2" />
+                          <h5 className="font-medium text-white mb-1">To Address</h5>
+                          <p className="text-zinc-400 text-xs">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <h5 className="font-medium text-white">Transaction Details</h5>
+                        <div className="grid gap-3 md:grid-cols-2">
+                          <div className="p-3 bg-zinc-800/30 rounded-lg">
+                            <p className="text-zinc-400 text-sm">Network Fee</p>
+                            <p className="text-white font-medium">0.00002 BTC (~$1.30)</p>
+                          </div>
+                          <div className="p-3 bg-zinc-800/30 rounded-lg">
+                            <p className="text-zinc-400 text-sm">Confirmation Time</p>
+                            <p className="text-white font-medium">~10 minutes</p>
+                          </div>
+                          <div className="p-3 bg-zinc-800/30 rounded-lg">
+                            <p className="text-zinc-400 text-sm">Transaction Size</p>
+                            <p className="text-white font-medium">226 bytes</p>
+                          </div>
+                          <div className="p-3 bg-zinc-800/30 rounded-lg">
+                            <p className="text-zinc-400 text-sm">Fee Rate</p>
+                            <p className="text-white font-medium">5.75 sat/vB</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-4 bg-orange-600/10 border border-orange-600/20 rounded-lg">
+                        <h5 className="font-medium text-orange-300 mb-2">How This Transaction Works:</h5>
+                        <ol className="space-y-1 text-zinc-300 text-sm">
+                          <li>1. Your wallet creates a transaction spending unspent outputs</li>
+                          <li>2. The transaction is signed with your private key</li>
+                          <li>3. It's broadcast to the Bitcoin network</li>
+                          <li>4. Miners include it in a block and confirm it</li>
+                        </ol>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {/* HODL Strategy */}
+            {practiceSubTab === "hodl" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">HODLing vs Trading Comparison</h3>
+                  <p className="text-zinc-400">Compare long-term holding against active trading strategies</p>
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-2">
+                  <Card className="bg-green-900/20 border-green-800">
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-green-600/20 rounded-lg">
+                            <TrendingUp className="w-6 h-6 text-green-400" />
+                          </div>
+                          <h4 className="text-lg font-bold text-white">HODL Strategy</h4>
+                        </div>
+                        <div className="space-y-3">
+                          <div className="p-3 bg-green-800/20 rounded-lg">
+                            <p className="text-green-300 font-medium text-sm">$10,000 Initial Investment</p>
+                            <p className="text-green-200 text-xs">Held for 4 years (2020-2024)</p>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400 text-sm">Final Value</span>
+                              <span className="text-green-400 font-medium">$28,500</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400 text-sm">Total Return</span>
+                              <span className="text-green-400 font-medium">+185%</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400 text-sm">Trading Fees</span>
+                              <span className="text-green-400 font-medium">$25</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400 text-sm">Tax Liability</span>
+                              <span className="text-green-400 font-medium">$3,700</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-red-900/20 border-red-800">
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-red-600/20 rounded-lg">
+                            <BarChart3 className="w-6 h-6 text-red-400" />
+                          </div>
+                          <h4 className="text-lg font-bold text-white">Active Trading</h4>
+                        </div>
+                        <div className="space-y-3">
+                          <div className="p-3 bg-red-800/20 rounded-lg">
+                            <p className="text-red-300 font-medium text-sm">$10,000 Initial Investment</p>
+                            <p className="text-red-200 text-xs">50 trades over 4 years</p>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400 text-sm">Final Value</span>
+                              <span className="text-red-400 font-medium">$18,200</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400 text-sm">Total Return</span>
+                              <span className="text-red-400 font-medium">+82%</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400 text-sm">Trading Fees</span>
+                              <span className="text-red-400 font-medium">$1,250</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400 text-sm">Tax Liability</span>
+                              <span className="text-red-400 font-medium">$2,460</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h4 className="text-lg font-bold text-white mb-4">Key Insights</h4>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <h5 className="font-medium text-green-300">HODL Advantages</h5>
+                        <ul className="space-y-1 text-zinc-300 text-sm">
+                          <li>• Lower fees and taxes</li>
+                          <li>• Reduced stress and time commitment</li>
+                          <li>• Benefits from long-term appreciation</li>
+                          <li>• No emotional trading decisions</li>
+                        </ul>
+                      </div>
+                      <div className="space-y-2">
+                        <h5 className="font-medium text-red-300">Trading Challenges</h5>
+                        <ul className="space-y-1 text-zinc-300 text-sm">
+                          <li>• High fees compound over time</li>
+                          <li>• Short-term gains taxed as income</li>
+                          <li>• Difficult to time markets consistently</li>
+                          <li>• Emotional decision making</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {/* DCA Strategy */}
+            {practiceSubTab === "dca" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">Dollar-Cost Averaging Calculator</h3>
+                  <p className="text-zinc-400">See how consistent investing smooths out market volatility</p>
+                </div>
+
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="space-y-6">
+                      <h4 className="text-lg font-bold text-white">DCA Simulation Results</h4>
+                      
+                      <div className="grid gap-4 md:grid-cols-3">
+                        <div className="p-4 bg-zinc-800/50 rounded-lg text-center">
+                          <DollarSign className="w-8 h-8 text-blue-400 mx-auto mb-2" />
+                          <h5 className="font-medium text-white mb-1">Monthly Investment</h5>
+                          <p className="text-blue-400 font-bold text-lg">$100</p>
+                        </div>
+                        <div className="p-4 bg-zinc-800/50 rounded-lg text-center">
+                          <Calendar className="w-8 h-8 text-orange-400 mx-auto mb-2" />
+                          <h5 className="font-medium text-white mb-1">Time Period</h5>
+                          <p className="text-orange-400 font-bold text-lg">24 Months</p>
+                        </div>
+                        <div className="p-4 bg-zinc-800/50 rounded-lg text-center">
+                          <TrendingUp className="w-8 h-8 text-green-400 mx-auto mb-2" />
+                          <h5 className="font-medium text-white mb-1">Total Invested</h5>
+                          <p className="text-green-400 font-bold text-lg">$2,400</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <h5 className="font-medium text-white">Results Comparison</h5>
+                        <div className="grid gap-3 md:grid-cols-2">
+                          <div className="p-4 bg-green-600/10 border border-green-600/20 rounded-lg">
+                            <h6 className="font-medium text-green-300 mb-2">DCA Strategy</h6>
+                            <div className="space-y-1 text-sm">
+                              <div className="flex justify-between">
+                                <span className="text-zinc-400">Bitcoin Acquired</span>
+                                <span className="text-white">0.0856 BTC</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-zinc-400">Average Price</span>
+                                <span className="text-white">$28,037</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-zinc-400">Current Value</span>
+                                <span className="text-green-400 font-medium">$4,280</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-zinc-400">Total Return</span>
+                                <span className="text-green-400 font-medium">+78.3%</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="p-4 bg-red-600/10 border border-red-600/20 rounded-lg">
+                            <h6 className="font-medium text-red-300 mb-2">Lump Sum (Month 1)</h6>
+                            <div className="space-y-1 text-sm">
+                              <div className="flex justify-between">
+                                <span className="text-zinc-400">Bitcoin Acquired</span>
+                                <span className="text-white">0.1200 BTC</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-zinc-400">Purchase Price</span>
+                                <span className="text-white">$20,000</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-zinc-400">Current Value</span>
+                                <span className="text-red-400 font-medium">$6,000</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-zinc-400">Total Return</span>
+                                <span className="text-red-400 font-medium">+150%</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-4 bg-blue-600/10 border border-blue-600/20 rounded-lg">
+                        <h5 className="font-medium text-blue-300 mb-2">DCA Benefits:</h5>
+                        <ul className="space-y-1 text-zinc-300 text-sm">
+                          <li>• Reduces impact of volatility through averaging</li>
+                          <li>• Makes investing accessible with smaller amounts</li>
+                          <li>• Removes emotion and timing from investment decisions</li>
+                          <li>• Builds discipline through consistent investing</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
           </div>
         )}
 
-        {/* Bitcoin Terms Section */}
-        {activeSection === "terms" && (
+        {/* More Section - Store Only */}
+        {activeSection === "more" && (
           <div className="space-y-6">
             <div className="text-center space-y-2">
-              <h2 className="text-2xl font-bold text-white">Bitcoin Terms</h2>
-              <p className="text-zinc-400">Essential vocabulary for understanding Bitcoin</p>
+              <h2 className="text-2xl font-bold text-white">Bitcoin Store</h2>
+              <p className="text-zinc-400">Essential hardware, books, and gear for your Bitcoin journey</p>
             </div>
-            
-            <div className="grid gap-4">
-              {bitcoinTerms.map((term, index) => (
-                <Card key={index} className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors">
-                  <CardContent className="p-6">
-                    <div className="space-y-3">
-                      <h3 className="text-lg font-semibold text-orange-400">{term.term}</h3>
-                      <p className="text-zinc-300 leading-relaxed">{term.definition}</p>
+                
+            {/* Store Categories */}
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              
+              {/* Hardware Wallets */}
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-orange-600/20 rounded-lg">
+                        <Shield className="w-6 h-6 text-orange-400" />
+                      </div>
+                      <h3 className="text-lg font-bold text-white">Hardware Wallets</h3>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    
+                    <div className="space-y-4">
+                      <div className="border border-zinc-700 rounded-lg p-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <h4 className="font-semibold text-white">Ledger Nano X</h4>
+                          <span className="text-orange-400 font-bold">$149</span>
+                        </div>
+                        <p className="text-zinc-400 text-sm mb-3">Bluetooth-enabled hardware wallet with mobile app support.</p>
+                        <Button 
+                          size="sm" 
+                          className="w-full bg-orange-600 hover:bg-orange-700"
+                          onClick={() => window.open('https://shop.ledger.com/?r=btc-journey', '_blank')}
+                        >
+                          <ExternalLink className="w-3 h-3 mr-2" />
+                          Buy Now
+                        </Button>
+                      </div>
+                      
+                      <div className="border border-zinc-700 rounded-lg p-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <h4 className="font-semibold text-white">Trezor Model T</h4>
+                          <span className="text-orange-400 font-bold">$219</span>
+                        </div>
+                        <p className="text-zinc-400 text-sm mb-3">Premium hardware wallet with touchscreen interface.</p>
+                        <Button 
+                          size="sm" 
+                          className="w-full bg-orange-600 hover:bg-orange-700"
+                          onClick={() => window.open('https://trezor.io/?offer=btc-journey', '_blank')}
+                        >
+                          <ExternalLink className="w-3 h-3 mr-2" />
+                          Buy Now
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Essential Books */}
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-blue-600/20 rounded-lg">
+                        <BookOpen className="w-6 h-6 text-blue-400" />
+                      </div>
+                      <h3 className="text-lg font-bold text-white">Essential Books</h3>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div className="border border-zinc-700 rounded-lg p-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <h4 className="font-semibold text-white">Broken Money</h4>
+                          <span className="text-orange-400 font-bold">$18</span>
+                        </div>
+                        <p className="text-zinc-400 text-sm mb-1">by Lyn Alden</p>
+                        <p className="text-zinc-400 text-sm mb-3">Deep dive into monetary history and Bitcoin's role.</p>
+                        <Button 
+                          size="sm" 
+                          className="w-full bg-orange-600 hover:bg-orange-700"
+                          onClick={() => window.open('https://amzn.to/3broken-money-lyn-alden', '_blank')}
+                        >
+                          <ExternalLink className="w-3 h-3 mr-2" />
+                          Buy Now
+                        </Button>
+                      </div>
+                      
+                      <div className="border border-zinc-700 rounded-lg p-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <h4 className="font-semibold text-white">The Bitcoin Standard</h4>
+                          <span className="text-orange-400 font-bold">$16</span>
+                        </div>
+                        <p className="text-zinc-400 text-sm mb-1">by Saifedean Ammous</p>
+                        <p className="text-zinc-400 text-sm mb-3">The definitive guide to understanding Bitcoin.</p>
+                        <Button 
+                          size="sm" 
+                          className="w-full bg-orange-600 hover:bg-orange-700"
+                          onClick={() => window.open('https://amzn.to/bitcoin-standard-ammous', '_blank')}
+                        >
+                          <ExternalLink className="w-3 h-3 mr-2" />
+                          Buy Now
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Affiliate Disclosure */}
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-green-600/20 rounded-lg">
+                        <AlertTriangle className="w-6 h-6 text-green-400" />
+                      </div>
+                      <h3 className="text-lg font-bold text-white">Affiliate Disclosure</h3>
+                    </div>
+                    
+                    <div className="space-y-3 text-sm text-zinc-400">
+                      <p>
+                        BTC Journey may receive commissions when you purchase products through our affiliate links. 
+                        This helps support our educational mission.
+                      </p>
+                      <p>
+                        We only recommend products we genuinely believe in and that align with Bitcoin's principles 
+                        of self-sovereignty and security.
+                      </p>
+                      <p className="text-green-400 font-medium">
+                        Your purchase price remains the same, and you help support Bitcoin education.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         )}
-
-        {/* Simplified Price Chart Modal */}
-        <Dialog open={showPriceChart} onOpenChange={setShowPriceChart}>
-          <DialogContent className="bg-zinc-900 border-zinc-800 max-w-2xl">
-            <DialogHeader>
-              <DialogTitle className="text-white flex items-center gap-2">
-                <Bitcoin className="w-5 h-5 text-orange-500" />
-                Bitcoin Information
-              </DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div className="text-center space-y-2">
-                <div className="text-3xl font-bold text-white">
-                  ${bitcoinPrice?.priceUsd ? Number(bitcoinPrice.priceUsd).toLocaleString() : 'Loading...'}
-                </div>
-                <p className="text-zinc-400">Current Bitcoin Price (USD)</p>
-              </div>
-              
-              <div className="bg-zinc-800/50 rounded-lg p-4">
-                <h4 className="text-white font-medium mb-2">What is Bitcoin?</h4>
-                <p className="text-zinc-300 text-sm leading-relaxed">
-                  Bitcoin is digital money that operates on a decentralized network. Unlike traditional currencies, 
-                  it's not controlled by any government or bank. Bitcoin is designed to be a store of value and 
-                  medium of exchange for the digital age.
-                </p>
-              </div>
-              
-              <div className="bg-blue-900/20 border border-blue-800/50 rounded-lg p-4">
-                <h4 className="text-blue-100 font-medium mb-2">Learning Focus</h4>
-                <p className="text-blue-200 text-sm leading-relaxed">
-                  This app focuses on education, not trading. Bitcoin's price changes daily, but understanding 
-                  its technology and long-term potential is more important than short-term price movements.
-                </p>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        {/* Shortened Disclaimer */}
-        <div className="mt-8 p-3 bg-zinc-900/50 border border-zinc-800 rounded-lg">
-          <p className="text-xs text-zinc-500 leading-relaxed">
-            <strong className="text-zinc-400">Educational Only:</strong> This content is for learning purposes and not financial advice. 
-            Bitcoin investments are volatile and speculative. Always research thoroughly and consult professionals before making financial decisions.
-          </p>
-        </div>
       </main>
     </div>
   );
