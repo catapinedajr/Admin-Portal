@@ -4,7 +4,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { 
   Bitcoin, 
@@ -41,26 +40,16 @@ import {
   ArrowUp,
   ArrowDown,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Send,
+  Eye,
+  EyeOff
 } from "lucide-react";
 import type { User, DailyFact, Lesson, UserProgress, ConvictionContent } from "@shared/schema";
 import DailyQuiz from "@/components/DailyQuiz";
 
-const iconMap = {
-  coins: Coins,
-  cube: Box,
-  "shield-alt": Shield,
-  "user-secret": KeyRound,
-  gem: Gem,
-  bolt: Zap,
-  "dollar-sign": DollarSign,
-  building: Building2,
-  "alert-triangle": AlertTriangle,
-};
-
 type MainSection = "learn" | "practice" | "more";
-type LearnSubTab = "today" | "explore" | "disruption" | "glossary";
-type PracticeSubTab = "mining" | "transactions" | "hodl" | "dca" | "halving";
+type PracticeSubTab = "hodl" | "dca" | "transactions" | "wallet-safety";
 type MoreSubTab = "stories" | "conviction" | "store";
 type StoriesSubTab = "individuals" | "businesses" | "nations";
 type ConvictionSubTab = "quotes" | "whitepaper" | "books" | "videos";
@@ -251,25 +240,28 @@ const userProfiles = {
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<MainSection>("learn");
-  const [learnSubTab, setLearnSubTab] = useState<LearnSubTab>("today");
-  const [practiceSubTab, setPracticeSubTab] = useState<PracticeSubTab>("mining");
+  const [practiceSubTab, setPracticeSubTab] = useState<PracticeSubTab>("hodl");
   const [moreSubTab, setMoreSubTab] = useState<MoreSubTab>("stories");
   const [storiesSubTab, setStoriesSubTab] = useState<StoriesSubTab>("individuals");
   const [convictionSubTab, setConvictionSubTab] = useState<ConvictionSubTab>("quotes");
   const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [showPriceChart, setShowPriceChart] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  
-  // Mining calculator state
-  const [hashRate, setHashRate] = useState(100);
-  const [electricityCost, setElectricityCost] = useState(0.12);
-  const [powerConsumption, setPowerConsumption] = useState(3000);
   
   // DCA calculator state
   const [dcaAmount, setDcaAmount] = useState(100);
   const [dcaFrequency, setDcaFrequency] = useState("weekly");
   const [dcaPeriod, setDcaPeriod] = useState(12);
+
+  // Transaction builder state
+  const [fromAddress, setFromAddress] = useState("");
+  const [toAddress, setToAddress] = useState("");
+  const [amount, setAmount] = useState("");
+  const [feeRate, setFeeRate] = useState(10);
+
+  // Wallet safety state
+  const [seedPhrase, setSeedPhrase] = useState("");
+  const [showSeedPhrase, setShowSeedPhrase] = useState(false);
 
   const { data: user } = useQuery<User>({
     queryKey: ["/api/user"]
@@ -319,16 +311,8 @@ export default function Home() {
     }
   };
 
-  const showUpgradePrompt = (feature: string) => {
+  const showUpgradePrompt = () => {
     setShowUpgradeModal(true);
-  };
-
-  const calculateMiningProfit = () => {
-    const bitcoinPerDay = (hashRate * 1e12 * 6.25) / (200 * 1e18) * 144; // Simplified calculation
-    const currentPrice = (bitcoinPrice as any)?.price || 50000;
-    const revenuePerDay = bitcoinPerDay * currentPrice;
-    const electricityCostPerDay = (powerConsumption / 1000) * 24 * electricityCost;
-    return revenuePerDay - electricityCostPerDay;
   };
 
   const calculateDCA = () => {
@@ -339,6 +323,12 @@ export default function Home() {
     const currentPrice = (bitcoinPrice as any)?.price || 50000;
     const currentValue = bitcoinAccumulated * currentPrice;
     return { totalInvested, bitcoinAccumulated, currentValue, profit: currentValue - totalInvested };
+  };
+
+  const generateSeedPhrase = () => {
+    const words = ["abandon", "ability", "able", "about", "above", "absent", "absorb", "abstract", "absurd", "abuse", "access", "accident"];
+    const phrase = Array.from({length: 12}, () => words[Math.floor(Math.random() * words.length)]).join(" ");
+    setSeedPhrase(phrase);
   };
 
   return (
@@ -411,231 +401,169 @@ export default function Home() {
       {/* Content Area */}
       <main className="max-w-6xl mx-auto px-4 py-6">
         
-        {/* Learn Section */}
+        {/* Learn Section - Today's Learning Experience */}
         {activeSection === "learn" && (
-          <div className="space-y-6">
-            {/* Learn Sub Navigation */}
-            <div className="flex flex-wrap gap-2 justify-center">
-              <Button
-                variant={learnSubTab === "today" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setLearnSubTab("today")}
-                className={learnSubTab === "today" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"}
-              >
-                Today
-              </Button>
-              <Button
-                variant={learnSubTab === "explore" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setLearnSubTab("explore")}
-                className={learnSubTab === "explore" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"}
-              >
-                Explore
-              </Button>
-              <Button
-                variant={learnSubTab === "disruption" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setLearnSubTab("disruption")}
-                className={learnSubTab === "disruption" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"}
-              >
-                Disruption
-              </Button>
-              <Button
-                variant={learnSubTab === "glossary" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setLearnSubTab("glossary")}
-                className={learnSubTab === "glossary" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"}
-              >
-                Glossary
-              </Button>
+          <div className="space-y-8">
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold mb-2">Today's Learning Journey</h1>
+              <p className="text-zinc-400">Daily facts, lesson, and quiz to build your Bitcoin knowledge</p>
             </div>
 
-            {/* Today Tab - Daily Facts, Lesson, Quiz */}
-            {learnSubTab === "today" && (
-              <div className="space-y-8">
-                {/* Daily Facts */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-bold">Daily Facts</h2>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="text-orange-400 border-orange-400">
-                        {userSubscription.dailyFactsViewed}/{subscriptionTiers[userSubscription.tier].factLimit === -1 ? "∞" : subscriptionTiers[userSubscription.tier].factLimit} today
-                      </Badge>
-                      {!checkSubscriptionLimit('fact') && (
-                        <Button size="sm" variant="outline" onClick={() => showUpgradePrompt('facts')} className="text-orange-400 border-orange-400">
-                          Upgrade
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Category Filter */}
-                  <div className="flex flex-wrap gap-2">
-                    <Button
-                      variant={selectedCategory === "all" ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setSelectedCategory("all")}
-                      className={selectedCategory === "all" ? "bg-orange-600 text-white" : ""}
-                    >
-                      All
+            {/* Daily Facts */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold">Daily Facts</h2>
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-orange-400 border-orange-400">
+                    {userSubscription.dailyFactsViewed}/{subscriptionTiers[userSubscription.tier].factLimit === -1 ? "∞" : subscriptionTiers[userSubscription.tier].factLimit} today
+                  </Badge>
+                  {!checkSubscriptionLimit('fact') && (
+                    <Button size="sm" variant="outline" onClick={showUpgradePrompt} className="text-orange-400 border-orange-400">
+                      Upgrade
                     </Button>
-                    {factCategories.map(category => (
-                      <Button
-                        key={category.id}
-                        variant={selectedCategory === category.id ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setSelectedCategory(category.id)}
-                        className={selectedCategory === category.id ? "bg-orange-600 text-white" : ""}
-                      >
-                        {category.icon} {category.name}
-                      </Button>
-                    ))}
-                  </div>
-
-                  <div className="grid gap-4">
-                    {filteredFacts.map((fact, index) => {
-                      const isLocked = !checkSubscriptionLimit('fact') && index >= subscriptionTiers[userSubscription.tier].factLimit;
-                      const isExpanded = expandedFacts.has(fact.id);
-                      
-                      return (
-                        <Card key={fact.id} className={`bg-zinc-800/50 border-zinc-700 ${isLocked ? 'opacity-50' : ''}`}>
-                          <CardContent className="p-4">
-                            <div className="flex items-start justify-between mb-2">
-                              <h3 className="font-semibold text-orange-400">{fact.title}</h3>
-                              {isLocked && <Lock className="w-4 h-4 text-orange-400" />}
-                            </div>
-                            <p className="text-zinc-300 mb-3">{fact.content}</p>
-                            
-                            {!isLocked && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => toggleFactExpansion(fact.id)}
-                                className="text-orange-400 hover:text-orange-300"
-                              >
-                                {isExpanded ? (
-                                  <>
-                                    <ChevronUp className="w-4 h-4 mr-1" />
-                                    Less
-                                  </>
-                                ) : (
-                                  <>
-                                    <ChevronDown className="w-4 h-4 mr-1" />
-                                    Dive Deeper
-                                  </>
-                                )}
-                              </Button>
-                            )}
-                            
-                            {isExpanded && (
-                              <div className="mt-4 p-4 bg-zinc-900/50 rounded-lg border border-zinc-700">
-                                <h4 className="font-semibold text-orange-400 mb-2">Deep Dive</h4>
-                                <p className="text-zinc-300 mb-3">
-                                  {fact.title === "What is Bitcoin?" && "Bitcoin represents the first successful implementation of digital scarcity. Unlike traditional digital files that can be copied infinitely, Bitcoin uses cryptographic proof to ensure each unit can only exist in one place at one time. This breakthrough enables true digital ownership without requiring trust in central authorities."}
-                                  {fact.title === "Why Bitcoin Matters" && "Bitcoin's importance extends beyond just being digital money. It's a neutral monetary network that operates independently of any government or corporation. This neutrality makes it valuable for preserving wealth, conducting censorship-resistant transactions, and providing financial services to the unbanked."}
-                                  {fact.title === "How Bitcoin Works" && "Bitcoin's security comes from a network of thousands of computers (nodes) that maintain identical copies of the transaction ledger. When someone sends Bitcoin, the transaction is broadcast to the network and included in a block by miners who compete to solve cryptographic puzzles. This process ensures no single entity can control or manipulate the system."}
-                                </p>
-                                <div className="flex items-center gap-2 text-xs text-zinc-400">
-                                  <Lightbulb className="w-3 h-3" />
-                                  <span>Key insight: This foundational concept builds toward understanding Bitcoin's role in the future of money.</span>
-                                </div>
-                              </div>
-                            )}
-                            
-                            {isLocked && (
-                              <div className="mt-3 p-3 bg-zinc-900/50 rounded-lg border border-orange-400/20">
-                                <p className="text-sm text-zinc-400">Upgrade to Scholar ($9.99/month) to access more daily facts and dive deeper content.</p>
-                              </div>
-                            )}
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Daily Lesson */}
-                {lesson && (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h2 className="text-2xl font-bold">Today's Lesson</h2>
-                      <Badge variant="outline" className="text-orange-400 border-orange-400">
-                        {userSubscription.lessonsThisWeek}/{subscriptionTiers[userSubscription.tier].lessonLimit === -1 ? "∞" : subscriptionTiers[userSubscription.tier].lessonLimit} this week
-                      </Badge>
-                    </div>
-                    
-                    {checkSubscriptionLimit('lesson') ? (
-                      <Card className="bg-zinc-800/50 border-zinc-700">
-                        <CardContent className="p-6">
-                          <div className="flex items-start gap-4">
-                            <BookOpen className="w-8 h-8 text-orange-400 mt-1" />
-                            <div className="flex-1">
-                              <h3 className="text-xl font-semibold mb-2">{lesson.title}</h3>
-                              <p className="text-zinc-300 mb-4">{lesson.summary}</p>
-                              <div className="flex items-center gap-4 text-sm text-zinc-400 mb-4">
-                                <span className="flex items-center gap-1">
-                                  <Clock className="w-4 h-4" />
-                                  {lesson.estimatedReadTime}
-                                </span>
-                                <Badge variant="secondary">Beginner</Badge>
-                              </div>
-                              <div className="prose prose-invert prose-orange max-w-none">
-                                <div dangerouslySetInnerHTML={{ __html: lesson.content }} />
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ) : (
-                      <Card className="bg-zinc-800/50 border-zinc-700 opacity-50">
-                        <CardContent className="p-6">
-                          <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xl font-semibold">{lesson.title}</h3>
-                            <Lock className="w-5 h-5 text-orange-400" />
-                          </div>
-                          <p className="text-zinc-400 mb-4">You've reached your weekly lesson limit on the Explorer plan.</p>
-                          <Button onClick={() => showUpgradePrompt('lesson')} className="bg-orange-600 hover:bg-orange-700">
-                            Upgrade to Scholar - $9.99/month
-                          </Button>
-                        </CardContent>
-                      </Card>
-                    )}
-                  </div>
-                )}
-
-                {/* Daily Quiz */}
-                <div className="space-y-4">
-                  <h2 className="text-2xl font-bold">Daily Quiz</h2>
-                  <DailyQuiz />
+                  )}
                 </div>
               </div>
-            )}
 
-            {/* Other Learn tabs would go here... */}
-            {learnSubTab === "glossary" && (
-              <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Bitcoin Glossary</h2>
-                <div className="grid gap-4">
-                  {[
-                    { term: "Bitcoin", definition: "A peer-to-peer electronic cash system enabling direct transactions without intermediaries." },
-                    { term: "Blockchain", definition: "A distributed ledger technology recording transactions in chronologically linked blocks." },
-                    { term: "Mining", definition: "The process of validating transactions and securing the network while earning Bitcoin rewards." },
-                    { term: "Wallet", definition: "Software or hardware storing private keys to send and receive Bitcoin." },
-                    { term: "Private Key", definition: "A secret number proving Bitcoin ownership. Never share with anyone." },
-                    { term: "Halving", definition: "Event every 4 years reducing mining rewards by half, limiting Bitcoin supply." },
-                    { term: "HODL", definition: "Strategy of holding Bitcoin long-term regardless of price volatility." },
-                    { term: "Satoshi", definition: "Smallest Bitcoin unit. One Bitcoin equals 100 million satoshis." }
-                  ].map((item, index) => (
-                    <Card key={index} className="bg-zinc-800/50 border-zinc-700">
+              {/* Category Filter */}
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant={selectedCategory === "all" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedCategory("all")}
+                  className={selectedCategory === "all" ? "bg-orange-600 text-white" : ""}
+                >
+                  All
+                </Button>
+                {factCategories.map(category => (
+                  <Button
+                    key={category.id}
+                    variant={selectedCategory === category.id ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedCategory(category.id)}
+                    className={selectedCategory === category.id ? "bg-orange-600 text-white" : ""}
+                  >
+                    {category.icon} {category.name}
+                  </Button>
+                ))}
+              </div>
+
+              <div className="grid gap-4">
+                {filteredFacts.map((fact, index) => {
+                  const isLocked = !checkSubscriptionLimit('fact') && index >= subscriptionTiers[userSubscription.tier].factLimit;
+                  const isExpanded = expandedFacts.has(fact.id);
+                  
+                  return (
+                    <Card key={fact.id} className={`bg-zinc-800/50 border-zinc-700 ${isLocked ? 'opacity-50' : ''}`}>
                       <CardContent className="p-4">
-                        <h3 className="font-semibold text-orange-400 mb-2">{item.term}</h3>
-                        <p className="text-zinc-300">{item.definition}</p>
+                        <div className="flex items-start justify-between mb-2">
+                          <h3 className="font-semibold text-orange-400">{fact.title}</h3>
+                          {isLocked && <Lock className="w-4 h-4 text-orange-400" />}
+                        </div>
+                        <p className="text-zinc-300 mb-3">{fact.content}</p>
+                        
+                        {!isLocked && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => toggleFactExpansion(fact.id)}
+                            className="text-orange-400 hover:text-orange-300"
+                          >
+                            {isExpanded ? (
+                              <>
+                                <ChevronUp className="w-4 h-4 mr-1" />
+                                Less
+                              </>
+                            ) : (
+                              <>
+                                <ChevronDown className="w-4 h-4 mr-1" />
+                                Dive Deeper
+                              </>
+                            )}
+                          </Button>
+                        )}
+                        
+                        {isExpanded && (
+                          <div className="mt-4 p-4 bg-zinc-900/50 rounded-lg border border-zinc-700">
+                            <h4 className="font-semibold text-orange-400 mb-2">Deep Dive</h4>
+                            <p className="text-zinc-300 mb-3">
+                              {fact.title === "What is Bitcoin?" && "Bitcoin represents the first successful implementation of digital scarcity. Unlike traditional digital files that can be copied infinitely, Bitcoin uses cryptographic proof to ensure each unit can only exist in one place at one time. This breakthrough enables true digital ownership without requiring trust in central authorities."}
+                              {fact.title === "Why Bitcoin Matters" && "Bitcoin's importance extends beyond just being digital money. It's a neutral monetary network that operates independently of any government or corporation. This neutrality makes it valuable for preserving wealth, conducting censorship-resistant transactions, and providing financial services to the unbanked."}
+                              {fact.title === "How Bitcoin Works" && "Bitcoin's security comes from a network of thousands of computers (nodes) that maintain identical copies of the transaction ledger. When someone sends Bitcoin, the transaction is broadcast to the network and included in a block by miners who compete to solve cryptographic puzzles. This process ensures no single entity can control or manipulate the system."}
+                            </p>
+                            <div className="flex items-center gap-2 text-xs text-zinc-400">
+                              <Lightbulb className="w-3 h-3" />
+                              <span>Key insight: This foundational concept builds toward understanding Bitcoin's role in the future of money.</span>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {isLocked && (
+                          <div className="mt-3 p-3 bg-zinc-900/50 rounded-lg border border-orange-400/20">
+                            <p className="text-sm text-zinc-400">Upgrade to Scholar ($9.99/month) to access more daily facts and dive deeper content.</p>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
-                  ))}
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Daily Lesson */}
+            {lesson && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold">Today's Lesson</h2>
+                  <Badge variant="outline" className="text-orange-400 border-orange-400">
+                    {userSubscription.lessonsThisWeek}/{subscriptionTiers[userSubscription.tier].lessonLimit === -1 ? "∞" : subscriptionTiers[userSubscription.tier].lessonLimit} this week
+                  </Badge>
                 </div>
+                
+                {checkSubscriptionLimit('lesson') ? (
+                  <Card className="bg-zinc-800/50 border-zinc-700">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <BookOpen className="w-8 h-8 text-orange-400 mt-1" />
+                        <div className="flex-1">
+                          <h3 className="text-xl font-semibold mb-2">{lesson.title}</h3>
+                          <p className="text-zinc-300 mb-4">{lesson.summary}</p>
+                          <div className="flex items-center gap-4 text-sm text-zinc-400 mb-4">
+                            <span className="flex items-center gap-1">
+                              <Clock className="w-4 h-4" />
+                              {lesson.estimatedReadTime} min read
+                            </span>
+                            <Badge variant="secondary">Beginner</Badge>
+                          </div>
+                          <div className="prose prose-invert prose-orange max-w-none">
+                            <div dangerouslySetInnerHTML={{ __html: lesson.content }} />
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <Card className="bg-zinc-800/50 border-zinc-700 opacity-50">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-xl font-semibold">{lesson.title}</h3>
+                        <Lock className="w-5 h-5 text-orange-400" />
+                      </div>
+                      <p className="text-zinc-400 mb-4">You've reached your weekly lesson limit on the Explorer plan.</p>
+                      <Button onClick={showUpgradePrompt} className="bg-orange-600 hover:bg-orange-700">
+                        Upgrade to Scholar - $9.99/month
+                      </Button>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             )}
+
+            {/* Daily Quiz */}
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold">Daily Quiz</h2>
+              <DailyQuiz />
+            </div>
           </div>
         )}
 
@@ -647,13 +575,13 @@ export default function Home() {
             {/* Practice Sub Navigation */}
             <div className="flex flex-wrap gap-2 justify-center">
               <Button
-                variant={practiceSubTab === "mining" ? "default" : "outline"}
+                variant={practiceSubTab === "hodl" ? "default" : "outline"}
                 size="sm"
-                onClick={() => setPracticeSubTab("mining")}
-                className={practiceSubTab === "mining" ? "bg-orange-600 text-white" : ""}
+                onClick={() => setPracticeSubTab("hodl")}
+                className={practiceSubTab === "hodl" ? "bg-orange-600 text-white" : ""}
               >
-                <Zap className="w-4 h-4 mr-1" />
-                Mining
+                <Target className="w-4 h-4 mr-1" />
+                HODL Strategy
               </Button>
               <Button
                 variant={practiceSubTab === "dca" ? "default" : "outline"}
@@ -662,78 +590,98 @@ export default function Home() {
                 className={practiceSubTab === "dca" ? "bg-orange-600 text-white" : ""}
               >
                 <TrendingUp className="w-4 h-4 mr-1" />
-                DCA
+                DCA Calculator
               </Button>
               <Button
-                variant={practiceSubTab === "hodl" ? "default" : "outline"}
+                variant={practiceSubTab === "transactions" ? "default" : "outline"}
                 size="sm"
-                onClick={() => setPracticeSubTab("hodl")}
-                className={practiceSubTab === "hodl" ? "bg-orange-600 text-white" : ""}
+                onClick={() => setPracticeSubTab("transactions")}
+                className={practiceSubTab === "transactions" ? "bg-orange-600 text-white" : ""}
               >
-                <Target className="w-4 h-4 mr-1" />
-                HODLing
+                <Send className="w-4 h-4 mr-1" />
+                Transaction Builder
+              </Button>
+              <Button
+                variant={practiceSubTab === "wallet-safety" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setPracticeSubTab("wallet-safety")}
+                className={practiceSubTab === "wallet-safety" ? "bg-orange-600 text-white" : ""}
+              >
+                <Shield className="w-4 h-4 mr-1" />
+                Wallet Safety
               </Button>
             </div>
 
-            {/* Mining Calculator */}
-            {practiceSubTab === "mining" && (
+            {/* HODL Strategy Simulator */}
+            {practiceSubTab === "hodl" && (
               <Card className="bg-zinc-800/50 border-zinc-700">
                 <CardContent className="p-6">
                   <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                    <Calculator className="w-5 h-5 text-orange-400" />
-                    Bitcoin Mining Profitability Calculator
+                    <Target className="w-5 h-5 text-orange-400" />
+                    HODLing vs Trading Strategy Comparison
                   </h3>
                   
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Hash Rate (TH/s)</label>
-                        <Input
-                          type="number"
-                          value={hashRate}
-                          onChange={(e) => setHashRate(Number(e.target.value))}
-                          className="bg-zinc-900 border-zinc-700"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Power Consumption (W)</label>
-                        <Input
-                          type="number"
-                          value={powerConsumption}
-                          onChange={(e) => setPowerConsumption(Number(e.target.value))}
-                          className="bg-zinc-900 border-zinc-700"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Electricity Cost ($/kWh)</label>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          value={electricityCost}
-                          onChange={(e) => setElectricityCost(Number(e.target.value))}
-                          className="bg-zinc-900 border-zinc-700"
-                        />
+                      <div className="p-4 bg-zinc-900/50 rounded-lg">
+                        <h4 className="font-semibold text-green-400 mb-2">HODL Strategy (2020-2024)</h4>
+                        <p className="text-sm text-zinc-300 mb-3">Buy $1,000 Bitcoin in January 2020 and hold</p>
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <span>Initial Investment:</span>
+                            <span className="font-mono">$1,000</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Current Value:</span>
+                            <span className="font-mono text-green-400">$8,450</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Profit:</span>
+                            <span className="font-mono text-green-400">+745%</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Stress Level:</span>
+                            <span className="text-green-400">Low</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     
                     <div className="space-y-4">
                       <div className="p-4 bg-zinc-900/50 rounded-lg">
-                        <h4 className="font-semibold text-orange-400 mb-2">Daily Profit</h4>
-                        <p className="text-2xl font-bold text-green-400">
-                          ${calculateMiningProfit().toFixed(2)}
-                        </p>
-                      </div>
-                      <div className="p-4 bg-zinc-900/50 rounded-lg">
-                        <h4 className="font-semibold text-orange-400 mb-2">Monthly Profit</h4>
-                        <p className="text-xl font-bold text-green-400">
-                          ${(calculateMiningProfit() * 30).toFixed(2)}
-                        </p>
-                      </div>
-                      <div className="text-xs text-zinc-400">
-                        <p>* Estimates based on current network difficulty and Bitcoin price</p>
-                        <p>* Results may vary with market conditions</p>
+                        <h4 className="font-semibold text-red-400 mb-2">Active Trading Strategy</h4>
+                        <p className="text-sm text-zinc-300 mb-3">Same $1,000 with trading fees and taxes</p>
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <span>Initial Investment:</span>
+                            <span className="font-mono">$1,000</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Trading Fees:</span>
+                            <span className="font-mono text-red-400">-$350</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Tax on Gains:</span>
+                            <span className="font-mono text-red-400">-$1,200</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Final Value:</span>
+                            <span className="font-mono text-red-400">$5,900</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Stress Level:</span>
+                            <span className="text-red-400">Very High</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
+                  </div>
+                  
+                  <div className="mt-6 p-4 bg-orange-900/20 rounded-lg border border-orange-400/20">
+                    <h5 className="font-semibold text-orange-400 mb-2">Key Insight</h5>
+                    <p className="text-sm text-zinc-300">
+                      HODLing often outperforms active trading due to reduced fees, tax efficiency, and avoiding emotional decisions during market volatility.
+                    </p>
                   </div>
                 </CardContent>
               </Card>
@@ -808,6 +756,184 @@ export default function Home() {
                         );
                       })()}
                     </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Transaction Builder */}
+            {practiceSubTab === "transactions" && (
+              <Card className="bg-zinc-800/50 border-zinc-700">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                    <Send className="w-5 h-5 text-orange-400" />
+                    Bitcoin Transaction Builder
+                  </h3>
+                  
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">From Address</label>
+                        <Input
+                          placeholder="1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
+                          value={fromAddress}
+                          onChange={(e) => setFromAddress(e.target.value)}
+                          className="bg-zinc-900 border-zinc-700 font-mono text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">To Address</label>
+                        <Input
+                          placeholder="3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy"
+                          value={toAddress}
+                          onChange={(e) => setToAddress(e.target.value)}
+                          className="bg-zinc-900 border-zinc-700 font-mono text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Amount (BTC)</label>
+                        <Input
+                          type="number"
+                          step="0.00000001"
+                          placeholder="0.001"
+                          value={amount}
+                          onChange={(e) => setAmount(e.target.value)}
+                          className="bg-zinc-900 border-zinc-700"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Fee Rate (sat/vB)</label>
+                        <Input
+                          type="number"
+                          value={feeRate}
+                          onChange={(e) => setFeeRate(Number(e.target.value))}
+                          className="bg-zinc-900 border-zinc-700"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div className="p-4 bg-zinc-900/50 rounded-lg">
+                        <h4 className="font-semibold text-orange-400 mb-3">Transaction Preview</h4>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex justify-between">
+                            <span>Amount:</span>
+                            <span className="font-mono">{amount || "0"} BTC</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Estimated Fee:</span>
+                            <span className="font-mono">{(feeRate * 0.00000225).toFixed(8)} BTC</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Total:</span>
+                            <span className="font-mono font-bold">{(Number(amount || 0) + feeRate * 0.00000225).toFixed(8)} BTC</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Confirmation Time:</span>
+                            <span>{feeRate > 20 ? "~10 min" : feeRate > 10 ? "~30 min" : "~60 min"}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <Button className="w-full bg-orange-600 hover:bg-orange-700" disabled={!fromAddress || !toAddress || !amount}>
+                        Build Transaction
+                      </Button>
+                      
+                      <div className="text-xs text-zinc-400 p-3 bg-orange-900/20 rounded border border-orange-400/20">
+                        <p className="font-semibold text-orange-400 mb-1">Educational Only</p>
+                        <p>This is a simulation for learning purposes. No real Bitcoin will be sent.</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Wallet Safety */}
+            {practiceSubTab === "wallet-safety" && (
+              <Card className="bg-zinc-800/50 border-zinc-700">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                    <Shield className="w-5 h-5 text-orange-400" />
+                    Bitcoin Wallet Safety Practice
+                  </h3>
+                  
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div className="p-4 bg-zinc-900/50 rounded-lg">
+                        <h4 className="font-semibold text-orange-400 mb-3">Seed Phrase Generator</h4>
+                        <p className="text-sm text-zinc-300 mb-3">Practice with a sample 12-word seed phrase:</p>
+                        
+                        <div className="space-y-3">
+                          <Button onClick={generateSeedPhrase} className="w-full bg-orange-600 hover:bg-orange-700">
+                            Generate Sample Seed Phrase
+                          </Button>
+                          
+                          {seedPhrase && (
+                            <div className="relative">
+                              <div className="p-3 bg-zinc-800 rounded border border-zinc-600">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-xs font-medium text-orange-400">SEED PHRASE</span>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setShowSeedPhrase(!showSeedPhrase)}
+                                  >
+                                    {showSeedPhrase ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                  </Button>
+                                </div>
+                                <p className="font-mono text-sm">
+                                  {showSeedPhrase ? seedPhrase : "••• ••• ••• ••• ••• ••• ••• ••• ••• ••• ••• •••"}
+                                </p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div className="p-4 bg-zinc-900/50 rounded-lg">
+                        <h4 className="font-semibold text-orange-400 mb-3">Security Best Practices</h4>
+                        <div className="space-y-3 text-sm">
+                          <div className="flex items-start gap-2">
+                            <div className="w-2 h-2 bg-green-400 rounded-full mt-2"></div>
+                            <div>
+                              <p className="font-medium">Write it down offline</p>
+                              <p className="text-zinc-400">Never store seed phrases digitally</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <div className="w-2 h-2 bg-green-400 rounded-full mt-2"></div>
+                            <div>
+                              <p className="font-medium">Multiple copies</p>
+                              <p className="text-zinc-400">Store in different secure locations</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <div className="w-2 h-2 bg-green-400 rounded-full mt-2"></div>
+                            <div>
+                              <p className="font-medium">Test recovery</p>
+                              <p className="text-zinc-400">Practice wallet restoration process</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <div className="w-2 h-2 bg-red-400 rounded-full mt-2"></div>
+                            <div>
+                              <p className="font-medium">Never share</p>
+                              <p className="text-zinc-400">Seed phrases give full wallet access</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6 p-4 bg-red-900/20 rounded-lg border border-red-400/20">
+                    <h5 className="font-semibold text-red-400 mb-2">⚠️ Warning</h5>
+                    <p className="text-sm text-zinc-300">
+                      This is for educational purposes only. Never use these sample seed phrases for real wallets. Always generate seed phrases through official wallet software.
+                    </p>
                   </div>
                 </CardContent>
               </Card>
