@@ -421,6 +421,8 @@ export default function Home() {
   const [foundationSubTab, setFoundationSubTab] = useState<FoundationSubTab>("today");
   const [practiceSubTab, setPracticeSubTab] = useState<PracticeSubTab>("safety");
   const [inspirationSubTab, setInspirationSubTab] = useState<InspirationSubTab>("stories");
+  const [txStatus, setTxStatus] = useState('preview');
+  const [currentStep, setCurrentStep] = useState(0);
   const [disruptionSubTab, setDisruptionSubTab] = useState<DisruptionSubTab>("problems");
   const [storiesSubTab, setStoriesSubTab] = useState<StoriesSubTab>("individuals");
   const [convictionSubTab, setConvictionSubTab] = useState<ConvictionSubTab>("whitepaper");
@@ -2557,152 +2559,350 @@ Banks hold your money and can restrict access. Bitcoin enables true ownership wh
                       <div className="space-y-4">
                         <h4 className="text-white font-semibold">Transaction Setup</h4>
                         
-                        <div className="grid md:grid-cols-2 gap-4">
-                          <div>
-                            <label className="text-zinc-300 text-sm block mb-2">Amount to Send (BTC)</label>
-                            <input
-                              type="number"
-                              step="0.00001"
-                              value={simulatorInputs.transaction.amount}
-                              onChange={(e) => setSimulatorInputs(prev => ({
-                                ...prev,
-                                transaction: { ...prev.transaction, amount: Number(e.target.value) }
-                              }))}
-                              className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
-                            />
+                        <div className="grid gap-4">
+                          <div className="grid md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-zinc-300 text-sm block mb-2">Amount to Send (BTC)</label>
+                              <input
+                                type="number"
+                                step="0.00001"
+                                value={simulatorInputs.transaction.amount}
+                                onChange={(e) => setSimulatorInputs(prev => ({
+                                  ...prev,
+                                  transaction: { ...prev.transaction, amount: Number(e.target.value) }
+                                }))}
+                                className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                              />
+                            </div>
+                            
+                            <div>
+                              <label className="text-zinc-300 text-sm block mb-2">Fee Priority</label>
+                              <select
+                                value={simulatorInputs.transaction.feeLevel}
+                                onChange={(e) => setSimulatorInputs(prev => ({
+                                  ...prev,
+                                  transaction: { ...prev.transaction, feeLevel: e.target.value as 'low' | 'medium' | 'high' }
+                                }))}
+                                className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                              >
+                                <option value="low">Low (1-3 hours)</option>
+                                <option value="medium">Medium (10-30 minutes)</option>
+                                <option value="high">High (Next block ~10 min)</option>
+                              </select>
+                            </div>
                           </div>
                           
-                          <div>
-                            <label className="text-zinc-300 text-sm block mb-2">Fee Priority</label>
-                            <select
-                              value={simulatorInputs.transaction.feeLevel}
-                              onChange={(e) => setSimulatorInputs(prev => ({
-                                ...prev,
-                                transaction: { ...prev.transaction, feeLevel: e.target.value as 'low' | 'medium' | 'high' }
-                              }))}
-                              className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
-                            >
-                              <option value="low">Low (1-3 hours)</option>
-                              <option value="medium">Medium (10-30 minutes)</option>
-                              <option value="high">High (Next block ~10 min)</option>
-                            </select>
+                          <div className="space-y-4">
+                            <h5 className="text-white font-medium">Wallet Addresses</h5>
+                            <div className="grid gap-3">
+                              <div className="bg-zinc-800 rounded-lg p-4">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-zinc-400 text-sm">From (Your Wallet)</span>
+                                  <span className="text-green-400 text-xs bg-green-600/20 px-2 py-1 rounded">Verified</span>
+                                </div>
+                                <div className="font-mono text-sm text-white break-all">
+                                  bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
+                                </div>
+                                <div className="text-zinc-400 text-xs mt-1">Balance: 0.15420000 BTC</div>
+                              </div>
+                              
+                              <div className="bg-zinc-800 rounded-lg p-4">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-zinc-400 text-sm">To (Recipient)</span>
+                                  <Button 
+                                    size="sm" 
+                                    variant="outline"
+                                    className="h-6 text-xs border-zinc-600"
+                                    onClick={() => {
+                                      const addresses = [
+                                        "3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy",
+                                        "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
+                                        "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
+                                      ];
+                                      const randomAddr = addresses[Math.floor(Math.random() * addresses.length)];
+                                      document.getElementById('recipient-addr').textContent = randomAddr;
+                                    }}
+                                  >
+                                    Generate
+                                  </Button>
+                                </div>
+                                <div id="recipient-addr" className="font-mono text-sm text-white break-all">
+                                  3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy
+                                </div>
+                                <div className="text-zinc-400 text-xs mt-1">Click Generate to simulate different addresses</div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
                       
                       <div className="space-y-4">
-                        <h4 className="text-white font-semibold">Transaction Preview</h4>
-                        {(() => {
-                          const feeRates = { low: 5, medium: 15, high: 30 }; // sats per vbyte
-                          const txSize = 250; // average transaction size in vbytes
-                          const feeSats = feeRates[simulatorInputs.transaction.feeLevel] * txSize;
-                          const feeUSD = (feeSats / 100000000) * 100000; // assuming $100k BTC
+                        <h4 className="text-white font-semibold">Transaction Preview & Signing</h4>
+                        <div className="bg-zinc-800 rounded-lg p-4 space-y-4">
+                          <div className="grid md:grid-cols-3 gap-4">
+                            <div>
+                              <div className="text-zinc-400 text-sm">Sending</div>
+                              <div className="text-orange-400 font-mono">{simulatorInputs.transaction.amount} BTC</div>
+                            </div>
+                            <div>
+                              <div className="text-zinc-400 text-sm">Network Fee</div>
+                              <div className="text-yellow-400 font-mono">
+                                {(() => {
+                                  const feeRates = { low: 5, medium: 15, high: 30 };
+                                  const feeSats = feeRates[simulatorInputs.transaction.feeLevel] * 250;
+                                  return `${feeSats} sats (~$${(feeSats / 100000000 * 100000).toFixed(2)})`;
+                                })()}
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-zinc-400 text-sm">Expected Time</div>
+                              <div className="text-green-400 font-mono">
+                                {(() => {
+                                  const times = { low: "1-3 hours", medium: "10-30 minutes", high: "~10 minutes" };
+                                  return times[simulatorInputs.transaction.feeLevel];
+                                })()}
+                              </div>
+                            </div>
+                          </div>
                           
-                          const scenarios = {
-                            low: { time: "1-3 hours", risk: "May take longer during high network usage" },
-                            medium: { time: "10-30 minutes", risk: "Good balance of speed and cost" },
-                            high: { time: "~10 minutes", risk: "Fast but more expensive" }
-                          };
-                          
-                          return (
-                            <div className="bg-zinc-800 rounded-lg p-4 space-y-4">
-                              <div className="grid md:grid-cols-3 gap-4">
-                                <div>
-                                  <div className="text-zinc-400 text-sm">Sending</div>
-                                  <div className="text-orange-400 font-mono">{simulatorInputs.transaction.amount} BTC</div>
-                                </div>
-                                <div>
-                                  <div className="text-zinc-400 text-sm">Network Fee</div>
-                                  <div className="text-yellow-400 font-mono">{feeSats} sats (~${feeUSD.toFixed(2)})</div>
-                                </div>
-                                <div>
-                                  <div className="text-zinc-400 text-sm">Expected Time</div>
-                                  <div className="text-green-400 font-mono">{scenarios[simulatorInputs.transaction.feeLevel].time}</div>
+                          {txStatus === 'preview' && (
+                            <div className="space-y-4">
+                              <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4">
+                                <h5 className="text-blue-300 font-medium mb-2">Transaction Summary</h5>
+                                <div className="space-y-2 text-sm">
+                                  <div className="flex justify-between">
+                                    <span className="text-zinc-400">Total Amount:</span>
+                                    <span className="text-white font-mono">{(simulatorInputs.transaction.amount + 0.00001).toFixed(8)} BTC</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-zinc-400">Remaining Balance:</span>
+                                    <span className="text-white font-mono">{(0.154 - simulatorInputs.transaction.amount).toFixed(8)} BTC</span>
+                                  </div>
                                 </div>
                               </div>
                               
-                              <div className="border-t border-zinc-700 pt-4">
-                                <h5 className="text-white font-medium mb-2">Transaction Journey</h5>
+                              <Button 
+                                onClick={() => {
+                                  setTxStatus('signing');
+                                  setCurrentStep(0);
+                                  setTimeout(() => setCurrentStep(1), 1000);
+                                  setTimeout(() => setCurrentStep(2), 2500);
+                                  setTimeout(() => setCurrentStep(3), 4000);
+                                  setTimeout(() => setCurrentStep(4), 6000);
+                                  setTimeout(() => setTxStatus('completed'), 8000);
+                                }}
+                                className="w-full bg-orange-600 hover:bg-orange-700 text-white"
+                                disabled={simulatorInputs.transaction.amount <= 0 || simulatorInputs.transaction.amount > 0.154}
+                              >
+                                <ArrowRight className="w-4 h-4 mr-2" />
+                                Sign & Send Transaction
+                              </Button>
+                            </div>
+                          )}
+                          
+                          {txStatus === 'signing' && (
+                            <div className="space-y-4">
+                              <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-4">
+                                <h5 className="text-orange-300 font-medium mb-3 flex items-center gap-2">
+                                  <ArrowRight className="w-4 h-4" />
+                                  Wallet Signing Process
+                                </h5>
                                 <div className="space-y-3">
-                                  <div className="flex items-start gap-3">
-                                    <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">1</div>
-                                    <div>
-                                      <div className="text-white text-sm font-medium">Broadcast to Network</div>
-                                      <div className="text-zinc-400 text-xs">Your transaction is sent to Bitcoin nodes worldwide</div>
+                                  {[
+                                    { step: 0, label: "Creating transaction", desc: "Building transaction with inputs and outputs" },
+                                    { step: 1, label: "Hardware wallet confirmation", desc: "Verify transaction details on device screen" },
+                                    { step: 2, label: "Signing with private key", desc: "Cryptographically signing transaction" },
+                                    { step: 3, label: "Broadcasting to network", desc: "Sending to Bitcoin mempool" },
+                                    { step: 4, label: "Waiting for confirmation", desc: "Transaction included in block" }
+                                  ].map((item, index) => (
+                                    <div key={index} className="flex items-center gap-3">
+                                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                                        currentStep > item.step ? 'bg-green-600 text-white' :
+                                        currentStep === item.step ? 'bg-orange-600 text-white animate-pulse' :
+                                        'bg-zinc-600 text-zinc-400'
+                                      }`}>
+                                        {currentStep > item.step ? '✓' : index + 1}
+                                      </div>
+                                      <div>
+                                        <div className={`text-sm font-medium ${
+                                          currentStep >= item.step ? 'text-white' : 'text-zinc-400'
+                                        }`}>
+                                          {item.label}
+                                        </div>
+                                        <div className={`text-xs ${
+                                          currentStep >= item.step ? 'text-zinc-300' : 'text-zinc-500'
+                                        }`}>
+                                          {item.desc}
+                                        </div>
+                                      </div>
                                     </div>
-                                  </div>
-                                  <div className="flex items-start gap-3">
-                                    <div className="w-6 h-6 bg-yellow-600 rounded-full flex items-center justify-center text-white text-xs font-bold">2</div>
-                                    <div>
-                                      <div className="text-white text-sm font-medium">Mempool Queue</div>
-                                      <div className="text-zinc-400 text-xs">Waits with other transactions to be included in a block</div>
-                                    </div>
-                                  </div>
-                                  <div className="flex items-start gap-3">
-                                    <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center text-white text-xs font-bold">3</div>
-                                    <div>
-                                      <div className="text-white text-sm font-medium">Block Confirmation</div>
-                                      <div className="text-zinc-400 text-xs">Miner includes your transaction in the next block</div>
-                                    </div>
-                                  </div>
-                                  <div className="flex items-start gap-3">
-                                    <div className="w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold">✓</div>
-                                    <div>
-                                      <div className="text-white text-sm font-medium">Final Settlement</div>
-                                      <div className="text-zinc-400 text-xs">Transaction is permanently recorded on the blockchain</div>
-                                    </div>
-                                  </div>
+                                  ))}
                                 </div>
                               </div>
                             </div>
-                          );
-                        })()}
+                          )}
+                          
+                          {txStatus === 'completed' && (
+                            <div className="space-y-4">
+                              <div className="bg-green-600/10 border border-green-600/20 rounded-lg p-4">
+                                <h5 className="text-green-300 font-medium mb-3 flex items-center gap-2">
+                                  <CheckCircle className="w-4 h-4" />
+                                  Transaction Confirmed!
+                                </h5>
+                                <div className="space-y-3">
+                                  <div className="bg-zinc-900 rounded p-3">
+                                    <div className="text-zinc-400 text-xs mb-1">Transaction ID (TXID)</div>
+                                    <div className="font-mono text-xs text-white break-all">
+                                      a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456
+                                    </div>
+                                  </div>
+                                  <div className="grid grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                      <div className="text-zinc-400">Block Height</div>
+                                      <div className="text-white font-mono">867,420</div>
+                                    </div>
+                                    <div>
+                                      <div className="text-zinc-400">Confirmations</div>
+                                      <div className="text-green-400 font-mono">1/6</div>
+                                    </div>
+                                  </div>
+                                  <div className="text-xs text-zinc-400">
+                                    Transaction is now permanently recorded on the Bitcoin blockchain. 
+                                    6 confirmations recommended for large amounts.
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <Button 
+                                onClick={() => {
+                                  setTxStatus('preview');
+                                  setCurrentStep(0);
+                                }}
+                                variant="outline"
+                                className="w-full border-zinc-600 text-zinc-300 hover:bg-zinc-800"
+                              >
+                                Try Another Transaction
+                              </Button>
+                            </div>
+                          )}
+                        </div>
                       </div>
                       
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-4">
-                          <h5 className="text-orange-300 font-medium mb-3">Security Tips</h5>
-                          <ul className="space-y-2 text-orange-200 text-sm">
-                            <li className="flex items-start gap-2">
-                              <div className="w-1 h-1 bg-orange-400 rounded-full mt-2 flex-shrink-0" />
-                              Always double-check the recipient address
-                            </li>
-                            <li className="flex items-start gap-2">
-                              <div className="w-1 h-1 bg-orange-400 rounded-full mt-2 flex-shrink-0" />
-                              Start with small test transactions for new addresses
-                            </li>
-                            <li className="flex items-start gap-2">
-                              <div className="w-1 h-1 bg-orange-400 rounded-full mt-2 flex-shrink-0" />
-                              Bitcoin transactions are irreversible once confirmed
-                            </li>
-                            <li className="flex items-start gap-2">
-                              <div className="w-1 h-1 bg-orange-400 rounded-full mt-2 flex-shrink-0" />
-                              Save transaction IDs for your records
-                            </li>
-                          </ul>
+                      <div className="border-t border-zinc-700 pt-4">
+                        <h5 className="text-white font-medium mb-2">Transaction Journey</h5>
+                        <div className="space-y-3">
+                          <div className="flex items-start gap-3">
+                            <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">1</div>
+                            <div>
+                              <div className="text-white text-sm font-medium">Broadcast to Network</div>
+                              <div className="text-zinc-400 text-xs">Your transaction is sent to Bitcoin nodes worldwide</div>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-3">
+                            <div className="w-6 h-6 bg-yellow-600 rounded-full flex items-center justify-center text-white text-xs font-bold">2</div>
+                            <div>
+                              <div className="text-white text-sm font-medium">Mempool Queue</div>
+                              <div className="text-zinc-400 text-xs">Waits with other transactions to be included in a block</div>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-3">
+                            <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center text-white text-xs font-bold">3</div>
+                            <div>
+                              <div className="text-white text-sm font-medium">Block Confirmation</div>
+                              <div className="text-zinc-400 text-xs">Miner includes your transaction in the next block</div>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-3">
+                            <div className="w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold">✓</div>
+                            <div>
+                              <div className="text-white text-sm font-medium">Final Settlement</div>
+                              <div className="text-zinc-400 text-xs">Transaction is permanently recorded on the blockchain</div>
+                            </div>
+                          </div>
                         </div>
-                        
-                        <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4">
-                          <h5 className="text-blue-300 font-medium mb-3">Fee Strategy</h5>
-                          <ul className="space-y-2 text-blue-200 text-sm">
-                            <li className="flex items-start gap-2">
-                              <div className="w-1 h-1 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
-                              Low fees: Good for non-urgent transactions
-                            </li>
-                            <li className="flex items-start gap-2">
-                              <div className="w-1 h-1 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
-                              Medium fees: Best balance for most users
-                            </li>
-                            <li className="flex items-start gap-2">
-                              <div className="w-1 h-1 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
-                              High fees: When you need fast confirmation
-                            </li>
-                            <li className="flex items-start gap-2">
-                              <div className="w-1 h-1 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
-                              Check network congestion before sending
-                            </li>
-                          </ul>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {practiceSubTab === "hodl" && (
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-6">
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-purple-600/20 rounded-lg">
+                        <TrendingUp className="w-8 h-8 text-purple-400" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-white mb-2">HODLing vs Trading Strategy</h3>
+                        <p className="text-zinc-300 mb-4">Compare the long-term HODLing strategy with active trading to see the power of patience</p>
+                        {/* HODLing Strategy Simulator */}
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-zinc-300 mb-2">Initial Investment ($)</label>
+                            <input
+                              type="number"
+                              value={simulatorInputs.investment}
+                              onChange={(e) => setSimulatorInputs(prev => ({...prev, investment: parseFloat(e.target.value) || 0}))}
+                              className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-white focus:ring-orange-500 focus:border-orange-500"
+                              placeholder="10000"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-zinc-300 mb-2">Holding Period (years)</label>
+                            <input
+                              type="number"
+                              value={simulatorInputs.years}
+                              onChange={(e) => setSimulatorInputs(prev => ({...prev, years: parseInt(e.target.value) || 1}))}
+                              className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-white focus:ring-orange-500 focus:border-orange-500"
+                              placeholder="4"
+                            />
+                          </div>
                         </div>
+
+                        <div className="text-center">
+                          <button
+                            onClick={() => {
+                              const results = calculateHODL(
+                                simulatorInputs.investment,
+                                simulatorInputs.years,
+                                simulatorInputs.tradingFeePercent
+                              );
+                              setHodlResults(results);
+                            }}
+                            className="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors"
+                          >
+                            Calculate HODL Strategy
+                          </button>
+                        </div>
+
+                        {hodlResults && (
+                          <div className="bg-zinc-800 rounded-lg p-6 space-y-4">
+                            <h4 className="text-lg font-semibold text-white">Results</h4>
+                            <div className="grid md:grid-cols-3 gap-4">
+                              <div className="text-center">
+                                <div className="text-2xl font-bold text-green-400">
+                                  ${hodlResults.hodlValue.toLocaleString()}
+                                </div>
+                                <div className="text-sm text-zinc-400">HODL Strategy</div>
+                              </div>
+                              <div className="text-center">
+                                <div className="text-2xl font-bold text-red-400">
+                                  ${hodlResults.tradingValue.toLocaleString()}
+                                </div>
+                                <div className="text-sm text-zinc-400">Active Trading</div>
+                              </div>
+                              <div className="text-center">
+                                <div className="text-2xl font-bold text-orange-400">
+                                  +{hodlResults.hodlAdvantage.toFixed(0)}%
+                                </div>
+                                <div className="text-sm text-zinc-400">HODL Advantage</div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
