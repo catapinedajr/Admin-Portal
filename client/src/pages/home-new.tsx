@@ -3218,24 +3218,24 @@ export default function Home() {
                             <SelectValue placeholder="Select start date" />
                           </SelectTrigger>
                           <SelectContent className="bg-zinc-800 border-zinc-700">
-                            <SelectItem value="2019-01-01">Jan 2019 (Post-Crash Recovery)</SelectItem>
-                            <SelectItem value="2019-07-01">Jul 2019 (Mid-Year Rally)</SelectItem>
-                            <SelectItem value="2020-01-01">Jan 2020 (Pre-Pandemic)</SelectItem>
-                            <SelectItem value="2020-03-01">Mar 2020 (COVID Crash)</SelectItem>
-                            <SelectItem value="2020-07-01">Jul 2020 (Recovery Begin)</SelectItem>
-                            <SelectItem value="2020-10-01">Oct 2020 (Institutional Wave)</SelectItem>
-                            <SelectItem value="2021-01-01">Jan 2021 (Bull Run Start)</SelectItem>
-                            <SelectItem value="2021-05-01">May 2021 (Peak & Crash)</SelectItem>
-                            <SelectItem value="2021-07-01">Jul 2021 (Summer Lows)</SelectItem>
-                            <SelectItem value="2021-10-01">Oct 2021 (ATH Approach)</SelectItem>
-                            <SelectItem value="2022-01-01">Jan 2022 (Bear Market Start)</SelectItem>
-                            <SelectItem value="2022-06-01">Jun 2022 (Deep Bear)</SelectItem>
-                            <SelectItem value="2022-11-01">Nov 2022 (FTX Collapse)</SelectItem>
-                            <SelectItem value="2023-01-01">Jan 2023 (Bear Bottom)</SelectItem>
-                            <SelectItem value="2023-06-01">Jun 2023 (Recovery Start)</SelectItem>
-                            <SelectItem value="2023-10-01">Oct 2023 (ETF Anticipation)</SelectItem>
-                            <SelectItem value="2024-01-01">Jan 2024 (ETF Approval)</SelectItem>
-                            <SelectItem value="2024-06-01">Jun 2024 (Recent Past)</SelectItem>
+                            <SelectItem value="2019-01-01">Jan 2019</SelectItem>
+                            <SelectItem value="2019-07-01">Jul 2019</SelectItem>
+                            <SelectItem value="2020-01-01">Jan 2020</SelectItem>
+                            <SelectItem value="2020-03-01">Mar 2020</SelectItem>
+                            <SelectItem value="2020-07-01">Jul 2020</SelectItem>
+                            <SelectItem value="2020-10-01">Oct 2020</SelectItem>
+                            <SelectItem value="2021-01-01">Jan 2021</SelectItem>
+                            <SelectItem value="2021-05-01">May 2021</SelectItem>
+                            <SelectItem value="2021-07-01">Jul 2021</SelectItem>
+                            <SelectItem value="2021-10-01">Oct 2021</SelectItem>
+                            <SelectItem value="2022-01-01">Jan 2022</SelectItem>
+                            <SelectItem value="2022-06-01">Jun 2022</SelectItem>
+                            <SelectItem value="2022-11-01">Nov 2022</SelectItem>
+                            <SelectItem value="2023-01-01">Jan 2023</SelectItem>
+                            <SelectItem value="2023-06-01">Jun 2023</SelectItem>
+                            <SelectItem value="2023-10-01">Oct 2023</SelectItem>
+                            <SelectItem value="2024-01-01">Jan 2024</SelectItem>
+                            <SelectItem value="2024-06-01">Jun 2024</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -3322,8 +3322,19 @@ export default function Home() {
                               <div className="absolute left-2 top-1/2 text-zinc-400 text-xs">
                                 $50k
                               </div>
-                              <div className="absolute left-2 bottom-8 text-zinc-400 text-xs">
+                              <div className="absolute left-2 bottom-12 text-zinc-400 text-xs">
                                 $10k
+                              </div>
+                              
+                              {/* X-axis labels */}
+                              <div className="absolute bottom-4 left-8 text-zinc-400 text-xs">
+                                Start
+                              </div>
+                              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-zinc-400 text-xs">
+                                {Math.floor(dcaResults.duration / 2)}mo
+                              </div>
+                              <div className="absolute bottom-4 right-8 text-zinc-400 text-xs">
+                                {dcaResults.duration}mo
                               </div>
                               
                               {/* Simulated Bitcoin price line */}

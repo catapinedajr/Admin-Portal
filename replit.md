@@ -149,6 +149,7 @@ Comprehensive component library built on Radix UI primitives:
 - June 26, 2025. Enhanced lesson content with bold formatting: added **bold** emphasis to key terms like Scarcity, Durability, Programmable, Investment Thesis, etc. to visually separate terms from their descriptions for improved readability
 - June 26, 2025. Simplified lesson section formatting: replaced complex ## markdown headers with clean **bold titles** for section divisions (Properties of Good Money, How Bitcoin Compares to Gold, Bitcoin's Monetary Advantages, The Network Effect) for cleaner, less cluttered text presentation
 - June 26, 2025. Added missing expandable "Dive Deeper" content for "Why Bitcoin Matters" fact to ensure all daily facts have comprehensive expandable explanations, examples, and key takeaways
+- June 26, 2025. Fixed DCA simulator chart X-axis display: added proper time labels (Start, midpoint months, end months) for better chart readability and simplified start date selection by removing noisy descriptive text, showing only clean "Jan 2019" format instead of "Jan 2019 (Post-Crash Recovery)"
 
 ## User Preferences
 
