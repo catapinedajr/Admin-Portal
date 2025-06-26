@@ -409,7 +409,7 @@ const traditionalFinanceProblems = {
 
 type MainSection = "foundation" | "practice" | "inspiration";
 type FoundationSubTab = "today" | "explore" | "disruption" | "terms";
-type PracticeSubTab = "mining" | "transactions" | "hodl" | "dca" | "halving" | "safety";
+type PracticeSubTab = "safety" | "transactions" | "hodl" | "dca";
 type InspirationSubTab = "stories" | "conviction" | "store";
 type DisruptionSubTab = "problems" | "solutions" | "comparison" | "future";
 type StoriesSubTab = "individuals" | "businesses" | "nations";
@@ -419,7 +419,7 @@ type ExploreSubTab = "overview" | "detail";
 export default function Home() {
   const [activeSection, setActiveSection] = useState<MainSection>("foundation");
   const [foundationSubTab, setFoundationSubTab] = useState<FoundationSubTab>("today");
-  const [practiceSubTab, setPracticeSubTab] = useState<PracticeSubTab>("mining");
+  const [practiceSubTab, setPracticeSubTab] = useState<PracticeSubTab>("safety");
   const [inspirationSubTab, setInspirationSubTab] = useState<InspirationSubTab>("stories");
   const [disruptionSubTab, setDisruptionSubTab] = useState<DisruptionSubTab>("problems");
   const [storiesSubTab, setStoriesSubTab] = useState<StoriesSubTab>("individuals");
@@ -429,9 +429,10 @@ export default function Home() {
   const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [simulatorInputs, setSimulatorInputs] = useState({
-    mining: { hashRate: 100, electricityCost: 0.12, bitcoinPrice: 100000 },
-    dca: { monthlyAmount: 100, duration: 12, startPrice: 50000 },
-    hodl: { initialAmount: 1000, years: 4, strategy: 'hodl' as 'hodl' | 'trading' }
+    dca: { monthlyAmount: 100, duration: 24, startPrice: 50000 },
+    hodl: { initialAmount: 5000, years: 4, volatilityLevel: 'medium' as 'low' | 'medium' | 'high' },
+    transaction: { amount: 0.001, feeLevel: 'medium' as 'low' | 'medium' | 'high' },
+    safety: { walletType: 'hardware' as 'exchange' | 'hot' | 'hardware', amount: 1000 }
   });
 
   const toggleFactExpansion = (factId: number) => {
@@ -566,44 +567,41 @@ export default function Home() {
     };
   };
 
-  const calculateHODL = (initialAmount: number, years: number, strategy: 'hodl' | 'trading') => {
+  const calculateHODL = (initialAmount: number, years: number, volatilityLevel: 'low' | 'medium' | 'high') => {
     const startPrice = 30000;
     const initialBtc = initialAmount / startPrice;
     
-    if (strategy === 'hodl') {
-      const finalPrice = startPrice * Math.pow(1.5, years); // 50% annual growth
-      const finalValue = initialBtc * finalPrice;
-      const totalReturn = finalValue - initialAmount;
-      const returnPercentage = (totalReturn / initialAmount) * 100;
-      
-      return {
-        strategy: 'HODLing',
-        initialBtc: initialBtc.toFixed(6),
-        finalValue: finalValue.toFixed(2),
-        totalReturn: totalReturn.toFixed(2),
-        returnPercentage: returnPercentage.toFixed(1),
-        trades: 0,
-        fees: 0
-      };
-    } else {
-      // Simulate trading with fees and taxes
-      const grossReturn = initialAmount * Math.pow(1.5, years);
-      const tradingFees = grossReturn * 0.05; // 5% in fees
-      const taxes = (grossReturn - initialAmount) * 0.25; // 25% capital gains
-      const finalValue = grossReturn - tradingFees - taxes;
-      const totalReturn = finalValue - initialAmount;
-      const returnPercentage = (totalReturn / initialAmount) * 100;
-      
-      return {
-        strategy: 'Active Trading',
-        initialBtc: initialBtc.toFixed(6),
-        finalValue: finalValue.toFixed(2),
-        totalReturn: totalReturn.toFixed(2),
-        returnPercentage: returnPercentage.toFixed(1),
-        trades: years * 12,
-        fees: tradingFees.toFixed(2)
-      };
-    }
+    // Base growth rates adjusted for volatility
+    const growthRates = {
+      low: 1.3,    // 30% annual growth
+      medium: 1.5, // 50% annual growth  
+      high: 1.8    // 80% annual growth
+    };
+    
+    // HODLing strategy - simple buy and hold
+    const finalPrice = startPrice * Math.pow(growthRates[volatilityLevel], years);
+    const finalValue = initialBtc * finalPrice;
+    const totalReturn = finalValue - initialAmount;
+    const returnPercentage = (totalReturn / initialAmount) * 100;
+    
+    // Compare with traditional savings (2% annual)
+    const savingsValue = initialAmount * Math.pow(1.02, years);
+    const savingsReturn = savingsValue - initialAmount;
+    
+    return {
+      strategy: 'HODLing (Long-term Savings)',
+      initialBtc: initialBtc.toFixed(6),
+      finalValue: finalValue.toFixed(2),
+      totalReturn: totalReturn.toFixed(2),
+      returnPercentage: returnPercentage.toFixed(1),
+      savingsComparison: {
+        traditionalSavings: savingsValue.toFixed(2),
+        traditionalReturn: savingsReturn.toFixed(2),
+        btcAdvantage: (finalValue - savingsValue).toFixed(2)
+      },
+      volatilityImpact: volatilityLevel,
+      timeHorizon: years
+    };
   };
 
   const { data: user } = useQuery({
@@ -770,13 +768,13 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-center gap-1 py-2 flex-wrap">
               <Button
-                variant={practiceSubTab === "mining" ? "secondary" : "ghost"}
+                variant={practiceSubTab === "safety" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setPracticeSubTab("mining")}
+                onClick={() => setPracticeSubTab("safety")}
                 className="text-xs px-2 py-1"
               >
-                <Zap className="w-3 h-3 mr-1" />
-                Mining
+                <Shield className="w-3 h-3 mr-1" />
+                Wallet Safety
               </Button>
               <Button
                 variant={practiceSubTab === "transactions" ? "secondary" : "ghost"}
@@ -793,7 +791,7 @@ export default function Home() {
                 onClick={() => setPracticeSubTab("hodl")}
                 className="text-xs px-2 py-1"
               >
-                <Shield className="w-3 h-3 mr-1" />
+                <Gem className="w-3 h-3 mr-1" />
                 HODLing
               </Button>
               <Button
@@ -804,24 +802,6 @@ export default function Home() {
               >
                 <TrendingUp className="w-3 h-3 mr-1" />
                 DCA
-              </Button>
-              <Button
-                variant={practiceSubTab === "halving" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setPracticeSubTab("halving")}
-                className="text-xs px-2 py-1"
-              >
-                <Gem className="w-3 h-3 mr-1" />
-                Halving
-              </Button>
-              <Button
-                variant={practiceSubTab === "safety" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setPracticeSubTab("safety")}
-                className="text-xs px-2 py-1"
-              >
-                <KeyRound className="w-3 h-3 mr-1" />
-                Wallet Safety
               </Button>
             </div>
           </div>
@@ -2381,106 +2361,348 @@ Banks hold your money and can restrict access. Bitcoin enables true ownership wh
         {activeSection === "practice" && (
           <div className="space-y-6">
 
-            {practiceSubTab === "mining" && (
+            {practiceSubTab === "safety" && (
               <Card className="bg-zinc-900 border-zinc-800">
                 <CardContent className="p-6">
                   <div className="space-y-6">
                     <div className="flex items-start gap-4">
-                      <div className="p-3 bg-orange-600/20 rounded-lg">
-                        <Zap className="w-8 h-8 text-orange-400" />
+                      <div className="p-3 bg-green-600/20 rounded-lg">
+                        <Shield className="w-8 h-8 text-green-400" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-xl font-bold text-white mb-2">Bitcoin Mining Calculator</h3>
-                        <p className="text-zinc-300 mb-4">Calculate mining profitability based on hash rate, electricity costs, and Bitcoin price</p>
+                        <h3 className="text-xl font-bold text-white mb-2">Wallet Safety Simulator</h3>
+                        <p className="text-zinc-300 mb-4">Learn how different wallet types protect your Bitcoin and practice secure storage</p>
                       </div>
                     </div>
                     
-                    <div className="grid md:grid-cols-2 gap-6">
+                    <div className="grid gap-6">
                       <div className="space-y-4">
-                        <h4 className="text-white font-semibold">Mining Parameters</h4>
+                        <h4 className="text-white font-semibold">Choose Your Wallet Type</h4>
                         
-                        <div>
-                          <label className="text-zinc-300 text-sm block mb-2">Hash Rate (TH/s)</label>
-                          <input
-                            type="number"
-                            value={simulatorInputs.mining.hashRate}
-                            onChange={(e) => setSimulatorInputs(prev => ({
-                              ...prev,
-                              mining: { ...prev.mining, hashRate: Number(e.target.value) }
-                            }))}
-                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
-                          />
-                        </div>
-                        
-                        <div>
-                          <label className="text-zinc-300 text-sm block mb-2">Electricity Cost ($/kWh)</label>
-                          <input
-                            type="number"
-                            step="0.01"
-                            value={simulatorInputs.mining.electricityCost}
-                            onChange={(e) => setSimulatorInputs(prev => ({
-                              ...prev,
-                              mining: { ...prev.mining, electricityCost: Number(e.target.value) }
-                            }))}
-                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
-                          />
-                        </div>
-                        
-                        <div>
-                          <label className="text-zinc-300 text-sm block mb-2">Bitcoin Price ($)</label>
-                          <input
-                            type="number"
-                            value={simulatorInputs.mining.bitcoinPrice}
-                            onChange={(e) => setSimulatorInputs(prev => ({
-                              ...prev,
-                              mining: { ...prev.mining, bitcoinPrice: Number(e.target.value) }
-                            }))}
-                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
-                          />
+                        <div className="grid gap-4">
+                          {['exchange', 'hot', 'hardware'].map((type) => (
+                            <Card 
+                              key={type}
+                              className={`cursor-pointer transition-all ${
+                                simulatorInputs.safety.walletType === type 
+                                  ? 'bg-green-600/20 border-green-600' 
+                                  : 'bg-zinc-800 border-zinc-700 hover:border-zinc-600'
+                              }`}
+                              onClick={() => setSimulatorInputs(prev => ({
+                                ...prev,
+                                safety: { ...prev.safety, walletType: type as 'exchange' | 'hot' | 'hardware' }
+                              }))}
+                            >
+                              <CardContent className="p-4">
+                                <div className="flex items-start gap-3">
+                                  <div className={`p-2 rounded-lg ${
+                                    type === 'exchange' ? 'bg-red-600/20' :
+                                    type === 'hot' ? 'bg-yellow-600/20' : 'bg-green-600/20'
+                                  }`}>
+                                    {type === 'exchange' && <Building2 className="w-5 h-5 text-red-400" />}
+                                    {type === 'hot' && <Globe className="w-5 h-5 text-yellow-400" />}
+                                    {type === 'hardware' && <Shield className="w-5 h-5 text-green-400" />}
+                                  </div>
+                                  <div className="flex-1">
+                                    <h5 className="text-white font-medium">
+                                      {type === 'exchange' && 'Exchange Wallet (Coinbase, Binance)'}
+                                      {type === 'hot' && 'Hot Wallet (Mobile/Desktop App)'}
+                                      {type === 'hardware' && 'Hardware Wallet (Ledger, Trezor)'}
+                                    </h5>
+                                    <p className="text-zinc-400 text-sm mt-1">
+                                      {type === 'exchange' && 'Convenient but you don\'t control your keys. Exchange holds your Bitcoin.'}
+                                      {type === 'hot' && 'You control keys but connected to internet. Good for small amounts.'}
+                                      {type === 'hardware' && 'Maximum security. Keys stored offline on dedicated device.'}
+                                    </p>
+                                    <div className="flex items-center gap-2 mt-2">
+                                      <span className="text-xs font-medium">Security Level:</span>
+                                      <div className="flex gap-1">
+                                        {[1, 2, 3, 4, 5].map((level) => (
+                                          <div
+                                            key={level}
+                                            className={`w-2 h-2 rounded-full ${
+                                              level <= (type === 'exchange' ? 2 : type === 'hot' ? 3 : 5)
+                                                ? (type === 'exchange' ? 'bg-red-400' : type === 'hot' ? 'bg-yellow-400' : 'bg-green-400')
+                                                : 'bg-zinc-600'
+                                            }`}
+                                          />
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          ))}
                         </div>
                       </div>
                       
                       <div className="space-y-4">
-                        <h4 className="text-white font-semibold">Profitability Results</h4>
+                        <h4 className="text-white font-semibold">Security Assessment</h4>
                         {(() => {
-                          const results = calculateMiningProfitability(
-                            simulatorInputs.mining.hashRate,
-                            simulatorInputs.mining.electricityCost,
-                            simulatorInputs.mining.bitcoinPrice
-                          );
+                          const walletType = simulatorInputs.safety.walletType;
+                          const risks = {
+                            exchange: [
+                              'Exchange can freeze your account',
+                              'Exchange could get hacked',
+                              'Exchange could go bankrupt',
+                              'You don\'t own the private keys',
+                              'Withdrawal limits and delays'
+                            ],
+                            hot: [
+                              'Device could get malware/virus',
+                              'Private keys stored on internet-connected device',
+                              'Risk of phishing attacks',
+                              'Backup seed phrase could be compromised'
+                            ],
+                            hardware: [
+                              'Physical device could be lost or damaged',
+                              'Need to secure backup seed phrase',
+                              'Less convenient for frequent transactions'
+                            ]
+                          };
+                          
+                          const benefits = {
+                            exchange: [
+                              'Very convenient to use',
+                              'Easy to buy/sell Bitcoin',
+                              'No need to manage keys',
+                              'Customer support available'
+                            ],
+                            hot: [
+                              'You control your private keys',
+                              'Quick access for transactions',
+                              'Good balance of security and convenience',
+                              'Can use anywhere with internet'
+                            ],
+                            hardware: [
+                              'Maximum security for Bitcoin storage',
+                              'Private keys never touch the internet',
+                              'Protection against malware and hacking',
+                              'Long-term cold storage solution'
+                            ]
+                          };
+                          
                           return (
-                            <div className="space-y-3">
-                              <div className="bg-zinc-800 rounded-lg p-3">
-                                <div className="text-zinc-400 text-sm">Daily Bitcoin Earned</div>
-                                <div className="text-orange-400 font-mono">{results.dailyBtc} BTC</div>
+                            <div className="grid md:grid-cols-2 gap-4">
+                              <div className="bg-red-600/10 border border-red-600/20 rounded-lg p-4">
+                                <h5 className="text-red-300 font-medium mb-3 flex items-center gap-2">
+                                  <AlertTriangle className="w-4 h-4" />
+                                  Risks
+                                </h5>
+                                <ul className="space-y-2">
+                                  {risks[walletType].map((risk, index) => (
+                                    <li key={index} className="text-red-200 text-sm flex items-start gap-2">
+                                      <div className="w-1 h-1 bg-red-400 rounded-full mt-2 flex-shrink-0" />
+                                      {risk}
+                                    </li>
+                                  ))}
+                                </ul>
                               </div>
-                              <div className="bg-zinc-800 rounded-lg p-3">
-                                <div className="text-zinc-400 text-sm">Daily Revenue</div>
-                                <div className="text-green-400 font-mono">${results.dailyRevenue}</div>
-                              </div>
-                              <div className="bg-zinc-800 rounded-lg p-3">
-                                <div className="text-zinc-400 text-sm">Daily Electricity Cost</div>
-                                <div className="text-red-400 font-mono">${results.dailyElectricityCost}</div>
-                              </div>
-                              <div className="bg-zinc-800 rounded-lg p-3">
-                                <div className="text-zinc-400 text-sm">Daily Profit</div>
-                                <div className={`font-mono ${Number(results.dailyProfit) > 0 ? 'text-green-400' : 'text-red-400'}`}>
-                                  ${results.dailyProfit}
-                                </div>
-                              </div>
-                              <div className="bg-zinc-800 rounded-lg p-3">
-                                <div className="text-zinc-400 text-sm">Monthly Profit</div>
-                                <div className={`font-mono ${Number(results.monthlyProfit) > 0 ? 'text-green-400' : 'text-red-400'}`}>
-                                  ${results.monthlyProfit}
-                                </div>
-                              </div>
-                              <div className="bg-zinc-800 rounded-lg p-3">
-                                <div className="text-zinc-400 text-sm">Profit Margin</div>
-                                <div className="text-blue-400 font-mono">{results.profitMargin}%</div>
+                              
+                              <div className="bg-green-600/10 border border-green-600/20 rounded-lg p-4">
+                                <h5 className="text-green-300 font-medium mb-3 flex items-center gap-2">
+                                  <CheckCircle className="w-4 h-4" />
+                                  Benefits
+                                </h5>
+                                <ul className="space-y-2">
+                                  {benefits[walletType].map((benefit, index) => (
+                                    <li key={index} className="text-green-200 text-sm flex items-start gap-2">
+                                      <div className="w-1 h-1 bg-green-400 rounded-full mt-2 flex-shrink-0" />
+                                      {benefit}
+                                    </li>
+                                  ))}
+                                </ul>
                               </div>
                             </div>
                           );
                         })()}
+                      </div>
+                      
+                      <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-4">
+                        <h5 className="text-orange-300 font-medium mb-3">Best Practice Recommendation</h5>
+                        <p className="text-orange-200 text-sm leading-relaxed">
+                          {simulatorInputs.safety.walletType === 'exchange' && 
+                            "For beginners: Start with small amounts on exchanges to learn, but move to self-custody as you accumulate more Bitcoin. Never store large amounts long-term on exchanges."
+                          }
+                          {simulatorInputs.safety.walletType === 'hot' && 
+                            "Good middle ground: Use hot wallets for spending money (like a checking account) but move larger savings to hardware wallets for long-term storage."
+                          }
+                          {simulatorInputs.safety.walletType === 'hardware' && 
+                            "Excellent choice for savings: Hardware wallets are the gold standard for Bitcoin storage. Always buy directly from manufacturers and verify the device hasn't been tampered with."
+                          }
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {practiceSubTab === "transactions" && (
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-6">
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-blue-600/20 rounded-lg">
+                        <ArrowRight className="w-8 h-8 text-blue-400" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-white mb-2">Transaction Simulator</h3>
+                        <p className="text-zinc-300 mb-4">Practice sending Bitcoin transactions and understand fees, confirmations, and security</p>
+                      </div>
+                    </div>
+                    
+                    <div className="grid gap-6">
+                      <div className="space-y-4">
+                        <h4 className="text-white font-semibold">Transaction Setup</h4>
+                        
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="text-zinc-300 text-sm block mb-2">Amount to Send (BTC)</label>
+                            <input
+                              type="number"
+                              step="0.00001"
+                              value={simulatorInputs.transaction.amount}
+                              onChange={(e) => setSimulatorInputs(prev => ({
+                                ...prev,
+                                transaction: { ...prev.transaction, amount: Number(e.target.value) }
+                              }))}
+                              className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                            />
+                          </div>
+                          
+                          <div>
+                            <label className="text-zinc-300 text-sm block mb-2">Fee Priority</label>
+                            <select
+                              value={simulatorInputs.transaction.feeLevel}
+                              onChange={(e) => setSimulatorInputs(prev => ({
+                                ...prev,
+                                transaction: { ...prev.transaction, feeLevel: e.target.value as 'low' | 'medium' | 'high' }
+                              }))}
+                              className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                            >
+                              <option value="low">Low (1-3 hours)</option>
+                              <option value="medium">Medium (10-30 minutes)</option>
+                              <option value="high">High (Next block ~10 min)</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <h4 className="text-white font-semibold">Transaction Preview</h4>
+                        {(() => {
+                          const feeRates = { low: 5, medium: 15, high: 30 }; // sats per vbyte
+                          const txSize = 250; // average transaction size in vbytes
+                          const feeSats = feeRates[simulatorInputs.transaction.feeLevel] * txSize;
+                          const feeUSD = (feeSats / 100000000) * 100000; // assuming $100k BTC
+                          
+                          const scenarios = {
+                            low: { time: "1-3 hours", risk: "May take longer during high network usage" },
+                            medium: { time: "10-30 minutes", risk: "Good balance of speed and cost" },
+                            high: { time: "~10 minutes", risk: "Fast but more expensive" }
+                          };
+                          
+                          return (
+                            <div className="bg-zinc-800 rounded-lg p-4 space-y-4">
+                              <div className="grid md:grid-cols-3 gap-4">
+                                <div>
+                                  <div className="text-zinc-400 text-sm">Sending</div>
+                                  <div className="text-orange-400 font-mono">{simulatorInputs.transaction.amount} BTC</div>
+                                </div>
+                                <div>
+                                  <div className="text-zinc-400 text-sm">Network Fee</div>
+                                  <div className="text-yellow-400 font-mono">{feeSats} sats (~${feeUSD.toFixed(2)})</div>
+                                </div>
+                                <div>
+                                  <div className="text-zinc-400 text-sm">Expected Time</div>
+                                  <div className="text-green-400 font-mono">{scenarios[simulatorInputs.transaction.feeLevel].time}</div>
+                                </div>
+                              </div>
+                              
+                              <div className="border-t border-zinc-700 pt-4">
+                                <h5 className="text-white font-medium mb-2">Transaction Journey</h5>
+                                <div className="space-y-3">
+                                  <div className="flex items-start gap-3">
+                                    <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">1</div>
+                                    <div>
+                                      <div className="text-white text-sm font-medium">Broadcast to Network</div>
+                                      <div className="text-zinc-400 text-xs">Your transaction is sent to Bitcoin nodes worldwide</div>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-start gap-3">
+                                    <div className="w-6 h-6 bg-yellow-600 rounded-full flex items-center justify-center text-white text-xs font-bold">2</div>
+                                    <div>
+                                      <div className="text-white text-sm font-medium">Mempool Queue</div>
+                                      <div className="text-zinc-400 text-xs">Waits with other transactions to be included in a block</div>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-start gap-3">
+                                    <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center text-white text-xs font-bold">3</div>
+                                    <div>
+                                      <div className="text-white text-sm font-medium">Block Confirmation</div>
+                                      <div className="text-zinc-400 text-xs">Miner includes your transaction in the next block</div>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-start gap-3">
+                                    <div className="w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold">✓</div>
+                                    <div>
+                                      <div className="text-white text-sm font-medium">Final Settlement</div>
+                                      <div className="text-zinc-400 text-xs">Transaction is permanently recorded on the blockchain</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })()}
+                      </div>
+                      
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-4">
+                          <h5 className="text-orange-300 font-medium mb-3">Security Tips</h5>
+                          <ul className="space-y-2 text-orange-200 text-sm">
+                            <li className="flex items-start gap-2">
+                              <div className="w-1 h-1 bg-orange-400 rounded-full mt-2 flex-shrink-0" />
+                              Always double-check the recipient address
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <div className="w-1 h-1 bg-orange-400 rounded-full mt-2 flex-shrink-0" />
+                              Start with small test transactions for new addresses
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <div className="w-1 h-1 bg-orange-400 rounded-full mt-2 flex-shrink-0" />
+                              Bitcoin transactions are irreversible once confirmed
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <div className="w-1 h-1 bg-orange-400 rounded-full mt-2 flex-shrink-0" />
+                              Save transaction IDs for your records
+                            </li>
+                          </ul>
+                        </div>
+                        
+                        <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4">
+                          <h5 className="text-blue-300 font-medium mb-3">Fee Strategy</h5>
+                          <ul className="space-y-2 text-blue-200 text-sm">
+                            <li className="flex items-start gap-2">
+                              <div className="w-1 h-1 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
+                              Low fees: Good for non-urgent transactions
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <div className="w-1 h-1 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
+                              Medium fees: Best balance for most users
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <div className="w-1 h-1 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
+                              High fees: When you need fast confirmation
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <div className="w-1 h-1 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
+                              Check network congestion before sending
+                            </li>
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -2633,17 +2855,18 @@ Banks hold your money and can restrict access. Bitcoin enables true ownership wh
                         </div>
                         
                         <div>
-                          <label className="text-zinc-300 text-sm block mb-2">Strategy</label>
+                          <label className="text-zinc-300 text-sm block mb-2">Market Volatility Level</label>
                           <select
-                            value={simulatorInputs.hodl.strategy}
+                            value={simulatorInputs.hodl.volatilityLevel}
                             onChange={(e) => setSimulatorInputs(prev => ({
                               ...prev,
-                              hodl: { ...prev.hodl, strategy: e.target.value as 'hodl' | 'trading' }
+                              hodl: { ...prev.hodl, volatilityLevel: e.target.value as 'low' | 'medium' | 'high' }
                             }))}
                             className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
                           >
-                            <option value="hodl">HODL (Hold)</option>
-                            <option value="trading">Active Trading</option>
+                            <option value="low">Low Volatility Period</option>
+                            <option value="medium">Medium Volatility Period</option>
+                            <option value="high">High Volatility Period</option>
                           </select>
                         </div>
                       </div>
@@ -2654,13 +2877,30 @@ Banks hold your money and can restrict access. Bitcoin enables true ownership wh
                           const results = calculateHODL(
                             simulatorInputs.hodl.initialAmount,
                             simulatorInputs.hodl.years,
-                            simulatorInputs.hodl.strategy
+                            simulatorInputs.hodl.volatilityLevel
                           );
                           return (
                             <div className="space-y-3">
                               <div className="bg-zinc-800 rounded-lg p-3">
                                 <div className="text-zinc-400 text-sm">Strategy</div>
                                 <div className="text-purple-400 font-mono">{results.strategy}</div>
+                              </div>
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">Bitcoin Accumulated</div>
+                                <div className="text-orange-400 font-mono">{results.initialBtc} BTC</div>
+                              </div>
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">Final Portfolio Value</div>
+                                <div className="text-green-400 font-mono">${results.finalValue}</div>
+                              </div>
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">Total Return</div>
+                                <div className="text-blue-400 font-mono">+{results.returnPercentage}%</div>
+                              </div>
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">vs Traditional Savings (2%)</div>
+                                <div className="text-yellow-400 font-mono">${results.savingsComparison.traditionalSavings}</div>
+                                <div className="text-green-300 text-xs">BTC Advantage: +${results.savingsComparison.btcAdvantage}</div>
                               </div>
                               <div className="bg-zinc-800 rounded-lg p-3">
                                 <div className="text-zinc-400 text-sm">Bitcoin Acquired</div>
@@ -2676,15 +2916,13 @@ Banks hold your money and can restrict access. Bitcoin enables true ownership wh
                                   ${results.totalReturn} ({results.returnPercentage}%)
                                 </div>
                               </div>
-                              {Number(results.fees) > 0 && (
-                                <div className="bg-zinc-800 rounded-lg p-3">
-                                  <div className="text-zinc-400 text-sm">Trading Fees & Taxes</div>
-                                  <div className="text-red-400 font-mono">${results.fees}</div>
-                                </div>
-                              )}
                               <div className="bg-zinc-800 rounded-lg p-3">
-                                <div className="text-zinc-400 text-sm">Number of Trades</div>
-                                <div className="text-blue-400 font-mono">{results.trades}</div>
+                                <div className="text-zinc-400 text-sm">Volatility Impact</div>
+                                <div className="text-yellow-400 font-mono capitalize">{results.volatilityImpact}</div>
+                              </div>
+                              <div className="bg-zinc-800 rounded-lg p-3">
+                                <div className="text-zinc-400 text-sm">Time Horizon</div>
+                                <div className="text-blue-400 font-mono">{results.timeHorizon} years</div>
                               </div>
                             </div>
                           );
