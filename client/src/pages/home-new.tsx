@@ -2733,32 +2733,34 @@ export default function Home() {
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                       {/* Investment Amount */}
                       <div className="space-y-3">
-                        <label className="text-sm font-medium text-white">Investment Amount</label>
-                        <div className="space-y-2">
-                          <div className="grid grid-cols-2 gap-2">
-                            {[50, 100, 250, 500].map(amount => (
-                              <Button
-                                key={amount}
-                                variant={dcaInputs.monthlyAmount === amount ? "secondary" : "outline"}
-                                size="sm"
-                                onClick={() => setDcaInputs(prev => ({ ...prev, monthlyAmount: amount }))}
-                                className="text-xs"
-                              >
-                                ${amount}
-                              </Button>
-                            ))}
-                          </div>
-                          <div className="flex gap-2">
-                            <span className="text-zinc-400 text-sm mt-2">$</span>
-                            <input
-                              type="number"
-                              value={dcaInputs.monthlyAmount}
-                              onChange={(e) => setDcaInputs(prev => ({ ...prev, monthlyAmount: Number(e.target.value) || 0 }))}
-                              className="flex-1 bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white text-sm"
-                              placeholder="Custom amount"
-                            />
-                          </div>
-                        </div>
+                        <label className="text-sm font-medium text-white">Monthly Investment Amount</label>
+                        <Select 
+                          value={dcaInputs.monthlyAmount.toString()} 
+                          onValueChange={(value) => setDcaInputs(prev => ({ ...prev, monthlyAmount: Number(value) }))}
+                        >
+                          <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                            <SelectValue placeholder="Select amount" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-zinc-800 border-zinc-700">
+                            <SelectItem value="25">$25/month</SelectItem>
+                            <SelectItem value="50">$50/month</SelectItem>
+                            <SelectItem value="75">$75/month</SelectItem>
+                            <SelectItem value="100">$100/month</SelectItem>
+                            <SelectItem value="150">$150/month</SelectItem>
+                            <SelectItem value="200">$200/month</SelectItem>
+                            <SelectItem value="250">$250/month</SelectItem>
+                            <SelectItem value="300">$300/month</SelectItem>
+                            <SelectItem value="400">$400/month</SelectItem>
+                            <SelectItem value="500">$500/month</SelectItem>
+                            <SelectItem value="750">$750/month</SelectItem>
+                            <SelectItem value="1000">$1,000/month</SelectItem>
+                            <SelectItem value="1500">$1,500/month</SelectItem>
+                            <SelectItem value="2000">$2,000/month</SelectItem>
+                            <SelectItem value="2500">$2,500/month</SelectItem>
+                            <SelectItem value="5000">$5,000/month</SelectItem>
+                            <SelectItem value="10000">$10,000/month</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
 
                       {/* Frequency */}
