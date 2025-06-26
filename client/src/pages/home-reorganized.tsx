@@ -407,7 +407,7 @@ const traditionalFinanceProblems = {
 };
 
 type MainSection = "foundation" | "practice" | "inspiration";
-type FoundationSubTab = "today" | "explore" | "disruption" | "glossary";
+type FoundationSubTab = "today" | "explore" | "disruption" | "terms";
 type PracticeSubTab = "mining" | "transactions" | "hodl" | "dca" | "halving";
 type InspirationSubTab = "stories" | "conviction";
 type DisruptionSubTab = "problems" | "solutions" | "comparison" | "future";
@@ -1077,7 +1077,142 @@ export default function Home() {
               </div>
             )}
 
-            {/* Explore Section */}
+            {/* Legacy Facts Section (kept for transition) */}
+            {foundationSubTab === "basics" && (
+              <div className="grid gap-6">
+                {dailyFacts.map((fact, index) => (
+                  <Card key={index} className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 bg-orange-600/20 rounded-lg">
+                          {(() => {
+                            const IconComponent = iconMap[fact.icon as keyof typeof iconMap];
+                            return IconComponent ? <IconComponent className="w-8 h-8 text-orange-400" /> : null;
+                          })()}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold text-white mb-2">{fact.title}</h3>
+                          <p className="text-zinc-300 mb-4">{fact.content}</p>
+                          
+                          <div className="flex items-center gap-3 mb-4">
+                            <Badge variant="outline" className="border-orange-600 text-orange-400">
+                              {fact.category}
+                            </Badge>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => toggleFactExpansion(index)}
+                              className="text-orange-400 hover:text-orange-300 hover:bg-orange-600/20 p-2"
+                            >
+                              {expandedFacts.has(index) ? (
+                                <>
+                                  <ChevronUp className="w-4 h-4 mr-1" />
+                                  Show Less
+                                </>
+                              ) : (
+                                <>
+                                  <ChevronDown className="w-4 h-4 mr-1" />
+                                  Dive Deeper
+                                </>
+                              )}
+                            </Button>
+                          </div>
+
+                          {expandedFacts.has(index) && (
+                            <div className="space-y-4 mt-4 p-4 bg-zinc-800/50 rounded-lg border border-zinc-700">
+                              {(() => {
+                                const deepDive = getFactDeepDive(fact.title);
+                                return (
+                                  <>
+                                    <div>
+                                      <h4 className="text-orange-300 font-semibold mb-2 flex items-center gap-2">
+                                        <BookOpen className="w-4 h-4" />
+                                        Deep Explanation
+                                      </h4>
+                                      <p className="text-zinc-300 text-sm leading-relaxed">{deepDive.explanation}</p>
+                                    </div>
+
+                                    <div>
+                                      <h4 className="text-blue-300 font-semibold mb-2 flex items-center gap-2">
+                                        <Lightbulb className="w-4 h-4" />
+                                        Visual Understanding
+                                      </h4>
+                                      <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-3">
+                                        <p className="text-blue-200 text-sm italic">{deepDive.visualDescription}</p>
+                                      </div>
+                                    </div>
+
+                                    <div>
+                                      <h4 className="text-green-300 font-semibold mb-2 flex items-center gap-2">
+                                        <FileText className="w-4 h-4" />
+                                        Real Examples
+                                      </h4>
+                                      <div className="space-y-2">
+                                        {deepDive.examples.map((example, exampleIndex) => (
+                                          <div key={exampleIndex} className="flex items-start gap-2">
+                                            <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                                            <span className="text-green-200 text-sm">{example}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+
+                                    <div>
+                                      <h4 className="text-purple-300 font-semibold mb-2 flex items-center gap-2">
+                                        <TrendingUp className="w-4 h-4" />
+                                        Key Takeaways
+                                      </h4>
+                                      <div className="grid gap-2">
+                                        {deepDive.keyTakeaways.map((takeaway, takeawayIndex) => (
+                                          <div key={takeawayIndex} className="bg-purple-600/10 border border-purple-600/20 rounded-lg p-2">
+                                            <span className="text-purple-200 text-sm font-medium">{takeaway}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </>
+                                );
+                              })()}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+
+            {foundationSubTab === "lesson" && lesson && (
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-6">
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-2xl font-bold text-white">{lesson.title}</h2>
+                      <Badge variant="outline" className="border-blue-600 text-blue-400">
+                        {lesson.estimatedReadTime} min read
+                      </Badge>
+                    </div>
+                    <div className="text-zinc-300 prose prose-invert max-w-none">
+                      {lesson.content.split('\n').map((paragraph, index) => (
+                        <p key={index} className="mb-4">{paragraph}</p>
+                      ))}
+                    </div>
+                    <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4">
+                      <h4 className="text-blue-300 font-medium mb-2">Key Takeaway</h4>
+                      <p className="text-blue-200 text-sm">{lesson.summary}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {foundationSubTab === "quiz" && (
+              <div>
+                <DailyQuiz />
+              </div>
+            )}
+
             {foundationSubTab === "explore" && (
               <div className="grid gap-6">
                 {[
