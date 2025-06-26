@@ -396,8 +396,14 @@ export default function Home() {
             title: "The Problems with Fiat Currency",
             paragraphs: [
               "Since 1971, when President Nixon ended the gold standard, most world currencies became 'fiat' money - backed only by government promises rather than tangible assets like gold. This fundamental shift has created several critical problems that affect everyone's financial security.",
+              "",
               "The most obvious problem is **inflation by design**. Governments can create new money at will, which reduces the purchasing power of existing money. The US dollar has lost over 85% of its value since 1971, meaning what cost $1 then requires about $6.50 today.",
-              "Beyond inflation, fiat systems concentrate enormous power in the hands of central authorities. Banks and governments can freeze accounts, reverse transactions, control who can participate in the financial system, and devalue savings through unlimited money printing."
+              "",
+              "Beyond inflation, fiat systems concentrate enormous power in the hands of central authorities. Banks and governments can:",
+              "• Freeze your accounts without warning",
+              "• Reverse your transactions",  
+              "• Control who can send or receive money",
+              "• Devalue your savings through unlimited money printing"
             ],
             keyPoints: [
               "Fiat currencies have no backing beyond government decree since 1971",
@@ -411,8 +417,14 @@ export default function Home() {
             title: "Bitcoin's Revolutionary Solutions",
             paragraphs: [
               "Bitcoin addresses each of these fundamental flaws through its innovative design. Most importantly, it has a **fixed supply schedule** - only 21 million bitcoins will ever exist, with this limit enforced by mathematics rather than political promises.",
-              "Unlike fiat systems, Bitcoin is **permissionless**. You don't need permission from any bank, government, or institution to send, receive, or store Bitcoin. Anyone with internet access can participate in the global Bitcoin economy, regardless of their location, citizenship, or political status.",
-              "Bitcoin transactions are also **censorship resistant**. No authority can prevent a valid Bitcoin transaction from being processed. The network operates according to mathematical rules, not human discretion, making it immune to political interference."
+              "",
+              "Unlike fiat systems, Bitcoin is **permissionless**. You don't need permission from any bank, government, or institution to:",
+              "• Send Bitcoin anywhere in the world",
+              "• Receive Bitcoin from anyone",
+              "• Store Bitcoin without account minimums",
+              "• Participate regardless of location or citizenship",
+              "",
+              "Bitcoin transactions are also **censorship resistant**. The network operates according to mathematical rules, not human discretion, making it immune to political interference."
             ],
             keyPoints: [
               "Fixed 21 million coin limit prevents monetary debasement",
@@ -426,8 +438,17 @@ export default function Home() {
             title: "The Path to Financial Sovereignty",
             paragraphs: [
               "Bitcoin represents more than just a new type of money - it's a return to **individual financial sovereignty**. For the first time in generations, people can store and transfer value without depending on institutions that may not have their best interests in mind.",
-              "This shift is particularly important for the 2 billion people worldwide who lack access to traditional banking services. Bitcoin provides them with a path to participate in the global economy, save for the future, and transact with anyone, anywhere.",
-              "Even for those with access to traditional banking, Bitcoin offers protection against monetary debasement, capital controls, and institutional failure. It's financial insurance for an uncertain world."
+              "",
+              "This shift is particularly important for the **2 billion people worldwide** who lack access to traditional banking services. Bitcoin provides them with:",
+              "• A path to participate in the global economy",
+              "• The ability to save for the future",
+              "• Direct peer-to-peer transactions with anyone, anywhere",
+              "",
+              "Even for those with access to traditional banking, Bitcoin offers protection against:",
+              "• Monetary debasement through inflation",
+              "• Capital controls and currency restrictions", 
+              "• Institutional failure and bank collapses",
+              "• Government interference in personal finances"
             ],
             keyPoints: [
               "True ownership - you control your funds without intermediaries",

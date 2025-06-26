@@ -44,7 +44,7 @@ export default function DailyQuiz() {
   const queryClient = useQueryClient();
   
   const today = new Date().toISOString().split('T')[0];
-  const dayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24)) % 365; // Cycle through year
+  const dayIndex = 1; // Temporarily show day 2 content to simulate tomorrow
   const userId = 1; // Default user
 
   // Fetch quiz questions for today
