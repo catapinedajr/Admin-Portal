@@ -2715,22 +2715,22 @@ export default function Home() {
                             <div className="flex items-start justify-between mb-4">
                               <div>
                                 <h4 className="text-white font-semibold text-lg">Ledger Nano X</h4>
-                                <p className="text-zinc-400">Industry-leading hardware wallet</p>
+                                <p className="text-zinc-400">Bluetooth-enabled with mobile app</p>
                               </div>
                               <div className="text-right">
                                 <p className="text-orange-400 font-bold text-lg">$149</p>
                                 <p className="text-zinc-500 text-sm">Free shipping</p>
                               </div>
                             </div>
-                            <p className="text-zinc-300 mb-4">Bluetooth-enabled hardware wallet supporting 5,500+ cryptocurrencies. Secure chip technology and mobile app integration.</p>
+                            <p className="text-zinc-300 mb-4">Industry-leading hardware wallet with Bluetooth connectivity and support for 5,500+ cryptocurrencies. Secure element chip and mobile app integration for on-the-go management.</p>
                             <div className="flex flex-wrap gap-2 mb-4">
                               <Badge variant="secondary" className="bg-green-600/20 text-green-400">Bluetooth</Badge>
                               <Badge variant="secondary" className="bg-blue-600/20 text-blue-400">Mobile App</Badge>
-                              <Badge variant="secondary" className="bg-purple-600/20 text-purple-400">5,500+ Coins</Badge>
+                              <Badge variant="secondary" className="bg-purple-600/20 text-purple-400">5,500+ Assets</Badge>
                             </div>
                             <Button className="w-full bg-orange-600 hover:bg-orange-700">
                               <ExternalLink className="w-4 h-4 mr-2" />
-                              Buy on Ledger (Affiliate Link)
+                              Buy on Ledger.com (Affiliate Link)
                             </Button>
                           </div>
 
@@ -2738,22 +2738,68 @@ export default function Home() {
                             <div className="flex items-start justify-between mb-4">
                               <div>
                                 <h4 className="text-white font-semibold text-lg">Trezor Model T</h4>
-                                <p className="text-zinc-400">Touchscreen hardware wallet</p>
+                                <p className="text-zinc-400">Premium touchscreen wallet</p>
                               </div>
                               <div className="text-right">
                                 <p className="text-orange-400 font-bold text-lg">$219</p>
                                 <p className="text-zinc-500 text-sm">Free shipping</p>
                               </div>
                             </div>
-                            <p className="text-zinc-300 mb-4">Premium hardware wallet with color touchscreen. Open-source firmware and advanced security features.</p>
+                            <p className="text-zinc-300 mb-4">Advanced hardware wallet with color touchscreen and open-source firmware. Enhanced security features with passphrase protection and recovery seed backup.</p>
                             <div className="flex flex-wrap gap-2 mb-4">
                               <Badge variant="secondary" className="bg-green-600/20 text-green-400">Touchscreen</Badge>
                               <Badge variant="secondary" className="bg-blue-600/20 text-blue-400">Open Source</Badge>
-                              <Badge variant="secondary" className="bg-purple-600/20 text-purple-400">1,000+ Coins</Badge>
+                              <Badge variant="secondary" className="bg-purple-600/20 text-purple-400">1,000+ Assets</Badge>
                             </div>
                             <Button className="w-full bg-orange-600 hover:bg-orange-700">
                               <ExternalLink className="w-4 h-4 mr-2" />
-                              Buy on Trezor (Affiliate Link)
+                              Buy on Trezor.io (Affiliate Link)
+                            </Button>
+                          </div>
+
+                          <div className="border border-zinc-700 rounded-lg p-4">
+                            <div className="flex items-start justify-between mb-4">
+                              <div>
+                                <h4 className="text-white font-semibold text-lg">Coldcard Mk4</h4>
+                                <p className="text-zinc-400">Bitcoin-only air-gapped wallet</p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-orange-400 font-bold text-lg">$147</p>
+                                <p className="text-zinc-500 text-sm">Ships worldwide</p>
+                              </div>
+                            </div>
+                            <p className="text-zinc-300 mb-4">Bitcoin-focused hardware wallet with air-gapped operation and advanced security features. No Bluetooth, no WiFi - maximum security for serious Bitcoiners.</p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              <Badge variant="secondary" className="bg-orange-600/20 text-orange-400">Bitcoin Only</Badge>
+                              <Badge variant="secondary" className="bg-red-600/20 text-red-400">Air-Gapped</Badge>
+                              <Badge variant="secondary" className="bg-green-600/20 text-green-400">Max Security</Badge>
+                            </div>
+                            <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                              <ExternalLink className="w-4 h-4 mr-2" />
+                              Buy on Coinkite.com (Affiliate Link)
+                            </Button>
+                          </div>
+
+                          <div className="border border-zinc-700 rounded-lg p-4">
+                            <div className="flex items-start justify-between mb-4">
+                              <div>
+                                <h4 className="text-white font-semibold text-lg">BitBox02</h4>
+                                <p className="text-zinc-400">Swiss-made minimalist design</p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-orange-400 font-bold text-lg">$109</p>
+                                <p className="text-zinc-500 text-sm">Made in Switzerland</p>
+                              </div>
+                            </div>
+                            <p className="text-zinc-300 mb-4">Minimalist hardware wallet with a focus on security and ease of use. Swiss engineering with dual-chip architecture and backup on microSD card.</p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              <Badge variant="secondary" className="bg-red-600/20 text-red-400">Swiss Made</Badge>
+                              <Badge variant="secondary" className="bg-blue-600/20 text-blue-400">Dual Chip</Badge>
+                              <Badge variant="secondary" className="bg-green-600/20 text-green-400">microSD Backup</Badge>
+                            </div>
+                            <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                              <ExternalLink className="w-4 h-4 mr-2" />
+                              Buy on ShiftCrypto.shop (Affiliate Link)
                             </Button>
                           </div>
                         </div>
@@ -2779,11 +2825,12 @@ export default function Home() {
                                 <Badge variant="outline" className="border-green-600 text-green-400 mt-1">Beginner</Badge>
                               </div>
                             </div>
-                            <p className="text-zinc-300 mb-4">Comprehensive analysis of monetary history and why Bitcoin represents a return to sound money principles. Perfect for understanding the "why" behind Bitcoin.</p>
+                            <p className="text-zinc-300 mb-4">Comprehensive analysis of monetary history and why Bitcoin represents a return to sound money principles. Perfect for understanding the "why" behind Bitcoin from one of the most respected voices in the space.</p>
                             <div className="flex flex-wrap gap-2 mb-4">
                               <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Monetary History</Badge>
                               <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Economics</Badge>
                               <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Sound Money</Badge>
+                              <Badge variant="secondary" className="bg-green-600/20 text-green-400">Highly Recommended</Badge>
                             </div>
                             <Button className="w-full bg-orange-600 hover:bg-orange-700">
                               <ExternalLink className="w-4 h-4 mr-2" />
@@ -2802,7 +2849,7 @@ export default function Home() {
                                 <Badge variant="outline" className="border-yellow-600 text-yellow-400 mt-1">Intermediate</Badge>
                               </div>
                             </div>
-                            <p className="text-zinc-300 mb-4">Classic introduction to Bitcoin's economic properties and historical context of money. Essential reading for understanding Bitcoin as digital gold.</p>
+                            <p className="text-zinc-300 mb-4">The book that introduced millions to Bitcoin's economic properties. Essential reading for understanding Bitcoin as digital gold and the historical context of sound money.</p>
                             <div className="flex flex-wrap gap-2 mb-4">
                               <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Austrian Economics</Badge>
                               <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Store of Value</Badge>
@@ -2825,11 +2872,103 @@ export default function Home() {
                                 <Badge variant="outline" className="border-red-600 text-red-400 mt-1">Advanced</Badge>
                               </div>
                             </div>
-                            <p className="text-zinc-300 mb-4">Deep dive into the problems with the current fiat monetary system and how it affects society, culture, and human flourishing.</p>
+                            <p className="text-zinc-300 mb-4">Deep dive into the problems with the current fiat monetary system and how it affects society, culture, and human flourishing. The sequel to The Bitcoin Standard.</p>
                             <div className="flex flex-wrap gap-2 mb-4">
                               <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Fiat Problems</Badge>
                               <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Society</Badge>
                               <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Civilization</Badge>
+                            </div>
+                            <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                              <ExternalLink className="w-4 h-4 mr-2" />
+                              Buy on Amazon (Affiliate Link)
+                            </Button>
+                          </div>
+
+                          <div className="border border-zinc-700 rounded-lg p-4">
+                            <div className="flex items-start justify-between mb-4">
+                              <div>
+                                <h4 className="text-white font-semibold text-lg">The Price of Tomorrow by Jeff Booth</h4>
+                                <p className="text-zinc-400">Why Deflation is the Key to an Abundant Future</p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-orange-400 font-bold text-lg">$18.99</p>
+                                <Badge variant="outline" className="border-green-600 text-green-400 mt-1">Beginner</Badge>
+                              </div>
+                            </div>
+                            <p className="text-zinc-300 mb-4">Explores how technology creates deflation and why this conflicts with our inflationary monetary system. Makes the case for deflationary money like Bitcoin.</p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Technology</Badge>
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Deflation</Badge>
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Future</Badge>
+                            </div>
+                            <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                              <ExternalLink className="w-4 h-4 mr-2" />
+                              Buy on Amazon (Affiliate Link)
+                            </Button>
+                          </div>
+
+                          <div className="border border-zinc-700 rounded-lg p-4">
+                            <div className="flex items-start justify-between mb-4">
+                              <div>
+                                <h4 className="text-white font-semibold text-lg">The Big Print by Alexander Macris</h4>
+                                <p className="text-zinc-400">The Case for Federal Reserve and Treasury Actions</p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-orange-400 font-bold text-lg">$16.99</p>
+                                <Badge variant="outline" className="border-yellow-600 text-yellow-400 mt-1">Intermediate</Badge>
+                              </div>
+                            </div>
+                            <p className="text-zinc-300 mb-4">Examines the relationship between government monetary policy and Bitcoin. Provides insights into how traditional finance and Bitcoin intersect.</p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Federal Reserve</Badge>
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Policy</Badge>
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Analysis</Badge>
+                            </div>
+                            <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                              <ExternalLink className="w-4 h-4 mr-2" />
+                              Buy on Amazon (Affiliate Link)
+                            </Button>
+                          </div>
+
+                          <div className="border border-zinc-700 rounded-lg p-4">
+                            <div className="flex items-start justify-between mb-4">
+                              <div>
+                                <h4 className="text-white font-semibold text-lg">Bitcoin Billionaires by Ben Mezrich</h4>
+                                <p className="text-zinc-400">A True Story of Genius, Betrayal, and Redemption</p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-orange-400 font-bold text-lg">$15.99</p>
+                                <Badge variant="outline" className="border-green-600 text-green-400 mt-1">Beginner</Badge>
+                              </div>
+                            </div>
+                            <p className="text-zinc-300 mb-4">The story of the Winklevoss twins and their journey from Facebook lawsuit to Bitcoin billionaires. Engaging narrative about early Bitcoin adoption.</p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Biography</Badge>
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Early Adoption</Badge>
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Narrative</Badge>
+                            </div>
+                            <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                              <ExternalLink className="w-4 h-4 mr-2" />
+                              Buy on Amazon (Affiliate Link)
+                            </Button>
+                          </div>
+
+                          <div className="border border-zinc-700 rounded-lg p-4">
+                            <div className="flex items-start justify-between mb-4">
+                              <div>
+                                <h4 className="text-white font-semibold text-lg">Mastering Bitcoin by Andreas M. Antonopoulos</h4>
+                                <p className="text-zinc-400">Programming the Open Blockchain (3rd Edition)</p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-orange-400 font-bold text-lg">$44.99</p>
+                                <Badge variant="outline" className="border-red-600 text-red-400 mt-1">Advanced</Badge>
+                              </div>
+                            </div>
+                            <p className="text-zinc-300 mb-4">Technical deep dive into Bitcoin's architecture and implementation. Essential for developers and those wanting to understand the technical foundations.</p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Technical</Badge>
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Programming</Badge>
+                              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">Blockchain</Badge>
                             </div>
                             <Button className="w-full bg-orange-600 hover:bg-orange-700">
                               <ExternalLink className="w-4 h-4 mr-2" />
