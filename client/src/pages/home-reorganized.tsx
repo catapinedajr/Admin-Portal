@@ -1672,10 +1672,6 @@ export default function Home() {
         {/* Practice Section */}
         {activeSection === "practice" && (
           <div className="space-y-6">
-            <div className="text-center space-y-2">
-              <h2 className="text-2xl font-bold text-white">Practice Bitcoin Concepts</h2>
-              <p className="text-zinc-400">Interactive simulations to deepen your understanding</p>
-            </div>
 
             {practiceSubTab === "mining" && (
               <Card className="bg-zinc-900 border-zinc-800">
