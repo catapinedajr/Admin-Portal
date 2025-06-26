@@ -147,7 +147,7 @@ Comprehensive component library built on Radix UI primitives:
 - June 26, 2025. Fixed lesson content rendering issue: updated getExpandedLessonContent default case to properly split content by double line breaks instead of dumping entire lesson as single paragraph, resolving cramped text display
 - June 26, 2025. Added missing line spacing in Bitcoin vs Gold comparison section: separated each checkmark comparison item with proper line breaks for better readability in lesson content
 - June 26, 2025. Enhanced lesson content with bold formatting: added **bold** emphasis to key terms like Scarcity, Durability, Programmable, Investment Thesis, etc. to visually separate terms from their descriptions for improved readability
-- June 26, 2025. Added proper section headers to lesson content: formatted main sections with ## markdown headers (Properties of Good Money, How Bitcoin Compares to Gold, Bitcoin's Monetary Advantages, The Network Effect) for better content organization and visual hierarchy
+- June 26, 2025. Simplified lesson section formatting: replaced complex ## markdown headers with clean **bold titles** for section divisions (Properties of Good Money, How Bitcoin Compares to Gold, Bitcoin's Monetary Advantages, The Network Effect) for cleaner, less cluttered text presentation
 - June 26, 2025. Added missing expandable "Dive Deeper" content for "Why Bitcoin Matters" fact to ensure all daily facts have comprehensive expandable explanations, examples, and key takeaways
 
 ## User Preferences

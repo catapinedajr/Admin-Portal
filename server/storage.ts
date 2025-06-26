@@ -530,7 +530,7 @@ This ensures Bitcoin becomes increasingly scarce over time.
         title: "Bitcoin as Digital Gold: Store of Value",
         content: `Bitcoin is often called "digital gold" because it shares many properties with gold while improving upon them for the digital age.
 
-## Properties of Good Money
+**Properties of Good Money**
 
 Throughout history, the best forms of money have shared certain characteristics:
 
@@ -545,7 +545,7 @@ Throughout history, the best forms of money have shared certain characteristics:
 • **Verifiability**: Easy to authenticate as genuine
 
 
-## How Bitcoin Compares to Gold
+**How Bitcoin Compares to Gold**
 
 **Scarcity**: ✅ Fixed 21 million supply vs. unknown gold reserves
 
@@ -558,7 +558,7 @@ Throughout history, the best forms of money have shared certain characteristics:
 **Verifiability**: ✅ Cryptographic proof vs. expensive testing
 
 
-## Bitcoin's Monetary Advantages
+**Bitcoin's Monetary Advantages**
 
 Unlike gold, Bitcoin is:
 
@@ -571,7 +571,7 @@ Unlike gold, Bitcoin is:
 • **Resistant to confiscation**: Properly stored Bitcoin cannot be seized
 
 
-## The Network Effect
+**The Network Effect**
 
 As more people recognize Bitcoin's superior monetary properties:
 
