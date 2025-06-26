@@ -129,6 +129,8 @@ Comprehensive component library built on Radix UI primitives:
 - June 25, 2025. Implemented fully functional interactive simulators: Bitcoin Mining Calculator (hash rate, electricity costs, profitability), DCA Calculator (dollar-cost averaging with volatility simulation), and HODLing vs Trading Strategy Comparison (including fees and taxes)
 - June 25, 2025. Optimized main navigation menu for all screen sizes with responsive button sizing, spacing, and typography to prevent overflow on mobile devices
 - June 25, 2025. Consolidated Facts, Lesson, and Quiz into unified "Today" section for improved gamified daily learning experience with progress tracking and cohesive content flow
+- June 26, 2025. Expanded Bitcoin glossary to 80+ comprehensive terms organized by category (Core Concepts, Wallets & Security, Network & Mining, Transactions & Blocks, Economics & Investment, Key Properties) with interactive tooltips throughout the app
+- June 26, 2025. Renamed "Terms" section to "Glossary" and created comprehensive reference guide with color-coded categories and complete Bitcoin whitepaper integration with interactive glossary tooltips
 
 ## User Preferences
 

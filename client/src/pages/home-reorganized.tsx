@@ -755,7 +755,7 @@ export default function Home() {
                 className="text-xs px-2 py-1"
               >
                 <FileText className="w-3 h-3 mr-1" />
-                Terms
+                Glossary
               </Button>
             </div>
           </div>
@@ -1461,15 +1461,191 @@ export default function Home() {
             )}
 
             {foundationSubTab === "terms" && (
-              <div className="grid gap-4">
-                {bitcoinTerms.map((term, index) => (
-                  <Card key={index} className="bg-zinc-900 border-zinc-800">
-                    <CardContent className="p-4">
-                      <h3 className="text-lg font-bold text-white mb-2">{term.term}</h3>
-                      <p className="text-zinc-300">{term.definition}</p>
-                    </CardContent>
-                  </Card>
-                ))}
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-bold text-white">Bitcoin Glossary</h2>
+                  <p className="text-zinc-400">Essential terminology for understanding Bitcoin and cryptocurrency</p>
+                </div>
+
+                {/* Core Concepts */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold text-orange-400 mb-4 flex items-center gap-2">
+                      <Bitcoin className="w-5 h-5" />
+                      Core Bitcoin Concepts
+                    </h3>
+                    <div className="grid gap-4">
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="Bitcoin">Bitcoin</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">A decentralized digital currency that operates on a peer-to-peer network without banks or governments, using cryptography for security.</p>
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="blockchain">Blockchain</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">A distributed ledger that records all Bitcoin transactions in chronological order, secured by cryptography and maintained by thousands of computers worldwide.</p>
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="cryptocurrency">Cryptocurrency</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">Digital or virtual currency secured by cryptography, making it nearly impossible to counterfeit or double-spend.</p>
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="satoshi">Satoshi</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">The smallest unit of Bitcoin (0.00000001 BTC). Named after Bitcoin's creator, like cents to dollars.</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Wallets & Security */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                      <Shield className="w-5 h-5" />
+                      Wallets & Security
+                    </h3>
+                    <div className="grid gap-4">
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="wallet">Wallet</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">Software or hardware that stores your Bitcoin private keys and allows you to send and receive Bitcoin.</p>
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="private key">Private Key</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">A secret code that grants access to Bitcoin in a wallet. Like a password, it must be kept secure and never shared.</p>
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="seed phrase">Seed Phrase</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">12-24 words that can restore your entire Bitcoin wallet. Must be kept secret and backed up safely.</p>
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="cold storage">Cold Storage</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">Keeping Bitcoin private keys completely offline (like on a hardware wallet) to protect from online threats.</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Network & Mining */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                      <Network className="w-5 h-5" />
+                      Network & Mining
+                    </h3>
+                    <div className="grid gap-4">
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="mining">Mining</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">The process of using computer power to secure the Bitcoin network, validate transactions, and solve computational puzzles for rewards.</p>
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="node">Node</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">A computer that maintains a copy of the Bitcoin blockchain and helps validate transactions across the network.</p>
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="proof of work">Proof of Work</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">Bitcoin's security mechanism where miners compete to solve mathematical puzzles, proving they've invested computational energy.</p>
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="halving">Halving</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">An event reducing mining reward by half, occurs approximately every 4 years to control Bitcoin supply.</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Transactions */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+                      <ArrowRight className="w-5 h-5" />
+                      Transactions & Blocks
+                    </h3>
+                    <div className="grid gap-4">
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="transaction">Transaction</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">A transfer of Bitcoin from one address to another, recorded permanently on the blockchain.</p>
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="block">Block</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">A group of transactions bundled together and added to the blockchain approximately every 10 minutes.</p>
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="confirmation">Confirmation</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">When a transaction is included in a block and added to the blockchain. More confirmations mean more security.</p>
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="fee">Fee</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">A small amount paid to miners to prioritize including your transaction in the next block.</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Economics & Investment */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold text-yellow-400 mb-4 flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5" />
+                      Economics & Investment
+                    </h3>
+                    <div className="grid gap-4">
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="HODL">HODL</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">A misspelling of 'hold' that became popular Bitcoin slang, meaning to keep Bitcoin long-term rather than selling.</p>
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="DCA">DCA (Dollar-Cost Averaging)</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">Investment strategy of buying fixed dollar amounts regularly regardless of price.</p>
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="volatility">Volatility</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">How much Bitcoin's price fluctuates. High volatility means large price swings up and down.</p>
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="store of value">Store of Value</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">An asset that maintains its worth over time. Bitcoin is often called 'digital gold' for this property.</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Key Properties */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                      <Zap className="w-5 h-5" />
+                      Key Properties
+                    </h3>
+                    <div className="grid gap-4">
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="decentralized">Decentralized</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">No single point of control. Bitcoin operates across thousands of computers worldwide with no central authority.</p>
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="trustless">Trustless</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">System that works without requiring trust in any central authority or counterparty.</p>
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="permissionless">Permissionless</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">Anyone can use Bitcoin without asking permission from any authority.</p>
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold mb-1"><BitcoinTerm term="immutable">Immutable</BitcoinTerm></h4>
+                        <p className="text-zinc-300 text-sm">Cannot be changed or altered. Bitcoin transaction history is immutable once confirmed.</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <HelpCircle className="w-5 h-5 text-orange-400 mt-0.5" />
+                    <div>
+                      <h4 className="text-orange-300 font-medium mb-2">Interactive Glossary</h4>
+                      <p className="text-orange-200 text-sm">
+                        Throughout this app, Bitcoin terms are highlighted with dotted underlines. Hover over any highlighted term to see its definition instantly.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>

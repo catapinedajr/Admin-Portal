@@ -1,0 +1,50 @@
+Glossary of Terms for Bitcoin Education App
+Bitcoin (BTC): Decentralized digital currency, operates on a peer-to-peer network.
+Blockchain: Distributed ledger recording all Bitcoin transactions, immutable and transparent.
+Wallet: Software or device storing private/public keys for sending/receiving Bitcoin.
+Private Key: Secret code granting access to Bitcoin in a wallet.
+Public Key: Address for receiving Bitcoin, derived from private key.
+Address: Shortened public key (e.g., 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa).
+Transaction: Transfer of Bitcoin, recorded on the blockchain.
+Block: Group of transactions added to the blockchain.
+Mining: Process of validating transactions, solving computational puzzles for rewards.
+Hash: Cryptographic function turning data into fixed-length string.
+Node: Computer running Bitcoin software, maintaining blockchain copy.
+Halving: Event reducing mining reward by half, occurs ~every 4 years.
+Satoshi: Smallest Bitcoin unit (0.00000001 BTC).
+Fork: Change in blockchain protocol, creating new chain (hard/soft fork).
+Decentralized: No central authority, governed by network consensus.
+Consensus: Agreement among nodes on blockchain state (e.g., Proof of Work).
+HODL: Slang for holding Bitcoin long-term, not selling.
+KYC: Know Your Customer, regulatory ID verification.
+Cold Storage: Offline wallet for secure Bitcoin storage.
+Hot Wallet: Online wallet, convenient but less secure.
+Fiat: Government-issued currency (e.g., USD, EUR).
+Exchange: Platform for trading Bitcoin (e.g., Coinbase, Binance).
+Gas Fees: Transaction fees on Bitcoin network (not Ethereum-specific here).
+Whitepaper: Bitcoin’s foundational document by Satoshi Nakamoto (2008).
+Foundational Concepts to Cover
+What is Bitcoin?
+Peer-to-peer digital cash, no intermediaries, created by Satoshi Nakamoto.
+Limited supply (21M coins), deflationary design.
+How Bitcoin Works
+Blockchain structure: blocks, transactions, hashes.
+Mining and Proof of Work for security.
+Role of nodes in decentralization.
+Wallets and Security
+Difference between hot/cold wallets.
+Importance of private keys, seed phrases.
+Basic security: avoiding phishing, using 2FA.
+Transactions
+Sending/receiving Bitcoin, confirming on blockchain.
+Transaction fees, speed, and network congestion.
+Bitcoin’s Value
+Supply/demand dynamics, halving impact.
+Volatility, market sentiment, adoption trends.
+Use Cases
+Payments, remittances, store of value.
+Comparison to fiat and other cryptocurrencies.
+Risks and Challenges
+Regulatory risks, scams, hacks.
+Environmental concerns (mining energy use).
+Importance of self-custody and due diligence.
