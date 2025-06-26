@@ -407,25 +407,19 @@ const traditionalFinanceProblems = {
   ]
 };
 
-type MainSection = "foundation" | "practice" | "inspiration";
-type FoundationSubTab = "today" | "explore" | "disruption" | "terms";
+type MainSection = "learn" | "practice" | "more";
+type LearnSubTab = "today" | "deepdive" | "reference";
 type PracticeSubTab = "safety" | "transactions" | "hodl" | "dca";
-type InspirationSubTab = "stories" | "conviction" | "store";
-type DisruptionSubTab = "problems" | "solutions" | "comparison" | "future";
-type StoriesSubTab = "individuals" | "businesses" | "nations";
-type ConvictionSubTab = "whitepaper" | "books" | "videos";
-type ExploreSubTab = "overview" | "detail";
+type MoreSubTab = "stories" | "resources";
 
 export default function Home() {
-  const [activeSection, setActiveSection] = useState<MainSection>("foundation");
-  const [foundationSubTab, setFoundationSubTab] = useState<FoundationSubTab>("today");
+  const [activeSection, setActiveSection] = useState<MainSection>("learn");
+  const [learnSubTab, setLearnSubTab] = useState<LearnSubTab>("today");
   const [practiceSubTab, setPracticeSubTab] = useState<PracticeSubTab>("safety");
-  const [inspirationSubTab, setInspirationSubTab] = useState<InspirationSubTab>("stories");
+  const [moreSubTab, setMoreSubTab] = useState<MoreSubTab>("stories");
   const [txStatus, setTxStatus] = useState('preview');
   const [currentStep, setCurrentStep] = useState(0);
-  const [disruptionSubTab, setDisruptionSubTab] = useState<DisruptionSubTab>("problems");
-  const [storiesSubTab, setStoriesSubTab] = useState<StoriesSubTab>("individuals");
-  const [convictionSubTab, setConvictionSubTab] = useState<ConvictionSubTab>("whitepaper");
+
   const [showPriceChart, setShowPriceChart] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
@@ -693,10 +687,10 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-2 sm:px-4">
           <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-6 py-2 sm:py-3">
             <Button
-              variant={activeSection === "foundation" ? "default" : "ghost"}
+              variant={activeSection === "learn" ? "default" : "ghost"}
               size="sm"
-              onClick={() => setActiveSection("foundation")}
-              className={`${activeSection === "foundation" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} px-3 sm:px-4 py-2 text-sm sm:text-base min-w-0 flex-shrink-0`}
+              onClick={() => setActiveSection("learn")}
+              className={`${activeSection === "learn" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} px-3 sm:px-4 py-2 text-sm sm:text-base min-w-0 flex-shrink-0`}
             >
               <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
               <span className="whitespace-nowrap">Learn</span>
@@ -711,10 +705,10 @@ export default function Home() {
               <span className="whitespace-nowrap">Practice</span>
             </Button>
             <Button
-              variant={activeSection === "inspiration" ? "default" : "ghost"}
+              variant={activeSection === "more" ? "default" : "ghost"}
               size="sm"
-              onClick={() => setActiveSection("inspiration")}
-              className={`${activeSection === "inspiration" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} px-3 sm:px-4 py-2 text-sm sm:text-base min-w-0 flex-shrink-0`}
+              onClick={() => setActiveSection("more")}
+              className={`${activeSection === "more" ? "bg-orange-600 text-white" : "text-zinc-400 hover:text-white"} px-3 sm:px-4 py-2 text-sm sm:text-base min-w-0 flex-shrink-0`}
             >
               <Heart className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
               <span className="whitespace-nowrap">More</span>
@@ -724,45 +718,36 @@ export default function Home() {
       </nav>
 
       {/* Sub Navigation */}
-      {activeSection === "foundation" && (
+      {activeSection === "learn" && (
         <div className="bg-zinc-800/30 border-b border-zinc-800">
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-center gap-1 py-2 flex-wrap">
               <Button
-                variant={foundationSubTab === "today" ? "secondary" : "ghost"}
+                variant={learnSubTab === "today" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setFoundationSubTab("today")}
+                onClick={() => setLearnSubTab("today")}
                 className="text-xs px-2 py-1"
               >
                 <Calendar className="w-3 h-3 mr-1" />
                 Today
               </Button>
               <Button
-                variant={foundationSubTab === "explore" ? "secondary" : "ghost"}
+                variant={learnSubTab === "deepdive" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setFoundationSubTab("explore")}
+                onClick={() => setLearnSubTab("deepdive")}
                 className="text-xs px-2 py-1"
               >
                 <Globe className="w-3 h-3 mr-1" />
-                Explore
+                Deep Dive
               </Button>
               <Button
-                variant={foundationSubTab === "disruption" ? "secondary" : "ghost"}
+                variant={learnSubTab === "reference" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setFoundationSubTab("disruption")}
-                className="text-xs px-2 py-1"
-              >
-                <AlertTriangle className="w-3 h-3 mr-1" />
-                Why Bitcoin
-              </Button>
-              <Button
-                variant={foundationSubTab === "terms" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setFoundationSubTab("terms")}
+                onClick={() => setLearnSubTab("reference")}
                 className="text-xs px-2 py-1"
               >
                 <FileText className="w-3 h-3 mr-1" />
-                Glossary
+                Reference
               </Button>
             </div>
           </div>
@@ -814,36 +799,27 @@ export default function Home() {
         </div>
       )}
 
-      {activeSection === "inspiration" && (
+      {activeSection === "more" && (
         <div className="bg-zinc-800/30 border-b border-zinc-800">
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-center gap-1 py-2 flex-wrap">
               <Button
-                variant={inspirationSubTab === "stories" ? "secondary" : "ghost"}
+                variant={moreSubTab === "stories" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setInspirationSubTab("stories")}
+                onClick={() => setMoreSubTab("stories")}
                 className="text-xs px-2 py-1"
               >
                 <Users className="w-3 h-3 mr-1" />
                 Stories
               </Button>
               <Button
-                variant={inspirationSubTab === "conviction" ? "secondary" : "ghost"}
+                variant={moreSubTab === "resources" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setInspirationSubTab("conviction")}
+                onClick={() => setMoreSubTab("resources")}
                 className="text-xs px-2 py-1"
               >
                 <Heart className="w-3 h-3 mr-1" />
-                Conviction
-              </Button>
-              <Button
-                variant={inspirationSubTab === "store" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setInspirationSubTab("store")}
-                className="text-xs px-2 py-1"
-              >
-                <DollarSign className="w-3 h-3 mr-1" />
-                Store
+                Resources
               </Button>
             </div>
           </div>
@@ -854,21 +830,21 @@ export default function Home() {
       <main className="max-w-6xl mx-auto px-4 py-6">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-white mb-2">
-            {activeSection === "foundation" && "Build Your Bitcoin Foundation"}
+            {activeSection === "learn" && "Build Your Bitcoin Foundation"}
             {activeSection === "practice" && "Practice Bitcoin Concepts"}
-            {activeSection === "inspiration" && "Find Your Bitcoin Inspiration"}
+            {activeSection === "more" && "Discover More About Bitcoin"}
           </h2>
           <p className="text-zinc-400">
-            {activeSection === "foundation" && "Learn the fundamentals and understand why Bitcoin matters"}
+            {activeSection === "learn" && "Learn the fundamentals and understand why Bitcoin matters"}
             {activeSection === "practice" && "Interactive simulations to deepen your understanding"}
-            {activeSection === "inspiration" && "Real stories and conviction-building content"}
+            {activeSection === "more" && "Real stories and conviction-building content"}
           </p>
         </div>
 
-        {/* Foundation Section */}
-        {activeSection === "foundation" && (
+        {/* Learn Section */}
+        {activeSection === "learn" && (
           <div className="space-y-6">
-            {foundationSubTab === "today" && (
+            {learnSubTab === "today" && (
               <div className="space-y-6">
                 {/* Apple Activity-Inspired Condensed Header */}
                 <Card className="bg-zinc-900 border-zinc-800 mb-6">
@@ -1391,13 +1367,92 @@ export default function Home() {
               </Card>
             )}
 
-            {foundationSubTab === "quiz" && (
-              <div>
-                <DailyQuiz />
+            {learnSubTab === "reference" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-bold text-white">Bitcoin Reference Guide</h2>
+                  <p className="text-zinc-400">Essential terms, concepts, and the Bitcoin whitepaper</p>
+                </div>
+                
+                <div className="grid gap-6 md:grid-cols-2">
+                  {/* Glossary Card */}
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <FileText className="w-8 h-8 text-orange-400" />
+                        <div>
+                          <h3 className="text-xl font-bold text-white">Bitcoin Glossary</h3>
+                          <p className="text-zinc-400">80+ essential Bitcoin terms</p>
+                        </div>
+                      </div>
+                      <p className="text-zinc-300 mb-4">
+                        Comprehensive definitions for all Bitcoin terminology, organized by category with interactive tooltips throughout the app.
+                      </p>
+                      <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div className="text-orange-300">• Core Concepts</div>
+                        <div className="text-blue-300">• Wallets & Security</div>
+                        <div className="text-green-300">• Network & Mining</div>
+                        <div className="text-purple-300">• Economics</div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Whitepaper Card */}
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <BookOpen className="w-8 h-8 text-orange-400" />
+                        <div>
+                          <h3 className="text-xl font-bold text-white">Bitcoin Whitepaper</h3>
+                          <p className="text-zinc-400">Satoshi's original vision</p>
+                        </div>
+                      </div>
+                      <p className="text-zinc-300 mb-4">
+                        The foundational document that started it all. Read Satoshi Nakamoto's original Bitcoin paper with interactive explanations.
+                      </p>
+                      <div className="text-sm text-zinc-400">
+                        Published October 31, 2008 • 9 pages • Revolutionary
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Quick Reference */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-bold text-white mb-4">Quick Reference</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <h4 className="text-orange-300 font-medium">Key Numbers</h4>
+                        <div className="text-sm text-zinc-300 space-y-1">
+                          <div>• 21 million BTC max supply</div>
+                          <div>• 10 minute block time</div>
+                          <div>• 4 year halving cycle</div>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <h4 className="text-blue-300 font-medium">Important Dates</h4>
+                        <div className="text-sm text-zinc-300 space-y-1">
+                          <div>• 2008: Whitepaper published</div>
+                          <div>• 2009: Genesis block mined</div>
+                          <div>• 2010: First transaction</div>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <h4 className="text-green-300 font-medium">Core Principles</h4>
+                        <div className="text-sm text-zinc-300 space-y-1">
+                          <div>• Decentralization</div>
+                          <div>• Proof of Work</div>
+                          <div>• Digital scarcity</div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             )}
 
-            {foundationSubTab === "explore" && !selectedTopic && (
+            {learnSubTab === "deepdive" && !selectedTopic && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h2 className="text-2xl font-bold text-white">Deep Dive Topics</h2>
