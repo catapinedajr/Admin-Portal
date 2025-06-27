@@ -2236,7 +2236,7 @@ export default function Home() {
                     <div className="text-center">
                       <div className="text-red-400 text-sm font-medium mb-2">Fiat Currency Loss</div>
                       <div className="text-3xl font-bold text-red-300 mb-1">
-                        ${Math.round(parseInt(inflationAmount) * (1 - Math.pow(0.97, parseInt(inflationYears)))).toLocaleString()}
+                        -${Math.round(parseInt(inflationAmount) * (1 - Math.pow(0.97, parseInt(inflationYears)))).toLocaleString()}
                       </div>
                       <div className="text-red-400/70 text-xs">Lost to 3% inflation</div>
                     </div>
