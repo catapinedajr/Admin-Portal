@@ -161,6 +161,7 @@ Comprehensive component library built on Radix UI primitives:
 - June 27, 2025. Removed Stories section entirely from app navigation and functionality to streamline user experience and focus on core educational content
 - June 27, 2025. Renamed Practice section to "Simulations" throughout navigation and interface to better reflect the interactive nature of the educational tools
 - June 27, 2025. Enhanced Transaction Simulator UX: removed pre-populated TO address requiring users to click paste button, fixed paste button responsive positioning with shrink-0 and min-w-0 classes, added empty state validation for recipient address displays, removed redundant Fee Rate Guide from building phase since it appears again during signing
+- June 27, 2025. Completely rebuilt HODLing simulator with authentic historical scenarios: added three real Bitcoin market periods (COVID Crash 2020-2021, Bear Market 2018-2021, Early Adopter 2017-2024) with accurate price data, psychological stress levels, investment amount tiers, comprehensive traditional investment comparisons (S&P 500, real estate, gold, savings), educational insights on time-in-market benefits, and visual journey preview functionality to demonstrate real-world HODLing advantages
 
 ## User Preferences
 
