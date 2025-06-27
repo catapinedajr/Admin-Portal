@@ -2470,9 +2470,9 @@ export default function Home() {
                       <div className="text-zinc-400 text-xs mt-1">After all 21M are mined</div>
                     </div>
                     
-                    <div className="p-4 bg-orange-950/50 rounded-xl border border-orange-800/50">
-                      <div className="text-orange-300 font-bold text-xl">100%</div>
-                      <div className="text-orange-400/80 text-sm">You Own Your Bitcoin</div>
+                    <div className="p-4 bg-orange-900/40 rounded-xl border border-orange-600/50">
+                      <div className="text-orange-200 font-bold text-xl">100%</div>
+                      <div className="text-orange-300/90 text-sm">You Own Your Bitcoin</div>
                       <div className="text-zinc-400 text-xs mt-1">No bank can freeze it</div>
                     </div>
                   </div>
