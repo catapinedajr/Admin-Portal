@@ -3029,6 +3029,226 @@ export default function Home() {
                 </Card>
 
 
+                  <CardContent className="p-6">
+                    <div className="text-center mb-6">
+                      <h3 className="text-xl font-bold text-white mb-2">HODL Calculator</h3>
+                      <p className="text-zinc-400">See how much your Bitcoin investment would be worth today</p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      {/* Input Section */}
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-white font-medium mb-2">Investment Amount</label>
+                          <div className="relative">
+                            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-400 pointer-events-none text-lg">$</div>
+                            <input
+                              type="text"
+                              value={hodlInputs.initialAmount.toLocaleString()}
+                              onChange={(e) => {
+                                const numericValue = e.target.value.replace(/[^0-9]/g, '');
+                                const amount = parseInt(numericValue) || 0;
+                                setHodlInputs(prev => ({...prev, initialAmount: amount}));
+                                setTimeout(() => calculateHodlStrategy(), 100);
+                              }}
+                              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg pl-8 pr-4 py-3 text-white font-mono text-lg"
+                              placeholder="Enter amount"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-white font-medium mb-2">Purchase Date</label>
+                          <Select
+                            value={hodlInputs.scenario}
+                            onValueChange={(value) => {
+                              const scenarios: { [key: string]: { startPrice: number; endPrice: number; years: number; period: string } } = {
+                                'jan2024': { startPrice: 42300, endPrice: 106000, years: 1, period: 'Jan 2024' },
+                                'jan2023': { startPrice: 16530, endPrice: 106000, years: 2, period: 'Jan 2023' },
+                                'jan2022': { startPrice: 46200, endPrice: 106000, years: 3, period: 'Jan 2022' },
+                                'jan2021': { startPrice: 29000, endPrice: 106000, years: 4, period: 'Jan 2021' },
+                                'jan2020': { startPrice: 7195, endPrice: 106000, years: 5, period: 'Jan 2020' },
+                                'jan2019': { startPrice: 3693, endPrice: 106000, years: 6, period: 'Jan 2019' },
+                                'jan2018': { startPrice: 13412, endPrice: 106000, years: 7, period: 'Jan 2018' },
+                                'jan2017': { startPrice: 963, endPrice: 106000, years: 8, period: 'Jan 2017' },
+                                'jan2016': { startPrice: 434, endPrice: 106000, years: 9, period: 'Jan 2016' },
+                                'jan2015': { startPrice: 315, endPrice: 106000, years: 10, period: 'Jan 2015' }
+                              };
+                              
+                              const scenario = scenarios[value];
+                              setHodlInputs(prev => ({
+                                ...prev,
+                                scenario: value,
+                                startPrice: scenario.startPrice,
+                                endPrice: scenario.endPrice,
+                                years: scenario.years,
+                                period: scenario.period
+                              }));
+                              setTimeout(() => calculateHodlStrategy(), 100);
+                            }}
+                          >
+                            <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                              <SelectValue placeholder="Select purchase date" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-zinc-800 border-zinc-700">
+                              <SelectItem value="jan2024">January 2024 ($42,000)</SelectItem>
+                              <SelectItem value="jan2023">January 2023 ($16,500)</SelectItem>
+                              <SelectItem value="jan2022">January 2022 ($47,000)</SelectItem>
+                              <SelectItem value="jan2021">January 2021 ($29,000)</SelectItem>
+                              <SelectItem value="jan2020">January 2020 ($7,200)</SelectItem>
+                              <SelectItem value="jan2019">January 2019 ($3,700)</SelectItem>
+                              <SelectItem value="jan2018">January 2018 ($13,800)</SelectItem>
+                              <SelectItem value="jan2017">January 2017 ($1,000)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      {/* Results Section */}
+                      <div className="space-y-4">
+                        {hodlResults && hodlInputs.scenario && (
+                          <div className="bg-zinc-800/50 rounded-lg p-4">
+                            <h4 className="text-white font-semibold mb-3">Your HODL Results</h4>
+                            
+                            {/* Growth Chart */}
+                            <div className="mb-4 p-3 bg-zinc-900/50 rounded-lg">
+                              <div className="text-xs text-zinc-400 mb-2">Portfolio Growth Over Time</div>
+                              <div className="h-32 relative">
+                                <svg width="100%" height="100%" className="overflow-visible">
+                                  {/* Chart Background Grid */}
+                                  <defs>
+                                    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.3"/>
+                                    </pattern>
+                                  </defs>
+                                  <rect width="100%" height="100%" fill="url(#grid)" />
+                                  
+                                  {/* Growth Line */}
+                                  {(() => {
+                                    const points = [];
+                                    const years = hodlInputs.years;
+                                    const startValue = hodlResults.initialInvestment;
+                                    const endValue = hodlResults.currentValue;
+                                    const steps = Math.min(20, Math.max(5, years * 2));
+                                    
+                                    for (let i = 0; i <= steps; i++) {
+                                      const progress = i / steps;
+                                      const timeProgress = progress * years;
+                                      
+                                      // Simulate realistic Bitcoin growth with volatility
+                                      let value;
+                                      if (hodlInputs.scenario === 'jan2017') {
+                                        // Early adopter with major volatility
+                                        const volatilityFactors = [1, 3, 0.5, 8, 2, 0.3, 15, 5, 1.2, 25, 8, 2, 45, 15, 3, 95];
+                                        value = startValue * (volatilityFactors[Math.floor(progress * (volatilityFactors.length - 1))] || endValue / startValue);
+                                      } else if (hodlInputs.scenario === 'jan2020') {
+                                        // COVID era with crash and recovery
+                                        const covidPattern = progress < 0.1 ? 0.5 : progress < 0.3 ? 0.8 : Math.pow(endValue / startValue, progress);
+                                        value = startValue * covidPattern;
+                                      } else {
+                                        // Smooth exponential growth with minor volatility
+                                        const baseGrowth = Math.pow(endValue / startValue, progress);
+                                        const volatility = 1 + 0.2 * Math.sin(progress * 8) * (1 - progress * 0.5);
+                                        value = startValue * baseGrowth * volatility;
+                                      }
+                                      
+                                      points.push({
+                                        x: (progress * 280) + 10,
+                                        y: 120 - ((Math.log(value / startValue + 1) / Math.log(endValue / startValue + 1)) * 100),
+                                        value
+                                      });
+                                    }
+                                    
+                                    const pathData = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+                                    
+                                    return (
+                                      <>
+                                        {/* Growth Line */}
+                                        <path
+                                          d={pathData}
+                                          stroke="#f97316"
+                                          strokeWidth="2"
+                                          fill="none"
+                                          className="drop-shadow-sm"
+                                        />
+                                        
+                                        {/* Area Fill */}
+                                        <path
+                                          d={`${pathData} L ${points[points.length - 1].x} 120 L 10 120 Z`}
+                                          fill="url(#orangeGradient)"
+                                          opacity="0.2"
+                                        />
+                                        
+                                        {/* Start and End Points */}
+                                        <circle cx={points[0].x} cy={points[0].y} r="3" fill="#10b981" />
+                                        <circle cx={points[points.length - 1].x} cy={points[points.length - 1].y} r="3" fill="#f97316" />
+                                        
+                                        {/* Gradient Definition */}
+                                        <defs>
+                                          <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                            <stop offset="0%" stopColor="#f97316" stopOpacity="0.3"/>
+                                            <stop offset="100%" stopColor="#f97316" stopOpacity="0.1"/>
+                                          </linearGradient>
+                                        </defs>
+                                        
+                                        {/* Time Labels */}
+                                        <text x="10" y="135" fill="#9ca3af" fontSize="8" textAnchor="start">
+                                          {hodlInputs.period}
+                                        </text>
+                                        <text x="290" y="135" fill="#9ca3af" fontSize="8" textAnchor="end">
+                                          Jan 2025
+                                        </text>
+                                      </>
+                                    );
+                                  })()}
+                                </svg>
+                              </div>
+                            </div>
+                            
+                            <div className="space-y-3">
+                              <div className="flex justify-between items-center">
+                                <span className="text-zinc-400">Initial Investment:</span>
+                                <span className="text-white font-mono">${hodlResults.initialInvestment.toLocaleString()}</span>
+                              </div>
+                              
+                              <div className="flex justify-between items-center">
+                                <span className="text-zinc-400">Current Value:</span>
+                                <span className="text-green-400 font-mono text-lg">${hodlResults.currentValue.toLocaleString()}</span>
+                              </div>
+                              
+                              <div className="flex justify-between items-center">
+                                <span className="text-zinc-400">Total Gain:</span>
+                                <span className="text-orange-400 font-mono text-lg">+{hodlResults.percentageReturn.toFixed(1)}%</span>
+                              </div>
+                              
+                              <div className="flex justify-between items-center">
+                                <span className="text-zinc-400">Profit:</span>
+                                <span className="text-green-400 font-mono">+${hodlResults.totalGain.toLocaleString()}</span>
+                              </div>
+                              
+                              <div className="pt-3 border-t border-zinc-700">
+                                <div className="text-center">
+                                  <div className="text-zinc-300 text-sm">Held for {hodlInputs.years} years</div>
+                                  <div className="text-orange-300 font-medium">{hodlResults.annualReturn.toFixed(1)}% annual return</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {!hodlResults && (
+                          <div className="text-center py-8 text-zinc-400">
+                            <TrendingUp className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                            <p>Select an investment amount and purchase date to see your HODL results</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
             {/* Interactive DCA Calculator */}
             {simulationsSubTab === "dca" && (
               <div className="space-y-4">
