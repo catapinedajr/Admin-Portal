@@ -389,6 +389,134 @@ export default function Home() {
     setExpandedFacts(newExpanded);
   };
 
+  // Missing transaction helper functions
+  const updateTransactionInput = (field: string, value: string) => {
+    setTransactionInputs(prev => ({ ...prev, [field]: value }));
+  };
+
+  const simulatePasteFromClipboard = () => {
+    const sampleAddresses = [
+      "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+      "1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2",
+      "3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy"
+    ];
+    const randomAddress = sampleAddresses[Math.floor(Math.random() * sampleAddresses.length)];
+    updateTransactionInput("toAddress", randomAddress);
+  };
+
+  const getUSDValue = (btcAmount: number | string) => {
+    const amount = typeof btcAmount === 'string' ? parseFloat(btcAmount) : btcAmount;
+    return (amount * 95000).toFixed(2); // Using $95k as current BTC price
+  };
+
+  const calculateTransactionFee = () => {
+    const feeData = feeOptions[transactionInputs.feeRate as keyof typeof feeOptions];
+    return parseFloat(feeData.cost);
+  };
+
+  const getCurrentFee = () => {
+    return calculateTransactionFee();
+  };
+
+  const getTransactionTotal = () => {
+    return parseFloat(transactionInputs.amount) + getCurrentFee();
+  };
+
+  const proceedToPreview = () => {
+    if (!transactionInputs.toAddress) {
+      alert("Please enter a recipient address");
+      return;
+    }
+    setTransactionState("preview");
+  };
+
+  const startSigning = () => {
+    setTransactionState("signing");
+    setShowTransactionApproval(true);
+  };
+
+  const approveTransaction = () => {
+    setShowTransactionApproval(false);
+    setTransactionState("broadcasting");
+    setTransactionJourney("broadcast");
+    setTransactionId(`tx_${Math.random().toString(36).substr(2, 9)}`);
+    
+    // Start confirmation process
+    setTimeout(() => {
+      setTransactionJourney("mempool");
+      setConfirmationCount(0);
+      
+      // Simulate confirmation progress
+      const confirmInterval = setInterval(() => {
+        setConfirmationCount(prev => {
+          if (prev >= 6) {
+            clearInterval(confirmInterval);
+            setTransactionState("confirmed");
+            setTransactionJourney("settled");
+            return 6;
+          }
+          return prev + 1;
+        });
+      }, 10000); // 10 seconds per confirmation
+    }, 3000);
+  };
+
+  // Wallet safety data
+  const walletTypes = [
+    {
+      name: "Hardware Wallet",
+      security: "Highest",
+      difficulty: "Medium",
+      pros: ["Offline storage", "Immune to computer viruses", "Backup and recovery options"],
+      cons: ["Physical device can be lost", "More expensive", "Learning curve"],
+      examples: ["Ledger Nano X", "Trezor Model T", "BitBox02"]
+    },
+    {
+      name: "Mobile Wallet",
+      security: "Medium",
+      difficulty: "Low",
+      pros: ["Easy to use", "Convenient for payments", "Good for small amounts"],
+      cons: ["Connected to internet", "Vulnerable to phone theft", "App-dependent"],
+      examples: ["Blue Wallet", "Electrum Mobile", "Phoenix Wallet"]
+    },
+    {
+      name: "Desktop Wallet",
+      security: "Medium",
+      difficulty: "Medium",
+      pros: ["Full control", "Advanced features", "Better privacy"],
+      cons: ["Computer vulnerabilities", "Backup responsibility", "Technical setup"],
+      examples: ["Electrum", "Bitcoin Core", "Wasabi Wallet"]
+    },
+    {
+      name: "Exchange Wallet",
+      security: "Low",
+      difficulty: "Very Low",
+      pros: ["Very easy to use", "Integrated trading", "Customer support"],
+      cons: ["Not your keys, not your coins", "Exchange hacks possible", "Withdrawal limits"],
+      examples: ["Coinbase", "Binance", "Kraken"]
+    }
+  ];
+
+  const [selectedWalletType, setSelectedWalletType] = useState<string | null>(null);
+
+  const safetyQuestions = [
+    {
+      question: "What should you NEVER share with anyone?",
+      options: ["Your Bitcoin address", "Your private key/seed phrase", "Your transaction history", "Your wallet balance"],
+      correct: 1
+    },
+    {
+      question: "Where is the safest place to store large amounts of Bitcoin?",
+      options: ["On an exchange", "In a hardware wallet", "In a mobile app", "On a piece of paper"],
+      correct: 1
+    },
+    {
+      question: "Someone offers to 'double your Bitcoin' - what should you do?",
+      options: ["Send them Bitcoin immediately", "Ask for proof first", "It's definitely a scam - ignore it", "Send a small amount to test"],
+      correct: 2
+    }
+  ];
+
   const getLessonObjectives = (lessonTitle: string): string[] => {
     const objectives: Record<string, string[]> = {
       "Understanding Bitcoin: Digital Money": [
