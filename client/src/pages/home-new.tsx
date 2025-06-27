@@ -2793,63 +2793,35 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Fading Dollar Bill Visualization */}
-                <div className="space-y-3">
-                  <h4 className="text-white font-semibold flex items-center gap-2">
-                    <DollarSign className="w-4 h-4 text-orange-400" />
-                    Watch Your Dollar Disappear: {moneySupplyYear}
-                  </h4>
-                  
-                  <div className="bg-gradient-to-r from-red-950/30 to-orange-950/30 rounded-lg p-6 border border-red-800/30">
-                    <div className="flex items-center justify-center space-x-8">
-                      {/* Fading Dollar Bill */}
-                      <div className="text-center">
-                        <div className="relative">
-                          <svg 
-                            width="120" 
-                            height="60" 
-                            viewBox="0 0 120 60" 
-                            className="mx-auto"
-                            style={{ 
-                              opacity: getPurchasingPowerPercentage(moneySupplyYear) / 100,
-                              filter: `saturate(${getPurchasingPowerPercentage(moneySupplyYear) / 100})`
-                            }}
-                          >
-                            {/* Dollar Bill Shape */}
-                            <rect x="2" y="2" width="116" height="56" rx="4" fill="#85BB65" stroke="#5D8343" strokeWidth="2"/>
-                            {/* Dollar Bill Details */}
-                            <circle cx="30" cy="30" r="12" fill="#5D8343" opacity="0.3"/>
-                            <text x="30" y="35" textAnchor="middle" fontSize="12" fill="#2D4A1E" fontWeight="bold">$1</text>
-                            <text x="60" y="15" textAnchor="middle" fontSize="8" fill="#2D4A1E">THE UNITED STATES</text>
-                            <text x="60" y="25" textAnchor="middle" fontSize="6" fill="#2D4A1E">OF AMERICA</text>
-                            <text x="60" y="40" textAnchor="middle" fontSize="10" fill="#2D4A1E" fontWeight="bold">ONE DOLLAR</text>
-                            <text x="60" y="50" textAnchor="middle" fontSize="6" fill="#2D4A1E">1920</text>
-                            <circle cx="90" cy="30" r="8" fill="#5D8343" opacity="0.2"/>
-                          </svg>
-                        </div>
-                        <div className="mt-2 text-zinc-300 text-sm">Your 1920 Dollar</div>
-                      </div>
+                {/* Ultra-Compact Dollar Visualization */}
+                <div className="bg-gradient-to-r from-red-950/30 to-orange-950/30 rounded-lg p-3 border border-red-800/30">
+                  <div className="flex items-center justify-between gap-3">
+                    {/* Compact Dollar Bill */}
+                    <div className="flex items-center gap-2">
+                      <svg 
+                        width="60" 
+                        height="30" 
+                        viewBox="0 0 120 60" 
+                        style={{ 
+                          opacity: getPurchasingPowerPercentage(moneySupplyYear) / 100,
+                          filter: `saturate(${getPurchasingPowerPercentage(moneySupplyYear) / 100})`
+                        }}
+                      >
+                        <rect x="2" y="2" width="116" height="56" rx="4" fill="#85BB65" stroke="#5D8343" strokeWidth="2"/>
+                        <circle cx="30" cy="30" r="12" fill="#5D8343" opacity="0.3"/>
+                        <text x="30" y="35" textAnchor="middle" fontSize="12" fill="#2D4A1E" fontWeight="bold">$1</text>
+                        <text x="90" y="30" textAnchor="middle" fontSize="8" fill="#2D4A1E">1920</text>
+                      </svg>
+                      <span className="text-orange-400 text-sm">→</span>
+                    </div>
 
-                      {/* Arrow and Stats */}
-                      <div className="text-center">
-                        <div className="text-orange-400 text-2xl">→</div>
-                        <div className="text-zinc-400 text-xs mt-1">buys today</div>
+                    {/* Current Value - Inline */}
+                    <div className="text-right">
+                      <div className="text-orange-400 font-bold text-lg">
+                        ${(getPurchasingPowerPercentage(moneySupplyYear) / 100).toFixed(2)}
                       </div>
-
-                      {/* Current Value */}
-                      <div className="text-center">
-                        <div className="text-orange-400 font-bold text-2xl">
-                          ${(getPurchasingPowerPercentage(moneySupplyYear) / 100).toFixed(2)}
-                        </div>
-                        <div className="text-zinc-300 text-sm">
-                          {getPurchasingPowerPercentage(moneySupplyYear).toFixed(1)}% of original value
-                        </div>
-                        <div className="text-zinc-500 text-xs mt-1">
-                          {moneySupplyYear === 1920 ? "Full purchasing power" : 
-                           moneySupplyYear >= 2020 ? "Buys a few cents worth" :
-                           moneySupplyYear >= 1980 ? "Buys a quarter's worth" :
-                           "Still has some value"}
-                        </div>
+                      <div className="text-zinc-400 text-xs">
+                        {getPurchasingPowerPercentage(moneySupplyYear).toFixed(0)}% left in {moneySupplyYear}
                       </div>
                     </div>
                   </div>
