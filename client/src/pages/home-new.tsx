@@ -2536,10 +2536,10 @@ export default function Home() {
                         <text x="10" y="135" fill="#9ca3af" fontSize="10">$5T</text>
                         <text x="10" y="175" fill="#9ca3af" fontSize="10">$0</text>
                         
-                        {/* X-axis labels - Simplified to prevent overlap */}
+                        {/* X-axis labels - Evenly spaced per year for dramatic accuracy */}
                         <text x="50" y="195" fill="#9ca3af" fontSize="10">1920</text>
-                        <text x="180" y="195" fill="#9ca3af" fontSize="10">1960</text>
-                        <text x="310" y="195" fill="#9ca3af" fontSize="10">2000</text>
+                        <text x="173" y="195" fill="#9ca3af" fontSize="10">1960</text>
+                        <text x="295" y="195" fill="#9ca3af" fontSize="10">2000</text>
                         <text x="370" y="195" fill="#9ca3af" fontSize="10">2024</text>
                         
                         {/* Money Supply Growth Line - Using Real Federal Reserve Data */}
