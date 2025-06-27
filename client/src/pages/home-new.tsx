@@ -2758,260 +2758,269 @@ export default function Home() {
             {/* Compact HODL Challenge Simulator */}
             {simulationsSubTab === "hodl" && (
               <div className="space-y-6">
-                <div className="text-center space-y-2">
-                  <h3 className="text-xl font-bold text-white">HODL Challenge Simulator</h3>
-                  <p className="text-zinc-400">Pick a scenario, adjust your investment, see instant results</p>
-                </div>
+                {/* HODL vs Market Timing Educational Section */}
+                <Card className="bg-gradient-to-r from-orange-900/20 to-yellow-900/20 border-orange-800/50">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center">
+                        <Clock className="w-4 h-4 text-white" />
+                      </div>
+                      <h3 className="text-xl font-bold text-white">Why HODLing Beats Market Timing</h3>
+                    </div>
+                    
+                    <div className="prose prose-invert max-w-none">
+                      <p className="text-zinc-300 mb-4">
+                        Bitcoin's price can swing wildly day-to-day, making it tempting to try "buying low and selling high." 
+                        However, research consistently shows that <strong className="text-orange-400">time in the market beats timing the market</strong>.
+                      </p>
+                      
+                      <div className="grid md:grid-cols-2 gap-6 mb-4">
+                        <div className="bg-red-900/20 border border-red-800/50 rounded-lg p-4">
+                          <h4 className="text-red-400 font-semibold mb-2">❌ Market Timing Problems</h4>
+                          <ul className="text-zinc-300 text-sm space-y-1">
+                            <li>• Missing the best days hurts returns dramatically</li>
+                            <li>• Emotional decisions during volatility</li>
+                            <li>• Trading fees eat into profits</li>
+                            <li>• Tax implications on short-term gains</li>
+                            <li>• Stress and time consumption</li>
+                          </ul>
+                        </div>
+                        
+                        <div className="bg-green-900/20 border border-green-800/50 rounded-lg p-4">
+                          <h4 className="text-green-400 font-semibold mb-2">✅ HODLing Benefits</h4>
+                          <ul className="text-zinc-300 text-sm space-y-1">
+                            <li>• Captures all market growth over time</li>
+                            <li>• Reduces emotional trading mistakes</li>
+                            <li>• Lower fees and tax advantages</li>
+                            <li>• Compound growth over years</li>
+                            <li>• Peace of mind and simplicity</li>
+                          </ul>
+                        </div>
+                      </div>
+                      
+                      <p className="text-orange-300 font-medium text-center">
+                        <strong>Key Insight:</strong> Even if you bought Bitcoin at its previous all-time high in 2017, 
+                        holding until today would have resulted in massive gains. Patience pays off.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
 
-                {/* Single Card with Split Layout */}
+                {/* Simple HODL Calculator */}
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
-                    {/* Top Section: Scenario Selection */}
-                    <div className="space-y-4">
-                      <h4 className="text-white font-semibold">Choose Your HODL Journey</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        {[
-                          {
-                            id: 'covid',
-                            title: 'COVID Crash',
-                            period: 'Mar 2020 - Jan 2025',
-                            startPrice: 3800,
-                            endPrice: 95000, // Current Bitcoin price Jan 2025
-                            gain: 2400,
+                    <div className="text-center mb-6">
+                      <h3 className="text-xl font-bold text-white mb-2">HODL Calculator</h3>
+                      <p className="text-zinc-400">See how much your Bitcoin investment would be worth today</p>
+                    </div>
 
-                            color: 'red',
-                            years: 4.8
-                          },
-                          {
-                            id: 'bear',
-                            title: 'Bear Market',
-                            period: 'Jan 2018 - Jan 2025',
-                            startPrice: 6500,
-                            endPrice: 95000,
-                            gain: 1362,
-
-                            color: 'purple',
-                            years: 7
-                          },
-                          {
-                            id: 'early',
-                            title: 'Early Adopter',
-                            period: 'Jan 2017 - Jan 2025',
-                            startPrice: 1000,
-                            endPrice: 95000,
-                            gain: 9400,
-
-                            color: 'green',
-                            years: 8
-                          }
-                        ].map((scenario) => {
-                          const isSelected = hodlInputs.scenario === scenario.id;
-                          return (
-                            <button
-                              key={scenario.id}
-                              onMouseEnter={() => {
-                                setHodlInputs({
-                                  ...hodlInputs,
-                                  startPrice: scenario.startPrice,
-                                  endPrice: scenario.endPrice,
-                                  scenario: scenario.id,
-                                  title: scenario.title,
-                                  period: scenario.period,
-                                  years: scenario.years
-                                });
-                                // Auto-calculate on hover
-                                setTimeout(() => calculateHodlStrategy(), 50);
+                    <div className="grid md:grid-cols-2 gap-6">
+                      {/* Input Section */}
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-white font-medium mb-2">Investment Amount</label>
+                          <div className="relative">
+                            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-400 pointer-events-none text-lg">$</div>
+                            <input
+                              type="number"
+                              value={hodlInputs.initialAmount}
+                              onChange={(e) => {
+                                setHodlInputs(prev => ({...prev, initialAmount: Number(e.target.value)}));
+                                setTimeout(() => calculateHodlStrategy(), 100);
                               }}
-                              onClick={() => {
-                                setHodlInputs({
-                                  ...hodlInputs,
-                                  startPrice: scenario.startPrice,
-                                  endPrice: scenario.endPrice,
-                                  scenario: scenario.id,
-                                  title: scenario.title,
-                                  period: scenario.period,
-                                  years: scenario.years
-                                });
-                                calculateHodlStrategy();
-                              }}
-                              className={`p-4 rounded-lg border-2 transition-all text-left ${
-                                isSelected
-                                  ? `border-${scenario.color}-500 bg-${scenario.color}-600/10`
-                                  : 'border-zinc-700 bg-zinc-800 hover:border-zinc-600 hover:bg-zinc-750'
-                              }`}
-                            >
-                              <div className="flex justify-between items-start mb-2">
-                                <div>
-                                  <div className="font-semibold text-white text-sm">{scenario.title}</div>
-                                  <div className="text-xs text-zinc-400">{scenario.period}</div>
-                                </div>
-                                <div className="text-right">
-                                  <div className="text-green-400 font-mono text-sm font-bold">
-                                    +{scenario.gain.toLocaleString()}%
-                                  </div>
-                                  <div className="text-xs text-orange-300">{scenario.years} years</div>
+                              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg pl-8 pr-4 py-3 text-white font-mono text-lg"
+                              placeholder="Enter amount"
+                              min="100"
+                              max="1000000"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-white font-medium mb-2">Purchase Date</label>
+                          <Select
+                            value={hodlInputs.scenario}
+                            onValueChange={(value) => {
+                              const scenarios: { [key: string]: { startPrice: number; endPrice: number; years: number; period: string } } = {
+                                'jan2024': { startPrice: 42000, endPrice: 95000, years: 1, period: 'Jan 2024' },
+                                'jan2023': { startPrice: 16500, endPrice: 95000, years: 2, period: 'Jan 2023' },
+                                'jan2022': { startPrice: 47000, endPrice: 95000, years: 3, period: 'Jan 2022' },
+                                'jan2021': { startPrice: 29000, endPrice: 95000, years: 4, period: 'Jan 2021' },
+                                'jan2020': { startPrice: 7200, endPrice: 95000, years: 5, period: 'Jan 2020' },
+                                'jan2019': { startPrice: 3700, endPrice: 95000, years: 6, period: 'Jan 2019' },
+                                'jan2018': { startPrice: 13800, endPrice: 95000, years: 7, period: 'Jan 2018' },
+                                'jan2017': { startPrice: 1000, endPrice: 95000, years: 8, period: 'Jan 2017' }
+                              };
+                              
+                              const scenario = scenarios[value];
+                              setHodlInputs(prev => ({
+                                ...prev,
+                                scenario: value,
+                                startPrice: scenario.startPrice,
+                                endPrice: scenario.endPrice,
+                                years: scenario.years,
+                                period: scenario.period
+                              }));
+                              setTimeout(() => calculateHodlStrategy(), 100);
+                            }}
+                          >
+                            <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                              <SelectValue placeholder="Select purchase date" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-zinc-800 border-zinc-700">
+                              <SelectItem value="jan2024">January 2024 ($42,000)</SelectItem>
+                              <SelectItem value="jan2023">January 2023 ($16,500)</SelectItem>
+                              <SelectItem value="jan2022">January 2022 ($47,000)</SelectItem>
+                              <SelectItem value="jan2021">January 2021 ($29,000)</SelectItem>
+                              <SelectItem value="jan2020">January 2020 ($7,200)</SelectItem>
+                              <SelectItem value="jan2019">January 2019 ($3,700)</SelectItem>
+                              <SelectItem value="jan2018">January 2018 ($13,800)</SelectItem>
+                              <SelectItem value="jan2017">January 2017 ($1,000)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      {/* Results Section */}
+                      <div className="space-y-4">
+                        {hodlResults && hodlInputs.scenario && (
+                          <div className="bg-zinc-800/50 rounded-lg p-4">
+                            <h4 className="text-white font-semibold mb-3">Your HODL Results</h4>
+                            
+                            {/* Growth Chart */}
+                            <div className="mb-4 p-3 bg-zinc-900/50 rounded-lg">
+                              <div className="text-xs text-zinc-400 mb-2">Portfolio Growth Over Time</div>
+                              <div className="h-32 relative">
+                                <svg width="100%" height="100%" className="overflow-visible">
+                                  {/* Chart Background Grid */}
+                                  <defs>
+                                    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.3"/>
+                                    </pattern>
+                                  </defs>
+                                  <rect width="100%" height="100%" fill="url(#grid)" />
+                                  
+                                  {/* Growth Line */}
+                                  {(() => {
+                                    const points = [];
+                                    const years = hodlInputs.years;
+                                    const startValue = hodlResults.initialInvestment;
+                                    const endValue = hodlResults.currentValue;
+                                    const steps = Math.min(20, Math.max(5, years * 2));
+                                    
+                                    for (let i = 0; i <= steps; i++) {
+                                      const progress = i / steps;
+                                      const timeProgress = progress * years;
+                                      
+                                      // Simulate realistic Bitcoin growth with volatility
+                                      let value;
+                                      if (hodlInputs.scenario === 'jan2017') {
+                                        // Early adopter with major volatility
+                                        const volatilityFactors = [1, 3, 0.5, 8, 2, 0.3, 15, 5, 1.2, 25, 8, 2, 45, 15, 3, 95];
+                                        value = startValue * (volatilityFactors[Math.floor(progress * (volatilityFactors.length - 1))] || endValue / startValue);
+                                      } else if (hodlInputs.scenario === 'jan2020') {
+                                        // COVID era with crash and recovery
+                                        const covidPattern = progress < 0.1 ? 0.5 : progress < 0.3 ? 0.8 : Math.pow(endValue / startValue, progress);
+                                        value = startValue * covidPattern;
+                                      } else {
+                                        // Smooth exponential growth with minor volatility
+                                        const baseGrowth = Math.pow(endValue / startValue, progress);
+                                        const volatility = 1 + 0.2 * Math.sin(progress * 8) * (1 - progress * 0.5);
+                                        value = startValue * baseGrowth * volatility;
+                                      }
+                                      
+                                      points.push({
+                                        x: (progress * 280) + 10,
+                                        y: 120 - ((Math.log(value / startValue + 1) / Math.log(endValue / startValue + 1)) * 100),
+                                        value
+                                      });
+                                    }
+                                    
+                                    const pathData = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+                                    
+                                    return (
+                                      <>
+                                        {/* Growth Line */}
+                                        <path
+                                          d={pathData}
+                                          stroke="#f97316"
+                                          strokeWidth="2"
+                                          fill="none"
+                                          className="drop-shadow-sm"
+                                        />
+                                        
+                                        {/* Area Fill */}
+                                        <path
+                                          d={`${pathData} L ${points[points.length - 1].x} 120 L 10 120 Z`}
+                                          fill="url(#orangeGradient)"
+                                          opacity="0.2"
+                                        />
+                                        
+                                        {/* Start and End Points */}
+                                        <circle cx={points[0].x} cy={points[0].y} r="3" fill="#10b981" />
+                                        <circle cx={points[points.length - 1].x} cy={points[points.length - 1].y} r="3" fill="#f97316" />
+                                        
+                                        {/* Gradient Definition */}
+                                        <defs>
+                                          <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                            <stop offset="0%" stopColor="#f97316" stopOpacity="0.3"/>
+                                            <stop offset="100%" stopColor="#f97316" stopOpacity="0.1"/>
+                                          </linearGradient>
+                                        </defs>
+                                        
+                                        {/* Time Labels */}
+                                        <text x="10" y="135" fill="#9ca3af" fontSize="8" textAnchor="start">
+                                          {hodlInputs.period}
+                                        </text>
+                                        <text x="290" y="135" fill="#9ca3af" fontSize="8" textAnchor="end">
+                                          Jan 2025
+                                        </text>
+                                      </>
+                                    );
+                                  })()}
+                                </svg>
+                              </div>
+                            </div>
+                            
+                            <div className="space-y-3">
+                              <div className="flex justify-between items-center">
+                                <span className="text-zinc-400">Initial Investment:</span>
+                                <span className="text-white font-mono">${hodlResults.initialInvestment.toLocaleString()}</span>
+                              </div>
+                              
+                              <div className="flex justify-between items-center">
+                                <span className="text-zinc-400">Current Value:</span>
+                                <span className="text-green-400 font-mono text-lg">${hodlResults.currentValue.toLocaleString()}</span>
+                              </div>
+                              
+                              <div className="flex justify-between items-center">
+                                <span className="text-zinc-400">Total Gain:</span>
+                                <span className="text-orange-400 font-mono text-lg">+{hodlResults.percentageReturn.toFixed(1)}%</span>
+                              </div>
+                              
+                              <div className="flex justify-between items-center">
+                                <span className="text-zinc-400">Profit:</span>
+                                <span className="text-green-400 font-mono">+${hodlResults.totalGain.toLocaleString()}</span>
+                              </div>
+                              
+                              <div className="pt-3 border-t border-zinc-700">
+                                <div className="text-center">
+                                  <div className="text-zinc-300 text-sm">Held for {hodlInputs.years} years</div>
+                                  <div className="text-orange-300 font-medium">{hodlResults.annualReturn.toFixed(1)}% annual return</div>
                                 </div>
                               </div>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Investment Amount Slider */}
-                    <div className="space-y-3 pt-4 border-t border-zinc-700">
-                      <div className="flex justify-between items-center">
-                        <label className="text-white font-medium">Investment Amount</label>
-                        <span className="text-orange-400 font-mono text-lg">
-                          ${hodlInputs.initialAmount.toLocaleString()}
-                        </span>
-                      </div>
-                      <input
-                        type="range"
-                        min="1000"
-                        max="100000"
-                        step="1000"
-                        value={hodlInputs.initialAmount}
-                        onChange={(e) => {
-                          setHodlInputs(prev => ({...prev, initialAmount: Number(e.target.value)}));
-                          // Auto-calculate on change
-                          setTimeout(() => calculateHodlStrategy(), 50);
-                        }}
-                        className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer slider"
-                      />
-                      <div className="flex justify-between text-xs text-zinc-400">
-                        <span>$1,000</span>
-                        <span>$25,000</span>
-                        <span>$50,000</span>
-                        <span>$100,000</span>
-                      </div>
-                    </div>
-
-                    {/* Real-time Results Display */}
-                    {hodlResults && hodlInputs.scenario && (
-                      <div className="space-y-4 pt-4 border-t border-zinc-700">
-                        <h4 className="text-white font-semibold">Your Results</h4>
+                            </div>
+                          </div>
+                        )}
                         
-                        {/* Main Results Row */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div className="bg-zinc-800 rounded-lg p-4 text-center">
-                            <div className="text-zinc-400 text-sm">Portfolio Value</div>
-                            <div className="text-green-400 font-mono text-xl font-bold">
-                              ${hodlResults.currentValue.toLocaleString()}
-                            </div>
-                            <div className="text-green-300 text-xs">
-                              +${hodlResults.totalGain.toLocaleString()} profit
-                            </div>
+                        {!hodlResults && (
+                          <div className="text-center py-8 text-zinc-400">
+                            <TrendingUp className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                            <p>Select an investment amount and purchase date to see your HODL results</p>
                           </div>
-                          
-                          <div className="bg-zinc-800 rounded-lg p-4 text-center">
-                            <div className="text-zinc-400 text-sm">Total Return</div>
-                            <div className="text-orange-400 font-mono text-xl font-bold">
-                              +{hodlResults.percentageReturn.toLocaleString()}%
-                            </div>
-                            <div className="text-orange-300 text-xs">
-                              {hodlResults.annualReturn.toFixed(1)}% per year
-                            </div>
-                          </div>
-                          
-                          <div className="bg-zinc-800 rounded-lg p-4 text-center">
-                            <div className="text-zinc-400 text-sm">vs S&P 500</div>
-                            <div className="text-purple-400 font-mono text-xl font-bold">
-                              +${(() => {
-                                let spReturn;
-                                if (hodlInputs.scenario === 'covid') {
-                                  spReturn = 1.85; // +85% Mar 2020 - Jan 2025
-                                } else if (hodlInputs.scenario === 'bear') {
-                                  spReturn = 2.1; // +110% Jan 2018 - Jan 2025
-                                } else if (hodlInputs.scenario === 'early') {
-                                  spReturn = 2.8; // +180% Jan 2017 - Jan 2025
-                                } else {
-                                  spReturn = Math.pow(1.10, hodlResults.years || 4);
-                                }
-                                return (hodlResults.currentValue - hodlResults.initialInvestment * spReturn).toLocaleString();
-                              })()}
-                            </div>
-                            <div className="text-purple-300 text-xs">HODL advantage</div>
-                          </div>
-                        </div>
-
-                        {/* Simplified Performance Comparison */}
-                        <div className="space-y-3">
-                          <div className="text-zinc-300 text-sm font-medium">Performance vs Traditional Assets</div>
-                          {(() => {
-                            // Accurate historical returns for each scenario period
-                            let spReturn, realEstateReturn, goldReturn;
-                            
-                            if (hodlInputs.scenario === 'covid') {
-                              // Mar 2020 - Jan 2025 (4.8 years)
-                              spReturn = 1.85; // S&P 500: +85% over 4.8 years
-                              realEstateReturn = 1.65; // Real estate: +65%
-                              goldReturn = 1.20; // Gold: +20%
-                            } else if (hodlInputs.scenario === 'bear') {
-                              // Jan 2018 - Jan 2025 (7 years)
-                              spReturn = 2.1; // S&P 500: +110% over 7 years
-                              realEstateReturn = 1.8; // Real estate: +80%
-                              goldReturn = 1.35; // Gold: +35%
-                            } else if (hodlInputs.scenario === 'early') {
-                              // Jan 2017 - Jan 2025 (8 years)
-                              spReturn = 2.8; // S&P 500: +180% over 8 years
-                              realEstateReturn = 1.9; // Real estate: +90%
-                              goldReturn = 1.4; // Gold: +40%
-                            } else {
-                              spReturn = Math.pow(1.10, hodlResults.years || 4);
-                              realEstateReturn = Math.pow(1.06, hodlResults.years || 4);
-                              goldReturn = Math.pow(1.03, hodlResults.years || 4);
-                            }
-
-                            const comparisons = [
-                              { 
-                                name: 'Bitcoin', 
-                                amount: hodlResults.currentValue, 
-                                color: 'orange-500',
-                                gain: hodlResults.percentageReturn
-                              },
-                              { 
-                                name: 'S&P 500', 
-                                amount: hodlResults.initialInvestment * spReturn, 
-                                color: 'blue-500',
-                                gain: (spReturn - 1) * 100
-                              },
-                              { 
-                                name: 'Real Estate', 
-                                amount: hodlResults.initialInvestment * realEstateReturn, 
-                                color: 'green-500',
-                                gain: (realEstateReturn - 1) * 100
-                              },
-                              { 
-                                name: 'Gold', 
-                                amount: hodlResults.initialInvestment * goldReturn, 
-                                color: 'yellow-500',
-                                gain: (goldReturn - 1) * 100
-                              }
-                            ];
-                            
-                            return (
-                              <div className="grid grid-cols-2 gap-3">
-                                {comparisons.map((investment) => (
-                                  <div key={investment.name} className="bg-zinc-800 rounded-lg p-3">
-                                    <div className="flex items-center justify-between mb-1">
-                                      <span className="text-white text-sm font-medium">{investment.name}</span>
-                                      <div className={`w-3 h-3 rounded-full bg-${investment.color}`}></div>
-                                    </div>
-                                    <div className="text-zinc-300 font-mono text-lg">
-                                      ${investment.amount.toLocaleString()}
-                                    </div>
-                                    <div className={`text-xs ${investment.gain >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                                      {investment.gain >= 0 ? '+' : ''}{investment.gain.toLocaleString()}% return
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            );
-                          })()}
-                        </div>
+                        )}
                       </div>
-                    )}
+                    </div>
                   </CardContent>
                 </Card>
               </div>
