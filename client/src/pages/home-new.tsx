@@ -737,43 +737,55 @@ export default function Home() {
 
   const getLessonTakeaways = (lessonTitle: string): string[] => {
     const takeaways: Record<string, string[]> = {
-      "Bitcoin vs Traditional Money: Why It Matters": [
-        "**Fiat currencies** are backed only by government promises and consistently lose purchasing power through inflation by design",
-        "**Central authorities** can freeze accounts, reverse transactions, and exclude people from the financial system at will", 
-        "**Bitcoin's fixed supply** of 21 million coins protects against monetary debasement and provides predictable scarcity",
-        "**Permissionless access** means anyone with internet can participate in Bitcoin without needing approval from banks or governments",
-        "**Financial sovereignty** returns control of money to individuals, protecting against institutional failure and political interference"
+      "What Is Money Really? - Day 1": [
+        "**Money solves the coincidence of wants problem** by eliminating the need to find someone who has what you want AND wants what you have",
+        "**Community agreement** is the foundation of all money systems - value comes from shared trust that others will accept it",
+        "**Medium of exchange** allows people to trade indirectly, dramatically expanding economic possibilities beyond simple barter",
+        "**Store of value** enables people to save their economic output today and spend it later, making long-term planning possible",
+        "**Unit of account** provides a standard way to measure and compare the value of different goods and services"
       ],
-      "Understanding Bitcoin: Digital Money": [
-        "Bitcoin is the first successful peer-to-peer digital cash system that works without banks or central authorities",
-        "Cryptographic signatures ensure only you can spend your Bitcoin, providing security without revealing private keys",
-        "Bitcoin operates 24/7 globally, making it accessible to anyone with internet access regardless of location or banking status",
-        "The decentralized network means no single entity can control, freeze, or reverse your transactions"
+      "Medium of Exchange - Day 2": [
+        "**Direct trade limitations** make complex economies impossible without a commonly accepted medium of exchange",
+        "**Network effects** make money more valuable as more people accept it, creating powerful adoption incentives",
+        "**Reduced transaction costs** from using money instead of barter enables specialization and economic growth",
+        "**Market expansion** occurs when money allows people to trade with strangers and across great distances"
       ],
-      "Bitcoin Mining: Securing the Network": [
-        "Mining is a competitive process where computers solve puzzles to add new blocks and earn Bitcoin rewards",
-        "Energy consumption directly correlates with network security - more energy makes Bitcoin harder to attack",
-        "Difficulty adjustment every 2016 blocks ensures consistent 10-minute block times regardless of mining participation",
-        "The economic incentives align miners' interests with network security, creating a robust and self-sustaining system"
+      "Inflation - Day 3": [
+        "**Purchasing power erosion** occurs when the money supply grows faster than economic output, making each unit worth less",
+        "**Wealth redistribution** happens through inflation as asset owners benefit while savers and wage earners lose purchasing power",
+        "**Economic distortion** results from inflation as it encourages immediate spending over saving and long-term investment",
+        "**Hidden taxation** occurs when governments finance spending through money creation rather than explicit taxes"
       ],
-      "Digital Scarcity: Fixed Supply": [
-        "Bitcoin's 21 million coin limit is hardcoded and cannot be changed, creating true digital scarcity",
-        "Halving events every 4 years reduce new Bitcoin creation, increasing scarcity over time",
-        "Unlike fiat currencies, Bitcoin cannot be inflated away by central banks or governments",
-        "Digital scarcity combined with increasing demand creates long-term value preservation potential"
+      "Gold and Scarcity - Day 4": [
+        "**Natural scarcity** makes gold valuable because it cannot be created artificially, maintaining consistent supply constraints",
+        "**Historical reliability** demonstrates that gold has maintained value across civilizations and millennia",
+        "**Physical properties** like durability, divisibility, and portability make gold practical for monetary use",
+        "**Scarcity premium** means slight supply increases have minimal impact on gold's value due to massive existing stockpiles"
       ],
-      "Decentralized Network: No Central Control": [
-        "Thousands of independent nodes worldwide maintain identical copies of Bitcoin's transaction history",
-        "No single entity can shut down or control the Bitcoin network due to its distributed nature",
-        "Consensus rules are enforced by mathematics and network agreement, not human authority",
-        "Decentralization provides censorship resistance and financial sovereignty to users globally"
+      "Central Control of Money - Day 5": [
+        "**Centralized issuance** means modern money supply is controlled by government institutions rather than natural constraints",
+        "**Policy influence** allows central banks to expand or contract money supply based on economic and political considerations",
+        "**Exclusion risk** exists when central authorities can freeze accounts or deny access to the monetary system",
+        "**Single point of failure** creates systemic risk when central monetary authorities make poor decisions"
+      ],
+      "Unit of Account - Day 6": [
+        "**Economic calculation** becomes possible when all goods can be priced in terms of a single monetary unit",
+        "**Price comparison** is simplified when everything uses the same unit of account for measuring value",
+        "**Contract enforcement** relies on stable units of account for long-term agreements and planning",
+        "**Planning facilitation** enables businesses and individuals to make informed decisions about future resource allocation"
+      ],
+      "Trust in Money Systems - Day 7": [
+        "**Community consensus** is required for any money system to function, regardless of its underlying technology",
+        "**Institutional trust** varies across different money systems, from government backing to mathematical algorithms",
+        "**Network effects** strengthen money as more people accept and use it, creating positive feedback loops",
+        "**Trust evolution** shows how monetary systems change as communities update their shared beliefs about value"
       ]
     };
     return takeaways[lessonTitle] || [
-      "This topic introduces fundamental concepts essential for understanding Bitcoin",
-      "Real-world applications demonstrate practical value and utility",
-      "Understanding this concept helps build comprehensive Bitcoin knowledge",
-      "These principles contribute to Bitcoin's unique properties and advantages"
+      "This topic introduces fundamental concepts essential for understanding money and monetary systems",
+      "Real-world applications demonstrate practical importance in daily economic life",
+      "Understanding this concept helps build comprehensive knowledge of how economies function",
+      "These principles contribute to informed decision-making about personal finances and economic policy"
     ];
   };
 
