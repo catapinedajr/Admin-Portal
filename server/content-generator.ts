@@ -19,7 +19,7 @@ interface DayContent {
     summary: string;
     estimatedReadTime: number;
   };
-  quiz: {
+  quizQuestions: Array<{
     question: string;
     optionA: string;
     optionB: string;
@@ -29,7 +29,7 @@ interface DayContent {
     explanation: string;
     category: string;
     difficulty: string;
-  };
+  }>;
   diveDeeper: {
     explanation: string;
     examples: string[];
@@ -102,13 +102,16 @@ Generate the following components:
    - Summary: 1-2 sentences capturing main point
    - Estimated Read Time: 2-4 minutes based on content length
 
-3. QUIZ QUESTION:
-   - Question: Tests conceptual understanding
-   - 4 multiple choice options (A, B, C, D)
-   - Correct Answer: Letter of correct option
-   - Explanation: Why the answer is correct (educational)
-   - Category: Same as daily fact category
-   - Difficulty: ${difficulty}
+3. QUIZ QUESTIONS (5 questions):
+   - Create 5 quiz questions that DIRECTLY test the content from the daily fact and lesson above
+   - Question 1: Test understanding of the daily fact's main concept
+   - Question 2: Test a key detail from the lesson content
+   - Question 3: Test practical application mentioned in the lesson
+   - Question 4: Test comparison or relationship explained in the content
+   - Question 5: Test broader implication or "why this matters" from the lesson
+   - Each question: 4 multiple choice options (A, B, C, D) with correct answer letter
+   - Each question: Educational explanation referencing the lesson content
+   - Category: Same as daily fact, difficulty: ${difficulty}
 
 4. DIVE DEEPER:
    - Explanation: 3-4 sentences expanding the daily fact
@@ -135,17 +138,63 @@ Return the content as a JSON object with this exact structure:
     "summary": "string", 
     "estimatedReadTime": number
   },
-  "quiz": {
-    "question": "string",
-    "optionA": "string",
-    "optionB": "string", 
-    "optionC": "string",
-    "optionD": "string",
-    "correctAnswer": "string",
-    "explanation": "string",
-    "category": "string",
-    "difficulty": "string"
-  },
+  "quizQuestions": [
+    {
+      "question": "string",
+      "optionA": "string",
+      "optionB": "string", 
+      "optionC": "string",
+      "optionD": "string",
+      "correctAnswer": "string",
+      "explanation": "string",
+      "category": "string",
+      "difficulty": "string"
+    },
+    {
+      "question": "string",
+      "optionA": "string",
+      "optionB": "string", 
+      "optionC": "string",
+      "optionD": "string",
+      "correctAnswer": "string",
+      "explanation": "string",
+      "category": "string",
+      "difficulty": "string"
+    },
+    {
+      "question": "string",
+      "optionA": "string",
+      "optionB": "string", 
+      "optionC": "string",
+      "optionD": "string",
+      "correctAnswer": "string",
+      "explanation": "string",
+      "category": "string",
+      "difficulty": "string"
+    },
+    {
+      "question": "string",
+      "optionA": "string",
+      "optionB": "string", 
+      "optionC": "string",
+      "optionD": "string",
+      "correctAnswer": "string",
+      "explanation": "string",
+      "category": "string",
+      "difficulty": "string"
+    },
+    {
+      "question": "string",
+      "optionA": "string",
+      "optionB": "string", 
+      "optionC": "string",
+      "optionD": "string",
+      "correctAnswer": "string",
+      "explanation": "string",
+      "category": "string",
+      "difficulty": "string"
+    }
+  ],
   "diveDeeper": {
     "explanation": "string",
     "examples": ["string", "string", "string", "string"],
@@ -179,7 +228,7 @@ Return the content as a JSON object with this exact structure:
       topic,
       dailyFact: contentData.dailyFact,
       lesson: contentData.lesson,
-      quiz: contentData.quiz,
+      quizQuestions: contentData.quizQuestions,
       diveDeeper: contentData.diveDeeper
     };
   } catch (error) {
@@ -216,19 +265,21 @@ export async function generateMonth1Content(): Promise<void> {
         imageUrl: null
       });
       
-      // Create quiz question
-      await storage.createQuizQuestion({
-        dayIndex: content.dayIndex,
-        question: content.quiz.question,
-        optionA: content.quiz.optionA,
-        optionB: content.quiz.optionB,
-        optionC: content.quiz.optionC,
-        optionD: content.quiz.optionD,
-        correctAnswer: content.quiz.correctAnswer,
-        explanation: content.quiz.explanation,
-        category: content.quiz.category,
-        difficulty: content.quiz.difficulty
-      });
+      // Create quiz questions (5 per day)
+      for (const quizQuestion of content.quizQuestions) {
+        await storage.createQuizQuestion({
+          dayIndex: content.dayIndex,
+          question: quizQuestion.question,
+          optionA: quizQuestion.optionA,
+          optionB: quizQuestion.optionB,
+          optionC: quizQuestion.optionC,
+          optionD: quizQuestion.optionD,
+          correctAnswer: quizQuestion.correctAnswer,
+          explanation: quizQuestion.explanation,
+          category: quizQuestion.category,
+          difficulty: quizQuestion.difficulty
+        });
+      }
       
       console.log(`✅ Day ${day} content created successfully`);
       
