@@ -2616,42 +2616,68 @@ export default function Home() {
                         <g>
                           {(() => {
                             const events = [
-                              { year: 1929, m2: 0.026, label: "1929\nCrash", x: -15, y: -25 },     // Great Depression
-                              { year: 1933, m2: 0.020, label: "Gold\nBan", x: -15, y: -25 },       // FDR Gold Ban  
-                              { year: 1945, m2: 0.107, label: "WWII\nEnd", x: -15, y: -25 },       // Post-WWII expansion
-                              { year: 1971, m2: 0.583, label: "Gold\nStandard\nEnds", x: -20, y: -35 }, // Nixon Shock - Gold Standard
-                              { year: 2008, m2: 7.500, label: "Financial\nCrisis", x: -25, y: -25 }, // Financial Crisis
-                              { year: 2020, m2: 15.400, label: "COVID\nPrinting", x: -25, y: -25 }  // COVID printing
+                              { year: 1929, m2: 0.026, label: "1929", subLabel: "Crash", offsetX: -15, offsetY: -35 },
+                              { year: 1933, m2: 0.020, label: "1933", subLabel: "Gold Ban", offsetX: -18, offsetY: -35 },  
+                              { year: 1945, m2: 0.107, label: "1945", subLabel: "War End", offsetX: -18, offsetY: -35 },
+                              { year: 1971, m2: 0.583, label: "1971", subLabel: "Gold Std", offsetX: -20, offsetY: -35 },
+                              { year: 2008, m2: 7.500, label: "2008", subLabel: "Crisis", offsetX: -15, offsetY: -35 },
+                              { year: 2020, m2: 15.400, label: "2020", subLabel: "COVID", offsetX: -15, offsetY: -35 }
                             ];
                             
                             return events.map((event, index) => {
+                              // Calculate X position: chart starts at x=50, width=320, spanning 1920-2024 (104 years)
                               const chartX = 50 + ((event.year - 1920) / (2024 - 1920)) * 320;
+                              // Calculate Y position: chart height=155, spanning 0.023-21.0 trillions
                               const chartY = 175 - ((event.m2 - 0.023) / (21.0 - 0.023)) * 155;
+                              
+                              // Adjust label positions to prevent overlap
+                              let adjustedOffsetY = event.offsetY;
+                              if (event.year === 1929 || event.year === 1933) {
+                                adjustedOffsetY = -45; // Move higher for early events
+                              }
+                              if (event.year === 1971) {
+                                adjustedOffsetY = -50; // Extra space for important event
+                              }
                               
                               return (
                                 <g key={index}>
-                                  <circle cx={chartX} cy={chartY} r="4" fill="#dc2626" stroke="#ffffff" strokeWidth="2"/>
+                                  <circle cx={chartX} cy={chartY} r="3" fill="#dc2626" stroke="#ffffff" strokeWidth="1"/>
+                                  
+                                  {/* Label background */}
                                   <rect 
-                                    x={chartX + event.x - 2} 
-                                    y={chartY + event.y - 2} 
-                                    width="40" 
-                                    height={event.label.includes('\n') ? (event.label.split('\n').length * 10 + 4) : "14"} 
-                                    fill="rgba(0,0,0,0.8)" 
-                                    rx="3"
+                                    x={chartX + event.offsetX} 
+                                    y={chartY + adjustedOffsetY} 
+                                    width="36" 
+                                    height="24" 
+                                    fill="rgba(0,0,0,0.9)" 
+                                    stroke="#dc2626"
+                                    strokeWidth="1"
+                                    rx="2"
                                   />
-                                  {event.label.split('\n').map((line, lineIndex) => (
-                                    <text 
-                                      key={lineIndex}
-                                      x={chartX + event.x + 18} 
-                                      y={chartY + event.y + 10 + (lineIndex * 10)} 
-                                      fill="#dc2626" 
-                                      fontSize="8" 
-                                      fontWeight="bold"
-                                      textAnchor="middle"
-                                    >
-                                      {line}
-                                    </text>
-                                  ))}
+                                  
+                                  {/* Year label */}
+                                  <text 
+                                    x={chartX + event.offsetX + 18} 
+                                    y={chartY + adjustedOffsetY + 10} 
+                                    fill="#ffffff" 
+                                    fontSize="9" 
+                                    fontWeight="bold"
+                                    textAnchor="middle"
+                                  >
+                                    {event.label}
+                                  </text>
+                                  
+                                  {/* Event description */}
+                                  <text 
+                                    x={chartX + event.offsetX + 18} 
+                                    y={chartY + adjustedOffsetY + 20} 
+                                    fill="#dc2626" 
+                                    fontSize="7" 
+                                    fontWeight="normal"
+                                    textAnchor="middle"
+                                  >
+                                    {event.subLabel}
+                                  </text>
                                 </g>
                               );
                             });
