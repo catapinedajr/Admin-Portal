@@ -20,7 +20,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/daily-facts", async (req, res) => {
     try {
       const today = new Date();
-      const dayIndex = Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 5; // Cycle through 5 days of content
+      const dayIndex = Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 7; // Week 1 has 7 days of content
       const facts = await storage.getDailyFacts(dayIndex);
       res.json(facts);
     } catch (error) {
@@ -32,8 +32,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/lesson", async (req, res) => {
     try {
       const today = new Date();
-      const dayIndex = Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 10;
-      const lesson = await storage.getLesson(dayIndex); // Use actual day cycling
+      const dayIndex = Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 7; // Week 1 has 7 days of content
+      const lesson = await storage.getLesson(dayIndex);
       if (!lesson) {
         return res.status(404).json({ message: "No lesson found for today" });
       }

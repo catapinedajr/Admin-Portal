@@ -256,7 +256,122 @@ The story of money is really the story of human cooperation and trust. Every for
 Understanding what money really is helps us appreciate why the invention of Bitcoin represents such a revolutionary moment in human history - it's not just a new type of money, but a completely new way of creating trust and cooperation without needing to rely on any central authority.`,
         summary: "Money solves the fundamental problem of trade by serving as a medium of exchange, store of value, and unit of account based on shared community agreement.",
         estimatedReadTime: 8,
-        dayIndex: 0
+        dayIndex: 0,
+        imageUrl: null
+      },
+      {
+        title: "Medium of Exchange - Day 2",
+        content: `Picture walking into a busy marketplace hundreds of years ago. A farmer wants to buy cloth from a weaver, but the weaver doesn't need vegetables - she needs pottery. The farmer must first find a potter who wants vegetables, trade for pottery, then find the weaver again. This exhausting process could take hours or even days for a single transaction.
+
+This is exactly why communities around the world independently discovered the need for a medium of exchange. When everyone agrees that a particular item has value and will be accepted by others, that item becomes money. It breaks the complex chain of direct bartering into simple, efficient transactions.
+
+The medium of exchange function is what transforms a community from struggling with complicated barter systems to flowing with efficient trade. Instead of remembering hundreds of exchange rates between different goods, everyone only needs to know the price of items in terms of the agreed-upon money. The farmer sells vegetables for money, then uses that money to buy cloth directly from the weaver.
+
+Throughout history, different communities have used shells, beads, cattle, salt, precious metals, and paper as their medium of exchange. What matters isn't the physical form - what matters is that everyone in the community agrees to accept it in trade. This shared agreement creates a network effect that makes trade exponentially more efficient for everyone involved.
+
+Modern digital payments have taken this concept even further. Whether you're using a credit card, mobile payment app, or bank transfer, you're participating in this same fundamental function that has driven human civilization for thousands of years. The technology changes, but the core purpose remains the same: enabling efficient exchange without the complications of direct barter.
+
+This is why the medium of exchange function is often considered the most important role of money. Without it, complex societies simply cannot exist. It's the foundation that makes all other economic activity possible.`,
+        summary: "Money as a medium of exchange eliminates the inefficiencies of barter by providing a commonly accepted item that facilitates all trades.",
+        estimatedReadTime: 7,
+        dayIndex: 1,
+        imageUrl: null
+      },
+      {
+        title: "Store of Value - Day 3", 
+        content: `A hardworking blacksmith in ancient times faces a dilemma. He's just completed a major project and earned enough to support his family for months. But how can he preserve this wealth? Fresh food will spoil, tools might rust, and livestock require constant care. He needs something that will hold its value over time - a reliable store of value.
+
+This fundamental need has driven humans to seek out money that can preserve purchasing power across time. Good money allows you to convert your current work into future consumption. It's like a battery for human effort - you charge it up with your labor today and discharge it when you need to buy something tomorrow, next month, or next year.
+
+The store of value function explains why certain materials became money throughout history. Gold and silver emerged as preferred money in many cultures not just because they were scarce and durable, but because they maintained their purchasing power over generations. A Roman gold coin from 2,000 years ago still has significant value today, demonstrating remarkable durability as a store of value.
+
+However, not all money serves this function equally well. When governments create new money faster than economic growth, inflation erodes the store of value function. This is why your grandparents could buy a house for what seems like an impossibly small amount by today's standards - the money they earned and saved lost purchasing power over time.
+
+Understanding this function helps explain many of the financial challenges people face today. When inflation runs higher than wage growth, people working the same jobs find their savings buying less each year. This erosion of purchasing power can trap people in a cycle where they're constantly working harder just to maintain the same standard of living.
+
+The store of value function is crucial for enabling long-term thinking and planning. It allows people to save for major purchases, prepare for emergencies, and build wealth over time. Without reliable store of value, societies tend to focus on immediate consumption rather than long-term investment and growth.`,
+        summary: "Money must preserve purchasing power over time, allowing people to save their work today for future consumption and enabling long-term economic planning.",
+        estimatedReadTime: 7,
+        dayIndex: 2,
+        imageUrl: null
+      },
+      {
+        title: "Understanding Inflation - Day 4",
+        content: `Your grandmother tells stories of buying candy for a nickel and gasoline for 25 cents per gallon. You might wonder: were things really that cheap, or has something fundamental changed about money? The answer lies in understanding one of the most important economic forces affecting everyone's daily life: inflation.
+
+Inflation occurs when the general price level of goods and services rises over time, which means each unit of money buys less than it did before. It's like a hidden tax that silently erodes the purchasing power of everyone holding that money. What cost one dollar in 1950 would cost over ten dollars today - not because goods became more valuable, but because the dollar became less valuable.
+
+The primary cause of sustained inflation is the expansion of the money supply faster than economic growth. When central banks and governments create new money, they increase the total amount of money chasing the same amount of goods and services. This additional money doesn't create more wealth - it just dilutes the value of existing money, similar to how adding water to a glass of orange juice makes it weaker.
+
+This process affects different people in dramatically different ways. Those who own assets like real estate, stocks, or precious metals often see their wealth increase along with inflation. But people who save in cash or earn fixed wages find their purchasing power steadily decreasing. This creates a wealth gap where asset owners benefit while savers and wage earners struggle.
+
+Inflation also distorts economic decision-making throughout society. When people expect their money to lose value over time, they're incentivized to spend immediately rather than save. This reduces the capital available for productive investment and encourages speculation over long-term thinking. Businesses struggle to plan for the future when they can't predict what their costs or revenues will be worth.
+
+Understanding inflation is crucial for making informed financial decisions. It explains why simply keeping money in a savings account may not preserve wealth over time, and why many people seek alternatives that can maintain purchasing power despite monetary expansion.`,
+        summary: "Inflation erodes money's purchasing power when new money is created faster than economic growth, affecting savers and wage earners most severely.",
+        estimatedReadTime: 8,
+        dayIndex: 3,
+        imageUrl: null
+      },
+      {
+        title: "Central Control of Money - Day 5",
+        content: `Every paper bill in your wallet carries a promise from a central authority - typically a government or central bank. This promise represents one of the most significant changes in monetary history: the shift from naturally scarce money like gold to artificially controlled money managed by institutions.
+
+For most of human history, money emerged naturally from market processes. Communities gravitated toward materials that were scarce, durable, and divisible. No central authority needed to declare that gold or silver was money - people chose these materials because they possessed the best monetary properties available. The supply of these natural moneys was constrained by physical reality, not human decisions.
+
+Modern fiat currency systems represent a fundamental departure from this natural selection process. Instead of money being chosen by market participants, it's imposed by legal tender laws that require citizens to accept government-issued currency. The supply of this money is no longer constrained by natural scarcity but by the discretion of central bankers and politicians.
+
+This centralized control creates new possibilities and new risks. Central banks can respond to economic crises by creating money quickly, potentially preventing deflationary spirals. However, this same power can be used to finance government spending through monetary expansion, effectively taxing all money holders through inflation without their explicit consent.
+
+The concentration of monetary control also creates single points of failure in the financial system. When central authorities make mistakes in monetary policy, the effects ripple through the entire economy. Historical examples include hyperinflation in Germany during the 1920s, Zimbabwe in the 2000s, and Venezuela more recently - all cases where central mismanagement destroyed the store of value function of money.
+
+Perhaps most significantly, centralized money systems can exclude people from participation. Banks can freeze accounts, governments can impose capital controls, and individuals can be cut off from the financial system entirely. This power over money becomes power over people's ability to trade, save, and participate in economic life.
+
+Understanding central control helps explain why some people seek alternatives that operate independently of centralized institutions.`,
+        summary: "Modern money is controlled by central authorities rather than emerging naturally, creating both capabilities and risks from concentrated monetary power.",
+        estimatedReadTime: 8,
+        dayIndex: 4,
+        imageUrl: null
+      },
+      {
+        title: "Unit of Account - Day 6",
+        content: `Imagine trying to run a business in a world without a common unit of account. You'd need to remember that one chicken equals three loaves of bread, two loaves equal one pair of shoes, five pairs of shoes equal one goat, and so on. The mental complexity would be overwhelming, and comparing the value of different goods would require elaborate calculations.
+
+This is exactly the problem that money solves in its role as a unit of account. By providing a single standard of measurement for value, money dramatically simplifies economic calculation and comparison. Just as we use meters to measure distance and kilograms to measure weight, we use monetary units to measure and compare economic value.
+
+The unit of account function enables sophisticated economic coordination that would be impossible otherwise. Businesses can calculate profits and losses, compare the efficiency of different investments, and make rational decisions about resource allocation. Consumers can easily compare prices across different products and vendors to make informed purchasing decisions.
+
+This function becomes particularly important in complex economies with thousands of different goods and services. Without a common unit of account, price discovery would be incredibly difficult. Instead of needing to know millions of possible exchange rates between different items, everyone only needs to know each item's price in terms of the common monetary unit.
+
+The unit of account function also enables long-term contracts and planning. Employment agreements, loan contracts, insurance policies, and business partnerships all rely on the ability to specify future payments in terms of a stable unit of account. This predictability enables people to make commitments and plans extending far into the future.
+
+However, when money fails as a unit of account due to rapid inflation or instability, economic calculation becomes distorted. Businesses struggle to distinguish between real profits and monetary illusions. Long-term contracts become nearly impossible to negotiate fairly. The entire process of economic coordination breaks down.
+
+A reliable unit of account is essential for any advanced economy. It provides the measurement standard that makes complex economic calculation possible and enables the sophisticated coordination required for modern civilization.`,
+        summary: "Money provides a standard measurement for comparing values, enabling economic calculation, price discovery, and long-term planning in complex economies.",
+        estimatedReadTime: 7,
+        dayIndex: 5,
+        imageUrl: null
+      },
+      {
+        title: "Trust and Agreement - Day 7",
+        content: `At the heart of every monetary system lies a remarkable social phenomenon: collective belief. Whether we're talking about ancient shells, medieval gold coins, or modern digital payments, money only works because a community of people agrees to trust and accept it. This shared trust is perhaps the most fascinating aspect of how money functions in human society.
+
+Consider how extraordinary this really is. You accept pieces of paper with pictures and numbers printed on them in exchange for real goods and services - not because the paper has inherent value, but because you trust that others will also accept these pieces of paper. This creates a network effect where the value of money increases as more people use and accept it.
+
+This trust can be based on different foundations. Sometimes it's backed by the intrinsic value of the monetary material itself, like gold or silver. Sometimes it's backed by the promise of a government or institution to redeem the money for something of value. And sometimes it's backed purely by the collective agreement that the money has value, with no other backing required.
+
+The fragility of this trust becomes apparent during monetary crises. When people lose confidence in a particular form of money, its value can collapse rapidly despite having worked perfectly well for years or even decades. Historical examples include the collapse of various paper currencies, bank runs when people lose faith in financial institutions, and hyperinflation when trust in government monetary management evaporates.
+
+Building and maintaining monetary trust requires consistent behavior over time. Money that maintains stable purchasing power, remains widely accepted, and operates according to predictable rules tends to strengthen trust. Money that experiences wild volatility, faces acceptance issues, or operates under constantly changing rules tends to weaken trust.
+
+The digital age has introduced new dimensions to monetary trust. Instead of trusting institutions alone, some new forms of money ask us to trust mathematical algorithms and decentralized networks. This represents a different approach to solving the trust problem - one based on transparency and mathematical verification rather than institutional promises.
+
+Understanding the role of trust in money helps explain why monetary transitions can be so slow and difficult, and why established money systems tend to persist even when superior alternatives exist.`,
+        summary: "All money systems depend on collective trust and agreement within communities, creating network effects but also vulnerabilities when confidence is lost.",
+        estimatedReadTime: 8,
+        dayIndex: 6,
+        imageUrl: null
       }
     ];
 
@@ -378,6 +493,72 @@ Understanding what money really is helps us appreciate why the invention of Bitc
       };
       this.quizQuestions.set(newQuestion.id, newQuestion);
     });
+
+    // Week 1: What Is Money Really? - Weekly Topic
+    const weeklyTopic = {
+      weekNumber: 1,
+      title: "What Is Money Really?",
+      description: "Understanding the fundamental nature, functions, and evolution of money in human society",
+      content: {
+        introduction: "This week we explore the foundational concepts of money, examining what it really is and why it matters in our daily lives.",
+        sections: [
+          {
+            title: "The Nature of Money",
+            content: "Money is fundamentally a social technology that enables cooperation and trade among people who don't know each other."
+          },
+          {
+            title: "Three Functions",
+            content: "Money serves as a medium of exchange, store of value, and unit of account - each function enabling different aspects of economic life."
+          },
+          {
+            title: "Trust and Agreement",
+            content: "All money systems require collective belief and trust to function, creating powerful network effects but also potential vulnerabilities."
+          },
+          {
+            title: "Modern Challenges",
+            content: "Central control and inflation present ongoing challenges to money's effectiveness as a store of value and economic coordinator."
+          }
+        ]
+      },
+      category: "Foundation",
+      difficulty: "Beginner",
+      estimatedReadTime: 25,
+      keyTakeaways: [
+        "Money solves the coincidence of wants problem that makes barter inefficient",
+        "The three functions of money enable complex economic coordination",
+        "Trust and community agreement are essential for any money system",
+        "Inflation erodes money's store of value function over time",
+        "Central control creates both capabilities and risks in monetary systems"
+      ],
+      relatedDayIndex: 0,
+      practicalApplications: [
+        "Understanding why your savings might lose purchasing power over time",
+        "Recognizing how inflation affects different groups differently",
+        "Appreciating the role of trust in financial systems",
+        "Making informed decisions about storing value long-term"
+      ],
+      furtherReading: [
+        {
+          title: "The Denationalization of Money",
+          author: "F.A. Hayek",
+          difficulty: "Advanced",
+          description: "Classic work on competing currencies and monetary theory"
+        },
+        {
+          title: "What Has Government Done to Our Money?",
+          author: "Murray Rothbard", 
+          difficulty: "Intermediate",
+          description: "Analysis of government intervention in monetary systems"
+        }
+      ]
+    };
+
+    const newWeeklyTopic: WeeklyTopic = {
+      ...weeklyTopic,
+      id: this.currentWeeklyTopicId++,
+      createdAt: new Date()
+    };
+    this.weeklyTopics.set(newWeeklyTopic.id, newWeeklyTopic);
 
     // Create default user
     const defaultUser: User = {
