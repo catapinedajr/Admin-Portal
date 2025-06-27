@@ -19,14 +19,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get daily facts for today
   app.get("/api/daily-facts", async (req, res) => {
     try {
+      // Calculate user's current day based on their progress
+      const user = await storage.getUser(1); // Default user
       const today = new Date();
-      const dayIndex = Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 7; // Week 1 has 7 days of content
+      const daysSinceStart = user?.lastActivityDate ? 
+        Math.floor((today.getTime() - new Date(user.lastActivityDate).getTime()) / (1000 * 60 * 60 * 24)) : 0;
+      
+      // For fresh start or reset, use completedLessons to determine current day
+      const dayIndex = (user?.completedLessons || 0) % 7; // Week 1 has 7 days of content
       
       // For Week 1, show 3 facts per day by cycling through content
       const allFacts = await storage.getAllDailyFacts();
       const factsToShow = [];
       
-      // Get 3 facts starting from today's dayIndex
+      // Get 3 facts starting from user's current dayIndex
       for (let i = 0; i < 3; i++) {
         const factIndex = (dayIndex * 3 + i) % allFacts.length;
         if (allFacts[factIndex]) {
@@ -43,8 +49,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get today's lesson
   app.get("/api/lesson", async (req, res) => {
     try {
-      const today = new Date();
-      const dayIndex = Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 7; // Week 1 has 7 days of content
+      // Calculate user's current day based on their progress
+      const user = await storage.getUser(1); // Default user
+      const dayIndex = (user?.completedLessons || 0) % 7; // Week 1 has 7 days of content
+      
       const lesson = await storage.getLesson(dayIndex);
       if (!lesson) {
         return res.status(404).json({ message: "No lesson found for today" });
@@ -697,9 +705,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Quiz routes
   app.get('/api/quiz/daily/:dayIndex', async (req, res) => {
     try {
-      const rawDayIndex = parseInt(req.params.dayIndex);
-      // Convert any day index to Week 1 cycle (0-6)
-      const dayIndex = rawDayIndex % 7;
+      // Calculate user's current day based on their progress
+      const user = await storage.getUser(1); // Default user
+      const dayIndex = (user?.completedLessons || 0) % 7; // Week 1 has 7 days of content
+      
       const questions = await storage.getDailyQuizQuestions(dayIndex);
       res.json(questions);
     } catch (error) {

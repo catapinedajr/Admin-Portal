@@ -568,14 +568,14 @@ Understanding the role of trust in money helps explain why monetary transitions 
     };
     this.weeklyTopics.set(newWeeklyTopic.id, newWeeklyTopic);
 
-    // Create default user
+    // Create default user starting fresh at Day 1
     const defaultUser: User = {
       id: 1,
       username: "default_user",
-      currentStreak: 7,
-      longestStreak: 21,
-      completedLessons: 1,
-      lastActivityDate: new Date().toISOString(),
+      currentStreak: 0,
+      longestStreak: 0,
+      completedLessons: 0, // Reset to Day 1 
+      lastActivityDate: null,
       createdAt: new Date()
     };
     this.users.set(defaultUser.id, defaultUser);
