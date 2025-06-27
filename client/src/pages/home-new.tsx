@@ -2536,14 +2536,14 @@ export default function Home() {
                         <text x="10" y="135" fill="#9ca3af" fontSize="10">$5T</text>
                         <text x="10" y="175" fill="#9ca3af" fontSize="10">$0</text>
                         
-                        {/* X-axis labels - Updated for 1920-2024 range */}
-                        <text x="45" y="195" fill="#9ca3af" fontSize="10">1920</text>
-                        <text x="95" y="195" fill="#9ca3af" fontSize="10">1940</text>
-                        <text x="145" y="195" fill="#9ca3af" fontSize="10">1960</text>
-                        <text x="195" y="195" fill="#9ca3af" fontSize="10">1980</text>
-                        <text x="245" y="195" fill="#9ca3af" fontSize="10">2000</text>
-                        <text x="295" y="195" fill="#9ca3af" fontSize="10">2020</text>
-                        <text x="360" y="195" fill="#9ca3af" fontSize="10">2024</text>
+                        {/* X-axis labels - Corrected for accurate 1920-2024 positioning */}
+                        <text x="50" y="195" fill="#9ca3af" fontSize="10">1920</text>
+                        <text x="115" y="195" fill="#9ca3af" fontSize="10">1940</text>
+                        <text x="180" y="195" fill="#9ca3af" fontSize="10">1960</text>
+                        <text x="245" y="195" fill="#9ca3af" fontSize="10">1980</text>
+                        <text x="310" y="195" fill="#9ca3af" fontSize="10">2000</text>
+                        <text x="350" y="195" fill="#9ca3af" fontSize="10">2020</text>
+                        <text x="370" y="195" fill="#9ca3af" fontSize="10">2024</text>
                         
                         {/* Money Supply Growth Line - Using Real Federal Reserve Data */}
                         <path
@@ -2625,8 +2625,11 @@ export default function Home() {
                             ];
                             
                             return events.map((event, index) => {
-                              // Calculate X position: chart starts at x=50, width=320, spanning 1920-2024 (104 years)
-                              const chartX = 50 + ((event.year - 1920) / (2024 - 1920)) * 320;
+                              // Calculate X position: chart starts at x=50, ends at x=370, spanning 1920-2024 (104 years)
+                              const yearRange = 2024 - 1920; // 104 years
+                              const yearFromStart = event.year - 1920;
+                              const chartX = 50 + (yearFromStart / yearRange) * 320;
+                              
                               // Calculate Y position: chart height=155, spanning 0.023-21.0 trillions
                               const chartY = 175 - ((event.m2 - 0.023) / (21.0 - 0.023)) * 155;
                               
