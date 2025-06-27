@@ -7,12 +7,18 @@ const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPE
 interface DayContent {
   dayIndex: number;
   topic: string;
-  dailyFact: {
+  dailyFacts: Array<{
     title: string;
     content: string;
     category: string;
     icon: string;
-  };
+    diveDeeper: {
+      explanation: string;
+      examples: string[];
+      visualDescription: string;
+      keyTakeaways: string[];
+    };
+  }>;
   lesson: {
     title: string;
     content: string;
@@ -30,12 +36,6 @@ interface DayContent {
     category: string;
     difficulty: string;
   }>;
-  diveDeeper: {
-    explanation: string;
-    examples: string[];
-    visualDescription: string;
-    keyTakeaways: string[];
-  };
 }
 
 const month1Topics = [
@@ -90,11 +90,17 @@ CONTENT REQUIREMENTS:
 
 Generate the following components:
 
-1. DAILY FACT:
+1. DAILY FACTS (3 facts):
+   - Create 3 distinct daily facts that explore different aspects of the topic
+   - Each fact should have a unique angle/perspective on the day's theme
+   - Each fact gets its own "Dive Deeper" content
+   
+   For each fact:
    - Title: 5-8 words, compelling headline
    - Content: 2-3 sentences introducing the concept
    - Category: Choose from "Core Concepts", "Technology", "Economics", "History", "Network"
-   - Icon: Appropriate Lucide React icon name (e.g., "Bitcoin", "Shield", "Coins", "Globe", "Lightbulb")
+   - Icon: Appropriate Lucide React icon name (e.g., "coins", "shield", "globe", "lightbulb", "trending-up")
+   - Dive Deeper: Explanation (3-4 sentences), Examples (4 real-world examples), Visual Description (creative analogy), Key Takeaways (4 learning points)
 
 2. LESSON (300-500 words):
    - Title: Clear, engaging lesson title
@@ -113,11 +119,16 @@ Generate the following components:
    - Each question: Educational explanation referencing the lesson content
    - Category: Same as daily fact, difficulty: ${difficulty}
 
-4. DIVE DEEPER:
-   - Explanation: 3-4 sentences expanding the daily fact
-   - Examples: 4 concrete, real-world examples
-   - Visual Description: Creative analogy/metaphor for understanding
-   - Key Takeaways: 4 main learning points
+3. QUIZ QUESTIONS (5 questions):
+   - Create 5 quiz questions that test content from ALL the daily facts and lesson above
+   - Question 1: Test understanding of the first daily fact
+   - Question 2: Test understanding of the second daily fact  
+   - Question 3: Test understanding of the third daily fact
+   - Question 4: Test key detail from the lesson content
+   - Question 5: Test broader implication from the lesson
+   - Each question: 4 multiple choice options (A, B, C, D) with correct answer letter
+   - Each question: Educational explanation referencing the content
+   - Category: Same as related daily fact, difficulty: ${difficulty}
 
 ACCURACY REQUIREMENTS:
 - All Bitcoin technical information must be factually correct
