@@ -36,6 +36,7 @@ import {
   ArrowRight,
   ChevronDown,
   ChevronUp,
+  ChevronRight,
   CheckCircle,
   BarChart3,
   Clock,
@@ -51,7 +52,8 @@ import {
   TrendingDown,
   Target,
   Star,
-  Brain
+  Brain,
+  X
 } from "lucide-react";
 import type { User, DailyFact, Lesson, UserProgress, ConvictionContent } from "@shared/schema";
 import DailyQuiz from "@/components/DailyQuiz";
@@ -278,7 +280,7 @@ const bitcoinTerms = [
 
 
 type MainSection = "learn" | "simulations" | "more";
-type LearnSubTab = "today" | "weekly" | "reference";
+type LearnSubTab = "today" | "weekly" | "reference" | "appendix";
 type SimulationsSubTab = "safety" | "transactions" | "hodl" | "dca";
 type MoreSubTab = "store";
 
@@ -305,6 +307,11 @@ export default function Home() {
   const [timeRemaining, setTimeRemaining] = useState(45);
   const [transactionJourney, setTransactionJourney] = useState<"broadcast" | "mempool" | "confirming" | "settled">("broadcast");
   const [transactionId, setTransactionId] = useState("");
+
+  // Appendix state
+  const [appendixView, setAppendixView] = useState<"daily" | "weekly">("daily");
+  const [selectedAppendixLesson, setSelectedAppendixLesson] = useState<any>(null);
+  const [selectedAppendixLessonType, setSelectedAppendixLessonType] = useState<"daily" | "weekly">("daily");
 
   // Fee options with realistic data
   const feeOptions = {
@@ -348,6 +355,71 @@ export default function Home() {
       runningAvgCost: number;
     }>;
   } | null>(null);
+
+  // Appendix helper functions
+  const getCompletedDailyLessons = () => {
+    // For now, return lessons from previous days (simulating completed progress)
+    // In a real app, this would come from user progress data
+    const currentDay = getCurrentDayIndex();
+    const completedLessons = [];
+    
+    // Show lessons from the last 7 days as "completed"
+    for (let i = Math.max(1, currentDay - 7); i < currentDay; i++) {
+      completedLessons.push({
+        dayIndex: i,
+        title: `Day ${i} Lesson`,
+        content: `Bitcoin educational content for day ${i}`,
+        estimatedReadTime: 8
+      });
+    }
+    
+    return completedLessons;
+  };
+
+  const getCompletedWeeklyTopics = () => {
+    // For now, return previous weeks as completed
+    // In a real app, this would come from user progress data
+    const currentWeek = Math.ceil(getCurrentDayIndex() / 7);
+    const completedTopics = [];
+    
+    // Show previous weeks as completed
+    for (let i = Math.max(1, currentWeek - 2); i < currentWeek; i++) {
+      if (i === 1) {
+        completedTopics.push({
+          weekNumber: 1,
+          title: "Austrian Economics & Sound Money",
+          content: "Deep dive into economic principles behind Bitcoin",
+          difficulty: "Intermediate",
+          category: "Economics",
+          estimatedReadTime: 65
+        });
+      } else if (i === 2) {
+        completedTopics.push({
+          weekNumber: 2,
+          title: "Bitcoin Mining & Network Security",
+          content: "Understanding proof-of-work and mining economics",
+          difficulty: "Advanced",
+          category: "Technical",
+          estimatedReadTime: 70
+        });
+      }
+    }
+    
+    return completedTopics;
+  };
+
+  const openAppendixLesson = (lesson: any, type: "daily" | "weekly") => {
+    setSelectedAppendixLesson(lesson);
+    setSelectedAppendixLessonType(type);
+  };
+
+  const getCurrentDayIndex = () => {
+    const startDate = new Date('2024-01-01');
+    const currentDate = new Date();
+    const diffTime = Math.abs(currentDate.getTime() - startDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays % 365;
+  };
   
   const toggleFactExpansion = (factId: number) => {
     const newExpanded = new Set(expandedFacts);
@@ -1645,6 +1717,16 @@ export default function Home() {
                   Reference
                 </Button>
 
+                <Button
+                  variant={learnSubTab === "appendix" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setLearnSubTab("appendix")}
+                  className="text-xs px-3 py-1"
+                >
+                  <BookOpen className="w-3 h-3 mr-1" />
+                  Appendix
+                </Button>
+
               </div>
             </div>
 
@@ -1926,6 +2008,201 @@ export default function Home() {
                     </div>
                   </CardContent>
                 </Card>
+              </div>
+            )}
+
+            {/* Appendix Section */}
+            {learnSubTab === "appendix" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">Learning Appendix</h3>
+                  <p className="text-zinc-400">Review your completed lessons and weekly content</p>
+                </div>
+
+                {/* Appendix Navigation */}
+                <div className="flex justify-center gap-4 bg-zinc-800/50 rounded-lg p-2">
+                  <Button
+                    variant={appendixView === "daily" ? "secondary" : "ghost"}
+                    size="sm"
+                    onClick={() => setAppendixView("daily")}
+                    className="text-xs px-3 py-1"
+                  >
+                    Daily Lessons
+                  </Button>
+                  <Button
+                    variant={appendixView === "weekly" ? "secondary" : "ghost"}
+                    size="sm"
+                    onClick={() => setAppendixView("weekly")}
+                    className="text-xs px-3 py-1"
+                  >
+                    Weekly Topics
+                  </Button>
+                </div>
+
+                {/* Daily Lessons Appendix */}
+                {appendixView === "daily" && (
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3 mb-4">
+                          <BookOpen className="w-6 h-6 text-orange-400" />
+                          <h4 className="text-lg font-bold text-white">Completed Daily Lessons</h4>
+                        </div>
+                        
+                        <div className="grid gap-4">
+                          {getCompletedDailyLessons().map((lesson, index) => (
+                            <div 
+                              key={index}
+                              className="p-4 bg-zinc-800/50 rounded-lg border border-zinc-700 hover:border-orange-500/50 transition-colors cursor-pointer"
+                              onClick={() => openAppendixLesson(lesson, 'daily')}
+                            >
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <h5 className="font-semibold text-white mb-1">{lesson.title}</h5>
+                                  <p className="text-zinc-400 text-sm">Day {lesson.dayIndex} • {lesson.estimatedReadTime} min read</p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Badge variant="outline" className="border-green-600 text-green-400">
+                                    <CheckCircle className="w-3 h-3 mr-1" />
+                                    Completed
+                                  </Badge>
+                                  <ChevronRight className="w-4 h-4 text-zinc-400" />
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                          
+                          {getCompletedDailyLessons().length === 0 && (
+                            <div className="text-center py-8">
+                              <BookOpen className="w-12 h-12 text-zinc-600 mx-auto mb-3" />
+                              <p className="text-zinc-500">No completed daily lessons yet</p>
+                              <p className="text-zinc-600 text-sm">Complete today's lesson to see it here</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Weekly Topics Appendix */}
+                {appendixView === "weekly" && (
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3 mb-4">
+                          <Calendar className="w-6 h-6 text-blue-400" />
+                          <h4 className="text-lg font-bold text-white">Completed Weekly Topics</h4>
+                        </div>
+                        
+                        <div className="grid gap-4">
+                          {getCompletedWeeklyTopics().map((topic, index) => (
+                            <div 
+                              key={index}
+                              className="p-4 bg-zinc-800/50 rounded-lg border border-zinc-700 hover:border-blue-500/50 transition-colors cursor-pointer"
+                              onClick={() => openAppendixLesson(topic, 'weekly')}
+                            >
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <h5 className="font-semibold text-white mb-1">{topic.title}</h5>
+                                  <p className="text-zinc-400 text-sm">Week {topic.weekNumber} • {topic.difficulty} • {topic.estimatedReadTime} min</p>
+                                  <div className="flex items-center gap-2 mt-2">
+                                    <Badge variant="outline" className="border-blue-600 text-blue-400 text-xs">
+                                      {topic.category}
+                                    </Badge>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Badge variant="outline" className="border-green-600 text-green-400">
+                                    <CheckCircle className="w-3 h-3 mr-1" />
+                                    Completed
+                                  </Badge>
+                                  <ChevronRight className="w-4 h-4 text-zinc-400" />
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                          
+                          {getCompletedWeeklyTopics().length === 0 && (
+                            <div className="text-center py-8">
+                              <Calendar className="w-12 h-12 text-zinc-600 mx-auto mb-3" />
+                              <p className="text-zinc-500">No completed weekly topics yet</p>
+                              <p className="text-zinc-600 text-sm">Complete a weekly topic to see it here</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Modal for viewing appendix content */}
+                {selectedAppendixLesson && (
+                  <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
+                    <Card className="bg-zinc-900 border-zinc-800 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                      <CardContent className="p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <div>
+                            <h3 className="text-xl font-bold text-white">{selectedAppendixLesson.title}</h3>
+                            <p className="text-zinc-400 text-sm">
+                              {selectedAppendixLessonType === 'daily' 
+                                ? `Day ${selectedAppendixLesson.dayIndex} • ${selectedAppendixLesson.estimatedReadTime} min read`
+                                : `Week ${selectedAppendixLesson.weekNumber} • ${selectedAppendixLesson.difficulty} • ${selectedAppendixLesson.estimatedReadTime} min`
+                              }
+                            </p>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setSelectedAppendixLesson(null)}
+                            className="text-zinc-400 hover:text-white"
+                          >
+                            <X className="w-5 h-5" />
+                          </Button>
+                        </div>
+                        
+                        <div className="prose prose-invert max-w-none">
+                          {selectedAppendixLessonType === 'daily' ? (
+                            <div className="space-y-6">
+                              {getExpandedLessonContent(selectedAppendixLesson.title, selectedAppendixLesson.content).map((section, idx) => (
+                                <div key={idx} className="space-y-4">
+                                  <h4 className="text-lg font-semibold text-white border-l-4 border-orange-500 pl-4">
+                                    {section.title}
+                                  </h4>
+                                  <div className="text-zinc-300 leading-relaxed space-y-4">
+                                    {section.content.split('\n\n').map((paragraph, pIdx) => (
+                                      <p key={pIdx}>{paragraph}</p>
+                                    ))}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="space-y-6">
+                              {Array.isArray(selectedAppendixLesson.content) ? 
+                                selectedAppendixLesson.content.map((section, idx) => (
+                                  <div key={idx} className="space-y-4">
+                                    <h4 className="text-lg font-semibold text-white border-l-4 border-blue-500 pl-4">
+                                      {section.title}
+                                    </h4>
+                                    <div className="text-zinc-300 leading-relaxed space-y-4">
+                                      {section.content.split('\n\n').map((paragraph, pIdx) => (
+                                        <p key={pIdx} dangerouslySetInnerHTML={{ __html: paragraph }} />
+                                      ))}
+                                    </div>
+                                  </div>
+                                )) :
+                                <div className="text-zinc-300 leading-relaxed">
+                                  <p>{selectedAppendixLesson.content}</p>
+                                </div>
+                              }
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
               </div>
             )}
           </div>
