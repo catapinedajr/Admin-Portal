@@ -2763,7 +2763,7 @@ export default function Home() {
                             startPrice: 3800,
                             endPrice: 95000, // Current Bitcoin price Jan 2025
                             gain: 2400,
-                            stress: 'Market Crash',
+
                             color: 'red',
                             years: 4.8
                           },
@@ -2774,7 +2774,7 @@ export default function Home() {
                             startPrice: 6500,
                             endPrice: 95000,
                             gain: 1362,
-                            stress: 'Bear Market',
+
                             color: 'purple',
                             years: 7
                           },
@@ -2785,7 +2785,7 @@ export default function Home() {
                             startPrice: 1000,
                             endPrice: 95000,
                             gain: 9400,
-                            stress: 'Early Days',
+
                             color: 'green',
                             years: 8
                           }
@@ -2825,14 +2825,14 @@ export default function Home() {
                                   : 'border-zinc-700 bg-zinc-800 hover:border-zinc-600 hover:bg-zinc-750'
                               }`}
                             >
-                              <div className="font-semibold text-white mb-1">{scenario.title}</div>
-                              <div className="text-xs text-zinc-400 mb-1">{scenario.period}</div>
-                              <div className="text-xs text-orange-300 mb-2 font-medium">{scenario.years} years holding</div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-green-400 font-mono text-sm font-bold">
+                              <div className="font-semibold text-white mb-2">{scenario.title}</div>
+                              <div className="text-xs text-zinc-400 mb-2">{scenario.period}</div>
+                              <div className="text-xs text-orange-300 mb-3 font-medium">{scenario.years} years holding</div>
+                              <div className="text-center">
+                                <span className="text-green-400 font-mono text-lg font-bold">
                                   +{scenario.gain.toLocaleString()}%
                                 </span>
-                                <span className="text-xs">{scenario.stress}</span>
+                                <div className="text-xs text-zinc-400 mt-1">Total Return</div>
                               </div>
                             </button>
                           );
