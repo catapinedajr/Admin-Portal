@@ -2616,7 +2616,7 @@ export default function Home() {
                           {(() => {
                             const events = [
                               { year: 1933, m2: 0.020, label: "1933", subLabel: "Gold Ban", offsetX: -18, offsetY: -70 },  
-                              { year: 1971, m2: 0.583, label: "1971", subLabel: "Gold Std", offsetX: -20, offsetY: -80 },
+                              { year: 1971, m2: 0.583, label: "1971", subLabel: "Nixon", offsetX: -20, offsetY: -80 },
                               { year: 2008, m2: 7.500, label: "2008", subLabel: "Crisis", offsetX: -15, offsetY: -90 },
                               { year: 2020, m2: 15.400, label: "2020", subLabel: "COVID", offsetX: -15, offsetY: -100 }
                             ];
@@ -2700,6 +2700,38 @@ export default function Home() {
                             strokeWidth="2"
                           />
                         </g>
+                        
+                        {/* Vertical line marking 1971 Nixon Shock - Gold Standard Abandonment */}
+                        <g>
+                          {(() => {
+                            const nixonYear = 1971;
+                            const nixonX = 50 + ((nixonYear - 1920) / 104) * 320;
+                            return (
+                              <g>
+                                <line 
+                                  x1={nixonX} 
+                                  y1="20" 
+                                  x2={nixonX} 
+                                  y2="175" 
+                                  stroke="#fbbf24" 
+                                  strokeWidth="2" 
+                                  strokeDasharray="5,5"
+                                  opacity="0.8"
+                                />
+                                <text 
+                                  x={nixonX - 35} 
+                                  y="15" 
+                                  fill="#fbbf24" 
+                                  fontSize="8" 
+                                  fontWeight="bold"
+                                >
+                                  Gold Standard Ends
+                                </text>
+                              </g>
+                            );
+                          })()}
+                        </g>
+                        
                       </svg>
                     </div>
                     
