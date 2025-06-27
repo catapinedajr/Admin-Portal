@@ -2786,13 +2786,13 @@ export default function Home() {
                               <span className={`font-medium text-sm transition-colors duration-500 ${
                                 settlementProgress.traditional >= 1 ? 'text-red-200' : 'text-zinc-400'
                               }`}>
-                                📍 Bank Branch Visit
+                                📍 Visit Bank Branch
                               </span>
                             </div>
                             <div className={`text-xs transition-colors duration-500 ${
                               settlementProgress.traditional >= 1 ? 'text-red-300' : 'text-zinc-500'
                             }`}>
-                              Forms • ID verification • Manager approval
+                              Fill out forms • Show ID • Get approval
                             </div>
                             {settlementProgress.traditional === 1 && animationActive && (
                               <div className="mt-2 flex items-center gap-2 text-red-400 text-xs">
@@ -2817,13 +2817,13 @@ export default function Home() {
                               <span className={`font-medium text-sm transition-colors duration-500 ${
                                 settlementProgress.bitcoin >= 1 ? 'text-green-200' : 'text-zinc-400'
                               }`}>
-                                📱 Create Transaction
+                                📱 Create & Sign Transfer
                               </span>
                             </div>
                             <div className={`text-xs transition-colors duration-500 ${
                               settlementProgress.bitcoin >= 1 ? 'text-green-300' : 'text-zinc-500'
                             }`}>
-                              Open wallet • Enter address • Sign with key
+                              Open app • Enter address • Approve with password
                             </div>
                             {settlementProgress.bitcoin === 1 && animationActive && (
                               <div className="mt-2 flex items-center gap-2 text-green-400 text-xs">
@@ -2851,13 +2851,13 @@ export default function Home() {
                               <span className={`font-medium text-sm transition-colors duration-500 ${
                                 settlementProgress.traditional >= 2 ? 'text-red-200' : 'text-zinc-400'
                               }`}>
-                                🏢 Compliance Review
+                                🏢 Security Checks
                               </span>
                             </div>
                             <div className={`text-xs transition-colors duration-500 ${
                               settlementProgress.traditional >= 2 ? 'text-red-300' : 'text-zinc-500'
                             }`}>
-                              AML checks • OFAC screening • Risk assessment
+                              Background checks • Paperwork • Risk review
                             </div>
                             {settlementProgress.traditional === 2 && animationActive && (
                               <div className="mt-2 flex items-center gap-2 text-red-400 text-xs">
@@ -2882,13 +2882,13 @@ export default function Home() {
                               <span className={`font-medium text-sm transition-colors duration-500 ${
                                 settlementProgress.bitcoin >= 2 ? 'text-green-200' : 'text-zinc-400'
                               }`}>
-                                🌐 Network Broadcast
+                                🌐 Send to Bitcoin Network
                               </span>
                             </div>
                             <div className={`text-xs transition-colors duration-500 ${
                               settlementProgress.bitcoin >= 2 ? 'text-green-300' : 'text-zinc-500'
                             }`}>
-                              Sent to 15,000+ nodes globally
+                              Instantly shared with computers worldwide
                             </div>
                             {settlementProgress.bitcoin === 2 && animationActive && (
                               <div className="mt-2 flex items-center gap-2 text-green-400 text-xs">
@@ -2916,13 +2916,13 @@ export default function Home() {
                               <span className={`font-medium text-sm transition-colors duration-500 ${
                                 settlementProgress.traditional >= 3 ? 'text-red-200' : 'text-zinc-400'
                               }`}>
-                                🌐 Correspondent Bank
+                                🌐 Send Through Partner Banks
                               </span>
                             </div>
                             <div className={`text-xs transition-colors duration-500 ${
                               settlementProgress.traditional >= 3 ? 'text-red-300' : 'text-zinc-500'
                             }`}>
-                              Cross-border routing • Additional compliance
+                              Route through multiple banks • More checks
                             </div>
                           </div>
 
@@ -2941,13 +2941,13 @@ export default function Home() {
                               <span className={`font-medium text-sm transition-colors duration-500 ${
                                 settlementProgress.bitcoin >= 3 ? 'text-green-200' : 'text-zinc-400'
                               }`}>
-                                ⚡ Mining & Confirmation
+                                ⚡ Network Confirms Transfer
                               </span>
                             </div>
                             <div className={`text-xs transition-colors duration-500 ${
                               settlementProgress.bitcoin >= 3 ? 'text-green-300' : 'text-zinc-500'
                             }`}>
-                              Added to blockchain permanently
+                              Network checks transfer • Adds to ledger
                             </div>
                             {settlementProgress.bitcoin === 3 && animationActive && (
                               <div className="mt-2 flex items-center gap-2 text-green-400 text-xs">
@@ -2975,13 +2975,13 @@ export default function Home() {
                               <span className={`font-medium text-sm transition-colors duration-500 ${
                                 settlementProgress.traditional >= 4 ? 'text-red-200' : 'text-zinc-400'
                               }`}>
-                                🏛 SWIFT Settlement
+                                🏛 Government Bank Processing
                               </span>
                             </div>
                             <div className={`text-xs transition-colors duration-500 ${
                               settlementProgress.traditional >= 4 ? 'text-red-300' : 'text-zinc-500'
                             }`}>
-                              Central bank clearing • Currency conversion
+                              Central bank approval • Currency exchange
                             </div>
                           </div>
 
@@ -3000,13 +3000,13 @@ export default function Home() {
                               <span className={`font-medium text-sm transition-colors duration-500 ${
                                 settlementProgress.bitcoin >= 4 ? 'text-green-200' : 'text-zinc-400'
                               }`}>
-                                ✅ Settlement Complete
+                                ✅ Transfer Complete
                               </span>
                             </div>
                             <div className={`text-xs transition-colors duration-500 ${
                               settlementProgress.bitcoin >= 4 ? 'text-green-300' : 'text-zinc-500'
                             }`}>
-                              Funds arrive • Immutable • No reversals
+                              Money arrives • Permanent • Cannot be reversed
                             </div>
                             {settlementProgress.bitcoin === 4 && (
                               <div className="mt-2 flex items-center gap-2 text-green-400 text-xs font-medium">
@@ -3033,13 +3033,13 @@ export default function Home() {
                               <span className={`font-medium text-sm transition-colors duration-500 ${
                                 settlementProgress.traditional >= 5 ? 'text-red-200' : 'text-zinc-400'
                               }`}>
-                                🏦 Final Crediting
+                                🏦 Final Bank Approval
                               </span>
                             </div>
                             <div className={`text-xs transition-colors duration-500 ${
                               settlementProgress.traditional >= 5 ? 'text-red-300' : 'text-zinc-500'
                             }`}>
-                              Wells Fargo review • Account crediting
+                              Receiving bank review • Add money to account
                             </div>
                           </div>
 
