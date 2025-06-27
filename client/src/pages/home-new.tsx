@@ -302,6 +302,13 @@ export default function Home() {
   const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
   const [expandedTopics, setExpandedTopics] = useState<Set<string>>(new Set());
   const [safetyQuizScore, setSafetyQuizScore] = useState<number>(0);
+  
+  // Finance section interactive states
+  const [inflationAmount, setInflationAmount] = useState<string>("10000");
+  const [inflationYears, setInflationYears] = useState<string>("10");
+  const [transferCount, setTransferCount] = useState<string>("2");
+  const [transferAmount, setTransferAmount] = useState<string>("1000");
+  const [speedRaceActive, setSpeedRaceActive] = useState<boolean>(false);
   const [transactionInputs, setTransactionInputs] = useState({
     fromAddress: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
     toAddress: "",
@@ -2181,160 +2188,277 @@ export default function Home() {
         {/* Finance Section */}
         {activeSection === "finance" && (
           <div className="space-y-6">
-            {/* Traditional Finance Problems */}
-            <Card className="bg-red-900/20 border-red-800">
+            {/* Interactive Inflation Calculator */}
+            <Card className="bg-gradient-to-br from-red-900/20 to-orange-900/20 border-red-800">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-3">
                   <TrendingDown className="w-6 h-6 text-red-400" />
-                  Problems with Traditional Finance
+                  Interactive Inflation Impact Calculator
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-3">
-                    <div className="p-4 bg-red-900/30 rounded-lg">
-                      <h4 className="font-semibold text-red-300 mb-2">💸 Inflation & Currency Debasement</h4>
-                      <p className="text-sm text-zinc-300">The US dollar has lost over 96% of its purchasing power since 1913 due to money printing. Your savings lose value every year through hidden taxation.</p>
+              <CardContent className="space-y-6">
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-zinc-300">Your Savings Amount</label>
+                      <Select value={inflationAmount} onValueChange={setInflationAmount}>
+                        <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1000">$1,000</SelectItem>
+                          <SelectItem value="5000">$5,000</SelectItem>
+                          <SelectItem value="10000">$10,000</SelectItem>
+                          <SelectItem value="25000">$25,000</SelectItem>
+                          <SelectItem value="50000">$50,000</SelectItem>
+                          <SelectItem value="100000">$100,000</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
-                    <div className="p-4 bg-red-900/30 rounded-lg">
-                      <h4 className="font-semibold text-red-300 mb-2">🏦 Banking Intermediaries</h4>
-                      <p className="text-sm text-zinc-300">Banks can freeze accounts, charge fees, and control your money. They profit from your deposits while paying you virtually nothing in return.</p>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-zinc-300">Time Period</label>
+                      <Select value={inflationYears} onValueChange={setInflationYears}>
+                        <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="5">5 years</SelectItem>
+                          <SelectItem value="10">10 years</SelectItem>
+                          <SelectItem value="20">20 years</SelectItem>
+                          <SelectItem value="30">30 years</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     <div className="p-4 bg-red-900/30 rounded-lg">
-                      <h4 className="font-semibold text-red-300 mb-2">🚫 Financial Exclusion</h4>
-                      <p className="text-sm text-zinc-300">2 billion people worldwide lack access to banking. Traditional systems require documentation, minimum balances, and institutional approval.</p>
+                      <h4 className="font-semibold text-red-300 mb-2">💸 Purchasing Power Lost</h4>
+                      <div className="text-2xl font-bold text-red-400">
+                        ${Math.round(parseInt(inflationAmount) * (1 - Math.pow(0.97, parseInt(inflationYears)))).toLocaleString()}
+                      </div>
+                      <p className="text-xs text-zinc-400 mt-1">Lost to 3% annual inflation</p>
                     </div>
-                    <div className="p-4 bg-red-900/30 rounded-lg">
-                      <h4 className="font-semibold text-red-300 mb-2">⚡ High Fees & Slow Transfers</h4>
-                      <p className="text-sm text-zinc-300">International transfers cost 5-15% and take days to settle. The poorest people pay the highest fees for basic financial services.</p>
+                    <div className="p-4 bg-green-900/30 rounded-lg">
+                      <h4 className="font-semibold text-green-300 mb-2">₿ With Bitcoin Protection</h4>
+                      <div className="text-2xl font-bold text-green-400">
+                        ${Math.round(parseInt(inflationAmount) * Math.pow(1.15, parseInt(inflationYears))).toLocaleString()}
+                      </div>
+                      <p className="text-xs text-zinc-400 mt-1">Assuming 15% annual appreciation</p>
                     </div>
                   </div>
+                </div>
+                <div className="text-center p-4 bg-orange-900/20 rounded-lg">
+                  <p className="text-orange-300 font-medium">
+                    💡 The difference: <span className="text-orange-400 text-xl font-bold">
+                      ${(Math.round(parseInt(inflationAmount) * Math.pow(1.15, parseInt(inflationYears))) + 
+                        Math.round(parseInt(inflationAmount) * (1 - Math.pow(0.97, parseInt(inflationYears))))).toLocaleString()}
+                    </span> advantage with Bitcoin
+                  </p>
                 </div>
               </CardContent>
             </Card>
 
-            {/* How Bitcoin Fixes These Problems */}
-            <Card className="bg-green-900/20 border-green-800">
+            {/* Interactive Banking Fees Calculator */}
+            <Card className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 border-blue-800">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-3">
-                  <TrendingUp className="w-6 h-6 text-green-400" />
-                  How Bitcoin Solves These Problems
+                  <Calculator className="w-6 h-6 text-blue-400" />
+                  Banking Fees vs Bitcoin Cost Comparison
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-3">
-                    <div className="p-4 bg-green-900/30 rounded-lg">
-                      <h4 className="font-semibold text-green-300 mb-2">📈 Fixed Supply</h4>
-                      <p className="text-sm text-zinc-300">Only 21 million Bitcoin will ever exist. No central authority can print more, protecting your purchasing power from inflation.</p>
+              <CardContent className="space-y-6">
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-zinc-300">Monthly International Transfers</label>
+                      <Select value={transferCount} onValueChange={setTransferCount}>
+                        <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1">1 transfer</SelectItem>
+                          <SelectItem value="2">2 transfers</SelectItem>
+                          <SelectItem value="4">4 transfers</SelectItem>
+                          <SelectItem value="8">8 transfers</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
-                    <div className="p-4 bg-green-900/30 rounded-lg">
-                      <h4 className="font-semibold text-green-300 mb-2">🌐 Permissionless Access</h4>
-                      <p className="text-sm text-zinc-300">Anyone with internet can use Bitcoin. No bank approval, documentation, or minimum balance required. True financial inclusion.</p>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-zinc-300">Average Transfer Amount</label>
+                      <Select value={transferAmount} onValueChange={setTransferAmount}>
+                        <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="500">$500</SelectItem>
+                          <SelectItem value="1000">$1,000</SelectItem>
+                          <SelectItem value="2500">$2,500</SelectItem>
+                          <SelectItem value="5000">$5,000</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
-                  <div className="space-y-3">
-                    <div className="p-4 bg-green-900/30 rounded-lg">
-                      <h4 className="font-semibold text-green-300 mb-2">🛡️ Censorship Resistance</h4>
-                      <p className="text-sm text-zinc-300">No government or corporation can freeze your Bitcoin. You control your money with mathematical certainty, not institutional permission.</p>
+                  <div className="space-y-4">
+                    <div className="p-4 bg-red-900/30 rounded-lg">
+                      <h4 className="font-semibold text-red-300 mb-2">🏦 Traditional Banking Costs</h4>
+                      <div className="text-2xl font-bold text-red-400">
+                        ${Math.round(parseInt(transferCount) * parseInt(transferAmount) * 0.08 * 12).toLocaleString()}/year
+                      </div>
+                      <p className="text-xs text-zinc-400 mt-1">8% average fee + delays</p>
                     </div>
                     <div className="p-4 bg-green-900/30 rounded-lg">
-                      <h4 className="font-semibold text-green-300 mb-2">⚡ Low-Cost Global Transfers</h4>
-                      <p className="text-sm text-zinc-300">Send Bitcoin anywhere in the world for less than $1 in fees. Transactions settle in minutes, not days.</p>
+                      <h4 className="font-semibold text-green-300 mb-2">₿ Bitcoin Costs</h4>
+                      <div className="text-2xl font-bold text-green-400">
+                        ${Math.round(parseInt(transferCount) * 0.5 * 12).toLocaleString()}/year
+                      </div>
+                      <p className="text-xs text-zinc-400 mt-1">$0.50 average fee</p>
                     </div>
                   </div>
+                </div>
+                <div className="text-center p-4 bg-orange-900/20 rounded-lg">
+                  <p className="text-orange-300 font-medium">
+                    💰 Annual Savings: <span className="text-orange-400 text-xl font-bold">
+                      ${(Math.round(parseInt(transferCount) * parseInt(transferAmount) * 0.08 * 12) - 
+                        Math.round(parseInt(transferCount) * 0.5 * 12)).toLocaleString()}
+                    </span> with Bitcoin
+                  </p>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Side-by-Side Comparison */}
-            <Card className="bg-zinc-900 border-zinc-800">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center gap-3">
-                  <Calculator className="w-6 h-6 text-orange-400" />
-                  Traditional Finance vs Bitcoin Comparison
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-zinc-700">
-                        <th className="text-left py-3 px-4 text-zinc-400">Feature</th>
-                        <th className="text-left py-3 px-4 text-red-400">Traditional Finance</th>
-                        <th className="text-left py-3 px-4 text-green-400">Bitcoin</th>
-                      </tr>
-                    </thead>
-                    <tbody className="text-zinc-300">
-                      <tr className="border-b border-zinc-800">
-                        <td className="py-3 px-4 font-medium">Supply Control</td>
-                        <td className="py-3 px-4">Central banks print unlimited money</td>
-                        <td className="py-3 px-4">Fixed 21 million cap</td>
-                      </tr>
-                      <tr className="border-b border-zinc-800">
-                        <td className="py-3 px-4 font-medium">Access Requirements</td>
-                        <td className="py-3 px-4">Documentation, approval, minimums</td>
-                        <td className="py-3 px-4">Just internet connection</td>
-                      </tr>
-                      <tr className="border-b border-zinc-800">
-                        <td className="py-3 px-4 font-medium">Transaction Fees</td>
-                        <td className="py-3 px-4">5-15% for international transfers</td>
-                        <td className="py-3 px-4">Less than $1 globally</td>
-                      </tr>
-                      <tr className="border-b border-zinc-800">
-                        <td className="py-3 px-4 font-medium">Settlement Time</td>
-                        <td className="py-3 px-4">3-5 business days</td>
-                        <td className="py-3 px-4">10 minutes to 1 hour</td>
-                      </tr>
-                      <tr className="border-b border-zinc-800">
-                        <td className="py-3 px-4 font-medium">Operating Hours</td>
-                        <td className="py-3 px-4">Business hours only</td>
-                        <td className="py-3 px-4">24/7/365</td>
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4 font-medium">Account Control</td>
-                        <td className="py-3 px-4">Banks can freeze/close accounts</td>
-                        <td className="py-3 px-4">You control your own keys</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
+            {/* Interactive Problem/Solution Cards */}
+            <div className="grid gap-6 md:grid-cols-2">
+              {[
+                {
+                  problem: "💸 Inflation Destroys Savings",
+                  solution: "📈 Fixed 21M Supply",
+                  problemDesc: "Fiat loses 96% of value since 1913",
+                  solutionDesc: "Math-enforced scarcity protects wealth",
+                  bgFrom: "from-red-900/20",
+                  bgTo: "to-red-800/20"
+                },
+                {
+                  problem: "🏦 Banks Control Your Money",
+                  solution: "🔐 You Control Your Keys",
+                  problemDesc: "Accounts frozen, fees charged arbitrarily",
+                  solutionDesc: "True ownership with cryptographic proof",
+                  bgFrom: "from-blue-900/20",
+                  bgTo: "to-blue-800/20"
+                },
+                {
+                  problem: "🚫 2B People Excluded",
+                  solution: "🌐 Internet = Bank Account",
+                  problemDesc: "Documentation, minimums, approval required",
+                  solutionDesc: "Anyone can participate globally",
+                  bgFrom: "from-purple-900/20",
+                  bgTo: "to-purple-800/20"
+                },
+                {
+                  problem: "⏰ 3-5 Day Settlements",
+                  solution: "⚡ 10-60 Minute Finality",
+                  problemDesc: "Money trapped in banking hours",
+                  solutionDesc: "24/7 global settlement network",
+                  bgFrom: "from-yellow-900/20",
+                  bgTo: "to-yellow-800/20"
+                }
+              ].map((item, index) => (
+                <Card key={index} className={`bg-gradient-to-br ${item.bgFrom} ${item.bgTo} border-zinc-700 transform hover:scale-105 transition-all duration-300 cursor-pointer`}>
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      <div className="text-center">
+                        <h3 className="font-bold text-red-300 text-lg mb-2">{item.problem}</h3>
+                        <p className="text-sm text-zinc-300">{item.problemDesc}</p>
+                      </div>
+                      <div className="border-t border-zinc-600 pt-4">
+                        <div className="text-center">
+                          <h3 className="font-bold text-green-300 text-lg mb-2">{item.solution}</h3>
+                          <p className="text-sm text-zinc-300">{item.solutionDesc}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
-            {/* Future Timeline */}
-            <Card className="bg-zinc-900 border-zinc-800">
+            {/* Interactive Speed Comparison */}
+            <Card className="bg-gradient-to-br from-zinc-900 to-zinc-800 border-zinc-700">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-3">
-                  <Star className="w-6 h-6 text-orange-400" />
-                  The Financial Future Timeline
+                  <Clock className="w-6 h-6 text-orange-400" />
+                  Settlement Speed Race
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6">
                 <div className="space-y-4">
-                  <div className="flex items-start gap-4 p-4 bg-zinc-800/50 rounded-lg">
-                    <div className="text-orange-400 font-bold">2024</div>
-                    <div>
-                      <h4 className="font-semibold text-white mb-1">Early Adoption Phase</h4>
-                      <p className="text-sm text-zinc-300">Countries like El Salvador adopt Bitcoin as legal tender. Major corporations add Bitcoin to treasury reserves. Traditional financial institutions begin offering Bitcoin services.</p>
+                  <Button 
+                    onClick={() => setSpeedRaceActive(!speedRaceActive)}
+                    className="w-full bg-orange-600 hover:bg-orange-700"
+                  >
+                    {speedRaceActive ? "Reset Race" : "Start Settlement Race!"}
+                  </Button>
+                  
+                  {speedRaceActive && (
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span className="text-zinc-300">Traditional Banking</span>
+                          <span className="text-red-400">3-5 days</span>
+                        </div>
+                        <div className="w-full bg-zinc-700 rounded-full h-3">
+                          <div 
+                            className="bg-red-500 h-3 rounded-full transition-all duration-[5000ms] ease-linear"
+                            style={{ width: speedRaceActive ? "100%" : "0%" }}
+                          ></div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span className="text-zinc-300">Bitcoin Settlement</span>
+                          <span className="text-green-400">10-60 minutes</span>
+                        </div>
+                        <div className="w-full bg-zinc-700 rounded-full h-3">
+                          <div 
+                            className="bg-green-500 h-3 rounded-full transition-all duration-1000 ease-out"
+                            style={{ width: speedRaceActive ? "100%" : "0%" }}
+                          ></div>
+                        </div>
+                      </div>
                     </div>
+                  )}
+                </div>
+                
+                {speedRaceActive && (
+                  <div className="text-center p-4 bg-green-900/20 rounded-lg animate-pulse">
+                    <p className="text-green-300 font-bold">🏆 Bitcoin wins by 72x-120x faster!</p>
                   </div>
-                  <div className="flex items-start gap-4 p-4 bg-zinc-800/50 rounded-lg">
-                    <div className="text-orange-400 font-bold">2030</div>
-                    <div>
-                      <h4 className="font-semibold text-white mb-1">Mainstream Integration</h4>
-                      <p className="text-sm text-zinc-300">Bitcoin payments become common globally. Lightning Network enables instant micropayments. Traditional banks offer Bitcoin custody and lending services.</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4 p-4 bg-zinc-800/50 rounded-lg">
-                    <div className="text-orange-400 font-bold">2040</div>
-                    <div>
-                      <h4 className="font-semibold text-white mb-1">The New Financial Standard</h4>
-                      <p className="text-sm text-zinc-300">Bitcoin serves as the global reserve asset. Central banks hold Bitcoin reserves. Cross-border trade settles primarily in Bitcoin rather than fiat currencies.</p>
-                    </div>
-                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Call to Action */}
+            <Card className="bg-gradient-to-br from-orange-900/30 to-yellow-900/30 border-orange-600">
+              <CardContent className="p-8 text-center">
+                <h3 className="text-2xl font-bold text-white mb-4">Ready to escape the broken system?</h3>
+                <p className="text-zinc-300 mb-6">
+                  These calculators show the real cost of traditional finance. 
+                  Bitcoin offers a mathematically superior alternative.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button 
+                    onClick={() => setActiveSection("learn")}
+                    className="bg-orange-600 hover:bg-orange-700 px-8 py-3"
+                  >
+                    Start Learning Bitcoin
+                  </Button>
+                  <Button 
+                    onClick={() => setActiveSection("simulations")}
+                    variant="outline"
+                    className="border-orange-600 text-orange-400 hover:bg-orange-600/20 px-8 py-3"
+                  >
+                    Try Our Simulators
+                  </Button>
                 </div>
               </CardContent>
             </Card>
