@@ -17,11 +17,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get daily facts for today
-  app.get("/api/daily-facts", async (req, res) => {
+  // Get daily facts for today or specific day
+  app.get("/api/daily-facts/:dayIndex?", async (req, res) => {
     try {
-      const today = new Date();
-      const dayIndex = Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 5; // Cycle through 5 days of content
+      let dayIndex;
+      if (req.params.dayIndex) {
+        dayIndex = parseInt(req.params.dayIndex);
+      } else {
+        const today = new Date();
+        dayIndex = Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 365;
+      }
       const facts = await storage.getDailyFacts(dayIndex);
       res.json(facts);
     } catch (error) {
@@ -29,14 +34,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get today's lesson
-  app.get("/api/lesson", async (req, res) => {
+  // Get today's lesson or specific day
+  app.get("/api/lesson/:dayIndex?", async (req, res) => {
     try {
-      const today = new Date();
-      const dayIndex = Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 10;
-      const lesson = await storage.getLesson(dayIndex); // Use actual day cycling
+      let dayIndex;
+      if (req.params.dayIndex) {
+        dayIndex = parseInt(req.params.dayIndex);
+      } else {
+        const today = new Date();
+        dayIndex = Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 10;
+      }
+      const lesson = await storage.getLesson(dayIndex);
       if (!lesson) {
-        return res.status(404).json({ message: "No lesson found for today" });
+        return res.status(404).json({ message: "No lesson found for this day" });
       }
       res.json(lesson);
     } catch (error) {

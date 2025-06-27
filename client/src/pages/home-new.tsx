@@ -36,6 +36,8 @@ import {
   ArrowRight,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
+  ChevronRight,
   CheckCircle,
   BarChart3,
   Clock,
@@ -287,6 +289,11 @@ export default function Home() {
   const [learnSubTab, setLearnSubTab] = useState<LearnSubTab>("today");
   const [simulationsSubTab, setSimulationsSubTab] = useState<SimulationsSubTab>("safety");
   const [moreSubTab, setMoreSubTab] = useState<MoreSubTab>("store");
+  
+  // Day navigation for testing generated content (defaulting to Month 1 range)
+  const [testDayOverride, setTestDayOverride] = useState<number | null>(1);
+  const naturalDayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24)) % 30 + 1; // Range 1-30
+  const currentDayIndex = testDayOverride !== null ? testDayOverride : naturalDayIndex;
 
   const [convictionSubTab, setConvictionSubTab] = useState<"whitepaper" | "books" | "videos">("whitepaper");
   const [showSplash, setShowSplash] = useState(true);
@@ -1536,13 +1543,15 @@ export default function Home() {
     }
   ];
 
-  // API Queries
+  // API Queries - using currentDayIndex for testing
   const { data: dailyFacts } = useQuery({
-    queryKey: ['/api/daily-facts'],
+    queryKey: ['/api/daily-facts', currentDayIndex],
+    queryFn: () => fetch(`/api/daily-facts/${currentDayIndex}`).then(res => res.json()),
   });
 
   const { data: lesson } = useQuery({
-    queryKey: ['/api/lesson'],
+    queryKey: ['/api/lesson', currentDayIndex], 
+    queryFn: () => fetch(`/api/lesson/${currentDayIndex}`).then(res => res.json()),
   });
 
   const { data: user } = useQuery({
@@ -1671,6 +1680,47 @@ export default function Home() {
 
               </div>
             </div>
+
+            {/* Day Navigation Controls for Testing Generated Content */}
+            {learnSubTab === "today" && (
+              <div className="flex justify-center">
+                <div className="flex items-center gap-3 bg-zinc-800/30 rounded-lg p-3 border border-zinc-700">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setTestDayOverride(prev => Math.max(1, (prev || currentDayIndex) - 1))}
+                    className="text-xs px-2 py-1"
+                  >
+                    <ArrowLeft className="w-3 h-3" />
+                    Prev Day
+                  </Button>
+                  
+                  <div className="text-center">
+                    <div className="text-xs text-zinc-400">Testing Day</div>
+                    <div className="text-sm font-medium text-white">{currentDayIndex}</div>
+                  </div>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setTestDayOverride(prev => Math.min(30, (prev || currentDayIndex) + 1))}
+                    className="text-xs px-2 py-1"
+                  >
+                    Next Day
+                    <ArrowRight className="w-3 h-3" />
+                  </Button>
+                  
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setTestDayOverride(naturalDayIndex)}
+                    className="text-xs px-2 py-1 text-orange-400 hover:text-orange-300"
+                  >
+                    Reset to Today
+                  </Button>
+                </div>
+              </div>
+            )}
 
             {/* Today's Learning */}
             {learnSubTab === "today" && (
