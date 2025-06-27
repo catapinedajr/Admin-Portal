@@ -346,15 +346,16 @@ export default function Home() {
   };
 
   const getMoneySupplyMultiplier = (year: number): string => {
-    return (getMoneySupplyRaw(year) / 0.6).toFixed(1);
+    return (getMoneySupplyRaw(year) / 0.023).toFixed(0);
   };
 
   const getPurchasingPowerRaw = (year: number): number => {
-    // What $1 from 1971 is worth today (inverse of cumulative inflation)
+    // What $1 from 1920 is worth today (inverse of cumulative inflation)
     const dataPoints: { [key: number]: number } = {
-      1971: 1.00, 1980: 2.10, 1990: 3.30, 2000: 4.70, 2008: 6.20,
-      2010: 6.80, 2015: 7.10, 2020: 7.30, 2021: 7.70, 2022: 8.40,
-      2023: 8.60, 2024: 8.70
+      1920: 1.00, 1929: 1.00, 1933: 1.25, 1940: 0.90, 1945: 0.70,
+      1950: 0.60, 1960: 0.50, 1971: 0.35, 1980: 0.20, 1990: 0.15,
+      2000: 0.10, 2008: 0.08, 2010: 0.07, 2015: 0.065, 2020: 0.065,
+      2021: 0.060, 2024: 0.065
     };
     
     const years = Object.keys(dataPoints).map(Number).sort();
@@ -2493,9 +2494,9 @@ export default function Home() {
                   {/* Purchasing Power Display - Moved Here */}
                   <div className="bg-zinc-800/50 rounded-lg p-3 mt-3">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-zinc-300 text-sm">$1 from 1971 = </span>
+                      <span className="text-zinc-300 text-sm">$1 from 1920 = </span>
                       <span className="text-red-400 font-bold">
-                        ${getPurchasingPowerForYear(moneySupplyYear)} today
+                        ${(1 / getPurchasingPowerRaw(moneySupplyYear)).toFixed(2)} today
                       </span>
                     </div>
                     <div className="w-full bg-zinc-700 rounded-full h-2">
