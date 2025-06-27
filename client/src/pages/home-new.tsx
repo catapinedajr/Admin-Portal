@@ -1332,7 +1332,12 @@ export default function Home() {
   };
 
   const calculateDcaStrategy = () => {
-    const { monthlyAmount, frequency, duration, startDate } = dcaInputs;
+    const { monthlyAmount, frequency, startDate } = dcaInputs;
+    
+    // Calculate duration from start date to January 2025 (present)
+    const startDateObj = new Date(startDate);
+    const endDate = new Date('2025-01-27'); // Current date
+    const durationYears = (endDate.getTime() - startDateObj.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
     
     // Calculate frequency multiplier and total purchases
     const frequencyMap = { 
@@ -1343,33 +1348,31 @@ export default function Home() {
       quarterly: 4 
     };
     const purchasesPerYear = frequencyMap[frequency];
-    const totalPurchases = Math.floor((duration / 12) * purchasesPerYear);
+    const totalPurchases = Math.floor(durationYears * purchasesPerYear);
     const purchaseAmount = frequency === 'daily' ? monthlyAmount * 12 / 365 : 
                           frequency === 'weekly' ? monthlyAmount * 12 / 52 : 
                           frequency === 'biweekly' ? monthlyAmount * 12 / 26 : 
                           frequency === 'quarterly' ? monthlyAmount * 3 :
                           monthlyAmount;
     
-    // Get historical starting price based on date
+    // Get historical starting price based on date (January each year)
     const getStartingPrice = (startDate: string) => {
+      if (startDate.includes('2009-01')) return 0.001; // Bitcoin's earliest price
+      if (startDate.includes('2010-01')) return 0.003;
+      if (startDate.includes('2011-01')) return 0.30;
+      if (startDate.includes('2012-01')) return 5.27;
+      if (startDate.includes('2013-01')) return 13.30;
+      if (startDate.includes('2014-01')) return 770;
+      if (startDate.includes('2015-01')) return 315;
+      if (startDate.includes('2016-01')) return 430;
+      if (startDate.includes('2017-01')) return 1000;
+      if (startDate.includes('2018-01')) return 14000;
       if (startDate.includes('2019-01')) return 3500;
-      if (startDate.includes('2019-07')) return 10000;
       if (startDate.includes('2020-01')) return 7200;
-      if (startDate.includes('2020-03')) return 5000;
-      if (startDate.includes('2020-07')) return 9000;
-      if (startDate.includes('2020-10')) return 11000;
       if (startDate.includes('2021-01')) return 30000;
-      if (startDate.includes('2021-05')) return 58000;
-      if (startDate.includes('2021-07')) return 30000;
-      if (startDate.includes('2021-10')) return 45000;
       if (startDate.includes('2022-01')) return 47000;
-      if (startDate.includes('2022-06')) return 30000;
-      if (startDate.includes('2022-11')) return 16000;
       if (startDate.includes('2023-01')) return 16500;
-      if (startDate.includes('2023-06')) return 25000;
-      if (startDate.includes('2023-10')) return 35000;
       if (startDate.includes('2024-01')) return 42000;
-      if (startDate.includes('2024-06')) return 65000;
       return 35000; // Default
     };
     
@@ -1383,7 +1386,7 @@ export default function Home() {
       const timeProgress = i / Math.max(totalPurchases - 1, 1);
       
       // Realistic Bitcoin price evolution over time
-      const longTermGrowth = Math.pow(1.15, timeProgress * (duration / 12)); // 15% annual growth trend
+      const longTermGrowth = Math.pow(1.15, timeProgress * durationYears); // 15% annual growth trend
       const marketCycles = 1 + Math.sin(timeProgress * 4 * Math.PI) * 0.3; // Market cycles
       const volatility = 1 + (Math.random() - 0.5) * 0.4; // ±20% volatility
       const crashRecovery = timeProgress < 0.3 ? (0.7 + timeProgress * 1.0) : 1; // Early period recovery
@@ -1419,7 +1422,7 @@ export default function Home() {
       currentValue,
       totalGain,
       percentageReturn,
-      duration,
+      duration: durationYears,
       purchases // Include purchase data for accurate charting
     });
   };
@@ -3013,7 +3016,7 @@ export default function Home() {
                 {/* Compact Input Controls */}
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-4">
-                    <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+                    <div className="grid gap-3 grid-cols-3">
                       {/* Investment Amount */}
                       <div className="space-y-2">
                         <label className="text-xs font-medium text-white">Amount</label>
@@ -3066,36 +3069,9 @@ export default function Home() {
                         </Select>
                       </div>
 
-                      {/* Time Period */}
+                      {/* Start Date - calculates to present */}
                       <div className="space-y-2">
-                        <label className="text-xs font-medium text-white">Duration</label>
-                        <Select 
-                          value={dcaInputs.duration.toString()} 
-                          onValueChange={(value) => setDcaInputs(prev => ({ ...prev, duration: Number(value) }))}
-                        >
-                          <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
-                            <SelectValue placeholder="Select duration" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-zinc-800 border-zinc-700">
-                            <SelectItem value="3">3 months</SelectItem>
-                            <SelectItem value="6">6 months</SelectItem>
-                            <SelectItem value="9">9 months</SelectItem>
-                            <SelectItem value="12">1 year</SelectItem>
-                            <SelectItem value="18">1.5 years</SelectItem>
-                            <SelectItem value="24">2 years</SelectItem>
-                            <SelectItem value="30">2.5 years</SelectItem>
-                            <SelectItem value="36">3 years</SelectItem>
-                            <SelectItem value="48">4 years</SelectItem>
-                            <SelectItem value="60">5 years</SelectItem>
-                            <SelectItem value="84">7 years</SelectItem>
-                            <SelectItem value="120">10 years</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      {/* Start Date */}
-                      <div className="space-y-2">
-                        <label className="text-xs font-medium text-white">Start Date</label>
+                        <label className="text-xs font-medium text-white">Started DCA</label>
                         <Select 
                           value={dcaInputs.startDate} 
                           onValueChange={(value) => setDcaInputs(prev => ({ ...prev, startDate: value }))}
@@ -3104,24 +3080,22 @@ export default function Home() {
                             <SelectValue placeholder="Select start date" />
                           </SelectTrigger>
                           <SelectContent className="bg-zinc-800 border-zinc-700">
+                            <SelectItem value="2009-01-01">Jan 2009</SelectItem>
+                            <SelectItem value="2010-01-01">Jan 2010</SelectItem>
+                            <SelectItem value="2011-01-01">Jan 2011</SelectItem>
+                            <SelectItem value="2012-01-01">Jan 2012</SelectItem>
+                            <SelectItem value="2013-01-01">Jan 2013</SelectItem>
+                            <SelectItem value="2014-01-01">Jan 2014</SelectItem>
+                            <SelectItem value="2015-01-01">Jan 2015</SelectItem>
+                            <SelectItem value="2016-01-01">Jan 2016</SelectItem>
+                            <SelectItem value="2017-01-01">Jan 2017</SelectItem>
+                            <SelectItem value="2018-01-01">Jan 2018</SelectItem>
                             <SelectItem value="2019-01-01">Jan 2019</SelectItem>
-                            <SelectItem value="2019-07-01">Jul 2019</SelectItem>
                             <SelectItem value="2020-01-01">Jan 2020</SelectItem>
-                            <SelectItem value="2020-03-01">Mar 2020</SelectItem>
-                            <SelectItem value="2020-07-01">Jul 2020</SelectItem>
-                            <SelectItem value="2020-10-01">Oct 2020</SelectItem>
                             <SelectItem value="2021-01-01">Jan 2021</SelectItem>
-                            <SelectItem value="2021-05-01">May 2021</SelectItem>
-                            <SelectItem value="2021-07-01">Jul 2021</SelectItem>
-                            <SelectItem value="2021-10-01">Oct 2021</SelectItem>
                             <SelectItem value="2022-01-01">Jan 2022</SelectItem>
-                            <SelectItem value="2022-06-01">Jun 2022</SelectItem>
-                            <SelectItem value="2022-11-01">Nov 2022</SelectItem>
                             <SelectItem value="2023-01-01">Jan 2023</SelectItem>
-                            <SelectItem value="2023-06-01">Jun 2023</SelectItem>
-                            <SelectItem value="2023-10-01">Oct 2023</SelectItem>
                             <SelectItem value="2024-01-01">Jan 2024</SelectItem>
-                            <SelectItem value="2024-06-01">Jun 2024</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -3130,7 +3104,7 @@ export default function Home() {
                     <div className="mt-3 flex items-center justify-between">
                       <p className="text-zinc-400 text-xs flex items-center">
                         <Info className="w-3 h-3 mr-1" />
-                        Uses real Bitcoin price history
+                        Continuous DCA to January 2025
                       </p>
                       <Button 
                         onClick={calculateDcaStrategy}
