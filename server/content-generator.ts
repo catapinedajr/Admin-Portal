@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import { storage } from "./storage";
 
 // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
 interface DayContent {
   dayIndex: number;
@@ -72,6 +72,10 @@ const month1Topics = [
 ];
 
 async function generateDayContent(dayIndex: number, topic: string): Promise<DayContent> {
+  if (!openai) {
+    throw new Error("OpenAI API key not configured. Please set OPENAI_API_KEY environment variable.");
+  }
+
   // Determine difficulty based on day
   const difficulty = dayIndex <= 10 ? 'beginner' : dayIndex <= 20 ? 'intermediate' : 'advanced';
   
