@@ -37,14 +37,17 @@ interface QuizScore {
   percentage: number;
 }
 
-export default function DailyQuiz() {
+interface DailyQuizProps {
+  dayIndex: number;
+}
+
+export default function DailyQuiz({ dayIndex }: DailyQuizProps) {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const [submittedAnswers, setSubmittedAnswers] = useState<Record<number, QuizAnswer>>({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const queryClient = useQueryClient();
   
   const today = new Date().toISOString().split('T')[0];
-  const dayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24)) % 365; // Cycle through year
   const userId = 1; // Default user
 
   // Fetch quiz questions for today

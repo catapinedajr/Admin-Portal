@@ -1886,7 +1886,7 @@ export default function Home() {
 
                 {/* Daily Quiz */}
                 <div data-testid="daily-quiz">
-                  <DailyQuiz />
+                  <DailyQuiz dayIndex={currentDayIndex} />
                 </div>
               </div>
             )}
