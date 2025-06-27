@@ -1334,10 +1334,14 @@ export default function Home() {
   const calculateDcaStrategy = () => {
     const { monthlyAmount, frequency, startDate } = dcaInputs;
     
+    // Validate inputs
+    const validAmount = Number(monthlyAmount) || 100;
+    if (!startDate || !frequency) return;
+    
     // Calculate duration from start date to January 2025 (present)
     const startDateObj = new Date(startDate);
     const endDate = new Date('2025-01-27'); // Current date
-    const durationYears = (endDate.getTime() - startDateObj.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+    const durationYears = Math.max(0.1, (endDate.getTime() - startDateObj.getTime()) / (1000 * 60 * 60 * 24 * 365.25));
     
     // Calculate frequency multiplier and total purchases
     const frequencyMap = { 
@@ -1348,69 +1352,87 @@ export default function Home() {
       quarterly: 4 
     };
     const purchasesPerYear = frequencyMap[frequency];
-    const totalPurchases = Math.floor(durationYears * purchasesPerYear);
-    const purchaseAmount = frequency === 'daily' ? monthlyAmount * 12 / 365 : 
-                          frequency === 'weekly' ? monthlyAmount * 12 / 52 : 
-                          frequency === 'biweekly' ? monthlyAmount * 12 / 26 : 
-                          frequency === 'quarterly' ? monthlyAmount * 3 :
-                          monthlyAmount;
+    const totalPurchases = Math.max(1, Math.floor(durationYears * purchasesPerYear));
+    const purchaseAmount = frequency === 'daily' ? validAmount * 12 / 365 : 
+                          frequency === 'weekly' ? validAmount * 12 / 52 : 
+                          frequency === 'biweekly' ? validAmount * 12 / 26 : 
+                          frequency === 'quarterly' ? validAmount * 3 :
+                          validAmount;
     
-    // Get historical starting price based on date (January each year)
+    // Get historically accurate Bitcoin prices for January each year
     const getStartingPrice = (startDate: string) => {
-      if (startDate.includes('2009-01')) return 0.001; // Bitcoin's earliest price
-      if (startDate.includes('2010-01')) return 0.003;
-      if (startDate.includes('2011-01')) return 0.30;
-      if (startDate.includes('2012-01')) return 5.27;
-      if (startDate.includes('2013-01')) return 13.30;
-      if (startDate.includes('2014-01')) return 770;
-      if (startDate.includes('2015-01')) return 315;
-      if (startDate.includes('2016-01')) return 430;
-      if (startDate.includes('2017-01')) return 1000;
-      if (startDate.includes('2018-01')) return 14000;
-      if (startDate.includes('2019-01')) return 3500;
-      if (startDate.includes('2020-01')) return 7200;
-      if (startDate.includes('2021-01')) return 30000;
-      if (startDate.includes('2022-01')) return 47000;
-      if (startDate.includes('2023-01')) return 16500;
-      if (startDate.includes('2024-01')) return 42000;
-      return 35000; // Default
+      if (startDate.includes('2009-01')) return 0.001; // Bitcoin launch - first recorded price
+      if (startDate.includes('2010-01')) return 0.10;  // Very early adoption
+      if (startDate.includes('2011-01')) return 0.30;  // Before $1 breakthrough
+      if (startDate.includes('2012-01')) return 5.00;  // Recovery from 2011 crash
+      if (startDate.includes('2013-01')) return 13.00; // Start of first major bull run
+      if (startDate.includes('2014-01')) return 732;   // Coming off 2013 peak
+      if (startDate.includes('2015-01')) return 315;   // Bear market after Mt. Gox
+      if (startDate.includes('2016-01')) return 430;   // Slow recovery begins
+      if (startDate.includes('2017-01')) return 1000;  // Watershed year beginning
+      if (startDate.includes('2018-01')) return 14000; // Near 2017 peak of $20k
+      if (startDate.includes('2019-01')) return 3700;  // Deep bear market bottom
+      if (startDate.includes('2020-01')) return 7200;  // Pre-COVID institutional adoption
+      if (startDate.includes('2021-01')) return 29000; // Bull run in progress
+      if (startDate.includes('2022-01')) return 47000; // Near all-time highs
+      if (startDate.includes('2023-01')) return 16530; // Recovery from 2022 crash
+      if (startDate.includes('2024-01')) return 42000; // ETF approval momentum
+      return 35000; // Default fallback
     };
     
-    const startingPrice = getStartingPrice(startDate);
+    const startingPrice = Math.max(0.001, getStartingPrice(startDate)); // Minimum price protection
     const purchases = [];
     let totalInvested = 0;
     let totalBitcoin = 0;
     
+    // Use current Bitcoin price (January 2025)
+    const currentBitcoinPrice = 95000; // Current Bitcoin price January 2025
+    
+    // Calculate mathematically accurate growth rate with safety checks
+    const totalGrowthRatio = currentBitcoinPrice / startingPrice;
+    const annualGrowthRate = Math.max(1, Math.pow(totalGrowthRatio, 1/durationYears)); // Ensure positive growth
+    
     // Generate realistic Bitcoin price progression and track each purchase
     for (let i = 0; i < totalPurchases; i++) {
       const timeProgress = i / Math.max(totalPurchases - 1, 1);
+      const yearsElapsed = timeProgress * durationYears;
       
-      // Realistic Bitcoin price evolution over time
-      const longTermGrowth = Math.pow(1.15, timeProgress * durationYears); // 15% annual growth trend
-      const marketCycles = 1 + Math.sin(timeProgress * 4 * Math.PI) * 0.3; // Market cycles
-      const volatility = 1 + (Math.random() - 0.5) * 0.4; // ±20% volatility
-      const crashRecovery = timeProgress < 0.3 ? (0.7 + timeProgress * 1.0) : 1; // Early period recovery
+      // Base exponential growth with realistic compounding
+      const basePrice = startingPrice * Math.pow(annualGrowthRate, yearsElapsed);
       
-      const currentPrice = Math.max(1000, startingPrice * longTermGrowth * marketCycles * volatility * crashRecovery);
-      const bitcoinPurchased = purchaseAmount / currentPrice;
+      // Add Bitcoin's characteristic volatility patterns
+      const marketCycle = 1 + Math.sin(timeProgress * 4 * Math.PI) * 0.25; // 4-year cycles
+      const volatility = 1 + (Math.sin(timeProgress * 20 * Math.PI) * 0.15); // Short-term volatility
+      const crashRecovery = timeProgress > 0.8 ? 1.1 : 1; // Recent bull run
+      
+      const currentPrice = Math.max(
+        startingPrice * 0.5, // Never go below 50% of starting price
+        basePrice * marketCycle * volatility * crashRecovery
+      );
+      
+      // Safety checks to prevent NaN values
+      const validCurrentPrice = isFinite(currentPrice) && currentPrice > 0 ? currentPrice : startingPrice;
+      const bitcoinPurchased = purchaseAmount / validCurrentPrice;
       
       totalInvested += purchaseAmount;
       totalBitcoin += bitcoinPurchased;
       
+      // Ensure all values are finite before adding to purchases
+      const runningAvgCost = totalBitcoin > 0 ? totalInvested / totalBitcoin : validCurrentPrice;
+      
       purchases.push({
         index: i,
-        timeProgress,
-        price: Math.round(currentPrice),
+        timeProgress: isFinite(timeProgress) ? timeProgress : 0,
+        price: Math.round(validCurrentPrice),
         amount: purchaseAmount,
-        bitcoinPurchased,
+        bitcoinPurchased: isFinite(bitcoinPurchased) ? bitcoinPurchased : 0,
         totalInvested,
-        totalBitcoin,
-        runningAvgCost: totalInvested / totalBitcoin
+        totalBitcoin: isFinite(totalBitcoin) ? totalBitcoin : 0,
+        runningAvgCost: isFinite(runningAvgCost) ? runningAvgCost : validCurrentPrice
       });
     }
     
     const averagePrice = totalInvested / totalBitcoin;
-    const currentBitcoinPrice = 50000; // Current market price
     const currentValue = totalBitcoin * currentBitcoinPrice;
     const totalGain = currentValue - totalInvested;
     const percentageReturn = (totalGain / totalInvested) * 100;
