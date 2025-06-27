@@ -2600,17 +2600,27 @@ export default function Home() {
                         
                         {/* Historical Event Markers */}
                         <g>
-                          {/* 1971 Nixon Shock */}
-                          <circle cx="50" cy="175" r="4" fill="#dc2626" stroke="#ffffff" strokeWidth="2"/>
-                          <text x="25" y="190" fill="#dc2626" fontSize="8" fontWeight="bold">Nixon</text>
-                          
-                          {/* 2008 Crisis */}
-                          <circle cx="280" cy="80" r="4" fill="#dc2626" stroke="#ffffff" strokeWidth="2"/>
-                          <text x="260" y="70" fill="#dc2626" fontSize="8" fontWeight="bold">2008</text>
-                          
-                          {/* 2020 COVID */}
-                          <circle cx="340" cy="35" r="4" fill="#dc2626" stroke="#ffffff" strokeWidth="2"/>
-                          <text x="320" y="25" fill="#dc2626" fontSize="8" fontWeight="bold">COVID</text>
+                          {(() => {
+                            const events = [
+                              { year: 1971, m2: 0.6, label: "Nixon", labelOffset: -25 },
+                              { year: 2008, m2: 7.5, label: "2008", labelOffset: -20 },
+                              { year: 2020, m2: 15.4, label: "COVID", labelOffset: -20 }
+                            ];
+                            
+                            return events.map((event, index) => {
+                              const x = 50 + ((event.year - 1971) / (2024 - 1971)) * 320;
+                              const y = 175 - ((event.m2 - 0.6) / (21.0 - 0.6)) * 155;
+                              
+                              return (
+                                <g key={index}>
+                                  <circle cx={x} cy={y} r="4" fill="#dc2626" stroke="#ffffff" strokeWidth="2"/>
+                                  <text x={x + event.labelOffset} y={y - 10} fill="#dc2626" fontSize="8" fontWeight="bold">
+                                    {event.label}
+                                  </text>
+                                </g>
+                              );
+                            });
+                          })()}
                           
                           {/* Current year indicator */}
                           <line 
