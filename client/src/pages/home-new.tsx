@@ -2534,13 +2534,15 @@ export default function Home() {
                         <text x="10" y="55" fill="#9ca3af" fontSize="10">$15T</text>
                         <text x="10" y="95" fill="#9ca3af" fontSize="10">$10T</text>
                         <text x="10" y="135" fill="#9ca3af" fontSize="10">$5T</text>
-                        <text x="10" y="175" fill="#9ca3af" fontSize="10">$0.6T</text>
+                        <text x="10" y="175" fill="#9ca3af" fontSize="10">$0</text>
                         
-                        {/* X-axis labels */}
-                        <text x="45" y="195" fill="#9ca3af" fontSize="10">1971</text>
-                        <text x="120" y="195" fill="#9ca3af" fontSize="10">1990</text>
-                        <text x="200" y="195" fill="#9ca3af" fontSize="10">2000</text>
-                        <text x="280" y="195" fill="#9ca3af" fontSize="10">2010</text>
+                        {/* X-axis labels - Updated for 1920-2024 range */}
+                        <text x="45" y="195" fill="#9ca3af" fontSize="10">1920</text>
+                        <text x="95" y="195" fill="#9ca3af" fontSize="10">1940</text>
+                        <text x="145" y="195" fill="#9ca3af" fontSize="10">1960</text>
+                        <text x="195" y="195" fill="#9ca3af" fontSize="10">1980</text>
+                        <text x="245" y="195" fill="#9ca3af" fontSize="10">2000</text>
+                        <text x="295" y="195" fill="#9ca3af" fontSize="10">2020</text>
                         <text x="360" y="195" fill="#9ca3af" fontSize="10">2024</text>
                         
                         {/* Money Supply Growth Line - Using Real Federal Reserve Data */}
@@ -2614,24 +2616,42 @@ export default function Home() {
                         <g>
                           {(() => {
                             const events = [
-                              { year: 1929, m2: 0.026, label: "1929", labelOffset: -20 },   // Great Depression
-                              { year: 1933, m2: 0.020, label: "1933", labelOffset: -20 },   // FDR Gold Ban
-                              { year: 1945, m2: 0.107, label: "WWII", labelOffset: -20 },   // Post-WWII expansion
-                              { year: 1971, m2: 0.583, label: "Nixon", labelOffset: -25 },  // Nixon Shock
-                              { year: 2008, m2: 7.500, label: "2008", labelOffset: -20 },   // Financial Crisis
-                              { year: 2020, m2: 15.400, label: "COVID", labelOffset: -20 }  // COVID printing
+                              { year: 1929, m2: 0.026, label: "1929\nCrash", x: -15, y: -25 },     // Great Depression
+                              { year: 1933, m2: 0.020, label: "Gold\nBan", x: -15, y: -25 },       // FDR Gold Ban  
+                              { year: 1945, m2: 0.107, label: "WWII\nEnd", x: -15, y: -25 },       // Post-WWII expansion
+                              { year: 1971, m2: 0.583, label: "Gold\nStandard\nEnds", x: -20, y: -35 }, // Nixon Shock - Gold Standard
+                              { year: 2008, m2: 7.500, label: "Financial\nCrisis", x: -25, y: -25 }, // Financial Crisis
+                              { year: 2020, m2: 15.400, label: "COVID\nPrinting", x: -25, y: -25 }  // COVID printing
                             ];
                             
                             return events.map((event, index) => {
-                              const x = 50 + ((event.year - 1920) / (2024 - 1920)) * 320;
-                              const y = 175 - ((event.m2 - 0.023) / (21.0 - 0.023)) * 155;
+                              const chartX = 50 + ((event.year - 1920) / (2024 - 1920)) * 320;
+                              const chartY = 175 - ((event.m2 - 0.023) / (21.0 - 0.023)) * 155;
                               
                               return (
                                 <g key={index}>
-                                  <circle cx={x} cy={y} r="4" fill="#dc2626" stroke="#ffffff" strokeWidth="2"/>
-                                  <text x={x + event.labelOffset} y={y - 10} fill="#dc2626" fontSize="8" fontWeight="bold">
-                                    {event.label}
-                                  </text>
+                                  <circle cx={chartX} cy={chartY} r="4" fill="#dc2626" stroke="#ffffff" strokeWidth="2"/>
+                                  <rect 
+                                    x={chartX + event.x - 2} 
+                                    y={chartY + event.y - 2} 
+                                    width="40" 
+                                    height={event.label.includes('\n') ? (event.label.split('\n').length * 10 + 4) : "14"} 
+                                    fill="rgba(0,0,0,0.8)" 
+                                    rx="3"
+                                  />
+                                  {event.label.split('\n').map((line, lineIndex) => (
+                                    <text 
+                                      key={lineIndex}
+                                      x={chartX + event.x + 18} 
+                                      y={chartY + event.y + 10 + (lineIndex * 10)} 
+                                      fill="#dc2626" 
+                                      fontSize="8" 
+                                      fontWeight="bold"
+                                      textAnchor="middle"
+                                    >
+                                      {line}
+                                    </text>
+                                  ))}
                                 </g>
                               );
                             });
