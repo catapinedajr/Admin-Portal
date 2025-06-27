@@ -3141,13 +3141,13 @@ export default function Home() {
                   <Calculator className="w-5 h-5 text-orange-400" />
                   Banks Are Bleeding You Dry With Fees
                 </CardTitle>
-                <p className="text-zinc-400 text-sm">See exactly how much money you lose to international transfer fees every year</p>
+                <p className="text-zinc-400 text-sm">See exactly how much money you lose to everyday banking fees every year</p>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="grid gap-6 lg:grid-cols-2">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-zinc-300">How often do you send money internationally?</label>
+                      <label className="text-sm font-medium text-zinc-300">How often do you use ATMs outside your bank's network?</label>
                       <Select value={transferCount} onValueChange={setTransferCount}>
                         <SelectTrigger className="bg-zinc-800 border-zinc-700 h-12">
                           <SelectValue />
@@ -3161,16 +3161,16 @@ export default function Home() {
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-zinc-300">How much do you typically send?</label>
+                      <label className="text-sm font-medium text-zinc-300">What monthly account fees do you pay?</label>
                       <Select value={transferAmount} onValueChange={setTransferAmount}>
                         <SelectTrigger className="bg-zinc-800 border-zinc-700 h-12">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="500">$500</SelectItem>
-                          <SelectItem value="1000">$1,000</SelectItem>
-                          <SelectItem value="2500">$2,500</SelectItem>
-                          <SelectItem value="5000">$5,000</SelectItem>
+                          <SelectItem value="500">$5 (Basic checking)</SelectItem>
+                          <SelectItem value="1000">$12 (Standard checking)</SelectItem>
+                          <SelectItem value="2500">$25 (Premium account)</SelectItem>
+                          <SelectItem value="5000">$35 (Business account)</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -3189,11 +3189,11 @@ export default function Home() {
                             <span className="text-green-400 font-medium">Bitcoin Network</span>
                           </div>
                           <span className="text-green-400 font-bold text-lg">
-                            ${Math.round(parseInt(transferCount) * 0.5 * 12).toLocaleString()}
+                            $0
                           </span>
                         </div>
                         <div className="text-zinc-400 text-xs">
-                          ~$0.50 per transfer, regardless of amount
+                          No monthly fees, ATM fees, or overdraft charges
                         </div>
                       </div>
                       
@@ -3205,11 +3205,11 @@ export default function Home() {
                             <span className="text-red-400 font-medium">Traditional Banks</span>
                           </div>
                           <span className="text-red-400 font-bold text-lg">
-                            ${Math.round(parseInt(transferCount) * parseInt(transferAmount) * 0.08 * 12).toLocaleString()}
+                            ${(parseInt(transferCount) * 3.5 * 12 + parseInt(transferAmount) * 12 / 100 + 70).toLocaleString()}
                           </span>
                         </div>
                         <div className="text-zinc-400 text-xs">
-                          8% average fees + poor exchange rates
+                          ATM fees + monthly fees + overdraft fees
                         </div>
                       </div>
                       
@@ -3218,8 +3218,7 @@ export default function Home() {
                         <div className="flex justify-between items-center">
                           <span className="text-orange-300 font-medium">You save annually:</span>
                           <span className="text-orange-400 font-bold text-xl">
-                            ${(Math.round(parseInt(transferCount) * parseInt(transferAmount) * 0.08 * 12) - 
-                              Math.round(parseInt(transferCount) * 0.5 * 12)).toLocaleString()}
+                            ${(parseInt(transferCount) * 3.5 * 12 + parseInt(transferAmount) * 12 / 100 + 70).toLocaleString()}
                           </span>
                         </div>
                       </div>
@@ -3228,9 +3227,9 @@ export default function Home() {
                     <div className="p-4 bg-red-950/50 rounded-xl border border-red-800/50 text-center">
                       <div className="text-red-300 text-sm mb-2">Banks take this much from you annually:</div>
                       <div className="text-3xl font-bold text-red-400">
-                        ${Math.round(parseInt(transferCount) * parseInt(transferAmount) * 0.08 * 12).toLocaleString()}
+                        ${(parseInt(transferCount) * 3.5 * 12 + parseInt(transferAmount) * 12 / 100 + 70).toLocaleString()}
                       </div>
-                      <div className="text-red-300/70 text-xs mt-1">8% fees + terrible exchange rates</div>
+                      <div className="text-red-300/70 text-xs mt-1">ATM fees + monthly fees + overdraft fees</div>
                     </div>
                   </div>
                 </div>
@@ -3239,16 +3238,15 @@ export default function Home() {
                   <div className="text-center space-y-3">
                     <div className="text-green-300 font-semibold">You keep this money with Bitcoin:</div>
                     <div className="text-4xl font-bold text-green-400">
-                      ${(Math.round(parseInt(transferCount) * parseInt(transferAmount) * 0.08 * 12) - 
-                        Math.round(parseInt(transferCount) * 0.5 * 12)).toLocaleString()}
+                      ${(parseInt(transferCount) * 3.5 * 12 + parseInt(transferAmount) * 12 / 100 + 70).toLocaleString()}
                     </div>
                     <div className="text-zinc-300 text-sm">
                       That's <span className="text-orange-400 font-bold">
-                        {Math.round((1 - (Math.round(parseInt(transferCount) * 0.5 * 12) / Math.round(parseInt(transferCount) * parseInt(transferAmount) * 0.08 * 12))) * 100)}% less fees
-                      </span> than what banks charge
+                        100% savings
+                      </span> on banking fees every year
                     </div>
                     <div className="text-zinc-400 text-xs">
-                      Bitcoin transfers typically cost $0.50 regardless of amount
+                      Bitcoin self-custody eliminates all monthly banking fees
                     </div>
                   </div>
                 </div>
