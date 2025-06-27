@@ -1738,7 +1738,7 @@ export default function Home() {
                       <div className="space-y-4">
                         {(dailyFacts as DailyFact[]).map((fact: DailyFact) => {
                           const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Coins;
-                          const deepDive = getFactDeepDive(fact.title);
+                          const deepDive = fact.diveDeeper || getFactDeepDive(fact.title);
                           const isExpanded = expandedFacts.has(fact.id);
                           
                           return (
