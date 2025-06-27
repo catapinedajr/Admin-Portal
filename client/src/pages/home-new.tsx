@@ -275,71 +275,10 @@ const bitcoinTerms = [
   }
 ];
 
-const userProfiles = {
-  individuals: [
-    {
-      name: "Sarah Chen",
-      role: "Software Engineer & Bitcoin HODLer",
-      story: "Started buying Bitcoin in 2018 after realizing traditional savings accounts weren't keeping up with inflation. Now uses Bitcoin as her primary savings vehicle and has built a substantial position through consistent dollar-cost averaging.",
-      reason: "Bitcoin gives me control over my money and protects my purchasing power better than any bank ever could."
-    },
-    {
-      name: "Marcus Rodriguez", 
-      role: "Small Business Owner",
-      story: "Owns a coffee shop in Miami and started accepting Bitcoin payments in 2021. Now keeps 30% of business reserves in Bitcoin and has seen significant growth in his savings despite economic uncertainty.",
-      reason: "Bitcoin allows me to serve customers globally and protects my business from currency debasement."
-    },
-    {
-      name: "Elena Petrov",
-      role: "Teacher & DCA Investor", 
-      story: "A high school mathematics teacher who began learning about Bitcoin during the 2020 pandemic. She now dedicates $200 monthly to Bitcoin purchases and teaches her students about digital currency concepts.",
-      reason: "Bitcoin represents financial education and freedom - something I want to pass on to the next generation."
-    }
-  ],
-  businesses: [
-    {
-      name: "MicroStrategy", 
-      role: "Business Intelligence Company",
-      story: "Led by Michael Saylor, MicroStrategy was the first major public company to adopt Bitcoin as its primary treasury reserve asset. They've accumulated over 130,000 Bitcoin since 2020, fundamentally changing how corporations think about cash management.",
-      reason: "Bitcoin is superior to cash as a store of value and provides shareholders with exposure to the digital transformation of the global economy."
-    },
-    {
-      name: "Tesla",
-      role: "Electric Vehicle Manufacturer", 
-      story: "Under Elon Musk's leadership, Tesla invested $1.5 billion in Bitcoin in early 2021 and briefly accepted Bitcoin payments for vehicles. Though they scaled back vehicle purchases due to environmental concerns, they maintained their Bitcoin holdings.",
-      reason: "Bitcoin diversifies our cash position and provides long-term value storage as we transition to sustainable energy."
-    },
-    {
-      name: "Strike",
-      role: "Bitcoin Payment Platform",
-      story: "Founded by Jack Mallers, Strike built the Lightning Network infrastructure that enabled El Salvador's Bitcoin adoption. They've revolutionized cross-border payments by using Bitcoin rails to settle transactions instantly and cheaply.",
-      reason: "Bitcoin's Lightning Network enables instant, low-cost global payments that traditional banking simply cannot match."
-    }
-  ],
-  nations: [
-    {
-      name: "El Salvador",
-      role: "First Nation to Adopt Bitcoin as Legal Tender",
-      story: "Under President Nayib Bukele's leadership, El Salvador became the first country to make Bitcoin legal tender in September 2021. They've purchased over 2,600 Bitcoin for their national treasury and built Bitcoin education programs for citizens.",
-      reason: "Bitcoin provides financial inclusion for our unbanked population and reduces our dependence on the US dollar."
-    },
-    {
-      name: "Central African Republic", 
-      role: "Second Country to Adopt Bitcoin",
-      story: "Following El Salvador's lead, CAR adopted Bitcoin as legal tender in 2022. Despite economic challenges, they've embraced Bitcoin as a tool for financial sovereignty and to attract international investment in their resource-rich economy.",
-      reason: "Bitcoin offers us monetary independence and connects our economy directly to the global digital financial system."
-    },
-    {
-      name: "Miami, Florida",
-      role: "Bitcoin-Friendly City",
-      story: "Mayor Francis Suarez has transformed Miami into America's Bitcoin capital, exploring Bitcoin for city finances, hosting major Bitcoin conferences, and attracting crypto companies with progressive policies. Miami was among the first cities to explore paying employees in Bitcoin.",
-      reason: "Bitcoin positions Miami as the financial technology capital of America and attracts innovative businesses to our city."
-    }
-  ]
-};
+
 
 type MainSection = "learn" | "practice" | "more";
-type LearnSubTab = "today" | "weekly" | "reference" | "stories";
+type LearnSubTab = "today" | "weekly" | "reference";
 type PracticeSubTab = "safety" | "transactions" | "hodl" | "dca";
 type MoreSubTab = "store";
 
@@ -348,7 +287,7 @@ export default function Home() {
   const [learnSubTab, setLearnSubTab] = useState<LearnSubTab>("today");
   const [practiceSubTab, setPracticeSubTab] = useState<PracticeSubTab>("safety");
   const [moreSubTab, setMoreSubTab] = useState<MoreSubTab>("store");
-  const [storiesSubTab, setStoriesSubTab] = useState<"individuals" | "businesses" | "nations">("individuals");
+
   const [convictionSubTab, setConvictionSubTab] = useState<"whitepaper" | "books" | "videos">("whitepaper");
   const [showSplash, setShowSplash] = useState(true);
   const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
@@ -1669,7 +1608,7 @@ export default function Home() {
           <p className="text-zinc-400">
             {activeSection === "learn" && "Learn the fundamentals and understand why Bitcoin matters"}
             {activeSection === "practice" && "Interactive simulations to deepen your understanding"}
-            {activeSection === "more" && "Real stories and conviction-building content"}
+            {activeSection === "more" && "Resources and tools to support your Bitcoin journey"}
           </p>
         </div>
 
@@ -1705,14 +1644,7 @@ export default function Home() {
                 >
                   Reference
                 </Button>
-                <Button
-                  variant={learnSubTab === "stories" ? "secondary" : "ghost"}
-                  size="sm"
-                  onClick={() => setLearnSubTab("stories")}
-                  className="text-xs px-3 py-1"
-                >
-                  Stories
-                </Button>
+
               </div>
             </div>
 
@@ -1896,83 +1828,7 @@ export default function Home() {
               </div>
             )}
 
-            {/* Stories Content */}
-            {learnSubTab === "stories" && (
-              <div className="space-y-6">
-                <div className="text-center space-y-2">
-                  <h3 className="text-xl font-bold text-white">Real Bitcoin Stories</h3>
-                  <p className="text-zinc-400">See how individuals, businesses, and nations are using Bitcoin</p>
-                </div>
 
-                {/* Stories Sub-navigation */}
-                <div className="flex justify-center">
-                  <div className="flex space-x-2 mb-6 justify-center flex-wrap gap-2">
-                    <Button
-                      variant={storiesSubTab === "individuals" ? "secondary" : "ghost"}
-                      size="sm"
-                      onClick={() => setStoriesSubTab("individuals")}
-                      className="text-xs px-3 py-1"
-                    >
-                      <UserIcon className="w-3 h-3 mr-1" />
-                      Individuals
-                    </Button>
-                    <Button
-                      variant={storiesSubTab === "businesses" ? "secondary" : "ghost"}
-                      size="sm"
-                      onClick={() => setStoriesSubTab("businesses")}
-                      className="text-xs px-3 py-1"
-                    >
-                      <Building2 className="w-3 h-3 mr-1" />
-                      Businesses
-                    </Button>
-                    <Button
-                      variant={storiesSubTab === "nations" ? "secondary" : "ghost"}
-                      size="sm"
-                      onClick={() => setStoriesSubTab("nations")}
-                      className="text-xs px-3 py-1"
-                    >
-                      <Globe className="w-3 h-3 mr-1" />
-                      Nations
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Stories Content */}
-                <div className="grid gap-6">
-                  {userProfiles[storiesSubTab].map((profile, index) => (
-                    <Card key={index} className="bg-zinc-900 border-zinc-800">
-                      <CardContent className="p-6">
-                        <div className="space-y-4">
-                          <div className="flex items-start gap-4">
-                            <div className="p-3 bg-orange-600/20 rounded-lg">
-                              {storiesSubTab === "individuals" && <UserIcon className="w-8 h-8 text-orange-400" />}
-                              {storiesSubTab === "businesses" && <Building2 className="w-8 h-8 text-orange-400" />}
-                              {storiesSubTab === "nations" && <Globe className="w-8 h-8 text-orange-400" />}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h3 className="text-xl font-bold text-white">{profile.name}</h3>
-                              <p className="text-orange-400 font-medium">{profile.role}</p>
-                            </div>
-                          </div>
-                          
-                          <div className="space-y-3">
-                            <p className="text-zinc-300 leading-relaxed">{profile.story}</p>
-                            
-                            <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-4">
-                              <h4 className="text-orange-300 font-medium mb-2 flex items-center gap-2">
-                                <Quote className="w-4 h-4" />
-                                Why Bitcoin?
-                              </h4>
-                              <p className="text-orange-100 text-sm italic">"{profile.reason}"</p>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            )}
 
 
             {/* Reference Section */}
