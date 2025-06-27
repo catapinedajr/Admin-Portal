@@ -280,7 +280,7 @@ const bitcoinTerms = [
 
 
 
-type MainSection = "learn" | "simulations" | "more";
+type MainSection = "learn" | "finance" | "simulations" | "more";
 type LearnSubTab = "today" | "reference";
 type SimulationsSubTab = "safety" | "transactions" | "hodl" | "dca";
 type MoreSubTab = "store";
@@ -1788,6 +1788,15 @@ export default function Home() {
               </Button>
 
               <Button
+                variant={activeSection === "finance" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setActiveSection("finance")}
+                className="text-sm px-4 py-2"
+              >
+                Finance
+              </Button>
+
+              <Button
                 variant={activeSection === "simulations" ? "secondary" : "ghost"}
                 size="sm"
                 onClick={() => setActiveSection("simulations")}
@@ -1813,11 +1822,13 @@ export default function Home() {
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-white mb-2">
             {activeSection === "learn" && "Build Your Bitcoin Foundation"}
+            {activeSection === "finance" && "Traditional Finance vs Bitcoin"}
             {activeSection === "simulations" && "Practice Bitcoin Concepts"}
             {activeSection === "more" && "Discover More About Bitcoin"}
           </h2>
           <p className="text-zinc-400">
             {activeSection === "learn" && "Learn the fundamentals and understand why Bitcoin matters"}
+            {activeSection === "finance" && "Understand why Bitcoin fixes the problems of traditional finance"}
             {activeSection === "simulations" && "Interactive simulations to deepen your understanding"}
             {activeSection === "more" && "Resources and tools to support your Bitcoin journey"}
           </p>
@@ -2167,7 +2178,168 @@ export default function Home() {
           </div>
         )}
 
+        {/* Finance Section */}
+        {activeSection === "finance" && (
+          <div className="space-y-6">
+            {/* Traditional Finance Problems */}
+            <Card className="bg-red-900/20 border-red-800">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-3">
+                  <TrendingDown className="w-6 h-6 text-red-400" />
+                  Problems with Traditional Finance
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-3">
+                    <div className="p-4 bg-red-900/30 rounded-lg">
+                      <h4 className="font-semibold text-red-300 mb-2">💸 Inflation & Currency Debasement</h4>
+                      <p className="text-sm text-zinc-300">The US dollar has lost over 96% of its purchasing power since 1913 due to money printing. Your savings lose value every year through hidden taxation.</p>
+                    </div>
+                    <div className="p-4 bg-red-900/30 rounded-lg">
+                      <h4 className="font-semibold text-red-300 mb-2">🏦 Banking Intermediaries</h4>
+                      <p className="text-sm text-zinc-300">Banks can freeze accounts, charge fees, and control your money. They profit from your deposits while paying you virtually nothing in return.</p>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="p-4 bg-red-900/30 rounded-lg">
+                      <h4 className="font-semibold text-red-300 mb-2">🚫 Financial Exclusion</h4>
+                      <p className="text-sm text-zinc-300">2 billion people worldwide lack access to banking. Traditional systems require documentation, minimum balances, and institutional approval.</p>
+                    </div>
+                    <div className="p-4 bg-red-900/30 rounded-lg">
+                      <h4 className="font-semibold text-red-300 mb-2">⚡ High Fees & Slow Transfers</h4>
+                      <p className="text-sm text-zinc-300">International transfers cost 5-15% and take days to settle. The poorest people pay the highest fees for basic financial services.</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
+            {/* How Bitcoin Fixes These Problems */}
+            <Card className="bg-green-900/20 border-green-800">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-3">
+                  <TrendingUp className="w-6 h-6 text-green-400" />
+                  How Bitcoin Solves These Problems
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-3">
+                    <div className="p-4 bg-green-900/30 rounded-lg">
+                      <h4 className="font-semibold text-green-300 mb-2">📈 Fixed Supply</h4>
+                      <p className="text-sm text-zinc-300">Only 21 million Bitcoin will ever exist. No central authority can print more, protecting your purchasing power from inflation.</p>
+                    </div>
+                    <div className="p-4 bg-green-900/30 rounded-lg">
+                      <h4 className="font-semibold text-green-300 mb-2">🌐 Permissionless Access</h4>
+                      <p className="text-sm text-zinc-300">Anyone with internet can use Bitcoin. No bank approval, documentation, or minimum balance required. True financial inclusion.</p>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="p-4 bg-green-900/30 rounded-lg">
+                      <h4 className="font-semibold text-green-300 mb-2">🛡️ Censorship Resistance</h4>
+                      <p className="text-sm text-zinc-300">No government or corporation can freeze your Bitcoin. You control your money with mathematical certainty, not institutional permission.</p>
+                    </div>
+                    <div className="p-4 bg-green-900/30 rounded-lg">
+                      <h4 className="font-semibold text-green-300 mb-2">⚡ Low-Cost Global Transfers</h4>
+                      <p className="text-sm text-zinc-300">Send Bitcoin anywhere in the world for less than $1 in fees. Transactions settle in minutes, not days.</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Side-by-Side Comparison */}
+            <Card className="bg-zinc-900 border-zinc-800">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-3">
+                  <Calculator className="w-6 h-6 text-orange-400" />
+                  Traditional Finance vs Bitcoin Comparison
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-zinc-700">
+                        <th className="text-left py-3 px-4 text-zinc-400">Feature</th>
+                        <th className="text-left py-3 px-4 text-red-400">Traditional Finance</th>
+                        <th className="text-left py-3 px-4 text-green-400">Bitcoin</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-zinc-300">
+                      <tr className="border-b border-zinc-800">
+                        <td className="py-3 px-4 font-medium">Supply Control</td>
+                        <td className="py-3 px-4">Central banks print unlimited money</td>
+                        <td className="py-3 px-4">Fixed 21 million cap</td>
+                      </tr>
+                      <tr className="border-b border-zinc-800">
+                        <td className="py-3 px-4 font-medium">Access Requirements</td>
+                        <td className="py-3 px-4">Documentation, approval, minimums</td>
+                        <td className="py-3 px-4">Just internet connection</td>
+                      </tr>
+                      <tr className="border-b border-zinc-800">
+                        <td className="py-3 px-4 font-medium">Transaction Fees</td>
+                        <td className="py-3 px-4">5-15% for international transfers</td>
+                        <td className="py-3 px-4">Less than $1 globally</td>
+                      </tr>
+                      <tr className="border-b border-zinc-800">
+                        <td className="py-3 px-4 font-medium">Settlement Time</td>
+                        <td className="py-3 px-4">3-5 business days</td>
+                        <td className="py-3 px-4">10 minutes to 1 hour</td>
+                      </tr>
+                      <tr className="border-b border-zinc-800">
+                        <td className="py-3 px-4 font-medium">Operating Hours</td>
+                        <td className="py-3 px-4">Business hours only</td>
+                        <td className="py-3 px-4">24/7/365</td>
+                      </tr>
+                      <tr>
+                        <td className="py-3 px-4 font-medium">Account Control</td>
+                        <td className="py-3 px-4">Banks can freeze/close accounts</td>
+                        <td className="py-3 px-4">You control your own keys</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Future Timeline */}
+            <Card className="bg-zinc-900 border-zinc-800">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-3">
+                  <Star className="w-6 h-6 text-orange-400" />
+                  The Financial Future Timeline
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-4">
+                  <div className="flex items-start gap-4 p-4 bg-zinc-800/50 rounded-lg">
+                    <div className="text-orange-400 font-bold">2024</div>
+                    <div>
+                      <h4 className="font-semibold text-white mb-1">Early Adoption Phase</h4>
+                      <p className="text-sm text-zinc-300">Countries like El Salvador adopt Bitcoin as legal tender. Major corporations add Bitcoin to treasury reserves. Traditional financial institutions begin offering Bitcoin services.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4 p-4 bg-zinc-800/50 rounded-lg">
+                    <div className="text-orange-400 font-bold">2030</div>
+                    <div>
+                      <h4 className="font-semibold text-white mb-1">Mainstream Integration</h4>
+                      <p className="text-sm text-zinc-300">Bitcoin payments become common globally. Lightning Network enables instant micropayments. Traditional banks offer Bitcoin custody and lending services.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4 p-4 bg-zinc-800/50 rounded-lg">
+                    <div className="text-orange-400 font-bold">2040</div>
+                    <div>
+                      <h4 className="font-semibold text-white mb-1">The New Financial Standard</h4>
+                      <p className="text-sm text-zinc-300">Bitcoin serves as the global reserve asset. Central banks hold Bitcoin reserves. Cross-border trade settles primarily in Bitcoin rather than fiat currencies.</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* Practice Section */}
         {activeSection === "simulations" && (
