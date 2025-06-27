@@ -2894,10 +2894,10 @@ export default function Home() {
                                         } else {
                                           // Gradual recovery and exponential growth
                                           const recoveryProgress = (progress - 0.5) / 0.5;
-                                          volatilityMultiplier = 1 + recoveryProgress * (currentGrowthRatio / startValue - 1);
+                                          volatilityMultiplier = 1 + recoveryProgress * (currentGrowthRatio - 1);
                                         }
                                         
-                                        value = startValue * Math.min(volatilityMultiplier, currentGrowthRatio);
+                                        value = startValue * volatilityMultiplier;
                                       } else if (hodlInputs.scenario === 'jan2020') {
                                         // COVID crash and recovery - dramatic dip then exponential recovery
                                         if (progress < 0.15) {
@@ -2910,15 +2910,20 @@ export default function Home() {
                                           value = startValue * (2 + growthProgress * (currentGrowthRatio - 2));
                                         }
                                       } else if (years >= 5) {
-                                        // Long-term exponential with realistic volatility
+                                        // Long-term exponential with realistic volatility - ensure full growth is reached
                                         const baseGrowth = Math.pow(currentGrowthRatio, progress);
-                                        const volatility = 1 + 0.4 * Math.sin(progress * 12) * (1 - progress * 0.3);
-                                        value = startValue * baseGrowth * volatility;
+                                        const volatility = 1 + 0.3 * Math.sin(progress * 8) * (1 - progress * 0.4);
+                                        value = startValue * baseGrowth * Math.max(0.3, volatility);
                                       } else {
                                         // Shorter term with more moderate growth
                                         const baseGrowth = Math.pow(currentGrowthRatio, progress);
-                                        const volatility = 1 + 0.25 * Math.sin(progress * 6);
-                                        value = startValue * baseGrowth * volatility;
+                                        const volatility = 1 + 0.2 * Math.sin(progress * 6) * (1 - progress * 0.2);
+                                        value = startValue * baseGrowth * Math.max(0.5, volatility);
+                                      }
+                                      
+                                      // Ensure the final value always reaches the correct target
+                                      if (progress >= 0.98) {
+                                        value = startValue * currentGrowthRatio;
                                       }
                                       
                                       // Use logarithmic scale for better visual impact of compounding
