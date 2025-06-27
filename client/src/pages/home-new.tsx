@@ -2763,30 +2763,27 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Real-World Examples - Compact */}
-                <div className="bg-gradient-to-r from-red-950/30 to-orange-950/30 rounded-lg p-4 border border-red-800/30">
-                  <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
+                {/* Real-World Examples - Horizontal Boxes */}
+                <div className="space-y-2">
+                  <h4 className="text-white font-semibold flex items-center gap-2">
                     <ShoppingCart className="w-4 h-4 text-orange-400" />
                     Real-World Impact in {moneySupplyYear}
                   </h4>
-                  <div className="grid gap-3 md:grid-cols-3">
-                    <div className="text-center space-y-1">
-                      <div className="text-lg">🏠</div>
-                      <div className="text-zinc-300 text-xs">House</div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="bg-red-950/40 border border-red-800/40 rounded-lg p-3 text-center">
+                      <div className="text-sm">🏠 House</div>
                       <div className="text-orange-400 font-bold text-sm">${getHousePriceForYear(moneySupplyYear).toLocaleString()}</div>
-                      <div className="text-zinc-500 text-xs">vs $3,200 in 1920</div>
+                      <div className="text-zinc-500 text-xs">vs $3,200</div>
                     </div>
-                    <div className="text-center space-y-1">
-                      <div className="text-lg">🥛</div>
-                      <div className="text-zinc-300 text-xs">Milk</div>
+                    <div className="bg-red-950/40 border border-red-800/40 rounded-lg p-3 text-center">
+                      <div className="text-sm">🥛 Milk</div>
                       <div className="text-orange-400 font-bold text-sm">${getMilkPriceForYear(moneySupplyYear)}</div>
-                      <div className="text-zinc-500 text-xs">vs $0.56 in 1920</div>
+                      <div className="text-zinc-500 text-xs">vs $0.56</div>
                     </div>
-                    <div className="text-center space-y-1">
-                      <div className="text-lg">⛽</div>
-                      <div className="text-zinc-300 text-xs">Gas</div>
+                    <div className="bg-red-950/40 border border-red-800/40 rounded-lg p-3 text-center">
+                      <div className="text-sm">⛽ Gas</div>
                       <div className="text-orange-400 font-bold text-sm">${getGasPriceForYear(moneySupplyYear)}</div>
-                      <div className="text-zinc-500 text-xs">vs $0.30 in 1920</div>
+                      <div className="text-zinc-500 text-xs">vs $0.30</div>
                     </div>
                   </div>
                 </div>
