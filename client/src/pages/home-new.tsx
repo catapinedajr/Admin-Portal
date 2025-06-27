@@ -2662,7 +2662,7 @@ export default function Home() {
                     )}
                     
                     {/* Compact Year Timeline */}
-                    <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
                       {[
                         { step: 0, year: "Today", value: 25000, purchasingPower: 100, loss: "$0" },
                         { step: 1, year: "Year 1", value: 24250, purchasingPower: 97, loss: "$750" },
@@ -2676,7 +2676,7 @@ export default function Home() {
                         const isCurrentStep = inflationProgress === step && inflationSimActive;
                         
                         return (
-                          <div key={step} className={`relative p-3 rounded-lg border transition-all duration-1000 overflow-hidden ${
+                          <div key={step} className={`relative p-2 rounded-lg border transition-all duration-1000 overflow-hidden ${
                             isActive 
                               ? step === 0 ? 'bg-green-800/30 border-green-600/50' : 'bg-red-800/30 border-red-600/50'
                               : 'bg-zinc-800 border-zinc-700'
@@ -2694,22 +2694,22 @@ export default function Home() {
                               }}
                             ></div>
                             
-                            <div className="relative text-center">
-                              <div className={`font-bold text-lg transition-colors duration-1000 ${
+                            <div className="relative text-center space-y-1">
+                              <div className={`font-bold text-sm transition-colors duration-1000 ${
                                 isActive 
                                   ? step === 0 ? 'text-green-400' : 'text-red-400' 
                                   : 'text-zinc-400'
                               }`}>
                                 {year}
                               </div>
-                              <div className={`text-2xl font-bold transition-colors duration-1000 ${
+                              <div className={`text-lg font-bold transition-colors duration-1000 ${
                                 isActive 
                                   ? step === 0 ? 'text-green-300' : 'text-red-300'
                                   : 'text-zinc-500'
                               }`}>
                                 ${value.toLocaleString()}
                               </div>
-                              <div className={`text-sm transition-colors duration-1000 ${
+                              <div className={`text-xs transition-colors duration-1000 ${
                                 isActive 
                                   ? step === 0 ? 'text-green-400' : 'text-red-400'
                                   : 'text-zinc-500'
@@ -2717,7 +2717,7 @@ export default function Home() {
                                 {purchasingPower}% buying power
                               </div>
                               {step > 0 && (
-                                <div className={`text-xs mt-1 transition-colors duration-1000 ${
+                                <div className={`text-xs transition-colors duration-1000 ${
                                   isActive ? 'text-red-300' : 'text-zinc-600'
                                 }`}>
                                   Lost {loss}
