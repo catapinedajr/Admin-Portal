@@ -2646,10 +2646,9 @@ export default function Home() {
                         <g>
                           {(() => {
                             const events = [
-                              { year: 1933, m2: 0.020, label: "Gold Confiscation", sublabel: "1933", labelX: 20, labelY: 35 },  
-                              { year: 1971, m2: 0.583, label: "Gold Standard Ends", sublabel: "1971", labelX: 110, labelY: 25 },
-                              { year: 2008, m2: 7.500, label: "Financial Crisis", sublabel: "2008", labelX: 270, labelY: 35 },
-                              { year: 2020, m2: 15.400, label: "Money Printing", sublabel: "2020", labelX: 310, labelY: 25 }
+                              { year: 1945, m2: 0.107, label: "WWII", sublabel: "Post-War", labelX: 80, labelY: 30 },
+                              { year: 2008, m2: 7.500, label: "Financial Crisis", sublabel: "2008", labelX: 240, labelY: 40 },
+                              { year: 2020, m2: 15.400, label: "COVID", sublabel: "Money Printing", labelX: 300, labelY: 30 }
                             ];
                             
                             return events.map((event, index) => {
@@ -2665,47 +2664,47 @@ export default function Home() {
                                   <line 
                                     x1={chartX} 
                                     y1={chartY} 
-                                    x2={event.labelX + 50} 
-                                    y2={event.labelY + 15} 
+                                    x2={event.labelX + 40} 
+                                    y2={event.labelY + 12} 
                                     stroke="#64748b" 
                                     strokeWidth="1" 
                                     strokeDasharray="3,2"
-                                    opacity="0.6"
+                                    opacity="0.5"
                                   />
                                   
                                   {/* Chart point marker */}
                                   <circle cx={chartX} cy={chartY} r="3" fill="#dc2626" stroke="#ffffff" strokeWidth="1"/>
                                   
-                                  {/* Professional label background */}
+                                  {/* Compact label background */}
                                   <rect 
                                     x={event.labelX} 
                                     y={event.labelY} 
-                                    width="100" 
-                                    height="30" 
-                                    fill="rgba(15,23,42,0.95)" 
-                                    stroke="#475569"
+                                    width="80" 
+                                    height="24" 
+                                    fill="rgba(0,0,0,0.85)" 
+                                    stroke="#64748b"
                                     strokeWidth="1"
-                                    rx="4"
+                                    rx="3"
                                   />
                                   
                                   {/* Event title */}
                                   <text 
-                                    x={event.labelX + 50} 
-                                    y={event.labelY + 12} 
+                                    x={event.labelX + 40} 
+                                    y={event.labelY + 10} 
                                     fill="#ffffff" 
-                                    fontSize="10" 
+                                    fontSize="9" 
                                     fontWeight="600"
                                     textAnchor="middle"
                                   >
                                     {event.label}
                                   </text>
                                   
-                                  {/* Year subtitle */}
+                                  {/* Subtitle */}
                                   <text 
-                                    x={event.labelX + 50} 
-                                    y={event.labelY + 24} 
+                                    x={event.labelX + 40} 
+                                    y={event.labelY + 20} 
                                     fill="#94a3b8" 
-                                    fontSize="8" 
+                                    fontSize="7" 
                                     fontWeight="normal"
                                     textAnchor="middle"
                                   >
