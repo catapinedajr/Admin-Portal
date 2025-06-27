@@ -2295,27 +2295,33 @@ export default function Home() {
                   
                   <div className="space-y-4">
                     {/* Visual Comparison Chart */}
-                    <div className="h-32 bg-zinc-800 rounded-lg p-4 relative">
-                      <div className="text-xs text-zinc-400 mb-2">Your purchasing power over {inflationYears} years:</div>
-                      <div className="flex items-end justify-between h-16">
+                    <div className="h-40 bg-zinc-800 rounded-lg p-4 relative">
+                      <div className="text-sm text-zinc-300 mb-3 font-medium">Your purchasing power over {inflationYears} years:</div>
+                      <div className="flex items-end justify-center gap-8 h-20">
                         {/* Starting Value Bar */}
                         <div className="flex flex-col items-center">
-                          <div className="bg-zinc-500 w-8 h-16 rounded-sm"></div>
-                          <div className="text-xs text-zinc-400 mt-1">Today</div>
-                          <div className="text-xs text-white font-bold">${parseInt(inflationAmount).toLocaleString()}</div>
+                          <div className="bg-zinc-500 w-12 h-20 rounded-t-md flex items-end justify-center pb-2">
+                            <span className="text-white text-xs font-bold">100%</span>
+                          </div>
+                          <div className="text-sm text-zinc-300 mt-2 font-medium">Today</div>
+                          <div className="text-sm text-white font-bold">${parseInt(inflationAmount).toLocaleString()}</div>
                         </div>
                         
                         {/* Arrow */}
-                        <div className="text-zinc-600 text-2xl">→</div>
+                        <div className="text-zinc-500 text-3xl mb-8">→</div>
                         
-                        {/* Ending Value Bar (Shorter) */}
+                        {/* Ending Value Bar (Proportionally shorter) */}
                         <div className="flex flex-col items-center">
                           <div 
-                            className="bg-red-500 w-8 rounded-sm"
-                            style={{ height: `${16 * Math.pow(0.97, parseInt(inflationYears))}px` }}
-                          ></div>
-                          <div className="text-xs text-zinc-400 mt-1">In {inflationYears} years</div>
-                          <div className="text-xs text-red-400 font-bold">
+                            className="bg-red-500 w-12 rounded-t-md flex items-end justify-center pb-2"
+                            style={{ height: `${Math.max(20, 80 * Math.pow(0.97, parseInt(inflationYears)))}px` }}
+                          >
+                            <span className="text-white text-xs font-bold">
+                              {Math.round(Math.pow(0.97, parseInt(inflationYears)) * 100)}%
+                            </span>
+                          </div>
+                          <div className="text-sm text-zinc-300 mt-2 font-medium">In {inflationYears} years</div>
+                          <div className="text-sm text-red-400 font-bold">
                             ${Math.round(parseInt(inflationAmount) * Math.pow(0.97, parseInt(inflationYears))).toLocaleString()}
                           </div>
                         </div>
@@ -2324,8 +2330,8 @@ export default function Home() {
                     
                     {/* Clear Loss Statement */}
                     <div className="p-4 bg-red-950/50 rounded-xl border border-red-800/50 text-center">
-                      <div className="text-red-300 text-sm mb-2">You lose this much buying power:</div>
-                      <div className="text-2xl font-bold text-red-400">
+                      <div className="text-red-300 text-sm mb-2">Money lost to inflation:</div>
+                      <div className="text-3xl font-bold text-red-400">
                         ${Math.round(parseInt(inflationAmount) * (1 - Math.pow(0.97, parseInt(inflationYears)))).toLocaleString()}
                       </div>
                       <div className="text-red-300/70 text-xs mt-1">Gone forever due to money printing</div>
@@ -2397,26 +2403,30 @@ export default function Home() {
                   
                   <div className="space-y-4">
                     {/* Fee Comparison Visual */}
-                    <div className="h-32 bg-zinc-800 rounded-lg p-4">
-                      <div className="text-xs text-zinc-400 mb-2">Annual fees you pay:</div>
-                      <div className="flex items-end justify-between h-16">
+                    <div className="h-40 bg-zinc-800 rounded-lg p-4">
+                      <div className="text-sm text-zinc-300 mb-3 font-medium">Annual fees you pay:</div>
+                      <div className="flex items-end justify-center gap-8 h-20">
                         {/* Bitcoin Fee Bar (Very short) */}
-                        <div className="flex flex-col items-center flex-1">
-                          <div className="bg-green-500 w-8 h-2 rounded-sm"></div>
-                          <div className="text-xs text-green-400 mt-1 font-bold">Bitcoin</div>
-                          <div className="text-xs text-green-400">
+                        <div className="flex flex-col items-center">
+                          <div className="bg-green-500 w-12 h-4 rounded-t-md flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">$</span>
+                          </div>
+                          <div className="text-sm text-green-400 mt-2 font-bold">Bitcoin</div>
+                          <div className="text-sm text-green-400 font-bold">
                             ${Math.round(parseInt(transferCount) * 0.5 * 12).toLocaleString()}
                           </div>
                         </div>
                         
                         {/* vs */}
-                        <div className="text-zinc-600 text-xs mx-2">vs</div>
+                        <div className="text-zinc-500 text-3xl mb-8">vs</div>
                         
                         {/* Bank Fee Bar (Much taller) */}
-                        <div className="flex flex-col items-center flex-1">
-                          <div className="bg-red-500 w-8 h-16 rounded-sm"></div>
-                          <div className="text-xs text-red-400 mt-1 font-bold">Banks</div>
-                          <div className="text-xs text-red-400">
+                        <div className="flex flex-col items-center">
+                          <div className="bg-red-500 w-12 h-20 rounded-t-md flex items-end justify-center pb-2">
+                            <span className="text-white text-xs font-bold">$$$</span>
+                          </div>
+                          <div className="text-sm text-red-400 mt-2 font-bold">Banks</div>
+                          <div className="text-sm text-red-400 font-bold">
                             ${Math.round(parseInt(transferCount) * parseInt(transferAmount) * 0.08 * 12).toLocaleString()}
                           </div>
                         </div>
@@ -2424,8 +2434,8 @@ export default function Home() {
                     </div>
                     
                     <div className="p-4 bg-red-950/50 rounded-xl border border-red-800/50 text-center">
-                      <div className="text-red-300 text-sm mb-2">Banks steal this much from you annually:</div>
-                      <div className="text-2xl font-bold text-red-400">
+                      <div className="text-red-300 text-sm mb-2">Banks take this much from you annually:</div>
+                      <div className="text-3xl font-bold text-red-400">
                         ${Math.round(parseInt(transferCount) * parseInt(transferAmount) * 0.08 * 12).toLocaleString()}
                       </div>
                       <div className="text-red-300/70 text-xs mt-1">8% fees + terrible exchange rates</div>
