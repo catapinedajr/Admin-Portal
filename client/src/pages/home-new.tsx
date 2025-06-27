@@ -2647,16 +2647,16 @@ export default function Home() {
                   <div className="absolute inset-0 bg-zinc-800 rounded-lg overflow-hidden">
                     {/* Chart Container */}
                     <div className="h-full relative p-6">
-                      {/* Y-Axis Labels - Money Supply */}
+                      {/* Y-Axis Labels - Logarithmic-style for dramatic effect */}
                       <div className="absolute left-0 top-4 bottom-8 flex flex-col justify-between text-xs text-zinc-400">
-                        <span className="text-red-400 font-bold">$21T</span>
-                        <span className="text-orange-400">$18T</span>
-                        <span className="text-yellow-400">$15T</span>
-                        <span className="text-zinc-300">$12T</span>
-                        <span className="text-zinc-300">$9T</span>
-                        <span className="text-zinc-300">$6T</span>
-                        <span className="text-zinc-300">$3T</span>
-                        <span className="text-green-400 font-bold">$27B</span>
+                        <span className="text-red-400 font-bold text-sm">$21T</span>
+                        <span className="text-red-300 font-medium">$10T</span>
+                        <span className="text-orange-400 font-medium">$5T</span>
+                        <span className="text-orange-300">$1T</span>
+                        <span className="text-yellow-400">$500B</span>
+                        <span className="text-yellow-300">$100B</span>
+                        <span className="text-green-300">$50B</span>
+                        <span className="text-green-400 font-bold text-sm">$27B</span>
                       </div>
                       
                       {/* Chart Title */}
@@ -2692,30 +2692,54 @@ export default function Home() {
                             </linearGradient>
                           </defs>
                           
-                          {/* Money Supply Exponential Growth - Mathematical exponential curve */}
+                          {/* Money Supply Exponential Growth - Dramatic logarithmic-style curve */}
                           <path
-                            d="M 0 99.9 
-                               C 50 99.8 100 99.7 150 99.5
-                               C 200 99.2 250 98.8 300 98.0
-                               C 350 96.8 400 95.0 450 92.0
-                               C 500 87.5 550 80.0 600 68.0
-                               C 650 50.0 700 25.0 750 8.0
-                               C 800 2.0 850 0.5 900 0.1"
+                            d="M 0 99.8
+                               L 50 99.7
+                               L 100 99.6
+                               L 150 99.4
+                               L 200 99.0
+                               L 250 98.4
+                               L 300 97.5
+                               L 350 96.0
+                               L 400 93.5
+                               L 450 89.5
+                               L 500 83.0
+                               L 550 73.0
+                               L 600 58.0
+                               L 650 38.0
+                               L 700 18.0
+                               L 750 6.0
+                               L 800 1.5
+                               L 850 0.4
+                               L 900 0.1"
                             stroke="#ef4444"
-                            strokeWidth="3"
+                            strokeWidth="4"
                             fill="none"
                             className="drop-shadow-lg"
                           />
                           
-                          {/* Fill area under exponential curve */}
+                          {/* Fill area under dramatic exponential curve */}
                           <path
-                            d="M 0 99.9 
-                               C 50 99.8 100 99.7 150 99.5
-                               C 200 99.2 250 98.8 300 98.0
-                               C 350 96.8 400 95.0 450 92.0
-                               C 500 87.5 550 80.0 600 68.0
-                               C 650 50.0 700 25.0 750 8.0
-                               C 800 2.0 850 0.5 900 0.1
+                            d="M 0 99.8
+                               L 50 99.7
+                               L 100 99.6
+                               L 150 99.4
+                               L 200 99.0
+                               L 250 98.4
+                               L 300 97.5
+                               L 350 96.0
+                               L 400 93.5
+                               L 450 89.5
+                               L 500 83.0
+                               L 550 73.0
+                               L 600 58.0
+                               L 650 38.0
+                               L 700 18.0
+                               L 750 6.0
+                               L 800 1.5
+                               L 850 0.4
+                               L 900 0.1
                                L 900 100 L 0 100 Z"
                             fill="url(#moneySupplyGradient)"
                           />
@@ -2748,48 +2772,48 @@ export default function Home() {
                           </text>
                         </svg>
                         
-                        {/* Key Historical Events aligned with exponential curve */}
+                        {/* Key Historical Events aligned with dramatic logarithmic curve */}
                         <div className="absolute inset-0">
-                          {/* 1924 Start - $27B */}
+                          {/* 1924 Start - $27B (bottom of curve) */}
                           <div className="absolute" style={{ left: '1%', top: '98%' }}>
-                            <div className="w-3 h-3 bg-green-500 rounded-full border-2 border-zinc-900"></div>
+                            <div className="w-4 h-4 bg-green-500 rounded-full border-2 border-zinc-900 shadow-lg"></div>
                             <div className="text-xs text-green-400 mt-1 whitespace-nowrap font-medium">1924: Gold Era</div>
                             <div className="text-xs text-zinc-500">$27B → Sound money</div>
                           </div>
                           
                           {/* 1933 Gold Standard Abandoned - $33B */}
-                          <div className="absolute" style={{ left: '9%', top: '97.5%' }}>
-                            <div className="w-3 h-3 bg-yellow-500 rounded-full border-2 border-zinc-900"></div>
+                          <div className="absolute" style={{ left: '9%', top: '97.8%' }}>
+                            <div className="w-4 h-4 bg-yellow-500 rounded-full border-2 border-zinc-900 shadow-lg"></div>
                             <div className="text-xs text-yellow-400 mt-1 whitespace-nowrap font-medium">1933: Gold Confiscation</div>
                             <div className="text-xs text-zinc-500">$33B → Printing begins</div>
                           </div>
                           
-                          {/* 1971 Nixon Shock - $600B */}
-                          <div className="absolute" style={{ left: '47%', top: '96%' }}>
-                            <div className="w-3 h-3 bg-orange-500 rounded-full border-2 border-zinc-900"></div>
+                          {/* 1971 Nixon Shock - $600B (mid-curve acceleration) */}
+                          <div className="absolute" style={{ left: '47%', top: '96.5%' }}>
+                            <div className="w-4 h-4 bg-orange-500 rounded-full border-2 border-zinc-900 shadow-lg"></div>
                             <div className="text-xs text-orange-400 mt-1 whitespace-nowrap font-medium">1971: Nixon Shock</div>
                             <div className="text-xs text-zinc-500">$600B → Fiat explosion</div>
                           </div>
                           
-                          {/* 2008 Financial Crisis - $8T */}
-                          <div className="absolute" style={{ left: '67%', top: '66%' }}>
-                            <div className="w-3 h-3 bg-red-500 rounded-full border-2 border-zinc-900"></div>
+                          {/* 2008 Financial Crisis - $8T (steep climb begins) */}
+                          <div className="absolute" style={{ left: '67%', top: '56%' }}>
+                            <div className="w-4 h-4 bg-red-500 rounded-full border-2 border-zinc-900 shadow-lg"></div>
                             <div className="text-xs text-red-400 mt-1 whitespace-nowrap font-medium">2008: QE Begins</div>
                             <div className="text-xs text-zinc-500">$8T → Bailout bonanza</div>
                           </div>
                           
                           {/* 2009 Bitcoin Launch - positioned on Bitcoin line */}
                           <div className="absolute" style={{ left: '75%', top: '82%' }}>
-                            <div className="w-3 h-3 bg-green-500 rounded-full border-2 border-zinc-900"></div>
+                            <div className="w-4 h-4 bg-green-500 rounded-full border-2 border-zinc-900 shadow-lg"></div>
                             <div className="text-xs text-green-400 mt-1 whitespace-nowrap font-medium">2009: Bitcoin Born</div>
                             <div className="text-xs text-zinc-500">21M cap → Fixed forever</div>
                           </div>
                           
-                          {/* 2020 Money Printing Madness - $21T */}
-                          <div className="absolute" style={{ left: '93%', top: '4%' }}>
-                            <div className="w-3 h-3 bg-purple-500 rounded-full border-2 border-zinc-900"></div>
-                            <div className="text-xs text-purple-400 mt-1 whitespace-nowrap font-medium">2020: Printer Go Brrr</div>
-                            <div className="text-xs text-zinc-500">$21T → 40% in 2 years!</div>
+                          {/* 2020 Money Printing Madness - $21T (top of exponential curve) */}
+                          <div className="absolute" style={{ left: '93%', top: '2%' }}>
+                            <div className="w-5 h-5 bg-purple-500 rounded-full border-2 border-zinc-900 shadow-xl"></div>
+                            <div className="text-xs text-purple-400 mt-1 whitespace-nowrap font-bold">2020: Printer Go Brrr</div>
+                            <div className="text-xs text-zinc-400 font-medium">$21T → 40% in 2 years!</div>
                           </div>
                         </div>
                       </div>
