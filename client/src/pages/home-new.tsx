@@ -3132,79 +3132,7 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            {/* Banking Story Transition */}
-            <div className="bg-zinc-900/50 rounded-lg p-6 border border-zinc-800/50">
-              <h3 className="text-xl font-bold mb-4 text-orange-400">The Banking Racket: Death by a Thousand Cuts</h3>
-              <div className="space-y-4 text-zinc-300 leading-relaxed">
-                <p>
-                  While inflation slowly erodes your wealth, banks extract value through direct fees. Every international transfer, 
-                  currency exchange, and wire payment becomes a profit center for financial institutions. They've built an entire 
-                  business model around being the middleman in your financial life.
-                </p>
-                <p>
-                  A typical international wire transfer costs $25-50 in fees, plus hidden currency exchange markups of 3-5%. 
-                  Sending $1,000 to family abroad? You'll pay $50+ in fees and lose another $30-50 to poor exchange rates. 
-                  That's nearly 10% of your money disappearing into bank profits.
-                </p>
-                <p>
-                  Bitcoin eliminates the middleman entirely. Your transaction goes directly to the recipient, anywhere in the world, 
-                  for a few dollars in network fees. No wire transfer departments, no currency exchange desks, no "business day" delays.
-                </p>
-                <p className="text-orange-300 font-medium">
-                  Calculate exactly how much banks are stealing from you every year:
-                </p>
-              </div>
-            </div>
 
-
-
-            {/* Problem/Solution Comparison Grid */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              {[
-                {
-                  icon: "💸",
-                  problem: "Inflation Destroys Savings",
-                  solution: "Fixed 21M Supply",
-                  desc: "Math-enforced scarcity",
-                  color: "red"
-                },
-                {
-                  icon: "🏦",
-                  problem: "Banks Control Money",
-                  solution: "You Control Keys",
-                  desc: "True ownership",
-                  color: "blue"
-                },
-                {
-                  icon: "🚫",
-                  problem: "2B People Excluded",
-                  solution: "Internet = Access",
-                  desc: "Global participation",
-                  color: "purple"
-                },
-                {
-                  icon: "⏰",
-                  problem: "3-5 Day Settlements",
-                  solution: "10-60 Minute Finality",
-                  desc: "24/7 settlement",
-                  color: "yellow"
-                }
-              ].map((item, index) => (
-                <Card key={index} className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-all duration-300 hover:transform hover:scale-105">
-                  <CardContent className="p-6">
-                    <div className="text-center space-y-4">
-                      <div className="text-3xl">{item.icon}</div>
-                      <div className="space-y-2">
-                        <div className="text-red-300 font-semibold text-sm">{item.problem}</div>
-                        <div className="w-full h-px bg-zinc-700"></div>
-                        <div className="text-green-300 font-semibold text-sm">{item.solution}</div>
-                        <div className="text-zinc-400 text-xs">{item.desc}</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
 
             {/* Subscription Value Proposition */}
             <Card className="bg-gradient-to-r from-orange-950/30 to-zinc-900 border-orange-800/50">
