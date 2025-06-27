@@ -309,6 +309,54 @@ export default function Home() {
   const [transferCount, setTransferCount] = useState<string>("2");
   const [transferAmount, setTransferAmount] = useState<string>("1000");
   const [speedRaceActive, setSpeedRaceActive] = useState<boolean>(false);
+  const [settlementProgress, setSettlementProgress] = useState({ traditional: 0, bitcoin: 0 });
+  const [animationActive, setAnimationActive] = useState(false);
+
+  // Settlement Animation Logic
+  const startSettlementAnimation = () => {
+    setSpeedRaceActive(true);
+    setAnimationActive(true);
+    setSettlementProgress({ traditional: 0, bitcoin: 0 });
+
+    // Bitcoin animation: completes all 4 steps in 10 seconds (out of 30)
+    const bitcoinSteps = [
+      { step: 1, delay: 1000 },   // Step 1 at 1 second
+      { step: 2, delay: 2000 },   // Step 2 at 2 seconds  
+      { step: 3, delay: 8000 },   // Step 3 at 8 seconds (mining)
+      { step: 4, delay: 10000 }   // Step 4 at 10 seconds (complete)
+    ];
+
+    // Traditional banking: only gets to step 2 in 30 seconds (stuck in compliance)
+    const traditionalSteps = [
+      { step: 1, delay: 5000 },   // Step 1 at 5 seconds (branch visit)
+      { step: 2, delay: 15000 }   // Step 2 at 15 seconds (still in compliance)
+    ];
+
+    // Animate Bitcoin steps
+    bitcoinSteps.forEach(({ step, delay }) => {
+      setTimeout(() => {
+        setSettlementProgress(prev => ({ ...prev, bitcoin: step }));
+      }, delay);
+    });
+
+    // Animate Traditional steps  
+    traditionalSteps.forEach(({ step, delay }) => {
+      setTimeout(() => {
+        setSettlementProgress(prev => ({ ...prev, traditional: step }));
+      }, delay);
+    });
+
+    // End animation after 30 seconds
+    setTimeout(() => {
+      setAnimationActive(false);
+    }, 30000);
+  };
+
+  const resetSettlementAnimation = () => {
+    setSpeedRaceActive(false);
+    setAnimationActive(false);
+    setSettlementProgress({ traditional: 0, bitcoin: 0 });
+  };
   const [transactionInputs, setTransactionInputs] = useState({
     fromAddress: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
     toAddress: "",
@@ -2603,10 +2651,10 @@ export default function Home() {
                       </p>
                     </div>
                     <Button 
-                      onClick={() => setSpeedRaceActive(true)}
+                      onClick={startSettlementAnimation}
                       className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg font-medium"
                     >
-                      Start Settlement Journey
+                      Start Live Settlement Race (30s)
                     </Button>
                   </div>
                 )}
@@ -2615,226 +2663,189 @@ export default function Home() {
                   <div className="space-y-6">
                     <div className="text-center">
                       <Button 
-                        onClick={() => setSpeedRaceActive(false)}
+                        onClick={resetSettlementAnimation}
                         className="bg-orange-600 hover:bg-orange-700"
+                        disabled={animationActive}
                       >
-                        Reset Journey
+                        {animationActive ? "Animation Running..." : "Reset Journey"}
                       </Button>
+                      {animationActive && (
+                        <p className="text-zinc-400 text-sm mt-2">
+                          Watch Bitcoin complete while traditional banking gets stuck...
+                        </p>
+                      )}
                     </div>
                     
-                    {/* Side-by-Side Workflow Comparison */}
+                    {/* Animated Side-by-Side Settlement Race */}
                     <div className="grid gap-6 lg:grid-cols-2">
                       
-                      {/* Traditional Banking Journey */}
+                      {/* Traditional Banking Journey (Left Side) */}
                       <div className="space-y-4">
                         <div className="flex items-center gap-3 p-3 bg-red-950/30 rounded-lg border border-red-800/30">
                           <Building2 className="w-6 h-6 text-red-400" />
                           <div>
-                            <div className="text-red-300 font-bold">Traditional Banking Journey</div>
-                            <div className="text-zinc-400 text-sm">The old way: complex, slow, expensive</div>
+                            <div className="text-red-300 font-bold">Traditional Banking</div>
+                            <div className="text-zinc-400 text-sm">Complex, slow, expensive</div>
                           </div>
                         </div>
                         
-                        {/* Traditional Steps with Visual Flow */}
+                        {/* Traditional Steps with Animation */}
                         <div className="space-y-3">
-                          
-                          {/* Step 1 */}
-                          <div className="relative">
-                            <div className="flex items-start gap-3 p-4 bg-zinc-800 rounded-lg border border-zinc-700">
-                              <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 mt-1">1</div>
-                              <div className="flex-1 min-w-0">
-                                <div className="text-zinc-200 font-medium mb-1">📍 Chase Bank Branch (NYC)</div>
-                                <div className="text-zinc-400 text-sm mb-2">
-                                  • Physical branch visit required<br/>
-                                  • Fill out wire transfer forms<br/>
-                                  • ID verification & purpose docs<br/>
-                                  • Manager approval for large amount
+                          {[
+                            { step: 1, title: "📍 Chase Bank Branch", desc: "Physical branch visit • Forms • ID verification", time: "30-45 min" },
+                            { step: 2, title: "🏢 Chase Compliance", desc: "AML checks • OFAC screening • Risk assessment", time: "2-4 hours" },
+                            { step: 3, title: "🌐 Correspondent Bank", desc: "Cross-border routing • Additional compliance", time: "4-8 hours" },
+                            { step: 4, title: "🏛 SWIFT Settlement", desc: "Central bank clearing • Currency conversion", time: "1-2 days" },
+                            { step: 5, title: "🏦 Wells Fargo London", desc: "Incoming review • Final crediting", time: "2-4 hours" }
+                          ].map(({ step, title, desc, time }) => {
+                            const isActive = settlementProgress.traditional >= step;
+                            const isCurrentStep = settlementProgress.traditional === step && animationActive;
+                            
+                            return (
+                              <div key={step} className="relative">
+                                <div className={`flex items-start gap-3 p-4 rounded-lg border transition-all duration-500 ${
+                                  isActive 
+                                    ? 'bg-red-800/30 border-red-600/50' 
+                                    : 'bg-zinc-800 border-zinc-700'
+                                }`}>
+                                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 mt-1 transition-all duration-500 ${
+                                    isActive ? 'bg-red-500' : 'bg-zinc-600'
+                                  }`}>
+                                    {isActive ? '✓' : step}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className={`font-medium mb-1 transition-colors duration-500 ${
+                                      isActive ? 'text-red-200' : 'text-zinc-400'
+                                    }`}>
+                                      {title}
+                                    </div>
+                                    <div className={`text-sm mb-2 transition-colors duration-500 ${
+                                      isActive ? 'text-red-300' : 'text-zinc-500'
+                                    }`}>
+                                      {desc}
+                                    </div>
+                                    <div className={`text-sm font-medium transition-colors duration-500 ${
+                                      isActive ? 'text-red-400' : 'text-zinc-500'
+                                    }`}>
+                                      ⏱ {time}
+                                    </div>
+                                    {isCurrentStep && (
+                                      <div className="mt-2 flex items-center gap-2 text-red-400 text-sm">
+                                        <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
+                                        Processing...
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
-                                <div className="text-red-400 text-sm font-medium">⏱ 30-45 minutes</div>
+                                {step < 5 && (
+                                  <div className={`absolute left-6 -bottom-2 w-0.5 h-4 transition-colors duration-500 ${
+                                    isActive ? 'bg-red-400' : 'bg-zinc-600'
+                                  }`}></div>
+                                )}
                               </div>
-                            </div>
-                            {/* Connecting Arrow */}
-                            <div className="absolute left-6 -bottom-2 w-0.5 h-4 bg-red-400"></div>
-                          </div>
+                            );
+                          })}
                           
-                          {/* Step 2 */}
-                          <div className="relative">
-                            <div className="flex items-start gap-3 p-4 bg-zinc-800 rounded-lg border border-zinc-700">
-                              <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 mt-1">2</div>
-                              <div className="flex-1 min-w-0">
-                                <div className="text-zinc-200 font-medium mb-1">🏢 Chase Compliance Dept</div>
-                                <div className="text-zinc-400 text-sm mb-2">
-                                  • AML (Anti-Money Laundering) checks<br/>
-                                  • OFAC sanctions screening<br/>
-                                  • Risk assessment algorithms<br/>
-                                  • Secondary approval process
-                                </div>
-                                <div className="text-red-400 text-sm font-medium">⏱ 2-4 hours</div>
-                              </div>
-                            </div>
-                            <div className="absolute left-6 -bottom-2 w-0.5 h-4 bg-red-400"></div>
-                          </div>
-                          
-                          {/* Step 3 */}
-                          <div className="relative">
-                            <div className="flex items-start gap-3 p-4 bg-zinc-800 rounded-lg border border-zinc-700">
-                              <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 mt-1">3</div>
-                              <div className="flex-1 min-w-0">
-                                <div className="text-zinc-200 font-medium mb-1">🌐 Correspondent Bank (JPMorgan)</div>
-                                <div className="text-zinc-400 text-sm mb-2">
-                                  • Cross-border routing decisions<br/>
-                                  • Additional compliance checks<br/>
-                                  • Currency conversion setup<br/>
-                                  • International regulations review
-                                </div>
-                                <div className="text-red-400 text-sm font-medium">⏱ 4-8 hours</div>
-                              </div>
-                            </div>
-                            <div className="absolute left-6 -bottom-2 w-0.5 h-4 bg-red-400"></div>
-                          </div>
-                          
-                          {/* Step 4 */}
-                          <div className="relative">
-                            <div className="flex items-start gap-3 p-4 bg-zinc-800 rounded-lg border border-zinc-700">
-                              <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 mt-1">4</div>
-                              <div className="flex-1 min-w-0">
-                                <div className="text-zinc-200 font-medium mb-1">🏛 Central Bank Settlement (SWIFT)</div>
-                                <div className="text-zinc-400 text-sm mb-2">
-                                  • SWIFT messaging system<br/>
-                                  • USD → GBP conversion<br/>
-                                  • Settlement queue processing<br/>
-                                  • Central bank clearing
-                                </div>
-                                <div className="text-red-400 text-sm font-medium">⏱ 1-2 business days</div>
-                              </div>
-                            </div>
-                            <div className="absolute left-6 -bottom-2 w-0.5 h-4 bg-red-400"></div>
-                          </div>
-                          
-                          {/* Step 5 */}
-                          <div className="relative">
-                            <div className="flex items-start gap-3 p-4 bg-zinc-800 rounded-lg border border-zinc-700">
-                              <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 mt-1">5</div>
-                              <div className="flex-1 min-w-0">
-                                <div className="text-zinc-200 font-medium mb-1">🏦 Wells Fargo (London)</div>
-                                <div className="text-zinc-400 text-sm mb-2">
-                                  • Incoming wire review<br/>
-                                  • Beneficiary verification<br/>
-                                  • Final compliance check<br/>
-                                  • Account crediting process
-                                </div>
-                                <div className="text-red-400 text-sm font-medium">⏱ 2-4 hours</div>
-                              </div>
-                            </div>
-                          </div>
-                          
-                          {/* Traditional Total */}
+                          {/* Traditional Status */}
                           <div className="p-4 bg-red-950/40 rounded-lg border border-red-800/50 mt-4">
                             <div className="text-center">
-                              <div className="text-red-300 font-medium text-sm mb-1">Total Journey Time</div>
-                              <div className="text-red-400 font-bold text-2xl">3-5 Business Days</div>
+                              <div className="text-red-300 font-medium text-sm mb-1">Traditional Banking Status</div>
+                              <div className="text-red-400 font-bold text-xl">
+                                {settlementProgress.traditional === 0 && "Waiting to start..."}
+                                {settlementProgress.traditional === 1 && "At bank branch"}
+                                {settlementProgress.traditional === 2 && "Stuck in compliance"}
+                                {settlementProgress.traditional >= 3 && "Still processing..."}
+                              </div>
                               <div className="text-zinc-400 text-xs mt-2">
-                                5 institutions • $45-75 fees • 3-5% failure rate
+                                Step {settlementProgress.traditional}/5 • Still {Math.max(0, 5 - settlementProgress.traditional)} steps remaining
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
                       
-                      {/* Bitcoin Journey */}
+                      {/* Bitcoin Journey (Right Side) */}
                       <div className="space-y-4">
                         <div className="flex items-center gap-3 p-3 bg-green-950/30 rounded-lg border border-green-800/30">
                           <Zap className="w-6 h-6 text-green-400" />
                           <div>
-                            <div className="text-green-300 font-bold">Bitcoin Journey</div>
-                            <div className="text-zinc-400 text-sm">The new way: simple, fast, global</div>
+                            <div className="text-green-300 font-bold">Bitcoin Network</div>
+                            <div className="text-zinc-400 text-sm">Simple, fast, global</div>
                           </div>
                         </div>
                         
-                        {/* Bitcoin Steps with Visual Flow */}
+                        {/* Bitcoin Steps with Animation */}
                         <div className="space-y-3">
-                          
-                          {/* Step 1 */}
-                          <div className="relative">
-                            <div className="flex items-start gap-3 p-4 bg-zinc-800 rounded-lg border border-zinc-700">
-                              <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 mt-1">1</div>
-                              <div className="flex-1 min-w-0">
-                                <div className="text-zinc-200 font-medium mb-1">📱 Create Transaction</div>
-                                <div className="text-zinc-400 text-sm mb-2">
-                                  • Open Bitcoin wallet app<br/>
-                                  • Enter recipient's address<br/>
-                                  • Specify amount ($50,000 in BTC)<br/>
-                                  • Sign with private key
+                          {[
+                            { step: 1, title: "📱 Create Transaction", desc: "Open wallet • Enter address • Sign with key", time: "30 seconds" },
+                            { step: 2, title: "🌐 Network Broadcast", desc: "Sent to 15,000+ nodes globally", time: "10 seconds" },
+                            { step: 3, title: "⚡ Mining & Confirmation", desc: "Added to blockchain permanently", time: "~10 minutes" },
+                            { step: 4, title: "✅ Settlement Complete", desc: "Funds arrive • Immutable • No reversals", time: "Instant" }
+                          ].map(({ step, title, desc, time }) => {
+                            const isActive = settlementProgress.bitcoin >= step;
+                            const isCurrentStep = settlementProgress.bitcoin === step && animationActive;
+                            
+                            return (
+                              <div key={step} className="relative">
+                                <div className={`flex items-start gap-3 p-4 rounded-lg border transition-all duration-500 ${
+                                  isActive 
+                                    ? 'bg-green-800/30 border-green-600/50' 
+                                    : 'bg-zinc-800 border-zinc-700'
+                                }`}>
+                                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 mt-1 transition-all duration-500 ${
+                                    isActive ? 'bg-green-500' : 'bg-zinc-600'
+                                  }`}>
+                                    {isActive ? '✓' : step}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className={`font-medium mb-1 transition-colors duration-500 ${
+                                      isActive ? 'text-green-200' : 'text-zinc-400'
+                                    }`}>
+                                      {title}
+                                    </div>
+                                    <div className={`text-sm mb-2 transition-colors duration-500 ${
+                                      isActive ? 'text-green-300' : 'text-zinc-500'
+                                    }`}>
+                                      {desc}
+                                    </div>
+                                    <div className={`text-sm font-medium transition-colors duration-500 ${
+                                      isActive ? 'text-green-400' : 'text-zinc-500'
+                                    }`}>
+                                      ⏱ {time}
+                                    </div>
+                                    {isCurrentStep && (
+                                      <div className="mt-2 flex items-center gap-2 text-green-400 text-sm">
+                                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                                        Processing...
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
-                                <div className="text-green-400 text-sm font-medium">⏱ 30 seconds</div>
+                                {step < 4 && (
+                                  <div className={`absolute left-6 -bottom-2 w-0.5 h-4 transition-colors duration-500 ${
+                                    isActive ? 'bg-green-400' : 'bg-zinc-600'
+                                  }`}></div>
+                                )}
                               </div>
-                            </div>
-                            <div className="absolute left-6 -bottom-2 w-0.5 h-4 bg-green-400"></div>
-                          </div>
+                            );
+                          })}
                           
-                          {/* Step 2 */}
-                          <div className="relative">
-                            <div className="flex items-start gap-3 p-4 bg-zinc-800 rounded-lg border border-zinc-700">
-                              <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 mt-1">2</div>
-                              <div className="flex-1 min-w-0">
-                                <div className="text-zinc-200 font-medium mb-1">🌐 Network Broadcast</div>
-                                <div className="text-zinc-400 text-sm mb-2">
-                                  • Transaction sent to Bitcoin network<br/>
-                                  • Propagates to 15,000+ nodes globally<br/>
-                                  • No permission needed<br/>
-                                  • Instant worldwide visibility
-                                </div>
-                                <div className="text-green-400 text-sm font-medium">⏱ 10 seconds</div>
-                              </div>
-                            </div>
-                            <div className="absolute left-6 -bottom-2 w-0.5 h-4 bg-green-400"></div>
-                          </div>
-                          
-                          {/* Step 3 */}
-                          <div className="relative">
-                            <div className="flex items-start gap-3 p-4 bg-zinc-800 rounded-lg border border-zinc-700">
-                              <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 mt-1">3</div>
-                              <div className="flex-1 min-w-0">
-                                <div className="text-zinc-200 font-medium mb-1">⚡ Mining & Confirmation</div>
-                                <div className="text-zinc-400 text-sm mb-2">
-                                  • Miners compete to include transaction<br/>
-                                  • Cryptographic proof-of-work<br/>
-                                  • Added to blockchain permanently<br/>
-                                  • Mathematical verification only
-                                </div>
-                                <div className="text-green-400 text-sm font-medium">⏱ ~10 minutes</div>
-                              </div>
-                            </div>
-                            <div className="absolute left-6 -bottom-2 w-0.5 h-4 bg-green-400"></div>
-                          </div>
-                          
-                          {/* Step 4 */}
-                          <div className="relative">
-                            <div className="flex items-start gap-3 p-4 bg-zinc-800 rounded-lg border border-zinc-700">
-                              <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 mt-1">4</div>
-                              <div className="flex-1 min-w-0">
-                                <div className="text-zinc-200 font-medium mb-1">✅ Settlement Complete</div>
-                                <div className="text-zinc-400 text-sm mb-2">
-                                  • Funds arrive in recipient wallet<br/>
-                                  • Immutable and irreversible<br/>
-                                  • No intermediary risk<br/>
-                                  • Global settlement achieved
-                                </div>
-                                <div className="text-green-400 text-sm font-medium">⏱ Instant</div>
-                              </div>
-                            </div>
-                          </div>
-                          
-                          {/* Spacer to align with traditional */}
-                          <div className="h-20"></div>
-                          
-                          {/* Bitcoin Total */}
+                          {/* Bitcoin Status */}
                           <div className="p-4 bg-green-950/40 rounded-lg border border-green-800/50 mt-4">
                             <div className="text-center">
-                              <div className="text-green-300 font-medium text-sm mb-1">Total Journey Time</div>
-                              <div className="text-green-400 font-bold text-2xl">~10 Minutes</div>
+                              <div className="text-green-300 font-medium text-sm mb-1">Bitcoin Network Status</div>
+                              <div className="text-green-400 font-bold text-xl">
+                                {settlementProgress.bitcoin === 0 && "Ready to send"}
+                                {settlementProgress.bitcoin === 1 && "Transaction created"}
+                                {settlementProgress.bitcoin === 2 && "Broadcasting globally"}
+                                {settlementProgress.bitcoin === 3 && "Mining in progress"}
+                                {settlementProgress.bitcoin === 4 && "✅ COMPLETE!"}
+                              </div>
                               <div className="text-zinc-400 text-xs mt-2">
-                                0 institutions • $2-5 fees • 99.99% success rate
+                                {settlementProgress.bitcoin === 4 
+                                  ? "Settled in ~10 minutes • 0 institutions • $2-5 fees"
+                                  : `Step ${settlementProgress.bitcoin}/4 • ${4 - settlementProgress.bitcoin} steps remaining`
+                                }
                               </div>
                             </div>
                           </div>
