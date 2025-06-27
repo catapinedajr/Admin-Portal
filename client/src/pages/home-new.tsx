@@ -3004,22 +3004,19 @@ export default function Home() {
 
             {/* Interactive DCA Calculator */}
             {simulationsSubTab === "dca" && (
-              <div className="space-y-6">
-                <div className="text-center space-y-2">
-                  <h3 className="text-xl font-bold text-white">Interactive DCA Calculator</h3>
-                  <p className="text-zinc-400">Configure your strategy and see how dollar-cost averaging performs with real Bitcoin price history</p>
+              <div className="space-y-4">
+                <div className="text-center space-y-1">
+                  <h3 className="text-lg font-bold text-white">DCA Calculator</h3>
+                  <p className="text-zinc-400 text-sm">Configure your strategy and see real Bitcoin performance</p>
                 </div>
 
-                {/* Input Controls */}
+                {/* Compact Input Controls */}
                 <Card className="bg-zinc-900 border-zinc-800">
-                  <CardContent className="p-6">
-                    <h4 className="text-lg font-bold text-white mb-4">Configure Your DCA Strategy</h4>
-                    
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  <CardContent className="p-4">
+                    <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
                       {/* Investment Amount */}
-                      <div className="space-y-3">
-                        <label className="text-sm font-medium text-white">Investment Amount</label>
-                        <p className="text-xs text-zinc-400">Per selected frequency below</p>
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium text-white">Amount</label>
                         <Select 
                           value={dcaInputs.monthlyAmount.toString()} 
                           onValueChange={(value) => setDcaInputs(prev => ({ ...prev, monthlyAmount: Number(value) }))}
@@ -3050,8 +3047,8 @@ export default function Home() {
                       </div>
 
                       {/* Frequency */}
-                      <div className="space-y-3">
-                        <label className="text-sm font-medium text-white">Purchase Frequency</label>
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium text-white">Frequency</label>
                         <Select 
                           value={dcaInputs.frequency} 
                           onValueChange={(value) => setDcaInputs(prev => ({ ...prev, frequency: value as any }))}
@@ -3070,8 +3067,8 @@ export default function Home() {
                       </div>
 
                       {/* Time Period */}
-                      <div className="space-y-3">
-                        <label className="text-sm font-medium text-white">Investment Duration</label>
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium text-white">Duration</label>
                         <Select 
                           value={dcaInputs.duration.toString()} 
                           onValueChange={(value) => setDcaInputs(prev => ({ ...prev, duration: Number(value) }))}
@@ -3097,8 +3094,8 @@ export default function Home() {
                       </div>
 
                       {/* Start Date */}
-                      <div className="space-y-3">
-                        <label className="text-sm font-medium text-white">Historical Start Date</label>
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium text-white">Start Date</label>
                         <Select 
                           value={dcaInputs.startDate} 
                           onValueChange={(value) => setDcaInputs(prev => ({ ...prev, startDate: value }))}
@@ -3130,66 +3127,60 @@ export default function Home() {
                       </div>
                     </div>
 
-                    <div className="mt-4 p-3 bg-zinc-800/50 rounded-lg border border-zinc-700">
-                      <p className="text-zinc-400 text-xs">
-                        <Info className="w-3 h-3 inline mr-1" />
-                        This simulation uses historically-accurate Bitcoin price data and volatility patterns. 
-                        Results will vary on each calculation to simulate real market conditions.
+                    <div className="mt-3 flex items-center justify-between">
+                      <p className="text-zinc-400 text-xs flex items-center">
+                        <Info className="w-3 h-3 mr-1" />
+                        Uses real Bitcoin price history
                       </p>
+                      <Button 
+                        onClick={calculateDcaStrategy}
+                        className="bg-orange-600 hover:bg-orange-700 text-sm px-4 py-2"
+                      >
+                        <Calculator className="w-3 h-3 mr-1" />
+                        Calculate
+                      </Button>
                     </div>
-
-                    <Button 
-                      onClick={calculateDcaStrategy}
-                      className="w-full mt-6 bg-orange-600 hover:bg-orange-700"
-                    >
-                      <Calculator className="w-4 h-4 mr-2" />
-                      Calculate DCA Performance
-                    </Button>
                   </CardContent>
                 </Card>
 
                 {/* Results Display */}
                 {dcaResults && (
                   <>
-                    {/* Summary Cards */}
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                    {/* Compact Results */}
+                    <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
                       <Card className="bg-blue-900/20 border-blue-800">
-                        <CardContent className="p-4 text-center">
-                          <DollarSign className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-                          <h5 className="font-medium text-white mb-1">Total Invested</h5>
-                          <p className="text-blue-400 font-bold text-lg">${Math.round(dcaResults.totalInvested).toLocaleString()}</p>
+                        <CardContent className="p-3 text-center">
+                          <DollarSign className="w-5 h-5 text-blue-400 mx-auto mb-1" />
+                          <h5 className="font-medium text-white mb-1 text-xs">Invested</h5>
+                          <p className="text-blue-400 font-bold">${Math.round(dcaResults.totalInvested).toLocaleString()}</p>
                         </CardContent>
                       </Card>
                       
                       <Card className="bg-orange-900/20 border-orange-800">
-                        <CardContent className="p-4 text-center">
-                          <Coins className="w-8 h-8 text-orange-400 mx-auto mb-2" />
-                          <h5 className="font-medium text-white mb-1">Bitcoin Accumulated</h5>
-                          <p className="text-orange-400 font-bold text-lg">{Math.round(dcaResults.totalBitcoin * 100000000).toLocaleString()} sats</p>
-                          <p className="text-zinc-400 text-xs">{dcaResults.totalBitcoin.toFixed(6)} BTC</p>
+                        <CardContent className="p-3 text-center">
+                          <Coins className="w-5 h-5 text-orange-400 mx-auto mb-1" />
+                          <h5 className="font-medium text-white mb-1 text-xs">Bitcoin</h5>
+                          <p className="text-orange-400 font-bold">{dcaResults.totalBitcoin.toFixed(4)} BTC</p>
                         </CardContent>
                       </Card>
                       
                       <Card className="bg-green-900/20 border-green-800">
-                        <CardContent className="p-4 text-center">
-                          <TrendingUp className="w-8 h-8 text-green-400 mx-auto mb-2" />
-                          <h5 className="font-medium text-white mb-1">Current Value</h5>
-                          <p className="text-green-400 font-bold text-lg">${Math.round(dcaResults.currentValue).toLocaleString()}</p>
+                        <CardContent className="p-3 text-center">
+                          <TrendingUp className="w-5 h-5 text-green-400 mx-auto mb-1" />
+                          <h5 className="font-medium text-white mb-1 text-xs">Value</h5>
+                          <p className="text-green-400 font-bold">${Math.round(dcaResults.currentValue).toLocaleString()}</p>
                         </CardContent>
                       </Card>
                       
                       <Card className={`border ${dcaResults.totalGain >= 0 ? 'bg-green-900/20 border-green-800' : 'bg-red-900/20 border-red-800'}`}>
-                        <CardContent className="p-4 text-center">
+                        <CardContent className="p-3 text-center">
                           {dcaResults.totalGain >= 0 ? 
-                            <TrendingUp className="w-8 h-8 text-green-400 mx-auto mb-2" /> :
-                            <TrendingDown className="w-8 h-8 text-red-400 mx-auto mb-2" />
+                            <TrendingUp className="w-5 h-5 text-green-400 mx-auto mb-1" /> :
+                            <TrendingDown className="w-5 h-5 text-red-400 mx-auto mb-1" />
                           }
-                          <h5 className="font-medium text-white mb-1">Total Return</h5>
-                          <p className={`font-bold text-lg ${dcaResults.totalGain >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                          <h5 className="font-medium text-white mb-1 text-xs">Return</h5>
+                          <p className={`font-bold ${dcaResults.totalGain >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                             {dcaResults.percentageReturn >= 0 ? '+' : ''}{Math.round(dcaResults.percentageReturn)}%
-                          </p>
-                          <p className={`text-xs ${dcaResults.totalGain >= 0 ? 'text-green-300' : 'text-red-300'}`}>
-                            ${dcaResults.totalGain >= 0 ? '+' : ''}${Math.round(Math.abs(dcaResults.totalGain)).toLocaleString()}
                           </p>
                         </CardContent>
                       </Card>
