@@ -1,0 +1,225 @@
+52-Week Curriculum Outline
+
+Weeks 1-12: Beginner (No technical jargon, foundational concepts)
+
+
+
+
+
+Week 1: What Is Money Really? – Value, trade, monetary history
+
+
+
+Week 2: Digital vs Physical – Transition to digital assets
+
+
+
+Week 3: Bitcoin’s Birth Story – Satoshi, 2008 crisis context
+
+
+
+Week 4: Your First Bitcoin Concepts – Addresses, keys, wallets
+
+
+
+Week 5: Sending and Receiving – Bitcoin transactions explained
+
+
+
+Week 6: The Security Mindset – Protecting Bitcoin, avoiding scams
+
+
+
+Week 7: Why 21 Million Matters – Scarcity, inflation, supply economics
+
+
+
+Week 8: Bitcoin vs Everything Else – Comparing to gold, stocks, fiat
+
+
+
+Week 9: The Network Effect – Bitcoin’s strength from user growth
+
+
+
+Week 10: Mining Demystified – Miners’ role and importance
+
+
+
+Week 11: The Blockchain Explained – Ledger basics, non-technical
+
+
+
+Week 12: Lightning Fast Payments – Second-layer solutions
+
+Weeks 13-26: Early Intermediate (Basic technical concepts)
+
+
+
+
+
+Week 13: Public vs Private Keys – Cryptography basics
+
+
+
+Week 14: Transaction Fees – Why they exist, how they work
+
+
+
+Week 15: Bitcoin Halvings – Supply reduction events
+
+
+
+Week 16: Nodes and Consensus – How Bitcoin stays decentralized
+
+
+
+Week 17: Wallets in Depth – Hot vs cold, hardware vs software
+
+
+
+Week 18: Bitcoin’s Energy Use – Mining’s environmental impact
+
+
+
+Week 19: Privacy Basics – Bitcoin’s pseudonymity explained
+
+
+
+Week 20: Forks and Upgrades – Soft vs hard forks
+
+
+
+Week 21: Stablecoins and Bitcoin – Complementary digital assets
+
+
+
+Week 22: Bitcoin in Commerce – Merchant adoption, payments
+
+
+
+Week 23: Regulatory Landscape – Governments and Bitcoin
+
+
+
+Week 24: Peer-to-Peer Vision – Bitcoin’s philosophical roots
+
+
+
+Week 25: Altcoins Explored – Bitcoin vs other cryptocurrencies
+
+
+
+Week 26: Bitcoin’s Volatility – Price swings and market dynamics
+
+Weeks 27-39: Intermediate (Moderate technical depth)
+
+
+
+
+
+Week 27: Blockchain Mechanics – Blocks, hashes, confirmations
+
+
+
+Week 28: Mining Pools – How miners collaborate
+
+
+
+Week 29: Layer 2 Scaling – Lightning Network in depth
+
+
+
+Week 30: Smart Contracts on Bitcoin – RSK, Taproot basics
+
+
+
+Week 31: Bitcoin’s Security Model – Game theory, incentives
+
+
+
+Week 32: Decentralized Governance – Who controls Bitcoin?
+
+
+
+Week 33: Privacy Tools – Mixers, CoinJoin, challenges
+
+
+
+Week 34: Bitcoin in Developing Nations – Financial inclusion
+
+
+
+Week 35: Market Analysis – Trading, cycles, sentiment
+
+
+
+Week 36: Bitcoin and Gold – Digital vs physical scarcity
+
+
+
+Week 37: Institutional Adoption – ETFs, corporate treasuries
+
+
+
+Week 38: Cybersecurity Threats – Hacks, 51% attacks
+
+
+
+Week 39: Bitcoin’s Cultural Impact – Art, memes, community
+
+Weeks 40-52: Advanced (Technical and economic depth)
+
+
+
+
+
+Week 40: Cryptographic Foundations – Hash functions, signatures
+
+
+
+Week 41: Bitcoin’s Monetary Policy – Code as law
+
+
+
+Week 42: Advanced Lightning – Channels, routing, scaling
+
+
+
+Week 43: Taproot and Schnorr – Privacy, efficiency upgrades
+
+
+
+Week 44: Bitcoin in DeFi – Decentralized finance integration
+
+
+
+Week 45: Global Economic Impact – Bitcoin vs central banks
+
+
+
+Week 46: Mining Economics – Hardware, energy, profitability
+
+
+
+Week 47: Quantum Computing Risks – Future-proofing Bitcoin
+
+
+
+Week 48: Bitcoin as a Protocol – Beyond currency
+
+
+
+Week 49: Geopolitical Implications – Sovereignty, sanctions
+
+
+
+Week 50: Hyperbitcoinization – Could Bitcoin replace fiat?
+
+
+
+Week 51: Building on Bitcoin – Developer ecosystem
+
+
+
+Week 52: The Bitcoin Expert – Synthesizing knowledge, future vision
