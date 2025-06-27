@@ -2580,53 +2580,223 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Speed Race */}
+            {/* Interactive Settlement Simulation */}
             <Card className="bg-zinc-900 border-zinc-800">
               <CardHeader className="pb-4">
                 <CardTitle className="text-white flex items-center gap-3 text-xl">
                   <Clock className="w-5 h-5 text-orange-400" />
-                  Settlement Speed Race
+                  Settlement Simulation: Traditional vs Bitcoin
                 </CardTitle>
-                <p className="text-zinc-400 text-sm">See how fast Bitcoin settles compared to traditional banking</p>
+                <p className="text-zinc-400 text-sm">Experience the real complexity of moving $50,000 across institutions</p>
               </CardHeader>
               <CardContent className="space-y-6">
-                <Button 
-                  onClick={() => setSpeedRaceActive(!speedRaceActive)}
-                  className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg font-medium"
-                >
-                  {speedRaceActive ? "Reset Race" : "Start Settlement Race"}
-                </Button>
-                
+                {!speedRaceActive && (
+                  <div className="text-center space-y-4">
+                    <div className="p-6 bg-zinc-800 rounded-lg border border-zinc-700">
+                      <h3 className="text-lg font-medium text-white mb-3">Simulation Scenario</h3>
+                      <p className="text-zinc-300 mb-4">
+                        You need to send <span className="text-orange-400 font-bold">$50,000</span> from your 
+                        Chase Bank account in New York to a business partner's Wells Fargo account in London.
+                      </p>
+                      <div className="grid gap-4 md:grid-cols-2 text-sm">
+                        <div className="p-3 bg-red-950/30 rounded border border-red-800/30">
+                          <div className="text-red-400 font-medium mb-2">Traditional Wire Transfer</div>
+                          <div className="text-zinc-300 space-y-1">
+                            <div>• Multiple bank verification steps</div>
+                            <div>• Correspondent banking network</div>
+                            <div>• Currency conversion delays</div>
+                            <div>• Compliance checks at each step</div>
+                          </div>
+                        </div>
+                        <div className="p-3 bg-green-950/30 rounded border border-green-800/30">
+                          <div className="text-green-400 font-medium mb-2">Bitcoin Transfer</div>
+                          <div className="text-zinc-300 space-y-1">
+                            <div>• Direct peer-to-peer transaction</div>
+                            <div>• Global network consensus</div>
+                            <div>• No currency conversion needed</div>
+                            <div>• Cryptographic verification only</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <Button 
+                      onClick={() => setSpeedRaceActive(true)}
+                      className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg font-medium"
+                    >
+                      Start Settlement Simulation
+                    </Button>
+                  </div>
+                )}
+
                 {speedRaceActive && (
                   <div className="space-y-6">
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-zinc-300 font-medium">Traditional Banking</span>
-                        <span className="text-red-400 text-sm">3-5 business days</span>
+                    <div className="text-center">
+                      <Button 
+                        onClick={() => setSpeedRaceActive(false)}
+                        className="bg-orange-600 hover:bg-orange-700"
+                      >
+                        Reset Simulation
+                      </Button>
+                    </div>
+                    
+                    {/* Traditional Banking Process */}
+                    <div className="p-4 bg-red-950/20 rounded-xl border border-red-800/30">
+                      <div className="flex items-center gap-3 mb-4">
+                        <Building2 className="w-5 h-5 text-red-400" />
+                        <span className="text-red-300 font-medium text-lg">Traditional Wire Transfer Process</span>
                       </div>
-                      <div className="w-full bg-zinc-800 rounded-full h-4">
-                        <div 
-                          className="bg-red-500 h-4 rounded-full transition-all duration-[5000ms] ease-linear"
-                          style={{ width: speedRaceActive ? "100%" : "0%" }}
-                        ></div>
+                      
+                      <div className="space-y-3">
+                        {/* Step 1: Customer Initiation */}
+                        <div className="flex items-center gap-3 p-3 bg-zinc-800 rounded-lg">
+                          <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">1</div>
+                          <div className="flex-1">
+                            <div className="text-zinc-200 font-medium">Customer initiates wire at Chase Bank</div>
+                            <div className="text-zinc-400 text-sm">Branch visit required • Forms filled • ID verification • Purpose documentation</div>
+                          </div>
+                          <div className="text-red-400 text-sm font-medium">30 min</div>
+                        </div>
+                        
+                        {/* Step 2: Internal Processing */}
+                        <div className="flex items-center gap-3 p-3 bg-zinc-800 rounded-lg">
+                          <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">2</div>
+                          <div className="flex-1">
+                            <div className="text-zinc-200 font-medium">Chase internal compliance review</div>
+                            <div className="text-zinc-400 text-sm">AML checks • OFAC screening • Risk assessment • Manager approval</div>
+                          </div>
+                          <div className="text-red-400 text-sm font-medium">2-4 hours</div>
+                        </div>
+                        
+                        {/* Step 3: Correspondent Bank */}
+                        <div className="flex items-center gap-3 p-3 bg-zinc-800 rounded-lg">
+                          <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">3</div>
+                          <div className="flex-1">
+                            <div className="text-zinc-200 font-medium">Correspondent Bank (JPMorgan London)</div>
+                            <div className="text-zinc-400 text-sm">Cross-border routing • Additional compliance • Currency exchange prep</div>
+                          </div>
+                          <div className="text-red-400 text-sm font-medium">4-8 hours</div>
+                        </div>
+                        
+                        {/* Step 4: Central Bank */}
+                        <div className="flex items-center gap-3 p-3 bg-zinc-800 rounded-lg">
+                          <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">4</div>
+                          <div className="flex-1">
+                            <div className="text-zinc-200 font-medium">Central Bank Settlement (SWIFT)</div>
+                            <div className="text-zinc-400 text-sm">International messaging • FX conversion • Settlement queue</div>
+                          </div>
+                          <div className="text-red-400 text-sm font-medium">1-2 days</div>
+                        </div>
+                        
+                        {/* Step 5: Receiving Bank */}
+                        <div className="flex items-center gap-3 p-3 bg-zinc-800 rounded-lg">
+                          <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">5</div>
+                          <div className="flex-1">
+                            <div className="text-zinc-200 font-medium">Wells Fargo receives and processes</div>
+                            <div className="text-zinc-400 text-sm">Incoming wire review • Beneficiary verification • Account crediting</div>
+                          </div>
+                          <div className="text-red-400 text-sm font-medium">2-4 hours</div>
+                        </div>
+                        
+                        <div className="mt-4 p-3 bg-red-950/40 rounded-lg border border-red-800/50">
+                          <div className="flex justify-between items-center">
+                            <span className="text-red-300 font-medium">Total Traditional Settlement Time:</span>
+                            <span className="text-red-400 font-bold text-lg">3-5 Business Days</span>
+                          </div>
+                          <div className="text-zinc-400 text-sm mt-1">
+                            Institutions involved: 5+ • Fees: $45-75 • Failure rate: 3-5%
+                          </div>
+                        </div>
                       </div>
                     </div>
                     
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-zinc-300 font-medium">Bitcoin Network</span>
-                        <span className="text-green-400 text-sm">10-60 minutes</span>
+                    {/* Bitcoin Process */}
+                    <div className="p-4 bg-green-950/20 rounded-xl border border-green-800/30">
+                      <div className="flex items-center gap-3 mb-4">
+                        <Zap className="w-5 h-5 text-green-400" />
+                        <span className="text-green-300 font-medium text-lg">Bitcoin Transfer Process</span>
                       </div>
-                      <div className="w-full bg-zinc-800 rounded-full h-4">
-                        <div 
-                          className="bg-green-500 h-4 rounded-full transition-all duration-1000 ease-out"
-                          style={{ width: speedRaceActive ? "100%" : "0%" }}
-                        ></div>
+                      
+                      <div className="space-y-3">
+                        {/* Step 1: Transaction Creation */}
+                        <div className="flex items-center gap-3 p-3 bg-zinc-800 rounded-lg">
+                          <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">1</div>
+                          <div className="flex-1">
+                            <div className="text-zinc-200 font-medium">Create Bitcoin transaction</div>
+                            <div className="text-zinc-400 text-sm">Digital signature • Specify amount and recipient address</div>
+                          </div>
+                          <div className="text-green-400 text-sm font-medium">30 seconds</div>
+                        </div>
+                        
+                        {/* Step 2: Network Broadcast */}
+                        <div className="flex items-center gap-3 p-3 bg-zinc-800 rounded-lg">
+                          <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">2</div>
+                          <div className="flex-1">
+                            <div className="text-zinc-200 font-medium">Broadcast to Bitcoin network</div>
+                            <div className="text-zinc-400 text-sm">Propagates to 15,000+ nodes worldwide instantly</div>
+                          </div>
+                          <div className="text-green-400 text-sm font-medium">10 seconds</div>
+                        </div>
+                        
+                        {/* Step 3: Mining Pool */}
+                        <div className="flex items-center gap-3 p-3 bg-zinc-800 rounded-lg">
+                          <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">3</div>
+                          <div className="flex-1">
+                            <div className="text-zinc-200 font-medium">Miners include in next block</div>
+                            <div className="text-zinc-400 text-sm">Cryptographic proof-of-work • Global competition</div>
+                          </div>
+                          <div className="text-green-400 text-sm font-medium">~10 minutes</div>
+                        </div>
+                        
+                        {/* Step 4: Confirmation */}
+                        <div className="flex items-center gap-3 p-3 bg-zinc-800 rounded-lg">
+                          <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">4</div>
+                          <div className="flex-1">
+                            <div className="text-zinc-200 font-medium">Transaction confirmed & settled</div>
+                            <div className="text-zinc-400 text-sm">Immutable settlement • No reversals possible</div>
+                          </div>
+                          <div className="text-green-400 text-sm font-medium">Instant</div>
+                        </div>
+                        
+                        <div className="mt-4 p-3 bg-green-950/40 rounded-lg border border-green-800/50">
+                          <div className="flex justify-between items-center">
+                            <span className="text-green-300 font-medium">Total Bitcoin Settlement Time:</span>
+                            <span className="text-green-400 font-bold text-lg">~10 Minutes</span>
+                          </div>
+                          <div className="text-zinc-400 text-sm mt-1">
+                            Institutions involved: 0 • Fees: $2-5 • Failure rate: 0.01%
+                          </div>
+                        </div>
                       </div>
                     </div>
                     
-                    <div className="text-center p-4 bg-green-950/30 rounded-xl border border-green-800/30">
-                      <div className="text-green-300 font-bold text-lg">Bitcoin wins by 72x-120x faster!</div>
+                    {/* Comparison Results */}
+                    <div className="p-6 bg-gradient-to-r from-green-950/30 to-orange-950/30 rounded-xl border border-green-800/30">
+                      <div className="text-center space-y-4">
+                        <div className="text-orange-300 font-bold text-xl">Simulation Results</div>
+                        
+                        <div className="grid gap-4 md:grid-cols-3 text-center">
+                          <div className="p-4 bg-zinc-800 rounded-lg">
+                            <div className="text-green-400 font-bold text-2xl">432x</div>
+                            <div className="text-zinc-300 text-sm">Faster Settlement</div>
+                          </div>
+                          <div className="p-4 bg-zinc-800 rounded-lg">
+                            <div className="text-green-400 font-bold text-2xl">90%</div>
+                            <div className="text-zinc-300 text-sm">Lower Fees</div>
+                          </div>
+                          <div className="p-4 bg-zinc-800 rounded-lg">
+                            <div className="text-green-400 font-bold text-2xl">99.99%</div>
+                            <div className="text-zinc-300 text-sm">Success Rate</div>
+                          </div>
+                        </div>
+                        
+                        <div className="text-zinc-300 leading-relaxed">
+                          While traditional finance requires <span className="text-red-400 font-bold">5 institutions</span> and 
+                          <span className="text-red-400 font-bold"> 3-5 days</span>, Bitcoin settles in 
+                          <span className="text-green-400 font-bold"> 10 minutes</span> with <span className="text-green-400 font-bold">zero intermediaries</span>.
+                          <br />
+                          This is the difference between old financial rails and modern monetary technology.
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
