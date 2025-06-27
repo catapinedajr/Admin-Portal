@@ -914,20 +914,36 @@ export default function Home() {
           "Difficulty adjusts to maintain 10-minute block times"
         ]
       },
-      "Store of Value": {
-        explanation: "Bitcoin serves as digital gold - a way to preserve wealth over time. Its fixed supply and decentralized nature make it resistant to inflation and monetary debasement by central authorities.",
+      "Unit of Account": {
+        explanation: "A unit of account provides a standard way to measure and compare the value of different goods and services. It's like having a universal ruler for value that everyone understands and can use.",
         examples: [
-          "Limited supply of 21 million coins maximum",
-          "Cannot be inflated away by governments",
-          "Portable across borders without confiscation risk",
-          "Divisible into 100 million satoshis per bitcoin"
+          "Instead of remembering that 1 cow = 10 chickens = 100 apples, you can price everything in dollars",
+          "Businesses can compare profits across different product lines using the same currency",
+          "You can budget and plan by knowing rent costs $1,000 and groceries cost $200 per month",
+          "International trade becomes easier when everyone uses recognized currency values"
         ],
-        visualDescription: "Imagine digital gold that you can carry in your phone, send across the world instantly, and that no government can print more of or confiscate.",
+        visualDescription: "Think of money as a measuring tape for value. Just as we use inches or centimeters to measure length, we use dollars or other currencies to measure economic value.",
         keyTakeaways: [
-          "Fixed supply creates scarcity like precious metals",
-          "Immune to monetary inflation",
-          "Portable and divisible digital asset",
-          "Censorship-resistant wealth preservation"
+          "Simplifies complex value comparisons",
+          "Enables accounting, budgeting, and financial planning",
+          "Must be stable and widely understood to work effectively",
+          "Essential for business operations and economic calculation"
+        ]
+      },
+      "Trust & Agreement": {
+        explanation: "Money is fundamentally a social technology based on shared belief and trust. Throughout history, communities have agreed that certain objects have value and can be used for trade, from shells to gold to digital numbers.",
+        examples: [
+          "Pacific islanders used large stone wheels as money because the community agreed they had value",
+          "Gold became popular worldwide because many cultures independently recognized its properties",
+          "Modern paper money works because governments back it and people trust the system",
+          "Credit cards work because merchants trust the bank will process the payment"
+        ],
+        visualDescription: "Imagine money as a social contract written in the language of trust. Everyone signs this invisible agreement that certain things have value and can be exchanged.",
+        keyTakeaways: [
+          "All money systems require community agreement to function",
+          "Trust can be built through scarcity, backing, or institutional guarantees",
+          "When trust breaks down, money systems can collapse rapidly",
+          "New forms of money must establish trust to gain adoption"
         ]
       },
       "Blockchain Technology": {

@@ -205,21 +205,7 @@ export class MemStorage implements IStorage {
         dayIndex: 1
       },
 
-      // Day 1: How Bitcoin Works
-      {
-        title: "The Blockchain",
-        content: "Bitcoin transactions are recorded on a blockchain - a digital ledger that's shared across thousands of computers worldwide. This makes it impossible to fake or duplicate Bitcoin.",
-        category: "Technology",
-        icon: "cube",
-        dayIndex: 1
-      },
-      {
-        title: "Peer-to-Peer Network",
-        content: "Bitcoin works directly between people without middlemen. When you send Bitcoin, it goes straight from your wallet to theirs - no banks required.",
-        category: "Technology",
-        icon: "user-secret",
-        dayIndex: 1
-      },
+
 
       // Day 4: Problems with Traditional Money
       {
@@ -237,142 +223,22 @@ export class MemStorage implements IStorage {
         dayIndex: 4
       },
 
-      // Day 2: Bitcoin vs Traditional Money
+      // Week 1: Unit of Account
       {
-        title: "Inflation Protection",
-        content: "Unlike government currencies that lose value over time due to printing, Bitcoin's fixed supply protects against inflation. Your Bitcoin can't be devalued by money printing.",
-        category: "Economics",
-        icon: "trending-up",
-        dayIndex: 2
-      },
-      {
-        title: "24/7 Global Access",
-        content: "Bitcoin never sleeps. You can send and receive Bitcoin 24/7, 365 days a year, anywhere in the world. No bank holidays, no business hours.",
-        category: "Accessibility",
-        icon: "globe",
-        dayIndex: 2
-      },
-      {
-        title: "No Censorship",
-        content: "No government or corporation can stop Bitcoin transactions. Your money, your rules - Bitcoin gives you true financial sovereignty.",
-        category: "Freedom",
-        icon: "key",
+        title: "Unit of Account",
+        content: "Money provides a common way to measure and compare the value of different things. Instead of saying '1 cow = 10 chickens = 100 apples,' we can say everything in dollar terms.",
+        category: "Money Functions",
+        icon: "calculator",
         dayIndex: 2
       },
 
-      // Day 3: Bitcoin Mining & Security
+      // Week 1: Trust and Social Agreement  
       {
-        title: "Bitcoin Mining",
-        content: "Mining is how new Bitcoin is created and transactions are secured. Miners use computer power to solve mathematical puzzles, earning Bitcoin rewards for protecting the network.",
-        category: "Mining",
-        icon: "zap",
+        title: "Trust & Agreement",
+        content: "All money systems depend on community trust. Whether it's gold, paper bills, or digital numbers, money only works when people believe others will accept it.",
+        category: "Money Basics",
+        icon: "handshake",
         dayIndex: 3
-      },
-      {
-        title: "Proof of Work",
-        content: "Bitcoin uses proof of work to secure the network. Miners must prove they've done computational work to add new blocks, making the blockchain extremely difficult to attack.",
-        category: "Security",
-        icon: "shield",
-        dayIndex: 3
-      },
-      {
-        title: "Network Difficulty",
-        content: "Bitcoin automatically adjusts mining difficulty every 2 weeks to maintain 10-minute block times. This keeps the network stable regardless of how many miners participate.",
-        category: "Technology",
-        icon: "target",
-        dayIndex: 3
-      },
-
-      // Day 4: Bitcoin Wallets & Keys
-      {
-        title: "Bitcoin Wallets",
-        content: "A Bitcoin wallet stores your private keys, not your Bitcoin. Your Bitcoin exists on the blockchain; your wallet is like a key that proves you own it.",
-        category: "Wallets",
-        icon: "wallet",
-        dayIndex: 4
-      },
-      {
-        title: "Private Keys",
-        content: "Your private key is a secret number that controls your Bitcoin. Anyone with your private key can spend your Bitcoin, so keep it secure and never share it.",
-        category: "Security",
-        icon: "key-round",
-        dayIndex: 4
-      },
-      {
-        title: "Not Your Keys, Not Your Coins",
-        content: "If you don't control the private keys to your Bitcoin, you don't truly own it. Bitcoin stored on exchanges is controlled by the exchange, not you.",
-        category: "Ownership",
-        icon: "alert-triangle",
-        dayIndex: 4
-      },
-
-      // Day 5: Bitcoin Transactions
-      {
-        title: "How Transactions Work",
-        content: "Bitcoin transactions send value from one address to another. Each transaction is digitally signed with your private key and recorded permanently on the blockchain.",
-        category: "Transactions",
-        icon: "arrow-right",
-        dayIndex: 5
-      },
-      {
-        title: "Transaction Fees",
-        content: "Bitcoin transaction fees go to miners who include your transaction in a block. Higher fees get faster confirmation during busy periods.",
-        category: "Economics",
-        icon: "dollar-sign",
-        dayIndex: 5
-      },
-      {
-        title: "Confirmation Times",
-        content: "Bitcoin transactions typically confirm in 10-60 minutes. More confirmations mean higher security, with 6 confirmations considered fully secure.",
-        category: "Technology",
-        icon: "clock",
-        dayIndex: 5
-      },
-
-      // Day 6: Bitcoin Halving & Monetary Policy
-      {
-        title: "Bitcoin Halving",
-        content: "Every 4 years, the Bitcoin reward for mining new blocks is cut in half. This programmed scarcity makes Bitcoin increasingly rare over time.",
-        category: "Monetary Policy",
-        icon: "scissors",
-        dayIndex: 6
-      },
-      {
-        title: "Fixed Supply Schedule",
-        content: "Bitcoin's supply increases predictably until reaching 21 million coins around 2140. No central authority can change this monetary policy.",
-        category: "Economics",
-        icon: "calendar",
-        dayIndex: 6
-      },
-      {
-        title: "Store of Value",
-        content: "Bitcoin's predictable supply and decentralized nature make it a superior store of value compared to currencies that can be printed endlessly.",
-        category: "Investment",
-        icon: "vault",
-        dayIndex: 6
-      },
-
-      // Day 7: Bitcoin vs Traditional Finance
-      {
-        title: "Fiat Currency Problems",
-        content: "Fiat currencies lose purchasing power over time due to inflation. The US dollar has lost over 96% of its value since 1913 due to money printing.",
-        category: "Traditional Finance",
-        icon: "trending-down",
-        dayIndex: 7
-      },
-      {
-        title: "Banking Intermediaries",
-        content: "Traditional banking requires trust in third parties who can freeze accounts, charge fees, and control your money. Bitcoin eliminates these intermediaries.",
-        category: "Banking",
-        icon: "building",
-        dayIndex: 7
-      },
-      {
-        title: "Financial Inclusion",
-        content: "2 billion people worldwide lack access to banking. Bitcoin only requires internet access, providing financial services to the unbanked globally.",
-        category: "Global Impact",
-        icon: "users",
-        dayIndex: 7
       }
     ];
 
