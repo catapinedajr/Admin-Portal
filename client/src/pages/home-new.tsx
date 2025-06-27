@@ -2441,6 +2441,140 @@ export default function Home() {
               </CardContent>
             </Card>
 
+            {/* Historical Money Supply & Inflation Impact Chart */}
+            <Card className="bg-zinc-900 border-zinc-800">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-white flex items-center gap-3 text-xl">
+                  <TrendingUp className="w-5 h-5 text-orange-400" />
+                  100 Years of Monetary Debasement (1924-2024)
+                </CardTitle>
+                <p className="text-zinc-400 text-sm">See how the dollar lost 96% of its purchasing power over the past century</p>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="h-80 relative">
+                  <div className="absolute inset-0 bg-zinc-800 rounded-lg overflow-hidden">
+                    {/* Chart Container */}
+                    <div className="h-full relative p-6">
+                      {/* Y-Axis Labels */}
+                      <div className="absolute left-0 top-6 bottom-6 flex flex-col justify-between text-xs text-zinc-400">
+                        <span>$100</span>
+                        <span>$50</span>
+                        <span>$25</span>
+                        <span>$10</span>
+                        <span>$5</span>
+                        <span>$1</span>
+                      </div>
+                      
+                      {/* Chart Area */}
+                      <div className="ml-8 h-full relative">
+                        {/* Grid Lines */}
+                        <div className="absolute inset-0">
+                          {[0, 20, 40, 60, 80, 100].map((percent) => (
+                            <div 
+                              key={percent}
+                              className="absolute w-full border-t border-zinc-700/50"
+                              style={{ top: `${percent}%` }}
+                            />
+                          ))}
+                        </div>
+                        
+                        {/* Purchasing Power Line (Exponential Decay) */}
+                        <svg className="absolute inset-0 w-full h-full">
+                          <defs>
+                            <linearGradient id="purchasingPowerGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                              <stop offset="0%" stopColor="#ef4444" stopOpacity="0.3" />
+                              <stop offset="100%" stopColor="#ef4444" stopOpacity="0.1" />
+                            </linearGradient>
+                          </defs>
+                          {/* Purchasing Power Decline Path */}
+                          <path
+                            d="M 0 20 Q 150 25 300 45 Q 450 65 600 85 Q 750 95 900 98"
+                            stroke="#ef4444"
+                            strokeWidth="3"
+                            fill="none"
+                            className="drop-shadow-lg"
+                          />
+                          {/* Fill area under curve */}
+                          <path
+                            d="M 0 20 Q 150 25 300 45 Q 450 65 600 85 Q 750 95 900 98 L 900 100 L 0 100 Z"
+                            fill="url(#purchasingPowerGradient)"
+                          />
+                        </svg>
+                        
+                        {/* Key Historical Events */}
+                        <div className="absolute inset-0">
+                          {/* 1933 Gold Standard Abandoned */}
+                          <div className="absolute" style={{ left: '10%', top: '25%' }}>
+                            <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                            <div className="text-xs text-yellow-400 mt-1 whitespace-nowrap">1933: Gold Standard</div>
+                          </div>
+                          
+                          {/* 1971 Nixon Shock */}
+                          <div className="absolute" style={{ left: '47%', top: '65%' }}>
+                            <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                            <div className="text-xs text-orange-400 mt-1 whitespace-nowrap">1971: Nixon Shock</div>
+                          </div>
+                          
+                          {/* 2008 Financial Crisis */}
+                          <div className="absolute" style={{ left: '84%', top: '85%' }}>
+                            <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                            <div className="text-xs text-red-400 mt-1 whitespace-nowrap">2008: Financial Crisis</div>
+                          </div>
+                          
+                          {/* 2020 Money Printing */}
+                          <div className="absolute" style={{ left: '92%', top: '95%' }}>
+                            <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                            <div className="text-xs text-purple-400 mt-1 whitespace-nowrap">2020: Money Printing</div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* X-Axis Labels */}
+                      <div className="absolute bottom-0 left-8 right-0 flex justify-between text-xs text-zinc-400 mt-2">
+                        <span>1924</span>
+                        <span>1950</span>
+                        <span>1975</span>
+                        <span>2000</span>
+                        <span>2024</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Key Stats */}
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="p-4 bg-red-950/30 rounded-xl border border-red-800/30 text-center">
+                    <div className="text-red-400 text-sm font-medium mb-1">Purchasing Power Lost</div>
+                    <div className="text-2xl font-bold text-red-300">96%</div>
+                    <div className="text-red-400/70 text-xs">Since 1924</div>
+                  </div>
+                  
+                  <div className="p-4 bg-yellow-950/30 rounded-xl border border-yellow-800/30 text-center">
+                    <div className="text-yellow-400 text-sm font-medium mb-1">Money Supply Growth</div>
+                    <div className="text-2xl font-bold text-yellow-300">3,000%+</div>
+                    <div className="text-yellow-400/70 text-xs">M2 since 1971</div>
+                  </div>
+                  
+                  <div className="p-4 bg-green-950/30 rounded-xl border border-green-800/30 text-center">
+                    <div className="text-green-400 text-sm font-medium mb-1">Bitcoin's Fixed Supply</div>
+                    <div className="text-2xl font-bold text-green-300">21M</div>
+                    <div className="text-green-400/70 text-xs">Forever</div>
+                  </div>
+                </div>
+                
+                <div className="p-4 bg-orange-950/20 rounded-xl border border-orange-800/30">
+                  <div className="text-center">
+                    <div className="text-orange-300 font-semibold mb-2">The Result:</div>
+                    <div className="text-zinc-300 text-sm">
+                      What cost <span className="text-white font-bold">$1.00</span> in 1924 now costs <span className="text-red-400 font-bold">$17.42</span> today.
+                      <br />
+                      Your savings lose <span className="text-red-400 font-bold">3-4%</span> of their value every year due to money printing.
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Call to Action */}
             <Card className="bg-gradient-to-br from-orange-950/50 to-amber-950/50 border-orange-800/50">
               <CardContent className="p-8 text-center">
