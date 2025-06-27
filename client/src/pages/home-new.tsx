@@ -1343,6 +1343,8 @@ export default function Home() {
     // Validate percentage calculation for accuracy
     const validatedPercentageReturn = Math.round(((hodlInputs.endPrice / hodlInputs.startPrice - 1) * 100) * 10) / 10;
     
+
+    
     setHodlResults({
       initialInvestment: hodlInputs.initialAmount,
       bitcoinAmount,
@@ -1465,6 +1467,13 @@ export default function Home() {
   useEffect(() => {
     calculateDcaStrategy();
   }, [dcaInputs.monthlyAmount, dcaInputs.frequency, dcaInputs.startDate]);
+
+  // Auto-calculate HODL results when inputs change
+  useEffect(() => {
+    if (hodlInputs.startPrice && hodlInputs.endPrice && hodlInputs.initialAmount) {
+      calculateHodlStrategy();
+    }
+  }, [hodlInputs.startPrice, hodlInputs.endPrice, hodlInputs.initialAmount, hodlInputs.years]);
 
   const [selectedWalletType, setSelectedWalletType] = useState<string | null>(null);
   
@@ -2785,7 +2794,6 @@ export default function Home() {
                                 const numericValue = e.target.value.replace(/[^0-9]/g, '');
                                 const amount = parseInt(numericValue) || 0;
                                 setHodlInputs(prev => ({...prev, initialAmount: amount}));
-                                setTimeout(() => calculateHodlStrategy(), 100);
                               }}
                               className="w-full bg-zinc-800 border border-zinc-700 rounded-lg pl-8 pr-4 py-3 text-white font-mono text-lg"
                               placeholder="Enter amount"
@@ -2820,7 +2828,6 @@ export default function Home() {
                                 years: scenario.years,
                                 period: scenario.period
                               }));
-                              setTimeout(() => calculateHodlStrategy(), 100);
                             }}
                           >
                             <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
