@@ -277,15 +277,15 @@ const bitcoinTerms = [
 
 
 
-type MainSection = "learn" | "practice" | "more";
+type MainSection = "learn" | "simulations" | "more";
 type LearnSubTab = "today" | "weekly" | "reference";
-type PracticeSubTab = "safety" | "transactions" | "hodl" | "dca";
+type SimulationsSubTab = "safety" | "transactions" | "hodl" | "dca";
 type MoreSubTab = "store";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<MainSection>("learn");
   const [learnSubTab, setLearnSubTab] = useState<LearnSubTab>("today");
-  const [practiceSubTab, setPracticeSubTab] = useState<PracticeSubTab>("safety");
+  const [simulationsSubTab, setSimulationsSubTab] = useState<SimulationsSubTab>("safety");
   const [moreSubTab, setMoreSubTab] = useState<MoreSubTab>("store");
 
   const [convictionSubTab, setConvictionSubTab] = useState<"whitepaper" | "books" | "videos">("whitepaper");
@@ -1577,12 +1577,12 @@ export default function Home() {
               </Button>
 
               <Button
-                variant={activeSection === "practice" ? "secondary" : "ghost"}
+                variant={activeSection === "simulations" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setActiveSection("practice")}
+                onClick={() => setActiveSection("simulations")}
                 className="text-sm px-4 py-2"
               >
-                Practice
+                Simulations
               </Button>
               <Button
                 variant={activeSection === "more" ? "secondary" : "ghost"}
@@ -1602,12 +1602,12 @@ export default function Home() {
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-white mb-2">
             {activeSection === "learn" && "Build Your Bitcoin Foundation"}
-            {activeSection === "practice" && "Practice Bitcoin Concepts"}
+            {activeSection === "simulations" && "Practice Bitcoin Concepts"}
             {activeSection === "more" && "Discover More About Bitcoin"}
           </h2>
           <p className="text-zinc-400">
             {activeSection === "learn" && "Learn the fundamentals and understand why Bitcoin matters"}
-            {activeSection === "practice" && "Interactive simulations to deepen your understanding"}
+            {activeSection === "simulations" && "Interactive simulations to deepen your understanding"}
             {activeSection === "more" && "Resources and tools to support your Bitcoin journey"}
           </p>
         </div>
@@ -1934,42 +1934,42 @@ export default function Home() {
 
 
         {/* Practice Section */}
-        {activeSection === "practice" && (
+        {activeSection === "simulations" && (
           <div className="space-y-6">
             {/* Practice Sub-navigation */}
             <div className="flex justify-center">
               <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2">
                 <Button
-                  variant={practiceSubTab === "safety" ? "secondary" : "ghost"}
+                  variant={simulationsSubTab === "safety" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => setPracticeSubTab("safety")}
+                  onClick={() => setSimulationsSubTab("safety")}
                   className="text-xs px-3 py-1"
                 >
                   <Shield className="w-3 h-3 mr-1" />
                   Safety
                 </Button>
                 <Button
-                  variant={practiceSubTab === "transactions" ? "secondary" : "ghost"}
+                  variant={simulationsSubTab === "transactions" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => setPracticeSubTab("transactions")}
+                  onClick={() => setSimulationsSubTab("transactions")}
                   className="text-xs px-3 py-1"
                 >
                   <CreditCard className="w-3 h-3 mr-1" />
                   Transactions
                 </Button>
                 <Button
-                  variant={practiceSubTab === "hodl" ? "secondary" : "ghost"}
+                  variant={simulationsSubTab === "hodl" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => setPracticeSubTab("hodl")}
+                  onClick={() => setSimulationsSubTab("hodl")}
                   className="text-xs px-3 py-1"
                 >
                   <TrendingUp className="w-3 h-3 mr-1" />
                   HODL
                 </Button>
                 <Button
-                  variant={practiceSubTab === "dca" ? "secondary" : "ghost"}
+                  variant={simulationsSubTab === "dca" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => setPracticeSubTab("dca")}
+                  onClick={() => setSimulationsSubTab("dca")}
                   className="text-xs px-3 py-1"
                 >
                   <BarChart3 className="w-3 h-3 mr-1" />
@@ -1979,7 +1979,7 @@ export default function Home() {
             </div>
 
             {/* Safety Training */}
-            {practiceSubTab === "safety" && (
+            {simulationsSubTab === "safety" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h3 className="text-xl font-bold text-white">Bitcoin Security Best Practices</h3>
@@ -2230,7 +2230,7 @@ export default function Home() {
             )}
 
             {/* Transaction Simulator */}
-            {practiceSubTab === "transactions" && (
+            {simulationsSubTab === "transactions" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h3 className="text-xl font-bold text-white">Interactive Bitcoin Transaction Builder</h3>
@@ -2750,7 +2750,7 @@ export default function Home() {
             )}
 
             {/* HODL Strategy */}
-            {practiceSubTab === "hodl" && (
+            {simulationsSubTab === "hodl" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h3 className="text-xl font-bold text-white">Interactive HODL Calculator</h3>
@@ -2862,7 +2862,7 @@ export default function Home() {
             )}
 
             {/* Interactive DCA Calculator */}
-            {practiceSubTab === "dca" && (
+            {simulationsSubTab === "dca" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h3 className="text-xl font-bold text-white">Interactive DCA Calculator</h3>
