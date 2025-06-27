@@ -2567,7 +2567,8 @@ export default function Home() {
                             ];
                             
                             return m2Data.map((point, index) => {
-                              const x = 50 + ((point.year - 1920) / (2024 - 1920)) * 320;
+                              // Linear time positioning: 3.077px per year (320px / 104 years)
+                              const x = 50 + ((point.year - 1920) / 104) * 320;
                               const y = 175 - ((point.m2 - 0.023) / (21.0 - 0.023)) * 155;
                               return `${index === 0 ? 'M' : 'L'} ${x},${y}`;
                             }).join(' ');
@@ -2590,7 +2591,8 @@ export default function Home() {
                             ];
                             
                             const pathData = m2Data.map((point, index) => {
-                              const x = 50 + ((point.year - 1920) / (2024 - 1920)) * 320;
+                              // Linear time positioning: 3.077px per year (320px / 104 years)
+                              const x = 50 + ((point.year - 1920) / 104) * 320;
                               const y = 175 - ((point.m2 - 0.023) / (21.0 - 0.023)) * 155;
                               return `${index === 0 ? 'M' : 'L'} ${x},${y}`;
                             }).join(' ');
@@ -2620,10 +2622,8 @@ export default function Home() {
                             ];
                             
                             return events.map((event, index) => {
-                              // Calculate X position: chart starts at x=50, ends at x=370, spanning 1920-2024 (104 years)
-                              const yearRange = 2024 - 1920; // 104 years
-                              const yearFromStart = event.year - 1920;
-                              const chartX = 50 + (yearFromStart / yearRange) * 320;
+                              // Linear time positioning: 3.077px per year (320px / 104 years)
+                              const chartX = 50 + ((event.year - 1920) / 104) * 320;
                               
                               // Calculate Y position: chart height=155, spanning 0.023-21.0 trillions
                               const chartY = 175 - ((event.m2 - 0.023) / (21.0 - 0.023)) * 155;
