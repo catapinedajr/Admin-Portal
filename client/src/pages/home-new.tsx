@@ -291,8 +291,8 @@ export default function Home() {
   const [moreSubTab, setMoreSubTab] = useState<MoreSubTab>("store");
   
   // Day navigation for testing generated content (defaulting to Month 1 range)
-  const [testDayOverride, setTestDayOverride] = useState<number | null>(1);
-  const naturalDayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24)) % 30 + 1; // Range 1-30
+  const [testDayOverride, setTestDayOverride] = useState<number | null>(0);
+  const naturalDayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24)) % 30; // Range 0-29 (0-based)
   const currentDayIndex = testDayOverride !== null ? testDayOverride : naturalDayIndex;
 
   const [convictionSubTab, setConvictionSubTab] = useState<"whitepaper" | "books" | "videos">("whitepaper");
