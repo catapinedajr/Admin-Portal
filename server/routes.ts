@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { generateMonth1Content } from "./content-generator";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Get current user (default user for simplicity)
@@ -855,6 +856,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error updating weekly progress:', error);
       res.status(500).json({ message: "Failed to update weekly progress" });
+    }
+  });
+
+  // Content generation endpoint
+  app.post("/api/generate-month1-content", async (req, res) => {
+    try {
+      console.log("🚀 Starting Month 1 content generation...");
+      await generateMonth1Content();
+      res.json({ 
+        success: true, 
+        message: "Month 1 content generated successfully!" 
+      });
+    } catch (error) {
+      console.error("❌ Content generation failed:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to generate content", 
+        error: error.message 
+      });
     }
   });
 
