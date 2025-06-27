@@ -3266,7 +3266,7 @@ export default function Home() {
                         <CardContent className="p-3 text-center">
                           <Coins className="w-5 h-5 text-orange-400 mx-auto mb-1" />
                           <h5 className="font-medium text-white mb-1 text-xs">Bitcoin</h5>
-                          <p className="text-orange-400 font-bold">{dcaResults.totalBitcoin.toFixed(4)} BTC</p>
+                          <p className="text-orange-400 font-bold">{dcaResults.totalBitcoin.toLocaleString('en-US', {maximumFractionDigits: 4, minimumFractionDigits: 4})} BTC</p>
                         </CardContent>
                       </Card>
                       
@@ -3460,7 +3460,7 @@ export default function Home() {
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-zinc-400">Bitcoin Acquired</span>
-                                <span className="text-white">{dcaResults.totalBitcoin.toFixed(6)} BTC</span>
+                                <span className="text-white">{dcaResults.totalBitcoin.toLocaleString('en-US', {maximumFractionDigits: 6, minimumFractionDigits: 4})} BTC</span>
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-zinc-400">Average Price</span>
