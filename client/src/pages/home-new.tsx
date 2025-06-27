@@ -2501,12 +2501,12 @@ export default function Home() {
                     </div>
                     <div className="w-full bg-zinc-700 rounded-full h-2">
                       <div 
-                        className="bg-gradient-to-r from-zinc-400 to-zinc-600 h-2 rounded-full transition-all duration-500"
-                        style={{ width: `${(1 / getPurchasingPowerRaw(moneySupplyYear)) * 100}%` }}
+                        className="bg-gradient-to-r from-red-400 to-red-600 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${Math.min(100, (1 / getPurchasingPowerRaw(moneySupplyYear) - 1) * 5)}%` }}
                       ></div>
                     </div>
                     <div className="text-xs text-zinc-400 mt-1">
-                      {Math.round((1 - (1 / getPurchasingPowerRaw(moneySupplyYear))) * 100)}% of purchasing power lost
+                      {Math.round((1 - getPurchasingPowerRaw(moneySupplyYear)) * 100)}% of purchasing power lost since 1920
                     </div>
                   </div>
                 </div>
