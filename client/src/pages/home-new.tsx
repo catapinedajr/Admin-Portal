@@ -2611,14 +2611,45 @@ export default function Home() {
                           </linearGradient>
                         </defs>
                         
+                        {/* Gold Standard Line - Behind other elements */}
+                        <g>
+                          {(() => {
+                            const nixonYear = 1971;
+                            const nixonX = 50 + ((nixonYear - 1920) / 104) * 320;
+                            return (
+                              <g>
+                                <line 
+                                  x1={nixonX} 
+                                  y1="20" 
+                                  x2={nixonX} 
+                                  y2="175" 
+                                  stroke="#fbbf24" 
+                                  strokeWidth="2" 
+                                  strokeDasharray="5,5"
+                                  opacity="0.6"
+                                />
+                                <text 
+                                  x={nixonX - 35} 
+                                  y="15" 
+                                  fill="#fbbf24" 
+                                  fontSize="8" 
+                                  fontWeight="bold"
+                                >
+                                  Gold Standard Ends
+                                </text>
+                              </g>
+                            );
+                          })()}
+                        </g>
+
                         {/* Historical Event Markers */}
                         <g>
                           {(() => {
                             const events = [
-                              { year: 1933, m2: 0.020, label: "1933", subLabel: "Gold Ban", offsetX: -18, offsetY: -70 },  
-                              { year: 1971, m2: 0.583, label: "1971", subLabel: "Nixon", offsetX: -20, offsetY: -80 },
-                              { year: 2008, m2: 7.500, label: "2008", subLabel: "Crisis", offsetX: -15, offsetY: -90 },
-                              { year: 2020, m2: 15.400, label: "2020", subLabel: "COVID", offsetX: -15, offsetY: -100 }
+                              { year: 1933, m2: 0.020, label: "1933", subLabel: "Gold Ban", labelX: 30, labelY: 40 },  
+                              { year: 1971, m2: 0.583, label: "1971", subLabel: "Nixon", labelX: 120, labelY: 30 },
+                              { year: 2008, m2: 7.500, label: "2008", subLabel: "Crisis", labelX: 280, labelY: 40 },
+                              { year: 2020, m2: 15.400, label: "2020", subLabel: "COVID", labelX: 320, labelY: 30 }
                             ];
                             
                             return events.map((event, index) => {
@@ -2628,17 +2659,27 @@ export default function Home() {
                               // Calculate Y position: chart height=155, spanning 0.023-21.0 trillions
                               const chartY = 175 - ((event.m2 - 0.023) / (21.0 - 0.023)) * 155;
                               
-                              // Use predefined offset positions to prevent overlap
-                              const adjustedOffsetY = event.offsetY;
-                              
                               return (
                                 <g key={index}>
+                                  {/* Connection line from chart point to label */}
+                                  <line 
+                                    x1={chartX} 
+                                    y1={chartY} 
+                                    x2={event.labelX + 18} 
+                                    y2={event.labelY + 12} 
+                                    stroke="#dc2626" 
+                                    strokeWidth="1" 
+                                    strokeDasharray="2,2"
+                                    opacity="0.7"
+                                  />
+                                  
+                                  {/* Chart point marker */}
                                   <circle cx={chartX} cy={chartY} r="3" fill="#dc2626" stroke="#ffffff" strokeWidth="1"/>
                                   
                                   {/* Label background */}
                                   <rect 
-                                    x={chartX + event.offsetX} 
-                                    y={chartY + adjustedOffsetY} 
+                                    x={event.labelX} 
+                                    y={event.labelY} 
                                     width="36" 
                                     height="24" 
                                     fill="rgba(0,0,0,0.9)" 
@@ -2649,8 +2690,8 @@ export default function Home() {
                                   
                                   {/* Year label */}
                                   <text 
-                                    x={chartX + event.offsetX + 18} 
-                                    y={chartY + adjustedOffsetY + 10} 
+                                    x={event.labelX + 18} 
+                                    y={event.labelY + 10} 
                                     fill="#ffffff" 
                                     fontSize="9" 
                                     fontWeight="bold"
@@ -2661,8 +2702,8 @@ export default function Home() {
                                   
                                   {/* Event description */}
                                   <text 
-                                    x={chartX + event.offsetX + 18} 
-                                    y={chartY + adjustedOffsetY + 20} 
+                                    x={event.labelX + 18} 
+                                    y={event.labelY + 20} 
                                     fill="#dc2626" 
                                     fontSize="7" 
                                     fontWeight="normal"
@@ -2701,36 +2742,7 @@ export default function Home() {
                           />
                         </g>
                         
-                        {/* Vertical line marking 1971 Nixon Shock - Gold Standard Abandonment */}
-                        <g>
-                          {(() => {
-                            const nixonYear = 1971;
-                            const nixonX = 50 + ((nixonYear - 1920) / 104) * 320;
-                            return (
-                              <g>
-                                <line 
-                                  x1={nixonX} 
-                                  y1="20" 
-                                  x2={nixonX} 
-                                  y2="175" 
-                                  stroke="#fbbf24" 
-                                  strokeWidth="2" 
-                                  strokeDasharray="5,5"
-                                  opacity="0.8"
-                                />
-                                <text 
-                                  x={nixonX - 35} 
-                                  y="15" 
-                                  fill="#fbbf24" 
-                                  fontSize="8" 
-                                  fontWeight="bold"
-                                >
-                                  Gold Standard Ends
-                                </text>
-                              </g>
-                            );
-                          })()}
-                        </g>
+
                         
                       </svg>
                     </div>
