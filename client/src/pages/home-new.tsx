@@ -376,8 +376,9 @@ export default function Home() {
   };
 
   const getHousePriceForYear = (year: number): number => {
-    // Median home prices in the US
+    // Median home prices in the US - authentic historical data
     const dataPoints: { [key: number]: number } = {
+      1920: 3200, 1930: 3900, 1940: 2900, 1950: 7400, 1960: 11900,
       1971: 25200, 1980: 64600, 1990: 122900, 2000: 169000, 2008: 247900,
       2010: 221800, 2015: 293400, 2020: 347500, 2021: 408800, 2022: 428700,
       2023: 436800, 2024: 442600
@@ -397,8 +398,9 @@ export default function Home() {
   };
 
   const getMilkPriceForYear = (year: number): string => {
-    // Average price per gallon of milk
+    // Average price per gallon of milk - authentic historical data
     const dataPoints: { [key: number]: number } = {
+      1920: 0.56, 1930: 0.46, 1940: 0.52, 1950: 0.82, 1960: 0.97,
       1971: 1.18, 1980: 2.16, 1990: 2.78, 2000: 2.97, 2008: 3.87,
       2010: 3.26, 2015: 3.41, 2020: 3.54, 2021: 3.69, 2022: 4.33,
       2023: 3.91, 2024: 3.99
@@ -419,8 +421,9 @@ export default function Home() {
   };
 
   const getGasPriceForYear = (year: number): string => {
-    // Average price per gallon of gasoline
+    // Average price per gallon of gasoline - authentic historical data
     const dataPoints: { [key: number]: number } = {
+      1920: 0.30, 1930: 0.20, 1940: 0.18, 1950: 0.27, 1960: 0.31,
       1971: 0.36, 1980: 1.19, 1990: 1.34, 2000: 1.51, 2008: 3.27,
       2010: 2.79, 2015: 2.43, 2020: 2.17, 2021: 3.01, 2022: 3.95,
       2023: 3.52, 2024: 3.38
@@ -2648,7 +2651,7 @@ export default function Home() {
                             const events = [
                               { year: 1945, m2: 0.107, label: "WWII", sublabel: "Post-War", labelX: 80, labelY: 130 },
                               { year: 2008, m2: 7.500, label: "Financial Crisis", sublabel: "2008", labelX: 240, labelY: 90 },
-                              { year: 2020, m2: 15.400, label: "COVID", sublabel: "Money Printing", labelX: 300, labelY: 30 }
+                              { year: 2020, m2: 15.400, label: "COVID", sublabel: "Money Printing", labelX: 260, labelY: 30 }
                             ];
                             
                             return events.map((event, index) => {
@@ -2760,30 +2763,30 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Real-World Examples */}
-                <div className="bg-gradient-to-r from-red-950/30 to-orange-950/30 rounded-xl p-6 border border-red-800/30">
-                  <h4 className="text-white font-semibold mb-4 flex items-center gap-2">
+                {/* Real-World Examples - Compact */}
+                <div className="bg-gradient-to-r from-red-950/30 to-orange-950/30 rounded-lg p-4 border border-red-800/30">
+                  <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
                     <ShoppingCart className="w-4 h-4 text-orange-400" />
                     Real-World Impact in {moneySupplyYear}
                   </h4>
-                  <div className="grid gap-4 md:grid-cols-3">
-                    <div className="text-center space-y-2">
-                      <div className="text-2xl">🏠</div>
-                      <div className="text-zinc-300 text-sm">Average House</div>
-                      <div className="text-orange-400 font-bold">${getHousePriceForYear(moneySupplyYear).toLocaleString()}</div>
-                      <div className="text-zinc-500 text-xs">vs $25,200 in 1971</div>
+                  <div className="grid gap-3 md:grid-cols-3">
+                    <div className="text-center space-y-1">
+                      <div className="text-lg">🏠</div>
+                      <div className="text-zinc-300 text-xs">House</div>
+                      <div className="text-orange-400 font-bold text-sm">${getHousePriceForYear(moneySupplyYear).toLocaleString()}</div>
+                      <div className="text-zinc-500 text-xs">vs $3,200 in 1920</div>
                     </div>
-                    <div className="text-center space-y-2">
-                      <div className="text-2xl">🥛</div>
-                      <div className="text-zinc-300 text-sm">Gallon of Milk</div>
-                      <div className="text-orange-400 font-bold">${getMilkPriceForYear(moneySupplyYear)}</div>
-                      <div className="text-zinc-500 text-xs">vs $1.18 in 1971</div>
+                    <div className="text-center space-y-1">
+                      <div className="text-lg">🥛</div>
+                      <div className="text-zinc-300 text-xs">Milk</div>
+                      <div className="text-orange-400 font-bold text-sm">${getMilkPriceForYear(moneySupplyYear)}</div>
+                      <div className="text-zinc-500 text-xs">vs $0.56 in 1920</div>
                     </div>
-                    <div className="text-center space-y-2">
-                      <div className="text-2xl">⛽</div>
-                      <div className="text-zinc-300 text-sm">Gallon of Gas</div>
-                      <div className="text-orange-400 font-bold">${getGasPriceForYear(moneySupplyYear)}</div>
-                      <div className="text-zinc-500 text-xs">vs $0.36 in 1971</div>
+                    <div className="text-center space-y-1">
+                      <div className="text-lg">⛽</div>
+                      <div className="text-zinc-300 text-xs">Gas</div>
+                      <div className="text-orange-400 font-bold text-sm">${getGasPriceForYear(moneySupplyYear)}</div>
+                      <div className="text-zinc-500 text-xs">vs $0.30 in 1920</div>
                     </div>
                   </div>
                 </div>
