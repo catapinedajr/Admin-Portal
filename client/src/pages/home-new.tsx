@@ -2645,7 +2645,7 @@ export default function Home() {
                       onClick={startInflationSimulation}
                       className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg font-medium"
                     >
-                      Start 12-Second Demo
+                      Watch Your Money Disappear
                     </Button>
                   </div>
                 )}
