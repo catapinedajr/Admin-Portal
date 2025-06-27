@@ -319,11 +319,12 @@ export default function Home() {
 
   // Money Supply Helper Functions
   const getMoneySupplyRaw = (year: number): number => {
-    // Authentic M2 Money Supply data (in trillions)
+    // Authentic M2 Money Supply data (in trillions) - 1920 to 2024
     const dataPoints: { [key: number]: number } = {
-      1971: 0.6, 1980: 1.6, 1990: 3.2, 2000: 4.9, 2008: 7.8, 
-      2010: 8.7, 2015: 11.6, 2020: 15.3, 2021: 20.8, 2022: 21.3, 
-      2023: 20.9, 2024: 21.0
+      1920: 0.023, 1929: 0.026, 1933: 0.020, 1940: 0.040, 1945: 0.107, 
+      1950: 0.117, 1960: 0.167, 1971: 0.583, 1980: 1.600, 1990: 3.200, 
+      2000: 4.900, 2008: 7.500, 2010: 8.700, 2015: 12.400, 2020: 15.400, 
+      2021: 20.100, 2024: 21.000
     };
     
     // Linear interpolation between known points
@@ -2410,9 +2411,9 @@ export default function Home() {
                     </p>
                     
                     <p>
-                      <span className="text-orange-400 font-semibold">What cost $1 in 1971 now costs $7.50.</span> Your 
-                      grandparents could buy a house with one income. Today, two incomes barely cover rent. This isn't 
-                      progress—it's systematic wealth transfer from savers to money printers.
+                      <span className="text-orange-400 font-semibold">What cost $1 in 1920 now costs $15.50.</span> Your 
+                      great-grandparents could buy a house with one income and still save money. Today, two incomes barely 
+                      cover rent. This isn't progress—it's systematic wealth transfer from savers to money printers.
                     </p>
                     
                     <p>
@@ -2474,17 +2475,17 @@ export default function Home() {
                   <div className="space-y-2">
                     <input
                       type="range"
-                      min="1971"
+                      min="1920"
                       max="2024"
                       value={moneySupplyYear}
                       onChange={(e) => setMoneySupplyYear(parseInt(e.target.value))}
                       className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer slider"
                       style={{
-                        background: `linear-gradient(to right, #f97316 0%, #f97316 ${((moneySupplyYear - 1971) / (2024 - 1971)) * 100}%, #374151 ${((moneySupplyYear - 1971) / (2024 - 1971)) * 100}%, #374151 100%)`
+                        background: `linear-gradient(to right, #f97316 0%, #f97316 ${((moneySupplyYear - 1920) / (2024 - 1920)) * 100}%, #374151 ${((moneySupplyYear - 1920) / (2024 - 1920)) * 100}%, #374151 100%)`
                       }}
                     />
                     <div className="flex justify-between text-xs text-zinc-500">
-                      <span>1971 (Nixon Shock)</span>
+                      <span>1920 (Gold Standard)</span>
                       <span>2024 (Today)</span>
                     </div>
                   </div>
@@ -2513,7 +2514,7 @@ export default function Home() {
                 <div className="space-y-4">
                   <h4 className="text-white font-semibold flex items-center gap-2">
                     <TrendingUp className="w-4 h-4 text-red-400" />
-                    M2 Money Supply Explosion: $0.6T → $21T Since 1971
+                    M2 Money Supply: 104 Years of Monetary History (1920-2024)
                   </h4>
                   <div className="bg-zinc-800/50 rounded-lg p-4">
                     <div className="relative h-64 w-full">
@@ -2544,23 +2545,30 @@ export default function Home() {
                         {/* Money Supply Growth Line - Using Real Federal Reserve Data */}
                         <path
                           d={(() => {
-                            // Real M2 data points (in trillions): Year -> M2 Value
+                            // Real M2 data points (in billions then trillions): Year -> M2 Value
                             const m2Data = [
-                              { year: 1971, m2: 0.6 },   // Nixon Shock baseline
-                              { year: 1980, m2: 1.6 },   // Early 80s
-                              { year: 1990, m2: 3.2 },   // 90s expansion  
-                              { year: 2000, m2: 4.9 },   // Dot-com era
-                              { year: 2008, m2: 7.5 },   // Pre-crisis
-                              { year: 2010, m2: 8.7 },   // Post-crisis QE1
-                              { year: 2015, m2: 12.4 },  // QE era
-                              { year: 2020, m2: 15.4 },  // Pre-COVID
-                              { year: 2021, m2: 20.1 },  // COVID peak
-                              { year: 2024, m2: 21.0 }   // Current
+                              { year: 1920, m2: 0.023 },   // Gold Standard era ($23B)
+                              { year: 1929, m2: 0.026 },   // Pre-Depression ($26B)
+                              { year: 1933, m2: 0.020 },   // Depression low ($20B)
+                              { year: 1940, m2: 0.040 },   // Pre-WWII ($40B)
+                              { year: 1945, m2: 0.107 },   // Post-WWII expansion ($107B)
+                              { year: 1950, m2: 0.117 },   // Korean War ($117B)
+                              { year: 1960, m2: 0.167 },   // 60s growth ($167B)
+                              { year: 1971, m2: 0.583 },   // Nixon Shock baseline ($583B)
+                              { year: 1980, m2: 1.600 },   // Early 80s ($1.6T)
+                              { year: 1990, m2: 3.200 },   // 90s expansion ($3.2T)
+                              { year: 2000, m2: 4.900 },   // Dot-com era ($4.9T)
+                              { year: 2008, m2: 7.500 },   // Pre-crisis ($7.5T)
+                              { year: 2010, m2: 8.700 },   // Post-crisis QE1 ($8.7T)
+                              { year: 2015, m2: 12.400 },  // QE era ($12.4T)
+                              { year: 2020, m2: 15.400 },  // Pre-COVID ($15.4T)
+                              { year: 2021, m2: 20.100 },  // COVID peak ($20.1T)
+                              { year: 2024, m2: 21.000 }   // Current ($21T)
                             ];
                             
                             return m2Data.map((point, index) => {
-                              const x = 50 + ((point.year - 1971) / (2024 - 1971)) * 320;
-                              const y = 175 - ((point.m2 - 0.6) / (21.0 - 0.6)) * 155;
+                              const x = 50 + ((point.year - 1920) / (2024 - 1920)) * 320;
+                              const y = 175 - ((point.m2 - 0.023) / (21.0 - 0.023)) * 155;
                               return `${index === 0 ? 'M' : 'L'} ${x},${y}`;
                             }).join(' ');
                           })()}
@@ -2573,14 +2581,17 @@ export default function Home() {
                         <path
                           d={(() => {
                             const m2Data = [
-                              { year: 1971, m2: 0.6 }, { year: 1980, m2: 1.6 }, { year: 1990, m2: 3.2 },
-                              { year: 2000, m2: 4.9 }, { year: 2008, m2: 7.5 }, { year: 2010, m2: 8.7 },
-                              { year: 2015, m2: 12.4 }, { year: 2020, m2: 15.4 }, { year: 2021, m2: 20.1 }, { year: 2024, m2: 21.0 }
+                              { year: 1920, m2: 0.023 }, { year: 1929, m2: 0.026 }, { year: 1933, m2: 0.020 },
+                              { year: 1940, m2: 0.040 }, { year: 1945, m2: 0.107 }, { year: 1950, m2: 0.117 },
+                              { year: 1960, m2: 0.167 }, { year: 1971, m2: 0.583 }, { year: 1980, m2: 1.600 },
+                              { year: 1990, m2: 3.200 }, { year: 2000, m2: 4.900 }, { year: 2008, m2: 7.500 },
+                              { year: 2010, m2: 8.700 }, { year: 2015, m2: 12.400 }, { year: 2020, m2: 15.400 },
+                              { year: 2021, m2: 20.100 }, { year: 2024, m2: 21.000 }
                             ];
                             
                             const pathData = m2Data.map((point, index) => {
-                              const x = 50 + ((point.year - 1971) / (2024 - 1971)) * 320;
-                              const y = 175 - ((point.m2 - 0.6) / (21.0 - 0.6)) * 155;
+                              const x = 50 + ((point.year - 1920) / (2024 - 1920)) * 320;
+                              const y = 175 - ((point.m2 - 0.023) / (21.0 - 0.023)) * 155;
                               return `${index === 0 ? 'M' : 'L'} ${x},${y}`;
                             }).join(' ');
                             
@@ -2602,14 +2613,17 @@ export default function Home() {
                         <g>
                           {(() => {
                             const events = [
-                              { year: 1971, m2: 0.6, label: "Nixon", labelOffset: -25 },
-                              { year: 2008, m2: 7.5, label: "2008", labelOffset: -20 },
-                              { year: 2020, m2: 15.4, label: "COVID", labelOffset: -20 }
+                              { year: 1929, m2: 0.026, label: "1929", labelOffset: -20 },   // Great Depression
+                              { year: 1933, m2: 0.020, label: "1933", labelOffset: -20 },   // FDR Gold Ban
+                              { year: 1945, m2: 0.107, label: "WWII", labelOffset: -20 },   // Post-WWII expansion
+                              { year: 1971, m2: 0.583, label: "Nixon", labelOffset: -25 },  // Nixon Shock
+                              { year: 2008, m2: 7.500, label: "2008", labelOffset: -20 },   // Financial Crisis
+                              { year: 2020, m2: 15.400, label: "COVID", labelOffset: -20 }  // COVID printing
                             ];
                             
                             return events.map((event, index) => {
-                              const x = 50 + ((event.year - 1971) / (2024 - 1971)) * 320;
-                              const y = 175 - ((event.m2 - 0.6) / (21.0 - 0.6)) * 155;
+                              const x = 50 + ((event.year - 1920) / (2024 - 1920)) * 320;
+                              const y = 175 - ((event.m2 - 0.023) / (21.0 - 0.023)) * 155;
                               
                               return (
                                 <g key={index}>
@@ -2633,27 +2647,13 @@ export default function Home() {
                             strokeDasharray="4,4"
                           />
                           <circle 
-                            cx={50 + ((moneySupplyYear - 1971) / (2024 - 1971)) * 320} 
+                            cx={50 + ((moneySupplyYear - 1920) / (2024 - 1920)) * 320} 
                             cy={(() => {
-                              // Use the same real M2 data as the line chart
-                              const m2Data = [
-                                { year: 1971, m2: 0.6 },   // Nixon Shock baseline
-                                { year: 1980, m2: 1.6 },   // Early 80s
-                                { year: 1990, m2: 3.2 },   // 90s expansion  
-                                { year: 2000, m2: 4.9 },   // Dot-com era
-                                { year: 2008, m2: 7.5 },   // Pre-crisis
-                                { year: 2010, m2: 8.7 },   // Post-crisis QE1
-                                { year: 2015, m2: 12.4 },  // QE era
-                                { year: 2020, m2: 15.4 },  // Pre-COVID
-                                { year: 2021, m2: 20.1 },  // COVID peak
-                                { year: 2024, m2: 21.0 }   // Current
-                              ];
-                              
                               // Get the actual M2 value for the selected year
                               const currentM2 = getMoneySupplyRaw(moneySupplyYear);
                               
-                              // Convert to Y coordinate using same formula as line chart
-                              return 175 - ((currentM2 - 0.6) / (21.0 - 0.6)) * 155;
+                              // Convert to Y coordinate using same formula as line chart (1920-2024 range)
+                              return 175 - ((currentM2 - 0.023) / (21.0 - 0.023)) * 155;
                             })()} 
                             r="5" 
                             fill="#f97316" 
