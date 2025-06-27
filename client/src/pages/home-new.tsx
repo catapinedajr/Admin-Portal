@@ -524,14 +524,14 @@ export default function Home() {
     setInflationSimActive(true);
     setInflationProgress(0);
 
-    // Animate through years: 0 -> 1yr -> 5yr -> 10yr -> 15yr -> 20yr -> 25yr (20% faster)
+    // Animate through years: 0 -> 1yr -> 5yr -> 10yr -> 15yr -> 20yr -> 25yr (2x faster)
     const timePoints = [
-      { step: 1, delay: 1600 },   // 1 year at 1.6 seconds
-      { step: 2, delay: 3200 },   // 5 years at 3.2 seconds  
-      { step: 3, delay: 4800 },   // 10 years at 4.8 seconds
-      { step: 4, delay: 6400 },   // 15 years at 6.4 seconds
-      { step: 5, delay: 8000 },   // 20 years at 8 seconds
-      { step: 6, delay: 9600 }    // 25 years at 9.6 seconds
+      { step: 1, delay: 800 },    // 1 year at 0.8 seconds
+      { step: 2, delay: 1600 },   // 5 years at 1.6 seconds  
+      { step: 3, delay: 2400 },   // 10 years at 2.4 seconds
+      { step: 4, delay: 3200 },   // 15 years at 3.2 seconds
+      { step: 5, delay: 4000 },   // 20 years at 4 seconds
+      { step: 6, delay: 4800 }    // 25 years at 4.8 seconds
     ];
 
     timePoints.forEach(({ step, delay }) => {
@@ -540,10 +540,10 @@ export default function Home() {
       }, delay);
     });
 
-    // End simulation after 12 seconds (20% faster)
+    // End simulation after 6 seconds (2x faster)
     setTimeout(() => {
       setInflationSimActive(false);
-    }, 12000);
+    }, 6000);
   };
 
   const resetInflationSimulation = () => {
@@ -3003,7 +3003,7 @@ export default function Home() {
                     )}
                     
                     {/* Compact Year Timeline */}
-                    <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid gap-1 md:grid-cols-2 lg:grid-cols-3">
                       {[
                         { step: 0, year: "Today", value: 25000, purchasingPower: 100, loss: "$0" },
                         { step: 1, year: "Year 1", value: 24250, purchasingPower: 97, loss: "$750" },
@@ -3017,7 +3017,7 @@ export default function Home() {
                         const isCurrentStep = inflationProgress === step && inflationSimActive;
                         
                         return (
-                          <div key={step} className={`relative p-2 rounded-lg border transition-all duration-1000 overflow-hidden ${
+                          <div key={step} className={`relative px-2 py-1 rounded border transition-all duration-500 overflow-hidden ${
                             isActive 
                               ? step === 0 ? 'bg-green-800/30 border-green-600/50' : 'bg-red-800/30 border-red-600/50'
                               : 'bg-zinc-800 border-zinc-700'
@@ -3035,30 +3035,30 @@ export default function Home() {
                               }}
                             ></div>
                             
-                            <div className="relative text-center space-y-1">
-                              <div className={`font-bold text-sm transition-colors duration-1000 ${
+                            <div className="relative text-center space-y-0.5">
+                              <div className={`font-bold text-xs transition-colors duration-500 ${
                                 isActive 
                                   ? step === 0 ? 'text-green-400' : 'text-red-400' 
                                   : 'text-zinc-400'
                               }`}>
                                 {year}
                               </div>
-                              <div className={`text-lg font-bold transition-colors duration-1000 ${
+                              <div className={`text-sm font-bold transition-colors duration-500 ${
                                 isActive 
                                   ? step === 0 ? 'text-green-300' : 'text-red-300'
                                   : 'text-zinc-500'
                               }`}>
                                 ${value.toLocaleString()}
                               </div>
-                              <div className={`text-xs transition-colors duration-1000 ${
+                              <div className={`text-xs transition-colors duration-500 ${
                                 isActive 
                                   ? step === 0 ? 'text-green-400' : 'text-red-400'
                                   : 'text-zinc-500'
                               }`}>
-                                {purchasingPower}% buying power
+                                {purchasingPower}% power
                               </div>
                               {step > 0 && (
-                                <div className={`text-xs transition-colors duration-1000 ${
+                                <div className={`text-xs transition-colors duration-500 ${
                                   isActive ? 'text-red-300' : 'text-zinc-600'
                                 }`}>
                                   Lost {loss}
