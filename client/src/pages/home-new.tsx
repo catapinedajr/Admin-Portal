@@ -2466,7 +2466,7 @@ export default function Home() {
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Year Slider Control */}
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-zinc-300 font-medium">Select Year:</span>
                     <span className="text-orange-400 font-bold text-lg">{moneySupplyYear}</span>
@@ -2488,76 +2488,148 @@ export default function Home() {
                       <span>2024 (Today)</span>
                     </div>
                   </div>
-                </div>
 
-                {/* Key Historical Events */}
-                <div className="grid gap-3 md:grid-cols-4 text-xs">
-                  <div className={`p-2 rounded-lg text-center transition-all ${moneySupplyYear >= 1971 ? 'bg-red-900/50 border border-red-700/50' : 'bg-zinc-800/50'}`}>
-                    <div className="font-medium text-red-300">1971</div>
-                    <div className="text-zinc-400">Gold Standard Ended</div>
-                  </div>
-                  <div className={`p-2 rounded-lg text-center transition-all ${moneySupplyYear >= 2008 ? 'bg-red-900/50 border border-red-700/50' : 'bg-zinc-800/50'}`}>
-                    <div className="font-medium text-red-300">2008</div>
-                    <div className="text-zinc-400">Financial Crisis</div>
-                  </div>
-                  <div className={`p-2 rounded-lg text-center transition-all ${moneySupplyYear >= 2020 ? 'bg-red-900/50 border border-red-700/50' : 'bg-zinc-800/50'}`}>
-                    <div className="font-medium text-red-300">2020</div>
-                    <div className="text-zinc-400">COVID Money Printing</div>
-                  </div>
-                  <div className={`p-2 rounded-lg text-center transition-all ${moneySupplyYear >= 2024 ? 'bg-orange-900/50 border border-orange-700/50' : 'bg-zinc-800/50'}`}>
-                    <div className="font-medium text-orange-300">2024</div>
-                    <div className="text-zinc-400">Bitcoin Alternative</div>
-                  </div>
-                </div>
-
-                {/* Visual Comparison */}
-                <div className="grid gap-6 lg:grid-cols-2">
-                  {/* Money Supply Growth */}
-                  <div className="space-y-4">
-                    <h4 className="text-white font-semibold flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4 text-red-400" />
-                      US Money Supply (M2)
-                    </h4>
-                    <div className="bg-zinc-800/50 rounded-lg p-4 space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-zinc-300">In {moneySupplyYear}:</span>
-                        <span className="text-red-400 font-bold">
-                          ${getMoneySupplyForYear(moneySupplyYear)}T
-                        </span>
-                      </div>
-                      <div className="w-full bg-zinc-700 rounded-full h-3">
-                        <div 
-                          className="bg-gradient-to-r from-red-600 to-red-400 h-3 rounded-full transition-all duration-500"
-                          style={{ width: `${Math.min(100, ((getMoneySupplyRaw(moneySupplyYear) - 0.6) / 20) * 100)}%` }}
-                        ></div>
-                      </div>
-                      <div className="text-xs text-zinc-400">
-                        {getMoneySupplyMultiplier(moneySupplyYear)}x more money than 1971
-                      </div>
+                  {/* Purchasing Power Display - Moved Here */}
+                  <div className="bg-zinc-800/50 rounded-lg p-3 mt-3">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-zinc-300 text-sm">$1 from 1971 = </span>
+                      <span className="text-red-400 font-bold">
+                        ${getPurchasingPowerForYear(moneySupplyYear)} today
+                      </span>
+                    </div>
+                    <div className="w-full bg-zinc-700 rounded-full h-2">
+                      <div 
+                        className="bg-gradient-to-r from-zinc-400 to-zinc-600 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${(1 / getPurchasingPowerRaw(moneySupplyYear)) * 100}%` }}
+                      ></div>
+                    </div>
+                    <div className="text-xs text-zinc-400 mt-1">
+                      {Math.round((1 - (1 / getPurchasingPowerRaw(moneySupplyYear))) * 100)}% of purchasing power lost
                     </div>
                   </div>
+                </div>
 
-                  {/* Purchasing Power */}
-                  <div className="space-y-4">
-                    <h4 className="text-white font-semibold flex items-center gap-2">
-                      <TrendingDown className="w-4 h-4 text-red-400" />
-                      Your Dollar's Purchasing Power
-                    </h4>
-                    <div className="bg-zinc-800/50 rounded-lg p-4 space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-zinc-300">$1 from 1971 = </span>
-                        <span className="text-red-400 font-bold">
-                          ${getPurchasingPowerForYear(moneySupplyYear)} today
-                        </span>
+                {/* Money Supply Growth Chart */}
+                <div className="space-y-4">
+                  <h4 className="text-white font-semibold flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-red-400" />
+                    M2 Money Supply Explosion: $0.6T → $21T Since 1971
+                  </h4>
+                  <div className="bg-zinc-800/50 rounded-lg p-4">
+                    <div className="relative h-64 w-full">
+                      {/* SVG Chart */}
+                      <svg viewBox="0 0 400 200" className="w-full h-full">
+                        {/* Grid Lines */}
+                        <defs>
+                          <pattern id="grid" width="40" height="20" patternUnits="userSpaceOnUse">
+                            <path d="M 40 0 L 0 0 0 20" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.3"/>
+                          </pattern>
+                        </defs>
+                        <rect width="400" height="200" fill="url(#grid)" />
+                        
+                        {/* Y-axis labels */}
+                        <text x="10" y="15" fill="#9ca3af" fontSize="10">$21T</text>
+                        <text x="10" y="55" fill="#9ca3af" fontSize="10">$15T</text>
+                        <text x="10" y="95" fill="#9ca3af" fontSize="10">$10T</text>
+                        <text x="10" y="135" fill="#9ca3af" fontSize="10">$5T</text>
+                        <text x="10" y="175" fill="#9ca3af" fontSize="10">$0.6T</text>
+                        
+                        {/* X-axis labels */}
+                        <text x="45" y="195" fill="#9ca3af" fontSize="10">1971</text>
+                        <text x="120" y="195" fill="#9ca3af" fontSize="10">1990</text>
+                        <text x="200" y="195" fill="#9ca3af" fontSize="10">2000</text>
+                        <text x="280" y="195" fill="#9ca3af" fontSize="10">2010</text>
+                        <text x="360" y="195" fill="#9ca3af" fontSize="10">2024</text>
+                        
+                        {/* Money Supply Growth Line */}
+                        <path
+                          d={`M 50,175 
+                             L 80,165 
+                             L 120,155 
+                             L 160,140 
+                             L 200,120 
+                             L 240,100 
+                             L 280,80 
+                             L 320,50 
+                             L 340,35 
+                             L 370,20`}
+                          fill="none"
+                          stroke="#ef4444"
+                          strokeWidth="3"
+                          className="transition-all duration-1000"
+                        />
+                        
+                        {/* Fill area under curve */}
+                        <path
+                          d={`M 50,175 
+                             L 80,165 
+                             L 120,155 
+                             L 160,140 
+                             L 200,120 
+                             L 240,100 
+                             L 280,80 
+                             L 320,50 
+                             L 340,35 
+                             L 370,20
+                             L 370,180 
+                             L 50,180 Z`}
+                          fill="url(#redGradient)"
+                          opacity="0.3"
+                        />
+                        
+                        {/* Gradient definition */}
+                        <defs>
+                          <linearGradient id="redGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="#ef4444" stopOpacity="0.6"/>
+                            <stop offset="100%" stopColor="#ef4444" stopOpacity="0.1"/>
+                          </linearGradient>
+                        </defs>
+                        
+                        {/* Historical Event Markers */}
+                        <g>
+                          {/* 1971 Nixon Shock */}
+                          <circle cx="50" cy="175" r="4" fill="#dc2626" stroke="#ffffff" strokeWidth="2"/>
+                          <text x="25" y="190" fill="#dc2626" fontSize="8" fontWeight="bold">Nixon</text>
+                          
+                          {/* 2008 Crisis */}
+                          <circle cx="280" cy="80" r="4" fill="#dc2626" stroke="#ffffff" strokeWidth="2"/>
+                          <text x="260" y="70" fill="#dc2626" fontSize="8" fontWeight="bold">2008</text>
+                          
+                          {/* 2020 COVID */}
+                          <circle cx="340" cy="35" r="4" fill="#dc2626" stroke="#ffffff" strokeWidth="2"/>
+                          <text x="320" y="25" fill="#dc2626" fontSize="8" fontWeight="bold">COVID</text>
+                          
+                          {/* Current year indicator */}
+                          <line 
+                            x1={50 + ((moneySupplyYear - 1971) / (2024 - 1971)) * 320} 
+                            y1="10" 
+                            x2={50 + ((moneySupplyYear - 1971) / (2024 - 1971)) * 320} 
+                            y2="180" 
+                            stroke="#f97316" 
+                            strokeWidth="2" 
+                            strokeDasharray="4,4"
+                          />
+                          <circle 
+                            cx={50 + ((moneySupplyYear - 1971) / (2024 - 1971)) * 320} 
+                            cy={175 - ((getMoneySupplyRaw(moneySupplyYear) - 0.6) / 20.4) * 155} 
+                            r="5" 
+                            fill="#f97316" 
+                            stroke="#ffffff" 
+                            strokeWidth="2"
+                          />
+                        </g>
+                      </svg>
+                    </div>
+                    
+                    {/* Current Values Display */}
+                    <div className="mt-4 grid grid-cols-2 gap-4">
+                      <div className="text-center">
+                        <div className="text-red-400 font-bold text-xl">${getMoneySupplyForYear(moneySupplyYear)}T</div>
+                        <div className="text-zinc-400 text-sm">Money Supply in {moneySupplyYear}</div>
                       </div>
-                      <div className="w-full bg-zinc-700 rounded-full h-3">
-                        <div 
-                          className="bg-gradient-to-r from-zinc-400 to-zinc-600 h-3 rounded-full transition-all duration-500"
-                          style={{ width: `${(1 / getPurchasingPowerRaw(moneySupplyYear)) * 100}%` }}
-                        ></div>
-                      </div>
-                      <div className="text-xs text-zinc-400">
-                        {Math.round((1 - (1 / getPurchasingPowerRaw(moneySupplyYear))) * 100)}% of purchasing power lost
+                      <div className="text-center">
+                        <div className="text-red-400 font-bold text-xl">{getMoneySupplyMultiplier(moneySupplyYear)}x</div>
+                        <div className="text-zinc-400 text-sm">Growth Since 1971</div>
                       </div>
                     </div>
                   </div>
