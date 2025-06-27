@@ -2913,62 +2913,76 @@ export default function Home() {
                           </div>
                         </div>
 
-                        {/* Quick Comparison Bars */}
-                        <div className="space-y-2">
-                          <div className="text-zinc-300 text-sm font-medium">vs Traditional Investments</div>
+                        {/* Simplified Performance Comparison */}
+                        <div className="space-y-3">
+                          <div className="text-zinc-300 text-sm font-medium">Performance vs Traditional Assets</div>
                           {(() => {
                             // Accurate historical returns for each scenario period
                             let spReturn, realEstateReturn, goldReturn;
                             
                             if (hodlInputs.scenario === 'covid') {
-                              // Mar 2020 - Nov 2021 (1.7 years)
-                              spReturn = 1.45; // S&P 500: +45% during this period
-                              realEstateReturn = 1.25; // Real estate: +25%
-                              goldReturn = 0.95; // Gold: -5%
+                              spReturn = 1.45; // +45% Mar 2020 - Nov 2021
+                              realEstateReturn = 1.25; // +25%
+                              goldReturn = 0.95; // -5%
                             } else if (hodlInputs.scenario === 'bear') {
-                              // Jan 2018 - Apr 2021 (3.3 years)
-                              spReturn = 1.35; // S&P 500: +35% total
-                              realEstateReturn = 1.20; // Real estate: +20%
-                              goldReturn = 1.15; // Gold: +15%
+                              spReturn = 1.35; // +35% Jan 2018 - Apr 2021
+                              realEstateReturn = 1.20; // +20%
+                              goldReturn = 1.15; // +15%
                             } else if (hodlInputs.scenario === 'early') {
-                              // Jan 2017 - Dec 2024 (8 years)
-                              spReturn = 2.8; // S&P 500: +180% total
-                              realEstateReturn = 1.9; // Real estate: +90%
-                              goldReturn = 1.4; // Gold: +40%
+                              spReturn = 2.8; // +180% Jan 2017 - Dec 2024
+                              realEstateReturn = 1.9; // +90%
+                              goldReturn = 1.4; // +40%
                             } else {
-                              // Default fallback
                               spReturn = Math.pow(1.10, hodlResults.years || 4);
                               realEstateReturn = Math.pow(1.06, hodlResults.years || 4);
                               goldReturn = Math.pow(1.03, hodlResults.years || 4);
                             }
 
                             const comparisons = [
-                              { name: 'Bitcoin HODL', amount: hodlResults.currentValue, color: 'orange' },
-                              { name: 'S&P 500', amount: hodlResults.initialInvestment * spReturn, color: 'blue' },
-                              { name: 'Real Estate', amount: hodlResults.initialInvestment * realEstateReturn, color: 'green' },
-                              { name: 'Gold', amount: hodlResults.initialInvestment * goldReturn, color: 'yellow' }
+                              { 
+                                name: 'Bitcoin', 
+                                amount: hodlResults.currentValue, 
+                                color: 'orange-500',
+                                gain: hodlResults.percentageReturn
+                              },
+                              { 
+                                name: 'S&P 500', 
+                                amount: hodlResults.initialInvestment * spReturn, 
+                                color: 'blue-500',
+                                gain: (spReturn - 1) * 100
+                              },
+                              { 
+                                name: 'Real Estate', 
+                                amount: hodlResults.initialInvestment * realEstateReturn, 
+                                color: 'green-500',
+                                gain: (realEstateReturn - 1) * 100
+                              },
+                              { 
+                                name: 'Gold', 
+                                amount: hodlResults.initialInvestment * goldReturn, 
+                                color: 'yellow-500',
+                                gain: (goldReturn - 1) * 100
+                              }
                             ];
-
-                            const maxAmount = Math.max(...comparisons.map(c => c.amount));
                             
-                            return comparisons.map((investment, index) => {
-                              const widthPercent = (investment.amount / maxAmount) * 100;
-                              return (
-                                <div key={investment.name} className="flex items-center gap-3">
-                                  <div className="w-20 text-xs text-zinc-400 text-right">{investment.name}</div>
-                                  <div className="flex-1 bg-zinc-800 rounded-full h-4 relative">
-                                    <div 
-                                      className={`bg-${investment.color}-500 h-4 rounded-full transition-all duration-500 flex items-center justify-end pr-2`}
-                                      style={{ width: `${widthPercent}%` }}
-                                    >
-                                      <span className="text-xs font-mono text-white">
-                                        ${(investment.amount / 1000).toFixed(0)}k
-                                      </span>
+                            return (
+                              <div className="grid grid-cols-2 gap-3">
+                                {comparisons.map((investment) => (
+                                  <div key={investment.name} className="bg-zinc-800 rounded-lg p-3">
+                                    <div className="flex items-center justify-between mb-1">
+                                      <span className="text-white text-sm font-medium">{investment.name}</span>
+                                      <div className={`w-3 h-3 rounded-full bg-${investment.color}`}></div>
+                                    </div>
+                                    <div className="text-zinc-300 font-mono text-lg">
+                                      ${(investment.amount / 1000).toFixed(0)}k
+                                    </div>
+                                    <div className={`text-xs ${investment.gain >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                      {investment.gain >= 0 ? '+' : ''}{investment.gain.toFixed(0)}% return
                                     </div>
                                   </div>
-                                </div>
-                              );
-                            });
+                                ))}
+                              </div>
+                            );
                           })()}
                         </div>
                       </div>
