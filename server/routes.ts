@@ -21,8 +21,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const today = new Date();
       const dayIndex = Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 7; // Week 1 has 7 days of content
-      const facts = await storage.getDailyFacts(dayIndex);
-      res.json(facts);
+      
+      // For Week 1, show 3 facts per day by cycling through content
+      const allFacts = await storage.getAllDailyFacts();
+      const factsToShow = [];
+      
+      // Get 3 facts starting from today's dayIndex
+      for (let i = 0; i < 3; i++) {
+        const factIndex = (dayIndex * 3 + i) % allFacts.length;
+        if (allFacts[factIndex]) {
+          factsToShow.push(allFacts[factIndex]);
+        }
+      }
+      
+      res.json(factsToShow);
     } catch (error) {
       res.status(500).json({ message: "Failed to get daily facts" });
     }
@@ -685,7 +697,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Quiz routes
   app.get('/api/quiz/daily/:dayIndex', async (req, res) => {
     try {
-      const dayIndex = parseInt(req.params.dayIndex);
+      const rawDayIndex = parseInt(req.params.dayIndex);
+      // Convert any day index to Week 1 cycle (0-6)
+      const dayIndex = rawDayIndex % 7;
       const questions = await storage.getDailyQuizQuestions(dayIndex);
       res.json(questions);
     } catch (error) {
