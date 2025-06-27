@@ -2254,15 +2254,15 @@ export default function Home() {
               <CardHeader className="pb-4">
                 <CardTitle className="text-white flex items-center gap-3 text-xl">
                   <TrendingDown className="w-5 h-5 text-orange-400" />
-                  Inflation Impact Calculator
+                  Your Money Is Losing Value Right Now
                 </CardTitle>
-                <p className="text-zinc-400 text-sm">See how inflation erodes your purchasing power over time</p>
+                <p className="text-zinc-400 text-sm">Calculate exactly how much purchasing power you're losing to inflation</p>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="grid gap-6 lg:grid-cols-3">
+                <div className="grid gap-6 lg:grid-cols-2">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-zinc-300">Savings Amount</label>
+                      <label className="text-sm font-medium text-zinc-300">If you have this much in cash savings:</label>
                       <Select value={inflationAmount} onValueChange={setInflationAmount}>
                         <SelectTrigger className="bg-zinc-800 border-zinc-700 h-12">
                           <SelectValue />
@@ -2278,7 +2278,7 @@ export default function Home() {
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-zinc-300">Time Period</label>
+                      <label className="text-sm font-medium text-zinc-300">Over this time period:</label>
                       <Select value={inflationYears} onValueChange={setInflationYears}>
                         <SelectTrigger className="bg-zinc-800 border-zinc-700 h-12">
                           <SelectValue />
@@ -2293,35 +2293,62 @@ export default function Home() {
                     </div>
                   </div>
                   
-                  <div className="p-6 bg-red-950/50 rounded-xl border border-red-800/50">
-                    <div className="text-center">
-                      <div className="text-red-400 text-sm font-medium mb-2">Fiat Currency Loss</div>
-                      <div className="text-3xl font-bold text-red-300 mb-1">
-                        -${Math.round(parseInt(inflationAmount) * (1 - Math.pow(0.97, parseInt(inflationYears)))).toLocaleString()}
+                  <div className="space-y-4">
+                    {/* Visual Comparison Chart */}
+                    <div className="h-32 bg-zinc-800 rounded-lg p-4 relative">
+                      <div className="text-xs text-zinc-400 mb-2">Your purchasing power over {inflationYears} years:</div>
+                      <div className="flex items-end justify-between h-16">
+                        {/* Starting Value Bar */}
+                        <div className="flex flex-col items-center">
+                          <div className="bg-zinc-500 w-8 h-16 rounded-sm"></div>
+                          <div className="text-xs text-zinc-400 mt-1">Today</div>
+                          <div className="text-xs text-white font-bold">${parseInt(inflationAmount).toLocaleString()}</div>
+                        </div>
+                        
+                        {/* Arrow */}
+                        <div className="text-zinc-600 text-2xl">→</div>
+                        
+                        {/* Ending Value Bar (Shorter) */}
+                        <div className="flex flex-col items-center">
+                          <div 
+                            className="bg-red-500 w-8 rounded-sm"
+                            style={{ height: `${16 * Math.pow(0.97, parseInt(inflationYears))}px` }}
+                          ></div>
+                          <div className="text-xs text-zinc-400 mt-1">In {inflationYears} years</div>
+                          <div className="text-xs text-red-400 font-bold">
+                            ${Math.round(parseInt(inflationAmount) * Math.pow(0.97, parseInt(inflationYears))).toLocaleString()}
+                          </div>
+                        </div>
                       </div>
-                      <div className="text-red-400/70 text-xs">Lost to 3% inflation</div>
                     </div>
-                  </div>
-                  
-                  <div className="p-6 bg-green-950/50 rounded-xl border border-green-800/50">
-                    <div className="text-center">
-                      <div className="text-green-400 text-sm font-medium mb-2">Bitcoin Protection</div>
-                      <div className="text-3xl font-bold text-green-300 mb-1">
-                        ${Math.round(parseInt(inflationAmount) * Math.pow(1.15, parseInt(inflationYears))).toLocaleString()}
+                    
+                    {/* Clear Loss Statement */}
+                    <div className="p-4 bg-red-950/50 rounded-xl border border-red-800/50 text-center">
+                      <div className="text-red-300 text-sm mb-2">You lose this much buying power:</div>
+                      <div className="text-2xl font-bold text-red-400">
+                        ${Math.round(parseInt(inflationAmount) * (1 - Math.pow(0.97, parseInt(inflationYears)))).toLocaleString()}
                       </div>
-                      <div className="text-green-400/70 text-xs">15% annual appreciation</div>
+                      <div className="text-red-300/70 text-xs mt-1">Gone forever due to money printing</div>
                     </div>
                   </div>
                 </div>
                 
-                <div className="text-center p-4 bg-orange-950/30 rounded-xl border border-orange-800/30">
-                  <div className="text-orange-300 text-lg font-semibold">
-                    Net Advantage: <span className="text-orange-400 text-2xl font-bold">
-                      ${(Math.round(parseInt(inflationAmount) * Math.pow(1.15, parseInt(inflationYears))) + 
-                        Math.round(parseInt(inflationAmount) * (1 - Math.pow(0.97, parseInt(inflationYears))))).toLocaleString()}
-                    </span>
+                {/* Bitcoin Alternative */}
+                <div className="p-6 bg-gradient-to-r from-green-950/30 to-orange-950/30 rounded-xl border border-green-800/30">
+                  <div className="text-center space-y-3">
+                    <div className="text-green-300 font-semibold">If you held Bitcoin instead:</div>
+                    <div className="text-4xl font-bold text-green-400">
+                      ${Math.round(parseInt(inflationAmount) * Math.pow(1.15, parseInt(inflationYears))).toLocaleString()}
+                    </div>
+                    <div className="text-zinc-300 text-sm">
+                      That's <span className="text-orange-400 font-bold">
+                        ${(Math.round(parseInt(inflationAmount) * Math.pow(1.15, parseInt(inflationYears))) - parseInt(inflationAmount)).toLocaleString()} more
+                      </span> than your starting amount
+                    </div>
+                    <div className="text-zinc-400 text-xs">
+                      Based on Bitcoin's historical 15% annual average returns
+                    </div>
                   </div>
-                  <div className="text-orange-400/70 text-sm mt-1">Total difference with Bitcoin over {inflationYears} years</div>
                 </div>
               </CardContent>
             </Card>
@@ -2331,29 +2358,29 @@ export default function Home() {
               <CardHeader className="pb-4">
                 <CardTitle className="text-white flex items-center gap-3 text-xl">
                   <Calculator className="w-5 h-5 text-orange-400" />
-                  Transfer Cost Comparison
+                  Banks Are Bleeding You Dry With Fees
                 </CardTitle>
-                <p className="text-zinc-400 text-sm">Compare the cost of sending money internationally</p>
+                <p className="text-zinc-400 text-sm">See exactly how much money you lose to international transfer fees every year</p>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="grid gap-6 lg:grid-cols-3">
+                <div className="grid gap-6 lg:grid-cols-2">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-zinc-300">Monthly Transfers</label>
+                      <label className="text-sm font-medium text-zinc-300">How often do you send money internationally?</label>
                       <Select value={transferCount} onValueChange={setTransferCount}>
                         <SelectTrigger className="bg-zinc-800 border-zinc-700 h-12">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="1">1 transfer</SelectItem>
-                          <SelectItem value="2">2 transfers</SelectItem>
-                          <SelectItem value="4">4 transfers</SelectItem>
-                          <SelectItem value="8">8 transfers</SelectItem>
+                          <SelectItem value="1">Once per month</SelectItem>
+                          <SelectItem value="2">Twice per month</SelectItem>
+                          <SelectItem value="4">Once per week</SelectItem>
+                          <SelectItem value="8">Twice per week</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-zinc-300">Average Amount</label>
+                      <label className="text-sm font-medium text-zinc-300">How much do you typically send?</label>
                       <Select value={transferAmount} onValueChange={setTransferAmount}>
                         <SelectTrigger className="bg-zinc-800 border-zinc-700 h-12">
                           <SelectValue />
@@ -2368,35 +2395,60 @@ export default function Home() {
                     </div>
                   </div>
                   
-                  <div className="p-6 bg-red-950/50 rounded-xl border border-red-800/50">
-                    <div className="text-center">
-                      <div className="text-red-400 text-sm font-medium mb-2">Traditional Banking</div>
-                      <div className="text-3xl font-bold text-red-300 mb-1">
+                  <div className="space-y-4">
+                    {/* Fee Comparison Visual */}
+                    <div className="h-32 bg-zinc-800 rounded-lg p-4">
+                      <div className="text-xs text-zinc-400 mb-2">Annual fees you pay:</div>
+                      <div className="flex items-end justify-between h-16">
+                        {/* Bitcoin Fee Bar (Very short) */}
+                        <div className="flex flex-col items-center flex-1">
+                          <div className="bg-green-500 w-8 h-2 rounded-sm"></div>
+                          <div className="text-xs text-green-400 mt-1 font-bold">Bitcoin</div>
+                          <div className="text-xs text-green-400">
+                            ${Math.round(parseInt(transferCount) * 0.5 * 12).toLocaleString()}
+                          </div>
+                        </div>
+                        
+                        {/* vs */}
+                        <div className="text-zinc-600 text-xs mx-2">vs</div>
+                        
+                        {/* Bank Fee Bar (Much taller) */}
+                        <div className="flex flex-col items-center flex-1">
+                          <div className="bg-red-500 w-8 h-16 rounded-sm"></div>
+                          <div className="text-xs text-red-400 mt-1 font-bold">Banks</div>
+                          <div className="text-xs text-red-400">
+                            ${Math.round(parseInt(transferCount) * parseInt(transferAmount) * 0.08 * 12).toLocaleString()}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="p-4 bg-red-950/50 rounded-xl border border-red-800/50 text-center">
+                      <div className="text-red-300 text-sm mb-2">Banks steal this much from you annually:</div>
+                      <div className="text-2xl font-bold text-red-400">
                         ${Math.round(parseInt(transferCount) * parseInt(transferAmount) * 0.08 * 12).toLocaleString()}
                       </div>
-                      <div className="text-red-400/70 text-xs">Annual fees (8% average)</div>
-                    </div>
-                  </div>
-                  
-                  <div className="p-6 bg-green-950/50 rounded-xl border border-green-800/50">
-                    <div className="text-center">
-                      <div className="text-green-400 text-sm font-medium mb-2">Bitcoin Network</div>
-                      <div className="text-3xl font-bold text-green-300 mb-1">
-                        ${Math.round(parseInt(transferCount) * 0.5 * 12).toLocaleString()}
-                      </div>
-                      <div className="text-green-400/70 text-xs">Annual fees ($0.50 avg)</div>
+                      <div className="text-red-300/70 text-xs mt-1">8% fees + terrible exchange rates</div>
                     </div>
                   </div>
                 </div>
                 
-                <div className="text-center p-4 bg-orange-950/30 rounded-xl border border-orange-800/30">
-                  <div className="text-orange-300 text-lg font-semibold">
-                    Annual Savings: <span className="text-orange-400 text-2xl font-bold">
+                <div className="p-6 bg-gradient-to-r from-green-950/30 to-orange-950/30 rounded-xl border border-green-800/30">
+                  <div className="text-center space-y-3">
+                    <div className="text-green-300 font-semibold">You keep this money with Bitcoin:</div>
+                    <div className="text-4xl font-bold text-green-400">
                       ${(Math.round(parseInt(transferCount) * parseInt(transferAmount) * 0.08 * 12) - 
                         Math.round(parseInt(transferCount) * 0.5 * 12)).toLocaleString()}
-                    </span>
+                    </div>
+                    <div className="text-zinc-300 text-sm">
+                      That's <span className="text-orange-400 font-bold">
+                        {Math.round((1 - (Math.round(parseInt(transferCount) * 0.5 * 12) / Math.round(parseInt(transferCount) * parseInt(transferAmount) * 0.08 * 12))) * 100)}% less fees
+                      </span> than what banks charge
+                    </div>
+                    <div className="text-zinc-400 text-xs">
+                      Bitcoin transfers typically cost $0.50 regardless of amount
+                    </div>
                   </div>
-                  <div className="text-orange-400/70 text-sm mt-1">Money saved by using Bitcoin instead of banks</div>
                 </div>
               </CardContent>
             </Card>
