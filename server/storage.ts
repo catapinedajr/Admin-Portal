@@ -177,6 +177,31 @@ export class MemStorage implements IStorage {
     this.currentWeeklyProgressId = 1;
 
     this.seedData();
+    
+    // Auto-generate Month 1 content if missing (async, doesn't block startup)
+    setTimeout(() => this.ensureMonth1Content(), 1000);
+  }
+
+  private async ensureMonth1Content() {
+    try {
+      // Check if any Day 0-29 content is missing
+      const missingDays = [];
+      for (let day = 0; day < 30; day++) {
+        const quizCount = await this.getDailyQuizQuestions(day);
+        if (quizCount.length === 0) {
+          missingDays.push(day);
+        }
+      }
+      
+      if (missingDays.length > 0) {
+        console.log(`🔄 Auto-generating content for ${missingDays.length} missing days: ${missingDays.slice(0, 5).join(', ')}${missingDays.length > 5 ? '...' : ''}`);
+        // Import and run content generation
+        const { generateMonth1Content } = await import('./content-generator');
+        await generateMonth1Content();
+      }
+    } catch (error) {
+      console.log(`⚠️ Auto-generation skipped: ${error.message}`);
+    }
   }
 
   private seedData() {
@@ -1714,7 +1739,10 @@ This layered approach mirrors the internet's architecture, where different layer
 
   // Quiz methods
   async getDailyQuizQuestions(dayIndex: number): Promise<QuizQuestion[]> {
-    return Array.from(this.quizQuestions.values()).filter(question => question.dayIndex === dayIndex);
+    const allQuestions = Array.from(this.quizQuestions.values());
+    const filtered = allQuestions.filter(question => question.dayIndex === dayIndex);
+    console.log(`🔍 getDailyQuizQuestions(${dayIndex}): ${filtered.length} questions found. Total questions in storage: ${allQuestions.length}`);
+    return filtered;
   }
 
   async getAllQuizQuestions(): Promise<QuizQuestion[]> {
@@ -1736,6 +1764,7 @@ This layered approach mirrors the internet's architecture, where different layer
       difficulty: insertQuestion.difficulty
     };
     this.quizQuestions.set(question.id, question);
+    console.log(`💾 Quiz question ${question.id} stored for Day ${question.dayIndex}. Map size: ${this.quizQuestions.size}`);
     return question;
   }
 

@@ -268,19 +268,27 @@ export async function generateMonth1Content(): Promise<void> {
       // Create quiz questions (5 per day)
       if (content.quizQuestions && Array.isArray(content.quizQuestions)) {
         console.log(`📋 Creating ${content.quizQuestions.length} quiz questions for Day ${day}`);
-        for (const quizQuestion of content.quizQuestions) {
-          await storage.createQuizQuestion({
-            dayIndex: content.dayIndex,
-            question: quizQuestion.question,
-            optionA: quizQuestion.optionA,
-            optionB: quizQuestion.optionB,
-            optionC: quizQuestion.optionC,
-            optionD: quizQuestion.optionD,
-            correctAnswer: quizQuestion.correctAnswer,
-            explanation: quizQuestion.explanation,
-            category: quizQuestion.category,
-            difficulty: quizQuestion.difficulty
-          });
+        for (let i = 0; i < content.quizQuestions.length; i++) {
+          const quizQuestion = content.quizQuestions[i];
+          try {
+            await storage.createQuizQuestion({
+              dayIndex: content.dayIndex,
+              question: quizQuestion.question,
+              optionA: quizQuestion.optionA,
+              optionB: quizQuestion.optionB,
+              optionC: quizQuestion.optionC,
+              optionD: quizQuestion.optionD,
+              correctAnswer: quizQuestion.correctAnswer,
+              explanation: quizQuestion.explanation,
+              category: quizQuestion.category,
+              difficulty: quizQuestion.difficulty
+            });
+            console.log(`✓ Quiz question ${i + 1} created for Day ${day}`);
+          } catch (error) {
+            console.error(`❌ Failed to create quiz question ${i + 1} for Day ${day}:`, error);
+            console.error(`Question data:`, quizQuestion);
+            throw error;
+          }
         }
       } else {
         console.error(`❌ Invalid quizQuestions data for Day ${day}:`, content.quizQuestions);
