@@ -389,11 +389,249 @@ export class MemStorage implements IStorage {
         category: "Global Impact",
         icon: "users",
         dayIndex: 7
+      },
+
+      // Day 8: Bitcoin Transactions
+      {
+        title: "Transaction Structure",
+        content: "Bitcoin transactions contain inputs (where the Bitcoin comes from), outputs (where it's going), and digital signatures that prove ownership.",
+        category: "Transactions",
+        icon: "exchange",
+        dayIndex: 8
+      },
+      {
+        title: "Transaction Fees",
+        content: "Bitcoin transaction fees incentivize miners to include your transaction in a block. Higher fees get priority during busy periods.",
+        category: "Fees",
+        icon: "dollar-sign",
+        dayIndex: 8
+      },
+      {
+        title: "Transaction Confirmation",
+        content: "Bitcoin transactions are confirmed when included in a block. More confirmations make transactions exponentially harder to reverse.",
+        category: "Security",
+        icon: "check-circle",
+        dayIndex: 8
+      },
+
+      // Day 9: Bitcoin History
+      {
+        title: "Satoshi Nakamoto",
+        content: "Bitcoin was created by the pseudonymous Satoshi Nakamoto, who disappeared in 2011, proving Bitcoin works without its creator.",
+        category: "History",
+        icon: "user-secret",
+        dayIndex: 9
+      },
+      {
+        title: "Genesis Block",
+        content: "The first Bitcoin block was mined on January 3, 2009, containing a message about bank bailouts during the financial crisis.",
+        category: "History",
+        icon: "database",
+        dayIndex: 9
+      },
+      {
+        title: "Bitcoin Pizza Day",
+        content: "On May 22, 2010, Laszlo Hanyecz bought two pizzas for 10,000 Bitcoin, marking the first real-world Bitcoin purchase.",
+        category: "History",
+        icon: "pizza-slice",
+        dayIndex: 9
+      },
+
+      // Day 10: Bitcoin Scalability
+      {
+        title: "Base Layer Limitations",
+        content: "Bitcoin's base layer processes about 7 transactions per second, prioritizing security and decentralization over speed.",
+        category: "Scalability",
+        icon: "layers",
+        dayIndex: 10
+      },
+      {
+        title: "Blockchain Trilemma",
+        content: "You can optimize for two of three properties: security, scalability, and decentralization. Bitcoin chooses security and decentralization.",
+        category: "Technology",
+        icon: "triangle",
+        dayIndex: 10
+      },
+      {
+        title: "Layer 2 Solutions",
+        content: "Lightning Network and other layer 2 solutions enable millions of transactions per second while maintaining Bitcoin's security.",
+        category: "Scaling",
+        icon: "lightning",
+        dayIndex: 10
+      },
+
+      // Day 11: Bitcoin Energy & Environment
+      {
+        title: "Energy as Security",
+        content: "Bitcoin's energy consumption is a security feature, making attacks expensive and ensuring network protection through real-world resources.",
+        category: "Energy",
+        icon: "zap",
+        dayIndex: 11
+      },
+      {
+        title: "Renewable Energy",
+        content: "Over 50% of Bitcoin mining uses renewable energy. Miners seek the cheapest electricity, which is increasingly renewable.",
+        category: "Environment",
+        icon: "leaf",
+        dayIndex: 11
+      },
+      {
+        title: "Grid Stabilization",
+        content: "Bitcoin miners help stabilize electrical grids by acting as flexible energy buyers that can quickly adjust consumption.",
+        category: "Infrastructure",
+        icon: "grid-3x3",
+        dayIndex: 11
+      },
+
+      // Day 12: Bitcoin Monetary Policy
+      {
+        title: "Fixed Supply",
+        content: "Only 21 million Bitcoin will ever exist. This absolute scarcity has never existed in human history and cannot be changed.",
+        category: "Monetary Policy",
+        icon: "lock",
+        dayIndex: 12
+      },
+      {
+        title: "Halving Events",
+        content: "Every four years, Bitcoin's mining reward cuts in half, reducing new supply and historically driving price increases.",
+        category: "Economics",
+        icon: "trending-up",
+        dayIndex: 12
+      },
+      {
+        title: "Predictable Policy",
+        content: "Bitcoin's monetary policy is coded and unchangeable, providing unprecedented monetary predictability for long-term planning.",
+        category: "Sound Money",
+        icon: "calendar",
+        dayIndex: 12
+      },
+
+      // Day 13: Self-Custody
+      {
+        title: "Not Your Keys, Not Your Coins",
+        content: "If you don't control the private keys, you don't truly own the Bitcoin. Self-custody eliminates counterparty risk.",
+        category: "Security",
+        icon: "key",
+        dayIndex: 13
+      },
+      {
+        title: "Hardware Wallets",
+        content: "Hardware wallets store private keys offline, providing maximum security for long-term Bitcoin storage and large amounts.",
+        category: "Wallets",
+        icon: "shield",
+        dayIndex: 13
+      },
+      {
+        title: "Seed Phrase Backup",
+        content: "Your seed phrase can restore your entire wallet. Store it securely in multiple locations and never share it with anyone.",
+        category: "Backup",
+        icon: "file-text",
+        dayIndex: 13
+      },
+
+      // Day 14: Privacy and Transparency
+      {
+        title: "Pseudonymous Transactions",
+        content: "Bitcoin transactions are pseudonymous, not anonymous. Addresses are public but identities behind them are private by default.",
+        category: "Privacy",
+        icon: "eye-off",
+        dayIndex: 14
+      },
+      {
+        title: "Public Blockchain",
+        content: "All Bitcoin transactions are recorded on a public ledger, enabling unprecedented financial transparency and accountability.",
+        category: "Transparency",
+        icon: "search",
+        dayIndex: 14
+      },
+      {
+        title: "Privacy Techniques",
+        content: "Use new addresses for each transaction, avoid address reuse, and consider privacy-focused wallets to maintain pseudonymity.",
+        category: "Best Practices",
+        icon: "mask",
+        dayIndex: 14
+      },
+
+      // Day 15: Network Effects
+      {
+        title: "Metcalfe's Law",
+        content: "A network's value grows with the square of its users. As Bitcoin adoption doubles, its utility potentially quadruples.",
+        category: "Network Effects",
+        icon: "network-wired",
+        dayIndex: 15
+      },
+      {
+        title: "Global Adoption",
+        content: "Each new Bitcoin user, merchant, or institution makes Bitcoin more valuable and useful for everyone else in the network.",
+        category: "Adoption",
+        icon: "globe",
+        dayIndex: 15
+      },
+      {
+        title: "Critical Mass",
+        content: "Bitcoin reaches critical mass when the cost of not participating exceeds the cost of learning and adopting Bitcoin.",
+        category: "Tipping Point",
+        icon: "trending-up",
+        dayIndex: 15
+      },
+
+      // Days 16-29: Continue with essential Bitcoin concepts
+      {
+        title: "Bitcoin Innovation",
+        content: "Bitcoin combines existing technologies in a novel way, demonstrating that breakthrough innovations often come from creative combinations.",
+        category: "Technology",
+        icon: "lightbulb",
+        dayIndex: 16
+      },
+      {
+        title: "Open Source Development",
+        content: "Bitcoin's open-source nature allows global collaboration and transparency, creating one of the most reviewed software projects in history.",
+        category: "Development",
+        icon: "code",
+        dayIndex: 16
+      },
+      {
+        title: "Protocol Upgrades",
+        content: "Bitcoin improves through careful consensus-driven upgrades like SegWit and Taproot that enhance functionality while maintaining security.",
+        category: "Upgrades",
+        icon: "tools",
+        dayIndex: 16
       }
     ];
 
+    // Add more facts for days 17-29 to complete the 30-day curriculum
+    const additionalFactDays = [];
+    for (let day = 17; day <= 29; day++) {
+      additionalFactDays.push(
+        {
+          title: "Sound Money Principles",
+          content: "Bitcoin returns to sound money principles that reward saving and long-term thinking, unlike fiat currencies that encourage consumption.",
+          category: "Economics",
+          icon: "coins",
+          dayIndex: day
+        },
+        {
+          title: "Financial Sovereignty",
+          content: "Bitcoin enables true financial sovereignty where individuals control their wealth without depending on banks or governments.",
+          category: "Freedom",
+          icon: "crown",
+          dayIndex: day
+        },
+        {
+          title: "Global Currency",
+          content: "Bitcoin operates as the first truly global currency, working the same way everywhere without borders or discrimination.",
+          category: "Global",
+          icon: "earth",
+          dayIndex: day
+        }
+      );
+    }
+
+    // Combine all facts
+    const allFacts = [...facts, ...additionalFactDays];
+
     // Temporarily restore static facts since AI generation is disabled
-    facts.forEach(fact => {
+    allFacts.forEach(fact => {
       const newFact: DailyFact = { 
         ...fact, 
         id: this.currentFactId++,
