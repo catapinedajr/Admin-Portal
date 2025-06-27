@@ -2336,120 +2336,97 @@ export default function Home() {
               <CardHeader className="pb-4">
                 <CardTitle className="text-white flex items-center gap-3 text-xl">
                   <TrendingDown className="w-5 h-5 text-orange-400" />
-                  Purchasing Power Erosion Simulator
+                  Your Money Is Disappearing
                 </CardTitle>
-                <p className="text-zinc-400 text-sm">Watch $25,000 lose value over 25 years due to inflation</p>
+                <p className="text-zinc-400 text-sm">See how $25,000 loses buying power over time</p>
               </CardHeader>
               <CardContent className="space-y-6">
-                {!inflationSimActive && (
+                {!inflationSimActive && inflationProgress === 0 && (
                   <div className="text-center space-y-4">
-                    <div className="p-6 bg-zinc-800 rounded-lg border border-zinc-700">
-                      <h3 className="text-lg font-medium text-white mb-3">Simulation Scenario</h3>
-                      <p className="text-zinc-300 mb-4">
-                        You have <span className="text-orange-400 font-bold">$25,000</span> in cash savings. 
-                        Watch how inflation (3% annually) slowly erodes your purchasing power over 25 years.
+                    <div className="p-4 bg-zinc-800 rounded-lg border border-zinc-700">
+                      <p className="text-zinc-300 mb-3">
+                        You saved <span className="text-orange-400 font-bold">$25,000</span>. 
+                        Watch what happens to your money's buying power over 25 years.
                       </p>
                       <p className="text-zinc-400 text-sm">
-                        This demonstrates the hidden tax of monetary debasement.
+                        This is what inflation does to your savings.
                       </p>
                     </div>
                     <Button 
                       onClick={startInflationSimulation}
                       className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg font-medium"
                     >
-                      Start Erosion Simulation (15s)
+                      Start 15-Second Demo
                     </Button>
                   </div>
                 )}
 
-                {inflationSimActive && (
-                  <div className="space-y-6">
-                    <div className="text-center">
-                      <Button 
-                        onClick={resetInflationSimulation}
-                        className="bg-orange-600 hover:bg-orange-700"
-                        disabled={inflationSimActive}
-                      >
-                        {inflationSimActive ? "Simulation Running..." : "Reset Simulation"}
-                      </Button>
-                      {inflationSimActive && (
-                        <p className="text-zinc-400 text-sm mt-2">
-                          Watch your money's purchasing power disappear...
+                {/* Always show simulation results once started */}
+                {(inflationSimActive || inflationProgress > 0) && (
+                  <div className="space-y-4">
+                    {inflationSimActive && (
+                      <div className="text-center">
+                        <p className="text-zinc-400 text-sm">
+                          Watching your money's buying power shrink...
                         </p>
-                      )}
-                    </div>
+                      </div>
+                    )}
                     
-                    {/* Animated Money Value Erosion */}
-                    <div className="space-y-4">
+                    {/* Compact Year Timeline */}
+                    <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
                       {[
-                        { step: 0, year: "Today", value: 25000, purchasingPower: 100, description: "Full purchasing power" },
-                        { step: 1, year: "1 Year", value: 24250, purchasingPower: 97, description: "Lost $750 to inflation" },
-                        { step: 2, year: "5 Years", value: 21562, purchasingPower: 86.2, description: "Lost $3,438 to inflation" },
-                        { step: 3, year: "10 Years", value: 18584, purchasingPower: 74.3, description: "Lost $6,416 to inflation" },
-                        { step: 4, year: "15 Years", value: 16023, purchasingPower: 64.1, description: "Lost $8,977 to inflation" },
-                        { step: 5, year: "20 Years", value: 13807, purchasingPower: 55.2, description: "Lost $11,193 to inflation" },
-                        { step: 6, year: "25 Years", value: 11903, purchasingPower: 47.6, description: "Lost $13,097 to inflation" }
-                      ].map(({ step, year, value, purchasingPower, description }) => {
+                        { step: 0, year: "Today", value: 25000, purchasingPower: 100, loss: "$0" },
+                        { step: 1, year: "Year 1", value: 24250, purchasingPower: 97, loss: "$750" },
+                        { step: 2, year: "Year 5", value: 21562, purchasingPower: 86, loss: "$3,438" },
+                        { step: 3, year: "Year 10", value: 18584, purchasingPower: 74, loss: "$6,416" },
+                        { step: 4, year: "Year 15", value: 16023, purchasingPower: 64, loss: "$8,977" },
+                        { step: 5, year: "Year 20", value: 13807, purchasingPower: 55, loss: "$11,193" },
+                        { step: 6, year: "Year 25", value: 11903, purchasingPower: 48, loss: "$13,097" }
+                      ].map(({ step, year, value, purchasingPower, loss }) => {
                         const isActive = inflationProgress >= step;
                         const isCurrentStep = inflationProgress === step && inflationSimActive;
                         
                         return (
-                          <div key={step} className={`p-4 rounded-lg border transition-all duration-1000 ${
+                          <div key={step} className={`p-3 rounded-lg border transition-all duration-1000 ${
                             isActive 
-                              ? 'bg-red-800/30 border-red-600/50' 
+                              ? step === 0 ? 'bg-green-800/30 border-green-600/50' : 'bg-red-800/30 border-red-600/50'
                               : 'bg-zinc-800 border-zinc-700'
                           }`}>
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-3">
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold transition-all duration-1000 ${
-                                  isActive ? 'bg-red-500' : 'bg-zinc-600'
-                                }`}>
-                                  {isActive ? '📉' : step === 0 ? '💰' : '⏳'}
-                                </div>
-                                <div>
-                                  <div className={`font-medium transition-colors duration-1000 ${
-                                    isActive ? 'text-red-200' : 'text-zinc-400'
-                                  }`}>
-                                    {year}
-                                  </div>
-                                  <div className={`text-xs transition-colors duration-1000 ${
-                                    isActive ? 'text-red-300' : 'text-zinc-500'
-                                  }`}>
-                                    {description}
-                                  </div>
-                                </div>
+                            <div className="text-center">
+                              <div className={`font-bold text-lg transition-colors duration-1000 ${
+                                isActive 
+                                  ? step === 0 ? 'text-green-400' : 'text-red-400' 
+                                  : 'text-zinc-400'
+                              }`}>
+                                {year}
                               </div>
-                              
-                              <div className="text-right">
-                                <div className={`font-bold text-lg transition-colors duration-1000 ${
-                                  isActive ? 'text-red-400' : 'text-zinc-400'
-                                }`}>
-                                  ${value.toLocaleString()}
-                                </div>
-                                <div className={`text-sm transition-colors duration-1000 ${
-                                  isActive ? 'text-red-300' : 'text-zinc-500'
-                                }`}>
-                                  {purchasingPower}% power
-                                </div>
+                              <div className={`text-2xl font-bold transition-colors duration-1000 ${
+                                isActive 
+                                  ? step === 0 ? 'text-green-300' : 'text-red-300'
+                                  : 'text-zinc-500'
+                              }`}>
+                                ${value.toLocaleString()}
                               </div>
-                            </div>
-                            
-                            {/* Visual Progress Bar */}
-                            <div className="mt-3">
-                              <div className="w-full bg-zinc-700 rounded-full h-2">
-                                <div 
-                                  className={`h-2 rounded-full transition-all duration-1000 ${
-                                    isActive ? 'bg-red-500' : 'bg-zinc-600'
-                                  }`}
-                                  style={{ width: `${purchasingPower}%` }}
-                                ></div>
+                              <div className={`text-sm transition-colors duration-1000 ${
+                                isActive 
+                                  ? step === 0 ? 'text-green-400' : 'text-red-400'
+                                  : 'text-zinc-500'
+                              }`}>
+                                {purchasingPower}% buying power
                               </div>
+                              {step > 0 && (
+                                <div className={`text-xs mt-1 transition-colors duration-1000 ${
+                                  isActive ? 'text-red-300' : 'text-zinc-600'
+                                }`}>
+                                  Lost {loss}
+                                </div>
+                              )}
                             </div>
                             
                             {isCurrentStep && (
-                              <div className="mt-2 flex items-center gap-2 text-red-400 text-sm">
-                                <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
-                                Inflation eating your savings...
+                              <div className="mt-2 flex items-center justify-center gap-2 text-red-400 text-xs">
+                                <div className="w-1.5 h-1.5 bg-red-400 rounded-full animate-pulse"></div>
+                                Losing value...
                               </div>
                             )}
                           </div>
@@ -2457,32 +2434,31 @@ export default function Home() {
                       })}
                     </div>
 
-                    {/* Final Results */}
+                    {/* Simple Results Summary */}
                     {inflationProgress >= 6 && (
-                      <div className="p-6 bg-gradient-to-r from-red-950/40 to-orange-950/40 rounded-xl border border-red-800/50">
-                        <div className="text-center space-y-4">
-                          <div className="text-red-300 font-bold text-xl">💸 The Inflation Tax Results</div>
+                      <div className="p-4 bg-gradient-to-r from-red-950/40 to-orange-950/40 rounded-xl border border-red-800/50">
+                        <div className="text-center space-y-3">
+                          <div className="text-red-300 font-bold text-lg">The Result After 25 Years:</div>
                           
-                          <div className="grid gap-4 md:grid-cols-2 text-center">
-                            <div className="p-4 bg-zinc-800 rounded-lg">
-                              <div className="text-red-400 font-bold text-2xl">$13,097</div>
-                              <div className="text-zinc-300 text-sm">Lost to Inflation</div>
-                              <div className="text-zinc-500 text-xs">52% of original value</div>
-                            </div>
-                            <div className="p-4 bg-zinc-800 rounded-lg">
-                              <div className="text-orange-400 font-bold text-2xl">47.6%</div>
-                              <div className="text-zinc-300 text-sm">Remaining Power</div>
-                              <div className="text-zinc-500 text-xs">What $25K can buy today</div>
-                            </div>
-                          </div>
-                          
-                          <div className="text-zinc-300 leading-relaxed max-w-2xl mx-auto">
-                            Your <span className="text-orange-400 font-bold">$25,000</span> can only buy what 
-                            <span className="text-red-400 font-bold"> $11,903</span> could buy 25 years ago. 
-                            <span className="text-red-400 font-bold"> Over half your wealth</span> was silently stolen through monetary debasement.
+                          <div className="text-zinc-300 text-lg leading-relaxed">
+                            Your <span className="text-orange-400 font-bold">$25,000</span> now buys what 
+                            <span className="text-red-400 font-bold"> $11,903</span> used to buy.
                             <br />
-                            <span className="text-orange-400 font-medium">This is why Bitcoin's fixed supply matters.</span>
+                            <span className="text-red-400 font-bold">You lost over half your wealth</span> to inflation.
                           </div>
+                          
+                          <div className="text-orange-400 font-medium mt-3">
+                            Bitcoin has a fixed supply of 21 million - no inflation possible.
+                          </div>
+
+                          {!inflationSimActive && (
+                            <Button 
+                              onClick={startInflationSimulation}
+                              className="mt-4 bg-orange-600 hover:bg-orange-700"
+                            >
+                              Watch Again
+                            </Button>
+                          )}
                         </div>
                       </div>
                     )}
