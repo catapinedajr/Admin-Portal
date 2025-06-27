@@ -2295,32 +2295,32 @@ export default function Home() {
                   
                   <div className="space-y-4">
                     {/* Visual Comparison Chart */}
-                    <div className="h-40 bg-zinc-800 rounded-lg p-4 relative">
+                    <div className="h-48 bg-zinc-800 rounded-lg p-4 relative">
                       <div className="text-sm text-zinc-300 mb-3 font-medium">Your purchasing power over {inflationYears} years:</div>
-                      <div className="flex items-end justify-center gap-8 h-20">
+                      <div className="flex items-end justify-center gap-12 h-24">
                         {/* Starting Value Bar */}
                         <div className="flex flex-col items-center">
-                          <div className="bg-zinc-500 w-12 h-20 rounded-t-md flex items-end justify-center pb-2">
-                            <span className="text-white text-xs font-bold">100%</span>
+                          <div className="bg-zinc-500 w-16 h-24 rounded-t-lg flex items-center justify-center">
+                            <span className="text-white text-sm font-bold">100%</span>
                           </div>
-                          <div className="text-sm text-zinc-300 mt-2 font-medium">Today</div>
+                          <div className="text-sm text-zinc-300 mt-3 font-medium text-center">Today</div>
                           <div className="text-sm text-white font-bold">${parseInt(inflationAmount).toLocaleString()}</div>
                         </div>
                         
                         {/* Arrow */}
-                        <div className="text-zinc-500 text-3xl mb-8">→</div>
+                        <div className="text-zinc-500 text-2xl mb-12 self-center">→</div>
                         
                         {/* Ending Value Bar (Proportionally shorter) */}
                         <div className="flex flex-col items-center">
                           <div 
-                            className="bg-red-500 w-12 rounded-t-md flex items-end justify-center pb-2"
-                            style={{ height: `${Math.max(20, 80 * Math.pow(0.97, parseInt(inflationYears)))}px` }}
+                            className="bg-red-500 w-16 rounded-t-lg flex items-center justify-center min-h-6"
+                            style={{ height: `${Math.max(24, 96 * Math.pow(0.97, parseInt(inflationYears)))}px` }}
                           >
-                            <span className="text-white text-xs font-bold">
+                            <span className="text-white text-sm font-bold">
                               {Math.round(Math.pow(0.97, parseInt(inflationYears)) * 100)}%
                             </span>
                           </div>
-                          <div className="text-sm text-zinc-300 mt-2 font-medium">In {inflationYears} years</div>
+                          <div className="text-sm text-zinc-300 mt-3 font-medium text-center">In {inflationYears} years</div>
                           <div className="text-sm text-red-400 font-bold">
                             ${Math.round(parseInt(inflationAmount) * Math.pow(0.97, parseInt(inflationYears))).toLocaleString()}
                           </div>
@@ -2403,29 +2403,29 @@ export default function Home() {
                   
                   <div className="space-y-4">
                     {/* Fee Comparison Visual */}
-                    <div className="h-40 bg-zinc-800 rounded-lg p-4">
+                    <div className="h-48 bg-zinc-800 rounded-lg p-4">
                       <div className="text-sm text-zinc-300 mb-3 font-medium">Annual fees you pay:</div>
-                      <div className="flex items-end justify-center gap-8 h-20">
+                      <div className="flex items-end justify-center gap-12 h-24">
                         {/* Bitcoin Fee Bar (Very short) */}
                         <div className="flex flex-col items-center">
-                          <div className="bg-green-500 w-12 h-4 rounded-t-md flex items-center justify-center">
-                            <span className="text-white text-xs font-bold">$</span>
+                          <div className="bg-green-500 w-16 h-6 rounded-t-lg flex items-center justify-center min-h-6">
+                            <span className="text-white text-sm font-bold">$</span>
                           </div>
-                          <div className="text-sm text-green-400 mt-2 font-bold">Bitcoin</div>
+                          <div className="text-sm text-green-400 mt-3 font-bold text-center">Bitcoin</div>
                           <div className="text-sm text-green-400 font-bold">
                             ${Math.round(parseInt(transferCount) * 0.5 * 12).toLocaleString()}
                           </div>
                         </div>
                         
                         {/* vs */}
-                        <div className="text-zinc-500 text-3xl mb-8">vs</div>
+                        <div className="text-zinc-500 text-2xl mb-12 self-center">vs</div>
                         
                         {/* Bank Fee Bar (Much taller) */}
                         <div className="flex flex-col items-center">
-                          <div className="bg-red-500 w-12 h-20 rounded-t-md flex items-end justify-center pb-2">
-                            <span className="text-white text-xs font-bold">$$$</span>
+                          <div className="bg-red-500 w-16 h-24 rounded-t-lg flex items-center justify-center">
+                            <span className="text-white text-sm font-bold">$$$</span>
                           </div>
-                          <div className="text-sm text-red-400 mt-2 font-bold">Banks</div>
+                          <div className="text-sm text-red-400 mt-3 font-bold text-center">Banks</div>
                           <div className="text-sm text-red-400 font-bold">
                             ${Math.round(parseInt(transferCount) * parseInt(transferAmount) * 0.08 * 12).toLocaleString()}
                           </div>
