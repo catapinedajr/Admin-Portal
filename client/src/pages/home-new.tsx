@@ -2615,10 +2615,10 @@ export default function Home() {
                         <g>
                           {(() => {
                             const events = [
-                              { year: 1933, m2: 0.020, label: "1933", subLabel: "Gold Ban", offsetX: -18, offsetY: -45 },  
-                              { year: 1971, m2: 0.583, label: "1971", subLabel: "Gold Std", offsetX: -20, offsetY: -35 },
-                              { year: 2008, m2: 7.500, label: "2008", subLabel: "Crisis", offsetX: -15, offsetY: -35 },
-                              { year: 2020, m2: 15.400, label: "2020", subLabel: "COVID", offsetX: -15, offsetY: -45 }
+                              { year: 1933, m2: 0.020, label: "1933", subLabel: "Gold Ban", offsetX: -18, offsetY: -70 },  
+                              { year: 1971, m2: 0.583, label: "1971", subLabel: "Gold Std", offsetX: -20, offsetY: -80 },
+                              { year: 2008, m2: 7.500, label: "2008", subLabel: "Crisis", offsetX: -15, offsetY: -90 },
+                              { year: 2020, m2: 15.400, label: "2020", subLabel: "COVID", offsetX: -15, offsetY: -100 }
                             ];
                             
                             return events.map((event, index) => {
