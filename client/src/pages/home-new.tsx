@@ -2470,9 +2470,9 @@ export default function Home() {
                       <div className="text-zinc-400 text-xs mt-1">After all 21M are mined</div>
                     </div>
                     
-                    <div className="p-4 bg-orange-900/40 rounded-xl border border-orange-600/50">
-                      <div className="text-orange-200 font-bold text-xl">100%</div>
-                      <div className="text-orange-300/90 text-sm">You Own Your Bitcoin</div>
+                    <div className="p-4 bg-orange-950/50 rounded-xl border border-orange-800/50">
+                      <div className="text-orange-300 font-bold text-xl">100%</div>
+                      <div className="text-orange-400/80 text-sm">You Own Your Bitcoin</div>
                       <div className="text-zinc-400 text-xs mt-1">No bank can freeze it</div>
                     </div>
                   </div>
@@ -2481,97 +2481,65 @@ export default function Home() {
                     <div className="text-orange-300 font-semibold text-lg mb-2">
                       The choice is yours:
                     </div>
-                    <div className="text-zinc-300 mb-4">
+                    <div className="text-zinc-300">
                       Keep letting inflation slowly drain your wealth, or learn about the money that can't be manipulated. 
                       The calculators below show you exactly what you're losing—and what you could gain.
-                    </div>
-                    
-                    {/* CTA Section */}
-                    <div className="flex flex-col sm:flex-row gap-4 items-center justify-between pt-4 border-t border-orange-800/30">
-                      <div className="text-center sm:text-left">
-                        <div className="text-white font-medium">Ready to protect your wealth?</div>
-                        <div className="text-zinc-400 text-sm">Join 12,000+ people learning Bitcoin daily</div>
-                      </div>
-                      <div className="flex gap-3">
-                        <button 
-                          onClick={() => setActiveSection("learn")}
-                          className="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg transition-colors"
-                        >
-                          Start Learning Free
-                        </button>
-                        <button 
-                          onClick={() => setActiveSection("simulations")}
-                          className="px-6 py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-medium rounded-lg border border-zinc-600 transition-colors"
-                        >
-                          Try Simulators
-                        </button>
-                      </div>
                     </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Simplified Money Supply Impact */}
+            {/* Money Supply Erosion Visualization */}
             <Card className="bg-zinc-900 border-zinc-800">
               <CardHeader className="pb-4">
                 <CardTitle className="text-white flex items-center gap-3 text-xl">
                   <TrendingDown className="w-5 h-5 text-red-400" />
-                  The Money Printing Explosion
+                  Watch Your Money Lose Value in Real Time
                 </CardTitle>
-                <p className="text-zinc-400 text-sm">How abandoning the gold standard destroyed your purchasing power</p>
+                <p className="text-zinc-400 text-sm">Interactive timeline showing how money printing destroys purchasing power since 1971</p>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="grid gap-6 md:grid-cols-2">
-                  {/* 1971 Gold Standard Era */}
-                  <div className="p-6 bg-green-950/30 rounded-xl border border-green-800/50">
-                    <div className="text-center space-y-4">
-                      <div className="text-green-300 font-bold text-lg">1971: Gold Standard</div>
-                      <div className="space-y-2">
-                        <div className="text-green-200 text-4xl font-bold">$583B</div>
-                        <div className="text-zinc-300 text-sm">Total US money supply</div>
-                      </div>
-                      <div className="text-zinc-400 text-xs p-3 bg-zinc-800/50 rounded-lg">
-                        Money backed by gold. Limited printing.
-                      </div>
+                {/* Year Slider Control */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-zinc-300 font-medium">Select Year:</span>
+                    <span className="text-orange-400 font-bold text-lg">{moneySupplyYear}</span>
+                  </div>
+                  <div className="space-y-2">
+                    <input
+                      type="range"
+                      min="1920"
+                      max="2024"
+                      value={moneySupplyYear}
+                      onChange={(e) => setMoneySupplyYear(parseInt(e.target.value))}
+                      className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer slider"
+                      style={{
+                        background: `linear-gradient(to right, #f97316 0%, #f97316 ${((moneySupplyYear - 1920) / (2024 - 1920)) * 100}%, #374151 ${((moneySupplyYear - 1920) / (2024 - 1920)) * 100}%, #374151 100%)`
+                      }}
+                    />
+                    <div className="flex justify-between text-xs text-zinc-500">
+                      <span>1920 (Gold Standard)</span>
+                      <span>2024 (Today)</span>
                     </div>
                   </div>
 
-                  {/* 2024 Fiat Era */}
-                  <div className="p-6 bg-red-950/30 rounded-xl border border-red-800/50">
-                    <div className="text-center space-y-4">
-                      <div className="text-red-300 font-bold text-lg">2024: Fiat Money</div>
-                      <div className="space-y-2">
-                        <div className="text-red-200 text-4xl font-bold">$21T</div>
-                        <div className="text-zinc-300 text-sm">Total US money supply</div>
-                      </div>
-                      <div className="text-zinc-400 text-xs p-3 bg-zinc-800/50 rounded-lg">
-                        Money created from nothing. Unlimited printing.
-                      </div>
+                  {/* Purchasing Power Display - Moved Here */}
+                  <div className="bg-zinc-800/50 rounded-lg p-3 mt-3">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-zinc-300 text-sm">$1 from 1920 = </span>
+                      <span className="text-red-400 font-bold">
+                        ${(1 / getPurchasingPowerRaw(moneySupplyYear)).toFixed(2)} today
+                      </span>
                     </div>
-                  </div>
-                </div>
-
-                {/* Impact Stats */}
-                <div className="p-6 bg-zinc-800 rounded-xl">
-                  <div className="text-center space-y-4">
-                    <div className="text-orange-300 font-bold text-xl">The Devastating Result</div>
-                    <div className="grid gap-4 md:grid-cols-3">
-                      <div className="text-center">
-                        <div className="text-orange-200 font-bold text-2xl">36x</div>
-                        <div className="text-zinc-400 text-sm">Money supply growth</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-orange-200 font-bold text-2xl">96%</div>
-                        <div className="text-zinc-400 text-sm">Purchasing power lost</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-orange-200 font-bold text-2xl">$25.43</div>
-                        <div className="text-zinc-400 text-sm">What $1 from 1971 costs today</div>
-                      </div>
+                    <div className="w-full bg-zinc-700 rounded-full h-2">
+                      <div 
+                        className="bg-gradient-to-r from-red-400 to-red-600 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${Math.round((1 - getPurchasingPowerRaw(moneySupplyYear)) * 100)}%` }}
+                      ></div>
                     </div>
-                    <div className="text-zinc-300 text-sm max-w-2xl mx-auto pt-4 border-t border-zinc-700">
-                      This is why your money buys less every year. This is why you need Bitcoin.
+                    <div className="text-xs text-zinc-400 mt-1">
+                      {Math.round((1 - getPurchasingPowerRaw(moneySupplyYear)) * 100)}% of purchasing power lost since 1920
                     </div>
                   </div>
                 </div>
@@ -2993,200 +2961,228 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            {/* Simplified Inflation Comparison */}
+            {/* Purchasing Power Erosion Simulator */}
             <Card className="bg-zinc-900 border-zinc-800">
               <CardHeader className="pb-4">
                 <CardTitle className="text-white flex items-center gap-3 text-xl">
-                  <TrendingDown className="w-5 h-5 text-red-400" />
-                  Why Banks Love Inflation
+                  <TrendingDown className="w-5 h-5 text-orange-400" />
+                  Your Money Is Disappearing
                 </CardTitle>
-                <p className="text-zinc-400 text-sm">You lose, they profit</p>
+                <p className="text-zinc-400 text-sm">See how $25,000 loses buying power over time</p>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="grid gap-6 md:grid-cols-2">
-                  {/* Your Savings */}
-                  <div className="p-6 bg-red-950/30 rounded-xl border border-red-800/50">
-                    <div className="text-center space-y-4">
-                      <div className="text-red-300 font-bold text-lg">Your Savings Account</div>
-                      <div className="space-y-3">
-                        <div className="text-red-200 text-4xl font-bold">$25,000</div>
-                        <div className="text-zinc-300 text-sm">What you save today</div>
-                        <div className="border-t border-red-800/50 pt-3">
-                          <div className="text-red-200 text-2xl font-bold">$13,000</div>
-                          <div className="text-zinc-400 text-xs">Buying power in 20 years</div>
-                        </div>
-                      </div>
-                      <div className="text-zinc-400 text-xs p-3 bg-zinc-800/50 rounded-lg">
-                        Your money loses value while you sleep
-                      </div>
+                {!inflationSimActive && inflationProgress === 0 && (
+                  <div className="text-center space-y-4">
+                    <div className="p-4 bg-zinc-800 rounded-lg border border-zinc-700">
+                      <p className="text-zinc-300 mb-3">
+                        You saved <span className="text-orange-400 font-bold">$25,000</span>. 
+                        Watch what happens to your money's buying power over 25 years.
+                      </p>
+                      <p className="text-zinc-400 text-sm">
+                        This is what inflation does to your savings.
+                      </p>
                     </div>
+                    <Button 
+                      onClick={startInflationSimulation}
+                      className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg font-medium"
+                    >
+                      Watch Your Money Disappear
+                    </Button>
                   </div>
+                )}
 
-                  {/* Bank Profits */}
-                  <div className="p-6 bg-green-950/30 rounded-xl border border-green-800/50">
-                    <div className="text-center space-y-4">
-                      <div className="text-green-300 font-bold text-lg">Bank's Profit</div>
-                      <div className="space-y-3">
-                        <div className="text-green-200 text-4xl font-bold">$25,000</div>
-                        <div className="text-zinc-300 text-sm">What they lend at 7%</div>
-                        <div className="border-t border-green-800/50 pt-3">
-                          <div className="text-green-200 text-2xl font-bold">$97,000</div>
-                          <div className="text-zinc-400 text-xs">What they collect in 20 years</div>
-                        </div>
-                      </div>
-                      <div className="text-zinc-400 text-xs p-3 bg-zinc-800/50 rounded-lg">
-                        They profit while paying you 0.5%
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Bottom Line */}
-                <div className="p-6 bg-zinc-800 rounded-xl text-center">
-                  <div className="text-orange-300 font-bold text-xl mb-3">The System is Rigged</div>
-                  <div className="text-zinc-300 text-sm max-w-2xl mx-auto">
-                    Banks pay you pennies while lending your money for massive profits. 
-                    Bitcoin gives you control of your money and a hedge against inflation.
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-
-
-            {/* Subscription Value Proposition */}
-            <Card className="bg-gradient-to-r from-orange-950/30 to-zinc-900 border-orange-800/50">
-              <CardContent className="p-8">
-                <div className="text-center space-y-6">
-                  <div className="space-y-2">
-                    <h3 className="text-2xl font-bold text-white">Ready to Master Bitcoin?</h3>
-                    <p className="text-zinc-300 max-w-2xl mx-auto">
-                      Join thousands of people transforming their financial future with our comprehensive Bitcoin education program.
-                    </p>
-                  </div>
-
-                  {/* What's Included */}
-                  <div className="grid gap-4 md:grid-cols-3 max-w-4xl mx-auto">
-                    <div className="p-4 bg-zinc-800/50 rounded-lg">
-                      <div className="text-orange-400 font-bold text-lg mb-2">📚 Daily Lessons</div>
-                      <div className="text-zinc-300 text-sm">
-                        5-minute lessons every day, building from basics to advanced concepts with progress tracking
-                      </div>
-                    </div>
-                    <div className="p-4 bg-zinc-800/50 rounded-lg">
-                      <div className="text-orange-400 font-bold text-lg mb-2">⚡ Interactive Simulators</div>
-                      <div className="text-zinc-300 text-sm">
-                        Practice with DCA calculators, transaction builders, and realistic trading scenarios
-                      </div>
-                    </div>
-                    <div className="p-4 bg-zinc-800/50 rounded-lg">
-                      <div className="text-orange-400 font-bold text-lg mb-2">🎯 Personal Progress</div>
-                      <div className="text-zinc-300 text-sm">
-                        Track your learning streak, quiz scores, and knowledge mastery across all Bitcoin topics
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Social Proof */}
+                {/* Always show simulation results once started */}
+                {(inflationSimActive || inflationProgress > 0) && (
                   <div className="space-y-4">
-                    <div className="text-orange-300 font-medium">Join 12,847 people already learning</div>
-                    <div className="flex justify-center items-center gap-8 text-zinc-400 text-sm">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span>4.9/5 rating</span>
+                    {inflationSimActive && (
+                      <div className="text-center">
+                        <p className="text-zinc-400 text-sm">
+                          Watching your money's buying power shrink...
+                        </p>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span>89% completion rate</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span>No ads, ever</span>
-                      </div>
+                    )}
+                    
+                    {/* Compact Year Timeline */}
+                    <div className="grid gap-1 md:grid-cols-2 lg:grid-cols-3">
+                      {[
+                        { step: 0, year: "Today", value: 25000, purchasingPower: 100, loss: "$0" },
+                        { step: 1, year: "Year 1", value: 24250, purchasingPower: 97, loss: "$750" },
+                        { step: 2, year: "Year 5", value: 21562, purchasingPower: 86, loss: "$3,438" },
+                        { step: 3, year: "Year 10", value: 18584, purchasingPower: 74, loss: "$6,416" },
+                        { step: 4, year: "Year 15", value: 16023, purchasingPower: 64, loss: "$8,977" },
+                        { step: 5, year: "Year 20", value: 13807, purchasingPower: 55, loss: "$11,193" },
+                        { step: 6, year: "Year 25", value: 11903, purchasingPower: 48, loss: "$13,097" }
+                      ].map(({ step, year, value, purchasingPower, loss }) => {
+                        const isActive = inflationProgress >= step;
+                        const isCurrentStep = inflationProgress === step && inflationSimActive;
+                        
+                        return (
+                          <div key={step} className={`relative px-2 py-1 rounded border transition-all duration-500 overflow-hidden ${
+                            isActive 
+                              ? step === 0 ? 'bg-green-800/30 border-green-600/50' : 'bg-red-800/30 border-red-600/50'
+                              : 'bg-zinc-800 border-zinc-700'
+                          }`}>
+                            {/* Visual decay bar overlay */}
+                            <div 
+                              className={`absolute inset-0 transition-all duration-1000 ${
+                                isActive 
+                                  ? step === 0 ? 'bg-green-500/20' : 'bg-red-500/20'
+                                  : 'bg-transparent'
+                              }`}
+                              style={{ 
+                                width: isActive ? `${purchasingPower}%` : '0%',
+                                transformOrigin: 'left'
+                              }}
+                            ></div>
+                            
+                            <div className="relative text-center space-y-0.5">
+                              <div className={`font-bold text-xs transition-colors duration-500 ${
+                                isActive 
+                                  ? step === 0 ? 'text-green-400' : 'text-red-400' 
+                                  : 'text-zinc-400'
+                              }`}>
+                                {year}
+                              </div>
+                              <div className={`text-sm font-bold transition-colors duration-500 ${
+                                isActive 
+                                  ? step === 0 ? 'text-green-300' : 'text-red-300'
+                                  : 'text-zinc-500'
+                              }`}>
+                                ${value.toLocaleString()}
+                              </div>
+                              <div className={`text-xs transition-colors duration-500 ${
+                                isActive 
+                                  ? step === 0 ? 'text-green-400' : 'text-red-400'
+                                  : 'text-zinc-500'
+                              }`}>
+                                {purchasingPower}% power
+                              </div>
+                              {step > 0 && (
+                                <div className={`text-xs transition-colors duration-500 ${
+                                  isActive ? 'text-red-300' : 'text-zinc-600'
+                                }`}>
+                                  Lost {loss}
+                                </div>
+                              )}
+                            </div>
+                            
+                            {isCurrentStep && (
+                              <div className="relative mt-2 flex items-center justify-center gap-2 text-red-400 text-xs">
+                                <div className="w-1.5 h-1.5 bg-red-400 rounded-full animate-pulse"></div>
+                                Losing value...
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
-                  </div>
 
-                  {/* CTA Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <button 
-                      onClick={() => setActiveSection("learn")}
-                      className="px-8 py-4 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg transition-colors text-lg"
-                    >
-                      Start Free Today
-                    </button>
-                    <button 
-                      onClick={() => setActiveSection("simulations")}
-                      className="px-8 py-4 bg-zinc-800 hover:bg-zinc-700 text-white font-medium rounded-lg border border-zinc-600 transition-colors"
-                    >
-                      Try Simulators
-                    </button>
+                    {/* Simple Results Summary */}
+                    {inflationProgress >= 6 && (
+                      <div className="p-4 bg-gradient-to-r from-red-950/40 to-orange-950/40 rounded-xl border border-red-800/50">
+                        <div className="text-center space-y-3">
+                          <div className="text-red-300 font-bold text-lg">The Result After 25 Years:</div>
+                          
+                          <div className="text-zinc-300 text-lg leading-relaxed">
+                            Your <span className="text-orange-400 font-bold">$25,000</span> now buys what 
+                            <span className="text-red-400 font-bold"> $11,903</span> used to buy.
+                            <br />
+                            <span className="text-red-400 font-bold">You lost over half your wealth</span> to inflation.
+                          </div>
+                          
+                          <div className="text-orange-400 font-medium mt-3">
+                            Bitcoin has a fixed supply of 21 million - no inflation possible.
+                          </div>
+
+                          {!inflationSimActive && (
+                            <Button 
+                              onClick={startInflationSimulation}
+                              className="mt-4 bg-orange-600 hover:bg-orange-700"
+                            >
+                              Watch Again
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </div>
+                )}
               </CardContent>
             </Card>
-          </div>
-        )}
 
-        {/* Learn Section */}
-        {activeSection === "learn" && (
-            </Card>
+            {/* Banking Story Transition */}
+            <div className="bg-zinc-900/50 rounded-lg p-6 border border-zinc-800/50">
+              <h3 className="text-xl font-bold mb-4 text-orange-400">The Banking Racket: Death by a Thousand Cuts</h3>
+              <div className="space-y-4 text-zinc-300 leading-relaxed">
+                <p>
+                  While inflation slowly erodes your wealth, banks extract value through direct fees. Every international transfer, 
+                  currency exchange, and wire payment becomes a profit center for financial institutions. They've built an entire 
+                  business model around being the middleman in your financial life.
+                </p>
+                <p>
+                  A typical international wire transfer costs $25-50 in fees, plus hidden currency exchange markups of 3-5%. 
+                  Sending $1,000 to family abroad? You'll pay $50+ in fees and lose another $30-50 to poor exchange rates. 
+                  That's nearly 10% of your money disappearing into bank profits.
+                </p>
+                <p>
+                  Bitcoin eliminates the middleman entirely. Your transaction goes directly to the recipient, anywhere in the world, 
+                  for a few dollars in network fees. No wire transfer departments, no currency exchange desks, no "business day" delays.
+                </p>
+                <p className="text-orange-300 font-medium">
+                  Calculate exactly how much banks are stealing from you every year:
+                </p>
+              </div>
+            </div>
 
-            {/* User Testimonials */}
-            <Card className="bg-zinc-900 border-zinc-800">
-              <CardContent className="p-6">
-                <div className="text-center mb-6">
-                  <h3 className="text-xl font-bold text-white mb-2">What Our Users Say</h3>
-                  <p className="text-zinc-400 text-sm">Real stories from people who transformed their understanding of money</p>
-                </div>
-                
-                <div className="grid gap-4 md:grid-cols-3">
-                  <div className="p-4 bg-zinc-800/50 rounded-lg">
-                    <div className="text-zinc-300 text-sm mb-3">
-                      "I was terrified of Bitcoin before this app. Now I confidently manage my own wallet and understand why it matters for my retirement."
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                        S
-                      </div>
-                      <div>
-                        <div className="text-white text-sm font-medium">Sarah M.</div>
-                        <div className="text-zinc-400 text-xs">Teacher, Age 54</div>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="p-4 bg-zinc-800/50 rounded-lg">
-                    <div className="text-zinc-300 text-sm mb-3">
-                      "The DCA simulator saved me from panic selling during market dips. I learned that time in the market beats timing the market."
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                        M
-                      </div>
-                      <div>
-                        <div className="text-white text-sm font-medium">Marcus T.</div>
-                        <div className="text-zinc-400 text-xs">Engineer, Age 29</div>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="p-4 bg-zinc-800/50 rounded-lg">
-                    <div className="text-zinc-300 text-sm mb-3">
-                      "Finally, Bitcoin education that doesn't talk down to you. I went from zero knowledge to confidently explaining it to my kids."
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                        L
+            {/* Problem/Solution Comparison Grid */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {[
+                {
+                  icon: "💸",
+                  problem: "Inflation Destroys Savings",
+                  solution: "Fixed 21M Supply",
+                  desc: "Math-enforced scarcity",
+                  color: "red"
+                },
+                {
+                  icon: "🏦",
+                  problem: "Banks Control Money",
+                  solution: "You Control Keys",
+                  desc: "True ownership",
+                  color: "blue"
+                },
+                {
+                  icon: "🚫",
+                  problem: "2B People Excluded",
+                  solution: "Internet = Access",
+                  desc: "Global participation",
+                  color: "purple"
+                },
+                {
+                  icon: "⏰",
+                  problem: "3-5 Day Settlements",
+                  solution: "10-60 Minute Finality",
+                  desc: "24/7 settlement",
+                  color: "yellow"
+                }
+              ].map((item, index) => (
+                <Card key={index} className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-all duration-300 hover:transform hover:scale-105">
+                  <CardContent className="p-6">
+                    <div className="text-center space-y-4">
+                      <div className="text-3xl">{item.icon}</div>
+                      <div className="space-y-2">
+                        <div className="text-red-300 font-semibold text-sm">{item.problem}</div>
+                        <div className="w-full h-px bg-zinc-700"></div>
+                        <div className="text-green-300 font-semibold text-sm">{item.solution}</div>
+                        <div className="text-zinc-400 text-xs">{item.desc}</div>
                       </div>
-                      <div>
-                        <div className="text-white text-sm font-medium">Linda K.</div>
-                        <div className="text-zinc-400 text-xs">Small Business Owner, Age 47</div>
-                      </div>
                     </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
             {/* Speed Story Transition */}
             <div className="bg-zinc-900/50 rounded-lg p-6 border border-zinc-800/50">
@@ -3657,89 +3653,28 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Urgency and Scarcity Section */}
-            <Card className="bg-gradient-to-r from-red-950/30 to-orange-950/30 border-red-800/50">
-              <CardContent className="p-8">
-                <div className="text-center space-y-6">
-                  <div className="space-y-2">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-900/50 rounded-full text-red-300 text-sm font-medium">
-                      🚨 Limited Time Access
-                    </div>
-                    <h3 className="text-2xl font-bold text-white">Don't Wait Until Bitcoin Hits $200K</h3>
-                    <p className="text-zinc-300 max-w-2xl mx-auto">
-                      While others panic-buy at all-time highs, you can learn the fundamentals now and make educated decisions. 
-                      Financial education always pays better returns than financial speculation.
-                    </p>
-                  </div>
-
-                  {/* Urgency Stats */}
-                  <div className="grid gap-4 md:grid-cols-3 max-w-3xl mx-auto">
-                    <div className="p-4 bg-zinc-800/70 rounded-lg border border-orange-800/30">
-                      <div className="text-orange-400 font-bold text-xl">743</div>
-                      <div className="text-zinc-300 text-sm">People joined today</div>
-                    </div>
-                    <div className="p-4 bg-zinc-800/70 rounded-lg border border-orange-800/30">
-                      <div className="text-orange-400 font-bold text-xl">15,347</div>
-                      <div className="text-zinc-300 text-sm">Completed first lesson</div>
-                    </div>
-                    <div className="p-4 bg-zinc-800/70 rounded-lg border border-orange-800/30">
-                      <div className="text-orange-400 font-bold text-xl">89%</div>
-                      <div className="text-zinc-300 text-sm">Recommend to friends</div>
-                    </div>
-                  </div>
-
-                  <div className="p-4 bg-zinc-900/70 rounded-lg border border-zinc-700 max-w-md mx-auto">
-                    <div className="text-zinc-400 text-sm mb-2">Most popular choice:</div>
-                    <div className="text-white font-semibold">⭐ Complete Bitcoin Mastery Program</div>
-                    <div className="text-zinc-300 text-sm mt-1">Daily lessons + Interactive simulators + Progress tracking</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Final CTA with Social Proof */}
             <Card className="bg-gradient-to-br from-orange-950/50 to-amber-950/50 border-orange-800/50">
               <CardContent className="p-8 text-center">
                 <div className="max-w-2xl mx-auto space-y-6">
-                  <h3 className="text-3xl font-bold text-white">Start Your Bitcoin Education Today</h3>
+                  <h3 className="text-3xl font-bold text-white">Ready to Learn How Bitcoin Works?</h3>
                   <p className="text-zinc-300 text-lg">
-                    Join 12,847 people building their financial future with comprehensive Bitcoin education. 
-                    Start free, learn at your pace, cancel anytime.
+                    Start with daily lessons, practice with real simulations, and understand why Bitcoin represents 
+                    the future of money. Your financial education begins here.
                   </p>
-                  
-                  {/* CTA Buttons */}
-                  <div className="space-y-4">
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                      <button 
-                        onClick={() => setActiveSection("learn")}
-                        className="bg-orange-600 hover:bg-orange-700 px-8 py-4 text-lg font-bold rounded-lg transition-colors text-white shadow-lg"
-                      >
-                        🚀 Start Free Lessons Now
-                      </button>
-                      <button 
-                        onClick={() => setActiveSection("simulations")}
-                        className="bg-zinc-800 hover:bg-zinc-700 border border-orange-600 text-orange-400 hover:text-white px-8 py-4 text-lg font-medium rounded-lg transition-colors"
-                      >
-                        Try Interactive Simulators
-                      </button>
-                    </div>
-                    
-                    <div className="text-zinc-400 text-sm space-y-1">
-                      <div>✅ No credit card required</div>
-                      <div>✅ Start learning in under 60 seconds</div>
-                      <div>✅ Join thousands already learning</div>
-                    </div>
-                  </div>
-
-                  {/* Trust Indicators */}
-                  <div className="pt-4 border-t border-zinc-700">
-                    <div className="text-zinc-400 text-xs mb-2">Trusted by learners at:</div>
-                    <div className="flex justify-center items-center gap-6 text-zinc-500 text-sm">
-                      <span>🏢 Apple</span>
-                      <span>🏢 Google</span>
-                      <span>🏢 Microsoft</span>
-                      <span>🏢 Tesla</span>
-                    </div>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button 
+                      onClick={() => setActiveSection("learn")}
+                      className="bg-orange-600 hover:bg-orange-700 px-8 py-4 text-lg font-medium h-auto"
+                    >
+                      Start Daily Bitcoin Lessons
+                    </Button>
+                    <Button 
+                      onClick={() => setActiveSection("simulations")}
+                      variant="outline"
+                      className="border-orange-600 text-orange-400 hover:bg-orange-600/20 px-8 py-4 text-lg font-medium h-auto"
+                    >
+                      Practice with Simulators
+                    </Button>
                   </div>
                 </div>
               </CardContent>
