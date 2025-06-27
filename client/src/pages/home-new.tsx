@@ -2718,9 +2718,9 @@ export default function Home() {
                           
                           {/* Current year indicator */}
                           <line 
-                            x1={50 + ((moneySupplyYear - 1971) / (2024 - 1971)) * 320} 
+                            x1={50 + ((moneySupplyYear - 1920) / 104) * 320} 
                             y1="10" 
-                            x2={50 + ((moneySupplyYear - 1971) / (2024 - 1971)) * 320} 
+                            x2={50 + ((moneySupplyYear - 1920) / 104) * 320} 
                             y2="180" 
                             stroke="#f97316" 
                             strokeWidth="2" 
