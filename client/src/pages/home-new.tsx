@@ -3040,7 +3040,7 @@ export default function Home() {
                               
                               <div className="flex justify-between items-center">
                                 <span className="text-zinc-400">Total Gain:</span>
-                                <span className="text-orange-400 font-mono text-lg">+{hodlResults.percentageReturn.toFixed(1)}%</span>
+                                <span className="text-orange-400 font-mono text-lg">+{hodlResults.percentageReturn.toLocaleString('en-US', {maximumFractionDigits: 1})}%</span>
                               </div>
                               
                               <div className="flex justify-between items-center">
