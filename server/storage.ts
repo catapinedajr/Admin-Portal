@@ -191,18 +191,18 @@ export class MemStorage implements IStorage {
         dayIndex: 1
       },
       {
-        title: "Digital Scarcity",
-        content: "Bitcoin has a maximum supply of 21 million coins that will ever exist. This digital scarcity makes it like digital gold - rare and valuable because there's a limited amount.",
-        category: "Fundamentals",
-        icon: "gem",
-        dayIndex: 0
+        title: "Medium of Exchange",
+        content: "Money allows us to trade without bartering. Instead of trading chickens for shoes, we use money as an in-between step.",
+        category: "Money Functions",
+        icon: "refresh-cw",
+        dayIndex: 1
       },
       {
-        title: "Why Bitcoin Matters",
-        content: "Bitcoin gives you complete control over your money. No one can freeze your account, reverse your transactions, or stop you from sending money anywhere in the world.",
-        category: "Purpose",
-        icon: "shield-alt",
-        dayIndex: 0
+        title: "Store of Value", 
+        content: "Good money keeps its value over time. You should be able to save money today and buy similar things with it years later.",
+        category: "Money Functions",
+        icon: "piggy-bank",
+        dayIndex: 1
       },
 
       // Day 1: How Bitcoin Works
@@ -220,12 +220,21 @@ export class MemStorage implements IStorage {
         icon: "user-secret",
         dayIndex: 1
       },
+
+      // Day 4: Problems with Traditional Money
       {
-        title: "Cryptographic Security",
-        content: "Bitcoin uses advanced mathematics called cryptography to secure transactions. This makes it virtually impossible to hack or counterfeit Bitcoin.",
-        category: "Security",
-        icon: "lock",
-        dayIndex: 1
+        title: "Inflation",
+        content: "When governments print more money, each dollar becomes worth less. This is why things cost more over time - your money loses value.",
+        category: "Money Problems",
+        icon: "trending-down",
+        dayIndex: 4
+      },
+      {
+        title: "Central Control",
+        content: "Traditional money is controlled by governments and banks. They can print more, freeze accounts, or stop transactions at will.",
+        category: "Money Problems",
+        icon: "building-2",
+        dayIndex: 4
       },
 
       // Day 2: Bitcoin vs Traditional Money
@@ -376,19 +385,21 @@ export class MemStorage implements IStorage {
     const lessons = [
       // Week 1: Foundation Lessons
       {
-        title: "Understanding Bitcoin: Digital Money Revolution",
-        content: `Bitcoin represents the first successful attempt at creating digital money that works without banks, governments, or any central authority controlling it.
+        title: "What Is Money Really? - Day 1",
+        content: `Imagine you're living thousands of years ago, and you've just grown the most beautiful apples anyone has ever seen. Your neighbor has crafted the warmest, most comfortable shoes in the village. You want those shoes, but your neighbor doesn't want apples - they need grain for bread. What do you do?
 
-Unlike traditional money, Bitcoin exists purely as computer code. But this isn't just any digital money - it's programmable money with rules that cannot be changed arbitrarily. For thousands of years, every form of money required someone to be in charge, whether it was kings minting coins, banks issuing notes, or governments printing currency. Bitcoin breaks this pattern completely.
+This simple problem has puzzled humans throughout history and led to one of humanity's greatest inventions: money. Money isn't just pieces of paper or metal coins - it's a solution to the fundamental challenge of how people can trade and cooperate with each other.
 
-The revolution lies in Bitcoin's solution to the "double-spending problem" - how to prevent someone from copying digital money and spending it twice. Before Bitcoin, every attempt at creating digital money failed because they required a central authority to prevent double-spending. Banks, for example, keep databases that track who owns what, preventing you from spending the same dollar twice. But what happens when the bank fails, gets hacked, or decides to freeze your account?
+At its core, money is anything that people in a community agree has value and can be used to exchange for goods and services. It's a shared belief system that makes complex societies possible. Without money, every trade would require the perfect coincidence of wants - you'd need to find someone who has what you want and wants what you have, at the exact same time.
 
-Bitcoin solves this through three fundamental properties that work together like a perfectly engineered system. First, it's completely decentralized with no single point of control or failure - thousands of computers worldwide work together to maintain the system. Second, it's mathematically scarce with only 21 million Bitcoin that will ever exist, making it more predictably scarce than gold or any government currency. Third, it's entirely permissionless, meaning anyone with an internet connection can use it without asking permission from any bank, government, or authority.
+Money serves three essential functions that make our modern world possible. First, it acts as a medium of exchange, allowing us to break the complex chain of bartering into simple transactions. Instead of trading apples for grain for shoes, you can sell your apples for money, then use that money to buy shoes directly. Second, money serves as a store of value, letting you save your hard work today to benefit from it tomorrow. Finally, money works as a unit of account, giving us a consistent way to measure and compare the value of different things.
 
-The revolutionary insight that changes everything is profound yet simple: money can exist and function perfectly without requiring trust in any institution or government. For the first time in human history, individuals can store and transfer value globally without depending on fallible intermediaries.`,
-        summary: "Bitcoin is programmable, decentralized digital money that operates without central control, solving the double-spending problem through cryptographic innovation.",
-        estimatedReadTime: 6,
-        dayIndex: 0
+The story of money is really the story of human cooperation and trust. Every form of money, from seashells to gold to paper bills, works because a community of people agrees to believe in its value. This shared belief creates the foundation for trade, savings, investment, and the complex economic systems that power our world.
+
+Understanding what money really is helps us appreciate why the invention of Bitcoin represents such a revolutionary moment in human history - it's not just a new type of money, but a completely new way of creating trust and cooperation without needing to rely on any central authority.`,
+        summary: "Money solves the fundamental problem of trade by serving as a medium of exchange, store of value, and unit of account based on shared community agreement.",
+        estimatedReadTime: 8,
+        dayIndex: 1
       },
 
       {
