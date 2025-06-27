@@ -2646,8 +2646,8 @@ export default function Home() {
                         <g>
                           {(() => {
                             const events = [
-                              { year: 1945, m2: 0.107, label: "WWII", sublabel: "Post-War", labelX: 80, labelY: 30 },
-                              { year: 2008, m2: 7.500, label: "Financial Crisis", sublabel: "2008", labelX: 240, labelY: 40 },
+                              { year: 1945, m2: 0.107, label: "WWII", sublabel: "Post-War", labelX: 80, labelY: 130 },
+                              { year: 2008, m2: 7.500, label: "Financial Crisis", sublabel: "2008", labelX: 240, labelY: 90 },
                               { year: 2020, m2: 15.400, label: "COVID", sublabel: "Money Printing", labelX: 300, labelY: 30 }
                             ];
                             
