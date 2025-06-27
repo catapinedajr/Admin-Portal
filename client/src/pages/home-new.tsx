@@ -2633,90 +2633,144 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            {/* Historical Money Supply & Inflation Impact Chart */}
+            {/* Historical Money Supply Growth Chart */}
             <Card className="bg-zinc-900 border-zinc-800">
               <CardHeader className="pb-4">
                 <CardTitle className="text-white flex items-center gap-3 text-xl">
                   <TrendingUp className="w-5 h-5 text-orange-400" />
-                  100 Years of Monetary Debasement (1924-2024)
+                  The Great Money Printing Experiment (1924-2024)
                 </CardTitle>
-                <p className="text-zinc-400 text-sm">See how the dollar lost 96% of its purchasing power over the past century</p>
+                <p className="text-zinc-400 text-sm">Watch 100 years of exponential money creation that destroyed the dollar</p>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="h-80 relative">
+                <div className="h-96 relative">
                   <div className="absolute inset-0 bg-zinc-800 rounded-lg overflow-hidden">
                     {/* Chart Container */}
                     <div className="h-full relative p-6">
-                      {/* Y-Axis Labels */}
-                      <div className="absolute left-0 top-6 bottom-6 flex flex-col justify-between text-xs text-zinc-400">
-                        <span>$100</span>
-                        <span>$50</span>
-                        <span>$25</span>
-                        <span>$10</span>
-                        <span>$5</span>
-                        <span>$1</span>
+                      {/* Y-Axis Labels - Money Supply */}
+                      <div className="absolute left-0 top-4 bottom-8 flex flex-col justify-between text-xs text-zinc-400">
+                        <span className="text-red-400 font-bold">$21T</span>
+                        <span className="text-orange-400">$18T</span>
+                        <span className="text-yellow-400">$15T</span>
+                        <span className="text-zinc-300">$12T</span>
+                        <span className="text-zinc-300">$9T</span>
+                        <span className="text-zinc-300">$6T</span>
+                        <span className="text-zinc-300">$3T</span>
+                        <span className="text-green-400 font-bold">$27B</span>
+                      </div>
+                      
+                      {/* Chart Title */}
+                      <div className="absolute top-1 left-16 right-0 text-center">
+                        <div className="text-sm text-zinc-300 font-medium">U.S. Money Supply (M2) Growth</div>
                       </div>
                       
                       {/* Chart Area */}
-                      <div className="ml-8 h-full relative">
+                      <div className="ml-12 h-full relative mt-4 mb-8">
                         {/* Grid Lines */}
                         <div className="absolute inset-0">
-                          {[0, 20, 40, 60, 80, 100].map((percent) => (
+                          {[0, 12.5, 25, 37.5, 50, 62.5, 75, 87.5, 100].map((percent) => (
                             <div 
                               key={percent}
-                              className="absolute w-full border-t border-zinc-700/50"
+                              className="absolute w-full border-t border-zinc-700/30"
                               style={{ top: `${percent}%` }}
                             />
                           ))}
                         </div>
                         
-                        {/* Purchasing Power Line (Exponential Decay) */}
+                        {/* Money Supply Explosive Growth */}
                         <svg className="absolute inset-0 w-full h-full">
                           <defs>
-                            <linearGradient id="purchasingPowerGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                              <stop offset="0%" stopColor="#ef4444" stopOpacity="0.3" />
-                              <stop offset="100%" stopColor="#ef4444" stopOpacity="0.1" />
+                            <linearGradient id="moneySupplyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                              <stop offset="0%" stopColor="#ef4444" stopOpacity="0.5" />
+                              <stop offset="30%" stopColor="#f97316" stopOpacity="0.4" />
+                              <stop offset="70%" stopColor="#fbbf24" stopOpacity="0.3" />
+                              <stop offset="100%" stopColor="#22c55e" stopOpacity="0.1" />
+                            </linearGradient>
+                            <linearGradient id="bitcoinGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                              <stop offset="0%" stopColor="#22c55e" stopOpacity="0.3" />
+                              <stop offset="100%" stopColor="#22c55e" stopOpacity="0.1" />
                             </linearGradient>
                           </defs>
-                          {/* Purchasing Power Decline Path */}
+                          
+                          {/* Money Supply Exponential Growth Path - Dramatic curve */}
                           <path
-                            d="M 0 20 Q 150 25 300 45 Q 450 65 600 85 Q 750 95 900 98"
+                            d="M 0 98 L 80 97 L 160 95 L 240 91 L 320 85 L 400 75 L 480 58 L 560 35 L 640 20 L 720 8 L 800 3 L 900 1"
                             stroke="#ef4444"
-                            strokeWidth="3"
+                            strokeWidth="4"
                             fill="none"
                             className="drop-shadow-lg"
                           />
-                          {/* Fill area under curve */}
+                          
+                          {/* Fill area under money supply curve */}
                           <path
-                            d="M 0 20 Q 150 25 300 45 Q 450 65 600 85 Q 750 95 900 98 L 900 100 L 0 100 Z"
-                            fill="url(#purchasingPowerGradient)"
+                            d="M 0 98 L 80 97 L 160 95 L 240 91 L 320 85 L 400 75 L 480 58 L 560 35 L 640 20 L 720 8 L 800 3 L 900 1 L 900 100 L 0 100 Z"
+                            fill="url(#moneySupplyGradient)"
+                          />
+                          
+                          {/* Bitcoin Fixed Supply Line (starts from 2009) */}
+                          <line
+                            x1="675"
+                            y1="87"
+                            x2="900"
+                            y2="87"
+                            stroke="#22c55e"
+                            strokeWidth="4"
+                            strokeDasharray="8,4"
+                            className="drop-shadow-sm"
+                          />
+                          
+                          {/* Bitcoin area (small rectangle) */}
+                          <rect
+                            x="675"
+                            y="87"
+                            width="225"
+                            height="13"
+                            fill="url(#bitcoinGradient)"
                           />
                         </svg>
                         
-                        {/* Key Historical Events */}
+                        {/* Key Historical Events with actual money supply amounts */}
                         <div className="absolute inset-0">
+                          {/* 1924 Start */}
+                          <div className="absolute" style={{ left: '1%', top: '96%' }}>
+                            <div className="w-3 h-3 bg-green-500 rounded-full border-2 border-zinc-900"></div>
+                            <div className="text-xs text-green-400 mt-1 whitespace-nowrap font-medium">1924: Gold Era</div>
+                            <div className="text-xs text-zinc-500">$27B → Sound money</div>
+                          </div>
+                          
                           {/* 1933 Gold Standard Abandoned */}
-                          <div className="absolute" style={{ left: '10%', top: '25%' }}>
-                            <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                            <div className="text-xs text-yellow-400 mt-1 whitespace-nowrap">1933: Gold Standard</div>
+                          <div className="absolute" style={{ left: '12%', top: '94%' }}>
+                            <div className="w-3 h-3 bg-yellow-500 rounded-full border-2 border-zinc-900"></div>
+                            <div className="text-xs text-yellow-400 mt-1 whitespace-nowrap font-medium">1933: Gold Confiscation</div>
+                            <div className="text-xs text-zinc-500">$33B → Printing begins</div>
                           </div>
                           
                           {/* 1971 Nixon Shock */}
-                          <div className="absolute" style={{ left: '47%', top: '65%' }}>
-                            <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                            <div className="text-xs text-orange-400 mt-1 whitespace-nowrap">1971: Nixon Shock</div>
+                          <div className="absolute" style={{ left: '47%', top: '83%' }}>
+                            <div className="w-3 h-3 bg-orange-500 rounded-full border-2 border-zinc-900"></div>
+                            <div className="text-xs text-orange-400 mt-1 whitespace-nowrap font-medium">1971: Nixon Shock</div>
+                            <div className="text-xs text-zinc-500">$600B → Fiat explosion</div>
                           </div>
                           
                           {/* 2008 Financial Crisis */}
-                          <div className="absolute" style={{ left: '84%', top: '85%' }}>
-                            <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                            <div className="text-xs text-red-400 mt-1 whitespace-nowrap">2008: Financial Crisis</div>
+                          <div className="absolute" style={{ left: '71%', top: '32%' }}>
+                            <div className="w-3 h-3 bg-red-500 rounded-full border-2 border-zinc-900"></div>
+                            <div className="text-xs text-red-400 mt-1 whitespace-nowrap font-medium">2008: QE Begins</div>
+                            <div className="text-xs text-zinc-500">$8T → Bailout bonanza</div>
                           </div>
                           
-                          {/* 2020 Money Printing */}
-                          <div className="absolute" style={{ left: '92%', top: '95%' }}>
-                            <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                            <div className="text-xs text-purple-400 mt-1 whitespace-nowrap">2020: Money Printing</div>
+                          {/* 2009 Bitcoin Launch */}
+                          <div className="absolute" style={{ left: '75%', top: '85%' }}>
+                            <div className="w-3 h-3 bg-green-500 rounded-full border-2 border-zinc-900"></div>
+                            <div className="text-xs text-green-400 mt-1 whitespace-nowrap font-medium">2009: Bitcoin Born</div>
+                            <div className="text-xs text-zinc-500">21M cap → Fixed forever</div>
+                          </div>
+                          
+                          {/* 2020 Money Printing Madness */}
+                          <div className="absolute" style={{ left: '89%', top: '8%' }}>
+                            <div className="w-3 h-3 bg-purple-500 rounded-full border-2 border-zinc-900"></div>
+                            <div className="text-xs text-purple-400 mt-1 whitespace-nowrap font-medium">2020: Printer Go Brrr</div>
+                            <div className="text-xs text-zinc-500">$21T → 40% in 2 years!</div>
                           </div>
                         </div>
                       </div>
@@ -2733,34 +2787,45 @@ export default function Home() {
                   </div>
                 </div>
                 
-                {/* Key Stats */}
-                <div className="grid gap-4 md:grid-cols-3">
-                  <div className="p-4 bg-red-950/30 rounded-xl border border-red-800/30 text-center">
-                    <div className="text-red-400 text-sm font-medium mb-1">Purchasing Power Lost</div>
-                    <div className="text-2xl font-bold text-red-300">96%</div>
-                    <div className="text-red-400/70 text-xs">Since 1924</div>
-                  </div>
-                  
-                  <div className="p-4 bg-yellow-950/30 rounded-xl border border-yellow-800/30 text-center">
-                    <div className="text-yellow-400 text-sm font-medium mb-1">Money Supply Growth</div>
-                    <div className="text-2xl font-bold text-yellow-300">3,000%+</div>
-                    <div className="text-yellow-400/70 text-xs">M2 since 1971</div>
-                  </div>
-                  
+                {/* Key Stats - Money Supply Focus */}
+                <div className="grid gap-4 md:grid-cols-4">
                   <div className="p-4 bg-green-950/30 rounded-xl border border-green-800/30 text-center">
-                    <div className="text-green-400 text-sm font-medium mb-1">Bitcoin's Fixed Supply</div>
-                    <div className="text-2xl font-bold text-green-300">21M</div>
-                    <div className="text-green-400/70 text-xs">Forever</div>
+                    <div className="text-green-400 text-sm font-medium mb-1">1924 Money Supply</div>
+                    <div className="text-2xl font-bold text-green-300">$27B</div>
+                    <div className="text-green-400/70 text-xs">Gold standard era</div>
+                  </div>
+                  
+                  <div className="p-4 bg-orange-950/30 rounded-xl border border-orange-800/30 text-center">
+                    <div className="text-orange-400 text-sm font-medium mb-1">1971 Nixon Shock</div>
+                    <div className="text-2xl font-bold text-orange-300">$600B</div>
+                    <div className="text-orange-400/70 text-xs">22x increase</div>
+                  </div>
+                  
+                  <div className="p-4 bg-red-950/30 rounded-xl border border-red-800/30 text-center">
+                    <div className="text-red-400 text-sm font-medium mb-1">2024 Money Supply</div>
+                    <div className="text-2xl font-bold text-red-300">$21T</div>
+                    <div className="text-red-400/70 text-xs">777x since 1924!</div>
+                  </div>
+                  
+                  <div className="p-4 bg-purple-950/30 rounded-xl border border-purple-800/30 text-center">
+                    <div className="text-purple-400 text-sm font-medium mb-1">Bitcoin Maximum</div>
+                    <div className="text-2xl font-bold text-purple-300">21M</div>
+                    <div className="text-purple-400/70 text-xs">Can never change</div>
                   </div>
                 </div>
                 
-                <div className="p-4 bg-orange-950/20 rounded-xl border border-orange-800/30">
-                  <div className="text-center">
-                    <div className="text-orange-300 font-semibold mb-2">The Result:</div>
-                    <div className="text-zinc-300 text-sm">
-                      What cost <span className="text-white font-bold">$1.00</span> in 1924 now costs <span className="text-red-400 font-bold">$17.42</span> today.
+                <div className="p-6 bg-gradient-to-r from-red-950/30 to-orange-950/30 rounded-xl border border-red-800/30">
+                  <div className="text-center space-y-3">
+                    <div className="text-orange-300 font-bold text-lg">The Shocking Reality:</div>
+                    <div className="text-zinc-300 leading-relaxed">
+                      The U.S. created <span className="text-red-400 font-bold">777x more dollars</span> in 100 years. 
+                      <span className="text-red-400 font-bold">40% of all dollars</span> were printed in just the last 4 years (2020-2024).
                       <br />
-                      Your savings lose <span className="text-red-400 font-bold">3-4%</span> of their value every year due to money printing.
+                      Meanwhile, Bitcoin's supply is <span className="text-green-400 font-bold">mathematically capped at 21 million</span> - 
+                      no government, bank, or entity can ever create more.
+                    </div>
+                    <div className="text-orange-400 font-medium">
+                      Which would you rather hold: dollars that multiply like rabbits, or Bitcoin with absolute scarcity?
                     </div>
                   </div>
                 </div>
