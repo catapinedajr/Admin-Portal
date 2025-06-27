@@ -2502,7 +2502,7 @@ export default function Home() {
                     <div className="w-full bg-zinc-700 rounded-full h-2">
                       <div 
                         className="bg-gradient-to-r from-red-400 to-red-600 h-2 rounded-full transition-all duration-500"
-                        style={{ width: `${Math.min(100, (1 / getPurchasingPowerRaw(moneySupplyYear) - 1) * 5)}%` }}
+                        style={{ width: `${Math.round((1 - getPurchasingPowerRaw(moneySupplyYear)) * 100)}%` }}
                       ></div>
                     </div>
                     <div className="text-xs text-zinc-400 mt-1">
