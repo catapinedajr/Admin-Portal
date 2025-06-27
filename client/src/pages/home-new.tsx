@@ -2566,69 +2566,36 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Simplified Money Supply Comparison */}
+                {/* Money Supply Growth Chart */}
                 <div className="space-y-4">
                   <h4 className="text-white font-semibold flex items-center gap-2">
                     <TrendingUp className="w-4 h-4 text-red-400" />
-                    The Money Printing Explosion
+                    M2 Money Supply: 104 Years of Monetary History (1920-2024)
                   </h4>
-                  
-                  <div className="grid gap-6 md:grid-cols-2">
-                    {/* 1971 Gold Standard Era */}
-                    <div className="p-6 bg-green-950/30 rounded-xl border border-green-800/50">
-                      <div className="text-center space-y-4">
-                        <div className="text-green-300 font-bold text-lg">1971: The Gold Standard</div>
-                        <div className="space-y-2">
-                          <div className="text-green-200 text-4xl font-bold">$583B</div>
-                          <div className="text-zinc-300 text-sm">Total US money supply</div>
-                        </div>
-                        <div className="text-zinc-400 text-xs p-3 bg-zinc-800/50 rounded-lg">
-                          Money was backed by gold. Governments couldn't print unlimited amounts because they needed actual gold reserves.
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* 2024 Fiat Era */}
-                    <div className="p-6 bg-red-950/30 rounded-xl border border-red-800/50">
-                      <div className="text-center space-y-4">
-                        <div className="text-red-300 font-bold text-lg">2024: The Fiat Era</div>
-                        <div className="space-y-2">
-                          <div className="text-red-200 text-4xl font-bold">$21T</div>
-                          <div className="text-zinc-300 text-sm">Total US money supply</div>
-                        </div>
-                        <div className="text-zinc-400 text-xs p-3 bg-zinc-800/50 rounded-lg">
-                          Money is created from nothing. The Federal Reserve can print unlimited amounts with just computer entries.
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Shocking Stats */}
-                  <div className="p-6 bg-zinc-800 rounded-xl">
-                    <div className="text-center space-y-4">
-                      <div className="text-orange-300 font-bold text-xl">The Shocking Reality</div>
-                      <div className="grid gap-4 md:grid-cols-3">
-                        <div className="text-center">
-                          <div className="text-orange-200 font-bold text-2xl">36x</div>
-                          <div className="text-zinc-400 text-sm">Money supply multiplied</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-orange-200 font-bold text-2xl">40%</div>
-                          <div className="text-zinc-400 text-sm">Printed in last 4 years</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-orange-200 font-bold text-2xl">96%</div>
-                          <div className="text-zinc-400 text-sm">Purchasing power lost</div>
-                        </div>
-                      </div>
-                      <div className="text-zinc-300 text-sm max-w-2xl mx-auto pt-4 border-t border-zinc-700">
-                        This is why your money buys less every year. This is why you need to understand Bitcoin.
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-
+                  <div className="bg-zinc-800/50 rounded-lg p-4">
+                    <div className="relative h-64 w-full">
+                      {/* SVG Chart */}
+                      <svg viewBox="0 0 400 200" className="w-full h-full">
+                        {/* Grid Lines */}
+                        <defs>
+                          <pattern id="grid" width="40" height="20" patternUnits="userSpaceOnUse">
+                            <path d="M 40 0 L 0 0 0 20" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.3"/>
+                          </pattern>
+                        </defs>
+                        <rect width="400" height="200" fill="url(#grid)" />
+                        
+                        {/* Y-axis labels */}
+                        <text x="10" y="15" fill="#9ca3af" fontSize="10">$21T</text>
+                        <text x="10" y="55" fill="#9ca3af" fontSize="10">$15T</text>
+                        <text x="10" y="95" fill="#9ca3af" fontSize="10">$10T</text>
+                        <text x="10" y="135" fill="#9ca3af" fontSize="10">$5T</text>
+                        <text x="10" y="175" fill="#9ca3af" fontSize="10">$0</text>
+                        
+                        {/* X-axis labels - Evenly spaced per year for dramatic accuracy */}
+                        <text x="50" y="195" fill="#9ca3af" fontSize="10">1920</text>
+                        <text x="173" y="195" fill="#9ca3af" fontSize="10">1960</text>
+                        <text x="295" y="195" fill="#9ca3af" fontSize="10">2000</text>
+                        <text x="370" y="195" fill="#9ca3af" fontSize="10">2024</text>
                         
                         {/* Money Supply Growth Line - Using Real Federal Reserve Data */}
                         <path
