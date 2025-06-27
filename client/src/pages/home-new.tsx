@@ -805,38 +805,8 @@ export default function Home() {
           "Demonstrates Bitcoin's deflationary monetary policy"
         ]
       },
-      "Digital Scarcity": {
-        explanation: "Before Bitcoin, digital items could be copied infinitely at zero cost. Bitcoin solved the 'double-spending problem' using cryptographic proof and network consensus, creating true digital scarcity.",
-        examples: [
-          "Only 21 million bitcoins will ever exist (hardcoded limit)",
-          "Digital files can be copied, but Bitcoin cannot be duplicated",
-          "Each bitcoin exists as unique blockchain entry",
-          "Scarcity is enforced by mathematics and consensus"
-        ],
-        visualDescription: "Think of Bitcoin like rare digital trading cards that cannot be photocopied. The blockchain acts like an unchangeable ledger that tracks who owns each unique card.",
-        keyTakeaways: [
-          "First truly scarce digital asset in history",
-          "Scarcity is mathematically guaranteed",
-          "Cannot be inflated away by central authorities",
-          "Digital scarcity enables digital value storage"
-        ]
-      },
-      "Peer-to-Peer Network": {
-        explanation: "Bitcoin operates on a decentralized network where thousands of computers (nodes) work together to validate transactions and maintain the blockchain without any central authority controlling the system.",
-        examples: [
-          "Over 15,000 nodes worldwide verify transactions",
-          "No single point of failure or control",
-          "Network becomes stronger as more nodes join",
-          "Anyone can run a node and participate in consensus"
-        ],
-        visualDescription: "Picture a massive web of interconnected computers around the world, each keeping an identical copy of Bitcoin's transaction history and working together like a global verification system.",
-        keyTakeaways: [
-          "Decentralized network with no central authority",
-          "Thousands of nodes provide security and redundancy",
-          "Permissionless participation strengthens the network",
-          "Resilient against censorship and shutdowns"
-        ]
-      },
+
+
       "Decentralized Currency": {
         explanation: "Unlike traditional currencies controlled by governments and central banks, Bitcoin operates without any central authority. The network rules are enforced by mathematics and consensus among participants.",
         examples: [
@@ -915,6 +885,342 @@ export default function Home() {
           "Censorship-resistant money for global freedom",
           "Accessible to anyone with internet connection",
           "Protection against monetary inflation and debasement"
+        ]
+      },
+      "The Blockchain": {
+        explanation: "A blockchain is a distributed ledger that maintains a continuously growing list of records (blocks) that are linked and secured using cryptography. Each block contains transaction data, a timestamp, and a cryptographic hash of the previous block, creating an unchangeable chain of transaction history.",
+        examples: [
+          "Every 10 minutes, a new block is added to the chain",
+          "Each block references the previous block's hash",
+          "Thousands of computers worldwide maintain identical copies",
+          "Tampering with any block would break the entire chain"
+        ],
+        visualDescription: "Picture a digital ledger book where each page (block) is numbered and contains a unique fingerprint of the previous page. Changing any page would immediately reveal the tampering to everyone holding a copy.",
+        keyTakeaways: [
+          "Creates permanent, unchangeable transaction records",
+          "Distributed across thousands of computers globally",
+          "Uses cryptographic hashing for security",
+          "Forms the foundation of Bitcoin's trustless system"
+        ]
+      },
+      "Peer-to-Peer Network": {
+        explanation: "Bitcoin operates on a peer-to-peer network where participants (nodes) connect directly with each other without intermediaries. This creates a resilient, decentralized system where no single point of failure can bring down the entire network.",
+        examples: [
+          "Over 15,000 nodes worldwide verify transactions",
+          "No central server that can be shut down",
+          "Each node maintains a complete copy of the blockchain",
+          "Transactions propagate through the network in seconds"
+        ],
+        visualDescription: "Imagine a global web where every computer talks directly to others, sharing information instantly. No central hub exists - if some computers go offline, the network continues operating seamlessly.",
+        keyTakeaways: [
+          "Eliminates single points of failure",
+          "Resistant to censorship and shutdowns",
+          "Enables direct value transfer between users",
+          "Creates trustless interaction through consensus"
+        ]
+      },
+      "Cryptographic Security": {
+        explanation: "Bitcoin uses advanced cryptographic techniques including SHA-256 hashing and elliptic curve digital signatures to secure transactions. These mathematical proofs make it computationally impossible to forge transactions or double-spend bitcoins.",
+        examples: [
+          "Private keys use 256-bit cryptography",
+          "Each transaction has a unique digital signature",
+          "Hash functions create unique 'fingerprints' for blocks",
+          "Breaking Bitcoin's crypto would require more energy than the sun produces"
+        ],
+        visualDescription: "Think of cryptography as unbreakable mathematical locks. Your private key is the only key that can unlock your bitcoins, and the math behind it is so complex that even all the world's computers working together couldn't crack it.",
+        keyTakeaways: [
+          "Uses military-grade cryptographic security",
+          "Mathematically impossible to counterfeit",
+          "Each transaction is cryptographically signed",
+          "Security increases with network growth"
+        ]
+      },
+      "Inflation Protection": {
+        explanation: "Bitcoin's fixed supply of 21 million coins provides protection against monetary inflation. Unlike fiat currencies that central banks can print indefinitely, Bitcoin's monetary policy is set in code and cannot be changed, preserving purchasing power over time.",
+        examples: [
+          "US dollar lost 96% of value since 1913 due to printing",
+          "Bitcoin supply increases predictably and will cap at 21M",
+          "Venezuelan bolívar lost 99% value in recent hyperinflation",
+          "Bitcoin holders preserve wealth during currency crises"
+        ],
+        visualDescription: "Imagine a currency where the total amount is written in stone and can never be changed. While governments print more money and dilute value, Bitcoin remains mathematically scarce forever.",
+        keyTakeaways: [
+          "Fixed supply prevents monetary debasement",
+          "Shields wealth from central bank policies",
+          "Predictable monetary policy built into code",
+          "Historical hedge against currency crises"
+        ]
+      },
+      "24/7 Global Access": {
+        explanation: "Bitcoin operates 24/7/365 without holidays, weekends, or banking hours. The network never sleeps, allowing instant global transactions at any time. This provides unprecedented access to financial services regardless of geography or time zones.",
+        examples: [
+          "Send money to Japan at 3 AM on Christmas",
+          "Receive payments during bank holidays",
+          "Access your funds from anywhere with internet",
+          "No waiting for Monday morning to open accounts"
+        ],
+        visualDescription: "Picture a global ATM that's always open, in every country, that speaks every language and never closes for maintenance or holidays. That's Bitcoin's accessibility.",
+        keyTakeaways: [
+          "Never closes or goes offline",
+          "Global access from any internet connection",
+          "No geographical restrictions or borders",
+          "Immediate settlement without waiting periods"
+        ]
+      },
+      "No Censorship": {
+        explanation: "Bitcoin transactions cannot be censored, reversed, or blocked by any authority. Once a transaction is included in the blockchain, it becomes permanent and irreversible. This provides true financial sovereignty and protection from authoritarian control.",
+        examples: [
+          "Journalists receiving donations in restrictive countries",
+          "Protesters fundraising despite government opposition",
+          "Businesses operating despite payment processor bans",
+          "Individuals preserving wealth during capital controls"
+        ],
+        visualDescription: "Imagine money that works like cash but digitally - no one can stop you from spending it, no authority can freeze it, and no intermediary can block your transactions.",
+        keyTakeaways: [
+          "Transactions cannot be reversed or blocked",
+          "No central authority can freeze accounts",
+          "Enables free speech through financial freedom",
+          "Protects against authoritarian monetary control"
+        ]
+      },
+      "Proof of Work": {
+        explanation: "Proof of Work is Bitcoin's consensus mechanism where miners compete to solve computational puzzles, proving they've expended real energy. This creates objective consensus without requiring trust in any central authority, making the network extremely secure.",
+        examples: [
+          "Miners spend electricity to earn the right to add blocks",
+          "Network automatically adjusts difficulty every 2016 blocks",
+          "Attacking Bitcoin would cost billions in energy",
+          "More mining power means more network security"
+        ],
+        visualDescription: "Think of Proof of Work like a global lottery where buying tickets costs real electricity. The more tickets (computational work) you buy, the better chance of winning, but everyone can verify the winner is legitimate.",
+        keyTakeaways: [
+          "Secures network through energy expenditure",
+          "Creates objective consensus without trust",
+          "Makes attacks prohibitively expensive",
+          "Difficulty adjusts to maintain security"
+        ]
+      },
+      "Network Difficulty": {
+        explanation: "Bitcoin's network difficulty automatically adjusts every 2,016 blocks (approximately two weeks) to maintain a consistent 10-minute average block time. This self-regulating mechanism ensures Bitcoin's predictable supply schedule regardless of mining participation.",
+        examples: [
+          "If more miners join, difficulty increases to slow down blocks",
+          "If miners leave, difficulty decreases to speed up blocks",
+          "Maintains 10-minute average regardless of hash rate",
+          "Ensures predictable 21 million coin supply schedule"
+        ],
+        visualDescription: "Imagine a smart puzzle that automatically becomes harder when more people are solving it and easier when fewer people participate, always keeping the solution time at exactly 10 minutes.",
+        keyTakeaways: [
+          "Automatically maintains 10-minute block times",
+          "Adjusts every 2,016 blocks (~2 weeks)",
+          "Ensures predictable Bitcoin issuance",
+          "Self-regulates regardless of mining participation"
+        ]
+      },
+      "Bitcoin Wallets": {
+        explanation: "Bitcoin wallets don't actually store Bitcoin - they store the private keys that control your Bitcoin on the blockchain. Think of wallets as key managers that prove ownership and enable spending of your Bitcoin.",
+        examples: [
+          "Hardware wallets store keys offline for security",
+          "Mobile wallets enable convenient daily transactions",
+          "Paper wallets are physical printouts of private keys",
+          "Multi-signature wallets require multiple keys to spend"
+        ],
+        visualDescription: "A Bitcoin wallet is like a digital keychain that holds the cryptographic keys to your Bitcoin safe deposit boxes on the blockchain. The Bitcoin stays in the boxes; the wallet just holds your keys.",
+        keyTakeaways: [
+          "Wallets store private keys, not Bitcoin itself",
+          "Different wallet types serve different security needs",
+          "Private key ownership equals Bitcoin ownership",
+          "Multiple wallet options provide flexibility"
+        ]
+      },
+      "Private Keys": {
+        explanation: "Private keys are secret 256-bit numbers that mathematically control your Bitcoin. They generate public keys and addresses, enable transaction signing, and provide ultimate ownership proof. Losing private keys means losing Bitcoin forever.",
+        examples: [
+          "Each private key controls specific Bitcoin addresses",
+          "Private keys create unforgeable digital signatures",
+          "Lost keys mean permanently lost Bitcoin",
+          "12-24 word seed phrases back up private keys"
+        ],
+        visualDescription: "Think of a private key as the master key to an unbreakable digital safe. Anyone with this key can open the safe and take everything inside, but without it, the contents are lost forever.",
+        keyTakeaways: [
+          "Private keys provide absolute Bitcoin control",
+          "Losing keys means losing Bitcoin permanently",
+          "Never share private keys with anyone",
+          "Secure backup is essential for recovery"
+        ]
+      },
+      "Not Your Keys, Not Your Coins": {
+        explanation: "This fundamental Bitcoin principle means that without controlling the private keys, you don't truly own your Bitcoin. Exchanges, custodial services, and third parties that hold your keys can freeze, seize, or lose your Bitcoin.",
+        examples: [
+          "Exchange bankruptcies resulting in lost customer funds",
+          "Governments seizing exchange-held Bitcoin",
+          "Frozen accounts preventing Bitcoin access",
+          "Self-custody providing true ownership"
+        ],
+        visualDescription: "It's like keeping your gold in someone else's vault versus your own safe. You might have a receipt saying it's yours, but until you control the keys to your own safe, you're trusting others with your wealth.",
+        keyTakeaways: [
+          "True ownership requires private key control",
+          "Third-party custody introduces counterparty risk",
+          "Self-custody provides maximum security",
+          "Exchanges are for trading, not long-term storage"
+        ]
+      },
+      "How Transactions Work": {
+        explanation: "Bitcoin transactions transfer value by spending previous transaction outputs. Each transaction is digitally signed with private keys, broadcast to the network, verified by nodes, and permanently recorded on the blockchain by miners.",
+        examples: [
+          "Alice signs a transaction spending her Bitcoin to Bob",
+          "Network nodes verify Alice owns the Bitcoin",
+          "Miners include the transaction in a new block",
+          "Transaction becomes permanent after confirmation"
+        ],
+        visualDescription: "Imagine writing a digital check that instantly proves you have the money, can't be forged, and gets recorded in a global ledger that everyone can verify but no one can change.",
+        keyTakeaways: [
+          "Transactions transfer ownership through digital signatures",
+          "Network verification ensures validity",
+          "Blockchain provides permanent transaction record",
+          "Process eliminates need for trusted intermediaries"
+        ]
+      },
+      "Transaction Fees": {
+        explanation: "Bitcoin transaction fees compensate miners for including transactions in blocks. Users can choose fee levels - higher fees get faster confirmation during busy periods, while lower fees may take longer but cost less.",
+        examples: [
+          "High fees during network congestion ensure fast confirmation",
+          "Low fees during quiet periods save money",
+          "Fee markets create economic efficiency",
+          "Lightning Network enables ultra-low fee transactions"
+        ],
+        visualDescription: "Think of transaction fees like express mail pricing - you can pay more for faster delivery or pay less and wait longer. The network automatically processes highest-fee transactions first.",
+        keyTakeaways: [
+          "Fees incentivize miners to process transactions",
+          "Users control fee levels based on urgency",
+          "Fee markets create network efficiency",
+          "Higher fees generally mean faster confirmation"
+        ]
+      },
+      "Confirmation Times": {
+        explanation: "Bitcoin confirmations represent how many blocks have been added after your transaction's block. Each confirmation exponentially reduces the risk of transaction reversal, with 6 confirmations considered fully secure for large amounts.",
+        examples: [
+          "1 confirmation: Transaction in latest block",
+          "3 confirmations: Very unlikely to reverse",
+          "6 confirmations: Considered fully final",
+          "Zero-confirmation: Transaction broadcast but not mined"
+        ],
+        visualDescription: "Imagine each confirmation as another layer of concrete poured over your transaction. After 6 layers, it would take enormous effort to dig it up and change it.",
+        keyTakeaways: [
+          "More confirmations mean higher security",
+          "6 confirmations considered fully secure",
+          "Confirmation time varies with network congestion",
+          "Large amounts should wait for multiple confirmations"
+        ]
+      },
+      "Bitcoin Halving": {
+        explanation: "Every 210,000 blocks (approximately 4 years), Bitcoin's mining reward is cut in half. This programmed scarcity reduces new Bitcoin supply over time, making existing Bitcoin more scarce and potentially more valuable.",
+        examples: [
+          "2009-2012: 50 BTC reward per block",
+          "2012-2016: 25 BTC reward per block",
+          "2016-2020: 12.5 BTC reward per block",
+          "2020-2024: 6.25 BTC reward per block"
+        ],
+        visualDescription: "Imagine a gold mine that automatically produces half as much gold every four years. As production slows, existing gold becomes increasingly rare and valuable.",
+        keyTakeaways: [
+          "Occurs every 210,000 blocks (~4 years)",
+          "Reduces new Bitcoin supply by 50%",
+          "Creates increasing scarcity over time",
+          "Built into Bitcoin's code and unchangeable"
+        ]
+      },
+      "Fixed Supply Schedule": {
+        explanation: "Bitcoin's monetary policy is completely predictable and unchangeable. New bitcoins are created on a fixed schedule that will result in exactly 21 million total bitcoins by approximately 2140, after which no new bitcoins will ever be created.",
+        examples: [
+          "Current supply increases by ~6.25 BTC every 10 minutes",
+          "Supply growth rate decreases with each halving",
+          "Final bitcoin will be mined around year 2140",
+          "No central authority can change this schedule"
+        ],
+        visualDescription: "Picture a vending machine programmed to release coins on a fixed schedule that slows down over time until it's completely empty. No one can reprogram it or add more coins - ever.",
+        keyTakeaways: [
+          "Exactly 21 million bitcoins will ever exist",
+          "Supply schedule is coded and unchangeable",
+          "Predictable scarcity increases over time",
+          "No inflation possible after 2140"
+        ]
+      },
+      "Fiat Currency Problems": {
+        explanation: "Fiat currencies are backed only by government decree and can be printed infinitely, leading to inflation and currency debasement. Historical data shows all fiat currencies eventually lose significant value or collapse entirely.",
+        examples: [
+          "US dollar lost 96% purchasing power since 1913",
+          "Weimar Germany hyperinflation destroyed savings",
+          "Venezuelan bolívar lost 99% value in recent years",
+          "Over 3,000 fiat currencies have failed throughout history"
+        ],
+        visualDescription: "Imagine a currency where the government can photocopy money whenever it wants. Each copy reduces the value of every existing bill in your wallet.",
+        keyTakeaways: [
+          "Fiat currencies inevitably lose purchasing power",
+          "Inflation is a hidden tax on savers",
+          "Money printing benefits insiders at public expense",
+          "Historical precedent shows fiat currencies fail"
+        ]
+      },
+      "Digital Scarcity": {
+        explanation: "Bitcoin achieves true digital scarcity for the first time in history. Unlike digital files that can be copied endlessly, Bitcoin uses cryptographic proof and network consensus to ensure each bitcoin exists only once and cannot be duplicated.",
+        examples: [
+          "Music files can be copied infinitely without cost",
+          "Bitcoin transactions require cryptographic proof",
+          "Double-spending is mathematically impossible",
+          "Network consensus prevents counterfeiting"
+        ],
+        visualDescription: "Imagine digital gold that can't be photocopied, duplicated, or faked - each piece is unique and verifiable, just like physical scarcity but in the digital realm.",
+        keyTakeaways: [
+          "First solution to digital scarcity problem",
+          "Uses cryptography to prevent duplication",
+          "Network consensus ensures authenticity",
+          "Creates genuine digital property rights"
+        ]
+      },
+      "Banking Intermediaries": {
+        explanation: "Traditional banking systems require trusted intermediaries who can freeze accounts, reverse transactions, and impose restrictions. Bitcoin eliminates intermediaries through cryptographic proof, giving users direct control over their money.",
+        examples: [
+          "Banks can freeze accounts without notice",
+          "Payment processors can deny transactions",
+          "International transfers require multiple intermediaries",
+          "Bitcoin enables direct peer-to-peer transfers"
+        ],
+        visualDescription: "Imagine being able to hand cash directly to someone on the other side of the world instantly, without any bank, government, or company being able to stop or monitor the transaction.",
+        keyTakeaways: [
+          "Eliminates need for trusted third parties",
+          "Users maintain direct control over funds",
+          "Reduces counterparty risk and fees",
+          "Enables true peer-to-peer transactions"
+        ]
+      },
+      "Lightning Network": {
+        explanation: "The Lightning Network is Bitcoin's layer-2 scaling solution that enables instant, low-cost transactions by creating payment channels between users. It maintains Bitcoin's security while dramatically improving transaction speed and reducing fees.",
+        examples: [
+          "Instant micropayments for streaming content",
+          "Coffee purchases with sub-penny fees",
+          "Cross-border remittances in seconds",
+          "Gaming and social media tipping"
+        ],
+        visualDescription: "Imagine Bitcoin as a settlement layer like the banking system, and Lightning as cash transactions - instant, private, and cheap for daily use, but backed by the security of the main network.",
+        keyTakeaways: [
+          "Enables instant Bitcoin transactions",
+          "Dramatically reduces transaction fees",
+          "Maintains Bitcoin's security properties",
+          "Unlocks Bitcoin for daily commerce"
+        ]
+      },
+      "Financial Sovereignty": {
+        explanation: "Bitcoin provides true financial sovereignty - complete control over your money without relying on banks, governments, or any third parties. Your private keys give you absolute ownership and the ability to transact freely.",
+        examples: [
+          "Access your money 24/7 without bank approval",
+          "Send money internationally without restrictions",
+          "Protect savings from currency devaluation",
+          "Maintain privacy in financial transactions"
+        ],
+        visualDescription: "Imagine being your own bank - you control every aspect of your money, from storage to spending, without needing anyone's permission or facing any restrictions.",
+        keyTakeaways: [
+          "Complete control over personal finances",
+          "Independence from traditional banking",
+          "Protection from monetary authoritarianism",
+          "True ownership through private keys"
         ]
       }
     };
