@@ -266,19 +266,25 @@ export async function generateMonth1Content(): Promise<void> {
       });
       
       // Create quiz questions (5 per day)
-      for (const quizQuestion of content.quizQuestions) {
-        await storage.createQuizQuestion({
-          dayIndex: content.dayIndex,
-          question: quizQuestion.question,
-          optionA: quizQuestion.optionA,
-          optionB: quizQuestion.optionB,
-          optionC: quizQuestion.optionC,
-          optionD: quizQuestion.optionD,
-          correctAnswer: quizQuestion.correctAnswer,
-          explanation: quizQuestion.explanation,
-          category: quizQuestion.category,
-          difficulty: quizQuestion.difficulty
-        });
+      if (content.quizQuestions && Array.isArray(content.quizQuestions)) {
+        console.log(`📋 Creating ${content.quizQuestions.length} quiz questions for Day ${day}`);
+        for (const quizQuestion of content.quizQuestions) {
+          await storage.createQuizQuestion({
+            dayIndex: content.dayIndex,
+            question: quizQuestion.question,
+            optionA: quizQuestion.optionA,
+            optionB: quizQuestion.optionB,
+            optionC: quizQuestion.optionC,
+            optionD: quizQuestion.optionD,
+            correctAnswer: quizQuestion.correctAnswer,
+            explanation: quizQuestion.explanation,
+            category: quizQuestion.category,
+            difficulty: quizQuestion.difficulty
+          });
+        }
+      } else {
+        console.error(`❌ Invalid quizQuestions data for Day ${day}:`, content.quizQuestions);
+        throw new Error(`Quiz questions not generated properly for Day ${day}`);
       }
       
       console.log(`✅ Day ${day} content created successfully`);
