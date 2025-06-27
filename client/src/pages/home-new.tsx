@@ -1338,6 +1338,11 @@ export default function Home() {
     const percentageReturn = (totalGain / hodlInputs.initialAmount) * 100;
     const annualReturn = Math.pow(hodlInputs.endPrice / hodlInputs.startPrice, 1/hodlInputs.years) - 1;
 
+
+
+    // Validate percentage calculation for accuracy
+    const validatedPercentageReturn = Math.round(((hodlInputs.endPrice / hodlInputs.startPrice - 1) * 100) * 10) / 10;
+    
     setHodlResults({
       initialInvestment: hodlInputs.initialAmount,
       bitcoinAmount,
@@ -1345,7 +1350,7 @@ export default function Home() {
       endPrice: hodlInputs.endPrice,
       currentValue,
       totalGain,
-      percentageReturn,
+      percentageReturn: validatedPercentageReturn, // Use validated calculation
       annualReturn: annualReturn * 100
     });
   };
