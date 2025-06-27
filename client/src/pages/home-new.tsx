@@ -2740,264 +2740,199 @@ export default function Home() {
               </div>
             )}
 
-            {/* Enhanced HODL Strategy Simulator */}
+            {/* Compact HODL Challenge Simulator */}
             {simulationsSubTab === "hodl" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
-                  <h3 className="text-xl font-bold text-white">Bitcoin HODL Journey Simulator</h3>
-                  <p className="text-zinc-400">Experience real historical periods and discover the power of diamond hands</p>
+                  <h3 className="text-xl font-bold text-white">HODL Challenge Simulator</h3>
+                  <p className="text-zinc-400">Pick a scenario, adjust your investment, see instant results</p>
                 </div>
 
-                {/* Historical Scenario Selection */}
+                {/* Single Card with Split Layout */}
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
-                    <h4 className="text-white font-semibold mb-4">Choose Your HODL Journey</h4>
-                    <div className="grid md:grid-cols-3 gap-4">
-                      {[
-                        {
-                          id: 'covid',
-                          title: 'COVID Crash Survivor',
-                          period: 'Mar 2020 - Nov 2021',
-                          startPrice: 3800,
-                          endPrice: 67000,
-                          description: 'Bought during the March 2020 panic crash',
-                          stressLevel: 'Extreme',
-                          color: 'red'
-                        },
-                        {
-                          id: 'bear',
-                          title: 'Bear Market Champion',
-                          period: 'Jan 2018 - Apr 2021',
-                          startPrice: 6500,
-                          endPrice: 63000,
-                          description: 'Endured the longest crypto winter',
-                          stressLevel: 'High',
-                          color: 'purple'
-                        },
-                        {
-                          id: 'early',
-                          title: 'Early Adopter',
-                          period: 'Jan 2017 - Dec 2024',
-                          startPrice: 1000,
-                          endPrice: 95000,
-                          description: 'Got in before the mainstream',
-                          stressLevel: 'Medium',
-                          color: 'green'
-                        }
-                      ].map((scenario) => (
-                        <button
-                          key={scenario.id}
-                          onClick={() => setHodlInputs({
-                            ...hodlInputs,
-                            startPrice: scenario.startPrice,
-                            endPrice: scenario.endPrice,
-                            scenario: scenario.id,
-                            title: scenario.title,
-                            period: scenario.period,
-                            description: scenario.description,
-                            years: scenario.id === 'covid' ? 1.7 : scenario.id === 'bear' ? 3.3 : 8
-                          })}
-                          className={`p-4 rounded-lg border-2 transition-all text-left ${
-                            hodlInputs.scenario === scenario.id
-                              ? `border-${scenario.color}-500 bg-${scenario.color}-600/10`
-                              : 'border-zinc-700 bg-zinc-800 hover:border-zinc-600'
-                          }`}
-                        >
-                          <div className="font-semibold text-white">{scenario.title}</div>
-                          <div className="text-sm text-zinc-400 mb-2">{scenario.period}</div>
-                          <div className="text-xs text-zinc-500">{scenario.description}</div>
-                          <div className="flex justify-between items-center mt-2">
-                            <span className="text-green-400 font-mono text-sm">
-                              +{((scenario.endPrice / scenario.startPrice - 1) * 100).toFixed(0)}%
-                            </span>
-                            <span className={`text-${scenario.color}-400 text-xs`}>
-                              {scenario.stressLevel} Stress
-                            </span>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Investment Configuration */}
-                <Card className="bg-zinc-900 border-zinc-800">
-                  <CardContent className="p-6">
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-4">
-                        <h4 className="text-white font-semibold">Your Investment</h4>
-                        
-                        <div>
-                          <label className="text-zinc-300 text-sm block mb-2">Investment Amount ($)</label>
-                          <select
-                            value={hodlInputs.initialAmount}
-                            onChange={(e) => setHodlInputs(prev => ({...prev, initialAmount: Number(e.target.value)}))}
-                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
-                          >
-                            <option value={1000}>$1,000 - First Timer</option>
-                            <option value={5000}>$5,000 - Getting Serious</option>
-                            <option value={10000}>$10,000 - Strong Conviction</option>
-                            <option value={25000}>$25,000 - Major Position</option>
-                            <option value={50000}>$50,000 - All In</option>
-                            <option value={100000}>$100,000 - Whale Mode</option>
-                          </select>
-                        </div>
-
-                        <button
-                          onClick={calculateHodlStrategy}
-                          className="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-lg font-medium transition-colors"
-                        >
-                          Start HODL Journey
-                        </button>
+                    {/* Top Section: Scenario Selection */}
+                    <div className="space-y-4">
+                      <h4 className="text-white font-semibold">Choose Your HODL Journey</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        {[
+                          {
+                            id: 'covid',
+                            title: 'COVID Survivor',
+                            period: '2020-2021',
+                            startPrice: 3800,
+                            endPrice: 67000,
+                            gain: 1663,
+                            stress: '🔥 Extreme',
+                            color: 'red'
+                          },
+                          {
+                            id: 'bear',
+                            title: 'Bear Champion',
+                            period: '2018-2021',
+                            startPrice: 6500,
+                            endPrice: 63000,
+                            gain: 869,
+                            stress: '⚡ High',
+                            color: 'purple'
+                          },
+                          {
+                            id: 'early',
+                            title: 'Early Adopter',
+                            period: '2017-2024',
+                            startPrice: 1000,
+                            endPrice: 95000,
+                            gain: 9400,
+                            stress: '💎 Diamond',
+                            color: 'green'
+                          }
+                        ].map((scenario) => {
+                          const isSelected = hodlInputs.scenario === scenario.id;
+                          return (
+                            <button
+                              key={scenario.id}
+                              onMouseEnter={() => {
+                                setHodlInputs({
+                                  ...hodlInputs,
+                                  startPrice: scenario.startPrice,
+                                  endPrice: scenario.endPrice,
+                                  scenario: scenario.id,
+                                  title: scenario.title,
+                                  period: scenario.period,
+                                  years: scenario.id === 'covid' ? 1.7 : scenario.id === 'bear' ? 3.3 : 8
+                                });
+                                // Auto-calculate on hover
+                                setTimeout(() => calculateHodlStrategy(), 50);
+                              }}
+                              onClick={() => {
+                                setHodlInputs({
+                                  ...hodlInputs,
+                                  startPrice: scenario.startPrice,
+                                  endPrice: scenario.endPrice,
+                                  scenario: scenario.id,
+                                  title: scenario.title,
+                                  period: scenario.period,
+                                  years: scenario.id === 'covid' ? 1.7 : scenario.id === 'bear' ? 3.3 : 8
+                                });
+                                calculateHodlStrategy();
+                              }}
+                              className={`p-4 rounded-lg border-2 transition-all text-left ${
+                                isSelected
+                                  ? `border-${scenario.color}-500 bg-${scenario.color}-600/10`
+                                  : 'border-zinc-700 bg-zinc-800 hover:border-zinc-600 hover:bg-zinc-750'
+                              }`}
+                            >
+                              <div className="font-semibold text-white mb-1">{scenario.title}</div>
+                              <div className="text-xs text-zinc-400 mb-2">{scenario.period}</div>
+                              <div className="flex justify-between items-center">
+                                <span className="text-green-400 font-mono text-sm font-bold">
+                                  +{scenario.gain}%
+                                </span>
+                                <span className="text-xs">{scenario.stress}</span>
+                              </div>
+                            </button>
+                          );
+                        })}
                       </div>
-                      
-                      {hodlInputs.scenario && (
-                        <div className="space-y-4">
-                          <h4 className="text-white font-semibold">Journey Preview</h4>
-                          
-                          <div className="bg-zinc-800 rounded-lg p-4 space-y-3">
-                            <div className="text-orange-400 font-semibold">{hodlInputs.title}</div>
-                            <div className="text-zinc-300 text-sm">{hodlInputs.description}</div>
-                            <div className="text-zinc-400 text-sm">{hodlInputs.period}</div>
-                            
-                            <div className="flex justify-between">
-                              <div>
-                                <div className="text-zinc-400 text-xs">Entry Price</div>
-                                <div className="text-white font-mono">${hodlInputs.startPrice.toLocaleString()}</div>
-                              </div>
-                              <div>
-                                <div className="text-zinc-400 text-xs">Peak Price</div>
-                                <div className="text-green-400 font-mono">${hodlInputs.endPrice.toLocaleString()}</div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
                     </div>
-                  </CardContent>
-                </Card>
 
-                {/* HODL Journey Results */}
-                {hodlResults && (
-                  <Card className="bg-zinc-900 border-zinc-800">
-                    <CardContent className="p-6">
-                      <h4 className="text-white font-semibold mb-4">Your HODL Journey Results</h4>
-                      
-                      <div className="grid md:grid-cols-2 gap-6">
-                        {/* Financial Results */}
-                        <div className="space-y-4">
-                          <h5 className="text-orange-400 font-medium">Financial Outcome</h5>
-                          
-                          <div className="grid gap-3">
-                            <div className="bg-zinc-800 rounded-lg p-4 flex justify-between">
-                              <div>
-                                <div className="text-zinc-400 text-sm">Initial Investment</div>
-                                <div className="text-white font-mono text-lg">
-                                  ${hodlResults.initialInvestment.toLocaleString()}
-                                </div>
-                              </div>
-                              <div className="text-right">
-                                <div className="text-zinc-400 text-sm">Bitcoin Acquired</div>
-                                <div className="text-orange-400 font-mono">
-                                  ₿{hodlResults.bitcoinAmount.toFixed(4)}
-                                </div>
-                              </div>
+                    {/* Investment Amount Slider */}
+                    <div className="space-y-3 pt-4 border-t border-zinc-700">
+                      <div className="flex justify-between items-center">
+                        <label className="text-white font-medium">Investment Amount</label>
+                        <span className="text-orange-400 font-mono text-lg">
+                          ${hodlInputs.initialAmount.toLocaleString()}
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="1000"
+                        max="100000"
+                        step="1000"
+                        value={hodlInputs.initialAmount}
+                        onChange={(e) => {
+                          setHodlInputs(prev => ({...prev, initialAmount: Number(e.target.value)}));
+                          // Auto-calculate on change
+                          setTimeout(() => calculateHodlStrategy(), 50);
+                        }}
+                        className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer slider"
+                      />
+                      <div className="flex justify-between text-xs text-zinc-400">
+                        <span>$1K</span>
+                        <span>$25K</span>
+                        <span>$50K</span>
+                        <span>$100K</span>
+                      </div>
+                    </div>
+
+                    {/* Real-time Results Display */}
+                    {hodlResults && hodlInputs.scenario && (
+                      <div className="space-y-4 pt-4 border-t border-zinc-700">
+                        <h4 className="text-white font-semibold">Your Results</h4>
+                        
+                        {/* Main Results Row */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div className="bg-zinc-800 rounded-lg p-4 text-center">
+                            <div className="text-zinc-400 text-sm">Portfolio Value</div>
+                            <div className="text-green-400 font-mono text-xl font-bold">
+                              ${hodlResults.currentValue.toLocaleString()}
                             </div>
-                            
-                            <div className="bg-gradient-to-r from-green-600/20 to-green-500/20 border border-green-600/30 rounded-lg p-4">
-                              <div className="text-green-300 text-sm">Final Portfolio Value</div>
-                              <div className="text-green-400 font-mono text-2xl">
-                                ${hodlResults.currentValue.toLocaleString()}
-                              </div>
-                              <div className="text-green-300 text-sm mt-1">
-                                Profit: +${hodlResults.totalGain.toLocaleString()} ({hodlResults.percentageReturn.toFixed(1)}%)
-                              </div>
-                            </div>
-                            
-                            <div className="bg-zinc-800 rounded-lg p-4">
-                              <div className="text-zinc-400 text-sm">Annualized Return</div>
-                              <div className="text-orange-400 font-mono text-lg">
-                                {hodlResults.annualReturn.toFixed(1)}% per year
-                              </div>
+                            <div className="text-green-300 text-xs">
+                              +${hodlResults.totalGain.toLocaleString()} profit
                             </div>
                           </div>
-                        </div>
-
-                        {/* Comparison & Benefits */}
-                        <div className="space-y-4">
-                          <h5 className="text-purple-400 font-medium">vs Traditional Investments</h5>
                           
-                          <div className="space-y-3">
-                            {[
-                              { name: 'S&P 500', return: 10, amount: hodlResults.initialInvestment * Math.pow(1.10, hodlResults.years || 4) },
-                              { name: 'Real Estate', return: 6, amount: hodlResults.initialInvestment * Math.pow(1.06, hodlResults.years || 4) },
-                              { name: 'Gold', return: 3, amount: hodlResults.initialInvestment * Math.pow(1.03, hodlResults.years || 4) },
-                              { name: 'Savings Account', return: 1, amount: hodlResults.initialInvestment * Math.pow(1.01, hodlResults.years || 4) }
-                            ].map((investment) => (
-                              <div key={investment.name} className="bg-zinc-800 rounded-lg p-3 flex justify-between items-center">
-                                <div>
-                                  <div className="text-white text-sm font-medium">{investment.name}</div>
-                                  <div className="text-zinc-400 text-xs">{investment.return}% annual return</div>
-                                </div>
-                                <div className="text-right">
-                                  <div className="text-zinc-300 font-mono">
-                                    ${investment.amount.toLocaleString()}
-                                  </div>
-                                  <div className="text-red-400 text-xs">
-                                    -{((hodlResults.currentValue - investment.amount) / 1000).toFixed(0)}k less
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
+                          <div className="bg-zinc-800 rounded-lg p-4 text-center">
+                            <div className="text-zinc-400 text-sm">Total Return</div>
+                            <div className="text-orange-400 font-mono text-xl font-bold">
+                              +{hodlResults.percentageReturn.toFixed(0)}%
+                            </div>
+                            <div className="text-orange-300 text-xs">
+                              {hodlResults.annualReturn.toFixed(1)}% per year
+                            </div>
                           </div>
                           
-                          <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-4">
-                            <div className="text-orange-300 font-medium text-sm mb-2">HODL Advantage</div>
-                            <div className="text-orange-400 font-mono text-lg">
+                          <div className="bg-zinc-800 rounded-lg p-4 text-center">
+                            <div className="text-zinc-400 text-sm">vs S&P 500</div>
+                            <div className="text-purple-400 font-mono text-xl font-bold">
                               +${(hodlResults.currentValue - hodlResults.initialInvestment * Math.pow(1.10, hodlResults.years || 4)).toLocaleString()}
                             </div>
-                            <div className="text-orange-200 text-xs">vs S&P 500 after {hodlResults.years || 4} years</div>
+                            <div className="text-purple-300 text-xs">HODL advantage</div>
                           </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
 
-                {/* Educational Insights */}
-                {hodlResults && (
-                  <Card className="bg-zinc-900 border-zinc-800">
-                    <CardContent className="p-6">
-                      <h4 className="text-white font-semibold mb-4">Why HODLing Works</h4>
-                      
-                      <div className="grid md:grid-cols-3 gap-4">
-                        <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4">
-                          <div className="text-blue-300 font-medium mb-2">Time in Market</div>
-                          <div className="text-zinc-300 text-sm">
-                            Bitcoin's long-term trend is upward despite short-term volatility. 
-                            HODLers benefit from compound growth over multiple market cycles.
-                          </div>
-                        </div>
-                        
-                        <div className="bg-green-600/10 border border-green-600/20 rounded-lg p-4">
-                          <div className="text-green-300 font-medium mb-2">Avoiding Mistakes</div>
-                          <div className="text-zinc-300 text-sm">
-                            Studies show most traders lose money due to emotional decisions. 
-                            HODLers avoid the common pitfalls of panic selling and FOMO buying.
-                          </div>
-                        </div>
-                        
-                        <div className="bg-purple-600/10 border border-purple-600/20 rounded-lg p-4">
-                          <div className="text-purple-300 font-medium mb-2">Network Growth</div>
-                          <div className="text-zinc-300 text-sm">
-                            As Bitcoin adoption increases and supply becomes scarcer, 
-                            long-term holders benefit from the growing network value.
-                          </div>
+                        {/* Quick Comparison Bars */}
+                        <div className="space-y-2">
+                          <div className="text-zinc-300 text-sm font-medium">vs Traditional Investments</div>
+                          {[
+                            { name: 'Bitcoin HODL', amount: hodlResults.currentValue, color: 'orange' },
+                            { name: 'S&P 500', amount: hodlResults.initialInvestment * Math.pow(1.10, hodlResults.years || 4), color: 'blue' },
+                            { name: 'Real Estate', amount: hodlResults.initialInvestment * Math.pow(1.06, hodlResults.years || 4), color: 'green' },
+                            { name: 'Gold', amount: hodlResults.initialInvestment * Math.pow(1.03, hodlResults.years || 4), color: 'yellow' }
+                          ].map((investment, index) => {
+                            const maxAmount = Math.max(hodlResults.currentValue, hodlResults.initialInvestment * Math.pow(1.10, hodlResults.years || 4));
+                            const widthPercent = (investment.amount / maxAmount) * 100;
+                            return (
+                              <div key={investment.name} className="flex items-center gap-3">
+                                <div className="w-20 text-xs text-zinc-400 text-right">{investment.name}</div>
+                                <div className="flex-1 bg-zinc-800 rounded-full h-4 relative">
+                                  <div 
+                                    className={`bg-${investment.color}-500 h-4 rounded-full transition-all duration-500 flex items-center justify-end pr-2`}
+                                    style={{ width: `${widthPercent}%` }}
+                                  >
+                                    <span className="text-xs font-mono text-white">
+                                      ${(investment.amount / 1000).toFixed(0)}k
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                )}
+                    )}
+                  </CardContent>
+                </Card>
               </div>
             )}
 
