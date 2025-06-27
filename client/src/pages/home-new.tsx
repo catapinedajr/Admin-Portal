@@ -2187,22 +2187,23 @@ export default function Home() {
 
         {/* Finance Section */}
         {activeSection === "finance" && (
-          <div className="space-y-6">
-            {/* Interactive Inflation Calculator */}
-            <Card className="bg-gradient-to-br from-red-900/20 to-orange-900/20 border-red-800">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center gap-3">
-                  <TrendingDown className="w-6 h-6 text-red-400" />
-                  Interactive Inflation Impact Calculator
+          <div className="space-y-8">
+            {/* Inflation Impact Calculator */}
+            <Card className="bg-zinc-900 border-zinc-800">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-white flex items-center gap-3 text-xl">
+                  <TrendingDown className="w-5 h-5 text-orange-400" />
+                  Inflation Impact Calculator
                 </CardTitle>
+                <p className="text-zinc-400 text-sm">See how inflation erodes your purchasing power over time</p>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-6 lg:grid-cols-3">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-zinc-300">Your Savings Amount</label>
+                      <label className="text-sm font-medium text-zinc-300">Savings Amount</label>
                       <Select value={inflationAmount} onValueChange={setInflationAmount}>
-                        <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                        <SelectTrigger className="bg-zinc-800 border-zinc-700 h-12">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -2218,7 +2219,7 @@ export default function Home() {
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-zinc-300">Time Period</label>
                       <Select value={inflationYears} onValueChange={setInflationYears}>
-                        <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                        <SelectTrigger className="bg-zinc-800 border-zinc-700 h-12">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -2230,49 +2231,56 @@ export default function Home() {
                       </Select>
                     </div>
                   </div>
-                  <div className="space-y-4">
-                    <div className="p-4 bg-red-900/30 rounded-lg">
-                      <h4 className="font-semibold text-red-300 mb-2">💸 Purchasing Power Lost</h4>
-                      <div className="text-2xl font-bold text-red-400">
+                  
+                  <div className="p-6 bg-red-950/50 rounded-xl border border-red-800/50">
+                    <div className="text-center">
+                      <div className="text-red-400 text-sm font-medium mb-2">Fiat Currency Loss</div>
+                      <div className="text-3xl font-bold text-red-300 mb-1">
                         ${Math.round(parseInt(inflationAmount) * (1 - Math.pow(0.97, parseInt(inflationYears)))).toLocaleString()}
                       </div>
-                      <p className="text-xs text-zinc-400 mt-1">Lost to 3% annual inflation</p>
+                      <div className="text-red-400/70 text-xs">Lost to 3% inflation</div>
                     </div>
-                    <div className="p-4 bg-green-900/30 rounded-lg">
-                      <h4 className="font-semibold text-green-300 mb-2">₿ With Bitcoin Protection</h4>
-                      <div className="text-2xl font-bold text-green-400">
+                  </div>
+                  
+                  <div className="p-6 bg-green-950/50 rounded-xl border border-green-800/50">
+                    <div className="text-center">
+                      <div className="text-green-400 text-sm font-medium mb-2">Bitcoin Protection</div>
+                      <div className="text-3xl font-bold text-green-300 mb-1">
                         ${Math.round(parseInt(inflationAmount) * Math.pow(1.15, parseInt(inflationYears))).toLocaleString()}
                       </div>
-                      <p className="text-xs text-zinc-400 mt-1">Assuming 15% annual appreciation</p>
+                      <div className="text-green-400/70 text-xs">15% annual appreciation</div>
                     </div>
                   </div>
                 </div>
-                <div className="text-center p-4 bg-orange-900/20 rounded-lg">
-                  <p className="text-orange-300 font-medium">
-                    💡 The difference: <span className="text-orange-400 text-xl font-bold">
+                
+                <div className="text-center p-4 bg-orange-950/30 rounded-xl border border-orange-800/30">
+                  <div className="text-orange-300 text-lg font-semibold">
+                    Net Advantage: <span className="text-orange-400 text-2xl font-bold">
                       ${(Math.round(parseInt(inflationAmount) * Math.pow(1.15, parseInt(inflationYears))) + 
                         Math.round(parseInt(inflationAmount) * (1 - Math.pow(0.97, parseInt(inflationYears))))).toLocaleString()}
-                    </span> advantage with Bitcoin
-                  </p>
+                    </span>
+                  </div>
+                  <div className="text-orange-400/70 text-sm mt-1">Total difference with Bitcoin over {inflationYears} years</div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Interactive Banking Fees Calculator */}
-            <Card className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 border-blue-800">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center gap-3">
-                  <Calculator className="w-6 h-6 text-blue-400" />
-                  Banking Fees vs Bitcoin Cost Comparison
+            {/* Banking Fees Calculator */}
+            <Card className="bg-zinc-900 border-zinc-800">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-white flex items-center gap-3 text-xl">
+                  <Calculator className="w-5 h-5 text-orange-400" />
+                  Transfer Cost Comparison
                 </CardTitle>
+                <p className="text-zinc-400 text-sm">Compare the cost of sending money internationally</p>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-6 lg:grid-cols-3">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-zinc-300">Monthly International Transfers</label>
+                      <label className="text-sm font-medium text-zinc-300">Monthly Transfers</label>
                       <Select value={transferCount} onValueChange={setTransferCount}>
-                        <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                        <SelectTrigger className="bg-zinc-800 border-zinc-700 h-12">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -2284,9 +2292,9 @@ export default function Home() {
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-zinc-300">Average Transfer Amount</label>
+                      <label className="text-sm font-medium text-zinc-300">Average Amount</label>
                       <Select value={transferAmount} onValueChange={setTransferAmount}>
-                        <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                        <SelectTrigger className="bg-zinc-800 border-zinc-700 h-12">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -2298,82 +2306,81 @@ export default function Home() {
                       </Select>
                     </div>
                   </div>
-                  <div className="space-y-4">
-                    <div className="p-4 bg-red-900/30 rounded-lg">
-                      <h4 className="font-semibold text-red-300 mb-2">🏦 Traditional Banking Costs</h4>
-                      <div className="text-2xl font-bold text-red-400">
-                        ${Math.round(parseInt(transferCount) * parseInt(transferAmount) * 0.08 * 12).toLocaleString()}/year
+                  
+                  <div className="p-6 bg-red-950/50 rounded-xl border border-red-800/50">
+                    <div className="text-center">
+                      <div className="text-red-400 text-sm font-medium mb-2">Traditional Banking</div>
+                      <div className="text-3xl font-bold text-red-300 mb-1">
+                        ${Math.round(parseInt(transferCount) * parseInt(transferAmount) * 0.08 * 12).toLocaleString()}
                       </div>
-                      <p className="text-xs text-zinc-400 mt-1">8% average fee + delays</p>
+                      <div className="text-red-400/70 text-xs">Annual fees (8% average)</div>
                     </div>
-                    <div className="p-4 bg-green-900/30 rounded-lg">
-                      <h4 className="font-semibold text-green-300 mb-2">₿ Bitcoin Costs</h4>
-                      <div className="text-2xl font-bold text-green-400">
-                        ${Math.round(parseInt(transferCount) * 0.5 * 12).toLocaleString()}/year
+                  </div>
+                  
+                  <div className="p-6 bg-green-950/50 rounded-xl border border-green-800/50">
+                    <div className="text-center">
+                      <div className="text-green-400 text-sm font-medium mb-2">Bitcoin Network</div>
+                      <div className="text-3xl font-bold text-green-300 mb-1">
+                        ${Math.round(parseInt(transferCount) * 0.5 * 12).toLocaleString()}
                       </div>
-                      <p className="text-xs text-zinc-400 mt-1">$0.50 average fee</p>
+                      <div className="text-green-400/70 text-xs">Annual fees ($0.50 avg)</div>
                     </div>
                   </div>
                 </div>
-                <div className="text-center p-4 bg-orange-900/20 rounded-lg">
-                  <p className="text-orange-300 font-medium">
-                    💰 Annual Savings: <span className="text-orange-400 text-xl font-bold">
+                
+                <div className="text-center p-4 bg-orange-950/30 rounded-xl border border-orange-800/30">
+                  <div className="text-orange-300 text-lg font-semibold">
+                    Annual Savings: <span className="text-orange-400 text-2xl font-bold">
                       ${(Math.round(parseInt(transferCount) * parseInt(transferAmount) * 0.08 * 12) - 
                         Math.round(parseInt(transferCount) * 0.5 * 12)).toLocaleString()}
-                    </span> with Bitcoin
-                  </p>
+                    </span>
+                  </div>
+                  <div className="text-orange-400/70 text-sm mt-1">Money saved by using Bitcoin instead of banks</div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Interactive Problem/Solution Cards */}
-            <div className="grid gap-6 md:grid-cols-2">
+            {/* Problem/Solution Comparison Grid */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               {[
                 {
-                  problem: "💸 Inflation Destroys Savings",
-                  solution: "📈 Fixed 21M Supply",
-                  problemDesc: "Fiat loses 96% of value since 1913",
-                  solutionDesc: "Math-enforced scarcity protects wealth",
-                  bgFrom: "from-red-900/20",
-                  bgTo: "to-red-800/20"
+                  icon: "💸",
+                  problem: "Inflation Destroys Savings",
+                  solution: "Fixed 21M Supply",
+                  desc: "Math-enforced scarcity",
+                  color: "red"
                 },
                 {
-                  problem: "🏦 Banks Control Your Money",
-                  solution: "🔐 You Control Your Keys",
-                  problemDesc: "Accounts frozen, fees charged arbitrarily",
-                  solutionDesc: "True ownership with cryptographic proof",
-                  bgFrom: "from-blue-900/20",
-                  bgTo: "to-blue-800/20"
+                  icon: "🏦",
+                  problem: "Banks Control Money",
+                  solution: "You Control Keys",
+                  desc: "True ownership",
+                  color: "blue"
                 },
                 {
-                  problem: "🚫 2B People Excluded",
-                  solution: "🌐 Internet = Bank Account",
-                  problemDesc: "Documentation, minimums, approval required",
-                  solutionDesc: "Anyone can participate globally",
-                  bgFrom: "from-purple-900/20",
-                  bgTo: "to-purple-800/20"
+                  icon: "🚫",
+                  problem: "2B People Excluded",
+                  solution: "Internet = Access",
+                  desc: "Global participation",
+                  color: "purple"
                 },
                 {
-                  problem: "⏰ 3-5 Day Settlements",
-                  solution: "⚡ 10-60 Minute Finality",
-                  problemDesc: "Money trapped in banking hours",
-                  solutionDesc: "24/7 global settlement network",
-                  bgFrom: "from-yellow-900/20",
-                  bgTo: "to-yellow-800/20"
+                  icon: "⏰",
+                  problem: "3-5 Day Settlements",
+                  solution: "10-60 Minute Finality",
+                  desc: "24/7 settlement",
+                  color: "yellow"
                 }
               ].map((item, index) => (
-                <Card key={index} className={`bg-gradient-to-br ${item.bgFrom} ${item.bgTo} border-zinc-700 transform hover:scale-105 transition-all duration-300 cursor-pointer`}>
+                <Card key={index} className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-all duration-300 hover:transform hover:scale-105">
                   <CardContent className="p-6">
-                    <div className="space-y-4">
-                      <div className="text-center">
-                        <h3 className="font-bold text-red-300 text-lg mb-2">{item.problem}</h3>
-                        <p className="text-sm text-zinc-300">{item.problemDesc}</p>
-                      </div>
-                      <div className="border-t border-zinc-600 pt-4">
-                        <div className="text-center">
-                          <h3 className="font-bold text-green-300 text-lg mb-2">{item.solution}</h3>
-                          <p className="text-sm text-zinc-300">{item.solutionDesc}</p>
-                        </div>
+                    <div className="text-center space-y-4">
+                      <div className="text-3xl">{item.icon}</div>
+                      <div className="space-y-2">
+                        <div className="text-red-300 font-semibold text-sm">{item.problem}</div>
+                        <div className="w-full h-px bg-zinc-700"></div>
+                        <div className="text-green-300 font-semibold text-sm">{item.solution}</div>
+                        <div className="text-zinc-400 text-xs">{item.desc}</div>
                       </div>
                     </div>
                   </CardContent>
@@ -2381,84 +2388,83 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Interactive Speed Comparison */}
-            <Card className="bg-gradient-to-br from-zinc-900 to-zinc-800 border-zinc-700">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center gap-3">
-                  <Clock className="w-6 h-6 text-orange-400" />
+            {/* Speed Race */}
+            <Card className="bg-zinc-900 border-zinc-800">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-white flex items-center gap-3 text-xl">
+                  <Clock className="w-5 h-5 text-orange-400" />
                   Settlement Speed Race
                 </CardTitle>
+                <p className="text-zinc-400 text-sm">See how fast Bitcoin settles compared to traditional banking</p>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <Button 
-                    onClick={() => setSpeedRaceActive(!speedRaceActive)}
-                    className="w-full bg-orange-600 hover:bg-orange-700"
-                  >
-                    {speedRaceActive ? "Reset Race" : "Start Settlement Race!"}
-                  </Button>
-                  
-                  {speedRaceActive && (
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <div className="flex justify-between">
-                          <span className="text-zinc-300">Traditional Banking</span>
-                          <span className="text-red-400">3-5 days</span>
-                        </div>
-                        <div className="w-full bg-zinc-700 rounded-full h-3">
-                          <div 
-                            className="bg-red-500 h-3 rounded-full transition-all duration-[5000ms] ease-linear"
-                            style={{ width: speedRaceActive ? "100%" : "0%" }}
-                          ></div>
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <div className="flex justify-between">
-                          <span className="text-zinc-300">Bitcoin Settlement</span>
-                          <span className="text-green-400">10-60 minutes</span>
-                        </div>
-                        <div className="w-full bg-zinc-700 rounded-full h-3">
-                          <div 
-                            className="bg-green-500 h-3 rounded-full transition-all duration-1000 ease-out"
-                            style={{ width: speedRaceActive ? "100%" : "0%" }}
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <Button 
+                  onClick={() => setSpeedRaceActive(!speedRaceActive)}
+                  className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg font-medium"
+                >
+                  {speedRaceActive ? "Reset Race" : "Start Settlement Race"}
+                </Button>
                 
                 {speedRaceActive && (
-                  <div className="text-center p-4 bg-green-900/20 rounded-lg animate-pulse">
-                    <p className="text-green-300 font-bold">🏆 Bitcoin wins by 72x-120x faster!</p>
+                  <div className="space-y-6">
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-zinc-300 font-medium">Traditional Banking</span>
+                        <span className="text-red-400 text-sm">3-5 business days</span>
+                      </div>
+                      <div className="w-full bg-zinc-800 rounded-full h-4">
+                        <div 
+                          className="bg-red-500 h-4 rounded-full transition-all duration-[5000ms] ease-linear"
+                          style={{ width: speedRaceActive ? "100%" : "0%" }}
+                        ></div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-zinc-300 font-medium">Bitcoin Network</span>
+                        <span className="text-green-400 text-sm">10-60 minutes</span>
+                      </div>
+                      <div className="w-full bg-zinc-800 rounded-full h-4">
+                        <div 
+                          className="bg-green-500 h-4 rounded-full transition-all duration-1000 ease-out"
+                          style={{ width: speedRaceActive ? "100%" : "0%" }}
+                        ></div>
+                      </div>
+                    </div>
+                    
+                    <div className="text-center p-4 bg-green-950/30 rounded-xl border border-green-800/30">
+                      <div className="text-green-300 font-bold text-lg">Bitcoin wins by 72x-120x faster!</div>
+                    </div>
                   </div>
                 )}
               </CardContent>
             </Card>
 
             {/* Call to Action */}
-            <Card className="bg-gradient-to-br from-orange-900/30 to-yellow-900/30 border-orange-600">
+            <Card className="bg-gradient-to-br from-orange-950/50 to-amber-950/50 border-orange-800/50">
               <CardContent className="p-8 text-center">
-                <h3 className="text-2xl font-bold text-white mb-4">Ready to escape the broken system?</h3>
-                <p className="text-zinc-300 mb-6">
-                  These calculators show the real cost of traditional finance. 
-                  Bitcoin offers a mathematically superior alternative.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button 
-                    onClick={() => setActiveSection("learn")}
-                    className="bg-orange-600 hover:bg-orange-700 px-8 py-3"
-                  >
-                    Start Learning Bitcoin
-                  </Button>
-                  <Button 
-                    onClick={() => setActiveSection("simulations")}
-                    variant="outline"
-                    className="border-orange-600 text-orange-400 hover:bg-orange-600/20 px-8 py-3"
-                  >
-                    Try Our Simulators
-                  </Button>
+                <div className="max-w-2xl mx-auto space-y-6">
+                  <h3 className="text-3xl font-bold text-white">Ready to learn more?</h3>
+                  <p className="text-zinc-300 text-lg">
+                    These calculators demonstrate the real advantages of Bitcoin over traditional finance. 
+                    Dive deeper into how Bitcoin works and practice with our interactive tools.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button 
+                      onClick={() => setActiveSection("learn")}
+                      className="bg-orange-600 hover:bg-orange-700 px-8 py-4 text-lg font-medium h-auto"
+                    >
+                      Start Learning Bitcoin
+                    </Button>
+                    <Button 
+                      onClick={() => setActiveSection("simulations")}
+                      variant="outline"
+                      className="border-orange-600 text-orange-400 hover:bg-orange-600/20 px-8 py-4 text-lg font-medium h-auto"
+                    >
+                      Try Interactive Simulators
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
