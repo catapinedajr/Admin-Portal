@@ -2758,33 +2758,36 @@ export default function Home() {
                         {[
                           {
                             id: 'covid',
-                            title: 'COVID Survivor',
-                            period: '2020-2021',
+                            title: 'COVID Crash',
+                            period: 'Mar 2020 - Jan 2025',
                             startPrice: 3800,
-                            endPrice: 67000,
-                            gain: 1663,
+                            endPrice: 95000, // Current Bitcoin price Jan 2025
+                            gain: 2400,
                             stress: '🔥 Extreme',
-                            color: 'red'
+                            color: 'red',
+                            years: 4.8
                           },
                           {
                             id: 'bear',
-                            title: 'Bear Champion',
-                            period: '2018-2021',
+                            title: 'Bear Market',
+                            period: 'Jan 2018 - Jan 2025',
                             startPrice: 6500,
-                            endPrice: 63000,
-                            gain: 869,
+                            endPrice: 95000,
+                            gain: 1362,
                             stress: '⚡ High',
-                            color: 'purple'
+                            color: 'purple',
+                            years: 7
                           },
                           {
                             id: 'early',
                             title: 'Early Adopter',
-                            period: '2017-2024',
+                            period: 'Jan 2017 - Jan 2025',
                             startPrice: 1000,
                             endPrice: 95000,
                             gain: 9400,
                             stress: '💎 Diamond',
-                            color: 'green'
+                            color: 'green',
+                            years: 8
                           }
                         ].map((scenario) => {
                           const isSelected = hodlInputs.scenario === scenario.id;
@@ -2799,7 +2802,7 @@ export default function Home() {
                                   scenario: scenario.id,
                                   title: scenario.title,
                                   period: scenario.period,
-                                  years: scenario.id === 'covid' ? 1.7 : scenario.id === 'bear' ? 3.3 : 8
+                                  years: scenario.years
                                 });
                                 // Auto-calculate on hover
                                 setTimeout(() => calculateHodlStrategy(), 50);
@@ -2812,7 +2815,7 @@ export default function Home() {
                                   scenario: scenario.id,
                                   title: scenario.title,
                                   period: scenario.period,
-                                  years: scenario.id === 'covid' ? 1.7 : scenario.id === 'bear' ? 3.3 : 8
+                                  years: scenario.years
                                 });
                                 calculateHodlStrategy();
                               }}
@@ -2898,11 +2901,11 @@ export default function Home() {
                               +${(() => {
                                 let spReturn;
                                 if (hodlInputs.scenario === 'covid') {
-                                  spReturn = 1.45; // +45% Mar 2020 - Nov 2021
+                                  spReturn = 1.85; // +85% Mar 2020 - Jan 2025
                                 } else if (hodlInputs.scenario === 'bear') {
-                                  spReturn = 1.35; // +35% Jan 2018 - Apr 2021
+                                  spReturn = 2.1; // +110% Jan 2018 - Jan 2025
                                 } else if (hodlInputs.scenario === 'early') {
-                                  spReturn = 2.8; // +180% Jan 2017 - Dec 2024
+                                  spReturn = 2.8; // +180% Jan 2017 - Jan 2025
                                 } else {
                                   spReturn = Math.pow(1.10, hodlResults.years || 4);
                                 }
@@ -2921,17 +2924,20 @@ export default function Home() {
                             let spReturn, realEstateReturn, goldReturn;
                             
                             if (hodlInputs.scenario === 'covid') {
-                              spReturn = 1.45; // +45% Mar 2020 - Nov 2021
-                              realEstateReturn = 1.25; // +25%
-                              goldReturn = 0.95; // -5%
+                              // Mar 2020 - Jan 2025 (4.8 years)
+                              spReturn = 1.85; // S&P 500: +85% over 4.8 years
+                              realEstateReturn = 1.65; // Real estate: +65%
+                              goldReturn = 1.20; // Gold: +20%
                             } else if (hodlInputs.scenario === 'bear') {
-                              spReturn = 1.35; // +35% Jan 2018 - Apr 2021
-                              realEstateReturn = 1.20; // +20%
-                              goldReturn = 1.15; // +15%
+                              // Jan 2018 - Jan 2025 (7 years)
+                              spReturn = 2.1; // S&P 500: +110% over 7 years
+                              realEstateReturn = 1.8; // Real estate: +80%
+                              goldReturn = 1.35; // Gold: +35%
                             } else if (hodlInputs.scenario === 'early') {
-                              spReturn = 2.8; // +180% Jan 2017 - Dec 2024
-                              realEstateReturn = 1.9; // +90%
-                              goldReturn = 1.4; // +40%
+                              // Jan 2017 - Jan 2025 (8 years)
+                              spReturn = 2.8; // S&P 500: +180% over 8 years
+                              realEstateReturn = 1.9; // Real estate: +90%
+                              goldReturn = 1.4; // Gold: +40%
                             } else {
                               spReturn = Math.pow(1.10, hodlResults.years || 4);
                               realEstateReturn = Math.pow(1.06, hodlResults.years || 4);
