@@ -379,29 +379,13 @@ export class MemStorage implements IStorage {
         title: "Understanding Bitcoin: Digital Money Revolution",
         content: `Bitcoin represents the first successful attempt at creating digital money that works without banks, governments, or any central authority controlling it.
 
+Unlike traditional money, Bitcoin exists purely as computer code. But this isn't just any digital money - it's programmable money with rules that cannot be changed arbitrarily. For thousands of years, every form of money required someone to be in charge, whether it was kings minting coins, banks issuing notes, or governments printing currency. Bitcoin breaks this pattern completely.
 
-What Makes Bitcoin Different?
+The revolution lies in Bitcoin's solution to the "double-spending problem" - how to prevent someone from copying digital money and spending it twice. Before Bitcoin, every attempt at creating digital money failed because they required a central authority to prevent double-spending. Banks, for example, keep databases that track who owns what, preventing you from spending the same dollar twice. But what happens when the bank fails, gets hacked, or decides to freeze your account?
 
-Unlike traditional money, Bitcoin exists purely as computer code. But this isn't just any digital money - it's programmable money with rules that cannot be changed arbitrarily.
+Bitcoin solves this through three fundamental properties that work together like a perfectly engineered system. First, it's completely decentralized with no single point of control or failure - thousands of computers worldwide work together to maintain the system. Second, it's mathematically scarce with only 21 million Bitcoin that will ever exist, making it more predictably scarce than gold or any government currency. Third, it's entirely permissionless, meaning anyone with an internet connection can use it without asking permission from any bank, government, or authority.
 
-
-The Core Innovation
-
-Bitcoin solved the "double-spending problem" - how to prevent someone from copying digital money and spending it twice. Previous attempts at digital money failed because they required a central authority to prevent double-spending.
-
-
-Key Properties
-
-Bitcoin has three fundamental properties:
-
-• Decentralized: No single point of control or failure
-
-• Scarce: Only 21 million will ever exist  
-
-• Permissionless: Anyone can use it without asking permission
-
-
-The Revolutionary Insight: Money can exist and function without requiring trust in any institution or government.`,
+The revolutionary insight that changes everything is profound yet simple: money can exist and function perfectly without requiring trust in any institution or government. For the first time in human history, individuals can store and transfer value globally without depending on fallible intermediaries.`,
         summary: "Bitcoin is programmable, decentralized digital money that operates without central control, solving the double-spending problem through cryptographic innovation.",
         estimatedReadTime: 6,
         dayIndex: 0
@@ -411,26 +395,13 @@ The Revolutionary Insight: Money can exist and function without requiring trust 
         title: "How Bitcoin Works: The Blockchain Explained",
         content: `The blockchain is Bitcoin's revolutionary innovation - a way to maintain a shared ledger without requiring trust in any central authority.
 
-## The Blockchain Concept
+Imagine a special notebook that records every Bitcoin transaction that has ever happened. Now imagine this notebook has magical properties: it's instantly copied to thousands of computers worldwide, every new page must be agreed upon by the majority before being added, and once something is written, it cannot be changed or removed. This is essentially what the Bitcoin blockchain does, but instead of magic, it uses mathematics and cryptography.
 
-Imagine a notebook that records every Bitcoin transaction. Now imagine this notebook is:
-- Copied to thousands of computers worldwide
-- Every new page (block) must be agreed upon by the majority
-- Once written, pages cannot be changed or removed
+When you send Bitcoin, something fascinating happens behind the scenes. Your wallet creates a transaction and broadcasts it to the entire network, like announcing to thousands of accountants simultaneously that you want to move money. Miners around the world collect these pending transactions and gather them into a new block, like filling up a new page in the ledger. Then comes the competitive part - miners race to solve a complex mathematical puzzle, with the winner earning the right to add their block to the blockchain and receive newly created Bitcoin as a reward.
 
-## How Transactions Work
+Once a miner wins this computational lottery, they broadcast their solution to the network. Thousands of other computers instantly verify that the solution is correct and the transactions are valid, then accept the new block and begin working on the next puzzle. This process repeats every 10 minutes on average, creating an unstoppable chain of verified transactions.
 
-1. **You send Bitcoin**: Your wallet creates a transaction and broadcasts it to the network
-2. **Miners collect transactions**: They gather pending transactions into a new block
-3. **Mining competition**: Miners compete to solve a mathematical puzzle
-4. **Winner adds block**: The first to solve it adds their block to the blockchain
-5. **Network validates**: Other computers verify the block is valid
-
-## Security Through Consensus
-
-The blockchain is secure because changing any transaction would require controlling more than half of all mining power - economically impossible at Bitcoin's scale.
-
-**Key Insight:** Trust is replaced by mathematical proof and economic incentives.`,
+The blockchain's security comes from a brilliant insight: changing any past transaction would require controlling more than half of all mining power worldwide, which is economically impossible at Bitcoin's massive scale. The energy cost alone would be tens of billions of dollars, making attacks prohibitively expensive. This is how trust gets replaced by mathematical proof and economic incentives, creating the most secure financial network ever built.`,
         summary: "The blockchain is a distributed ledger maintained by thousands of computers, where transactions are secured through cryptographic proof rather than trust.",
         estimatedReadTime: 7,
         dayIndex: 1
@@ -438,36 +409,19 @@ The blockchain is secure because changing any transaction would require controll
 
       {
         title: "Bitcoin vs Traditional Money: Why It Matters",
-        content: `To understand Bitcoin's importance, we must first understand the problems with traditional money systems.
+        content: `To understand Bitcoin's importance, we must first understand the fundamental problems with traditional money systems that affect billions of people worldwide.
 
-## The Fiat Money System
+Since 1971, when President Nixon ended the gold standard, most currencies became "fiat" money - backed only by government promises rather than gold or other tangible assets. This seemingly small change created a monetary system with three critical flaws that Bitcoin directly addresses.
 
-Since 1971, most currencies are "fiat" - backed only by government decree, not by gold or other assets. This system has several critical flaws:
+The first problem is inflation by design. Governments can create new money whenever they choose, systematically reducing the value of existing money. This isn't accidental - it's the intended function of modern monetary policy. The purchasing power of the US dollar has declined over 85% since 1971, meaning your grandparents' money was worth far more than the same dollar amount today. Every time central banks print money, they're essentially taxing everyone who holds that currency without calling it a tax.
 
-## Problem 1: Inflation by Design
+The second issue is total central control over your financial life. Banks and governments wield unprecedented power over individuals' money. They can freeze your accounts without warning, reverse your transactions after they've completed, control who can send or receive money based on political considerations, and devalue your life savings through money printing policies. This power has been increasingly weaponized, with financial deplatforming becoming a tool of political control.
 
-Governments can create new money at will, reducing the value of existing money. The purchasing power of the US dollar has declined over 85% since 1971.
+The third problem is systematic exclusion from the global economy. Over 2 billion people worldwide lack access to basic banking services, locked out of participating in international commerce not because they lack value to offer, but because they live in the wrong geographic location or don't meet arbitrary institutional requirements.
 
-## Problem 2: Central Control
+Bitcoin provides elegant solutions to each of these problems through its foundational design. Its fixed supply of 21 million coins eliminates inflation by making additional money creation impossible. Its permissionless nature means anyone with internet access can participate regardless of location, politics, or institutional approval. Its censorship-resistant architecture ensures no authority can stop valid transactions or freeze accounts. And its global operation means the same rules apply everywhere, eliminating borders and discrimination.
 
-Banks and governments can:
-- Freeze your accounts
-- Reverse your transactions  
-- Control who can send or receive money
-- Devalue your savings through money printing
-
-## Problem 3: Exclusion
-
-2 billion people worldwide lack access to basic banking services, excluded from the global economy.
-
-## Bitcoin's Solutions
-
-- **Fixed Supply**: Only 21 million Bitcoin will ever exist
-- **Permissionless**: Anyone with internet can participate
-- **Censorship Resistant**: No authority can stop valid transactions
-- **Global**: Same rules everywhere, no borders
-
-**The Bottom Line:** Bitcoin returns monetary sovereignty to individuals, protecting against both government overreach and institutional failure.`,
+Bitcoin returns monetary sovereignty to individuals, protecting against both government overreach and institutional failure while opening economic participation to everyone.`,
         summary: "Bitcoin addresses critical flaws in traditional fiat currency systems: inflation, central control, and financial exclusion through fixed supply and decentralization.",
         estimatedReadTime: 8,
         dayIndex: 2
@@ -475,39 +429,19 @@ Banks and governments can:
 
       {
         title: "Bitcoin Security: Wallets and Private Keys",
-        content: `Bitcoin security fundamentally differs from traditional account-based systems. Understanding this is crucial for safely using Bitcoin.
+        content: `Bitcoin security fundamentally differs from traditional account-based systems, representing a complete paradigm shift in how we think about money ownership. Understanding this difference is crucial for safely using Bitcoin and unlocking its full potential.
 
-## How Bitcoin Ownership Works
+Bitcoin doesn't exist in "accounts" like traditional bank balances that live on bank servers. Instead, ownership is proven through private keys - secret numbers that mathematically control specific Bitcoin on the blockchain. Think of it this way: your Bitcoin isn't stored anywhere physical, but rather exists as entries on a global ledger that can only be moved by someone who possesses the correct mathematical key.
 
-Bitcoin doesn't exist in "accounts" like bank balances. Instead, ownership is proven through **private keys** - secret numbers that allow you to spend specific Bitcoin.
+A Bitcoin wallet functions like a sophisticated digital keyring that manages these cryptographic secrets. It securely stores your private keys, calculates and displays your Bitcoin balance by scanning the blockchain, creates and signs transactions when you want to send Bitcoin, and generates new addresses for receiving payments. The wallet doesn't actually contain Bitcoin - it contains the keys that prove you own Bitcoin recorded on the blockchain.
 
-## Your Wallet is Your Key Ring
+This leads to Bitcoin's golden rule: "Not your keys, not your coins." If you don't personally control the private keys, you don't truly own the Bitcoin, regardless of what any website or app displays as your balance. This is why keeping Bitcoin on exchanges long-term carries significant risk - you're trusting a third party with complete control over your funds, potentially exposing yourself to exchange hacks, bankruptcies, or account freezes.
 
-A Bitcoin wallet is like a digital keyring that:
-- Stores your private keys securely
-- Shows your Bitcoin balance
-- Creates transactions when you want to send Bitcoin
-- Generates new addresses for receiving Bitcoin
+Different wallet types serve different security needs and use cases. Hardware wallets are physical devices that store keys completely offline, providing maximum security for long-term storage. Software wallets are convenient apps on your phone or computer that balance security with everyday usability. Paper wallets involve printing private keys on physical paper for ultra-secure offline storage. Custodial wallets, typically found on exchanges, sacrifice security for convenience by having someone else control your keys.
 
-## The Golden Rule
+The most critical practice is properly backing up your seed phrase - typically 12 to 24 words that can mathematically restore your entire wallet if your device is lost or damaged. These backup phrases should be stored securely in multiple physical locations, never shared with anyone, and never stored digitally where they could be hacked. Starting with small amounts allows you to learn the system before storing significant value.
 
-**"Not your keys, not your coins"** - If you don't control the private keys, you don't truly own the Bitcoin. This is why keeping Bitcoin on exchanges long-term is risky.
-
-## Types of Wallets
-
-- **Hardware Wallets**: Physical devices storing keys offline (most secure)
-- **Software Wallets**: Apps on your phone or computer
-- **Paper Wallets**: Private keys written on paper
-- **Custodial Wallets**: Someone else controls your keys (exchanges)
-
-## Best Practices
-
-1. **Backup your seed phrase**: 12-24 words that can restore your entire wallet
-2. **Keep backups secure**: Store in multiple safe locations
-3. **Never share private keys**: Anyone with your keys can spend your Bitcoin
-4. **Start small**: Learn with small amounts before storing significant value
-
-**Critical Point:** With Bitcoin, you are your own bank. This brings both freedom and responsibility.`,
+With Bitcoin, you truly become your own bank, bringing unprecedented financial freedom but also complete personal responsibility for security. This fundamental shift from institutional custody to self-sovereignty represents one of Bitcoin's most revolutionary aspects.`,
         summary: "Bitcoin security is based on private key cryptography. Proper wallet management and understanding 'not your keys, not your coins' is essential for safe Bitcoin usage.",
         estimatedReadTime: 9,
         dayIndex: 3
@@ -515,41 +449,17 @@ A Bitcoin wallet is like a digital keyring that:
 
       {
         title: "Bitcoin Mining: Securing the Network",
-        content: `Bitcoin mining is often misunderstood. It's not just about creating new Bitcoin - it's the process that keeps the entire network secure and decentralized.
+        content: `Bitcoin mining is often misunderstood as simply a way to create new Bitcoin, but it's actually the sophisticated process that keeps the entire network secure, decentralized, and functioning without any central authority.
 
-## What Mining Actually Does
+Mining serves three critical functions that work together seamlessly. First, it validates every transaction to ensure all Bitcoin movements follow the network's mathematical rules. Second, it secures the network by making attacks extraordinarily expensive through energy expenditure. Third, it issues new Bitcoin as rewards to miners for providing this essential security service to the global community.
 
-Mining serves three critical functions:
-1. **Validates transactions**: Ensures all transactions follow Bitcoin's rules
-2. **Secures the network**: Makes it extremely expensive to attack Bitcoin
-3. **Issues new Bitcoin**: Rewards miners for their security service
+The mining process works through competitive computation that creates what's called "proof of work." Miners around the world race to solve complex mathematical puzzles that require enormous amounts of computational power and real energy expenditure. This energy requirement is crucial because it makes attacks financially prohibitive - to rewrite Bitcoin's history, an attacker would need to spend more energy than the entire honest network combined. The winning miner gets to add the next block of transactions to the blockchain, receives newly created Bitcoin (currently 6.25 BTC per block), and collects all transaction fees from that block.
 
-## The Mining Process
+Bitcoin's energy consumption is often criticized, but this energy use is actually a fundamental security feature rather than a bug. More energy expenditure directly translates to higher security, making the network harder to attack. The system remains decentralized because anyone can participate in mining with the right equipment, unlike traditional financial systems that require institutional permissions. Most importantly, the economic incentives perfectly align miners' profit motives with network security - the more secure they make the network, the more valuable their rewards become.
 
-Miners compete to solve computational puzzles. This "proof of work" requires real energy expenditure, making attacks costly. The winner gets to:
-- Add the next block of transactions
-- Receive newly created Bitcoin (currently 6.25 BTC per block)
-- Collect transaction fees
+The system includes a brilliant scarcity mechanism called the halving cycle. Every four years (precisely every 210,000 blocks), the mining reward automatically cuts in half. This started at 50 BTC per block in 2009, dropped to 25 BTC in 2012, then 12.5 BTC in 2016, and currently sits at 6.25 BTC per block. The next halving in 2024 will reduce it to 3.125 BTC per block. This predictable reduction ensures Bitcoin becomes increasingly scarce over time, eventually reaching a maximum of 21 million coins.
 
-## Why Energy Use is a Feature
-
-Bitcoin's energy consumption is often criticized, but it serves a purpose:
-- **Security**: More energy = harder to attack
-- **Decentralization**: Anyone can mine with the right equipment
-- **Incentive alignment**: Miners are rewarded for securing the network
-
-## The Halving Cycle
-
-Every 4 years (210,000 blocks), the mining reward is cut in half:
-- 2009-2012: 50 BTC per block
-- 2012-2016: 25 BTC per block  
-- 2016-2020: 12.5 BTC per block
-- 2020-2024: 6.25 BTC per block
-- 2024-2028: 3.125 BTC per block
-
-This ensures Bitcoin becomes increasingly scarce over time.
-
-**Key Understanding:** Mining isn't wasteful - it's Bitcoin's immune system, protecting the network from attack and manipulation.`,
+Mining isn't wasteful - it's Bitcoin's immune system, protecting the network from attack and manipulation while maintaining the most secure financial network ever created.`,
         summary: "Bitcoin mining secures the network through proof of work, validates transactions, and issues new Bitcoin on a predictable schedule that becomes increasingly scarce.",
         estimatedReadTime: 10,
         dayIndex: 4
@@ -557,61 +467,17 @@ This ensures Bitcoin becomes increasingly scarce over time.
 
       {
         title: "Bitcoin as Digital Gold: Store of Value",
-        content: `Bitcoin is often called "digital gold" because it shares many properties with gold while improving upon them for the digital age.
+        content: `Bitcoin is often called "digital gold" because it shares the fundamental properties that made gold valuable throughout history while dramatically improving upon them for the digital age.
 
-**Properties of Good Money**
+Throughout human history, the best forms of money have consistently shared five critical characteristics that determine their success. Scarcity ensures limited supply maintains value over time rather than being inflated away. Durability means the money doesn't degrade, break down, or become unusable. Portability allows easy transport and transfer across distances. Divisibility enables breaking money into smaller units for different transaction sizes. Finally, verifiability makes it easy to authenticate as genuine rather than counterfeit.
 
-Throughout history, the best forms of money have shared certain characteristics:
+When comparing Bitcoin to gold across these monetary properties, Bitcoin demonstrates clear superiority in every category. In terms of scarcity, Bitcoin has a mathematically fixed supply of 21 million coins versus gold's unknown reserves that could potentially be disrupted by asteroid mining or new discovery techniques. For durability, Bitcoin's digital format is immortal compared to gold's potential for physical degradation. Bitcoin offers instant global portability versus gold's expensive and slow physical transport requirements. Bitcoin divides cleanly to 8 decimal places (100 million satoshis per bitcoin) while gold division requires industrial processes. Bitcoin provides cryptographic verification that's instant and free compared to gold's expensive and time-consuming testing requirements.
 
-• **Scarcity**: Limited supply maintains value
+Beyond matching gold's traditional monetary properties, Bitcoin offers revolutionary advantages that were impossible in the physical world. Bitcoin is fully programmable, meaning it can be sent automatically based on predetermined conditions without human intervention. It operates completely permissionlessly, eliminating the need for expensive vaults, guards, and trusted intermediaries. All Bitcoin transactions are transparent and publicly verifiable on the blockchain, creating unprecedented monetary accountability. Perhaps most importantly, properly stored Bitcoin cannot be confiscated by any authority since only the private key holder can move it.
 
-• **Durability**: Doesn't degrade over time  
+The network effect amplifies these advantages as adoption grows. When more people recognize Bitcoin's superior monetary properties, demand increases while supply remains mathematically fixed, creating upward price pressure over long time horizons. Each new participant makes the network more valuable and secure, creating a self-reinforcing cycle of improvement.
 
-• **Portability**: Easy to transport and transfer
-
-• **Divisibility**: Can be broken into smaller units
-
-• **Verifiability**: Easy to authenticate as genuine
-
-
-**How Bitcoin Compares to Gold**
-
-**Scarcity**: ✅ Fixed 21 million supply vs. unknown gold reserves
-
-**Durability**: ✅ Digital format vs. physical degradation  
-
-**Portability**: ✅ Instant global transfer vs. physical transport
-
-**Divisibility**: ✅ 8 decimal places vs. difficult gold division
-
-**Verifiability**: ✅ Cryptographic proof vs. expensive testing
-
-
-**Bitcoin's Monetary Advantages**
-
-Unlike gold, Bitcoin is:
-
-• **Programmable**: Can be sent automatically based on conditions
-
-• **Permissionless**: No need for vaults or intermediaries
-
-• **Transparent**: All transactions are publicly verifiable
-
-• **Resistant to confiscation**: Properly stored Bitcoin cannot be seized
-
-
-**The Network Effect**
-
-As more people recognize Bitcoin's superior monetary properties:
-
-• **Demand increases** while supply remains fixed
-
-• **Price tends to increase** over long time horizons
-
-• **Network becomes more valuable** and secure
-
-
-**Investment Thesis**: Bitcoin combines the scarcity of gold with the utility of digital technology, creating superior hard money for the internet age.`,
+Bitcoin represents the ultimate evolution of money - combining the proven scarcity of gold with the revolutionary utility of digital technology, creating superior hard money perfectly designed for the internet age.`,
         summary: "Bitcoin serves as digital gold, combining scarcity with superior portability, divisibility, and verifiability compared to traditional stores of value.",
         estimatedReadTime: 8,
         dayIndex: 5

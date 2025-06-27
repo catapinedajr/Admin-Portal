@@ -156,6 +156,8 @@ Comprehensive component library built on Radix UI primitives:
 - June 26, 2025. Removed Deep Dive section from Learn tab navigation for cleaner user experience, simplifying focus to Today, Reference, and Stories subsections as requested
 - June 26, 2025. Fixed Weekly content formatting issues: implemented proper HTML rendering for bold text in bullet points, improved paragraph spacing and visual hierarchy, restructured backend content with better line breaks and bullet point formatting for enhanced readability of 65-minute university-level content
 - June 26, 2025. Implemented comprehensive Weekly Quiz system for educational reinforcement: added quiz questions schema field to weekly topics, created interactive WeeklyQuiz component with progress tracking, question navigation, and detailed results with explanations, added 5 university-level questions each for Austrian Economics and Mining weeks positioned before Further Reading section for optimal educational flow
+- June 27, 2025. Systematically implemented comprehensive "Dive Deeper" expandable content for ALL daily facts in Learn > Today section: added detailed explanations, examples, visual descriptions, and key takeaways for 20+ daily facts covering blockchain, mining, wallets, transactions, halving, and economics to ensure consistent educational depth across the dynamic dataset
+- June 27, 2025. Converted all lesson content from markdown/technical formatting to narrative storytelling format: replaced bullet points, numbered lists, and headers with flowing paragraphs that tell engaging stories, applied changes systematically at the data source level to support dynamic content delivery and improve readability for non-technical users
 
 ## User Preferences
 
