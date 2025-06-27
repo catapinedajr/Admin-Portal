@@ -2541,38 +2541,51 @@ export default function Home() {
                         <text x="280" y="195" fill="#9ca3af" fontSize="10">2010</text>
                         <text x="360" y="195" fill="#9ca3af" fontSize="10">2024</text>
                         
-                        {/* Money Supply Growth Line */}
+                        {/* Money Supply Growth Line - Using Real Federal Reserve Data */}
                         <path
-                          d={`M 50,175 
-                             L 80,165 
-                             L 120,155 
-                             L 160,140 
-                             L 200,120 
-                             L 240,100 
-                             L 280,80 
-                             L 320,50 
-                             L 340,35 
-                             L 370,20`}
+                          d={(() => {
+                            // Real M2 data points (in trillions): Year -> M2 Value
+                            const m2Data = [
+                              { year: 1971, m2: 0.6 },   // Nixon Shock baseline
+                              { year: 1980, m2: 1.6 },   // Early 80s
+                              { year: 1990, m2: 3.2 },   // 90s expansion  
+                              { year: 2000, m2: 4.9 },   // Dot-com era
+                              { year: 2008, m2: 7.5 },   // Pre-crisis
+                              { year: 2010, m2: 8.7 },   // Post-crisis QE1
+                              { year: 2015, m2: 12.4 },  // QE era
+                              { year: 2020, m2: 15.4 },  // Pre-COVID
+                              { year: 2021, m2: 20.1 },  // COVID peak
+                              { year: 2024, m2: 21.0 }   // Current
+                            ];
+                            
+                            return m2Data.map((point, index) => {
+                              const x = 50 + ((point.year - 1971) / (2024 - 1971)) * 320;
+                              const y = 175 - ((point.m2 - 0.6) / (21.0 - 0.6)) * 155;
+                              return `${index === 0 ? 'M' : 'L'} ${x},${y}`;
+                            }).join(' ');
+                          })()}
                           fill="none"
                           stroke="#ef4444"
                           strokeWidth="3"
-                          className="transition-all duration-1000"
                         />
                         
                         {/* Fill area under curve */}
                         <path
-                          d={`M 50,175 
-                             L 80,165 
-                             L 120,155 
-                             L 160,140 
-                             L 200,120 
-                             L 240,100 
-                             L 280,80 
-                             L 320,50 
-                             L 340,35 
-                             L 370,20
-                             L 370,180 
-                             L 50,180 Z`}
+                          d={(() => {
+                            const m2Data = [
+                              { year: 1971, m2: 0.6 }, { year: 1980, m2: 1.6 }, { year: 1990, m2: 3.2 },
+                              { year: 2000, m2: 4.9 }, { year: 2008, m2: 7.5 }, { year: 2010, m2: 8.7 },
+                              { year: 2015, m2: 12.4 }, { year: 2020, m2: 15.4 }, { year: 2021, m2: 20.1 }, { year: 2024, m2: 21.0 }
+                            ];
+                            
+                            const pathData = m2Data.map((point, index) => {
+                              const x = 50 + ((point.year - 1971) / (2024 - 1971)) * 320;
+                              const y = 175 - ((point.m2 - 0.6) / (21.0 - 0.6)) * 155;
+                              return `${index === 0 ? 'M' : 'L'} ${x},${y}`;
+                            }).join(' ');
+                            
+                            return `${pathData} L 370,180 L 50,180 Z`;
+                          })()}
                           fill="url(#redGradient)"
                           opacity="0.3"
                         />
@@ -2612,36 +2625,25 @@ export default function Home() {
                           <circle 
                             cx={50 + ((moneySupplyYear - 1971) / (2024 - 1971)) * 320} 
                             cy={(() => {
-                              // Follow the exact same curve as the red line
-                              const yearProgress = (moneySupplyYear - 1971) / (2024 - 1971);
-                              
-                              // Define the exact same points as the red curve
-                              const curvePoints = [
-                                { x: 50, y: 175 },   // 1971
-                                { x: 80, y: 165 },   // ~1980
-                                { x: 120, y: 155 },  // ~1990
-                                { x: 160, y: 140 },  // ~1998
-                                { x: 200, y: 120 },  // ~2005
-                                { x: 240, y: 100 },  // ~2012
-                                { x: 280, y: 80 },   // ~2017
-                                { x: 320, y: 50 },   // ~2020
-                                { x: 340, y: 35 },   // ~2022
-                                { x: 370, y: 20 }    // 2024
+                              // Use the same real M2 data as the line chart
+                              const m2Data = [
+                                { year: 1971, m2: 0.6 },   // Nixon Shock baseline
+                                { year: 1980, m2: 1.6 },   // Early 80s
+                                { year: 1990, m2: 3.2 },   // 90s expansion  
+                                { year: 2000, m2: 4.9 },   // Dot-com era
+                                { year: 2008, m2: 7.5 },   // Pre-crisis
+                                { year: 2010, m2: 8.7 },   // Post-crisis QE1
+                                { year: 2015, m2: 12.4 },  // QE era
+                                { year: 2020, m2: 15.4 },  // Pre-COVID
+                                { year: 2021, m2: 20.1 },  // COVID peak
+                                { year: 2024, m2: 21.0 }   // Current
                               ];
                               
-                              // Find the current position along the curve
-                              const targetX = 50 + yearProgress * 320;
+                              // Get the actual M2 value for the selected year
+                              const currentM2 = getMoneySupplyRaw(moneySupplyYear);
                               
-                              // Find the two points to interpolate between
-                              for (let i = 0; i < curvePoints.length - 1; i++) {
-                                if (targetX >= curvePoints[i].x && targetX <= curvePoints[i + 1].x) {
-                                  const progress = (targetX - curvePoints[i].x) / (curvePoints[i + 1].x - curvePoints[i].x);
-                                  return curvePoints[i].y + progress * (curvePoints[i + 1].y - curvePoints[i].y);
-                                }
-                              }
-                              
-                              // Fallback for edge cases
-                              return targetX <= 50 ? 175 : 20;
+                              // Convert to Y coordinate using same formula as line chart
+                              return 175 - ((currentM2 - 0.6) / (21.0 - 0.6)) * 155;
                             })()} 
                             r="5" 
                             fill="#f97316" 
