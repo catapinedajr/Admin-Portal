@@ -139,12 +139,44 @@ ACCURACY REQUIREMENTS:
 
 Return the content as a JSON object with this exact structure:
 {
-  "dailyFact": {
-    "title": "string",
-    "content": "string", 
-    "category": "string",
-    "icon": "string"
-  },
+  "dailyFacts": [
+    {
+      "title": "string",
+      "content": "string", 
+      "category": "string",
+      "icon": "string",
+      "diveDeeper": {
+        "explanation": "string",
+        "examples": ["string1", "string2", "string3", "string4"],
+        "visualDescription": "string",
+        "keyTakeaways": ["string1", "string2", "string3", "string4"]
+      }
+    },
+    {
+      "title": "string",
+      "content": "string", 
+      "category": "string",
+      "icon": "string",
+      "diveDeeper": {
+        "explanation": "string",
+        "examples": ["string1", "string2", "string3", "string4"],
+        "visualDescription": "string",
+        "keyTakeaways": ["string1", "string2", "string3", "string4"]
+      }
+    },
+    {
+      "title": "string",
+      "content": "string", 
+      "category": "string",
+      "icon": "string",
+      "diveDeeper": {
+        "explanation": "string",
+        "examples": ["string1", "string2", "string3", "string4"],
+        "visualDescription": "string",
+        "keyTakeaways": ["string1", "string2", "string3", "string4"]
+      }
+    }
+  ],
   "lesson": {
     "title": "string",
     "content": "string",

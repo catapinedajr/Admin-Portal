@@ -194,10 +194,10 @@ export class MemStorage implements IStorage {
       }
       
       if (missingDays.length > 0) {
-        console.log(`🔄 Auto-generating content for ${missingDays.length} missing days: ${missingDays.slice(0, 5).join(', ')}${missingDays.length > 5 ? '...' : ''}`);
-        // Import and run content generation
-        const { generateMonth1Content } = await import('./content-generator');
-        await generateMonth1Content();
+        console.log(`⏸️ Auto-generation temporarily disabled. Missing days: ${missingDays.slice(0, 5).join(', ')}`);
+        // Auto-generation temporarily disabled while fixing structure
+        // const { generateMonth1Content } = await import('./content-generator');
+        // await generateMonth1Content();
       }
     } catch (error) {
       console.log(`⚠️ Auto-generation skipped: ${error.message}`);
@@ -205,7 +205,7 @@ export class MemStorage implements IStorage {
   }
 
   private seedData() {
-    // Skip daily facts for days 0-29 to avoid conflicts with AI-generated content
+    // Restore daily facts since AI generation is temporarily disabled  
     const facts = [
       // Week 1: Core Concepts
       {
@@ -392,11 +392,15 @@ export class MemStorage implements IStorage {
       }
     ];
 
-    // Skip seeding daily facts for days 0-29 to avoid conflicts with AI-generated content
-    // facts.forEach(fact => {
-    //   const newFact: DailyFact = { ...fact, id: this.currentFactId++ };
-    //   this.dailyFacts.set(newFact.id, newFact);
-    // });
+    // Temporarily restore static facts since AI generation is disabled
+    facts.forEach(fact => {
+      const newFact: DailyFact = { 
+        ...fact, 
+        id: this.currentFactId++,
+        diveDeeper: null // Static facts don't have dive deeper content yet
+      };
+      this.dailyFacts.set(newFact.id, newFact);
+    });
 
     // Comprehensive lesson content covering all fundamental Bitcoin concepts
     const lessons = [
