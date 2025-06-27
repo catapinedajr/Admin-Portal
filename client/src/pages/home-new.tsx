@@ -61,6 +61,541 @@ import { BitcoinTerm, AutoGlossary } from "@/components/BitcoinGlossary";
 import { ProgressIndicator, AchievementBadge, LearningAnalytics } from "@/components/ProgressIndicator";
 import AchievementSystem from "@/components/AchievementSystem";
 
+// Simulator Components
+function TransactionSimulator() {
+  const [step, setStep] = useState(1);
+  const [fromAddress] = useState("bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh");
+  const [toAddress, setToAddress] = useState("");
+  const [amount, setAmount] = useState("");
+  const [fee, setFee] = useState("standard");
+  const [confirmations, setConfirmations] = useState(0);
+  const [isComplete, setIsComplete] = useState(false);
+
+  const steps = [
+    "Build Transaction",
+    "Review & Sign", 
+    "Broadcast",
+    "Confirmation"
+  ];
+
+  const feeOptions = {
+    slow: { rate: "5 sat/vB", time: "~60 min", cost: "$0.50" },
+    standard: { rate: "20 sat/vB", time: "~20 min", cost: "$2.00" },
+    fast: { rate: "50 sat/vB", time: "~5 min", cost: "$5.00" }
+  };
+
+  useEffect(() => {
+    if (step === 4 && !isComplete) {
+      const interval = setInterval(() => {
+        setConfirmations(prev => {
+          if (prev >= 6) {
+            setIsComplete(true);
+            clearInterval(interval);
+            return 6;
+          }
+          return prev + 1;
+        });
+      }, 2000);
+      return () => clearInterval(interval);
+    }
+  }, [step, isComplete]);
+
+  return (
+    <Card className="bg-zinc-900/50 border-zinc-800">
+      <CardContent className="p-6">
+        <div className="space-y-6">
+          {/* Progress Steps */}
+          <div className="flex justify-between items-center">
+            {steps.map((stepName, idx) => (
+              <div key={idx} className="flex items-center">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  idx + 1 === step ? 'bg-orange-500 text-white' :
+                  idx + 1 < step ? 'bg-green-500 text-white' :
+                  'bg-zinc-700 text-zinc-400'
+                }`}>
+                  {idx + 1 < step ? <CheckCircle className="w-4 h-4" /> : idx + 1}
+                </div>
+                {idx < steps.length - 1 && (
+                  <div className={`w-12 h-1 mx-2 ${
+                    idx + 1 < step ? 'bg-green-500' : 'bg-zinc-700'
+                  }`} />
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Step 1: Build Transaction */}
+          {step === 1 && (
+            <div className="space-y-4">
+              <h4 className="text-lg font-semibold text-white">Build Your Transaction</h4>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm text-zinc-400 mb-1">From Address</label>
+                  <div className="bg-zinc-800 rounded p-3 text-sm text-zinc-300 font-mono">
+                    {fromAddress}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm text-zinc-400 mb-1">To Address</label>
+                  <input
+                    type="text"
+                    value={toAddress}
+                    onChange={(e) => setToAddress(e.target.value)}
+                    placeholder="Enter Bitcoin address..."
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded p-3 text-white text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-zinc-400 mb-1">Amount (BTC)</label>
+                  <input
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="0.00000000"
+                    step="0.00000001"
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded p-3 text-white text-sm"
+                  />
+                </div>
+              </div>
+              <Button 
+                onClick={() => setStep(2)}
+                disabled={!toAddress || !amount}
+                className="w-full bg-orange-600 hover:bg-orange-700"
+              >
+                Continue to Review
+              </Button>
+            </div>
+          )}
+
+          {/* Step 2: Review & Sign */}
+          {step === 2 && (
+            <div className="space-y-4">
+              <h4 className="text-lg font-semibold text-white">Review & Select Fee</h4>
+              <div className="space-y-3">
+                {Object.entries(feeOptions).map(([speed, details]) => (
+                  <div 
+                    key={speed}
+                    onClick={() => setFee(speed)}
+                    className={`p-3 rounded border cursor-pointer ${
+                      fee === speed ? 'border-orange-500 bg-orange-500/10' : 'border-zinc-700 bg-zinc-800/50'
+                    }`}
+                  >
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <div className="font-medium text-white capitalize">{speed}</div>
+                        <div className="text-sm text-zinc-400">{details.time}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-white">{details.cost}</div>
+                        <div className="text-sm text-zinc-400">{details.rate}</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="bg-zinc-800/50 rounded p-4 space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-zinc-400">Amount:</span>
+                  <span className="text-white">{amount} BTC</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-zinc-400">Fee:</span>
+                  <span className="text-white">{feeOptions[fee as keyof typeof feeOptions].cost}</span>
+                </div>
+                <div className="border-t border-zinc-700 pt-2 flex justify-between font-medium">
+                  <span className="text-zinc-400">Total:</span>
+                  <span className="text-white">{parseFloat(amount || "0") + 0.0001} BTC</span>
+                </div>
+              </div>
+              <Button 
+                onClick={() => setStep(3)}
+                className="w-full bg-orange-600 hover:bg-orange-700"
+              >
+                Sign Transaction
+              </Button>
+            </div>
+          )}
+
+          {/* Step 3: Broadcast */}
+          {step === 3 && (
+            <div className="space-y-4 text-center">
+              <h4 className="text-lg font-semibold text-white">Broadcasting Transaction</h4>
+              <div className="flex flex-col items-center space-y-4">
+                <RefreshCw className="w-8 h-8 text-orange-500 animate-spin" />
+                <p className="text-zinc-400">Your transaction is being broadcast to the Bitcoin network...</p>
+              </div>
+              <Button 
+                onClick={() => setStep(4)}
+                className="w-full bg-orange-600 hover:bg-orange-700"
+              >
+                View Confirmations
+              </Button>
+            </div>
+          )}
+
+          {/* Step 4: Confirmations */}
+          {step === 4 && (
+            <div className="space-y-4">
+              <h4 className="text-lg font-semibold text-white">Transaction Confirmations</h4>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-zinc-400">Confirmations:</span>
+                  <span className="text-white font-medium">{confirmations}/6</span>
+                </div>
+                <div className="w-full bg-zinc-700 rounded-full h-2">
+                  <div 
+                    className="bg-green-500 h-2 rounded-full transition-all duration-500"
+                    style={{ width: `${(confirmations / 6) * 100}%` }}
+                  />
+                </div>
+                <div className="text-sm text-zinc-400">
+                  {confirmations === 0 && "Waiting for first confirmation..."}
+                  {confirmations > 0 && confirmations < 6 && `${confirmations} confirmation${confirmations > 1 ? 's' : ''} received. Transaction becoming more secure...`}
+                  {confirmations >= 6 && "Transaction fully confirmed! Your Bitcoin transfer is complete."}
+                </div>
+                {isComplete && (
+                  <div className="bg-green-500/10 border border-green-500/50 rounded p-3 text-center">
+                    <CheckCircle className="w-6 h-6 text-green-500 mx-auto mb-2" />
+                    <p className="text-green-400 font-medium">Transaction Complete!</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function HODLSimulator() {
+  const [timeframe, setTimeframe] = useState("4years");
+  const [investment, setInvestment] = useState(1000);
+  const [strategy, setStrategy] = useState<"hodl" | "trading">("hodl");
+
+  const strategies = {
+    hodl: {
+      name: "HODL Strategy",
+      description: "Buy and hold Bitcoin for the long term",
+      fees: 0.5, // One-time purchase fee
+      taxEvents: 0,
+      stressLevel: "Low",
+      timeCommitment: "Minimal"
+    },
+    trading: {
+      name: "Active Trading",
+      description: "Frequent buying and selling to time the market",
+      fees: 15, // Multiple trading fees
+      taxEvents: 12,
+      stressLevel: "High", 
+      timeCommitment: "Significant"
+    }
+  };
+
+  const results = {
+    "1year": { hodl: 1200, trading: 950 },
+    "2years": { hodl: 1800, trading: 1100 },
+    "4years": { hodl: 3200, trading: 1600 }
+  };
+
+  const currentResult = results[timeframe as keyof typeof results];
+  const selectedStrategy = strategies[strategy];
+
+  return (
+    <Card className="bg-zinc-900/50 border-zinc-800">
+      <CardContent className="p-6">
+        <div className="space-y-6">
+          <h4 className="text-lg font-semibold text-white">Strategy Comparison</h4>
+          
+          {/* Controls */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm text-zinc-400 mb-2">Investment Amount</label>
+              <Select value={investment.toString()} onValueChange={(val) => setInvestment(parseInt(val))}>
+                <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="500">$500</SelectItem>
+                  <SelectItem value="1000">$1,000</SelectItem>
+                  <SelectItem value="5000">$5,000</SelectItem>
+                  <SelectItem value="10000">$10,000</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <label className="block text-sm text-zinc-400 mb-2">Time Period</label>
+              <Select value={timeframe} onValueChange={setTimeframe}>
+                <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1year">1 Year</SelectItem>
+                  <SelectItem value="2years">2 Years</SelectItem>
+                  <SelectItem value="4years">4 Years</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <label className="block text-sm text-zinc-400 mb-2">Strategy</label>
+              <Select value={strategy} onValueChange={(val: "hodl" | "trading") => setStrategy(val)}>
+                <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="hodl">HODL</SelectItem>
+                  <SelectItem value="trading">Trading</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Results Comparison */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-zinc-800/50 rounded-lg p-4">
+              <h5 className="font-semibold text-white mb-3">HODL Strategy</h5>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-zinc-400">Initial Investment:</span>
+                  <span className="text-white">${investment.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-400">Trading Fees:</span>
+                  <span className="text-white">$5 (0.5%)</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-400">Tax Events:</span>
+                  <span className="text-white">0</span>
+                </div>
+                <div className="flex justify-between border-t border-zinc-700 pt-2 font-medium">
+                  <span className="text-zinc-400">Final Value:</span>
+                  <span className="text-green-400">${(currentResult.hodl * investment / 1000).toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-400">Total Return:</span>
+                  <span className="text-green-400">+{((currentResult.hodl - 1000) / 10).toFixed(1)}%</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-zinc-800/50 rounded-lg p-4">
+              <h5 className="font-semibold text-white mb-3">Trading Strategy</h5>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-zinc-400">Initial Investment:</span>
+                  <span className="text-white">${investment.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-400">Trading Fees:</span>
+                  <span className="text-white">$150 (15%)</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-400">Tax Events:</span>
+                  <span className="text-white">12</span>
+                </div>
+                <div className="flex justify-between border-t border-zinc-700 pt-2 font-medium">
+                  <span className="text-zinc-400">Final Value:</span>
+                  <span className="text-orange-400">${(currentResult.trading * investment / 1000).toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-400">Total Return:</span>
+                  <span className="text-orange-400">+{((currentResult.trading - 1000) / 10).toFixed(1)}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Key Insights */}
+          <div className="bg-blue-500/10 border border-blue-500/50 rounded p-4">
+            <h5 className="font-semibold text-blue-400 mb-2">Key Insights</h5>
+            <ul className="text-sm text-zinc-300 space-y-1">
+              <li>• HODL strategy typically outperforms trading due to lower fees and taxes</li>
+              <li>• Active trading requires significant time and expertise</li>
+              <li>• Long-term holding aligns with Bitcoin's deflationary properties</li>
+              <li>• Emotional decision-making often reduces trading returns</li>
+            </ul>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function DCACalculator() {
+  const [amount, setAmount] = useState("100");
+  const [frequency, setFrequency] = useState("monthly");
+  const [period, setPeriod] = useState("1year");
+  const [startDate, setStartDate] = useState("2023-01");
+
+  const frequencies = {
+    daily: { label: "Daily", multiplier: 365 },
+    weekly: { label: "Weekly", multiplier: 52 },
+    monthly: { label: "Monthly", multiplier: 12 },
+    quarterly: { label: "Quarterly", multiplier: 4 }
+  };
+
+  const periods = {
+    "6months": { label: "6 Months", months: 6 },
+    "1year": { label: "1 Year", months: 12 },
+    "2years": { label: "2 Years", months: 24 },
+    "4years": { label: "4 Years", months: 48 }
+  };
+
+  const startDates = {
+    "2019-01": "Jan 2019",
+    "2020-01": "Jan 2020", 
+    "2021-01": "Jan 2021",
+    "2022-01": "Jan 2022",
+    "2023-01": "Jan 2023",
+    "2024-01": "Jan 2024"
+  };
+
+  // Simplified calculation for demo
+  const totalInvested = parseInt(amount) * frequencies[frequency as keyof typeof frequencies].multiplier * (periods[period as keyof typeof periods].months / 12);
+  const averagePrice = 35000; // Simplified average Bitcoin price
+  const currentPrice = 45000; // Simplified current price
+  const totalValue = (totalInvested / averagePrice) * currentPrice;
+  const profit = totalValue - totalInvested;
+  const returnPercent = (profit / totalInvested) * 100;
+
+  return (
+    <Card className="bg-zinc-900/50 border-zinc-800">
+      <CardContent className="p-6">
+        <div className="space-y-6">
+          <h4 className="text-lg font-semibold text-white">DCA Strategy Calculator</h4>
+          
+          {/* Controls */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+              <label className="block text-sm text-zinc-400 mb-2">Amount Per Investment</label>
+              <Select value={amount} onValueChange={setAmount}>
+                <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="25">$25</SelectItem>
+                  <SelectItem value="50">$50</SelectItem>
+                  <SelectItem value="100">$100</SelectItem>
+                  <SelectItem value="250">$250</SelectItem>
+                  <SelectItem value="500">$500</SelectItem>
+                  <SelectItem value="1000">$1,000</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-zinc-500 mt-1">Per selected frequency below</p>
+            </div>
+            
+            <div>
+              <label className="block text-sm text-zinc-400 mb-2">Frequency</label>
+              <Select value={frequency} onValueChange={setFrequency}>
+                <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(frequencies).map(([key, freq]) => (
+                    <SelectItem key={key} value={key}>{freq.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <label className="block text-sm text-zinc-400 mb-2">Time Period</label>
+              <Select value={period} onValueChange={setPeriod}>
+                <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(periods).map(([key, per]) => (
+                    <SelectItem key={key} value={key}>{per.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <label className="block text-sm text-zinc-400 mb-2">Start Date</label>
+              <Select value={startDate} onValueChange={setStartDate}>
+                <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(startDates).map(([key, date]) => (
+                    <SelectItem key={key} value={key}>{date}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Results */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <h5 className="font-semibold text-white">Investment Summary</h5>
+              <div className="bg-zinc-800/50 rounded-lg p-4 space-y-3">
+                <div className="flex justify-between text-sm">
+                  <span className="text-zinc-400">Total Invested:</span>
+                  <span className="text-white">${totalInvested.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-zinc-400">Average Price:</span>
+                  <span className="text-white">${averagePrice.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-zinc-400">Current Value:</span>
+                  <span className="text-white">${totalValue.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-sm border-t border-zinc-700 pt-3">
+                  <span className="text-zinc-400">Total Profit:</span>
+                  <span className={profit >= 0 ? "text-green-400" : "text-red-400"}>
+                    ${profit.toLocaleString()}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-zinc-400">Return:</span>
+                  <span className={returnPercent >= 0 ? "text-green-400" : "text-red-400"}>
+                    {returnPercent >= 0 ? '+' : ''}{returnPercent.toFixed(1)}%
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h5 className="font-semibold text-white">DCA Benefits</h5>
+              <div className="space-y-3 text-sm">
+                <div className="flex items-start space-x-3">
+                  <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                  <span className="text-zinc-300">Reduces impact of volatility through averaging</span>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                  <span className="text-zinc-300">Removes emotional decision-making from timing</span>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                  <span className="text-zinc-300">Easy to automate and maintain consistency</span>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                  <span className="text-zinc-300">Works well with long-term Bitcoin adoption</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Disclaimer */}
+          <div className="bg-yellow-500/10 border border-yellow-500/50 rounded p-3">
+            <p className="text-xs text-zinc-400">
+              <strong className="text-yellow-400">Educational Purpose:</strong> This calculator uses simplified historical data for educational purposes. Past performance doesn't guarantee future results. Real returns will vary based on market conditions, timing, and fees.
+            </p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 // Weekly Quiz Component
 interface WeeklyQuizProps {
   questions: Array<{
@@ -2178,6 +2713,379 @@ export default function Home() {
                     </Card>
                   </div>
                 )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Simulations Section */}
+        {activeSection === "simulations" && (
+          <div className="space-y-6">
+            {/* Simulations Sub-navigation */}
+            <div className="flex justify-center">
+              <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2">
+                <Button
+                  variant={simulationsSubTab === "safety" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("safety")}
+                  className="text-xs px-3 py-1"
+                >
+                  <Shield className="w-3 h-3 mr-1" />
+                  Safety
+                </Button>
+                <Button
+                  variant={simulationsSubTab === "transactions" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("transactions")}
+                  className="text-xs px-3 py-1"
+                >
+                  <CreditCard className="w-3 h-3 mr-1" />
+                  Transactions
+                </Button>
+                <Button
+                  variant={simulationsSubTab === "hodl" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("hodl")}
+                  className="text-xs px-3 py-1"
+                >
+                  <TrendingUp className="w-3 h-3 mr-1" />
+                  HODL vs Trading
+                </Button>
+                <Button
+                  variant={simulationsSubTab === "dca" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("dca")}
+                  className="text-xs px-3 py-1"
+                >
+                  <Calculator className="w-3 h-3 mr-1" />
+                  DCA
+                </Button>
+              </div>
+            </div>
+
+            {/* Safety Section */}
+            {simulationsSubTab === "safety" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">Bitcoin Wallet Safety</h3>
+                  <p className="text-zinc-400">Learn essential security practices to protect your Bitcoin</p>
+                </div>
+
+                {/* Safety Rules */}
+                <Card className="bg-zinc-900/50 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h4 className="text-lg font-semibold text-white mb-4 flex items-center">
+                      <Shield className="w-5 h-5 mr-2 text-orange-500" />
+                      Golden Rules of Bitcoin Security
+                    </h4>
+                    <div className="space-y-4">
+                      {[
+                        "Never share your private keys or seed phrases with anyone",
+                        "Always verify receiving addresses before sending Bitcoin",
+                        "Use hardware wallets for significant amounts",
+                        "Keep multiple secure backups of your seed phrase",
+                        "Never store large amounts on exchanges long-term",
+                        "Double-check all transaction details before confirming",
+                        "Be wary of phishing attempts and fake websites"
+                      ].map((rule, idx) => (
+                        <div key={idx} className="flex items-start space-x-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span className="text-zinc-300">{rule}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Interactive Wallet Explorer */}
+                <Card className="bg-zinc-900/50 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h4 className="text-lg font-semibold text-white mb-4 flex items-center">
+                      <Wallet className="w-5 h-5 mr-2 text-orange-500" />
+                      Interactive Wallet Explorer
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {[
+                        {
+                          type: "Hardware Wallet",
+                          icon: <Lock className="w-6 h-6" />,
+                          pros: ["Highest security", "Private keys never online", "Resistant to malware"],
+                          cons: ["Higher cost", "Can be lost/damaged", "Learning curve"],
+                          examples: ["Ledger Nano X", "Trezor Model T", "Coldcard"]
+                        },
+                        {
+                          type: "Mobile Wallet",
+                          icon: <CreditCard className="w-6 h-6" />,
+                          pros: ["Convenient for daily use", "Easy to use", "Quick transactions"],
+                          cons: ["Connected to internet", "Phone security risks", "Limited amounts"],
+                          examples: ["Blue Wallet", "Phoenix", "Muun"]
+                        },
+                        {
+                          type: "Desktop Wallet",
+                          icon: <Building2 className="w-6 h-6" />,
+                          pros: ["Full control", "Advanced features", "Better for larger amounts"],
+                          cons: ["Computer security risks", "Less convenient", "Backup complexity"],
+                          examples: ["Electrum", "Bitcoin Core", "Sparrow"]
+                        },
+                        {
+                          type: "Exchange Wallet",
+                          icon: <Globe className="w-6 h-6" />,
+                          pros: ["Easy to start", "Built-in trading", "User-friendly"],
+                          cons: ["Not your keys", "Centralized risk", "Regulatory risk"],
+                          examples: ["Coinbase", "Kraken", "Binance"]
+                        }
+                      ].map((wallet, idx) => (
+                        <div key={idx} className="bg-zinc-800/50 rounded-lg p-4 space-y-3">
+                          <div className="flex items-center space-x-2">
+                            <div className="text-orange-500">{wallet.icon}</div>
+                            <h5 className="font-semibold text-white">{wallet.type}</h5>
+                          </div>
+                          
+                          <div className="space-y-2 text-sm">
+                            <div>
+                              <span className="text-green-400 font-medium">Pros:</span>
+                              <ul className="text-zinc-300 ml-4 list-disc">
+                                {wallet.pros.map((pro, pIdx) => (
+                                  <li key={pIdx}>{pro}</li>
+                                ))}
+                              </ul>
+                            </div>
+                            
+                            <div>
+                              <span className="text-red-400 font-medium">Cons:</span>
+                              <ul className="text-zinc-300 ml-4 list-disc">
+                                {wallet.cons.map((con, cIdx) => (
+                                  <li key={cIdx}>{con}</li>
+                                ))}
+                              </ul>
+                            </div>
+                            
+                            <div>
+                              <span className="text-blue-400 font-medium">Examples:</span>
+                              <div className="text-zinc-300 ml-2">
+                                {wallet.examples.join(", ")}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {/* Transaction Builder */}
+            {simulationsSubTab === "transactions" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">Bitcoin Transaction Builder</h3>
+                  <p className="text-zinc-400">Learn how Bitcoin transactions work step by step</p>
+                </div>
+
+                <TransactionSimulator />
+              </div>
+            )}
+
+            {/* HODL vs Trading */}
+            {simulationsSubTab === "hodl" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">HODL vs Trading Strategy</h3>
+                  <p className="text-zinc-400">Compare long-term holding against active trading</p>
+                </div>
+
+                <HODLSimulator />
+              </div>
+            )}
+
+            {/* DCA Calculator */}
+            {simulationsSubTab === "dca" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">Dollar-Cost Averaging Calculator</h3>
+                  <p className="text-zinc-400">See how regular Bitcoin purchases perform over time</p>
+                </div>
+
+                <DCACalculator />
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* More Section */}
+        {activeSection === "more" && (
+          <div className="space-y-6">
+            {/* More Sub-navigation */}
+            <div className="flex justify-center">
+              <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2">
+                <Button
+                  variant={moreSubTab === "store" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setMoreSubTab("store")}
+                  className="text-xs px-3 py-1"
+                >
+                  <ShoppingCart className="w-3 h-3 mr-1" />
+                  Store
+                </Button>
+              </div>
+            </div>
+
+            {/* Store Section */}
+            {moreSubTab === "store" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">Bitcoin Learning Store</h3>
+                  <p className="text-zinc-400">Essential tools and books for your Bitcoin journey</p>
+                </div>
+
+                {/* Affiliate Disclosure */}
+                <Card className="bg-zinc-900/50 border-zinc-800">
+                  <CardContent className="p-4">
+                    <div className="flex items-start space-x-3">
+                      <Info className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                      <div className="text-sm text-zinc-300">
+                        <p className="font-medium text-white mb-1">Affiliate Disclosure</p>
+                        <p>This page contains affiliate links. When you purchase through these links, you support our educational mission at no extra cost to you. We only recommend products we genuinely believe will help your Bitcoin journey.</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Hardware Wallets */}
+                <Card className="bg-zinc-900/50 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h4 className="text-lg font-semibold text-white mb-4 flex items-center">
+                      <Lock className="w-5 h-5 mr-2 text-orange-500" />
+                      Hardware Wallets
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="bg-zinc-800/50 rounded-lg p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h5 className="font-semibold text-white">Ledger Nano X</h5>
+                          <Badge variant="secondary">$149</Badge>
+                        </div>
+                        <p className="text-sm text-zinc-300">
+                          The most popular hardware wallet with Bluetooth connectivity and support for over 5,500 cryptocurrencies.
+                        </p>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center space-x-2">
+                            <CheckCircle className="w-4 h-4 text-green-500" />
+                            <span className="text-zinc-300">Bluetooth enabled</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <CheckCircle className="w-4 h-4 text-green-500" />
+                            <span className="text-zinc-300">Mobile app support</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <CheckCircle className="w-4 h-4 text-green-500" />
+                            <span className="text-zinc-300">Secure chip technology</span>
+                          </div>
+                        </div>
+                        <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                          <ExternalLink className="w-4 h-4 mr-2" />
+                          Shop Ledger Nano X
+                        </Button>
+                      </div>
+
+                      <div className="bg-zinc-800/50 rounded-lg p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h5 className="font-semibold text-white">Trezor Model T</h5>
+                          <Badge variant="secondary">$219</Badge>
+                        </div>
+                        <p className="text-sm text-zinc-300">
+                          Advanced hardware wallet with touchscreen interface and comprehensive security features.
+                        </p>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center space-x-2">
+                            <CheckCircle className="w-4 h-4 text-green-500" />
+                            <span className="text-zinc-300">Color touchscreen</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <CheckCircle className="w-4 h-4 text-green-500" />
+                            <span className="text-zinc-300">Open-source firmware</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <CheckCircle className="w-4 h-4 text-green-500" />
+                            <span className="text-zinc-300">Advanced recovery features</span>
+                          </div>
+                        </div>
+                        <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                          <ExternalLink className="w-4 h-4 mr-2" />
+                          Shop Trezor Model T
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Essential Books */}
+                <Card className="bg-zinc-900/50 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h4 className="text-lg font-semibold text-white mb-4 flex items-center">
+                      <BookOpen className="w-5 h-5 mr-2 text-orange-500" />
+                      Essential Bitcoin Books
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="bg-zinc-800/50 rounded-lg p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h5 className="font-semibold text-white">Broken Money</h5>
+                          <Badge variant="secondary">$25</Badge>
+                        </div>
+                        <p className="text-xs text-zinc-400">by Lyn Alden</p>
+                        <p className="text-sm text-zinc-300">
+                          A comprehensive analysis of monetary systems and why they fail, leading to Bitcoin as a solution.
+                        </p>
+                        <div className="flex items-center space-x-2 text-sm">
+                          <Star className="w-4 h-4 text-yellow-500" />
+                          <span className="text-zinc-300">Beginner Friendly</span>
+                        </div>
+                        <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                          <ExternalLink className="w-4 h-4 mr-2" />
+                          Buy on Amazon
+                        </Button>
+                      </div>
+
+                      <div className="bg-zinc-800/50 rounded-lg p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h5 className="font-semibold text-white">The Bitcoin Standard</h5>
+                          <Badge variant="secondary">$20</Badge>
+                        </div>
+                        <p className="text-xs text-zinc-400">by Saifedean Ammous</p>
+                        <p className="text-sm text-zinc-300">
+                          The definitive guide to Bitcoin's economic properties and monetary theory.
+                        </p>
+                        <div className="flex items-center space-x-2 text-sm">
+                          <Brain className="w-4 h-4 text-blue-500" />
+                          <span className="text-zinc-300">Intermediate</span>
+                        </div>
+                        <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                          <ExternalLink className="w-4 h-4 mr-2" />
+                          Buy on Amazon
+                        </Button>
+                      </div>
+
+                      <div className="bg-zinc-800/50 rounded-lg p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h5 className="font-semibold text-white">The Fiat Standard</h5>
+                          <Badge variant="secondary">$22</Badge>
+                        </div>
+                        <p className="text-xs text-zinc-400">by Saifedean Ammous</p>
+                        <p className="text-sm text-zinc-300">
+                          A critical examination of government money and its effects on society.
+                        </p>
+                        <div className="flex items-center space-x-2 text-sm">
+                          <Brain className="w-4 h-4 text-blue-500" />
+                          <span className="text-zinc-300">Advanced</span>
+                        </div>
+                        <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                          <ExternalLink className="w-4 h-4 mr-2" />
+                          Buy on Amazon
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             )}
           </div>
