@@ -2387,12 +2387,25 @@ export default function Home() {
                         const isCurrentStep = inflationProgress === step && inflationSimActive;
                         
                         return (
-                          <div key={step} className={`p-3 rounded-lg border transition-all duration-1000 ${
+                          <div key={step} className={`relative p-3 rounded-lg border transition-all duration-1000 overflow-hidden ${
                             isActive 
                               ? step === 0 ? 'bg-green-800/30 border-green-600/50' : 'bg-red-800/30 border-red-600/50'
                               : 'bg-zinc-800 border-zinc-700'
                           }`}>
-                            <div className="text-center">
+                            {/* Visual decay bar overlay */}
+                            <div 
+                              className={`absolute inset-0 transition-all duration-1000 ${
+                                isActive 
+                                  ? step === 0 ? 'bg-green-500/20' : 'bg-red-500/20'
+                                  : 'bg-transparent'
+                              }`}
+                              style={{ 
+                                width: isActive ? `${purchasingPower}%` : '0%',
+                                transformOrigin: 'left'
+                              }}
+                            ></div>
+                            
+                            <div className="relative text-center">
                               <div className={`font-bold text-lg transition-colors duration-1000 ${
                                 isActive 
                                   ? step === 0 ? 'text-green-400' : 'text-red-400' 
@@ -2424,7 +2437,7 @@ export default function Home() {
                             </div>
                             
                             {isCurrentStep && (
-                              <div className="mt-2 flex items-center justify-center gap-2 text-red-400 text-xs">
+                              <div className="relative mt-2 flex items-center justify-center gap-2 text-red-400 text-xs">
                                 <div className="w-1.5 h-1.5 bg-red-400 rounded-full animate-pulse"></div>
                                 Losing value...
                               </div>
