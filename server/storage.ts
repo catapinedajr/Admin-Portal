@@ -8,8 +8,7 @@ import {
   treasuryCompanies,
   sovereignAdoption,
   deepDiveTopics,
-  weeklyTopics,
-  userWeeklyProgress,
+
   type User, 
   type InsertUser, 
   type DailyFact, 
@@ -34,10 +33,7 @@ import {
   type InsertUserQuizAnswer,
   type DeepDiveTopic,
   type InsertDeepDiveTopic,
-  type WeeklyTopic,
-  type InsertWeeklyTopic,
-  type UserWeeklyProgress,
-  type InsertUserWeeklyProgress
+
 } from "@shared/schema";
 
 export interface IStorage {
@@ -103,17 +99,7 @@ export interface IStorage {
   getAllDeepDiveTopics(): Promise<DeepDiveTopic[]>;
   createDeepDiveTopic(topic: InsertDeepDiveTopic): Promise<DeepDiveTopic>;
 
-  // Weekly topics methods
-  getCurrentWeeklyTopic(): Promise<WeeklyTopic | undefined>;
-  getWeeklyTopic(weekNumber: number): Promise<WeeklyTopic | undefined>;
-  getAllWeeklyTopics(): Promise<WeeklyTopic[]>;
-  createWeeklyTopic(topic: InsertWeeklyTopic): Promise<WeeklyTopic>;
-  
-  // User weekly progress methods
-  getUserWeeklyProgress(userId: number, weekNumber: number): Promise<UserWeeklyProgress | undefined>;
-  createOrUpdateWeeklyProgress(progress: InsertUserWeeklyProgress): Promise<UserWeeklyProgress>;
-  updateWeeklyProgress(userId: number, weekNumber: number, currentSection: number, progressPercentage: number): Promise<void>;
-  completeWeeklyTopic(userId: number, weekNumber: number): Promise<void>;
+
 }
 
 export class MemStorage implements IStorage {
@@ -129,8 +115,7 @@ export class MemStorage implements IStorage {
   private quizQuestions: Map<number, QuizQuestion>;
   private userQuizAnswers: Map<string, UserQuizAnswer>; // key: userId-questionId-date
   private deepDiveTopics: Map<number, DeepDiveTopic>;
-  private weeklyTopics: Map<number, WeeklyTopic>;
-  private userWeeklyProgress: Map<string, UserWeeklyProgress>; // key: userId-weekNumber
+
   private currentUserId: number;
   private currentFactId: number;
   private currentLessonId: number;
@@ -143,8 +128,7 @@ export class MemStorage implements IStorage {
   private currentQuizQuestionId: number;
   private currentQuizAnswerId: number;
   private currentDeepDiveTopicId: number;
-  private currentWeeklyTopicId: number;
-  private currentWeeklyProgressId: number;
+
 
   constructor() {
     this.users = new Map();
@@ -159,8 +143,7 @@ export class MemStorage implements IStorage {
     this.quizQuestions = new Map();
     this.userQuizAnswers = new Map();
     this.deepDiveTopics = new Map();
-    this.weeklyTopics = new Map();
-    this.userWeeklyProgress = new Map();
+
     
     this.currentUserId = 1;
     this.currentFactId = 1;
@@ -174,8 +157,7 @@ export class MemStorage implements IStorage {
     this.currentQuizQuestionId = 1;
     this.currentQuizAnswerId = 1;
     this.currentDeepDiveTopicId = 1;
-    this.currentWeeklyTopicId = 1;
-    this.currentWeeklyProgressId = 1;
+
 
     this.seedData();
   }
