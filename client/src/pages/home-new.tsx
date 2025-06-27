@@ -371,9 +371,7 @@ export default function Home() {
     return dataPoints[2024];
   };
 
-  const getPurchasingPowerForYear = (year: number): string => {
-    return getPurchasingPowerRaw(year).toFixed(2);
-  };
+
 
   const getHousePriceForYear = (year: number): number => {
     // Median home prices in the US - authentic historical data
@@ -441,6 +439,38 @@ export default function Home() {
       }
     }
     return dataPoints[2024].toFixed(2);
+  };
+
+  // Calculate purchasing power percentage based on CPI data
+  const getPurchasingPowerPercentage = (year: number): number => {
+    // Using authentic CPI data to calculate purchasing power
+    // 1920 baseline = 100% purchasing power
+    const cpiData: { [key: number]: number } = {
+      1920: 20.0, 1930: 16.7, 1940: 14.0, 1950: 24.1, 1960: 29.6,
+      1971: 40.5, 1980: 82.4, 1990: 130.7, 2000: 172.2, 2008: 215.3,
+      2010: 218.1, 2015: 237.0, 2020: 258.8, 2021: 271.0, 2022: 292.7,
+      2023: 307.0, 2024: 310.3
+    };
+    
+    const years = Object.keys(cpiData).map(Number).sort();
+    let currentCPI = cpiData[1920]; // default to 1920
+    
+    if (year <= years[0]) {
+      currentCPI = cpiData[years[0]];
+    } else if (year >= years[years.length - 1]) {
+      currentCPI = cpiData[years[years.length - 1]];
+    } else {
+      for (let i = 0; i < years.length - 1; i++) {
+        if (year >= years[i] && year <= years[i + 1]) {
+          const progress = (year - years[i]) / (years[i + 1] - years[i]);
+          currentCPI = cpiData[years[i]] + progress * (cpiData[years[i + 1]] - cpiData[years[i]]);
+          break;
+        }
+      }
+    }
+    
+    // Calculate purchasing power: (1920 CPI / current CPI) * 100
+    return (cpiData[1920] / currentCPI) * 100;
   };
 
   // Settlement Animation Logic
@@ -2763,27 +2793,64 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Real-World Examples - Horizontal Boxes */}
-                <div className="space-y-2">
+                {/* Fading Dollar Bill Visualization */}
+                <div className="space-y-3">
                   <h4 className="text-white font-semibold flex items-center gap-2">
-                    <ShoppingCart className="w-4 h-4 text-orange-400" />
-                    Real-World Impact in {moneySupplyYear}
+                    <DollarSign className="w-4 h-4 text-orange-400" />
+                    Watch Your Dollar Disappear: {moneySupplyYear}
                   </h4>
-                  <div className="grid grid-cols-3 gap-2">
-                    <div className="bg-red-950/40 border border-red-800/40 rounded-lg p-3 text-center">
-                      <div className="text-sm">🏠 House</div>
-                      <div className="text-orange-400 font-bold text-sm">${getHousePriceForYear(moneySupplyYear).toLocaleString()}</div>
-                      <div className="text-zinc-500 text-xs">vs $3,200</div>
-                    </div>
-                    <div className="bg-red-950/40 border border-red-800/40 rounded-lg p-3 text-center">
-                      <div className="text-sm">🥛 Milk</div>
-                      <div className="text-orange-400 font-bold text-sm">${getMilkPriceForYear(moneySupplyYear)}</div>
-                      <div className="text-zinc-500 text-xs">vs $0.56</div>
-                    </div>
-                    <div className="bg-red-950/40 border border-red-800/40 rounded-lg p-3 text-center">
-                      <div className="text-sm">⛽ Gas</div>
-                      <div className="text-orange-400 font-bold text-sm">${getGasPriceForYear(moneySupplyYear)}</div>
-                      <div className="text-zinc-500 text-xs">vs $0.30</div>
+                  
+                  <div className="bg-gradient-to-r from-red-950/30 to-orange-950/30 rounded-lg p-6 border border-red-800/30">
+                    <div className="flex items-center justify-center space-x-8">
+                      {/* Fading Dollar Bill */}
+                      <div className="text-center">
+                        <div className="relative">
+                          <svg 
+                            width="120" 
+                            height="60" 
+                            viewBox="0 0 120 60" 
+                            className="mx-auto"
+                            style={{ 
+                              opacity: getPurchasingPowerPercentage(moneySupplyYear) / 100,
+                              filter: `saturate(${getPurchasingPowerPercentage(moneySupplyYear) / 100})`
+                            }}
+                          >
+                            {/* Dollar Bill Shape */}
+                            <rect x="2" y="2" width="116" height="56" rx="4" fill="#85BB65" stroke="#5D8343" strokeWidth="2"/>
+                            {/* Dollar Bill Details */}
+                            <circle cx="30" cy="30" r="12" fill="#5D8343" opacity="0.3"/>
+                            <text x="30" y="35" textAnchor="middle" fontSize="12" fill="#2D4A1E" fontWeight="bold">$1</text>
+                            <text x="60" y="15" textAnchor="middle" fontSize="8" fill="#2D4A1E">THE UNITED STATES</text>
+                            <text x="60" y="25" textAnchor="middle" fontSize="6" fill="#2D4A1E">OF AMERICA</text>
+                            <text x="60" y="40" textAnchor="middle" fontSize="10" fill="#2D4A1E" fontWeight="bold">ONE DOLLAR</text>
+                            <text x="60" y="50" textAnchor="middle" fontSize="6" fill="#2D4A1E">1920</text>
+                            <circle cx="90" cy="30" r="8" fill="#5D8343" opacity="0.2"/>
+                          </svg>
+                        </div>
+                        <div className="mt-2 text-zinc-300 text-sm">Your 1920 Dollar</div>
+                      </div>
+
+                      {/* Arrow and Stats */}
+                      <div className="text-center">
+                        <div className="text-orange-400 text-2xl">→</div>
+                        <div className="text-zinc-400 text-xs mt-1">buys today</div>
+                      </div>
+
+                      {/* Current Value */}
+                      <div className="text-center">
+                        <div className="text-orange-400 font-bold text-2xl">
+                          ${(getPurchasingPowerPercentage(moneySupplyYear) / 100).toFixed(2)}
+                        </div>
+                        <div className="text-zinc-300 text-sm">
+                          {getPurchasingPowerPercentage(moneySupplyYear).toFixed(1)}% of original value
+                        </div>
+                        <div className="text-zinc-500 text-xs mt-1">
+                          {moneySupplyYear === 1920 ? "Full purchasing power" : 
+                           moneySupplyYear >= 2020 ? "Buys a few cents worth" :
+                           moneySupplyYear >= 1980 ? "Buys a quarter's worth" :
+                           "Still has some value"}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
