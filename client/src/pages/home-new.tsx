@@ -2807,41 +2807,108 @@ export default function Home() {
                         <svg 
                           width="120" 
                           height="50" 
-                          viewBox="0 0 240 100" 
+                          viewBox="0 0 300 125" 
                           className="mx-auto"
                           style={{ 
                             opacity: getPurchasingPowerPercentage(moneySupplyYear) / 100,
                             filter: `saturate(${getPurchasingPowerPercentage(moneySupplyYear) / 100})`
                           }}
                         >
-                          {/* Dollar Bill Base */}
-                          <rect x="2" y="2" width="236" height="96" rx="6" fill="#85BB65" stroke="#4A5D23" strokeWidth="2"/>
+                          {/* Base Paper with Subtle Texture */}
+                          <defs>
+                            <pattern id="paperTexture" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+                              <rect width="4" height="4" fill="#89BE6C"/>
+                              <circle cx="2" cy="2" r="0.2" fill="#7BA862" opacity="0.3"/>
+                            </pattern>
+                            <radialGradient id="billGradient" cx="50%" cy="50%" r="50%">
+                              <stop offset="0%" stopColor="#8BC46F"/>
+                              <stop offset="100%" stopColor="#6B9B4F"/>
+                            </radialGradient>
+                          </defs>
                           
-                          {/* Ornate Border */}
-                          <rect x="8" y="8" width="224" height="84" rx="4" fill="none" stroke="#2D4A1E" strokeWidth="1" strokeDasharray="2,1"/>
+                          {/* Dollar Bill Base with Gradient */}
+                          <rect x="5" y="5" width="290" height="115" rx="8" fill="url(#billGradient)" stroke="#2F4A1A" strokeWidth="2"/>
+                          <rect x="5" y="5" width="290" height="115" rx="8" fill="url(#paperTexture)" opacity="0.4"/>
                           
-                          {/* George Washington Portrait Circle */}
-                          <circle cx="60" cy="50" r="22" fill="#2D4A1E" opacity="0.15"/>
-                          <circle cx="60" cy="50" r="18" fill="none" stroke="#2D4A1E" strokeWidth="1"/>
-                          <text x="60" y="42" textAnchor="middle" fontSize="8" fill="#1A2E0F" fontFamily="serif">GEORGE</text>
-                          <text x="60" y="58" textAnchor="middle" fontSize="8" fill="#1A2E0F" fontFamily="serif">WASHINGTON</text>
+                          {/* Ornate Corner Decorations */}
+                          <g fill="none" stroke="#1F3510" strokeWidth="1.5" opacity="0.8">
+                            <path d="M15,15 Q25,15 25,25 Q25,15 35,15" strokeLinecap="round"/>
+                            <path d="M265,15 Q275,15 275,25 Q275,15 285,15" strokeLinecap="round"/>
+                            <path d="M15,105 Q25,105 25,95 Q25,105 35,105" strokeLinecap="round"/>
+                            <path d="M265,105 Q275,105 275,95 Q275,105 285,105" strokeLinecap="round"/>
+                          </g>
                           
-                          {/* Center Text */}
-                          <text x="120" y="25" textAnchor="middle" fontSize="9" fill="#1A2E0F" fontFamily="serif" fontWeight="bold">THE UNITED STATES OF AMERICA</text>
-                          <text x="120" y="40" textAnchor="middle" fontSize="16" fill="#1A2E0F" fontFamily="serif" fontWeight="bold">ONE</text>
-                          <text x="120" y="60" textAnchor="middle" fontSize="16" fill="#1A2E0F" fontFamily="serif" fontWeight="bold">DOLLAR</text>
-                          <text x="120" y="75" textAnchor="middle" fontSize="7" fill="#1A2E0F" fontFamily="serif">WASHINGTON, D.C.</text>
+                          {/* Washington Portrait Oval */}
+                          <ellipse cx="75" cy="62.5" rx="28" ry="35" fill="#1F3510" opacity="0.2"/>
+                          <ellipse cx="75" cy="62.5" rx="25" ry="32" fill="none" stroke="#1F3510" strokeWidth="2"/>
                           
-                          {/* Corner "1" */}
-                          <text x="25" y="30" textAnchor="middle" fontSize="20" fill="#1A2E0F" fontFamily="serif" fontWeight="bold">1</text>
-                          <text x="215" y="70" textAnchor="middle" fontSize="20" fill="#1A2E0F" fontFamily="serif" fontWeight="bold">1</text>
+                          {/* Portrait Details */}
+                          <circle cx="75" cy="55" r="8" fill="#1F3510" opacity="0.3"/>
+                          <rect x="67" y="65" width="16" height="12" rx="2" fill="#1F3510" opacity="0.2"/>
+                          <text x="75" y="48" textAnchor="middle" fontSize="6" fill="#0F1F08" fontWeight="bold">G.W.</text>
+                          <text x="75" y="85" textAnchor="middle" fontSize="5" fill="#0F1F08">1732-1799</text>
                           
-                          {/* Serial Number */}
-                          <text x="180" y="25" textAnchor="middle" fontSize="6" fill="#1A2E0F" fontFamily="monospace">1920</text>
+                          {/* Federal Reserve Seal (Right) */}
+                          <circle cx="225" cy="62.5" r="20" fill="none" stroke="#1F3510" strokeWidth="2"/>
+                          <circle cx="225" cy="62.5" r="15" fill="#1F3510" opacity="0.1"/>
+                          <text x="225" y="58" textAnchor="middle" fontSize="8" fill="#0F1F08" fontWeight="bold">FED</text>
+                          <text x="225" y="68" textAnchor="middle" fontSize="6" fill="#0F1F08">RES</text>
                           
-                          {/* Ornamental Elements */}
-                          <circle cx="180" cy="50" r="15" fill="none" stroke="#2D4A1E" strokeWidth="1" opacity="0.3"/>
-                          <text x="180" y="54" textAnchor="middle" fontSize="10" fill="#1A2E0F" fontFamily="serif">⚜</text>
+                          {/* Main Text - Top */}
+                          <text x="150" y="25" textAnchor="middle" fontSize="8" fill="#0F1F08" fontWeight="bold" letterSpacing="1">
+                            THE UNITED STATES OF AMERICA
+                          </text>
+                          
+                          {/* Federal Reserve Note */}
+                          <text x="150" y="35" textAnchor="middle" fontSize="5" fill="#0F1F08">
+                            FEDERAL RESERVE NOTE
+                          </text>
+                          
+                          {/* Large ONE DOLLAR */}
+                          <text x="150" y="55" textAnchor="middle" fontSize="14" fill="#0F1F08" fontWeight="bold" letterSpacing="2">
+                            ONE
+                          </text>
+                          <text x="150" y="70" textAnchor="middle" fontSize="14" fill="#0F1F08" fontWeight="bold" letterSpacing="2">
+                            DOLLAR
+                          </text>
+                          
+                          {/* Series and Signatures */}
+                          <text x="150" y="85" textAnchor="middle" fontSize="4" fill="#0F1F08">
+                            SERIES 1920
+                          </text>
+                          <text x="120" y="95" textAnchor="middle" fontSize="3" fill="#0F1F08">
+                            SECRETARY OF THE TREASURY
+                          </text>
+                          <text x="180" y="95" textAnchor="middle" fontSize="3" fill="#0F1F08">
+                            TREASURER OF THE UNITED STATES
+                          </text>
+                          
+                          {/* Corner 1's with Ornate Design */}
+                          <g fill="#0F1F08">
+                            <text x="30" y="35" textAnchor="middle" fontSize="16" fontWeight="bold">1</text>
+                            <text x="30" y="45" textAnchor="middle" fontSize="4">ONE</text>
+                            <text x="270" y="85" textAnchor="middle" fontSize="16" fontWeight="bold">1</text>
+                            <text x="270" y="95" textAnchor="middle" fontSize="4">ONE</text>
+                          </g>
+                          
+                          {/* Serial Numbers */}
+                          <text x="50" y="15" textAnchor="start" fontSize="4" fill="#0F1F08" fontFamily="monospace">
+                            A12345678A
+                          </text>
+                          <text x="250" y="110" textAnchor="end" fontSize="4" fill="#0F1F08" fontFamily="monospace">
+                            A12345678A
+                          </text>
+                          
+                          {/* Micro-printing Security Features */}
+                          <text x="150" y="105" textAnchor="middle" fontSize="2" fill="#0F1F08" opacity="0.6">
+                            THE UNITED STATES OF AMERICA • ONE DOLLAR • THE UNITED STATES OF AMERICA
+                          </text>
+                          
+                          {/* Decorative Flourishes */}
+                          <g fill="none" stroke="#1F3510" strokeWidth="0.8" opacity="0.6">
+                            <path d="M110,40 Q120,35 130,40 Q140,45 150,40" strokeLinecap="round"/>
+                            <path d="M110,75 Q120,80 130,75 Q140,70 150,75" strokeLinecap="round"/>
+                          </g>
                         </svg>
                         <div className="mt-1 text-zinc-300 text-xs text-center">Your 1920 Dollar</div>
                       </div>
