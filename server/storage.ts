@@ -850,9 +850,9 @@ This layered approach mirrors the internet's architecture, where different layer
     ];
 
     // Create quiz questions for multiple day indices (current day could be 190+ based on date calculation)
-    // Skip days 0-29 (reserved for AI-generated Month 1 content)
+    // Include days 0-29 since AI generation is temporarily disabled
     const quizQuestions = [];
-    for (let day = 30; day < 400; day++) {
+    for (let day = 0; day < 400; day++) {
       baseQuestions.forEach((baseQuestion, index) => {
         quizQuestions.push({
           dayIndex: day,
