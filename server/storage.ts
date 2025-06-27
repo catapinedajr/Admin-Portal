@@ -180,29 +180,56 @@ export class MemStorage implements IStorage {
   }
 
   private seedData() {
-    // Comprehensive Bitcoin education facts - organized by learning progression
+    // Week 1: What Is Money Really? - Facts from Grok curriculum
     const facts = [
-      // Week 1: Core Concepts
       {
-        title: "What is Bitcoin?",
-        content: "Bitcoin is digital money that works without banks or governments. It's the first successful cryptocurrency, created to give people financial freedom and control over their own money.",
-        category: "Fundamentals",
+        title: "The Barter Struggle",
+        content: "Barter systems required a 'double coincidence of wants,' meaning both parties had to want what the other offered. This inefficiency led to the creation of money as a shared medium of exchange.",
+        category: "History",
         icon: "coins",
-        dayIndex: 0
+        dayIndex: 1
       },
       {
-        title: "Digital Scarcity",
-        content: "Bitcoin has a maximum supply of 21 million coins that will ever exist. This digital scarcity makes it like digital gold - rare and valuable because there's a limited amount.",
-        category: "Fundamentals",
+        title: "Gold's Appeal",
+        content: "Gold became money because it's rare, durable, divisible, and hard to counterfeit. Its universal value made it a trusted medium for centuries.",
+        category: "History",
         icon: "gem",
-        dayIndex: 0
+        dayIndex: 2
       },
       {
-        title: "Why Bitcoin Matters",
-        content: "Bitcoin gives you complete control over your money. No one can freeze your account, reverse your transactions, or stop you from sending money anywhere in the world.",
-        category: "Purpose",
-        icon: "shield-alt",
-        dayIndex: 0
+        title: "Coin Innovation", 
+        content: "Coins, first minted in Lydia around 600 BCE, standardized trade by guaranteeing weight and purity, making transactions faster and more reliable.",
+        category: "History",
+        icon: "coins",
+        dayIndex: 3
+      },
+      {
+        title: "Paper's Rise",
+        content: "Paper money, starting in ancient China, replaced heavy coins with lightweight notes backed by gold or silver, but overprinting led to inflation.",
+        category: "History",
+        icon: "file-text",
+        dayIndex: 4
+      },
+      {
+        title: "Digital Shift",
+        content: "Most modern money is digital, existing as data in bank systems, but centralization makes it vulnerable to control and failure.",
+        category: "Technology",
+        icon: "credit-card",
+        dayIndex: 5
+      },
+      {
+        title: "Inflation's Sting",
+        content: "Inflation occurs when too much money chases too few goods, reducing money's value. Bitcoin's fixed supply aims to prevent this.",
+        category: "Economics",
+        icon: "trending-down",
+        dayIndex: 6
+      },
+      {
+        title: "Money Evolving",
+        content: "Money has evolved from shells to digital, each form solving and creating problems. Bitcoin is the next step, decentralizing trust.",
+        category: "Future",
+        icon: "zap",
+        dayIndex: 7
       },
 
       // Day 1: How Bitcoin Works
@@ -372,59 +399,172 @@ export class MemStorage implements IStorage {
       this.dailyFacts.set(newFact.id, newFact);
     });
 
-    // Comprehensive lesson content covering all fundamental Bitcoin concepts
+    // Week 1: What Is Money Really? - Foundation lessons from Grok curriculum
     const lessons = [
-      // Week 1: Foundation Lessons
       {
-        title: "Understanding Bitcoin: Digital Money Revolution",
-        content: `Bitcoin represents the first successful attempt at creating digital money that works without banks, governments, or any central authority controlling it.
+        title: "The Barter Problem",
+        content: `Imagine you're a farmer with a basket of apples, but you need shoes. You visit the cobbler, who wants fish instead. Now what?
 
-Unlike traditional money, Bitcoin exists purely as computer code. But this isn't just any digital money - it's programmable money with rules that cannot be changed arbitrarily. For thousands of years, every form of money required someone to be in charge, whether it was kings minting coins, banks issuing notes, or governments printing currency. Bitcoin breaks this pattern completely.
+In a small village long ago, people traded goods directly. You'd swap apples for bread, or a chicken for a blanket. This was barter, the earliest form of exchange. But it had a big problem: the "double coincidence of wants." You needed to find someone who had what you wanted and wanted what you had. If the cobbler didn't like apples, you were stuck. You might spend days wandering, trading apples for fish, then fish for shoes. It was slow, inefficient, and frustrating.
 
-The revolution lies in Bitcoin's solution to the "double-spending problem" - how to prevent someone from copying digital money and spending it twice. Before Bitcoin, every attempt at creating digital money failed because they required a central authority to prevent double-spending. Banks, for example, keep databases that track who owns what, preventing you from spending the same dollar twice. But what happens when the bank fails, gets hacked, or decides to freeze your account?
+Picture the village market on trading day. Farmers brought grain, craftsmen carried tools, weavers displayed cloth. Everyone had something valuable, but matching needs was like solving a complex puzzle. The wheat farmer needed pottery, but the potter wanted wool. The weaver had wool but needed grain. Round and round they'd go, creating complicated chains of trade that often fell apart when one person changed their mind.
 
-Bitcoin solves this through three fundamental properties that work together like a perfectly engineered system. First, it's completely decentralized with no single point of control or failure - thousands of computers worldwide work together to maintain the system. Second, it's mathematically scarce with only 21 million Bitcoin that will ever exist, making it more predictably scarce than gold or any government currency. Third, it's entirely permissionless, meaning anyone with an internet connection can use it without asking permission from any bank, government, or authority.
+As communities grew larger, barter became nearly impossible. You couldn't know everyone in a big city, and even if you did, finding the exact person who wanted your goods and had what you needed was like finding a needle in a haystack. Trade slowed, specialization became difficult, and economic growth stagnated. People spent more time arranging trades than actually producing valuable goods.
 
-The revolutionary insight that changes everything is profound yet simple: money can exist and function perfectly without requiring trust in any institution or government. For the first time in human history, individuals can store and transfer value globally without depending on fallible intermediaries.`,
-        summary: "Bitcoin is programmable, decentralized digital money that operates without central control, solving the double-spending problem through cryptographic innovation.",
-        estimatedReadTime: 6,
-        dayIndex: 0
-      },
+The solution came gradually as people discovered certain items everyone seemed to want. These might be beautiful shells from distant oceans, rare stones, or useful metals. When everyone accepted these special items, trading became much easier. You could sell your apples for shells, then use those shells to buy shoes. No more complex chains, no more frustrated searching. This was the birth of money—a shared medium of exchange that made commerce possible.
 
-      {
-        title: "How Bitcoin Works: The Blockchain Explained",
-        content: `The blockchain is Bitcoin's revolutionary innovation - a way to maintain a shared ledger without requiring trust in any central authority.
+Money fundamentally changed human civilization. It enabled specialization because people could focus on what they did best, knowing they could trade their products for anything they needed. It allowed for the accumulation of wealth and the planning of future transactions. Most importantly, it created trust between strangers because they all agreed on money's value.
 
-Imagine a special notebook that records every Bitcoin transaction that has ever happened. Now imagine this notebook has magical properties: it's instantly copied to thousands of computers worldwide, every new page must be agreed upon by the majority before being added, and once something is written, it cannot be changed or removed. This is essentially what the Bitcoin blockchain does, but instead of magic, it uses mathematics and cryptography.
-
-When you send Bitcoin, something fascinating happens behind the scenes. Your wallet creates a transaction and broadcasts it to the entire network, like announcing to thousands of accountants simultaneously that you want to move money. Miners around the world collect these pending transactions and gather them into a new block, like filling up a new page in the ledger. Then comes the competitive part - miners race to solve a complex mathematical puzzle, with the winner earning the right to add their block to the blockchain and receive newly created Bitcoin as a reward.
-
-Once a miner wins this computational lottery, they broadcast their solution to the network. Thousands of other computers instantly verify that the solution is correct and the transactions are valid, then accept the new block and begin working on the next puzzle. This process repeats every 10 minutes on average, creating an unstoppable chain of verified transactions.
-
-The blockchain's security comes from a brilliant insight: changing any past transaction would require controlling more than half of all mining power worldwide, which is economically impossible at Bitcoin's massive scale. The energy cost alone would be tens of billions of dollars, making attacks prohibitively expensive. This is how trust gets replaced by mathematical proof and economic incentives, creating the most secure financial network ever built.`,
-        summary: "The blockchain is a distributed ledger maintained by thousands of computers, where transactions are secured through cryptographic proof rather than trust.",
-        estimatedReadTime: 7,
+Bitcoin takes this ancient story and applies it to the digital age. Just as shells solved the barter problem thousands of years ago, Bitcoin solves the problems of digital trade in our interconnected world. It provides a universal medium of exchange that works across borders, operates without central control, and can't be counterfeited or controlled by any single authority.`,
+        summary: "The barter system's inefficiencies led to the creation of money as a shared medium of exchange, with Bitcoin serving as digital money for our modern world.",
+        estimatedReadTime: 8,
         dayIndex: 1
       },
 
       {
-        title: "Bitcoin vs Traditional Money: Why It Matters",
-        content: `To understand Bitcoin's importance, we must first understand the fundamental problems with traditional money systems that affect billions of people worldwide.
+        title: "The Value of Trust",
+        content: `Picture a merchant in ancient Mesopotamia, holding a clay tablet promising grain. Why does he accept it?
 
-Since 1971, when President Nixon ended the gold standard, most currencies became "fiat" money - backed only by government promises rather than gold or other tangible assets. This seemingly small change created a monetary system with three critical flaws that Bitcoin directly addresses.
+In ancient times, traders used shells, beads, or even promises written on clay as money. But why did anyone accept these things? Trust. The merchant believed the clay tablet could be traded for grain later because the issuer was reliable. Money has always been about shared belief. Gold became popular because it was rare, durable, and hard to fake. People trusted its value across cultures. But gold was heavy, so governments issued paper notes backed by gold. Over time, even the gold backing disappeared, leaving money backed only by trust in governments.
 
-The first problem is inflation by design. Governments can create new money whenever they choose, systematically reducing the value of existing money. This isn't accidental - it's the intended function of modern monetary policy. The purchasing power of the US dollar has declined over 85% since 1971, meaning your grandparents' money was worth far more than the same dollar amount today. Every time central banks print money, they're essentially taxing everyone who holds that currency without calling it a tax.
+Think about the bustling markets of ancient Babylon. Merchants from distant lands gathered with goods from across the known world. A trader from the north brought furs, another from the south carried spices, and a third offered precious stones. But how could they agree on value? The solution was shared trust in certain objects—perhaps stamped metal discs that everyone recognized as valuable.
 
-The second issue is total central control over your financial life. Banks and governments wield unprecedented power over individuals' money. They can freeze your accounts without warning, reverse your transactions after they've completed, control who can send or receive money based on political considerations, and devalue your life savings through money printing policies. This power has been increasingly weaponized, with financial deplatforming becoming a tool of political control.
+This trust wasn't blind faith. It was built on observable qualities. Gold shone with a distinctive luster that was hard to fake. It didn't rust or tarnish like other metals. It could be divided into smaller pieces without losing value. Most importantly, it was scarce enough to remain valuable but not so rare as to be useless for trade. These physical properties created natural trust that transcended language barriers and cultural differences.
 
-The third problem is systematic exclusion from the global economy. Over 2 billion people worldwide lack access to basic banking services, locked out of participating in international commerce not because they lack value to offer, but because they live in the wrong geographic location or don't meet arbitrary institutional requirements.
+As civilizations grew more sophisticated, the burden of carrying heavy gold became problematic. Ingenious bankers and governments began issuing paper certificates that represented claims on gold stored in vaults. These paper notes were lighter and more convenient, but they required a new kind of trust—faith that the issuer would actually have gold when you wanted to redeem your paper. This worked well as long as institutions remained trustworthy.
 
-Bitcoin provides elegant solutions to each of these problems through its foundational design. Its fixed supply of 21 million coins eliminates inflation by making additional money creation impossible. Its permissionless nature means anyone with internet access can participate regardless of location, politics, or institutional approval. Its censorship-resistant architecture ensures no authority can stop valid transactions or freeze accounts. And its global operation means the same rules apply everywhere, eliminating borders and discrimination.
+The modern era brought a dramatic change. In 1971, the United States ended the gold standard, meaning dollars were no longer backed by physical gold. Other countries followed suit. Suddenly, all major currencies were "fiat money"—valuable only because governments said so and people agreed to accept them. This system worked because of institutional trust, but it also created new vulnerabilities. Governments could print money at will, potentially destroying value through inflation.
 
-Bitcoin returns monetary sovereignty to individuals, protecting against both government overreach and institutional failure while opening economic participation to everyone.`,
-        summary: "Bitcoin addresses critical flaws in traditional fiat currency systems: inflation, central control, and financial exclusion through fixed supply and decentralization.",
+Bitcoin represents a return to trustless money, but in a revolutionary way. Instead of trusting governments or institutions, Bitcoin users trust mathematics and computer code. The network's rules are written in code that can't be changed without broad consensus. No central authority can print more Bitcoin beyond the predetermined supply limit of 21 million coins. The trust is built into the system itself, not dependent on any human institution or promise.
+
+This shift from institutional trust to mathematical trust is profound. With traditional money, you must trust banks not to freeze your account, governments not to inflate the currency, and payment processors not to block your transactions. With Bitcoin, the code guarantees these protections automatically.`,
+        summary: "Money's value has always depended on trust, evolving from gold's physical properties to government promises, and now to Bitcoin's mathematical certainty.",
         estimatedReadTime: 8,
         dayIndex: 2
+      },
+
+      {
+        title: "The Rise of Coins",
+        content: `You're in a bustling ancient market, clutching a shiny metal disc. Why is it special?
+
+Long ago, traders grew tired of weighing shells or grain for every deal. Around 600 BCE, a kingdom called Lydia (modern-day Turkey) created the first coins—small, stamped pieces of gold and silver. These coins were special because they were uniform, stamped with a king's mark, guaranteeing their weight and purity. Suddenly, trading was faster. You didn't need to haggle over how much gold was "enough" for a cow; the coin's stamp said it all. Coins spread across the ancient world, revolutionizing commerce and enabling empires to flourish.
+
+Picture the moment when King Croesus of Lydia first issued standardized coins. Before this innovation, every transaction required careful weighing and testing of precious metals. Merchants carried scales and testing stones to verify that the gold they received was genuine. Disagreements were common, and fraud was rampant. Some unscrupulous traders would mix cheaper metals with gold, making transactions risky and slow.
+
+The genius of coins lay in their standardization. Each coin represented a precise amount of precious metal, verified by the royal mint. The stamp wasn't just decoration—it was a guarantee backed by the king's reputation and power. If someone tried to pass off fake coins, they faced severe punishment. This royal backing created the first truly standardized money, where one coin of a particular type was identical to every other coin of that type.
+
+The innovation spread rapidly across the Mediterranean world. Greek city-states adopted coinage, each developing distinctive designs that became symbols of their power and culture. The owl coins of Athens, bearing the image of Athena, became so trusted that they were accepted far beyond Athens' borders. Roman coins eventually dominated much of the known world, carrying images of emperors and symbols of Roman power to distant lands.
+
+Coins transformed commerce in ways their creators never imagined. Long-distance trade became more practical because traders no longer needed to carry scales and testing equipment. Large transactions became simpler because counting coins was faster than weighing metal. Most importantly, coins enabled the development of more sophisticated economic systems, including banking, credit, and international trade networks.
+
+However, coins weren't perfect. They could be "debased"—mixed with cheaper metals to stretch the supply while maintaining the same appearance. Governments sometimes did this to fund wars or public works, effectively stealing value from coin holders. Coins were also heavy and bulky for large transactions, and they could be lost, stolen, or counterfeited by skilled criminals.
+
+Bitcoin takes the coin concept and perfects it in the digital realm. Like ancient coins, Bitcoin provides standardization—every Bitcoin follows identical rules and has identical properties. Like royal stamps, Bitcoin's cryptographic signatures provide unforgeable proof of authenticity. But unlike physical coins, Bitcoin can't be debased, counterfeited, or physically stolen from someone who properly secures their private keys.
+
+The standardization that made Lydian coins revolutionary is built into Bitcoin's very code, ensuring that this digital money maintains its integrity across a global network without requiring any central authority's guarantee.`,
+        summary: "Coins standardized trade by guaranteeing weight and purity through royal stamps, with Bitcoin now providing similar standardization through cryptographic proof.",
+        estimatedReadTime: 8,
+        dayIndex: 3
+      },
+
+      {
+        title: "Paper Promises",
+        content: `You're a trader in medieval China, handed a lightweight paper note. Is it really money?
+
+In ancient China, carrying heavy copper coins was a hassle. By the 7th century, merchants started leaving coins with trusted warehouses, receiving paper receipts instead. These receipts could be traded like money—light, easy, and convenient. This was the start of paper currency. By the Song Dynasty, the government issued official paper money, backed by gold or silver. Europe followed centuries later, with banks issuing notes redeemable for gold. But governments soon discovered they could print more notes than they had gold to back them, leading to inflation and economic instability.
+
+Imagine a wealthy merchant in Tang Dynasty China preparing for a long journey along the Silk Road. His cargo of silk and spices was valuable, but he also needed to carry payment for goods he would purchase along the way. Hundreds of copper coins would add dangerous weight to his caravan and attract bandits. The solution was ingenious—deposit the coins with a trusted merchant house and receive a paper certificate instead.
+
+These early paper notes worked because of reputation and relationships. The merchant houses that issued them were well-known and had been in business for generations. Their word was their bond, and their survival depended on honoring their paper promises. Traders could carry these lightweight certificates across vast distances, then redeem them for coins at the destination or trade them to others who trusted the issuing house.
+
+The Chinese government eventually recognized the brilliance of this system and began issuing official paper money. These notes were backed by government promises to exchange them for precious metals. The convenience was remarkable—a handful of paper could represent wealth that would otherwise require a cart full of metal. Trade flourished, and the Chinese economy grew more sophisticated as paper money reduced transaction costs and enabled larger, more complex deals.
+
+When European explorers like Marco Polo encountered Chinese paper money, they were amazed. Europe was still struggling with heavy gold and silver coins. It took centuries for Europeans to adopt paper currency, and when they did, it followed the Chinese model—banks and governments issued notes backed by promises to pay gold or silver on demand.
+
+However, paper money created new temptations and problems. Governments discovered they could print more notes than they had metal to back them, especially during wars or economic crises. This fractional backing meant that if everyone tried to redeem their paper for gold at once, there wouldn't be enough gold to go around. Gradually, governments printed more and more unbacked paper, causing inflation as the money supply grew faster than the underlying economy.
+
+The ultimate break came in the 20th century when governments abandoned the gold standard entirely. Paper money became "fiat currency"—valuable only because governments declared it legal tender and people agreed to accept it. While this system provided flexibility for economic policy, it also gave governments unlimited power to create new money, potentially devaluing existing money through inflation.
+
+Bitcoin represents a return to limited, backed money, but in digital form. Unlike paper promises that can be broken, Bitcoin's code provides mathematical certainty about its supply and rules. The "backing" comes not from government promises but from the energy and computational power securing the network.`,
+        summary: "Paper money began as convenient receipts for stored coins but evolved into unbacked government promises, while Bitcoin provides mathematical certainty.",
+        estimatedReadTime: 8,
+        dayIndex: 4
+      },
+
+      {
+        title: "Digital Dollars",
+        content: `You swipe a card to buy coffee. Where's the money, really?
+
+Today, most money isn't coins or paper—it's digital. When you swipe a card, numbers move from your bank account to the coffee shop's. No cash changes hands, just data in a bank's computer. Digital money is convenient but fragile. Banks can freeze accounts, governments can track transactions, and hackers can steal data. In 2008, the financial crisis showed how banks' bad bets could crash the system, eroding trust. Enter Bitcoin: a digital currency not controlled by banks or governments, but by math and code.
+
+Picture your last trip to the grocery store. You probably paid with a credit card, debit card, or mobile app. The cashier scanned your items, you tapped or swiped your card, and within seconds the transaction was complete. But what actually happened? No physical money changed hands. Instead, your bank's computer reduced your account balance by the purchase amount, while the store's bank increased their account by the same amount. The "money" was just information moving between databases.
+
+This digital transformation of money happened gradually, then suddenly. Banks started using computers in the 1960s, credit cards became common in the 1970s and 1980s, and online banking emerged in the 1990s. Today, the vast majority of all money exists only as digital entries in bank databases. Physical cash represents less than 10% of the total money supply in most developed countries.
+
+Digital money brought tremendous convenience. You can pay bills from your phone, send money across the country instantly, and carry the equivalent of thousands of dollars without the bulk and security risks of physical cash. Businesses can process payments faster, track transactions automatically, and reduce the costs associated with handling physical currency.
+
+However, this convenience came with hidden costs and vulnerabilities. Your digital money exists only as long as your bank says it does. Banks can freeze accounts for any reason, governments can order asset seizures, and technical failures can make your money temporarily unavailable. The 2008 financial crisis revealed how interconnected and fragile this system really is—when major banks failed, even insured deposits were at risk.
+
+The digital money system also eliminated financial privacy. Every transaction creates a digital trail that banks, governments, and potentially hackers can monitor. Unlike cash transactions that are private by default, digital payments are tracked and recorded by default. This surveillance capability, while useful for preventing some crimes, also enables unprecedented monitoring of personal financial behavior.
+
+Bitcoin emerged from the 2008 crisis as a response to these problems. It maintains the convenience of digital money while eliminating the need to trust banks or governments. Bitcoin transactions are verified by a global network of computers rather than a central authority. Your Bitcoin is truly yours—no bank can freeze it, no government can seize it without your private keys, and no institution can prevent you from sending it to anyone, anywhere in the world.
+
+The Bitcoin network operates 24/7 without holidays, weekends, or system maintenance windows. Unlike bank systems that can go offline, Bitcoin's distributed nature means the network continues functioning even if thousands of computers disconnect.`,
+        summary: "Digital money brought convenience but also centralized control and surveillance, while Bitcoin provides digital benefits without institutional dependency.",
+        estimatedReadTime: 8,
+        dayIndex: 5
+      },
+
+      {
+        title: "Money's Flaws",
+        content: `You're in Venezuela, where a loaf of bread costs a wheelbarrow of cash. What went wrong?
+
+In 2018, Venezuela's currency collapsed. Hyperinflation hit 1,000,000%, making money worthless. People carried stacks of bills for basic goods. This wasn't new—Germany in the 1920s saw similar chaos. The culprit? Governments printing too much money, diluting its value. Modern money also faces other flaws: banks charge fees, cross-border payments are slow, and billions lack access to financial systems. Bitcoin offers fixes. Its supply is capped at 21 million, preventing inflation. It works globally without banks, and anyone with internet can use it. While Bitcoin has challenges like price volatility, it addresses money's fundamental flaws.
+
+Picture Maria, a teacher in Caracas, Venezuela, in 2018. On Monday, her monthly salary could buy groceries for her family. By Friday, that same salary could barely buy a single meal. This wasn't fiction—this was the reality of hyperinflation. The Venezuelan government, facing economic crisis, decided to print more money to pay its bills. As more money flooded the market, each bolivar became worth less and less.
+
+Hyperinflation isn't unique to Venezuela. Germany experienced it in the 1920s when the government printed money to pay war reparations. Zimbabwe saw it in the 2000s, eventually abandoning its own currency entirely. The pattern is always the same: governments facing financial pressure choose to print money rather than reduce spending or raise taxes, destroying the currency's value in the process.
+
+But hyperinflation is just the most extreme example of modern money's problems. Even in stable countries, central banks routinely create new money, causing gradual inflation that erodes purchasing power over time. What cost $1 in 1970 costs about $7 today—not because goods became more valuable, but because dollars became less valuable as the money supply expanded.
+
+Traditional money systems also exclude billions of people. According to the World Bank, over 1.7 billion adults lack access to basic financial services. They can't open bank accounts, get loans, or safely store their savings. Banks find it unprofitable to serve poor or remote populations, leaving these people economically marginalized. Even those with bank access face high fees for basic services like international transfers, which can cost 10% or more of the amount sent.
+
+Cross-border payments in the traditional system are painfully slow and expensive. Sending money from New York to London might take several days and cost $50 in fees, despite being nothing more than database entries. The money doesn't physically travel—banks simply adjust their ledgers—yet the process involves multiple intermediaries, each taking a fee and adding delay.
+
+Financial surveillance represents another hidden cost of modern money. Every transaction creates a permanent record that governments and corporations can access. While this can help prevent crime, it also eliminates financial privacy and enables unprecedented monitoring of personal behavior. In authoritarian countries, this surveillance capability can be used to suppress dissent or control populations.
+
+Bitcoin addresses each of these flaws systematically. Its supply is mathematically limited to 21 million coins, making money printing impossible. Anyone with internet access can use Bitcoin without permission from banks or governments. International transfers happen directly between users, typically completing within minutes for fees under $1. While Bitcoin transactions are recorded on a public ledger, users can maintain privacy through careful practices, and the system cannot be shut down by any single authority.
+
+Bitcoin isn't perfect—its price can be volatile, and it requires technical knowledge to use safely. But it directly addresses the fundamental flaws that plague traditional money systems.`,
+        summary: "Modern money suffers from inflation, exclusion, high fees, and surveillance, while Bitcoin's design directly addresses these fundamental problems.",
+        estimatedReadTime: 8,
+        dayIndex: 6
+      },
+
+      {
+        title: "Money's Future",
+        content: `You're in 2030, paying for groceries with a phone scan. Is it Bitcoin?
+
+Money has always evolved—from shells to coins, paper to digital. Each step solved old problems but created new ones. Today's digital dollars are fast but centralized, vulnerable to control and failure. Bitcoin proposes a future where money is decentralized, like the internet itself. No single government or bank can shut it down. Its fixed supply could protect against inflation. Imagine a world where anyone, anywhere, can send value instantly, without fees or permissions. This future isn't guaranteed, but Bitcoin offers a glimpse of what money could become in a truly connected world.
+
+Imagine waking up in 2030 and living through a day in this potential future. You check your phone and see your savings have grown overnight, not because of interest payments from a bank, but because you hold a currency that can't be inflated away. Your money is truly yours—no institution can freeze it, no government can seize it, and no company can prevent you from spending it however you choose.
+
+You buy coffee at a local shop by scanning a QR code with your phone. The payment settles instantly, costs virtually nothing in fees, and works the same whether you're paying someone next door or on the other continent. The shop owner receives the payment immediately without waiting days for bank clearance or paying credit card processing fees. Neither of you needed permission from any financial institution to make this transaction.
+
+Throughout history, money has evolved to meet society's changing needs. When barter became too cumbersome, people adopted commodity money like shells and beads. When carrying heavy gold became impractical, coins provided standardization and portability. When coins became too bulky for large transactions, paper money offered convenience. When paper became too slow for modern commerce, digital money provided speed.
+
+Each evolution solved previous problems while introducing new ones. Commodity money eliminated barter's inefficiencies but could be counterfeited. Coins standardized value but could be debased. Paper money eased transport but enabled inflation. Digital money provided speed but centralized control. The pattern suggests that money's evolution isn't finished—we're ready for the next step.
+
+Bitcoin represents a potential future where money is both global and decentralized. Like the internet, which works everywhere without being controlled by any single entity, Bitcoin could provide a universal money system that serves everyone equally. No country's economic policies could devalue your savings, no bank's business decisions could freeze your account, and no company's terms of service could restrict your transactions.
+
+This future would particularly benefit the billions of people currently excluded from traditional finance. A farmer in rural Kenya could receive payment from a customer in Germany as easily as someone in Manhattan pays someone in Brooklyn. Small business owners wouldn't lose 3-5% of revenue to credit card fees. Families sending money to relatives abroad wouldn't pay exorbitant transfer fees to wire services.
+
+However, this future isn't guaranteed. Bitcoin faces challenges including technological scalability, regulatory uncertainty, environmental concerns about energy use, and the complexity of educating users about proper security practices. Traditional financial institutions and governments have powerful incentives to resist change that reduces their control and profit margins.
+
+The ultimate outcome depends on whether Bitcoin can overcome these challenges while maintaining its core properties of decentralization, scarcity, and censorship resistance. If it succeeds, we might look back at today's financial system the way we now view sending letters instead of emails—a quaint relic of a less connected time.`,
+        summary: "Money's evolution continues toward a decentralized future where Bitcoin could provide global, instant, permissionless value transfer without institutional control.",
+        estimatedReadTime: 8,
+        dayIndex: 7
       },
 
       {
