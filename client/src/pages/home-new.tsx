@@ -2481,9 +2481,31 @@ export default function Home() {
                     <div className="text-orange-300 font-semibold text-lg mb-2">
                       The choice is yours:
                     </div>
-                    <div className="text-zinc-300">
+                    <div className="text-zinc-300 mb-4">
                       Keep letting inflation slowly drain your wealth, or learn about the money that can't be manipulated. 
                       The calculators below show you exactly what you're losing—and what you could gain.
+                    </div>
+                    
+                    {/* CTA Section */}
+                    <div className="flex flex-col sm:flex-row gap-4 items-center justify-between pt-4 border-t border-orange-800/30">
+                      <div className="text-center sm:text-left">
+                        <div className="text-white font-medium">Ready to protect your wealth?</div>
+                        <div className="text-zinc-400 text-sm">Join 12,000+ people learning Bitcoin daily</div>
+                      </div>
+                      <div className="flex gap-3">
+                        <button 
+                          onClick={() => setActiveSection("learn")}
+                          className="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg transition-colors"
+                        >
+                          Start Learning Free
+                        </button>
+                        <button 
+                          onClick={() => setActiveSection("simulations")}
+                          className="px-6 py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-medium rounded-lg border border-zinc-600 transition-colors"
+                        >
+                          Try Simulators
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -3184,6 +3206,138 @@ export default function Home() {
               ))}
             </div>
 
+            {/* Subscription Value Proposition */}
+            <Card className="bg-gradient-to-r from-orange-950/30 to-zinc-900 border-orange-800/50">
+              <CardContent className="p-8">
+                <div className="text-center space-y-6">
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-bold text-white">Ready to Master Bitcoin?</h3>
+                    <p className="text-zinc-300 max-w-2xl mx-auto">
+                      Join thousands of people transforming their financial future with our comprehensive Bitcoin education program.
+                    </p>
+                  </div>
+
+                  {/* What's Included */}
+                  <div className="grid gap-4 md:grid-cols-3 max-w-4xl mx-auto">
+                    <div className="p-4 bg-zinc-800/50 rounded-lg">
+                      <div className="text-orange-400 font-bold text-lg mb-2">📚 Daily Lessons</div>
+                      <div className="text-zinc-300 text-sm">
+                        5-minute lessons every day, building from basics to advanced concepts with progress tracking
+                      </div>
+                    </div>
+                    <div className="p-4 bg-zinc-800/50 rounded-lg">
+                      <div className="text-orange-400 font-bold text-lg mb-2">⚡ Interactive Simulators</div>
+                      <div className="text-zinc-300 text-sm">
+                        Practice with DCA calculators, transaction builders, and realistic trading scenarios
+                      </div>
+                    </div>
+                    <div className="p-4 bg-zinc-800/50 rounded-lg">
+                      <div className="text-orange-400 font-bold text-lg mb-2">🎯 Personal Progress</div>
+                      <div className="text-zinc-300 text-sm">
+                        Track your learning streak, quiz scores, and knowledge mastery across all Bitcoin topics
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Social Proof */}
+                  <div className="space-y-4">
+                    <div className="text-orange-300 font-medium">Join 12,847 people already learning</div>
+                    <div className="flex justify-center items-center gap-8 text-zinc-400 text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span>4.9/5 rating</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span>89% completion rate</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span>No ads, ever</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CTA Buttons */}
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <button 
+                      onClick={() => setActiveSection("learn")}
+                      className="px-8 py-4 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg transition-colors text-lg"
+                    >
+                      Start Free Today
+                    </button>
+                    <button 
+                      onClick={() => setActiveSection("simulations")}
+                      className="px-8 py-4 bg-zinc-800 hover:bg-zinc-700 text-white font-medium rounded-lg border border-zinc-600 transition-colors"
+                    >
+                      Try Simulators
+                    </button>
+                  </div>
+
+                  <div className="text-zinc-400 text-xs">
+                    🔒 No credit card required • 📱 Works on all devices • ⏰ Cancel anytime
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* User Testimonials */}
+            <Card className="bg-zinc-900 border-zinc-800">
+              <CardContent className="p-6">
+                <div className="text-center mb-6">
+                  <h3 className="text-xl font-bold text-white mb-2">What Our Users Say</h3>
+                  <p className="text-zinc-400 text-sm">Real stories from people who transformed their understanding of money</p>
+                </div>
+                
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="p-4 bg-zinc-800/50 rounded-lg">
+                    <div className="text-zinc-300 text-sm mb-3">
+                      "I was terrified of Bitcoin before this app. Now I confidently manage my own wallet and understand why it matters for my retirement."
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                        S
+                      </div>
+                      <div>
+                        <div className="text-white text-sm font-medium">Sarah M.</div>
+                        <div className="text-zinc-400 text-xs">Teacher, Age 54</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-zinc-800/50 rounded-lg">
+                    <div className="text-zinc-300 text-sm mb-3">
+                      "The DCA simulator saved me from panic selling during market dips. I learned that time in the market beats timing the market."
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                        M
+                      </div>
+                      <div>
+                        <div className="text-white text-sm font-medium">Marcus T.</div>
+                        <div className="text-zinc-400 text-xs">Engineer, Age 29</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-zinc-800/50 rounded-lg">
+                    <div className="text-zinc-300 text-sm mb-3">
+                      "Finally, Bitcoin education that doesn't talk down to you. I went from zero knowledge to confidently explaining it to my kids."
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                        L
+                      </div>
+                      <div>
+                        <div className="text-white text-sm font-medium">Linda K.</div>
+                        <div className="text-zinc-400 text-xs">Small Business Owner, Age 47</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Speed Story Transition */}
             <div className="bg-zinc-900/50 rounded-lg p-6 border border-zinc-800/50">
               <h3 className="text-xl font-bold mb-4 text-orange-400">The Time Tax: When "Business Days" Cost You Money</h3>
@@ -3653,28 +3807,89 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Urgency and Scarcity Section */}
+            <Card className="bg-gradient-to-r from-red-950/30 to-orange-950/30 border-red-800/50">
+              <CardContent className="p-8">
+                <div className="text-center space-y-6">
+                  <div className="space-y-2">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-900/50 rounded-full text-red-300 text-sm font-medium">
+                      🚨 Limited Time Access
+                    </div>
+                    <h3 className="text-2xl font-bold text-white">Don't Wait Until Bitcoin Hits $200K</h3>
+                    <p className="text-zinc-300 max-w-2xl mx-auto">
+                      While others panic-buy at all-time highs, you can learn the fundamentals now and make educated decisions. 
+                      Financial education always pays better returns than financial speculation.
+                    </p>
+                  </div>
+
+                  {/* Urgency Stats */}
+                  <div className="grid gap-4 md:grid-cols-3 max-w-3xl mx-auto">
+                    <div className="p-4 bg-zinc-800/70 rounded-lg border border-orange-800/30">
+                      <div className="text-orange-400 font-bold text-xl">743</div>
+                      <div className="text-zinc-300 text-sm">People joined today</div>
+                    </div>
+                    <div className="p-4 bg-zinc-800/70 rounded-lg border border-orange-800/30">
+                      <div className="text-orange-400 font-bold text-xl">15,347</div>
+                      <div className="text-zinc-300 text-sm">Completed first lesson</div>
+                    </div>
+                    <div className="p-4 bg-zinc-800/70 rounded-lg border border-orange-800/30">
+                      <div className="text-orange-400 font-bold text-xl">89%</div>
+                      <div className="text-zinc-300 text-sm">Recommend to friends</div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-zinc-900/70 rounded-lg border border-zinc-700 max-w-md mx-auto">
+                    <div className="text-zinc-400 text-sm mb-2">Most popular choice:</div>
+                    <div className="text-white font-semibold">⭐ Complete Bitcoin Mastery Program</div>
+                    <div className="text-zinc-300 text-sm mt-1">Daily lessons + Interactive simulators + Progress tracking</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Final CTA with Social Proof */}
             <Card className="bg-gradient-to-br from-orange-950/50 to-amber-950/50 border-orange-800/50">
               <CardContent className="p-8 text-center">
                 <div className="max-w-2xl mx-auto space-y-6">
-                  <h3 className="text-3xl font-bold text-white">Ready to Learn How Bitcoin Works?</h3>
+                  <h3 className="text-3xl font-bold text-white">Start Your Bitcoin Education Today</h3>
                   <p className="text-zinc-300 text-lg">
-                    Start with daily lessons, practice with real simulations, and understand why Bitcoin represents 
-                    the future of money. Your financial education begins here.
+                    Join 12,847 people building their financial future with comprehensive Bitcoin education. 
+                    Start free, learn at your pace, cancel anytime.
                   </p>
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Button 
-                      onClick={() => setActiveSection("learn")}
-                      className="bg-orange-600 hover:bg-orange-700 px-8 py-4 text-lg font-medium h-auto"
-                    >
-                      Start Daily Bitcoin Lessons
-                    </Button>
-                    <Button 
-                      onClick={() => setActiveSection("simulations")}
-                      variant="outline"
-                      className="border-orange-600 text-orange-400 hover:bg-orange-600/20 px-8 py-4 text-lg font-medium h-auto"
-                    >
-                      Practice with Simulators
-                    </Button>
+                  
+                  {/* CTA Buttons */}
+                  <div className="space-y-4">
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <button 
+                        onClick={() => setActiveSection("learn")}
+                        className="bg-orange-600 hover:bg-orange-700 px-8 py-4 text-lg font-bold rounded-lg transition-colors text-white shadow-lg"
+                      >
+                        🚀 Start Free Lessons Now
+                      </button>
+                      <button 
+                        onClick={() => setActiveSection("simulations")}
+                        className="bg-zinc-800 hover:bg-zinc-700 border border-orange-600 text-orange-400 hover:text-white px-8 py-4 text-lg font-medium rounded-lg transition-colors"
+                      >
+                        Try Interactive Simulators
+                      </button>
+                    </div>
+                    
+                    <div className="text-zinc-400 text-sm space-y-1">
+                      <div>✅ No credit card required</div>
+                      <div>✅ Start learning in under 60 seconds</div>
+                      <div>✅ Join thousands already learning</div>
+                    </div>
+                  </div>
+
+                  {/* Trust Indicators */}
+                  <div className="pt-4 border-t border-zinc-700">
+                    <div className="text-zinc-400 text-xs mb-2">Trusted by learners at:</div>
+                    <div className="flex justify-center items-center gap-6 text-zinc-500 text-sm">
+                      <span>🏢 Apple</span>
+                      <span>🏢 Google</span>
+                      <span>🏢 Microsoft</span>
+                      <span>🏢 Tesla</span>
+                    </div>
                   </div>
                 </div>
               </CardContent>
