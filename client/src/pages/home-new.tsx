@@ -2170,9 +2170,9 @@ export default function Home() {
                                     {section.title}
                                   </h4>
                                   <div className="text-zinc-300 leading-relaxed space-y-4">
-                                    {section.content.split('\n\n').map((paragraph, pIdx) => (
+                                    {section.content ? section.content.split('\n\n').map((paragraph, pIdx) => (
                                       <p key={pIdx}>{paragraph}</p>
-                                    ))}
+                                    )) : <p>No content available</p>}
                                   </div>
                                 </div>
                               ))}
@@ -2186,9 +2186,9 @@ export default function Home() {
                                       {section.title}
                                     </h4>
                                     <div className="text-zinc-300 leading-relaxed space-y-4">
-                                      {section.content.split('\n\n').map((paragraph, pIdx) => (
+                                      {section.content ? section.content.split('\n\n').map((paragraph, pIdx) => (
                                         <p key={pIdx} dangerouslySetInnerHTML={{ __html: paragraph }} />
-                                      ))}
+                                      )) : <p>No content available</p>}
                                     </div>
                                   </div>
                                 )) :
