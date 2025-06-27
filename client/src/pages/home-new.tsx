@@ -2794,16 +2794,16 @@ export default function Home() {
                             value={hodlInputs.scenario}
                             onValueChange={(value) => {
                               const scenarios: { [key: string]: { startPrice: number; endPrice: number; years: number; period: string } } = {
-                                'jan2024': { startPrice: 42300, endPrice: 106000, years: 1, period: 'Jan 2024' },
-                                'jan2023': { startPrice: 16530, endPrice: 106000, years: 2, period: 'Jan 2023' },
-                                'jan2022': { startPrice: 46200, endPrice: 106000, years: 3, period: 'Jan 2022' },
-                                'jan2021': { startPrice: 29000, endPrice: 106000, years: 4, period: 'Jan 2021' },
-                                'jan2020': { startPrice: 7195, endPrice: 106000, years: 5, period: 'Jan 2020' },
-                                'jan2019': { startPrice: 3693, endPrice: 106000, years: 6, period: 'Jan 2019' },
-                                'jan2018': { startPrice: 13412, endPrice: 106000, years: 7, period: 'Jan 2018' },
-                                'jan2017': { startPrice: 963, endPrice: 106000, years: 8, period: 'Jan 2017' },
-                                'jan2016': { startPrice: 434, endPrice: 106000, years: 9, period: 'Jan 2016' },
-                                'jan2015': { startPrice: 315, endPrice: 106000, years: 10, period: 'Jan 2015' }
+                                'jan2024': { startPrice: 42867, endPrice: 94200, years: 1, period: 'Jan 2024' },
+                                'jan2023': { startPrice: 16625, endPrice: 94200, years: 2, period: 'Jan 2023' },
+                                'jan2022': { startPrice: 46311, endPrice: 94200, years: 3, period: 'Jan 2022' },
+                                'jan2021': { startPrice: 29374, endPrice: 94200, years: 4, period: 'Jan 2021' },
+                                'jan2020': { startPrice: 7200, endPrice: 94200, years: 5, period: 'Jan 2020' },
+                                'jan2019': { startPrice: 3784, endPrice: 94200, years: 6, period: 'Jan 2019' },
+                                'jan2018': { startPrice: 13412, endPrice: 94200, years: 7, period: 'Jan 2018' },
+                                'jan2017': { startPrice: 998, endPrice: 94200, years: 8, period: 'Jan 2017' },
+                                'jan2016': { startPrice: 434, endPrice: 94200, years: 9, period: 'Jan 2016' },
+                                'jan2015': { startPrice: 315, endPrice: 94200, years: 10, period: 'Jan 2015' }
                               };
                               
                               const scenario = scenarios[value];
@@ -2822,14 +2822,14 @@ export default function Home() {
                               <SelectValue placeholder="Select purchase date" />
                             </SelectTrigger>
                             <SelectContent className="bg-zinc-800 border-zinc-700">
-                              <SelectItem value="jan2024">January 2024 ($42,300)</SelectItem>
-                              <SelectItem value="jan2023">January 2023 ($16,530)</SelectItem>
-                              <SelectItem value="jan2022">January 2022 ($46,200)</SelectItem>
-                              <SelectItem value="jan2021">January 2021 ($29,000)</SelectItem>
-                              <SelectItem value="jan2020">January 2020 ($7,195)</SelectItem>
-                              <SelectItem value="jan2019">January 2019 ($3,693)</SelectItem>
+                              <SelectItem value="jan2024">January 2024 ($42,867)</SelectItem>
+                              <SelectItem value="jan2023">January 2023 ($16,625)</SelectItem>
+                              <SelectItem value="jan2022">January 2022 ($46,311)</SelectItem>
+                              <SelectItem value="jan2021">January 2021 ($29,374)</SelectItem>
+                              <SelectItem value="jan2020">January 2020 ($7,200)</SelectItem>
+                              <SelectItem value="jan2019">January 2019 ($3,784)</SelectItem>
                               <SelectItem value="jan2018">January 2018 ($13,412)</SelectItem>
-                              <SelectItem value="jan2017">January 2017 ($963)</SelectItem>
+                              <SelectItem value="jan2017">January 2017 ($998)</SelectItem>
                               <SelectItem value="jan2016">January 2016 ($434)</SelectItem>
                               <SelectItem value="jan2015">January 2015 ($315)</SelectItem>
                             </SelectContent>
@@ -3018,7 +3018,7 @@ export default function Home() {
                                         
                                         {/* Growth percentage indicator */}
                                         <text x="150" y="20" fill="#f97316" fontSize="12" fontWeight="bold" textAnchor="middle">
-                                          +{((currentGrowthRatio - 1) * 100).toFixed(0)}% Growth
+                                          +{((currentGrowthRatio - 1) * 100).toLocaleString('en-US', {maximumFractionDigits: 0})}% Growth
                                         </text>
                                       </>
                                     );
