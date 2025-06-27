@@ -402,86 +402,86 @@ Understanding the role of trust in money helps explain why monetary transitions 
       {
         dayIndex: 0,
         question: "What is the fundamental problem that money solves?",
-        options: [
-          "The need for physical storage of value",
-          "The coincidence of wants problem in barter systems", 
-          "The difficulty of counting large numbers",
-          "The problem of transportation costs"
-        ],
-        correctAnswer: 1,
-        explanation: "Money solves the coincidence of wants problem - the difficulty of finding someone who has what you want AND wants what you have at the same time."
+        optionA: "The need for physical storage of value",
+        optionB: "The coincidence of wants problem in barter systems",
+        optionC: "The difficulty of counting large numbers",
+        optionD: "The problem of transportation costs",
+        correctAnswer: "B",
+        explanation: "Money solves the coincidence of wants problem - the difficulty of finding someone who has what you want AND wants what you have at the same time.",
+        category: "fundamentals",
+        difficulty: "beginner"
       },
       {
         dayIndex: 1,
         question: "Which of these is NOT one of the three main functions of money?",
-        options: [
-          "Medium of exchange",
-          "Store of value", 
-          "Unit of account",
-          "Source of entertainment"
-        ],
-        correctAnswer: 3,
-        explanation: "The three main functions of money are: medium of exchange, store of value, and unit of account. Entertainment is not a function of money."
+        optionA: "Medium of exchange",
+        optionB: "Store of value",
+        optionC: "Unit of account", 
+        optionD: "Source of entertainment",
+        correctAnswer: "D",
+        explanation: "The three main functions of money are: medium of exchange, store of value, and unit of account. Entertainment is not a function of money.",
+        category: "functions",
+        difficulty: "beginner"
       },
       {
         dayIndex: 2,
         question: "What happens when governments create new money faster than economic growth?",
-        options: [
-          "Economic prosperity increases",
-          "Inflation occurs and existing money loses value",
-          "Interest rates automatically decrease", 
-          "International trade becomes easier"
-        ],
-        correctAnswer: 1,
-        explanation: "When the money supply increases faster than economic growth, inflation occurs and each unit of existing money becomes less valuable."
+        optionA: "Economic prosperity increases",
+        optionB: "Inflation occurs and existing money loses value",
+        optionC: "Interest rates automatically decrease",
+        optionD: "International trade becomes easier",
+        correctAnswer: "B",
+        explanation: "When the money supply increases faster than economic growth, inflation occurs and each unit of existing money becomes less valuable.",
+        category: "problems",
+        difficulty: "beginner"
       },
       {
         dayIndex: 3,
         question: "What is the key characteristic that made gold valuable as money throughout history?",
-        options: [
-          "Its beautiful appearance",
-          "Its use in jewelry",
-          "Its natural scarcity and durability",
-          "Its religious significance"
-        ],
-        correctAnswer: 2,
-        explanation: "Gold became valuable as money because it is naturally scarce, durable, portable, divisible, and recognizable - key properties of good money."
+        optionA: "Its beautiful appearance",
+        optionB: "Its use in jewelry",
+        optionC: "Its natural scarcity and durability",
+        optionD: "Its religious significance",
+        correctAnswer: "C",
+        explanation: "Gold became valuable as money because it is naturally scarce, durable, portable, divisible, and recognizable - key properties of good money.",
+        category: "history",
+        difficulty: "beginner"
       },
       {
         dayIndex: 4,
         question: "What does 'trust-minimized' money mean?",
-        options: [
-          "Money that requires trusting many institutions",
-          "Money that works through mathematical rules rather than institutional trust",
-          "Money that cannot be trusted at all",
-          "Money that requires maximum trust from users"
-        ],
-        correctAnswer: 1,
-        explanation: "Trust-minimized money like Bitcoin relies on mathematical rules and economic incentives rather than trusting specific institutions or authorities."
+        optionA: "Money that requires trusting many institutions",
+        optionB: "Money that works through mathematical rules rather than institutional trust",
+        optionC: "Money that cannot be trusted at all",
+        optionD: "Money that requires maximum trust from users",
+        correctAnswer: "B",
+        explanation: "Trust-minimized money like Bitcoin relies on mathematical rules and economic incentives rather than trusting specific institutions or authorities.",
+        category: "concepts",
+        difficulty: "intermediate"
       },
       {
         dayIndex: 5,
         question: "How does money function as a 'unit of account'?",
-        options: [
-          "It provides a standard way to measure and compare values",
-          "It helps people save for the future",
-          "It enables direct exchange without barter", 
-          "It prevents inflation from occurring"
-        ],
-        correctAnswer: 0,
-        explanation: "As a unit of account, money provides a standard measurement for comparing the value of different goods and services, like using dollars to price everything."
+        optionA: "It provides a standard way to measure and compare values",
+        optionB: "It helps people save for the future",
+        optionC: "It enables direct exchange without barter",
+        optionD: "It prevents inflation from occurring",
+        correctAnswer: "A",
+        explanation: "As a unit of account, money provides a standard measurement for comparing the value of different goods and services, like using dollars to price everything.",
+        category: "functions",
+        difficulty: "beginner"
       },
       {
         dayIndex: 6,
         question: "What is required for any money system to function effectively?",
-        options: [
-          "Government backing and legal enforcement",
-          "Physical form that can be touched",
-          "Community agreement and shared trust",
-          "Complex mathematical algorithms"
-        ],
-        correctAnswer: 2,
-        explanation: "All money systems, from seashells to gold to digital currencies, require community agreement and shared trust that others will accept the money in exchange."
+        optionA: "Government backing and legal enforcement",
+        optionB: "Physical form that can be touched",
+        optionC: "Community agreement and shared trust",
+        optionD: "Complex mathematical algorithms",
+        correctAnswer: "C",
+        explanation: "All money systems, from seashells to gold to digital currencies, require community agreement and shared trust that others will accept the money in exchange.",
+        category: "fundamentals",
+        difficulty: "beginner"
       }
     ];
 
@@ -549,6 +549,14 @@ Understanding the role of trust in money helps explain why monetary transitions 
           author: "Murray Rothbard", 
           difficulty: "Intermediate",
           description: "Analysis of government intervention in monetary systems"
+        }
+      ],
+      quizQuestions: [
+        {
+          question: "What are the three main functions of money?",
+          options: ["Medium of exchange, store of value, unit of account", "Saving, spending, investing", "Buying, selling, trading", "Past, present, future"],
+          correctAnswer: 0,
+          explanation: "Money serves three essential functions: medium of exchange (facilitating trade), store of value (preserving wealth over time), and unit of account (measuring value)."
         }
       ]
     };
@@ -861,8 +869,8 @@ Understanding the role of trust in money helps explain why monetary transitions 
   }
 
   async getCurrentWeeklyTopic(): Promise<WeeklyTopic | undefined> {
-    const currentWeek = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000)) % 52 + 1;
-    return Array.from(this.weeklyTopics.values()).find(topic => topic.weekNumber === currentWeek);
+    // For Week 1 curriculum, always return Week 1 content
+    return Array.from(this.weeklyTopics.values()).find(topic => topic.weekNumber === 1);
   }
 
   async getWeeklyTopic(weekNumber: number): Promise<WeeklyTopic | undefined> {
