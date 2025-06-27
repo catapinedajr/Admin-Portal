@@ -180,7 +180,7 @@ export class MemStorage implements IStorage {
   }
 
   private seedData() {
-    // Comprehensive Bitcoin education facts - organized by learning progression
+    // Skip daily facts for days 0-29 to avoid conflicts with AI-generated content
     const facts = [
       // Week 1: Core Concepts
       {
@@ -367,10 +367,11 @@ export class MemStorage implements IStorage {
       }
     ];
 
-    facts.forEach(fact => {
-      const newFact: DailyFact = { ...fact, id: this.currentFactId++ };
-      this.dailyFacts.set(newFact.id, newFact);
-    });
+    // Skip seeding daily facts for days 0-29 to avoid conflicts with AI-generated content
+    // facts.forEach(fact => {
+    //   const newFact: DailyFact = { ...fact, id: this.currentFactId++ };
+    //   this.dailyFacts.set(newFact.id, newFact);
+    // });
 
     // Comprehensive lesson content covering all fundamental Bitcoin concepts
     const lessons = [
