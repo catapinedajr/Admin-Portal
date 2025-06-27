@@ -1477,6 +1477,151 @@ export default function Home() {
 
   const [selectedWalletType, setSelectedWalletType] = useState<string | null>(null);
   
+  // Safety Simulator State
+  const [safetyStage, setSafetyStage] = useState(0);
+  const [safetyScore, setSafetyScore] = useState(0);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [showResult, setShowResult] = useState(false);
+  const [safetyCompleted, setSafetyCompleted] = useState(false);
+
+  // Multi-stage Safety Simulation Data
+  const safetySimulations = [
+    {
+      stage: "Phishing Detection",
+      title: "🎣 Spot the Phishing Email",
+      description: "Can you identify the dangerous email that's trying to steal your Bitcoin?",
+      emails: [
+        {
+          from: "security@binance.com",
+          subject: "Account Security Alert - Action Required",
+          preview: "We noticed unusual activity on your account. Click here to verify your identity immediately or your account will be suspended.",
+          isPhishing: true,
+          redFlags: ["Urgency tactics", "Suspicious domain", "Threatening suspension"]
+        },
+        {
+          from: "noreply@coinbase.com", 
+          subject: "Your Weekly Portfolio Summary",
+          preview: "Here's your portfolio performance for the week ending January 27, 2025. Your Bitcoin holdings are up 3.2%.",
+          isPhishing: false,
+          redFlags: []
+        },
+        {
+          from: "support@electrum.org",
+          subject: "Critical Security Update Required",
+          preview: "Download our urgent security patch at electrum-update[.]net to protect your wallet from new vulnerabilities.",
+          isPhishing: true,
+          redFlags: ["Fake domain", "Malicious download link", "Impersonation"]
+        }
+      ]
+    },
+    {
+      stage: "Seed Phrase Security",
+      title: "🔐 Protect Your Seed Phrase",
+      description: "You just generated a new Bitcoin wallet. Where should you store your 12-word recovery phrase?",
+      scenario: "apple bacon chair dog eagle five grape happy ice jelly king lemon",
+      options: [
+        {
+          method: "Screenshot on phone",
+          security: "Very Dangerous",
+          explanation: "Photos can be backed up to cloud, hacked, or seen by others. Never store seed phrases digitally.",
+          safe: false
+        },
+        {
+          method: "Write on paper, store in safe",
+          security: "Very Safe", 
+          explanation: "Physical storage offline is the gold standard. Keep multiple copies in secure locations.",
+          safe: true
+        },
+        {
+          method: "Save in password manager",
+          security: "Risky",
+          explanation: "Digital storage creates attack vectors. Password managers can be breached or corrupted.",
+          safe: false
+        },
+        {
+          method: "Memorize only",
+          security: "Dangerous",
+          explanation: "Memory fails. You could forget it or be unable to access it if something happens to you.",
+          safe: false
+        }
+      ]
+    },
+    {
+      stage: "Address Verification", 
+      title: "🎯 Verify Bitcoin Address",
+      description: "You're about to send 0.5 BTC. Check if this address matches what you copied:",
+      copied: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+      displayed: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+      options: [
+        { text: "Addresses match - Safe to send", correct: true },
+        { text: "Close enough - Send anyway", correct: false },
+        { text: "First 10 characters match - Good enough", correct: false },
+        { text: "Let me double-check character by character", correct: true }
+      ]
+    },
+    {
+      stage: "Scam Recognition",
+      title: "🚨 Spot the Bitcoin Scam", 
+      description: "Which of these messages is definitely a scam?",
+      scenarios: [
+        {
+          message: "Elon Musk is giving away Bitcoin! Send 0.1 BTC to get 1 BTC back! Limited time offer!",
+          isScam: true,
+          tactics: ["Impersonation", "Too good to be true", "Urgency", "Upfront payment required"]
+        },
+        {
+          message: "Your local Bitcoin meetup is next Thursday at 7 PM. Bring questions and let's learn together!",
+          isScam: false,
+          tactics: []
+        },
+        {
+          message: "I'm a prince who needs help moving my Bitcoin fortune. I'll share 50% if you help with transaction fees.",
+          isScam: true,
+          tactics: ["Classic advance fee fraud", "Unrealistic returns", "Emotional manipulation"]
+        }
+      ]
+    }
+  ];
+
+  const currentSimulation = safetySimulations[safetyStage];
+
+  const handleSafetyAnswer = (optionIndex: number) => {
+    setSelectedOption(optionIndex);
+    setShowResult(true);
+    
+    // Calculate score based on stage
+    let correct = false;
+    if (safetyStage === 0) { // Phishing
+      correct = currentSimulation.emails[optionIndex].isPhishing;
+    } else if (safetyStage === 1) { // Seed phrase  
+      correct = currentSimulation.options[optionIndex].safe;
+    } else if (safetyStage === 2) { // Address verification
+      correct = currentSimulation.options[optionIndex].correct;
+    } else if (safetyStage === 3) { // Scam recognition
+      correct = currentSimulation.scenarios[optionIndex].isScam;
+    }
+    
+    if (correct) setSafetyScore(prev => prev + 1);
+  };
+
+  const nextSafetyStage = () => {
+    if (safetyStage < safetySimulations.length - 1) {
+      setSafetyStage(prev => prev + 1);
+      setSelectedOption(null);
+      setShowResult(false);
+    } else {
+      setSafetyCompleted(true);
+    }
+  };
+
+  const resetSafetySimulator = () => {
+    setSafetyStage(0);
+    setSafetyScore(0);
+    setSelectedOption(null);
+    setShowResult(false);
+    setSafetyCompleted(false);
+  };
+  
   const safetyQuestions = [
     {
       question: "What should you NEVER share with anyone?",
