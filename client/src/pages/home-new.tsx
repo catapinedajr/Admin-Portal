@@ -2363,6 +2363,30 @@ export default function Home() {
               </CardContent>
             </Card>
 
+            {/* Banking Story Transition */}
+            <div className="bg-zinc-900/50 rounded-lg p-6 border border-zinc-800/50">
+              <h3 className="text-xl font-bold mb-4 text-orange-400">The Banking Racket: Death by a Thousand Cuts</h3>
+              <div className="space-y-4 text-zinc-300 leading-relaxed">
+                <p>
+                  While inflation slowly erodes your wealth, banks extract value through direct fees. Every international transfer, 
+                  currency exchange, and wire payment becomes a profit center for financial institutions. They've built an entire 
+                  business model around being the middleman in your financial life.
+                </p>
+                <p>
+                  A typical international wire transfer costs $25-50 in fees, plus hidden currency exchange markups of 3-5%. 
+                  Sending $1,000 to family abroad? You'll pay $50+ in fees and lose another $30-50 to poor exchange rates. 
+                  That's nearly 10% of your money disappearing into bank profits.
+                </p>
+                <p>
+                  Bitcoin eliminates the middleman entirely. Your transaction goes directly to the recipient, anywhere in the world, 
+                  for a few dollars in network fees. No wire transfer departments, no currency exchange desks, no "business day" delays.
+                </p>
+                <p className="text-orange-300 font-medium">
+                  Calculate exactly how much banks are stealing from you every year:
+                </p>
+              </div>
+            </div>
+
             {/* Banking Fees Calculator */}
             <Card className="bg-zinc-900 border-zinc-800">
               <CardHeader className="pb-4">
@@ -2530,6 +2554,30 @@ export default function Home() {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+
+            {/* Speed Story Transition */}
+            <div className="bg-zinc-900/50 rounded-lg p-6 border border-zinc-800/50">
+              <h3 className="text-xl font-bold mb-4 text-orange-400">The Time Tax: When "Business Days" Cost You Money</h3>
+              <div className="space-y-4 text-zinc-300 leading-relaxed">
+                <p>
+                  Your money sits frozen in banking limbo for days, sometimes weeks. A simple transfer from one account to another 
+                  requires multiple intermediary banks, clearing houses, and "business day" delays. Each institution adds time, 
+                  fees, and risk to your transaction.
+                </p>
+                <p>
+                  Meanwhile, that money generates interest for banks while earning nothing for you. A $10,000 wire transfer 
+                  sitting in banking purgatory for 5 days represents $14 in lost opportunity cost at current rates. 
+                  Multiply this across millions of transactions, and you see the scale of value extraction.
+                </p>
+                <p>
+                  Bitcoin operates 24/7/365. No lunch breaks, no holidays, no "business hours." Your transaction settles based 
+                  on mathematics, not banker availability. What takes banks 3-5 days happens in minutes on the Bitcoin network.
+                </p>
+                <p className="text-orange-300 font-medium">
+                  Watch how Bitcoin makes traditional banking look like dial-up internet:
+                </p>
+              </div>
             </div>
 
             {/* Speed Race */}
@@ -2719,28 +2767,50 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            {/* Call to Action */}
+            {/* Conclusion & Call to Action */}
+            <div className="bg-zinc-900/50 rounded-lg p-8 border border-zinc-800/50">
+              <h3 className="text-2xl font-bold mb-6 text-orange-400 text-center">The Choice Is Yours</h3>
+              <div className="space-y-6 text-zinc-300 leading-relaxed max-w-4xl mx-auto">
+                <p className="text-lg">
+                  You've seen the math. Every day you hold dollars, you lose purchasing power to inflation. Every international 
+                  transfer bleeds money to banking fees. Every "business day" delay costs you opportunity and freedom.
+                </p>
+                <p>
+                  Bitcoin isn't just an investment—it's a complete financial system upgrade. Fixed supply instead of endless printing. 
+                  Direct peer-to-peer transfers instead of middleman extraction. Mathematical certainty instead of central bank promises.
+                </p>
+                <p>
+                  The wealthy already know this. Major corporations hold Bitcoin on their balance sheets. Entire nations have made 
+                  it legal tender. Smart money is moving first, as it always does.
+                </p>
+                <p className="text-orange-300 font-medium text-lg text-center">
+                  Your financial future depends on understanding this technology. The question isn't whether Bitcoin will succeed—
+                  it's whether you'll learn about it before it's too late to matter.
+                </p>
+              </div>
+            </div>
+
             <Card className="bg-gradient-to-br from-orange-950/50 to-amber-950/50 border-orange-800/50">
               <CardContent className="p-8 text-center">
                 <div className="max-w-2xl mx-auto space-y-6">
-                  <h3 className="text-3xl font-bold text-white">Ready to learn more?</h3>
+                  <h3 className="text-3xl font-bold text-white">Ready to Learn How Bitcoin Works?</h3>
                   <p className="text-zinc-300 text-lg">
-                    These calculators demonstrate the real advantages of Bitcoin over traditional finance. 
-                    Dive deeper into how Bitcoin works and practice with our interactive tools.
+                    Start with daily lessons, practice with real simulations, and understand why Bitcoin represents 
+                    the future of money. Your financial education begins here.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Button 
                       onClick={() => setActiveSection("learn")}
                       className="bg-orange-600 hover:bg-orange-700 px-8 py-4 text-lg font-medium h-auto"
                     >
-                      Start Learning Bitcoin
+                      Start Daily Bitcoin Lessons
                     </Button>
                     <Button 
                       onClick={() => setActiveSection("simulations")}
                       variant="outline"
                       className="border-orange-600 text-orange-400 hover:bg-orange-600/20 px-8 py-4 text-lg font-medium h-auto"
                     >
-                      Try Interactive Simulators
+                      Practice with Simulators
                     </Button>
                   </div>
                 </div>
