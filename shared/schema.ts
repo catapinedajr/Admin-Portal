@@ -19,6 +19,12 @@ export const dailyFacts = pgTable("daily_facts", {
   category: text("category").notNull(),
   icon: text("icon").notNull(),
   dayIndex: integer("day_index").notNull(), // 0-based index for cycling through facts
+  diveDeeper: json("dive_deeper").$type<{
+    explanation: string;
+    examples: string[];
+    visualDescription: string;
+    keyTakeaways: string[];
+  }>(),
 });
 
 export const lessons = pgTable("lessons", {
@@ -29,6 +35,8 @@ export const lessons = pgTable("lessons", {
   estimatedReadTime: integer("estimated_read_time").notNull(), // in minutes
   dayIndex: integer("day_index").notNull(),
   imageUrl: text("image_url"),
+  keyPoints: json("key_points").$type<string[]>(),
+  whyItMatters: text("why_it_matters"),
 });
 
 export const userProgress = pgTable("user_progress", {
