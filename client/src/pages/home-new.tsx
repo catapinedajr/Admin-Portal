@@ -1437,7 +1437,10 @@ export default function Home() {
     });
   };
 
-  // Remove auto-calculation - users must click Calculate button
+  // Auto-calculate DCA results when inputs change
+  useEffect(() => {
+    calculateDcaStrategy();
+  }, [dcaInputs.monthlyAmount, dcaInputs.frequency, dcaInputs.startDate]);
 
   const [selectedWalletType, setSelectedWalletType] = useState<string | null>(null);
   
@@ -3181,12 +3184,26 @@ export default function Home() {
                         <div className="space-y-4">
                           <div className="h-64 bg-zinc-800/50 rounded-lg p-4 relative overflow-hidden">
                             <div className="absolute inset-0 p-4">
-                              {/* Simplified labels */}
-                              <div className="absolute bottom-2 left-4 text-zinc-500 text-xs">
+                              {/* Y-axis labels */}
+                              <div className="absolute left-2 top-4 text-zinc-400 text-xs">
+                                $100k
+                              </div>
+                              <div className="absolute left-2 top-1/2 text-zinc-400 text-xs">
+                                $50k
+                              </div>
+                              <div className="absolute left-2 bottom-12 text-zinc-400 text-xs">
+                                $10k
+                              </div>
+                              
+                              {/* X-axis labels */}
+                              <div className="absolute bottom-4 left-8 text-zinc-400 text-xs">
                                 Start
                               </div>
-                              <div className="absolute bottom-2 right-4 text-zinc-500 text-xs">
-                                Now
+                              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-zinc-400 text-xs">
+                                {Math.floor(dcaResults.duration / 2)}mo
+                              </div>
+                              <div className="absolute bottom-4 right-8 text-zinc-400 text-xs">
+                                {dcaResults.duration}mo
                               </div>
                               
                               {/* Accurate DCA Chart using real purchase data */}
@@ -3277,7 +3294,10 @@ export default function Home() {
                                       </text>
                                       
                                       {/* Time labels */}
-
+                                      <text x="25" y="195" fill="#9ca3af" fontSize="10">Start</text>
+                                      <text x="350" y="195" fill="#9ca3af" fontSize="10">
+                                        {dcaResults.duration}mo
+                                      </text>
                                     </>
                                   );
                                 })()}
@@ -3289,15 +3309,19 @@ export default function Home() {
                                 )}
                               </svg>
                               
-                              {/* Clean legend outside chart area */}
-                              <div className="absolute top-2 right-4 flex gap-3 text-xs">
-                                <div className="flex items-center gap-1">
-                                  <div className="w-2 h-0.5 bg-orange-500"></div>
-                                  <span className="text-zinc-500">Price</span>
+                              {/* Legend */}
+                              <div className="absolute bottom-2 left-4 flex gap-4 text-xs">
+                                <div className="flex items-center gap-2">
+                                  <div className="w-3 h-0.5 bg-orange-500"></div>
+                                  <span className="text-zinc-400">Bitcoin Price</span>
                                 </div>
-                                <div className="flex items-center gap-1">
-                                  <div className="w-2 h-0.5 bg-blue-500 opacity-70"></div>
-                                  <span className="text-zinc-500">Avg Cost</span>
+                                <div className="flex items-center gap-2">
+                                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                                  <span className="text-zinc-400">DCA Purchases</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <div className="w-3 h-0.5 bg-blue-500 border-dashed"></div>
+                                  <span className="text-zinc-400">Average Cost</span>
                                 </div>
                               </div>
                             </div>
