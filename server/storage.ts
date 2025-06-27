@@ -849,10 +849,132 @@ This layered approach mirrors the internet's architecture, where different layer
       }
     ];
 
-    // Create quiz questions for multiple day indices (current day could be 190+ based on date calculation)
-    // Include days 0-29 since AI generation is temporarily disabled
+    // Create day-specific quiz questions for first 30 days
+    const daySpecificQuestions = [
+      // Day 0: Bitcoin Basics
+      {
+        dayIndex: 0,
+        question: "What is the maximum supply of Bitcoin that will ever exist?",
+        optionA: "21 million",
+        optionB: "100 million", 
+        optionC: "50 million",
+        optionD: "Unlimited",
+        correctAnswer: "A",
+        explanation: "Bitcoin has a hard cap of 21 million coins, making it scarce by design.",
+        category: "Bitcoin Basics",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 0,
+        question: "What makes Bitcoin different from traditional currencies?",
+        optionA: "It's controlled by banks",
+        optionB: "It's backed by gold", 
+        optionC: "It's decentralized with no central authority",
+        optionD: "It can be printed unlimited amounts",
+        correctAnswer: "C",
+        explanation: "Bitcoin operates on a decentralized network with no central authority.",
+        category: "Bitcoin Basics",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 0,
+        question: "Who is the creator of Bitcoin?",
+        optionA: "Elon Musk",
+        optionB: "Satoshi Nakamoto",
+        optionC: "Vitalik Buterin", 
+        optionD: "Mark Zuckerberg",
+        correctAnswer: "B",
+        explanation: "Satoshi Nakamoto is the pseudonymous creator of Bitcoin.",
+        category: "Bitcoin History",
+        difficulty: "beginner"
+      },
+
+      // Day 1: How Bitcoin Works
+      {
+        dayIndex: 1,
+        question: "What is the blockchain?",
+        optionA: "A type of cryptocurrency",
+        optionB: "A digital ledger of all Bitcoin transactions",
+        optionC: "A mining device",
+        optionD: "A Bitcoin wallet",
+        correctAnswer: "B",
+        explanation: "The blockchain is a distributed digital ledger that records all Bitcoin transactions.",
+        category: "Technology",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 1,
+        question: "How are Bitcoin transactions verified?",
+        optionA: "By banks",
+        optionB: "By the government",
+        optionC: "By a network of computers (nodes)",
+        optionD: "By Satoshi Nakamoto",
+        correctAnswer: "C",
+        explanation: "Bitcoin transactions are verified by a decentralized network of computers called nodes.",
+        category: "Technology", 
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 1,
+        question: "What does 'peer-to-peer' mean in Bitcoin?",
+        optionA: "Transactions go directly between users",
+        optionB: "Transactions require bank approval",
+        optionC: "Only friends can send Bitcoin",
+        optionD: "Transactions are anonymous",
+        correctAnswer: "A",
+        explanation: "Peer-to-peer means Bitcoin transactions happen directly between users without intermediaries.",
+        category: "Technology",
+        difficulty: "beginner"
+      },
+
+      // Day 2: Bitcoin vs Traditional Money
+      {
+        dayIndex: 2,
+        question: "What causes inflation in traditional currencies?",
+        optionA: "Limited supply",
+        optionB: "Printing more money",
+        optionC: "High demand",
+        optionD: "Digital transactions",
+        correctAnswer: "B",
+        explanation: "Inflation occurs when central banks print more money, reducing the value of existing currency.",
+        category: "Economics",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 2,
+        question: "How does Bitcoin protect against inflation?",
+        optionA: "By printing more Bitcoin",
+        optionB: "By having a fixed supply cap",
+        optionC: "By government backing",
+        optionD: "By bank insurance",
+        correctAnswer: "B",
+        explanation: "Bitcoin's fixed supply of 21 million coins protects against inflation caused by money printing.",
+        category: "Economics",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 2,
+        question: "What has happened to the US dollar's purchasing power since 1913?",
+        optionA: "It has increased 50%",
+        optionB: "It has stayed the same",
+        optionC: "It has lost over 96% of its value",
+        optionD: "It has doubled in value",
+        correctAnswer: "C",
+        explanation: "The US dollar has lost over 96% of its purchasing power since 1913 due to inflation.",
+        category: "Economics",
+        difficulty: "intermediate"
+      }
+    ];
+
+    // Add the day-specific questions for days 0-2
+    daySpecificQuestions.forEach(question => {
+      const newQuestion: QuizQuestion = { ...question, id: this.currentQuizQuestionId++ };
+      this.quizQuestions.set(newQuestion.id, newQuestion);
+    });
+
+    // For days 30-400, use the base questions (keeping original functionality)
     const quizQuestions = [];
-    for (let day = 0; day < 400; day++) {
+    for (let day = 30; day < 400; day++) {
       baseQuestions.forEach((baseQuestion, index) => {
         quizQuestions.push({
           dayIndex: day,
