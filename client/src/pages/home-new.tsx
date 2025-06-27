@@ -2826,10 +2826,11 @@ export default function Home() {
                               }`}
                             >
                               <div className="font-semibold text-white mb-1">{scenario.title}</div>
-                              <div className="text-xs text-zinc-400 mb-2">{scenario.period}</div>
+                              <div className="text-xs text-zinc-400 mb-1">{scenario.period}</div>
+                              <div className="text-xs text-orange-300 mb-2 font-medium">{scenario.years} years holding</div>
                               <div className="flex justify-between items-center">
                                 <span className="text-green-400 font-mono text-sm font-bold">
-                                  +{scenario.gain}%
+                                  +{scenario.gain.toLocaleString()}%
                                 </span>
                                 <span className="text-xs">{scenario.stress}</span>
                               </div>
@@ -2888,7 +2889,7 @@ export default function Home() {
                           <div className="bg-zinc-800 rounded-lg p-4 text-center">
                             <div className="text-zinc-400 text-sm">Total Return</div>
                             <div className="text-orange-400 font-mono text-xl font-bold">
-                              +{hodlResults.percentageReturn.toFixed(0)}%
+                              +{hodlResults.percentageReturn.toLocaleString()}%
                             </div>
                             <div className="text-orange-300 text-xs">
                               {hodlResults.annualReturn.toFixed(1)}% per year
@@ -2980,10 +2981,10 @@ export default function Home() {
                                       <div className={`w-3 h-3 rounded-full bg-${investment.color}`}></div>
                                     </div>
                                     <div className="text-zinc-300 font-mono text-lg">
-                                      ${(investment.amount / 1000).toFixed(0)}k
+                                      ${investment.amount.toLocaleString()}
                                     </div>
                                     <div className={`text-xs ${investment.gain >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                                      {investment.gain >= 0 ? '+' : ''}{investment.gain.toFixed(0)}% return
+                                      {investment.gain >= 0 ? '+' : ''}{investment.gain.toLocaleString()}% return
                                     </div>
                                   </div>
                                 ))}
