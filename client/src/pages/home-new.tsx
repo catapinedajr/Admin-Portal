@@ -489,14 +489,14 @@ export default function Home() {
     setInflationSimActive(true);
     setInflationProgress(0);
 
-    // Animate through years: 0 -> 1yr -> 5yr -> 10yr -> 15yr -> 20yr -> 25yr
+    // Animate through years: 0 -> 1yr -> 5yr -> 10yr -> 15yr -> 20yr -> 25yr (20% faster)
     const timePoints = [
-      { step: 1, delay: 2000 },   // 1 year at 2 seconds
-      { step: 2, delay: 4000 },   // 5 years at 4 seconds  
-      { step: 3, delay: 6000 },   // 10 years at 6 seconds
-      { step: 4, delay: 8000 },   // 15 years at 8 seconds
-      { step: 5, delay: 10000 },  // 20 years at 10 seconds
-      { step: 6, delay: 12000 }   // 25 years at 12 seconds
+      { step: 1, delay: 1600 },   // 1 year at 1.6 seconds
+      { step: 2, delay: 3200 },   // 5 years at 3.2 seconds  
+      { step: 3, delay: 4800 },   // 10 years at 4.8 seconds
+      { step: 4, delay: 6400 },   // 15 years at 6.4 seconds
+      { step: 5, delay: 8000 },   // 20 years at 8 seconds
+      { step: 6, delay: 9600 }    // 25 years at 9.6 seconds
     ];
 
     timePoints.forEach(({ step, delay }) => {
@@ -505,10 +505,10 @@ export default function Home() {
       }, delay);
     });
 
-    // End simulation after 15 seconds
+    // End simulation after 12 seconds (20% faster)
     setTimeout(() => {
       setInflationSimActive(false);
-    }, 15000);
+    }, 12000);
   };
 
   const resetInflationSimulation = () => {
@@ -2645,7 +2645,7 @@ export default function Home() {
                       onClick={startInflationSimulation}
                       className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg font-medium"
                     >
-                      Start 15-Second Demo
+                      Start 12-Second Demo
                     </Button>
                   </div>
                 )}
