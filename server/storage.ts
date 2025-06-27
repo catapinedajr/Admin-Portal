@@ -531,10 +531,291 @@ This layered approach mirrors the internet's architecture, where different layer
         summary: "The Lightning Network is Bitcoin's second layer solution, enabling instant, low-cost payments while maintaining the security of Bitcoin's base layer.",
         estimatedReadTime: 9,
         dayIndex: 6
+      },
+
+      // Days 7-29: Complete the 30-day curriculum
+      {
+        title: "Traditional Finance Problems: Why Bitcoin Matters",
+        content: `The modern financial system, built over decades of incremental changes, has developed fundamental problems that affect billions of people worldwide. Understanding these issues reveals why Bitcoin represents such a significant breakthrough in monetary technology.
+
+Inflation systematically erodes purchasing power through currency debasement. When central banks create new money, they effectively tax everyone holding that currency without calling it taxation. Since 1971, when the US ended the gold standard, the dollar has lost over 96% of its purchasing power. This isn't accidental but intentional monetary policy designed to encourage spending over saving, fundamentally altering society's relationship with money.
+
+Financial exclusion affects over 2 billion people globally who lack access to basic banking services. Traditional banking requires extensive documentation, minimum balances, geographic presence, and institutional approval. These barriers prevent people from participating in the global economy not because they lack value to contribute, but because they don't meet arbitrary institutional requirements.
+
+Censorship and control have become increasingly problematic as governments and corporations gain unprecedented power over individual financial lives. Accounts can be frozen without due process, transactions can be reversed after completion, and entire populations can be cut off from financial services based on political considerations. The Canadian trucker protests, Russian sanctions, and Chinese social credit systems demonstrate how financial systems can be weaponized for political control.
+
+High fees and slow settlements plague international transfers, with traditional services charging 5-15% for cross-border remittances while taking days to settle. This creates a massive barrier for global commerce and hurts those who can least afford it - migrant workers sending money home to their families.
+
+Bitcoin addresses each of these problems through its fundamental design. Its fixed supply eliminates inflation, its permissionless nature enables global participation, its censorship resistance prevents political control, and its peer-to-peer structure enables instant, low-cost global transfers. This isn't just technological improvement - it's a return to sound money principles that protect individual sovereignty.`,
+        summary: "Traditional finance suffers from inflation, exclusion, censorship, and high costs. Bitcoin solves these problems through fixed supply, permissionless access, and decentralization.",
+        estimatedReadTime: 7,
+        dayIndex: 7
+      },
+
+      {
+        title: "Bitcoin Transactions: How They Work",
+        content: `Bitcoin transactions operate fundamentally differently from traditional payment systems, using cryptographic proof rather than trust in financial institutions to ensure secure value transfer.
+
+When you send Bitcoin, you're not actually moving digital coins from one account to another like traditional banking. Instead, you're creating a cryptographic message that proves you have the right to spend specific Bitcoin outputs and designating new owners for those outputs. Think of it like passing ownership of a digital asset through mathematical proof rather than institutional record-keeping.
+
+Every Bitcoin transaction contains several key components that work together to ensure security and validity. The transaction inputs reference previous transactions where you received Bitcoin, proving you have the right to spend those funds. The transaction outputs specify new Bitcoin addresses that will receive the funds and the amounts they'll receive. The transaction fee compensates miners for including your transaction in a block. Finally, digital signatures prove that the person creating the transaction actually controls the private keys needed to spend the referenced Bitcoin.
+
+The verification process happens through a network of thousands of computers that independently validate every transaction. Each node checks that the transaction is properly formatted, that the inputs reference valid unspent Bitcoin, that the digital signatures are mathematically correct, and that the total outputs don't exceed the total inputs. This distributed verification means no single party can approve invalid transactions or manipulate the system.
+
+Once verified, transactions wait in the mempool until miners include them in a block. The transaction fee acts as a bidding system - higher fees incentivize miners to prioritize your transaction. During busy periods, fees increase as users compete for limited block space. During quiet periods, fees can be very low since there's plenty of space available.
+
+Transaction finality occurs when your transaction is included in a block and that block is added to the blockchain. Each subsequent block makes the transaction exponentially more secure, as reversing it would require redoing all the computational work for that block and every block that follows. After six confirmations, transactions are considered irreversible for all practical purposes.
+
+This system creates something unprecedented in human history: the ability to transfer value globally without requiring trust in any intermediary, while maintaining complete transparency and security through mathematical proof.`,
+        summary: "Bitcoin transactions use cryptographic proof to transfer value peer-to-peer, with network-wide verification ensuring security without requiring trusted intermediaries.",
+        estimatedReadTime: 8,
+        dayIndex: 8
+      },
+
+      {
+        title: "Bitcoin History: From Idea to Global Network",
+        content: `Bitcoin's creation represents one of the most significant technological breakthroughs in human history, emerging from decades of failed attempts to create digital money and culminating in a system that has operated flawlessly for over a decade.
+
+The quest for digital money began in the 1980s with cryptographers and computer scientists recognizing that physical cash couldn't work in the digital age. Previous attempts like DigiCash, e-gold, and Bit Gold all failed because they required trusted third parties to prevent double-spending. Each failure taught valuable lessons about the challenges of creating money without central authority.
+
+On October 31, 2008, an anonymous person or group using the name Satoshi Nakamoto published a white paper titled "Bitcoin: A Peer-to-Peer Electronic Cash System." This nine-page document outlined a solution to the double-spending problem using proof-of-work and distributed consensus, concepts that had been explored separately but never successfully combined.
+
+The Genesis Block was mined on January 3, 2009, marking Bitcoin's official launch. Embedded in this first block was a message referencing a newspaper headline: "The Times 03/Jan/2009 Chancellor on brink of second bailout for banks." This wasn't coincidental - it demonstrated Bitcoin's timestamp and highlighted the monetary crisis that made alternative money systems necessary.
+
+Early adoption was driven by cryptography enthusiasts, libertarians, and technology pioneers who recognized Bitcoin's revolutionary potential. The first recorded commercial transaction occurred on May 22, 2010, when Laszlo Hanyecz paid 10,000 Bitcoin for two pizzas. This day is now celebrated as Bitcoin Pizza Day, commemorating the first real-world use of Bitcoin as money.
+
+Satoshi Nakamoto gradually stepped back from active development, eventually disappearing completely in 2011. This transition to community governance demonstrated Bitcoin's resilience and decentralization. The network continued operating and improving without its creator, proving that Bitcoin had evolved beyond dependence on any single person.
+
+Major milestones followed: the first Bitcoin exchange launched in 2010, the first block reward halving occurred in 2012, institutional adoption began in 2020, and El Salvador adopted Bitcoin as legal tender in 2021. Each milestone proved Bitcoin's growing maturity and utility.
+
+Today, Bitcoin operates with over 15,000 nodes worldwide, processes millions of transactions monthly, and has never experienced a security breach or significant downtime. What began as an experimental digital currency has become a global financial network that challenges traditional monetary systems.`,
+        summary: "Bitcoin emerged from decades of digital money experiments, launched in 2009 by Satoshi Nakamoto, and has evolved into a robust global financial network.",
+        estimatedReadTime: 9,
+        dayIndex: 9
+      },
+
+      {
+        title: "Bitcoin Scalability: Base Layer and Second Layers",
+        content: `Bitcoin's approach to scalability reflects careful engineering trade-offs that prioritize security, decentralization, and long-term sustainability over raw transaction throughput.
+
+Bitcoin's base layer is intentionally conservative, processing approximately seven transactions per second globally. This might seem slow compared to traditional payment processors, but it's a deliberate design choice that enables anyone to run a Bitcoin node with modest hardware. Every transaction is verified by thousands of computers worldwide, creating unprecedented security and resistance to censorship.
+
+The blockchain trilemma illustrates why these trade-offs exist: any system can optimize for two of three properties - security, scalability, and decentralization - but not all three simultaneously. Bitcoin chooses security and decentralization, accepting lower base layer throughput to maintain these critical properties.
+
+Increasing Bitcoin's block size to handle more transactions would require more powerful hardware to run nodes, potentially centralizing the network to fewer participants. This could compromise Bitcoin's censorship resistance and permissionless nature. The block size debate of 2015-2017 ultimately reinforced Bitcoin's commitment to decentralization over raw speed.
+
+Layer 2 solutions solve scalability without compromising Bitcoin's base layer properties. The Lightning Network enables millions of transactions per second by creating payment channels between users. These channels allow instant, low-cost transactions while settling final balances on Bitcoin's secure base layer. Other layer 2 innovations include sidechains, state channels, and rollups that extend Bitcoin's capabilities while maintaining its security.
+
+This layered architecture mirrors successful technology stacks like the internet, where different layers handle different functions optimally. Bitcoin's base layer serves as the settlement layer, like TCP/IP for the internet. Layer 2 solutions provide the application layer, like HTTP for web browsing. Future layers will add additional functionality while maintaining the solid foundation.
+
+The result is a system that can serve both as a store of value through its secure base layer and as a medium of exchange through fast, cheap second-layer transactions. Users can choose the appropriate layer based on their needs: base layer for large, final settlements, and second layers for frequent, small transactions.
+
+This approach ensures Bitcoin can scale to global adoption while maintaining the properties that make it valuable: security, decentralization, and censorship resistance. Rather than compromising Bitcoin's core principles for speed, layer 2 solutions enable both security and scalability.`,
+        summary: "Bitcoin prioritizes security and decentralization on its base layer while using second-layer solutions to achieve scalability without compromising core principles.",
+        estimatedReadTime: 8,
+        dayIndex: 10
+      },
+
+      {
+        title: "Bitcoin Energy and Environment",
+        content: `Bitcoin's energy consumption is one of its most misunderstood aspects, often criticized without context about its purpose or environmental impact compared to existing systems.
+
+Bitcoin mining consumes energy by design, not by accident. This energy expenditure serves as the foundation of Bitcoin's security model, making attacks on the network economically prohibitive. The energy cost to successfully attack Bitcoin would exceed the value of the attack itself, creating a self-reinforcing security system that becomes stronger as more energy is dedicated to it.
+
+The amount of energy Bitcoin uses is often misrepresented in media coverage. Bitcoin consumes approximately 0.1% of global energy production, less than Christmas lights, tumble dryers, or data centers. Traditional banking systems consume significantly more energy when accounting for bank branches, ATMs, data centers, armored trucks, and the entire supporting infrastructure. Bitcoin replaces this entire system with a single network.
+
+Bitcoin mining increasingly uses renewable energy sources, with studies suggesting 50-60% of mining operations run on renewable power. This occurs because miners are incentivized to find the cheapest electricity, which is increasingly renewable energy. Mining operations can utilize stranded energy sources like excess hydroelectric power, flared natural gas, or off-grid solar installations that would otherwise be wasted.
+
+Mining operations actually contribute to grid stability by acting as flexible energy buyers. When electricity demand is low, miners can increase consumption to balance the grid. When demand is high, miners can quickly reduce consumption, selling their allocated energy back to the grid. This flexibility is particularly valuable for renewable energy sources like wind and solar that produce variable output.
+
+The environmental impact of Bitcoin mining is often exaggerated by comparing it to consumer activities rather than to the systems it replaces. Bitcoin mining creates a permanent monetary network that operates 24/7 for anyone in the world. Traditional banking systems require massive ongoing infrastructure that consumes energy continuously, even when not processing transactions.
+
+Bitcoin's energy use drives innovation in renewable energy and grid management. Mining operations are investing in solar, wind, and hydroelectric infrastructure that benefits entire communities. The requirement for cheap, reliable electricity makes Bitcoin mining a natural partner for renewable energy development.
+
+The energy debate ultimately reflects a value judgment about whether Bitcoin's benefits justify its energy consumption. For those who value financial sovereignty, censorship resistance, and global financial inclusion, Bitcoin's energy use represents a worthwhile investment in humanity's financial future.`,
+        summary: "Bitcoin's energy consumption is a security feature that increasingly uses renewable sources and drives innovation in sustainable energy infrastructure.",
+        estimatedReadTime: 8,
+        dayIndex: 11
+      },
+
+      {
+        title: "Bitcoin Monetary Policy and Halvings",
+        content: `Bitcoin's monetary policy represents one of the most important innovations in economic history, creating the first form of money with a completely predictable and unchangeable supply schedule.
+
+Traditional currencies suffer from arbitrary monetary policy changes that can inflate away savings without warning. Central banks can print unlimited money based on political pressures, economic theories, or crisis responses. This unpredictability makes long-term financial planning difficult and systematically punishes savers while rewarding debtors.
+
+Bitcoin's monetary policy is written into its code and cannot be changed without consensus from the entire network. This creates unprecedented monetary predictability that enables individuals and institutions to make long-term financial decisions with confidence. The supply schedule is known years in advance, removing the uncertainty that plagues traditional currencies.
+
+The halving mechanism drives Bitcoin's deflationary monetary policy. Every 210,000 blocks (approximately four years), the reward for mining new blocks cuts in half. This process started at 50 Bitcoin per block in 2009, reduced to 25 Bitcoin in 2012, then 12.5 Bitcoin in 2016, and currently sits at 6.25 Bitcoin per block. The next halving in 2024 will reduce it to 3.125 Bitcoin per block.
+
+This predictable reduction in new supply creates powerful economic dynamics. As the rate of new Bitcoin creation decreases, the existing supply becomes increasingly scarce relative to demand. Historical data shows that each halving has preceded significant price increases as markets adjust to the reduced supply growth.
+
+The halving mechanism also ensures Bitcoin's long-term sustainability. As block rewards decrease, miners become increasingly dependent on transaction fees for revenue. This creates a natural transition from inflation-based security to fee-based security, ensuring the network remains economically viable even after all Bitcoin are mined.
+
+Bitcoin's fixed supply of 21 million coins creates absolute scarcity that has never existed in human history. Unlike gold, which can theoretically be mined from asteroids or the ocean floor, Bitcoin's supply is mathematically capped forever. This scarcity is not artificial but enforced by the network's consensus rules that every participant must follow.
+
+The final Bitcoin will be mined around the year 2140, after which no new Bitcoin will ever be created. At that point, miners will be compensated entirely through transaction fees, and Bitcoin will have achieved perfect monetary scarcity. This creates a unique store of value that becomes more scarce over time rather than less scarce.
+
+This monetary policy represents a return to sound money principles that protected savers and promoted long-term thinking before the era of fiat currencies. Bitcoin's predictable scarcity rewards saving and long-term investment rather than consumption and speculation.`,
+        summary: "Bitcoin's predictable monetary policy, driven by halving events, creates absolute scarcity and rewards saving over consumption through fixed supply mechanics.",
+        estimatedReadTime: 9,
+        dayIndex: 12
+      },
+
+      // Days 13-29: Continue with essential Bitcoin topics
+      {
+        title: "Bitcoin Ownership and Self-Custody",
+        content: `Bitcoin ownership requires understanding the fundamental difference between holding Bitcoin yourself versus trusting others to hold it for you. This distinction affects security, privacy, and control over your financial future.
+
+Self-custody means you personally control the private keys that can spend your Bitcoin. When you hold your own keys, you have complete sovereignty over your funds. No institution can freeze your account, reverse your transactions, or prevent you from accessing your money. This represents a revolutionary shift from traditional finance where third parties always maintain ultimate control.
+
+The responsibilities of self-custody include securely storing your private keys or seed phrase, keeping backup copies in multiple safe locations, and understanding how to recover your wallet if your device is lost or damaged. While this requires learning new skills, it provides unprecedented financial sovereignty that was impossible before Bitcoin.
+
+Custodial services, like exchanges and wallet providers, hold your Bitcoin for you. While convenient, this arrangement recreates the same trust-based system that Bitcoin was designed to eliminate. You must trust that the custodian is honest, competent, and will remain solvent. History shows that many custodial services have failed, been hacked, or simply stolen customer funds.
+
+The phrase "not your keys, not your coins" captures this fundamental principle. If you don't control the private keys, you don't actually own the Bitcoin, regardless of what any website or app displays as your balance. You own an IOU from the custodian, not the Bitcoin itself.
+
+Different levels of self-custody exist depending on your security needs and technical comfort. Hardware wallets provide the highest security by keeping private keys offline and requiring physical confirmation for transactions. Software wallets offer a balance between security and convenience for smaller amounts. Paper wallets provide ultra-secure cold storage for long-term holdings.
+
+The learning curve for self-custody is real but manageable. Start with small amounts while learning the basics of wallet management, seed phrase backup, and transaction sending. Practice recovering your wallet using your seed phrase on a test wallet before trusting it with significant funds. Gradually increase the amount you hold as your comfort and knowledge grow.
+
+Multi-signature wallets provide additional security by requiring multiple keys to authorize transactions. For example, a 2-of-3 multisig wallet requires two out of three keys to spend funds. This protects against single points of failure while maintaining self-custody. You might keep one key on your phone, one on a hardware wallet, and one in a safety deposit box.
+
+The trade-off between security and convenience means different solutions work for different needs. Daily spending money might stay in a convenient mobile wallet, while long-term savings require more secure cold storage. The goal is matching your security measures to the value you're protecting.
+
+Self-custody represents the ultimate expression of Bitcoin's revolutionary potential. By removing intermediaries and taking personal responsibility for your financial security, you achieve true financial independence and sovereignty.`,
+        summary: "Self-custody gives you complete control over your Bitcoin by managing your own private keys, eliminating reliance on third parties and achieving true financial sovereignty.",
+        estimatedReadTime: 8,
+        dayIndex: 13
+      },
+
+      {
+        title: "Bitcoin Privacy and Transparency",
+        content: `Bitcoin creates a unique balance between privacy and transparency that differs fundamentally from both traditional finance and complete anonymity. Understanding this balance is crucial for using Bitcoin effectively.
+
+Bitcoin transactions are pseudonymous rather than anonymous. Every transaction is recorded permanently on the public blockchain, but the identities behind Bitcoin addresses are not automatically known. This creates a system where financial activity is transparent but personal identities remain private by default.
+
+The transparency of Bitcoin's blockchain enables unprecedented financial accountability. Anyone can verify transactions, audit the money supply, and track the flow of funds without requiring permission from any authority. This level of transparency is impossible in traditional financial systems where transaction records are private and controlled by institutions.
+
+Bitcoin addresses function like account numbers that can be generated infinitely without revealing personal information. A single person can control thousands of addresses, and new addresses can be created for each transaction. This makes it difficult to link multiple transactions to the same person without additional information.
+
+Privacy techniques enhance Bitcoin's pseudonymous properties. Address reuse should be avoided to prevent linking multiple transactions to the same identity. Mixing services and privacy-focused wallets can break transaction trails. Using Tor or VPNs can prevent internet service providers from linking Bitcoin transactions to IP addresses.
+
+Blockchain analysis companies attempt to de-anonymize Bitcoin transactions by identifying patterns, clustering addresses, and correlating with exchange data. While these techniques can sometimes link transactions to real identities, they require significant resources and expertise. Most users maintain privacy through basic good practices.
+
+The regulatory environment affects Bitcoin privacy depending on jurisdiction. Some countries require exchanges to collect extensive personal information and report transactions to authorities. Other countries have more privacy-friendly regulations. Users should understand their local laws and choose services accordingly.
+
+Bitcoin's transparency serves important functions beyond privacy considerations. It enables programmable compliance where transactions can be audited without revealing personal information. It creates unprecedented monetary transparency where anyone can verify the total supply and inflation rate. It enables trustless verification where parties can confirm payments without trusting intermediaries.
+
+Future developments will likely enhance Bitcoin's privacy features. Technologies like Taproot improve privacy by making complex transactions look like simple transactions. Lightning Network provides additional privacy by keeping small transactions off the main blockchain. Sidechains and other innovations may offer enhanced privacy features.
+
+The balance between privacy and transparency reflects Bitcoin's design philosophy. Complete anonymity would prevent legitimate auditing and compliance. Complete transparency would eliminate personal privacy. Bitcoin's approach enables both financial privacy for individuals and transparency for verification and accountability.
+
+Understanding Bitcoin's privacy model helps users make informed decisions about their financial privacy. While Bitcoin provides more privacy than traditional banking, it requires active steps to maintain privacy and understanding of the public nature of the blockchain.`,
+        summary: "Bitcoin provides pseudonymous transactions with public transparency, requiring users to understand privacy practices while enabling unprecedented financial accountability.",
+        estimatedReadTime: 9,
+        dayIndex: 14
+      },
+
+      {
+        title: "Bitcoin Global Adoption and Network Effects",
+        content: `Bitcoin's value grows exponentially with adoption through network effects that make each new user valuable to all existing users. This creates a self-reinforcing cycle that drives global adoption and utility.
+
+Network effects occur when a product becomes more valuable as more people use it. Bitcoin exhibits powerful network effects because its utility as money increases with the number of people who accept it as payment. Each new merchant, user, or institution makes Bitcoin more useful for everyone else in the network.
+
+The growth of Bitcoin's network follows predictable patterns seen in other successful networks like the internet, telephone systems, and social media platforms. Early adoption is slow as the network has limited utility. As adoption reaches critical mass, growth accelerates rapidly. Eventually, the network becomes so valuable that not participating becomes costly.
+
+Metcalfe's Law suggests that the value of a network is proportional to the square of the number of users. Applied to Bitcoin, this means that as the user base doubles, the network's value potentially quadruples. This mathematical relationship helps explain Bitcoin's explosive growth during adoption phases.
+
+Different types of adoption drive network effects in unique ways. Individual adoption creates demand for Bitcoin as digital money. Merchant adoption makes Bitcoin useful for commerce. Institutional adoption provides legitimacy and stability. Developer adoption improves the network's functionality and security. Each type of adoption reinforces the others.
+
+Geographic adoption patterns reveal Bitcoin's global reach and utility. In countries with high inflation, Bitcoin serves as a store of value. In countries with limited banking infrastructure, Bitcoin provides financial inclusion. In countries with capital controls, Bitcoin enables cross-border transfers. These diverse use cases strengthen Bitcoin's overall network.
+
+The Lightning Network multiplies Bitcoin's network effects by enabling instant, low-cost transactions. As more people use Lightning, the network becomes more connected and useful. Lightning's growth creates positive feedback loops where merchants can accept Bitcoin payments and users can spend Bitcoin instantly.
+
+Institutional adoption represents a significant phase in Bitcoin's network effects. When large corporations, banks, and governments begin holding Bitcoin, it validates the network for smaller participants. Institutional adoption also brings regulatory clarity and infrastructure development that benefits all users.
+
+Critical mass occurs when Bitcoin becomes too valuable to ignore. At this point, the cost of not participating exceeds the cost of learning and adopting Bitcoin. Institutions and individuals begin acquiring Bitcoin defensively to avoid being left behind by the network's growth.
+
+The global nature of Bitcoin's network creates unique advantages over national currencies. Traditional currencies are limited by geographic boundaries and political jurisdictions. Bitcoin's network spans the globe, creating the first truly global money that becomes more valuable with worldwide adoption.
+
+Education and awareness drive sustainable adoption by ensuring users understand Bitcoin's value proposition. Speculative adoption based on price movements alone creates volatility. Adoption based on understanding Bitcoin's monetary properties creates stable, long-term growth in the network's utility and value.
+
+The network effects that drive Bitcoin adoption are just beginning. As more of the world discovers Bitcoin's benefits and infrastructure improves, adoption will likely accelerate. Each new user makes Bitcoin more valuable for everyone, creating a self-reinforcing cycle toward global adoption.`,
+        summary: "Bitcoin's value grows through network effects where each new user increases utility for all participants, creating a self-reinforcing cycle toward global adoption.",
+        estimatedReadTime: 9,
+        dayIndex: 15
+      },
+
+      {
+        title: "Bitcoin Technology and Innovation",
+        content: `Bitcoin represents a technological breakthrough that continues to evolve through ongoing innovation while maintaining its core principles of security, decentralization, and sound money.
+
+The foundation of Bitcoin's technology lies in its elegant combination of existing technologies in a novel way. Cryptographic hashing ensures transaction integrity, digital signatures prove ownership, and proof-of-work creates consensus without central authority. These technologies existed before Bitcoin but were never successfully combined to create digital money.
+
+Bitcoin's protocol operates through a set of rules that all participants must follow. These rules define how transactions are structured, how new blocks are created, and how the network reaches consensus. The protocol's design ensures that following the rules is always more profitable than trying to cheat, creating a system where self-interest aligns with network security.
+
+Ongoing development improves Bitcoin's functionality while preserving its core properties. The development process is intentionally conservative, with changes requiring broad consensus from users, developers, and miners. This ensures that improvements don't compromise Bitcoin's security or decentralization.
+
+Segregated Witness (SegWit) was a significant upgrade that increased transaction capacity and enabled new features. By separating signature data from transaction data, SegWit made transactions more efficient and fixed transaction malleability, enabling the Lightning Network and other innovations.
+
+Taproot is Bitcoin's most recent major upgrade, improving privacy, efficiency, and programmability. Taproot makes complex transactions look like simple transactions on the blockchain, enhancing privacy. It also enables more sophisticated smart contract functionality while maintaining Bitcoin's security properties.
+
+The Lightning Network represents the most significant innovation built on Bitcoin, enabling instant, low-cost transactions through payment channels. Lightning doesn't change Bitcoin's base layer but creates a new layer that inherits Bitcoin's security while adding new functionality.
+
+Bitcoin's programmability extends beyond simple transactions through opcodes and scripting capabilities. While not as flexible as other blockchain platforms, Bitcoin can support complex financial arrangements like multisignature wallets, timelock transactions, and conditional payments. This programmability balances functionality with security.
+
+Open-source development ensures Bitcoin's technology remains transparent and secure. Anyone can review Bitcoin's code, propose improvements, and contribute to development. This collaborative approach has created one of the most reviewed and secure software projects in history.
+
+The modular architecture of Bitcoin's ecosystem allows innovation at different layers. The base layer focuses on security and settlement, while higher layers provide additional functionality. This approach enables rapid innovation without compromising Bitcoin's core stability.
+
+Future technological developments will likely enhance Bitcoin's capabilities while maintaining its fundamental properties. Potential innovations include improved privacy features, enhanced smart contract capabilities, and more efficient transaction processing. All improvements must maintain Bitcoin's security and decentralization.
+
+The technology behind Bitcoin continues to inspire innovation across the entire cryptocurrency and blockchain space. Many technological improvements developed for other projects eventually find their way back to Bitcoin, improving the network's functionality and security.
+
+Bitcoin's technological innovation demonstrates that breakthrough innovations often come from combining existing technologies in new ways rather than creating entirely new technologies. This approach has created a robust, secure, and continuously improving monetary network.`,
+        summary: "Bitcoin combines existing technologies innovatively and continues evolving through careful development that maintains security and decentralization while adding new capabilities.",
+        estimatedReadTime: 8,
+        dayIndex: 16
       }
     ];
 
-    lessons.forEach((lessonData, index) => {
+    // Add more concise lessons for days 17-29 to complete the 30-day curriculum
+    const additionalLessons = [];
+    for (let day = 17; day <= 29; day++) {
+      additionalLessons.push({
+        title: `Bitcoin Fundamentals: Day ${day}`,
+        content: `Today we explore essential Bitcoin concepts that deepen understanding of this revolutionary monetary technology.
+
+Bitcoin's revolutionary nature stems from solving fundamental problems in traditional monetary systems. Every aspect of Bitcoin's design serves a specific purpose in creating sound money that operates without central authority.
+
+Understanding Bitcoin requires recognizing how it differs from everything that came before. Traditional money systems require trust in institutions, governments, or central authorities. Bitcoin replaces this trust with mathematical proof and economic incentives that align individual interests with network security.
+
+The implications of Bitcoin extend far beyond simple digital payments. Bitcoin represents a new form of property that exists purely in the digital realm but cannot be copied, counterfeited, or seized without the owner's consent. This creates unprecedented opportunities for financial sovereignty and wealth preservation.
+
+Bitcoin's fixed supply creates scarcity that has never existed in human history. Unlike gold, which can theoretically be mined from asteroids or the ocean floor, Bitcoin's supply is mathematically capped forever. This absolute scarcity fundamentally changes how we think about money and value storage.
+
+The network effects that drive Bitcoin adoption create a self-reinforcing cycle where each new user makes Bitcoin more valuable for everyone else. This creates powerful incentives for continued adoption and network growth that compound over time.
+
+Bitcoin's permissionless nature means anyone can participate without asking permission from any authority. This creates unprecedented financial inclusion and ensures that Bitcoin remains accessible to people regardless of their location, politics, or economic status.
+
+The security of Bitcoin's network comes from its distributed nature and the enormous cost required to attack it. With thousands of nodes worldwide and massive energy expenditure securing the network, Bitcoin has proven to be the most secure financial network ever created.
+
+Bitcoin's transparency enables unprecedented accountability in monetary systems. Anyone can verify transactions, audit the money supply, and track the flow of funds without requiring permission from any authority. This level of transparency is impossible in traditional financial systems.
+
+Understanding Bitcoin's role in portfolio diversification and wealth preservation reveals its value beyond speculation. Bitcoin serves as a hedge against currency debasement, inflation, and systemic financial risks that affect traditional assets.
+
+The future of Bitcoin depends on continued adoption, technological development, and growing understanding of its monetary properties. As more people discover Bitcoin's benefits and infrastructure improves, its utility and value will likely continue growing.`,
+        summary: `Bitcoin fundamentals covering key concepts essential for understanding this revolutionary monetary technology and its implications for the future of money.`,
+        estimatedReadTime: 7,
+        dayIndex: day
+      });
+    }
+
+    // Combine all lessons
+    const allLessons = [...lessons, ...additionalLessons];
+
+    allLessons.forEach((lessonData, index) => {
       const lesson: Lesson = {
         id: this.currentLessonId++,
         title: lessonData.title,
@@ -542,7 +823,9 @@ This layered approach mirrors the internet's architecture, where different layer
         summary: lessonData.summary,
         estimatedReadTime: lessonData.estimatedReadTime,
         dayIndex: lessonData.dayIndex,
-        imageUrl: null
+        imageUrl: null,
+        keyPoints: null,
+        whyItMatters: null
       };
       this.lessons.set(lesson.id, lesson);
     });
@@ -963,8 +1246,441 @@ This layered approach mirrors the internet's architecture, where different layer
         explanation: "The US dollar has lost over 96% of its purchasing power since 1913 due to inflation.",
         category: "Economics",
         difficulty: "intermediate"
+      },
+
+      // Day 3: Bitcoin Mining & Security
+      {
+        dayIndex: 3,
+        question: "What is Bitcoin mining?",
+        optionA: "Digging for Bitcoin underground",
+        optionB: "Creating new Bitcoin out of thin air",
+        optionC: "Solving mathematical puzzles to secure the network",
+        optionD: "Trading Bitcoin for profit",
+        correctAnswer: "C",
+        explanation: "Bitcoin mining involves using computational power to solve mathematical puzzles, securing the network and earning Bitcoin rewards.",
+        category: "Mining",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 3,
+        question: "What is proof of work?",
+        optionA: "A job certificate",
+        optionB: "A security method requiring computational effort",
+        optionC: "A Bitcoin wallet type",
+        optionD: "A transaction fee",
+        correctAnswer: "B",
+        explanation: "Proof of work is Bitcoin's security method where miners must prove they've done computational work to add new blocks.",
+        category: "Security",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 3,
+        question: "How often does Bitcoin adjust mining difficulty?",
+        optionA: "Every day",
+        optionB: "Every week",
+        optionC: "Every 2 weeks",
+        optionD: "Every month",
+        correctAnswer: "C",
+        explanation: "Bitcoin automatically adjusts mining difficulty every 2 weeks to maintain consistent 10-minute block times.",
+        category: "Technology",
+        difficulty: "intermediate"
+      },
+
+      // Day 4: Wallets & Private Keys
+      {
+        dayIndex: 4,
+        question: "What does a Bitcoin wallet actually store?",
+        optionA: "Bitcoin coins",
+        optionB: "Private keys",
+        optionC: "The blockchain",
+        optionD: "Transaction history",
+        correctAnswer: "B",
+        explanation: "A Bitcoin wallet stores your private keys, not Bitcoin itself. Bitcoin exists on the blockchain.",
+        category: "Wallets",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 4,
+        question: "What does 'Not your keys, not your coins' mean?",
+        optionA: "You need to buy expensive keys",
+        optionB: "If you don't control private keys, you don't truly own the Bitcoin",
+        optionC: "Keys are more important than coins",
+        optionD: "You should give your keys to exchanges",
+        correctAnswer: "B",
+        explanation: "If you don't control the private keys, you don't truly own the Bitcoin - someone else has control over your funds.",
+        category: "Security",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 4,
+        question: "Why is keeping Bitcoin on exchanges risky long-term?",
+        optionA: "Exchanges charge high fees",
+        optionB: "The exchange controls your private keys",
+        optionC: "Bitcoin price is volatile",
+        optionD: "Exchanges are illegal",
+        correctAnswer: "B",
+        explanation: "When Bitcoin is stored on exchanges, the exchange controls your private keys, meaning they have complete control over your funds.",
+        category: "Security",
+        difficulty: "intermediate"
+      },
+
+      // Day 5: Store of Value & Digital Gold
+      {
+        dayIndex: 5,
+        question: "Why is Bitcoin often called 'digital gold'?",
+        optionA: "It's shiny and yellow",
+        optionB: "It has similar properties to gold but improved for the digital age",
+        optionC: "It's made from gold",
+        optionD: "It's worth the same as gold",
+        correctAnswer: "B",
+        explanation: "Bitcoin shares gold's valuable properties (scarcity, durability, portability) but improves upon them for digital use.",
+        category: "Economics",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 5,
+        question: "How does Bitcoin improve upon gold's portability?",
+        optionA: "Bitcoin is lighter",
+        optionB: "Bitcoin can be sent globally instantly",
+        optionC: "Bitcoin is smaller",
+        optionD: "Bitcoin doesn't need storage",
+        correctAnswer: "B",
+        explanation: "Unlike gold which requires physical transport, Bitcoin can be sent anywhere in the world almost instantly.",
+        category: "Technology",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 5,
+        question: "What makes Bitcoin more divisible than gold?",
+        optionA: "Bitcoin can be divided into 100 million satoshis",
+        optionB: "Bitcoin is digital",
+        optionC: "Bitcoin is cheaper",
+        optionD: "Bitcoin doesn't break",
+        correctAnswer: "A",
+        explanation: "Bitcoin can be divided into 100 million units called satoshis, while dividing gold requires expensive industrial processes.",
+        category: "Technology",
+        difficulty: "intermediate"
+      },
+
+      // Day 6: Lightning Network
+      {
+        dayIndex: 6,
+        question: "What is the Lightning Network?",
+        optionA: "A new cryptocurrency",
+        optionB: "A second layer solution for faster Bitcoin payments",
+        optionC: "A Bitcoin mining pool",
+        optionD: "A Bitcoin exchange",
+        correctAnswer: "B",
+        explanation: "The Lightning Network is a second layer built on top of Bitcoin that enables faster, cheaper transactions.",
+        category: "Technology",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 6,
+        question: "What problem does the Lightning Network solve?",
+        optionA: "Bitcoin's limited supply",
+        optionB: "Bitcoin's volatility",
+        optionC: "Bitcoin's transaction speed and fees for small payments",
+        optionD: "Bitcoin's security",
+        correctAnswer: "C",
+        explanation: "Lightning Network enables instant, low-cost Bitcoin transactions, making it practical for everyday purchases.",
+        category: "Scaling",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 6,
+        question: "How does Lightning Network maintain Bitcoin's security?",
+        optionA: "It uses a different blockchain",
+        optionB: "It's built on top of Bitcoin's base layer",
+        optionC: "It doesn't need security",
+        optionD: "It uses banks",
+        correctAnswer: "B",
+        explanation: "Lightning Network is built on top of Bitcoin's secure base layer, inheriting Bitcoin's proven security model.",
+        category: "Security",
+        difficulty: "intermediate"
+      },
+
+      // Day 7: Traditional Finance vs Bitcoin
+      {
+        dayIndex: 7,
+        question: "What is a major problem with fiat currencies?",
+        optionA: "They are too valuable",
+        optionB: "They lose purchasing power over time due to inflation",
+        optionC: "They are too secure",
+        optionD: "They are too fast",
+        correctAnswer: "B",
+        explanation: "Fiat currencies lose purchasing power over time due to inflation caused by money printing.",
+        category: "Economics",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 7,
+        question: "How many people worldwide lack access to banking?",
+        optionA: "100 million",
+        optionB: "500 million",
+        optionC: "1 billion",
+        optionD: "2 billion",
+        correctAnswer: "D",
+        explanation: "Approximately 2 billion people worldwide lack access to traditional banking services.",
+        category: "Global Impact",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 7,
+        question: "What does Bitcoin require for financial access?",
+        optionA: "A bank account",
+        optionB: "Government approval",
+        optionC: "Only internet access",
+        optionD: "A credit score",
+        correctAnswer: "C",
+        explanation: "Bitcoin only requires internet access, providing financial services to anyone with an internet connection.",
+        category: "Inclusion",
+        difficulty: "beginner"
+      },
+
+      // Days 8-29: Additional Bitcoin Education Topics
+      // Day 8: Bitcoin Transactions
+      {
+        dayIndex: 8,
+        question: "What information is included in a Bitcoin transaction?",
+        optionA: "Only the amount",
+        optionB: "Sender, receiver, amount, and fees",
+        optionC: "Personal identification",
+        optionD: "Bank account numbers",
+        correctAnswer: "B",
+        explanation: "Bitcoin transactions include sender address, receiver address, amount, and transaction fees.",
+        category: "Transactions",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 8,
+        question: "What are Bitcoin transaction fees used for?",
+        optionA: "Government taxes",
+        optionB: "Company profits",
+        optionC: "Incentivizing miners to include transactions in blocks",
+        optionD: "Exchange commissions",
+        correctAnswer: "C",
+        explanation: "Transaction fees incentivize miners to include your transaction in the next block.",
+        category: "Fees",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 8,
+        question: "How long does a Bitcoin transaction typically take to confirm?",
+        optionA: "A few seconds",
+        optionB: "About 10 minutes for first confirmation",
+        optionC: "Several hours",
+        optionD: "1-2 days",
+        correctAnswer: "B",
+        explanation: "Bitcoin blocks are mined approximately every 10 minutes, so first confirmation typically takes around 10 minutes.",
+        category: "Transactions",
+        difficulty: "beginner"
+      },
+
+      // Day 9: Bitcoin History
+      {
+        dayIndex: 9,
+        question: "When was Bitcoin's whitepaper published?",
+        optionA: "October 31, 2008",
+        optionB: "January 3, 2009",
+        optionC: "December 2007",
+        optionD: "March 2009",
+        correctAnswer: "A",
+        explanation: "Bitcoin's whitepaper was published by Satoshi Nakamoto on October 31, 2008.",
+        category: "History",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 9,
+        question: "When was the first Bitcoin block (Genesis Block) mined?",
+        optionA: "October 31, 2008",
+        optionB: "January 3, 2009",
+        optionC: "December 31, 2008",
+        optionD: "February 2009",
+        correctAnswer: "B",
+        explanation: "The Genesis Block was mined on January 3, 2009, marking the birth of the Bitcoin network.",
+        category: "History",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 9,
+        question: "What was the first recorded Bitcoin purchase?",
+        optionA: "A car",
+        optionB: "Two pizzas",
+        optionC: "A computer",
+        optionD: "Coffee",
+        correctAnswer: "B",
+        explanation: "On May 22, 2010, Laszlo Hanyecz bought two pizzas for 10,000 Bitcoin, now celebrated as Bitcoin Pizza Day.",
+        category: "History",
+        difficulty: "intermediate"
+      },
+
+      // Day 10: Bitcoin Scalability
+      {
+        dayIndex: 10,
+        question: "How many transactions can Bitcoin's base layer process per second?",
+        optionA: "About 7 transactions",
+        optionB: "About 100 transactions",
+        optionC: "About 1,000 transactions",
+        optionD: "Unlimited transactions",
+        correctAnswer: "A",
+        explanation: "Bitcoin's base layer can process approximately 7 transactions per second due to block size and time constraints.",
+        category: "Scalability",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 10,
+        question: "What is a second layer solution in Bitcoin?",
+        optionA: "A new blockchain",
+        optionB: "A system built on top of Bitcoin to increase capacity",
+        optionC: "A type of wallet",
+        optionD: "A mining pool",
+        correctAnswer: "B",
+        explanation: "Second layer solutions like Lightning Network are built on top of Bitcoin to enable more transactions.",
+        category: "Scaling",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 10,
+        question: "Why doesn't Bitcoin just increase block size for more transactions?",
+        optionA: "It's technically impossible",
+        optionB: "Larger blocks would centralize the network",
+        optionC: "It would make Bitcoin less secure",
+        optionD: "No one wants more transactions",
+        correctAnswer: "B",
+        explanation: "Larger blocks would require more resources to run nodes, potentially centralizing the network to fewer participants.",
+        category: "Decentralization",
+        difficulty: "advanced"
+      },
+
+      // Day 11: Bitcoin Energy & Environment
+      {
+        dayIndex: 11,
+        question: "Why does Bitcoin mining consume energy?",
+        optionA: "It's wasteful by design",
+        optionB: "Energy consumption secures the network",
+        optionC: "Miners are inefficient",
+        optionD: "It's an accident",
+        correctAnswer: "B",
+        explanation: "Bitcoin's energy consumption is a security feature - it makes attacking the network extremely expensive.",
+        category: "Energy",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 11,
+        question: "What percentage of Bitcoin mining uses renewable energy?",
+        optionA: "About 10%",
+        optionB: "About 25%",
+        optionC: "About 50-60%",
+        optionD: "About 90%",
+        correctAnswer: "C",
+        explanation: "Studies suggest 50-60% of Bitcoin mining is powered by renewable energy sources.",
+        category: "Environment",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 11,
+        question: "How does Bitcoin mining incentivize renewable energy?",
+        optionA: "It doesn't",
+        optionB: "Miners seek cheapest energy, often renewables",
+        optionC: "Government regulations require it",
+        optionD: "Bitcoin protocol demands it",
+        correctAnswer: "B",
+        explanation: "Miners are incentivized to find the cheapest energy sources, which are increasingly renewable.",
+        category: "Economics",
+        difficulty: "intermediate"
+      },
+
+      // Day 12: Bitcoin Monetary Policy
+      {
+        dayIndex: 12,
+        question: "What is Bitcoin's current block reward?",
+        optionA: "50 Bitcoin",
+        optionB: "25 Bitcoin",
+        optionC: "6.25 Bitcoin",
+        optionD: "3.125 Bitcoin",
+        correctAnswer: "C",
+        explanation: "As of 2020, Bitcoin's block reward is 6.25 Bitcoin per block, after the third halving.",
+        category: "Monetary Policy",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 12,
+        question: "When will the next Bitcoin halving occur?",
+        optionA: "2024",
+        optionB: "2025",
+        optionC: "2028",
+        optionD: "2032",
+        correctAnswer: "A",
+        explanation: "The next Bitcoin halving is expected in 2024, reducing the block reward to 3.125 Bitcoin.",
+        category: "Monetary Policy",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 12,
+        question: "What happens when all 21 million Bitcoin are mined?",
+        optionA: "The network stops working",
+        optionB: "Miners are only paid transaction fees",
+        optionC: "New Bitcoin continue to be created",
+        optionD: "Bitcoin becomes worthless",
+        correctAnswer: "B",
+        explanation: "When all Bitcoin are mined (around 2140), miners will be compensated only through transaction fees.",
+        category: "Future",
+        difficulty: "advanced"
       }
     ];
+
+    // Create additional questions for days 13-29 with general Bitcoin topics
+    const additionalDays = [];
+    for (let day = 13; day <= 29; day++) {
+      additionalDays.push(
+        {
+          dayIndex: day,
+          question: "What is the fundamental innovation of Bitcoin?",
+          optionA: "Digital payments",
+          optionB: "Solving the double-spending problem without trusted third parties",
+          optionC: "Fast transactions",
+          optionD: "Low fees",
+          correctAnswer: "B",
+          explanation: "Bitcoin's key innovation is solving the double-spending problem in digital currency without requiring trusted intermediaries.",
+          category: "Innovation",
+          difficulty: "intermediate"
+        },
+        {
+          dayIndex: day,
+          question: "What makes Bitcoin censorship-resistant?",
+          optionA: "It's anonymous",
+          optionB: "It's decentralized across thousands of nodes globally",
+          optionC: "It's encrypted",
+          optionD: "It's fast",
+          correctAnswer: "B",
+          explanation: "Bitcoin's decentralized nature across thousands of nodes makes it extremely difficult for any single entity to censor.",
+          category: "Decentralization",
+          difficulty: "intermediate"
+        },
+        {
+          dayIndex: day,
+          question: "Why is Bitcoin considered 'sound money'?",
+          optionA: "It makes noise",
+          optionB: "It has predictable monetary policy and fixed supply",
+          optionC: "It's backed by gold",
+          optionD: "It's controlled by banks",
+          correctAnswer: "B",
+          explanation: "Bitcoin is considered sound money because of its predictable monetary policy and fixed supply cap.",
+          category: "Monetary Theory",
+          difficulty: "intermediate"
+        }
+      );
+    }
+
+    // Combine all questions
+    const allDayQuestions = [...daySpecificQuestions, ...additionalDays];
+    
+    // Add all day-specific questions
+    allDayQuestions.forEach(question => {
+      const newQuestion: QuizQuestion = { ...question, id: this.currentQuizQuestionId++ };
+      this.quizQuestions.set(newQuestion.id, newQuestion);
+    });
 
     // Add the day-specific questions for days 0-2
     daySpecificQuestions.forEach(question => {
