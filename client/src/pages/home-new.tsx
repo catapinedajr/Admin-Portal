@@ -1353,11 +1353,9 @@ export default function Home() {
     };
     const purchasesPerYear = frequencyMap[frequency];
     const totalPurchases = Math.max(1, Math.floor(durationYears * purchasesPerYear));
-    const purchaseAmount = frequency === 'daily' ? validAmount * 12 / 365 : 
-                          frequency === 'weekly' ? validAmount * 12 / 52 : 
-                          frequency === 'biweekly' ? validAmount * 12 / 26 : 
-                          frequency === 'quarterly' ? validAmount * 3 :
-                          validAmount;
+    
+    // Fix purchase amount calculation - validAmount should be what they invest per frequency period
+    const purchaseAmount = validAmount; // Simple: whatever amount they specify, they invest that often at the chosen frequency
     
     // Get historically accurate Bitcoin prices for January each year
     const getStartingPrice = (startDate: string) => {
@@ -1392,50 +1390,40 @@ export default function Home() {
     const totalGrowthRatio = currentBitcoinPrice / startingPrice;
     const annualGrowthRate = Math.max(1, Math.pow(totalGrowthRatio, 1/durationYears)); // Ensure positive growth
     
-    // Generate realistic Bitcoin price progression and track each purchase
+    // Generate Bitcoin price progression with simple, reliable calculation
     for (let i = 0; i < totalPurchases; i++) {
-      const timeProgress = i / Math.max(totalPurchases - 1, 1);
-      const yearsElapsed = timeProgress * durationYears;
+      const timeProgress = totalPurchases > 1 ? i / (totalPurchases - 1) : 0;
       
-      // Base exponential growth with realistic compounding
-      const basePrice = startingPrice * Math.pow(annualGrowthRate, yearsElapsed);
+      // Simple exponential growth from start price to current price
+      const priceAtTime = startingPrice * Math.pow(currentBitcoinPrice / startingPrice, timeProgress);
       
-      // Add Bitcoin's characteristic volatility patterns
-      const marketCycle = 1 + Math.sin(timeProgress * 4 * Math.PI) * 0.25; // 4-year cycles
-      const volatility = 1 + (Math.sin(timeProgress * 20 * Math.PI) * 0.15); // Short-term volatility
-      const crashRecovery = timeProgress > 0.8 ? 1.1 : 1; // Recent bull run
+      // Add modest volatility (±15%) for realism, but keep it stable for consistent results
+      const volatilityFactor = 0.9 + (Math.sin(i * 0.5) * 0.2); // Deterministic volatility based on purchase index
+      const currentPrice = Math.max(startingPrice * 0.1, priceAtTime * volatilityFactor);
       
-      const currentPrice = Math.max(
-        startingPrice * 0.5, // Never go below 50% of starting price
-        basePrice * marketCycle * volatility * crashRecovery
-      );
-      
-      // Safety checks to prevent NaN values
-      const validCurrentPrice = isFinite(currentPrice) && currentPrice > 0 ? currentPrice : startingPrice;
-      const bitcoinPurchased = purchaseAmount / validCurrentPrice;
+      const bitcoinPurchased = purchaseAmount / currentPrice;
       
       totalInvested += purchaseAmount;
       totalBitcoin += bitcoinPurchased;
       
-      // Ensure all values are finite before adding to purchases
-      const runningAvgCost = totalBitcoin > 0 ? totalInvested / totalBitcoin : validCurrentPrice;
-      
       purchases.push({
         index: i,
-        timeProgress: isFinite(timeProgress) ? timeProgress : 0,
-        price: Math.round(validCurrentPrice),
+        timeProgress,
+        price: Math.round(currentPrice),
         amount: purchaseAmount,
-        bitcoinPurchased: isFinite(bitcoinPurchased) ? bitcoinPurchased : 0,
+        bitcoinPurchased,
         totalInvested,
-        totalBitcoin: isFinite(totalBitcoin) ? totalBitcoin : 0,
-        runningAvgCost: isFinite(runningAvgCost) ? runningAvgCost : validCurrentPrice
+        totalBitcoin,
+        runningAvgCost: totalInvested / totalBitcoin
       });
     }
     
-    const averagePrice = totalInvested / totalBitcoin;
+    const averagePrice = totalBitcoin > 0 ? totalInvested / totalBitcoin : 0;
     const currentValue = totalBitcoin * currentBitcoinPrice;
     const totalGain = currentValue - totalInvested;
-    const percentageReturn = (totalGain / totalInvested) * 100;
+    const percentageReturn = totalInvested > 0 ? (totalGain / totalInvested) * 100 : 0;
+    
+    // Calculations complete
     
     setDcaResults({
       totalInvested,
@@ -1448,6 +1436,11 @@ export default function Home() {
       purchases // Include purchase data for accurate charting
     });
   };
+
+  // Auto-calculate DCA results when inputs change
+  useEffect(() => {
+    calculateDcaStrategy();
+  }, [dcaInputs.monthlyAmount, dcaInputs.frequency, dcaInputs.startDate]);
 
   const [selectedWalletType, setSelectedWalletType] = useState<string | null>(null);
   
