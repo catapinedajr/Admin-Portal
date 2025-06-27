@@ -3043,15 +3043,8 @@ export default function Home() {
                             </div>
                           </div>
 
-                          {/* Bitcoin - Empty space showing it's done */}
-                          <div className="p-3 rounded-lg border border-green-600/30 bg-green-800/10">
-                            <div className="text-center text-green-400 font-medium text-sm py-4">
-                              ✅ Bitcoin Already Complete
-                            </div>
-                            <div className="text-center text-green-300 text-xs">
-                              4 steps vs 5 steps
-                            </div>
-                          </div>
+                          {/* Bitcoin - Empty space (no 5th step needed) */}
+                          <div></div>
                         </div>
                       </div>
 
