@@ -2763,7 +2763,7 @@ export default function Home() {
                             startPrice: 3800,
                             endPrice: 95000, // Current Bitcoin price Jan 2025
                             gain: 2400,
-                            stress: '🔥 Extreme',
+                            stress: 'Market Crash',
                             color: 'red',
                             years: 4.8
                           },
@@ -2774,7 +2774,7 @@ export default function Home() {
                             startPrice: 6500,
                             endPrice: 95000,
                             gain: 1362,
-                            stress: '⚡ High',
+                            stress: 'Bear Market',
                             color: 'purple',
                             years: 7
                           },
@@ -2785,7 +2785,7 @@ export default function Home() {
                             startPrice: 1000,
                             endPrice: 95000,
                             gain: 9400,
-                            stress: '💎 Diamond',
+                            stress: 'Early Days',
                             color: 'green',
                             years: 8
                           }
@@ -2862,10 +2862,10 @@ export default function Home() {
                         className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer slider"
                       />
                       <div className="flex justify-between text-xs text-zinc-400">
-                        <span>$1K</span>
-                        <span>$25K</span>
-                        <span>$50K</span>
-                        <span>$100K</span>
+                        <span>$1,000</span>
+                        <span>$25,000</span>
+                        <span>$50,000</span>
+                        <span>$100,000</span>
                       </div>
                     </div>
 
