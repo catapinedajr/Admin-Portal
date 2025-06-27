@@ -2862,74 +2862,145 @@ export default function Home() {
                                     const years = hodlInputs.years;
                                     const startValue = hodlResults.initialInvestment;
                                     const endValue = hodlResults.currentValue;
-                                    const steps = Math.min(20, Math.max(5, years * 2));
+                                    const steps = Math.max(20, years * 3); // More data points for smoother curves
+                                    
+                                    // Fixed scale for maximum visual impact - always show full potential
+                                    const maxPossibleGrowth = 100; // 10,000% growth for scale reference
+                                    const currentGrowthRatio = (endValue / startValue);
                                     
                                     for (let i = 0; i <= steps; i++) {
                                       const progress = i / steps;
-                                      const timeProgress = progress * years;
                                       
-                                      // Simulate realistic Bitcoin growth with volatility
+                                      // Simulate realistic Bitcoin growth with dramatic volatility
                                       let value;
                                       if (hodlInputs.scenario === 'jan2017') {
-                                        // Early adopter with major volatility
-                                        const volatilityFactors = [1, 3, 0.5, 8, 2, 0.3, 15, 5, 1.2, 25, 8, 2, 45, 15, 3, 95];
-                                        value = startValue * (volatilityFactors[Math.floor(progress * (volatilityFactors.length - 1))] || endValue / startValue);
+                                        // Early adopter with extreme volatility - show the wild ride
+                                        const volatilityPoints = [
+                                          1, 4, 0.8, 12, 3, 0.4, 20, 8, 2, 35, 12, 3.5, 
+                                          65, 18, 5, 85, 25, 8, 110, 35, 12, 95
+                                        ];
+                                        const index = Math.floor(progress * (volatilityPoints.length - 1));
+                                        value = startValue * (volatilityPoints[index] || currentGrowthRatio);
                                       } else if (hodlInputs.scenario === 'jan2020') {
-                                        // COVID era with crash and recovery
-                                        const covidPattern = progress < 0.1 ? 0.5 : progress < 0.3 ? 0.8 : Math.pow(endValue / startValue, progress);
-                                        value = startValue * covidPattern;
+                                        // COVID crash and recovery - dramatic dip then exponential recovery
+                                        if (progress < 0.15) {
+                                          value = startValue * (1 - 0.6 * (progress / 0.15)); // 60% crash
+                                        } else if (progress < 0.4) {
+                                          const recoveryProgress = (progress - 0.15) / 0.25;
+                                          value = startValue * (0.4 + recoveryProgress * 1.6); // Recovery to 2x
+                                        } else {
+                                          const growthProgress = (progress - 0.4) / 0.6;
+                                          value = startValue * (2 + growthProgress * (currentGrowthRatio - 2));
+                                        }
+                                      } else if (years >= 5) {
+                                        // Long-term exponential with realistic volatility
+                                        const baseGrowth = Math.pow(currentGrowthRatio, progress);
+                                        const volatility = 1 + 0.4 * Math.sin(progress * 12) * (1 - progress * 0.3);
+                                        value = startValue * baseGrowth * volatility;
                                       } else {
-                                        // Smooth exponential growth with minor volatility
-                                        const baseGrowth = Math.pow(endValue / startValue, progress);
-                                        const volatility = 1 + 0.2 * Math.sin(progress * 8) * (1 - progress * 0.5);
+                                        // Shorter term with more moderate growth
+                                        const baseGrowth = Math.pow(currentGrowthRatio, progress);
+                                        const volatility = 1 + 0.25 * Math.sin(progress * 6);
                                         value = startValue * baseGrowth * volatility;
                                       }
                                       
+                                      // Use logarithmic scale for better visual impact of compounding
+                                      const logStartValue = Math.log(startValue);
+                                      const logValue = Math.log(Math.max(value, startValue * 0.1)); // Prevent negative logs
+                                      const logMaxValue = Math.log(startValue * maxPossibleGrowth);
+                                      
+                                      const yPosition = 115 - ((logValue - logStartValue) / (logMaxValue - logStartValue)) * 105;
+                                      
                                       points.push({
                                         x: (progress * 280) + 10,
-                                        y: 120 - ((Math.log(value / startValue + 1) / Math.log(endValue / startValue + 1)) * 100),
+                                        y: Math.max(10, Math.min(115, yPosition)), // Keep within bounds
                                         value
                                       });
                                     }
                                     
                                     const pathData = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
                                     
+                                    // Add value markers for dramatic effect
+                                    const keyMilestones = [];
+                                    if (currentGrowthRatio >= 10) keyMilestones.push({ label: '10x', multiplier: 10 });
+                                    if (currentGrowthRatio >= 50) keyMilestones.push({ label: '50x', multiplier: 50 });
+                                    if (currentGrowthRatio >= 100) keyMilestones.push({ label: '100x', multiplier: 100 });
+                                    
                                     return (
                                       <>
-                                        {/* Growth Line */}
-                                        <path
-                                          d={pathData}
-                                          stroke="#f97316"
-                                          strokeWidth="2"
-                                          fill="none"
-                                          className="drop-shadow-sm"
-                                        />
-                                        
-                                        {/* Area Fill */}
-                                        <path
-                                          d={`${pathData} L ${points[points.length - 1].x} 120 L 10 120 Z`}
-                                          fill="url(#orangeGradient)"
-                                          opacity="0.2"
-                                        />
-                                        
-                                        {/* Start and End Points */}
-                                        <circle cx={points[0].x} cy={points[0].y} r="3" fill="#10b981" />
-                                        <circle cx={points[points.length - 1].x} cy={points[points.length - 1].y} r="3" fill="#f97316" />
-                                        
-                                        {/* Gradient Definition */}
+                                        {/* Background grid for reference */}
                                         <defs>
-                                          <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                            <stop offset="0%" stopColor="#f97316" stopOpacity="0.3"/>
+                                          <pattern id="compoundGrid" width="35" height="25" patternUnits="userSpaceOnUse">
+                                            <path d="M 35 0 L 0 0 0 25" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.2"/>
+                                          </pattern>
+                                          <linearGradient id="dramaticGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                            <stop offset="0%" stopColor="#f97316" stopOpacity="0.4"/>
                                             <stop offset="100%" stopColor="#f97316" stopOpacity="0.1"/>
                                           </linearGradient>
                                         </defs>
+                                        <rect width="100%" height="100%" fill="url(#compoundGrid)" />
                                         
-                                        {/* Time Labels */}
-                                        <text x="10" y="135" fill="#9ca3af" fontSize="8" textAnchor="start">
+                                        {/* Milestone reference lines */}
+                                        {keyMilestones.map((milestone, index) => {
+                                          const logMilestone = Math.log(startValue * milestone.multiplier);
+                                          const logStartValue = Math.log(startValue);
+                                          const logMaxValue = Math.log(startValue * maxPossibleGrowth);
+                                          const y = 115 - ((logMilestone - logStartValue) / (logMaxValue - logStartValue)) * 105;
+                                          
+                                          return (
+                                            <g key={milestone.label}>
+                                              <line x1="10" y1={y} x2="290" y2={y} stroke="#fbbf24" strokeWidth="1" opacity="0.3" strokeDasharray="2,2"/>
+                                              <text x="295" y={y + 3} fill="#fbbf24" fontSize="8" opacity="0.7">{milestone.label}</text>
+                                            </g>
+                                          );
+                                        })}
+                                        
+                                        {/* Area fill for dramatic effect */}
+                                        <path
+                                          d={`${pathData} L ${points[points.length - 1].x} 115 L 10 115 Z`}
+                                          fill="url(#dramaticGradient)"
+                                          opacity="0.3"
+                                        />
+                                        
+                                        {/* Main growth line with enhanced styling */}
+                                        <path
+                                          d={pathData}
+                                          stroke="#f97316"
+                                          strokeWidth="3"
+                                          fill="none"
+                                          className="drop-shadow-lg"
+                                          filter="url(#glow)"
+                                        />
+                                        
+                                        {/* Glow effect for dramatic impact */}
+                                        <defs>
+                                          <filter id="glow">
+                                            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                                            <feMerge> 
+                                              <feMergeNode in="coloredBlur"/>
+                                              <feMergeNode in="SourceGraphic"/>
+                                            </feMerge>
+                                          </filter>
+                                        </defs>
+                                        
+                                        {/* Enhanced start and end points */}
+                                        <circle cx={points[0].x} cy={points[0].y} r="4" fill="#10b981" stroke="#ffffff" strokeWidth="2" opacity="0.9" />
+                                        <circle cx={points[points.length - 1].x} cy={points[points.length - 1].y} r="5" fill="#f97316" stroke="#ffffff" strokeWidth="2" className="animate-pulse" />
+                                        
+                                        {/* Time progression labels */}
+                                        <text x="10" y="135" fill="#9ca3af" fontSize="9" fontWeight="500" textAnchor="start">
                                           {hodlInputs.period}
                                         </text>
-                                        <text x="290" y="135" fill="#9ca3af" fontSize="8" textAnchor="end">
+                                        <text x="150" y="135" fill="#9ca3af" fontSize="8" textAnchor="middle">
+                                          {years > 3 ? `${Math.floor(years/2)} years` : ''}
+                                        </text>
+                                        <text x="290" y="135" fill="#9ca3af" fontSize="9" fontWeight="500" textAnchor="end">
                                           Jan 2025
+                                        </text>
+                                        
+                                        {/* Growth percentage indicator */}
+                                        <text x="150" y="20" fill="#f97316" fontSize="12" fontWeight="bold" textAnchor="middle">
+                                          +{((currentGrowthRatio - 1) * 100).toFixed(0)}% Growth
                                         </text>
                                       </>
                                     );
