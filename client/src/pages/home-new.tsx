@@ -2611,7 +2611,16 @@ export default function Home() {
                           />
                           <circle 
                             cx={50 + ((moneySupplyYear - 1971) / (2024 - 1971)) * 320} 
-                            cy={175 - ((getMoneySupplyRaw(moneySupplyYear) - 0.6) / 20.4) * 155} 
+                            cy={(() => {
+                              // Calculate Y position based on actual money supply curve
+                              const yearProgress = (moneySupplyYear - 1971) / (2024 - 1971);
+                              const moneySupply = getMoneySupplyRaw(moneySupplyYear);
+                              
+                              // Map money supply values to Y coordinates (inverted)
+                              // 0.6T -> 175, 21T -> 20
+                              const yPosition = 175 - ((moneySupply - 0.6) / (21 - 0.6)) * 155;
+                              return Math.max(20, Math.min(175, yPosition));
+                            })()} 
                             r="5" 
                             fill="#f97316" 
                             stroke="#ffffff" 
