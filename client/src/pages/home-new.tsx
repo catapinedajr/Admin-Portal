@@ -1596,7 +1596,7 @@ export default function Home() {
               <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
                 <Plus className="w-5 h-5 text-white" />
               </div>
-              <h1 className="text-xl font-bold text-white">BTC Journey</h1>
+              <h1 className="text-xl font-bold text-white">HODLearn</h1>
             </div>
           </div>
         </div>
@@ -1622,7 +1622,7 @@ export default function Home() {
                 onClick={() => setActiveSection("simulations")}
                 className="text-sm px-4 py-2"
               >
-                Simulations
+                Simulators
               </Button>
               <Button
                 variant={activeSection === "more" ? "secondary" : "ghost"}
