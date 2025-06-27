@@ -180,15 +180,15 @@ export class MemStorage implements IStorage {
   }
 
   private seedData() {
-    // Comprehensive Bitcoin education facts - organized by learning progression
+    // Week 1: "What Is Money Really?" - Building foundational understanding
     const facts = [
-      // Week 1: Core Concepts
+      // Day 1: What is Money?
       {
-        title: "What is Bitcoin?",
-        content: "Bitcoin is digital money that works without banks or governments. It's the first successful cryptocurrency, created to give people financial freedom and control over their own money.",
-        category: "Fundamentals",
+        title: "What Is Money?",
+        content: "Money is anything that people agree has value and can be used to trade for goods and services.",
+        category: "Money Basics",
         icon: "coins",
-        dayIndex: 0
+        dayIndex: 1
       },
       {
         title: "Digital Scarcity",
