@@ -2188,118 +2188,215 @@ export default function Home() {
         {/* Finance Section */}
         {activeSection === "finance" && (
           <div className="space-y-8">
-            {/* Streamlined Hero */}
-            <Card className="bg-gradient-to-r from-orange-950/40 to-red-950/40 border-orange-800/50">
-              <CardContent className="p-6">
-                <div className="max-w-3xl mx-auto text-center space-y-4">
-                  <h2 className="text-3xl font-bold text-white">
-                    Your Money Loses <span className="text-red-400">3-4%</span> Value Every Year
+            {/* Hero Narrative */}
+            <Card className="bg-gradient-to-br from-orange-950/30 via-zinc-900 to-red-950/30 border-orange-800/50">
+              <CardContent className="p-8">
+                <div className="max-w-4xl mx-auto text-center space-y-6">
+                  <h2 className="text-4xl font-bold text-white mb-4">
+                    Your Money Is Being <span className="text-red-400">Silently Stolen</span>
                   </h2>
                   
-                  <p className="text-lg text-zinc-300">
-                    Since 1971, the dollar lost 86% of its purchasing power. Bitcoin offers a fixed supply of 21 million coins—
-                    <span className="text-orange-400 font-semibold"> no central bank can print more.</span>
-                  </p>
+                  <div className="text-lg text-zinc-300 leading-relaxed space-y-4">
+                    <p>
+                      Every day you wait, your savings lose purchasing power. It's not your fault—the system is rigged. 
+                      Central banks print money endlessly, devaluing your hard-earned dollars while the wealthy protect 
+                      themselves with assets that can't be printed.
+                    </p>
+                    
+                    <p>
+                      <span className="text-orange-400 font-semibold">What cost $1 in 1971 now costs $7.50.</span> Your 
+                      grandparents could buy a house with one income. Today, two incomes barely cover rent. This isn't 
+                      progress—it's systematic wealth transfer from savers to money printers.
+                    </p>
+                    
+                    <p>
+                      But there's an escape route. For the first time in human history, we have <span className="text-orange-400 font-semibold">
+                      mathematically perfect money</span> that can't be inflated away. Bitcoin isn't just digital gold—it's 
+                      the antidote to monetary debasement.
+                    </p>
+                  </div>
                   
-                  <div className="grid gap-3 md:grid-cols-3 mt-6">
-                    <div className="p-3 bg-red-950/50 rounded-lg">
-                      <div className="text-red-300 font-bold">$1 → $7.50</div>
-                      <div className="text-red-400/70 text-sm">Since 1971</div>
+                  <div className="grid gap-4 md:grid-cols-3 mt-8">
+                    <div className="p-4 bg-red-950/50 rounded-xl border border-red-800/50">
+                      <div className="text-red-300 font-bold text-xl">21 Million</div>
+                      <div className="text-red-400/80 text-sm">Bitcoin's Maximum Supply</div>
+                      <div className="text-zinc-400 text-xs mt-1">No central bank can print more</div>
                     </div>
-                    <div className="p-3 bg-orange-950/50 rounded-lg">
-                      <div className="text-orange-300 font-bold">21M Max</div>
-                      <div className="text-orange-400/70 text-sm">Bitcoin Supply</div>
+                    
+                    <div className="p-4 bg-yellow-950/50 rounded-xl border border-yellow-800/50">
+                      <div className="text-yellow-300 font-bold text-xl">0%</div>
+                      <div className="text-yellow-400/80 text-sm">Bitcoin Inflation Rate</div>
+                      <div className="text-zinc-400 text-xs mt-1">After all 21M are mined</div>
                     </div>
-                    <div className="p-3 bg-green-950/50 rounded-lg">
-                      <div className="text-green-300 font-bold">0% Future</div>
-                      <div className="text-green-400/70 text-sm">Inflation Rate</div>
+                    
+                    <div className="p-4 bg-green-950/50 rounded-xl border border-green-800/50">
+                      <div className="text-green-300 font-bold text-xl">100%</div>
+                      <div className="text-green-400/80 text-sm">You Own Your Bitcoin</div>
+                      <div className="text-zinc-400 text-xs mt-1">No bank can freeze it</div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-8 p-6 bg-orange-950/20 rounded-xl border border-orange-800/30">
+                    <div className="text-orange-300 font-semibold text-lg mb-2">
+                      The choice is yours:
+                    </div>
+                    <div className="text-zinc-300">
+                      Keep letting inflation slowly drain your wealth, or learn about the money that can't be manipulated. 
+                      The calculators below show you exactly what you're losing—and what you could gain.
                     </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Dual Calculator */}
+            {/* Inflation Impact Calculator */}
             <Card className="bg-zinc-900 border-zinc-800">
               <CardHeader className="pb-4">
-                <CardTitle className="text-white text-xl">Calculate Your Real Costs</CardTitle>
-                <p className="text-zinc-400 text-sm">See what inflation and bank fees are really costing you</p>
+                <CardTitle className="text-white flex items-center gap-3 text-xl">
+                  <TrendingDown className="w-5 h-5 text-orange-400" />
+                  Inflation Impact Calculator
+                </CardTitle>
+                <p className="text-zinc-400 text-sm">See how inflation erodes your purchasing power over time</p>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="grid gap-6 lg:grid-cols-2">
-                  {/* Inflation Section */}
+                <div className="grid gap-6 lg:grid-cols-3">
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-white">Inflation Impact</h3>
-                    <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-zinc-300">Savings Amount</label>
                       <Select value={inflationAmount} onValueChange={setInflationAmount}>
-                        <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                        <SelectTrigger className="bg-zinc-800 border-zinc-700 h-12">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
+                          <SelectItem value="1000">$1,000</SelectItem>
+                          <SelectItem value="5000">$5,000</SelectItem>
                           <SelectItem value="10000">$10,000</SelectItem>
                           <SelectItem value="25000">$25,000</SelectItem>
                           <SelectItem value="50000">$50,000</SelectItem>
                           <SelectItem value="100000">$100,000</SelectItem>
                         </SelectContent>
                       </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-zinc-300">Time Period</label>
                       <Select value={inflationYears} onValueChange={setInflationYears}>
-                        <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                        <SelectTrigger className="bg-zinc-800 border-zinc-700 h-12">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
+                          <SelectItem value="5">5 years</SelectItem>
                           <SelectItem value="10">10 years</SelectItem>
                           <SelectItem value="20">20 years</SelectItem>
                           <SelectItem value="30">30 years</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="p-4 bg-red-950/30 rounded-lg text-center">
-                      <div className="text-red-300 text-2xl font-bold">
+                  </div>
+                  
+                  <div className="p-6 bg-red-950/50 rounded-xl border border-red-800/50">
+                    <div className="text-center">
+                      <div className="text-red-400 text-sm font-medium mb-2">Fiat Currency Loss</div>
+                      <div className="text-3xl font-bold text-red-300 mb-1">
                         -${Math.round(parseInt(inflationAmount) * (1 - Math.pow(0.97, parseInt(inflationYears)))).toLocaleString()}
                       </div>
-                      <div className="text-red-400/70 text-sm">Lost to inflation</div>
+                      <div className="text-red-400/70 text-xs">Lost to 3% inflation</div>
                     </div>
                   </div>
+                  
+                  <div className="p-6 bg-green-950/50 rounded-xl border border-green-800/50">
+                    <div className="text-center">
+                      <div className="text-green-400 text-sm font-medium mb-2">Bitcoin Protection</div>
+                      <div className="text-3xl font-bold text-green-300 mb-1">
+                        ${Math.round(parseInt(inflationAmount) * Math.pow(1.15, parseInt(inflationYears))).toLocaleString()}
+                      </div>
+                      <div className="text-green-400/70 text-xs">15% annual appreciation</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="text-center p-4 bg-orange-950/30 rounded-xl border border-orange-800/30">
+                  <div className="text-orange-300 text-lg font-semibold">
+                    Net Advantage: <span className="text-orange-400 text-2xl font-bold">
+                      ${(Math.round(parseInt(inflationAmount) * Math.pow(1.15, parseInt(inflationYears))) + 
+                        Math.round(parseInt(inflationAmount) * (1 - Math.pow(0.97, parseInt(inflationYears))))).toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="text-orange-400/70 text-sm mt-1">Total difference with Bitcoin over {inflationYears} years</div>
+                </div>
+              </CardContent>
+            </Card>
 
-                  {/* Transfer Fees Section */}
+            {/* Banking Fees Calculator */}
+            <Card className="bg-zinc-900 border-zinc-800">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-white flex items-center gap-3 text-xl">
+                  <Calculator className="w-5 h-5 text-orange-400" />
+                  Transfer Cost Comparison
+                </CardTitle>
+                <p className="text-zinc-400 text-sm">Compare the cost of sending money internationally</p>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid gap-6 lg:grid-cols-3">
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-white">Transfer Costs</h3>
-                    <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-zinc-300">Monthly Transfers</label>
                       <Select value={transferCount} onValueChange={setTransferCount}>
-                        <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                        <SelectTrigger className="bg-zinc-800 border-zinc-700 h-12">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="1">1/month</SelectItem>
-                          <SelectItem value="2">2/month</SelectItem>
-                          <SelectItem value="4">4/month</SelectItem>
-                          <SelectItem value="8">8/month</SelectItem>
+                          <SelectItem value="1">1 transfer</SelectItem>
+                          <SelectItem value="2">2 transfers</SelectItem>
+                          <SelectItem value="4">4 transfers</SelectItem>
+                          <SelectItem value="8">8 transfers</SelectItem>
                         </SelectContent>
                       </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-zinc-300">Average Amount</label>
                       <Select value={transferAmount} onValueChange={setTransferAmount}>
-                        <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                        <SelectTrigger className="bg-zinc-800 border-zinc-700 h-12">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
+                          <SelectItem value="500">$500</SelectItem>
                           <SelectItem value="1000">$1,000</SelectItem>
                           <SelectItem value="2500">$2,500</SelectItem>
                           <SelectItem value="5000">$5,000</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="p-4 bg-red-950/30 rounded-lg text-center">
-                      <div className="text-red-300 text-2xl font-bold">
+                  </div>
+                  
+                  <div className="p-6 bg-red-950/50 rounded-xl border border-red-800/50">
+                    <div className="text-center">
+                      <div className="text-red-400 text-sm font-medium mb-2">Traditional Banking</div>
+                      <div className="text-3xl font-bold text-red-300 mb-1">
                         ${Math.round(parseInt(transferCount) * parseInt(transferAmount) * 0.08 * 12).toLocaleString()}
                       </div>
-                      <div className="text-red-400/70 text-sm">Annual bank fees</div>
+                      <div className="text-red-400/70 text-xs">Annual fees (8% average)</div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-6 bg-green-950/50 rounded-xl border border-green-800/50">
+                    <div className="text-center">
+                      <div className="text-green-400 text-sm font-medium mb-2">Bitcoin Network</div>
+                      <div className="text-3xl font-bold text-green-300 mb-1">
+                        ${Math.round(parseInt(transferCount) * 0.5 * 12).toLocaleString()}
+                      </div>
+                      <div className="text-green-400/70 text-xs">Annual fees ($0.50 avg)</div>
                     </div>
                   </div>
                 </div>
-
-                <div className="p-4 bg-orange-950/20 rounded-xl border border-orange-800/30 text-center">
-                  <div className="text-orange-300 font-semibold">
-                    With Bitcoin: <span className="text-green-400">Fixed 21M supply</span> + <span className="text-green-400">$6/year fees</span>
+                
+                <div className="text-center p-4 bg-orange-950/30 rounded-xl border border-orange-800/30">
+                  <div className="text-orange-300 text-lg font-semibold">
+                    Annual Savings: <span className="text-orange-400 text-2xl font-bold">
+                      ${(Math.round(parseInt(transferCount) * parseInt(transferAmount) * 0.08 * 12) - 
+                        Math.round(parseInt(transferCount) * 0.5 * 12)).toLocaleString()}
+                    </span>
                   </div>
+                  <div className="text-orange-400/70 text-sm mt-1">Money saved by using Bitcoin instead of banks</div>
                 </div>
               </CardContent>
             </Card>
