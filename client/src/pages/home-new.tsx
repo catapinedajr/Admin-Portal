@@ -2536,13 +2536,10 @@ export default function Home() {
                         <text x="10" y="135" fill="#9ca3af" fontSize="10">$5T</text>
                         <text x="10" y="175" fill="#9ca3af" fontSize="10">$0</text>
                         
-                        {/* X-axis labels - Corrected for accurate 1920-2024 positioning */}
+                        {/* X-axis labels - Simplified to prevent overlap */}
                         <text x="50" y="195" fill="#9ca3af" fontSize="10">1920</text>
-                        <text x="115" y="195" fill="#9ca3af" fontSize="10">1940</text>
                         <text x="180" y="195" fill="#9ca3af" fontSize="10">1960</text>
-                        <text x="245" y="195" fill="#9ca3af" fontSize="10">1980</text>
                         <text x="310" y="195" fill="#9ca3af" fontSize="10">2000</text>
-                        <text x="350" y="195" fill="#9ca3af" fontSize="10">2020</text>
                         <text x="370" y="195" fill="#9ca3af" fontSize="10">2024</text>
                         
                         {/* Money Supply Growth Line - Using Real Federal Reserve Data */}
@@ -2616,12 +2613,10 @@ export default function Home() {
                         <g>
                           {(() => {
                             const events = [
-                              { year: 1929, m2: 0.026, label: "1929", subLabel: "Crash", offsetX: -15, offsetY: -35 },
-                              { year: 1933, m2: 0.020, label: "1933", subLabel: "Gold Ban", offsetX: -18, offsetY: -35 },  
-                              { year: 1945, m2: 0.107, label: "1945", subLabel: "War End", offsetX: -18, offsetY: -35 },
+                              { year: 1933, m2: 0.020, label: "1933", subLabel: "Gold Ban", offsetX: -18, offsetY: -45 },  
                               { year: 1971, m2: 0.583, label: "1971", subLabel: "Gold Std", offsetX: -20, offsetY: -35 },
                               { year: 2008, m2: 7.500, label: "2008", subLabel: "Crisis", offsetX: -15, offsetY: -35 },
-                              { year: 2020, m2: 15.400, label: "2020", subLabel: "COVID", offsetX: -15, offsetY: -35 }
+                              { year: 2020, m2: 15.400, label: "2020", subLabel: "COVID", offsetX: -15, offsetY: -45 }
                             ];
                             
                             return events.map((event, index) => {
@@ -2633,14 +2628,8 @@ export default function Home() {
                               // Calculate Y position: chart height=155, spanning 0.023-21.0 trillions
                               const chartY = 175 - ((event.m2 - 0.023) / (21.0 - 0.023)) * 155;
                               
-                              // Adjust label positions to prevent overlap
-                              let adjustedOffsetY = event.offsetY;
-                              if (event.year === 1929 || event.year === 1933) {
-                                adjustedOffsetY = -45; // Move higher for early events
-                              }
-                              if (event.year === 1971) {
-                                adjustedOffsetY = -50; // Extra space for important event
-                              }
+                              // Use predefined offset positions to prevent overlap
+                              const adjustedOffsetY = event.offsetY;
                               
                               return (
                                 <g key={index}>
