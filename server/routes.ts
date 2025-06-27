@@ -19,28 +19,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get daily facts for today
   app.get("/api/daily-facts", async (req, res) => {
     try {
-      // Calculate user's current day based on their progress
-      const user = await storage.getUser(1); // Default user
       const today = new Date();
-      const daysSinceStart = user?.lastActivityDate ? 
-        Math.floor((today.getTime() - new Date(user.lastActivityDate).getTime()) / (1000 * 60 * 60 * 24)) : 0;
-      
-      // For fresh start or reset, use completedLessons to determine current day
-      const dayIndex = (user?.completedLessons || 0) % 7; // Week 1 has 7 days of content
-      
-      // For Week 1, show 3 facts per day by cycling through content
-      const allFacts = await storage.getAllDailyFacts();
-      const factsToShow = [];
-      
-      // Get 3 facts starting from user's current dayIndex
-      for (let i = 0; i < 3; i++) {
-        const factIndex = (dayIndex * 3 + i) % allFacts.length;
-        if (allFacts[factIndex]) {
-          factsToShow.push(allFacts[factIndex]);
-        }
-      }
-      
-      res.json(factsToShow);
+      const dayIndex = Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 5; // Cycle through 5 days of content
+      const facts = await storage.getDailyFacts(dayIndex);
+      res.json(facts);
     } catch (error) {
       res.status(500).json({ message: "Failed to get daily facts" });
     }
@@ -49,11 +31,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get today's lesson
   app.get("/api/lesson", async (req, res) => {
     try {
-      // Calculate user's current day based on their progress
-      const user = await storage.getUser(1); // Default user
-      const dayIndex = (user?.completedLessons || 0) % 7; // Week 1 has 7 days of content
-      
-      const lesson = await storage.getLesson(dayIndex);
+      const today = new Date();
+      const dayIndex = Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 10;
+      const lesson = await storage.getLesson(dayIndex); // Use actual day cycling
       if (!lesson) {
         return res.status(404).json({ message: "No lesson found for today" });
       }
@@ -705,10 +685,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Quiz routes
   app.get('/api/quiz/daily/:dayIndex', async (req, res) => {
     try {
-      // Calculate user's current day based on their progress
-      const user = await storage.getUser(1); // Default user
-      const dayIndex = (user?.completedLessons || 0) % 7; // Week 1 has 7 days of content
-      
+      const dayIndex = parseInt(req.params.dayIndex);
       const questions = await storage.getDailyQuizQuestions(dayIndex);
       res.json(questions);
     } catch (error) {
@@ -773,6 +750,111 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error fetching quiz answers:', error);
       res.status(500).json({ message: "Failed to fetch quiz answers" });
+    }
+  });
+
+  // Weekly topics routes
+  app.get("/api/weekly/current", async (req, res) => {
+    try {
+      const weeklyTopic = await storage.getCurrentWeeklyTopic();
+      if (!weeklyTopic) {
+        return res.status(404).json({ message: "No current weekly topic found" });
+      }
+      res.json(weeklyTopic);
+    } catch (error) {
+      console.error('Error fetching current weekly topic:', error);
+      res.status(500).json({ message: "Failed to fetch current weekly topic" });
+    }
+  });
+
+  app.get("/api/weekly/:weekNumber", async (req, res) => {
+    try {
+      const weekNumber = parseInt(req.params.weekNumber);
+      if (isNaN(weekNumber)) {
+        return res.status(400).json({ message: "Invalid week number" });
+      }
+      
+      const weeklyTopic = await storage.getWeeklyTopic(weekNumber);
+      if (!weeklyTopic) {
+        return res.status(404).json({ message: "Weekly topic not found" });
+      }
+      res.json(weeklyTopic);
+    } catch (error) {
+      console.error('Error fetching weekly topic:', error);
+      res.status(500).json({ message: "Failed to fetch weekly topic" });
+    }
+  });
+
+  app.get("/api/weekly", async (req, res) => {
+    try {
+      const weeklyTopics = await storage.getAllWeeklyTopics();
+      res.json(weeklyTopics);
+    } catch (error) {
+      console.error('Error fetching weekly topics:', error);
+      res.status(500).json({ message: "Failed to fetch weekly topics" });
+    }
+  });
+
+  // User weekly progress routes
+  app.get("/api/weekly/progress/:weekNumber", async (req, res) => {
+    try {
+      const weekNumber = parseInt(req.params.weekNumber);
+      if (isNaN(weekNumber)) {
+        return res.status(400).json({ message: "Invalid week number" });
+      }
+      
+      const progress = await storage.getUserWeeklyProgress(1, weekNumber); // Default user ID
+      res.json(progress || null);
+    } catch (error) {
+      console.error('Error fetching weekly progress:', error);
+      res.status(500).json({ message: "Failed to fetch weekly progress" });
+    }
+  });
+
+  app.post("/api/weekly/progress", async (req, res) => {
+    try {
+      const { weekNumber, currentSection, totalSections, progressPercentage, bookmarked } = req.body;
+      
+      if (!weekNumber || !totalSections) {
+        return res.status(400).json({ message: "Week number and total sections are required" });
+      }
+
+      const progress = await storage.createOrUpdateWeeklyProgress({
+        userId: 1, // Default user ID
+        weekNumber,
+        currentSection: currentSection || 0,
+        totalSections,
+        progressPercentage: progressPercentage || 0,
+        bookmarked: bookmarked || false,
+        completedAt: progressPercentage === 100 ? new Date() : null
+      });
+
+      res.json(progress);
+    } catch (error) {
+      console.error('Error updating weekly progress:', error);
+      res.status(500).json({ message: "Failed to update weekly progress" });
+    }
+  });
+
+  app.put("/api/weekly/progress/:weekNumber", async (req, res) => {
+    try {
+      const weekNumber = parseInt(req.params.weekNumber);
+      const { currentSection, progressPercentage } = req.body;
+      
+      if (isNaN(weekNumber) || currentSection === undefined || progressPercentage === undefined) {
+        return res.status(400).json({ message: "Invalid parameters" });
+      }
+
+      await storage.updateWeeklyProgress(1, weekNumber, currentSection, progressPercentage);
+      
+      if (progressPercentage === 100) {
+        await storage.completeWeeklyTopic(1, weekNumber);
+      }
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error updating weekly progress:', error);
+      res.status(500).json({ message: "Failed to update weekly progress" });
     }
   });
 
