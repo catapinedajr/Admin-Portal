@@ -2367,81 +2367,22 @@ export default function Home() {
 
                       </div>
 
-                      {/* Visual Transaction Flow */}
-                      <div className="grid gap-4 md:grid-cols-3">
-                        <div className="p-4 bg-zinc-800/50 rounded-lg text-center">
-                          <Wallet className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-                          <h5 className="font-medium text-white mb-1">From</h5>
-                          <p className="text-zinc-400 text-xs break-all">{transactionInputs.fromAddress.slice(0, 20)}...</p>
-                        </div>
-                        <div className="p-4 bg-zinc-800/50 rounded-lg text-center">
-                          <ArrowRight className="w-8 h-8 text-orange-400 mx-auto mb-2" />
-                          <h5 className="font-medium text-white mb-1">Amount</h5>
-                          <p className="text-orange-400 font-medium">{transactionInputs.amount} BTC</p>
-                        </div>
-                        <div className="p-4 bg-zinc-800/50 rounded-lg text-center">
-                          <UserIcon className="w-8 h-8 text-green-400 mx-auto mb-2" />
-                          <h5 className="font-medium text-white mb-1">To</h5>
-                          <p className="text-zinc-400 text-xs break-all">
-                            {transactionInputs.toAddress ? 
-                              `${transactionInputs.toAddress.slice(0, 20)}...` : 
-                              'No recipient address set'
-                            }
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Calculated Transaction Details */}
-                      <div className="space-y-4">
-                        <h5 className="font-medium text-white">Calculated Transaction Details</h5>
-                        <div className="grid gap-3 md:grid-cols-2">
-                          <div className="p-3 bg-zinc-800/30 rounded-lg">
-                            <p className="text-zinc-400 text-sm">Network Fee</p>
-                            <p className="text-white font-medium">{calculateTransactionFee()} BTC</p>
+                      {/* Transaction Summary (Compact) */}
+                      <div className="p-3 bg-zinc-800/30 rounded-lg">
+                        <div className="grid gap-2 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-zinc-400">Amount:</span>
+                            <span className="text-white font-mono">{transactionInputs.amount} BTC</span>
                           </div>
-                          <div className="p-3 bg-zinc-800/30 rounded-lg">
-                            <p className="text-zinc-400 text-sm">Total Cost</p>
-                            <p className="text-white font-medium">{(parseFloat(transactionInputs.amount) + parseFloat(calculateTransactionFee())).toFixed(8)} BTC</p>
+                          <div className="flex justify-between">
+                            <span className="text-zinc-400">Network Fee:</span>
+                            <span className="text-white font-mono">{calculateTransactionFee()} BTC</span>
                           </div>
-                          <div className="p-3 bg-zinc-800/30 rounded-lg">
-                            <p className="text-zinc-400 text-sm">Transaction Size</p>
-                            <p className="text-white font-medium">226 bytes</p>
-                          </div>
-                          <div className="p-3 bg-zinc-800/30 rounded-lg">
-                            <p className="text-zinc-400 text-sm">Confirmation Time</p>
-                            <p className="text-white font-medium">
-                              {parseFloat(transactionInputs.feeRate) > 10 ? "~10 min" : 
-                               parseFloat(transactionInputs.feeRate) > 5 ? "~20 min" : "30+ min"}
-                            </p>
+                          <div className="flex justify-between border-t border-zinc-700 pt-2">
+                            <span className="text-zinc-300 font-medium">Total:</span>
+                            <span className="text-orange-400 font-mono">{(parseFloat(transactionInputs.amount) + parseFloat(calculateTransactionFee())).toFixed(8)} BTC</span>
                           </div>
                         </div>
-                      </div>
-
-                      {/* Transaction Steps */}
-                      <div className="p-4 bg-orange-600/10 border border-orange-600/20 rounded-lg">
-                        <h5 className="font-medium text-orange-300 mb-2">How This Transaction Works:</h5>
-                        <ol className="space-y-2 text-zinc-300 text-sm">
-                          <li className="flex items-start gap-2">
-                            <span className="text-orange-400 font-medium mt-1">1.</span>
-                            <span>Your wallet selects unspent transaction outputs (UTXOs) that total at least {transactionInputs.amount} BTC</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-orange-400 font-medium mt-1">2.</span>
-                            <span>A transaction is created specifying inputs, outputs, and fee of {calculateTransactionFee()} BTC</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-orange-400 font-medium mt-1">3.</span>
-                            <span>Your private key creates a digital signature proving ownership of the inputs</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-orange-400 font-medium mt-1">4.</span>
-                            <span>The signed transaction is broadcast to the Bitcoin network for validation</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-orange-400 font-medium mt-1">5.</span>
-                            <span>Miners include it in a block, and it gets {parseFloat(transactionInputs.feeRate) > 10 ? "fast" : "standard"} confirmation</span>
-                          </li>
-                        </ol>
                       </div>
 
                       {/* Transaction Status and Controls */}
@@ -2465,14 +2406,14 @@ export default function Home() {
                                   Transaction Preview
                                 </h5>
                                 
-                                {/* Fee Priority Selection */}
-                                <div className="space-y-3 mb-4">
+                                {/* Fee Priority Selection (Compact) */}
+                                <div className="space-y-2 mb-4">
                                   <label className="text-sm font-medium text-zinc-300">Fee Priority</label>
-                                  <div className="grid gap-2">
+                                  <div className="grid gap-1">
                                     {Object.entries(feeOptions).map(([key, option]) => (
                                       <div
                                         key={key}
-                                        className={`p-3 rounded-lg border cursor-pointer transition-colors ${
+                                        className={`p-2 rounded-lg border cursor-pointer transition-colors ${
                                           transactionInputs.feeRate === key
                                             ? 'bg-orange-600/20 border-orange-500'
                                             : 'bg-zinc-800/50 border-zinc-700 hover:border-zinc-600'
@@ -2480,14 +2421,8 @@ export default function Home() {
                                         onClick={() => setTransactionInputs(prev => ({ ...prev, feeRate: key }))}
                                       >
                                         <div className="flex justify-between items-center">
-                                          <div>
-                                            <p className="text-white font-medium">{option.priority}</p>
-                                            <p className="text-zinc-400 text-xs">{option.rate} sat/vB • {option.time} confirmation time estimate</p>
-                                          </div>
-                                          <div className="text-right">
-                                            <p className="text-orange-400 font-mono">{option.cost} BTC</p>
-                                            <p className="text-zinc-500 text-xs">${getUSDValue(option.cost)}</p>
-                                          </div>
+                                          <span className="text-white text-sm">{option.priority} • {option.time}</span>
+                                          <span className="text-orange-400 font-mono text-sm">{option.cost} BTC</span>
                                         </div>
                                       </div>
                                     ))}
@@ -2549,31 +2484,21 @@ export default function Home() {
                             <CardContent className="p-4">
                               <h5 className="font-bold text-blue-300 mb-4 text-center">Transaction Journey</h5>
                               
-                              {/* Journey Progress Indicator */}
-                              <div className="space-y-3 mb-4">
-                                <div className="flex items-center justify-between">
-                                  <div className={`flex items-center gap-2 ${transactionJourney === "broadcast" ? "text-blue-300" : "text-green-400"}`}>
-                                    <div className={`w-3 h-3 rounded-full ${transactionJourney === "broadcast" ? "bg-blue-400 animate-pulse" : "bg-green-400"}`}></div>
-                                    <span className="text-sm font-medium">Broadcasting to Network</span>
-                                  </div>
-                                  {transactionJourney !== "broadcast" && <CheckCircle className="w-4 h-4 text-green-400" />}
+                              {/* Compact Journey Progress */}
+                              <div className="flex justify-between items-center mb-3 text-xs">
+                                <div className={`flex items-center gap-1 ${transactionJourney === "broadcast" ? "text-blue-300" : "text-green-400"}`}>
+                                  <div className={`w-2 h-2 rounded-full ${transactionJourney === "broadcast" ? "bg-blue-400 animate-pulse" : "bg-green-400"}`}></div>
+                                  <span>Broadcast</span>
                                 </div>
-                                
-                                <div className={`flex items-center gap-2 ${transactionJourney === "mempool" ? "text-yellow-300" : transactionJourney === "broadcast" ? "text-zinc-500" : "text-green-400"}`}>
-                                  <div className={`w-3 h-3 rounded-full ${transactionJourney === "mempool" ? "bg-yellow-400 animate-pulse" : transactionJourney === "broadcast" ? "bg-zinc-600" : "bg-green-400"}`}></div>
-                                  <span className="text-sm font-medium">Mempool Queue</span>
-                                  {transactionJourney === "mempool" && <span className="text-xs text-yellow-200">(Waiting for miner selection)</span>}
+                                <ArrowRight className="w-3 h-3 text-zinc-500" />
+                                <div className={`flex items-center gap-1 ${transactionJourney === "mempool" ? "text-yellow-300" : transactionJourney === "broadcast" ? "text-zinc-500" : "text-green-400"}`}>
+                                  <div className={`w-2 h-2 rounded-full ${transactionJourney === "mempool" ? "bg-yellow-400 animate-pulse" : transactionJourney === "broadcast" ? "bg-zinc-600" : "bg-green-400"}`}></div>
+                                  <span>Mempool</span>
                                 </div>
-                                
-                                <div className={`flex items-center gap-2 ${transactionJourney === "confirming" ? "text-yellow-300" : ["broadcast", "mempool"].includes(transactionJourney) ? "text-zinc-500" : "text-green-400"}`}>
-                                  <div className={`w-3 h-3 rounded-full ${transactionJourney === "confirming" ? "bg-yellow-400 animate-pulse" : ["broadcast", "mempool"].includes(transactionJourney) ? "bg-zinc-600" : "bg-green-400"}`}></div>
-                                  <span className="text-sm font-medium">Block Confirmation</span>
-                                  {transactionJourney === "confirming" && <span className="text-xs text-yellow-200">({confirmationCount}/6)</span>}
-                                </div>
-                                
-                                <div className={`flex items-center gap-2 ${transactionJourney === "settled" ? "text-green-300" : "text-zinc-500"}`}>
-                                  <div className={`w-3 h-3 rounded-full ${transactionJourney === "settled" ? "bg-green-400" : "bg-zinc-600"}`}></div>
-                                  <span className="text-sm font-medium">Final Settlement</span>
+                                <ArrowRight className="w-3 h-3 text-zinc-500" />
+                                <div className={`flex items-center gap-1 ${transactionJourney === "confirming" ? "text-yellow-300" : ["broadcast", "mempool"].includes(transactionJourney) ? "text-zinc-500" : "text-green-400"}`}>
+                                  <div className={`w-2 h-2 rounded-full ${transactionJourney === "confirming" ? "bg-yellow-400 animate-pulse" : ["broadcast", "mempool"].includes(transactionJourney) ? "bg-zinc-600" : "bg-green-400"}`}></div>
+                                  <span>Confirm</span>
                                 </div>
                               </div>
 
@@ -2597,26 +2522,12 @@ export default function Home() {
                         {transactionState === "confirming" && (
                           <Card className="bg-yellow-900/20 border-yellow-800">
                             <CardContent className="p-4">
-                              <h5 className="font-bold text-yellow-300 mb-4 text-center">Transaction Journey - Block Confirmation</h5>
+                              <h5 className="font-bold text-yellow-300 mb-3 text-center">Block Confirmation</h5>
 
-                              {/* Journey Progress */}
-                              <div className="space-y-2 mb-4">
-                                <div className="flex items-center gap-2 text-green-400">
-                                  <CheckCircle className="w-4 h-4" />
-                                  <span className="text-sm">✓ Broadcast to Network</span>
-                                </div>
-                                <div className="flex items-center gap-2 text-green-400">
-                                  <CheckCircle className="w-4 h-4" />
-                                  <span className="text-sm">✓ Mempool Queue</span>
-                                </div>
-                                <div className="flex items-center gap-2 text-yellow-300">
-                                  <Clock className="w-4 h-4 animate-pulse" />
-                                  <span className="text-sm font-medium">🔄 Block Confirmation ({confirmationCount}/6)</span>
-                                </div>
-                                <div className="flex items-center gap-2 text-zinc-500">
-                                  <div className="w-4 h-4 rounded-full bg-zinc-600"></div>
-                                  <span className="text-sm">Final Settlement</span>
-                                </div>
+                              {/* Compact Confirmation Progress */}
+                              <div className="flex items-center justify-center gap-2 mb-3">
+                                <span className="text-yellow-300 text-sm">Confirmations: {confirmationCount}/6</span>
+                                <Clock className="w-4 h-4 animate-pulse text-yellow-400" />
                               </div>
 
                               {/* Confirmation Progress */}
