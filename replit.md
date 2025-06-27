@@ -160,6 +160,7 @@ Comprehensive component library built on Radix UI primitives:
 - June 27, 2025. Converted all lesson content from markdown/technical formatting to narrative storytelling format: replaced bullet points, numbered lists, and headers with flowing paragraphs that tell engaging stories, applied changes systematically at the data source level to support dynamic content delivery and improve readability for non-technical users
 - June 27, 2025. Removed Stories section entirely from app navigation and functionality to streamline user experience and focus on core educational content
 - June 27, 2025. Renamed Practice section to "Simulations" throughout navigation and interface to better reflect the interactive nature of the educational tools
+- June 27, 2025. Enhanced Transaction Simulator UX: removed pre-populated TO address requiring users to click paste button, fixed paste button responsive positioning with shrink-0 and min-w-0 classes, added empty state validation for recipient address displays, removed redundant Fee Rate Guide from building phase since it appears again during signing
 
 ## User Preferences
 

@@ -295,7 +295,7 @@ export default function Home() {
   const [safetyQuizScore, setSafetyQuizScore] = useState<number>(0);
   const [transactionInputs, setTransactionInputs] = useState({
     fromAddress: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-    toAddress: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+    toAddress: "",
     amount: "0.001",
     feeRate: "standard"
   });
@@ -2246,19 +2246,22 @@ export default function Home() {
                               type="text"
                               value={transactionInputs.toAddress}
                               onChange={(e) => updateTransactionInput('toAddress', e.target.value)}
-                              className="flex-1 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white text-sm focus:border-orange-500 focus:outline-none"
-                              placeholder="Recipient's Bitcoin address"
+                              className="flex-1 min-w-0 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white text-sm focus:border-orange-500 focus:outline-none"
+                              placeholder="Click Paste to add recipient address"
                             />
                             <Button
                               variant="outline"
                               size="sm"
                               onClick={simulatePasteFromClipboard}
-                              className="border-zinc-700 text-zinc-300 hover:border-orange-500 hover:text-orange-400 text-xs px-3 whitespace-nowrap"
+                              className="border-zinc-700 text-zinc-300 hover:border-orange-500 hover:text-orange-400 text-xs px-2 py-2 shrink-0"
                               title="Paste from clipboard"
                             >
-                              📋 Paste
+                              📋
                             </Button>
                           </div>
+                          {!transactionInputs.toAddress && (
+                            <p className="text-zinc-500 text-xs">Click the paste button to simulate adding a recipient address</p>
+                          )}
                         </div>
                         
                         <div className="grid gap-4 sm:grid-cols-2">
@@ -2298,7 +2301,12 @@ export default function Home() {
                         <div className="p-4 bg-zinc-800/50 rounded-lg text-center">
                           <UserIcon className="w-8 h-8 text-green-400 mx-auto mb-2" />
                           <h5 className="font-medium text-white mb-1">To</h5>
-                          <p className="text-zinc-400 text-xs break-all">{transactionInputs.toAddress.slice(0, 20)}...</p>
+                          <p className="text-zinc-400 text-xs break-all">
+                            {transactionInputs.toAddress ? 
+                              `${transactionInputs.toAddress.slice(0, 20)}...` : 
+                              'No recipient address set'
+                            }
+                          </p>
                         </div>
                       </div>
 
@@ -2324,25 +2332,6 @@ export default function Home() {
                               {parseFloat(transactionInputs.feeRate) > 10 ? "~10 min" : 
                                parseFloat(transactionInputs.feeRate) > 5 ? "~20 min" : "30+ min"}
                             </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Fee Rate Guide */}
-                      <div className="p-4 bg-blue-600/10 border border-blue-600/20 rounded-lg">
-                        <h5 className="font-medium text-blue-300 mb-2">Fee Rate Guide:</h5>
-                        <div className="grid gap-2 md:grid-cols-3 text-sm">
-                          <div className="p-2 bg-red-600/10 rounded border border-red-600/20">
-                            <span className="text-red-300 font-medium">1-4 sat/vB:</span>
-                            <span className="text-red-100"> Slow (30+ min)</span>
-                          </div>
-                          <div className="p-2 bg-yellow-600/10 rounded border border-yellow-600/20">
-                            <span className="text-yellow-300 font-medium">5-10 sat/vB:</span>
-                            <span className="text-yellow-100"> Medium (10-20 min)</span>
-                          </div>
-                          <div className="p-2 bg-green-600/10 rounded border border-green-600/20">
-                            <span className="text-green-300 font-medium">10+ sat/vB:</span>
-                            <span className="text-green-100"> Fast (~10 min)</span>
                           </div>
                         </div>
                       </div>
@@ -2671,7 +2660,12 @@ export default function Home() {
                                   </div>
                                   <div className="flex justify-between">
                                     <span className="text-zinc-400">To:</span>
-                                    <span className="text-white font-mono">{transactionInputs.toAddress.slice(0, 15)}...</span>
+                                    <span className="text-white font-mono">
+                                      {transactionInputs.toAddress ? 
+                                        `${transactionInputs.toAddress.slice(0, 15)}...` : 
+                                        'No address set'
+                                      }
+                                    </span>
                                   </div>
                                   <div className="flex justify-between">
                                     <span className="text-zinc-400">Amount:</span>
