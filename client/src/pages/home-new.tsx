@@ -1800,7 +1800,7 @@ export default function Home() {
                 onClick={() => setActiveSection("finance")}
                 className="text-sm px-4 py-2"
               >
-                Finance
+                Why BTC
               </Button>
 
               <Button
@@ -1829,13 +1829,13 @@ export default function Home() {
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-white mb-2">
             {activeSection === "learn" && "Build Your Bitcoin Foundation"}
-            {activeSection === "finance" && "Traditional Finance vs Bitcoin"}
+            {activeSection === "finance" && "Why Bitcoin Matters"}
             {activeSection === "simulations" && "Practice Bitcoin Concepts"}
             {activeSection === "more" && "Discover More About Bitcoin"}
           </h2>
           <p className="text-zinc-400">
             {activeSection === "learn" && "Learn the fundamentals and understand why Bitcoin matters"}
-            {activeSection === "finance" && "Understand why Bitcoin fixes the problems of traditional finance"}
+            {activeSection === "finance" && "Discover why Bitcoin is the future of money and finance"}
             {activeSection === "simulations" && "Interactive simulations to deepen your understanding"}
             {activeSection === "more" && "Resources and tools to support your Bitcoin journey"}
           </p>
