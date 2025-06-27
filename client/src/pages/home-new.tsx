@@ -3301,26 +3301,20 @@ export default function Home() {
                         <div className="space-y-4">
                           <div className="h-64 bg-zinc-800/50 rounded-lg p-4 relative overflow-hidden">
                             <div className="absolute inset-0 p-4">
-                              {/* Y-axis labels */}
-                              <div className="absolute left-2 top-4 text-zinc-400 text-xs">
-                                $100k
+                              {/* Simplified Y-axis labels */}
+                              <div className="absolute left-2 top-4 text-zinc-500 text-xs">
+                                High
                               </div>
-                              <div className="absolute left-2 top-1/2 text-zinc-400 text-xs">
-                                $50k
-                              </div>
-                              <div className="absolute left-2 bottom-12 text-zinc-400 text-xs">
-                                $10k
+                              <div className="absolute left-2 bottom-12 text-zinc-500 text-xs">
+                                Low
                               </div>
                               
-                              {/* X-axis labels */}
-                              <div className="absolute bottom-4 left-8 text-zinc-400 text-xs">
+                              {/* Simplified X-axis labels */}
+                              <div className="absolute bottom-4 left-8 text-zinc-500 text-xs">
                                 Start
                               </div>
-                              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-zinc-400 text-xs">
-                                {Math.floor(dcaResults.duration / 2)}mo
-                              </div>
-                              <div className="absolute bottom-4 right-8 text-zinc-400 text-xs">
-                                {dcaResults.duration}mo
+                              <div className="absolute bottom-4 right-8 text-zinc-500 text-xs">
+                                Now
                               </div>
                               
                               {/* Accurate DCA Chart using real purchase data */}
@@ -3402,19 +3396,7 @@ export default function Home() {
                                         </g>
                                       ))}
                                       
-                                      {/* Price labels */}
-                                      <text x="25" y="15" fill="#9ca3af" fontSize="11">
-                                        ${Math.round(maxPrice / 1000)}k
-                                      </text>
-                                      <text x="25" y="190" fill="#9ca3af" fontSize="11">
-                                        ${Math.round(minPrice / 1000)}k
-                                      </text>
-                                      
-                                      {/* Time labels */}
-                                      <text x="25" y="195" fill="#9ca3af" fontSize="10">Start</text>
-                                      <text x="350" y="195" fill="#9ca3af" fontSize="10">
-                                        {dcaResults.duration}mo
-                                      </text>
+
                                     </>
                                   );
                                 })()}
@@ -3426,19 +3408,19 @@ export default function Home() {
                                 )}
                               </svg>
                               
-                              {/* Legend */}
-                              <div className="absolute bottom-2 left-4 flex gap-4 text-xs">
-                                <div className="flex items-center gap-2">
+                              {/* Simplified Legend */}
+                              <div className="absolute bottom-2 left-4 flex gap-3 text-xs">
+                                <div className="flex items-center gap-1">
                                   <div className="w-3 h-0.5 bg-orange-500"></div>
-                                  <span className="text-zinc-400">Bitcoin Price</span>
+                                  <span className="text-zinc-500">Price</span>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                                  <span className="text-zinc-400">DCA Purchases</span>
+                                <div className="flex items-center gap-1">
+                                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                  <span className="text-zinc-500">Buys</span>
                                 </div>
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-1">
                                   <div className="w-3 h-0.5 bg-blue-500 border-dashed"></div>
-                                  <span className="text-zinc-400">Average Cost</span>
+                                  <span className="text-zinc-500">Avg</span>
                                 </div>
                               </div>
                             </div>
