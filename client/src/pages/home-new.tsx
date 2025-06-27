@@ -2612,14 +2612,36 @@ export default function Home() {
                           <circle 
                             cx={50 + ((moneySupplyYear - 1971) / (2024 - 1971)) * 320} 
                             cy={(() => {
-                              // Calculate Y position based on actual money supply curve
+                              // Follow the exact same curve as the red line
                               const yearProgress = (moneySupplyYear - 1971) / (2024 - 1971);
-                              const moneySupply = getMoneySupplyRaw(moneySupplyYear);
                               
-                              // Map money supply values to Y coordinates (inverted)
-                              // 0.6T -> 175, 21T -> 20
-                              const yPosition = 175 - ((moneySupply - 0.6) / (21 - 0.6)) * 155;
-                              return Math.max(20, Math.min(175, yPosition));
+                              // Define the exact same points as the red curve
+                              const curvePoints = [
+                                { x: 50, y: 175 },   // 1971
+                                { x: 80, y: 165 },   // ~1980
+                                { x: 120, y: 155 },  // ~1990
+                                { x: 160, y: 140 },  // ~1998
+                                { x: 200, y: 120 },  // ~2005
+                                { x: 240, y: 100 },  // ~2012
+                                { x: 280, y: 80 },   // ~2017
+                                { x: 320, y: 50 },   // ~2020
+                                { x: 340, y: 35 },   // ~2022
+                                { x: 370, y: 20 }    // 2024
+                              ];
+                              
+                              // Find the current position along the curve
+                              const targetX = 50 + yearProgress * 320;
+                              
+                              // Find the two points to interpolate between
+                              for (let i = 0; i < curvePoints.length - 1; i++) {
+                                if (targetX >= curvePoints[i].x && targetX <= curvePoints[i + 1].x) {
+                                  const progress = (targetX - curvePoints[i].x) / (curvePoints[i + 1].x - curvePoints[i].x);
+                                  return curvePoints[i].y + progress * (curvePoints[i + 1].y - curvePoints[i].y);
+                                }
+                              }
+                              
+                              // Fallback for edge cases
+                              return targetX <= 50 ? 175 : 20;
                             })()} 
                             r="5" 
                             fill="#f97316" 
