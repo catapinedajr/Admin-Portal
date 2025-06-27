@@ -784,20 +784,84 @@ export default function Home() {
       visualDescription: string;
       keyTakeaways: string[];
     }> = {
-      "What is Bitcoin?": {
-        explanation: "Bitcoin is a revolutionary peer-to-peer electronic cash system that allows online payments to be sent directly between parties without going through a financial institution. It operates on a decentralized network maintained by thousands of computers worldwide.",
+      "What Is Money?": {
+        explanation: "Money is any item or system that a community agrees has value and can be exchanged for goods and services. Throughout history, societies have used everything from seashells to gold to paper bills as money. The key is community agreement and trust that others will accept it.",
         examples: [
-          "Send money anywhere in the world 24/7 without banks",
-          "No central authority can freeze or confiscate your Bitcoin",
-          "Every transaction is recorded on a public, unchangeable ledger",
-          "Uses cryptographic proof instead of trust in institutions"
+          "Ancient civilizations used salt, cattle, and grain as money",
+          "Island societies used large stone wheels or rare shells",
+          "Gold became popular because it's scarce, durable, and portable",
+          "Paper money works because governments guarantee its value"
         ],
-        visualDescription: "Imagine a global digital cash system where every transaction is like writing in an unchangeable public notebook that thousands of people verify and keep copies of.",
+        visualDescription: "Imagine money as a shared language that lets people communicate value. Just like everyone agrees what words mean, communities agree what has value for trade.",
         keyTakeaways: [
-          "First successful digital currency without central control",
-          "Operates 24/7 globally without intermediaries",
-          "Transactions are irreversible and transparent",
-          "Powered by mathematical proof rather than institutional trust"
+          "Money is based on community agreement and trust",
+          "It solves the problem of trading without perfect coincidence of wants",
+          "Different societies have used many different forms of money",
+          "The best money shares certain properties like scarcity and durability"
+        ]
+      },
+      "Medium of Exchange": {
+        explanation: "A medium of exchange eliminates the need for barter by providing something everyone will accept in trade. Instead of trading apples for shoes directly, you can sell apples for money, then use that money to buy shoes from anyone who accepts it.",
+        examples: [
+          "You sell your artwork for dollars, then use dollars to buy groceries",
+          "A farmer sells wheat for money, then buys tools with that money",
+          "Without money, the farmer would need to find someone who wants wheat AND has tools to trade",
+          "Money breaks complex multi-party trades into simple two-party exchanges"
+        ],
+        visualDescription: "Think of money as a universal translator for value. Just as a translator helps people who speak different languages communicate, money helps people who produce different things trade with each other.",
+        keyTakeaways: [
+          "Eliminates the need for perfect coincidence of wants in trading",
+          "Makes complex economic systems possible",
+          "Must be widely accepted to function effectively",
+          "Enables specialization by making trade efficient"
+        ]
+      },
+      "Store of Value": {
+        explanation: "A store of value allows you to save your purchasing power for the future. Good money holds its value over time, so the work you do today can benefit you tomorrow, next month, or next year.",
+        examples: [
+          "You work overtime this month and save money for a vacation next year",
+          "A farmer saves money from harvest season to buy seeds for next year",
+          "Your grandmother saved money in a bank account for decades",
+          "People buy gold during uncertain times to preserve wealth"
+        ],
+        visualDescription: "Imagine money as a time machine for your work. It lets you capture the value of work you do today and transport it to the future when you need it.",
+        keyTakeaways: [
+          "Enables people to save for future needs and goals",
+          "Must maintain value over time to function properly",
+          "Poor stores of value lose purchasing power through inflation",
+          "Essential for long-term planning and investment"
+        ]
+      },
+      "Inflation": {
+        explanation: "Inflation occurs when the money supply increases faster than economic growth, causing each unit of money to buy less over time. When governments print more money, it dilutes the value of existing money, like adding water to soup - you get more volume but less flavor per spoonful.",
+        examples: [
+          "In the 1970s, coffee cost 25 cents - today it costs $3 or more",
+          "Your grandfather could buy a house for $20,000 - today it costs $400,000",
+          "Venezuela printed so much money that people used wheelbarrows to carry cash",
+          "Germany's 1920s hyperinflation made money so worthless people used it as wallpaper"
+        ],
+        visualDescription: "Picture inflation like a leak in your savings bucket. Even if you're not spending money, its purchasing power slowly drips away as prices rise around you.",
+        keyTakeaways: [
+          "Erodes the purchasing power of saved money over time",
+          "Caused by increasing money supply faster than economic growth",
+          "Hurts savers and people on fixed incomes the most",
+          "Can become extreme hyperinflation in worst cases"
+        ]
+      },
+      "Central Control": {
+        explanation: "Traditional money systems are controlled by central authorities like governments and central banks who can change the rules, print more money, freeze accounts, or stop transactions. This centralized control means your money's value and accessibility depends on their decisions.",
+        examples: [
+          "The Federal Reserve can print trillions of dollars during crises",
+          "Banks can freeze your account if they suspect unusual activity",
+          "Governments can seize assets or block international transfers",
+          "Currency controls can prevent people from exchanging their money"
+        ],
+        visualDescription: "Imagine your money as being stored in someone else's house. You might think it's yours, but the house owner can change the locks, limit your access, or even take some of it whenever they want.",
+        keyTakeaways: [
+          "Central authorities have ultimate control over traditional money",
+          "They can inflate away value by printing more money",
+          "Your access to your own money depends on their permission",
+          "This creates dependency and systemic risk for users"
         ]
       },
       "Halving Events": {

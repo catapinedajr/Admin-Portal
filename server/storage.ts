@@ -399,7 +399,7 @@ The story of money is really the story of human cooperation and trust. Every for
 Understanding what money really is helps us appreciate why the invention of Bitcoin represents such a revolutionary moment in human history - it's not just a new type of money, but a completely new way of creating trust and cooperation without needing to rely on any central authority.`,
         summary: "Money solves the fundamental problem of trade by serving as a medium of exchange, store of value, and unit of account based on shared community agreement.",
         estimatedReadTime: 8,
-        dayIndex: 1
+        dayIndex: 0
       },
 
       {
