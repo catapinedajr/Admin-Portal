@@ -2458,21 +2458,21 @@ export default function Home() {
                   </div>
                   
                   <div className="grid gap-4 md:grid-cols-3 mt-8">
-                    <div className="p-4 bg-red-950/50 rounded-xl border border-red-800/50">
-                      <div className="text-red-300 font-bold text-xl">21 Million</div>
-                      <div className="text-red-400/80 text-sm">Bitcoin's Maximum Supply</div>
+                    <div className="p-4 bg-green-950/50 rounded-xl border border-green-800/50">
+                      <div className="text-green-300 font-bold text-xl">21 Million</div>
+                      <div className="text-green-400/80 text-sm">Bitcoin's Maximum Supply</div>
                       <div className="text-zinc-400 text-xs mt-1">No central bank can print more</div>
                     </div>
                     
-                    <div className="p-4 bg-yellow-950/50 rounded-xl border border-yellow-800/50">
-                      <div className="text-yellow-300 font-bold text-xl">0%</div>
-                      <div className="text-yellow-400/80 text-sm">Bitcoin Inflation Rate</div>
+                    <div className="p-4 bg-blue-950/50 rounded-xl border border-blue-800/50">
+                      <div className="text-blue-300 font-bold text-xl">0%</div>
+                      <div className="text-blue-400/80 text-sm">Bitcoin Inflation Rate</div>
                       <div className="text-zinc-400 text-xs mt-1">After all 21M are mined</div>
                     </div>
                     
-                    <div className="p-4 bg-green-950/50 rounded-xl border border-green-800/50">
-                      <div className="text-green-300 font-bold text-xl">100%</div>
-                      <div className="text-green-400/80 text-sm">You Own Your Bitcoin</div>
+                    <div className="p-4 bg-orange-950/50 rounded-xl border border-orange-800/50">
+                      <div className="text-orange-300 font-bold text-xl">100%</div>
+                      <div className="text-orange-400/80 text-sm">You Own Your Bitcoin</div>
                       <div className="text-zinc-400 text-xs mt-1">No bank can freeze it</div>
                     </div>
                   </div>
