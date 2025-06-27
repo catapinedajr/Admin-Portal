@@ -24,6 +24,8 @@ interface DayContent {
     content: string;
     summary: string;
     estimatedReadTime: number;
+    keyPoints: string[];
+    whyItMatters: string;
   };
   quizQuestions: Array<{
     question: string;
@@ -237,10 +239,9 @@ Return the content as a JSON object with this exact structure:
     return {
       dayIndex,
       topic,
-      dailyFact: contentData.dailyFact,
+      dailyFacts: contentData.dailyFacts,
       lesson: contentData.lesson,
-      quizQuestions: contentData.quizQuestions,
-      diveDeeper: contentData.diveDeeper
+      quizQuestions: contentData.quizQuestions
     };
   } catch (error) {
     console.error(`Error generating content for day ${dayIndex}:`, error);
@@ -257,14 +258,17 @@ export async function generateMonth1Content(): Promise<void> {
       
       const content = await generateDayContent(day - 1, topic); // dayIndex is 0-based
       
-      // Create daily fact
-      await storage.createDailyFact({
-        title: content.dailyFact.title,
-        content: content.dailyFact.content,
-        category: content.dailyFact.category,
-        icon: content.dailyFact.icon,
-        dayIndex: content.dayIndex
-      });
+      // Create daily facts (3 per day)
+      for (const fact of content.dailyFacts) {
+        await storage.createDailyFact({
+          title: fact.title,
+          content: fact.content,
+          category: fact.category,
+          icon: fact.icon,
+          dayIndex: content.dayIndex,
+          diveDeeper: fact.diveDeeper
+        });
+      }
       
       // Create lesson
       await storage.createLesson({
@@ -273,7 +277,9 @@ export async function generateMonth1Content(): Promise<void> {
         summary: content.lesson.summary,
         estimatedReadTime: content.lesson.estimatedReadTime,
         dayIndex: content.dayIndex,
-        imageUrl: null
+        imageUrl: null,
+        keyPoints: content.lesson.keyPoints,
+        whyItMatters: content.lesson.whyItMatters
       });
       
       // Create quiz questions (5 per day)
