@@ -2874,13 +2874,30 @@ export default function Home() {
                                       // Simulate realistic Bitcoin growth with dramatic volatility
                                       let value;
                                       if (hodlInputs.scenario === 'jan2017') {
-                                        // Early adopter with extreme volatility - show the wild ride
-                                        const volatilityPoints = [
-                                          1, 4, 0.8, 12, 3, 0.4, 20, 8, 2, 35, 12, 3.5, 
-                                          65, 18, 5, 85, 25, 8, 110, 35, 12, 95
-                                        ];
-                                        const index = Math.floor(progress * (volatilityPoints.length - 1));
-                                        value = startValue * (volatilityPoints[index] || currentGrowthRatio);
+                                        // Early adopter with realistic major volatility events
+                                        const baseGrowth = Math.pow(currentGrowthRatio, progress);
+                                        let volatilityMultiplier = 1;
+                                        
+                                        // Major market events with smoother transitions
+                                        if (progress < 0.12) {
+                                          // Early 2017 growth
+                                          volatilityMultiplier = 1 + progress * 8;
+                                        } else if (progress < 0.25) {
+                                          // Mid 2017 bubble
+                                          volatilityMultiplier = 2 + (progress - 0.12) * 40;
+                                        } else if (progress < 0.35) {
+                                          // Late 2017 peak then crash
+                                          volatilityMultiplier = 7 - (progress - 0.25) * 15;
+                                        } else if (progress < 0.5) {
+                                          // 2018 bear market
+                                          volatilityMultiplier = 0.8 + (progress - 0.35) * 0.5;
+                                        } else {
+                                          // Gradual recovery and exponential growth
+                                          const recoveryProgress = (progress - 0.5) / 0.5;
+                                          volatilityMultiplier = 1 + recoveryProgress * (currentGrowthRatio / startValue - 1);
+                                        }
+                                        
+                                        value = startValue * Math.min(volatilityMultiplier, currentGrowthRatio);
                                       } else if (hodlInputs.scenario === 'jan2020') {
                                         // COVID crash and recovery - dramatic dip then exponential recovery
                                         if (progress < 0.15) {
@@ -2920,11 +2937,12 @@ export default function Home() {
                                     
                                     const pathData = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
                                     
-                                    // Add value markers for dramatic effect
-                                    const keyMilestones = [];
-                                    if (currentGrowthRatio >= 10) keyMilestones.push({ label: '10x', multiplier: 10 });
-                                    if (currentGrowthRatio >= 50) keyMilestones.push({ label: '50x', multiplier: 50 });
-                                    if (currentGrowthRatio >= 100) keyMilestones.push({ label: '100x', multiplier: 100 });
+                                    // Show consistent milestone markers for all scenarios
+                                    const keyMilestones = [
+                                      { label: '10x', multiplier: 10 },
+                                      { label: '50x', multiplier: 50 },
+                                      { label: '100x', multiplier: 100 }
+                                    ];
                                     
                                     return (
                                       <>
