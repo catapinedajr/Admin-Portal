@@ -58,6 +58,7 @@ import {
 import type { User, DailyFact, Lesson, UserProgress, ConvictionContent } from "@shared/schema";
 import DailyQuiz from "@/components/DailyQuiz";
 import { BitcoinTerm, AutoGlossary } from "@/components/BitcoinGlossary";
+import { useToast } from "@/hooks/use-toast";
 import { ProgressIndicator, AchievementBadge, LearningAnalytics } from "@/components/ProgressIndicator";
 import AchievementSystem from "@/components/AchievementSystem";
 
@@ -285,6 +286,7 @@ type SimulationsSubTab = "safety" | "transactions" | "hodl" | "dca";
 type MoreSubTab = "store";
 
 export default function Home() {
+  const { toast } = useToast();
   const [activeSection, setActiveSection] = useState<MainSection>("learn");
   const [learnSubTab, setLearnSubTab] = useState<LearnSubTab>("today");
   const [simulationsSubTab, setSimulationsSubTab] = useState<SimulationsSubTab>("safety");
@@ -1243,6 +1245,16 @@ export default function Home() {
   };
 
   const startSigning = () => {
+    // Validate that To Address is filled before proceeding
+    if (!transactionInputs.toAddress || transactionInputs.toAddress.trim() === '') {
+      toast({
+        title: "Missing Required Information",
+        description: "Please enter a Bitcoin address in the 'To Address' field before signing the transaction.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setTransactionState("signing");
     setShowTransactionApproval(true);
   };
@@ -2484,21 +2496,31 @@ export default function Home() {
                             <CardContent className="p-4">
                               <h5 className="font-bold text-blue-300 mb-4 text-center">Transaction Journey</h5>
                               
-                              {/* Compact Journey Progress */}
-                              <div className="flex justify-between items-center mb-3 text-xs">
-                                <div className={`flex items-center gap-1 ${transactionJourney === "broadcast" ? "text-blue-300" : "text-green-400"}`}>
-                                  <div className={`w-2 h-2 rounded-full ${transactionJourney === "broadcast" ? "bg-blue-400 animate-pulse" : "bg-green-400"}`}></div>
-                                  <span>Broadcast</span>
+                              {/* Journey Progress Indicator */}
+                              <div className="space-y-3 mb-4">
+                                <div className="flex items-center justify-between">
+                                  <div className={`flex items-center gap-2 ${transactionJourney === "broadcast" ? "text-blue-300" : "text-green-400"}`}>
+                                    <div className={`w-3 h-3 rounded-full ${transactionJourney === "broadcast" ? "bg-blue-400 animate-pulse" : "bg-green-400"}`}></div>
+                                    <span className="text-sm font-medium">Broadcasting to Network</span>
+                                  </div>
+                                  {transactionJourney !== "broadcast" && <CheckCircle className="w-4 h-4 text-green-400" />}
                                 </div>
-                                <ArrowRight className="w-3 h-3 text-zinc-500" />
-                                <div className={`flex items-center gap-1 ${transactionJourney === "mempool" ? "text-yellow-300" : transactionJourney === "broadcast" ? "text-zinc-500" : "text-green-400"}`}>
-                                  <div className={`w-2 h-2 rounded-full ${transactionJourney === "mempool" ? "bg-yellow-400 animate-pulse" : transactionJourney === "broadcast" ? "bg-zinc-600" : "bg-green-400"}`}></div>
-                                  <span>Mempool</span>
+                                
+                                <div className={`flex items-center gap-2 ${transactionJourney === "mempool" ? "text-yellow-300" : transactionJourney === "broadcast" ? "text-zinc-500" : "text-green-400"}`}>
+                                  <div className={`w-3 h-3 rounded-full ${transactionJourney === "mempool" ? "bg-yellow-400 animate-pulse" : transactionJourney === "broadcast" ? "bg-zinc-600" : "bg-green-400"}`}></div>
+                                  <span className="text-sm font-medium">Mempool Queue</span>
+                                  {transactionJourney === "mempool" && <span className="text-xs text-yellow-200">(Waiting for miner selection)</span>}
                                 </div>
-                                <ArrowRight className="w-3 h-3 text-zinc-500" />
-                                <div className={`flex items-center gap-1 ${transactionJourney === "confirming" ? "text-yellow-300" : ["broadcast", "mempool"].includes(transactionJourney) ? "text-zinc-500" : "text-green-400"}`}>
-                                  <div className={`w-2 h-2 rounded-full ${transactionJourney === "confirming" ? "bg-yellow-400 animate-pulse" : ["broadcast", "mempool"].includes(transactionJourney) ? "bg-zinc-600" : "bg-green-400"}`}></div>
-                                  <span>Confirm</span>
+                                
+                                <div className={`flex items-center gap-2 ${transactionJourney === "confirming" ? "text-yellow-300" : ["broadcast", "mempool"].includes(transactionJourney) ? "text-zinc-500" : "text-green-400"}`}>
+                                  <div className={`w-3 h-3 rounded-full ${transactionJourney === "confirming" ? "bg-yellow-400 animate-pulse" : ["broadcast", "mempool"].includes(transactionJourney) ? "bg-zinc-600" : "bg-green-400"}`}></div>
+                                  <span className="text-sm font-medium">Block Confirmation</span>
+                                  {transactionJourney === "confirming" && <span className="text-xs text-yellow-200">({confirmationCount}/6)</span>}
+                                </div>
+                                
+                                <div className={`flex items-center gap-2 ${transactionJourney === "settled" ? "text-green-300" : "text-zinc-500"}`}>
+                                  <div className={`w-3 h-3 rounded-full ${transactionJourney === "settled" ? "bg-green-400" : "bg-zinc-600"}`}></div>
+                                  <span className="text-sm font-medium">Final Settlement</span>
                                 </div>
                               </div>
 
@@ -2522,12 +2544,26 @@ export default function Home() {
                         {transactionState === "confirming" && (
                           <Card className="bg-yellow-900/20 border-yellow-800">
                             <CardContent className="p-4">
-                              <h5 className="font-bold text-yellow-300 mb-3 text-center">Block Confirmation</h5>
+                              <h5 className="font-bold text-yellow-300 mb-4 text-center">Transaction Journey - Block Confirmation</h5>
 
-                              {/* Compact Confirmation Progress */}
-                              <div className="flex items-center justify-center gap-2 mb-3">
-                                <span className="text-yellow-300 text-sm">Confirmations: {confirmationCount}/6</span>
-                                <Clock className="w-4 h-4 animate-pulse text-yellow-400" />
+                              {/* Journey Progress */}
+                              <div className="space-y-2 mb-4">
+                                <div className="flex items-center gap-2 text-green-400">
+                                  <CheckCircle className="w-4 h-4" />
+                                  <span className="text-sm">✓ Broadcast to Network</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-green-400">
+                                  <CheckCircle className="w-4 h-4" />
+                                  <span className="text-sm">✓ Mempool Queue</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-yellow-300">
+                                  <Clock className="w-4 h-4 animate-pulse" />
+                                  <span className="text-sm font-medium">🔄 Block Confirmation ({confirmationCount}/6)</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-zinc-500">
+                                  <div className="w-4 h-4 rounded-full bg-zinc-600"></div>
+                                  <span className="text-sm">Final Settlement</span>
+                                </div>
                               </div>
 
                               {/* Confirmation Progress */}
