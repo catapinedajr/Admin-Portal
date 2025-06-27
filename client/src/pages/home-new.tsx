@@ -579,22 +579,22 @@ export default function Home() {
     realWorldExample?: string;
   }> {
     switch (title) {
-      case "Bitcoin vs Traditional Money: Why It Matters":
+      case "What Is Money Really? - Day 1":
         return [
           {
-            title: "The Problems with Fiat Currency",
+            title: "The Coincidence of Wants Problem",
             paragraphs: [
-              "Since 1971, when President Nixon ended the gold standard, most world currencies became 'fiat' money - backed only by government promises rather than tangible assets like gold. This fundamental shift has created several critical problems that affect everyone's financial security.",
-              "The most obvious problem is inflation by design. Governments can create new money at will, which reduces the purchasing power of existing money. The US dollar has lost over 85% of its value since 1971, meaning what cost $1 then requires about $6.50 today.",
-              "Beyond inflation, fiat systems concentrate enormous power in the hands of central authorities. Banks and governments can freeze your accounts without warning, reverse your transactions, control who can send or receive money, and devalue your savings through unlimited money printing. This level of control gives them unprecedented power over your financial life."
+              "Before money existed, people had to rely on direct barter - trading one good directly for another. This created a massive problem called the 'coincidence of wants' - you needed to find someone who not only had what you wanted, but also wanted exactly what you had to offer.",
+              "Imagine you're a farmer with extra apples who needs shoes. In a barter system, you'd have to find a shoemaker who specifically wants apples at the exact same time you need shoes. If the shoemaker wants grain instead, you're stuck - you'd have to find someone willing to trade grain for apples, then trade that grain to the shoemaker.",
+              "This problem becomes exponentially worse as communities grow larger and more specialized. In a village of 100 people with different skills and needs, the chances of finding perfect trading matches become incredibly slim, severely limiting economic growth and cooperation."
             ],
             keyPoints: [
-              "Fiat currencies have no backing beyond government decree since 1971",
-              "Inflation is built into the system - governments profit from printing money", 
-              "Central authorities control who can access and use financial services",
-              "The purchasing power of fiat money consistently declines over time"
+              "Barter requires perfect matching of wants between two parties",
+              "Complex chains of trades become necessary for simple exchanges", 
+              "Economic growth is severely limited without a common medium",
+              "Specialization becomes nearly impossible in pure barter systems"
             ],
-            realWorldExample: "In 2022, Canadian authorities froze bank accounts of Freedom Convoy protesters and their supporters, demonstrating how easily centralized financial systems can be weaponized against citizens."
+            realWorldExample: "During economic crises when currency systems fail, communities often revert to barter. In Argentina's 2001 crisis, people traded professional services for food, but these exchanges were incredibly inefficient and limited economic recovery."
           },
           {
             title: "Bitcoin's Revolutionary Solutions",
