@@ -313,6 +313,130 @@ export default function Home() {
   const [animationActive, setAnimationActive] = useState(false);
   const [inflationSimActive, setInflationSimActive] = useState(false);
   const [inflationProgress, setInflationProgress] = useState(0); // 0-6 representing years 0,1,5,10,15,20,25
+  
+  // Money Supply Visualization State
+  const [moneySupplyYear, setMoneySupplyYear] = useState(2024);
+
+  // Money Supply Helper Functions
+  const getMoneySupplyRaw = (year: number): number => {
+    // Authentic M2 Money Supply data (in trillions)
+    const dataPoints: { [key: number]: number } = {
+      1971: 0.6, 1980: 1.6, 1990: 3.2, 2000: 4.9, 2008: 7.8, 
+      2010: 8.7, 2015: 11.6, 2020: 15.3, 2021: 20.8, 2022: 21.3, 
+      2023: 20.9, 2024: 21.0
+    };
+    
+    // Linear interpolation between known points
+    const years = Object.keys(dataPoints).map(Number).sort();
+    if (year <= years[0]) return dataPoints[years[0]];
+    if (year >= years[years.length - 1]) return dataPoints[years[years.length - 1]];
+    
+    for (let i = 0; i < years.length - 1; i++) {
+      if (year >= years[i] && year <= years[i + 1]) {
+        const progress = (year - years[i]) / (years[i + 1] - years[i]);
+        return dataPoints[years[i]] + progress * (dataPoints[years[i + 1]] - dataPoints[years[i]]);
+      }
+    }
+    return dataPoints[2024];
+  };
+
+  const getMoneySupplyForYear = (year: number): string => {
+    return getMoneySupplyRaw(year).toFixed(1);
+  };
+
+  const getMoneySupplyMultiplier = (year: number): string => {
+    return (getMoneySupplyRaw(year) / 0.6).toFixed(1);
+  };
+
+  const getPurchasingPowerRaw = (year: number): number => {
+    // What $1 from 1971 is worth today (inverse of cumulative inflation)
+    const dataPoints: { [key: number]: number } = {
+      1971: 1.00, 1980: 2.10, 1990: 3.30, 2000: 4.70, 2008: 6.20,
+      2010: 6.80, 2015: 7.10, 2020: 7.30, 2021: 7.70, 2022: 8.40,
+      2023: 8.60, 2024: 8.70
+    };
+    
+    const years = Object.keys(dataPoints).map(Number).sort();
+    if (year <= years[0]) return dataPoints[years[0]];
+    if (year >= years[years.length - 1]) return dataPoints[years[years.length - 1]];
+    
+    for (let i = 0; i < years.length - 1; i++) {
+      if (year >= years[i] && year <= years[i + 1]) {
+        const progress = (year - years[i]) / (years[i + 1] - years[i]);
+        return dataPoints[years[i]] + progress * (dataPoints[years[i + 1]] - dataPoints[years[i]]);
+      }
+    }
+    return dataPoints[2024];
+  };
+
+  const getPurchasingPowerForYear = (year: number): string => {
+    return getPurchasingPowerRaw(year).toFixed(2);
+  };
+
+  const getHousePriceForYear = (year: number): number => {
+    // Median home prices in the US
+    const dataPoints: { [key: number]: number } = {
+      1971: 25200, 1980: 64600, 1990: 122900, 2000: 169000, 2008: 247900,
+      2010: 221800, 2015: 293400, 2020: 347500, 2021: 408800, 2022: 428700,
+      2023: 436800, 2024: 442600
+    };
+    
+    const years = Object.keys(dataPoints).map(Number).sort();
+    if (year <= years[0]) return dataPoints[years[0]];
+    if (year >= years[years.length - 1]) return dataPoints[years[years.length - 1]];
+    
+    for (let i = 0; i < years.length - 1; i++) {
+      if (year >= years[i] && year <= years[i + 1]) {
+        const progress = (year - years[i]) / (years[i + 1] - years[i]);
+        return Math.round(dataPoints[years[i]] + progress * (dataPoints[years[i + 1]] - dataPoints[years[i]]));
+      }
+    }
+    return dataPoints[2024];
+  };
+
+  const getMilkPriceForYear = (year: number): string => {
+    // Average price per gallon of milk
+    const dataPoints: { [key: number]: number } = {
+      1971: 1.18, 1980: 2.16, 1990: 2.78, 2000: 2.97, 2008: 3.87,
+      2010: 3.26, 2015: 3.41, 2020: 3.54, 2021: 3.69, 2022: 4.33,
+      2023: 3.91, 2024: 3.99
+    };
+    
+    const years = Object.keys(dataPoints).map(Number).sort();
+    if (year <= years[0]) return dataPoints[years[0]].toFixed(2);
+    if (year >= years[years.length - 1]) return dataPoints[years[years.length - 1]].toFixed(2);
+    
+    for (let i = 0; i < years.length - 1; i++) {
+      if (year >= years[i] && year <= years[i + 1]) {
+        const progress = (year - years[i]) / (years[i + 1] - years[i]);
+        const price = dataPoints[years[i]] + progress * (dataPoints[years[i + 1]] - dataPoints[years[i]]);
+        return price.toFixed(2);
+      }
+    }
+    return dataPoints[2024].toFixed(2);
+  };
+
+  const getGasPriceForYear = (year: number): string => {
+    // Average price per gallon of gasoline
+    const dataPoints: { [key: number]: number } = {
+      1971: 0.36, 1980: 1.19, 1990: 1.34, 2000: 1.51, 2008: 3.27,
+      2010: 2.79, 2015: 2.43, 2020: 2.17, 2021: 3.01, 2022: 3.95,
+      2023: 3.52, 2024: 3.38
+    };
+    
+    const years = Object.keys(dataPoints).map(Number).sort();
+    if (year <= years[0]) return dataPoints[years[0]].toFixed(2);
+    if (year >= years[years.length - 1]) return dataPoints[years[years.length - 1]].toFixed(2);
+    
+    for (let i = 0; i < years.length - 1; i++) {
+      if (year >= years[i] && year <= years[i + 1]) {
+        const progress = (year - years[i]) / (years[i + 1] - years[i]);
+        const price = dataPoints[years[i]] + progress * (dataPoints[years[i + 1]] - dataPoints[years[i]]);
+        return price.toFixed(2);
+      }
+    }
+    return dataPoints[2024].toFixed(2);
+  };
 
   // Settlement Animation Logic
   const startSettlementAnimation = () => {
@@ -2325,6 +2449,171 @@ export default function Home() {
                     <div className="text-zinc-300">
                       Keep letting inflation slowly drain your wealth, or learn about the money that can't be manipulated. 
                       The calculators below show you exactly what you're losing—and what you could gain.
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Money Supply Erosion Visualization */}
+            <Card className="bg-zinc-900 border-zinc-800">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-white flex items-center gap-3 text-xl">
+                  <TrendingDown className="w-5 h-5 text-red-400" />
+                  Watch Your Money Lose Value in Real Time
+                </CardTitle>
+                <p className="text-zinc-400 text-sm">Interactive timeline showing how money printing destroys purchasing power since 1971</p>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Year Slider Control */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-zinc-300 font-medium">Select Year:</span>
+                    <span className="text-orange-400 font-bold text-lg">{moneySupplyYear}</span>
+                  </div>
+                  <div className="space-y-2">
+                    <input
+                      type="range"
+                      min="1971"
+                      max="2024"
+                      value={moneySupplyYear}
+                      onChange={(e) => setMoneySupplyYear(parseInt(e.target.value))}
+                      className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer slider"
+                      style={{
+                        background: `linear-gradient(to right, #f97316 0%, #f97316 ${((moneySupplyYear - 1971) / (2024 - 1971)) * 100}%, #374151 ${((moneySupplyYear - 1971) / (2024 - 1971)) * 100}%, #374151 100%)`
+                      }}
+                    />
+                    <div className="flex justify-between text-xs text-zinc-500">
+                      <span>1971 (Nixon Shock)</span>
+                      <span>2024 (Today)</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Key Historical Events */}
+                <div className="grid gap-3 md:grid-cols-4 text-xs">
+                  <div className={`p-2 rounded-lg text-center transition-all ${moneySupplyYear >= 1971 ? 'bg-red-900/50 border border-red-700/50' : 'bg-zinc-800/50'}`}>
+                    <div className="font-medium text-red-300">1971</div>
+                    <div className="text-zinc-400">Gold Standard Ended</div>
+                  </div>
+                  <div className={`p-2 rounded-lg text-center transition-all ${moneySupplyYear >= 2008 ? 'bg-red-900/50 border border-red-700/50' : 'bg-zinc-800/50'}`}>
+                    <div className="font-medium text-red-300">2008</div>
+                    <div className="text-zinc-400">Financial Crisis</div>
+                  </div>
+                  <div className={`p-2 rounded-lg text-center transition-all ${moneySupplyYear >= 2020 ? 'bg-red-900/50 border border-red-700/50' : 'bg-zinc-800/50'}`}>
+                    <div className="font-medium text-red-300">2020</div>
+                    <div className="text-zinc-400">COVID Money Printing</div>
+                  </div>
+                  <div className={`p-2 rounded-lg text-center transition-all ${moneySupplyYear >= 2024 ? 'bg-orange-900/50 border border-orange-700/50' : 'bg-zinc-800/50'}`}>
+                    <div className="font-medium text-orange-300">2024</div>
+                    <div className="text-zinc-400">Bitcoin Alternative</div>
+                  </div>
+                </div>
+
+                {/* Visual Comparison */}
+                <div className="grid gap-6 lg:grid-cols-2">
+                  {/* Money Supply Growth */}
+                  <div className="space-y-4">
+                    <h4 className="text-white font-semibold flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4 text-red-400" />
+                      US Money Supply (M2)
+                    </h4>
+                    <div className="bg-zinc-800/50 rounded-lg p-4 space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-zinc-300">In {moneySupplyYear}:</span>
+                        <span className="text-red-400 font-bold">
+                          ${getMoneySupplyForYear(moneySupplyYear)}T
+                        </span>
+                      </div>
+                      <div className="w-full bg-zinc-700 rounded-full h-3">
+                        <div 
+                          className="bg-gradient-to-r from-red-600 to-red-400 h-3 rounded-full transition-all duration-500"
+                          style={{ width: `${Math.min(100, ((getMoneySupplyRaw(moneySupplyYear) - 0.6) / 20) * 100)}%` }}
+                        ></div>
+                      </div>
+                      <div className="text-xs text-zinc-400">
+                        {getMoneySupplyMultiplier(moneySupplyYear)}x more money than 1971
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Purchasing Power */}
+                  <div className="space-y-4">
+                    <h4 className="text-white font-semibold flex items-center gap-2">
+                      <TrendingDown className="w-4 h-4 text-red-400" />
+                      Your Dollar's Purchasing Power
+                    </h4>
+                    <div className="bg-zinc-800/50 rounded-lg p-4 space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-zinc-300">$1 from 1971 = </span>
+                        <span className="text-red-400 font-bold">
+                          ${getPurchasingPowerForYear(moneySupplyYear)} today
+                        </span>
+                      </div>
+                      <div className="w-full bg-zinc-700 rounded-full h-3">
+                        <div 
+                          className="bg-gradient-to-r from-zinc-400 to-zinc-600 h-3 rounded-full transition-all duration-500"
+                          style={{ width: `${(1 / getPurchasingPowerRaw(moneySupplyYear)) * 100}%` }}
+                        ></div>
+                      </div>
+                      <div className="text-xs text-zinc-400">
+                        {Math.round((1 - (1 / getPurchasingPowerRaw(moneySupplyYear))) * 100)}% of purchasing power lost
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Real-World Examples */}
+                <div className="bg-gradient-to-r from-red-950/30 to-orange-950/30 rounded-xl p-6 border border-red-800/30">
+                  <h4 className="text-white font-semibold mb-4 flex items-center gap-2">
+                    <ShoppingCart className="w-4 h-4 text-orange-400" />
+                    Real-World Impact in {moneySupplyYear}
+                  </h4>
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <div className="text-center space-y-2">
+                      <div className="text-2xl">🏠</div>
+                      <div className="text-zinc-300 text-sm">Average House</div>
+                      <div className="text-orange-400 font-bold">${getHousePriceForYear(moneySupplyYear).toLocaleString()}</div>
+                      <div className="text-zinc-500 text-xs">vs $25,200 in 1971</div>
+                    </div>
+                    <div className="text-center space-y-2">
+                      <div className="text-2xl">🥛</div>
+                      <div className="text-zinc-300 text-sm">Gallon of Milk</div>
+                      <div className="text-orange-400 font-bold">${getMilkPriceForYear(moneySupplyYear)}</div>
+                      <div className="text-zinc-500 text-xs">vs $1.18 in 1971</div>
+                    </div>
+                    <div className="text-center space-y-2">
+                      <div className="text-2xl">⛽</div>
+                      <div className="text-zinc-300 text-sm">Gallon of Gas</div>
+                      <div className="text-orange-400 font-bold">${getGasPriceForYear(moneySupplyYear)}</div>
+                      <div className="text-zinc-500 text-xs">vs $0.36 in 1971</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bitcoin Contrast */}
+                <div className="bg-gradient-to-r from-orange-950/30 to-yellow-950/30 rounded-xl p-6 border border-orange-800/30">
+                  <div className="text-center space-y-4">
+                    <div className="flex items-center justify-center gap-3">
+                      <div className="p-2 bg-orange-600/20 rounded-lg">
+                        <Shield className="w-6 h-6 text-orange-400" />
+                      </div>
+                      <h4 className="text-white font-bold text-lg">Bitcoin: Fixed Forever at 21 Million</h4>
+                    </div>
+                    <p className="text-zinc-300 max-w-2xl mx-auto">
+                      While governments have created {getMoneySupplyForYear(moneySupplyYear)} trillion dollars since 1971, 
+                      Bitcoin's supply is mathematically limited to 21 million coins. No government, bank, or corporation 
+                      can print more Bitcoin. <span className="text-orange-400 font-semibold">This is why Bitcoin protects your purchasing power.</span>
+                    </p>
+                    <div className="flex items-center justify-center gap-4 text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <span className="text-red-300">US Dollar: ∞ Supply</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                        <span className="text-orange-300">Bitcoin: 21M Fixed</span>
+                      </div>
                     </div>
                   </div>
                 </div>
