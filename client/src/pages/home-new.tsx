@@ -2181,7 +2181,7 @@ export default function Home() {
                 <div className="inline-flex items-center gap-2 bg-zinc-800/50 rounded-lg px-4 py-2 border border-zinc-700/50">
                   <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
                   <span className="text-zinc-300 text-sm">
-                    Day {(user?.currentStreak || 0) + 1} of learning Bitcoin
+                    Day {currentDayIndex + 1} of learning Bitcoin
                   </span>
                 </div>
                 {user?.currentStreak && user.currentStreak > 0 && (
