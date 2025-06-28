@@ -3104,29 +3104,34 @@ export default function Home() {
                   </div>
                 )}
 
-                {/* OPTION 1: Horizontal Racing Bars */}
+                {/* Conservative Savings vs Bitcoin Comparison */}
                 {(inflationSimActive || inflationProgress > 0) && (
-                  <div className="space-y-3">
-                    {inflationSimActive && (
-                      <div className="text-center">
-                        <p className="text-zinc-400 text-sm">Watch two paths diverge...</p>
-                      </div>
-                    )}
+                  <div className="space-y-4">
+                    {/* Narrative Introduction */}
+                    <div className="text-center space-y-2">
+                      <p className="text-zinc-300 text-sm font-medium">
+                        The Tale of Two Strategies
+                      </p>
+                      <p className="text-zinc-400 text-xs leading-relaxed">
+                        Your $25,000 faces two very different futures. Traditional savings slowly loses buying power to inflation, 
+                        while Bitcoin has historically preserved and grown wealth. Here's what conservative projections show:
+                      </p>
+                    </div>
                     
                     {/* Compact Racing Animation */}
                     <div className="space-y-2">
                       {[
-                        { step: 0, year: "Today", savings: 25000, btc: 25000 },
-                        { step: 1, year: "5 years", savings: 21562, btc: 87500 },
-                        { step: 2, year: "10 years", savings: 18584, btc: 275000 },
-                        { step: 3, year: "15 years", savings: 16023, btc: 625000 },
-                        { step: 4, year: "20 years", savings: 13807, btc: 1250000 },
-                        { step: 5, year: "25 years", savings: 11903, btc: 2500000 }
-                      ].map(({ step, year, savings, btc }) => {
+                        { step: 0, year: "Today", savings: 25000, btc: 25000, narrative: "Both start equal" },
+                        { step: 1, year: "3 years", savings: 22750, btc: 50000, narrative: "Inflation vs growth" },
+                        { step: 2, year: "5 years", savings: 21562, btc: 75000, narrative: "Gap widens" },
+                        { step: 3, year: "10 years", savings: 18584, btc: 125000, narrative: "Significant difference" },
+                        { step: 4, year: "15 years", savings: 16023, btc: 200000, narrative: "Wealth preservation vs erosion" },
+                        { step: 5, year: "20 years", savings: 13807, btc: 300000, narrative: "Conservative Bitcoin growth" }
+                      ].map(({ step, year, savings, btc, narrative }) => {
                         const isActive = inflationProgress >= step;
                         
                         return (
-                          <div key={step} className={`grid grid-cols-3 gap-2 p-2 rounded transition-all duration-700 ${
+                          <div key={step} className={`grid grid-cols-4 gap-2 p-2 rounded transition-all duration-700 ${
                             isActive ? 'bg-zinc-800/50' : 'bg-zinc-900/30'
                           }`}>
                             {/* Year Label */}
@@ -3167,23 +3172,47 @@ export default function Home() {
                                   className={`h-full transition-all duration-1000 ${
                                     isActive ? 'bg-orange-500' : 'bg-zinc-600'
                                   }`}
-                                  style={{ width: isActive ? `${Math.min((btc/25000)*4, 100)}%` : '0%' }}
+                                  style={{ width: isActive ? `${Math.min((btc/25000)*2, 100)}%` : '0%' }}
                                 ></div>
                               </div>
+                            </div>
+                            
+                            {/* Narrative Text */}
+                            <div className={`text-xs italic flex items-center ${
+                              isActive ? 'text-zinc-300' : 'text-zinc-600'
+                            }`}>
+                              {isActive && narrative}
                             </div>
                           </div>
                         );
                       })}
                     </div>
                     
-                    {/* Compact Final Result */}
+                    {/* Conservative Final Summary */}
                     {inflationProgress >= 5 && (
-                      <div className="p-3 bg-orange-950/20 rounded border border-orange-600/30">
+                      <div className="space-y-3 p-4 bg-zinc-800/30 rounded-lg border border-orange-400/20">
                         <div className="text-center">
-                          <div className="text-orange-400 font-bold text-sm mb-1">25-Year Result</div>
-                          <div className="text-xs text-zinc-300">
-                            <span className="text-red-400">Savings: $11,903</span> vs <span className="text-orange-400">Bitcoin: $2.5M</span>
+                          <div className="text-orange-400 font-bold text-sm mb-2">The 20-Year Conservative Outcome</div>
+                          <div className="grid grid-cols-2 gap-4 text-xs">
+                            <div className="text-center">
+                              <div className="text-red-400 font-medium">Traditional Savings</div>
+                              <div className="text-red-300 text-lg font-bold">$13,807</div>
+                              <div className="text-red-400">Lost 45% to inflation</div>
+                            </div>
+                            <div className="text-center">
+                              <div className="text-orange-400 font-medium">Conservative Bitcoin</div>
+                              <div className="text-orange-300 text-lg font-bold">$300,000</div>
+                              <div className="text-orange-400">12x growth (6.7% yearly)</div>
+                            </div>
                           </div>
+                        </div>
+                        
+                        <div className="text-center pt-2 border-t border-zinc-700/50">
+                          <p className="text-zinc-400 text-xs leading-relaxed">
+                            Even with <span className="text-orange-400 font-medium">conservative projections</span>, Bitcoin's scarcity-driven 
+                            value preservation vastly outperforms inflation-eroded savings. This assumes modest 6.7% annual Bitcoin growth—
+                            far below its historical averages.
+                          </p>
                         </div>
                       </div>
                     )}
