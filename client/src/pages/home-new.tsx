@@ -5854,6 +5854,71 @@ export default function Home() {
                       <p className="text-zinc-400">See how much your Bitcoin investment would be worth today</p>
                     </div>
 
+                    {/* Always-Visible Chart Section */}
+                    <div className="mb-6">
+                      <div className="bg-zinc-800/30 rounded-lg p-4 border border-zinc-700">
+                        <div className="flex justify-between items-center mb-4">
+                          <h4 className="text-white font-semibold">Bitcoin Performance Chart</h4>
+                          <div className="text-xs text-zinc-400">Jan 2017 - Jan 2025</div>
+                        </div>
+                        <div className="relative">
+                          <svg viewBox="0 0 320 140" className="w-full h-32 bg-zinc-900/50 rounded">
+                            {/* Grid background */}
+                            <defs>
+                              <pattern id="grid" width="32" height="28" patternUnits="userSpaceOnUse">
+                                <path d="M 32 0 L 0 0 0 28" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.3"/>
+                              </pattern>
+                            </defs>
+                            <rect width="100%" height="100%" fill="url(#grid)" />
+                            
+                            {/* 5x Market Line */}
+                            <line x1="10" y1="90" x2="310" y2="90" stroke="#fbbf24" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                            <text x="315" y="94" fill="#fbbf24" fontSize="10" opacity="0.8">5x</text>
+                            
+                            {/* 10x Market Line */}
+                            <line x1="10" y1="60" x2="310" y2="60" stroke="#f97316" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                            <text x="315" y="64" fill="#f97316" fontSize="10" opacity="0.8">10x</text>
+                            
+                            {/* 100x Market Line */}
+                            <line x1="10" y1="20" x2="310" y2="20" stroke="#dc2626" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                            <text x="315" y="24" fill="#dc2626" fontSize="10" opacity="0.8">100x</text>
+                            
+                            {/* Bitcoin Price Line (realistic exponential growth) */}
+                            <path 
+                              d="M 10 120 Q 50 115 80 110 Q 120 105 160 95 Q 200 80 240 60 Q 280 35 310 25" 
+                              stroke="#f97316" 
+                              strokeWidth="3" 
+                              fill="none"
+                              className="drop-shadow-lg"
+                            />
+                            
+                            {/* Area fill */}
+                            <path 
+                              d="M 10 120 Q 50 115 80 110 Q 120 105 160 95 Q 200 80 240 60 Q 280 35 310 25 L 310 120 L 10 120 Z" 
+                              fill="url(#chartGradient)"
+                              opacity="0.2"
+                            />
+                            
+                            <defs>
+                              <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stopColor="#f97316" stopOpacity="0.4"/>
+                                <stop offset="100%" stopColor="#f97316" stopOpacity="0.1"/>
+                              </linearGradient>
+                            </defs>
+                            
+                            {/* Start and end markers */}
+                            <circle cx="10" cy="120" r="3" fill="#10b981" stroke="#ffffff" strokeWidth="1"/>
+                            <circle cx="310" cy="25" r="4" fill="#f97316" stroke="#ffffff" strokeWidth="2" className="animate-pulse"/>
+                            
+                            {/* Time labels */}
+                            <text x="10" y="135" fill="#9ca3af" fontSize="9" textAnchor="start">2017</text>
+                            <text x="160" y="135" fill="#9ca3af" fontSize="9" textAnchor="middle">2021</text>
+                            <text x="310" y="135" fill="#9ca3af" fontSize="9" textAnchor="end">2025</text>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+
                     <div className="grid md:grid-cols-2 gap-6">
                       {/* Input Section */}
                       <div className="space-y-4">
@@ -6161,11 +6226,11 @@ export default function Home() {
                 </Card>
 
                 {/* HODL vs Market Timing Educational Section */}
-                <Card className="bg-gradient-to-r from-orange-900/20 to-yellow-900/20 border-orange-800/50">
+                <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center">
-                        <Clock className="w-4 h-4 text-white" />
+                      <div className="w-8 h-8 bg-zinc-700 rounded-lg flex items-center justify-center">
+                        <Clock className="w-4 h-4 text-zinc-300" />
                       </div>
                       <h3 className="text-xl font-bold text-white">Why HODLing Beats Market Timing</h3>
                     </div>
@@ -6173,13 +6238,13 @@ export default function Home() {
                     <div className="prose prose-invert max-w-none">
                       <p className="text-zinc-300 mb-4">
                         Bitcoin's price can swing wildly day-to-day, making it tempting to try "buying low and selling high." 
-                        However, research consistently shows that <strong className="text-orange-400">time in the market beats timing the market</strong>.
+                        However, research consistently shows that <strong className="text-white">time in the market beats timing the market</strong>.
                       </p>
                       
                       <div className="grid md:grid-cols-2 gap-6 mb-4">
-                        <div className="bg-red-900/20 border border-red-800/50 rounded-lg p-4">
-                          <h4 className="text-red-400 font-semibold mb-2">❌ Market Timing Problems</h4>
-                          <ul className="text-zinc-300 text-sm space-y-1">
+                        <div className="bg-zinc-800/50 border border-zinc-700 rounded-lg p-4">
+                          <h4 className="text-zinc-300 font-semibold mb-2">Market Timing Problems</h4>
+                          <ul className="text-zinc-400 text-sm space-y-1">
                             <li>• Missing the best days hurts returns dramatically</li>
                             <li>• Emotional decisions during volatility</li>
                             <li>• Trading fees eat into profits</li>
@@ -6188,9 +6253,9 @@ export default function Home() {
                           </ul>
                         </div>
                         
-                        <div className="bg-green-900/20 border border-green-800/50 rounded-lg p-4">
-                          <h4 className="text-green-400 font-semibold mb-2">✅ HODLing Benefits</h4>
-                          <ul className="text-zinc-300 text-sm space-y-1">
+                        <div className="bg-zinc-800/50 border border-zinc-700 rounded-lg p-4">
+                          <h4 className="text-zinc-300 font-semibold mb-2">HODLing Benefits</h4>
+                          <ul className="text-zinc-400 text-sm space-y-1">
                             <li>• Captures all market growth over time</li>
                             <li>• Reduces emotional trading mistakes</li>
                             <li>• Lower fees and tax advantages</li>
@@ -6200,7 +6265,7 @@ export default function Home() {
                         </div>
                       </div>
                       
-                      <p className="text-orange-300 font-medium text-center">
+                      <p className="text-zinc-300 font-medium text-center">
                         <strong>Key Insight:</strong> Even if you bought Bitcoin at its previous all-time high in 2017, 
                         holding until today would have resulted in massive gains. Patience pays off.
                       </p>
