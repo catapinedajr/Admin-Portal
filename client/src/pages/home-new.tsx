@@ -299,9 +299,10 @@ export default function Home() {
   const [moreSubTab, setMoreSubTab] = useState<MoreSubTab>("store");
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   
-  // Use natural day progression (0-29 for Month 1)
+  // Day navigation for development testing
+  const [testDayOverride, setTestDayOverride] = useState<number | null>(null);
   const naturalDayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24)) % 30; // Range 0-29 (0-based)
-  const currentDayIndex = naturalDayIndex;
+  const currentDayIndex = testDayOverride !== null ? testDayOverride : naturalDayIndex;
   
   // Day access control queries
   const { data: dayAccessible = false } = useQuery({
@@ -2208,6 +2209,46 @@ export default function Home() {
 
 
 
+            {/* Development Day Navigation */}
+            {learnSubTab === "today" && (
+              <div className="flex justify-center">
+                <div className="flex items-center gap-2 bg-zinc-800/50 rounded-lg p-2 border border-zinc-600">
+                  <span className="text-xs text-zinc-400">DEV:</span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setTestDayOverride(Math.max(0, currentDayIndex - 1))}
+                    disabled={currentDayIndex <= 0}
+                    className="text-xs px-2 py-1"
+                  >
+                    ←
+                  </Button>
+                  
+                  <span className="text-xs text-white px-2">
+                    Day {currentDayIndex + 1}
+                  </span>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setTestDayOverride(Math.min(29, currentDayIndex + 1))}
+                    disabled={currentDayIndex >= 29}
+                    className="text-xs px-2 py-1"
+                  >
+                    →
+                  </Button>
+                  
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setTestDayOverride(null)}
+                    className="text-xs px-2 py-1 text-orange-400 hover:text-orange-300"
+                  >
+                    Today
+                  </Button>
+                </div>
+              </div>
+            )}
 
             {/* Today's Learning */}
             {learnSubTab === "today" && (
