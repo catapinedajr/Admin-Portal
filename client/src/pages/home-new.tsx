@@ -3125,17 +3125,7 @@ export default function Home() {
                       </svg>
                     </div>
                     
-                    {/* Current Values Display */}
-                    <div className="mt-4 grid grid-cols-2 gap-4">
-                      <div className="text-center">
-                        <div className="text-red-400 font-bold text-xl">${getMoneySupplyForYear(moneySupplyYear)}T</div>
-                        <div className="text-zinc-400 text-sm">Money Supply in {moneySupplyYear}</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-red-400 font-bold text-xl">{getMoneySupplyMultiplier(moneySupplyYear)}x</div>
-                        <div className="text-zinc-400 text-sm">Growth Since 1971</div>
-                      </div>
-                    </div>
+
                   </div>
                 </div>
 
