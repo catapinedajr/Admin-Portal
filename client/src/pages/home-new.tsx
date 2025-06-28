@@ -282,7 +282,7 @@ const bitcoinTerms = [
 
 type MainSection = "learn" | "finance" | "simulations" | "more";
 type LearnSubTab = "today" | "reference";
-type SimulationsSubTab = "safety" | "transactions" | "hodl" | "dca";
+type SimulationsSubTab = "safety" | "transactions" | "hodl" | "dca" | "inflation";
 type MoreSubTab = "store";
 
 export default function Home() {
@@ -305,7 +305,8 @@ export default function Home() {
   
   // Finance section interactive states
   const [inflationAmount, setInflationAmount] = useState<string>("10000");
-  const [inflationYears, setInflationYears] = useState<string>("10");
+  const [inflationYears, setInflationYears] = useState<number>(10);
+  const [inflationRate, setInflationRate] = useState<number>(3.0);
   const [transferCount, setTransferCount] = useState<string>("2");
   const [transferAmount, setTransferAmount] = useState<string>("1000");
   const [speedRaceActive, setSpeedRaceActive] = useState<boolean>(false);
@@ -3724,6 +3725,15 @@ export default function Home() {
                   <BarChart3 className="w-3 h-3 mr-1" />
                   DCA
                 </Button>
+                <Button
+                  variant={simulationsSubTab === "inflation" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("inflation")}
+                  className="text-xs px-3 py-1"
+                >
+                  <TrendingDown className="w-3 h-3 mr-1" />
+                  Inflation
+                </Button>
               </div>
             </div>
 
@@ -5202,6 +5212,266 @@ export default function Home() {
                     </Card>
                   </>
                 )}
+              </div>
+            )}
+
+            {/* Interactive Inflation Simulator */}
+            {simulationsSubTab === "inflation" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">Inflation Impact Calculator</h3>
+                  <p className="text-zinc-400">See how inflation affects your money's purchasing power over time</p>
+                </div>
+
+                {/* Inflation Calculator */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="grid gap-6 md:grid-cols-2">
+                      {/* Input Controls */}
+                      <div className="space-y-4">
+                        <h4 className="text-lg font-bold text-white mb-4">Calculate Your Loss</h4>
+                        
+                        <div className="space-y-3">
+                          <div>
+                            <label className="block text-white font-medium mb-2">Today's Dollar Amount</label>
+                            <div className="relative">
+                              <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                              <input
+                                type="number"
+                                value={inflationAmount}
+                                onChange={(e) => setInflationAmount(e.target.value)}
+                                className="w-full pl-10 pr-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white"
+                                placeholder="10000"
+                                min="1"
+                                step="1000"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-white font-medium mb-2">Years Forward</label>
+                            <select
+                              value={inflationYears}
+                              onChange={(e) => setInflationYears(parseInt(e.target.value))}
+                              className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white"
+                            >
+                              <option value={5}>5 years</option>
+                              <option value={10}>10 years</option>
+                              <option value={15}>15 years</option>
+                              <option value={20}>20 years</option>
+                              <option value={25}>25 years</option>
+                              <option value={30}>30 years</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block text-white font-medium mb-2">Annual Inflation Rate</label>
+                            <select
+                              value={inflationRate}
+                              onChange={(e) => setInflationRate(parseFloat(e.target.value))}
+                              className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white"
+                            >
+                              <option value={2.0}>2% (Fed Target)</option>
+                              <option value={3.0}>3% (Historical)</option>
+                              <option value={4.0}>4% (Recent Average)</option>
+                              <option value={6.0}>6% (1970s-80s)</option>
+                              <option value={8.0}>8% (Current Crisis)</option>
+                              <option value={12.0}>12% (Hyperinflation)</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Results Display */}
+                      <div className="space-y-4">
+                        <h4 className="text-lg font-bold text-white mb-4">Your Purchasing Power Loss</h4>
+                        
+                        {(() => {
+                          const currentAmount = parseFloat(inflationAmount) || 10000;
+                          const futureValue = currentAmount / Math.pow(1 + inflationRate / 100, inflationYears);
+                          const purchasingPowerLoss = currentAmount - futureValue;
+                          const lossPercentage = (purchasingPowerLoss / currentAmount) * 100;
+                          
+                          return (
+                            <div className="space-y-4">
+                              {/* Current vs Future Value */}
+                              <div className="grid gap-3">
+                                <div className="p-4 bg-green-600/20 border border-green-600/30 rounded-lg">
+                                  <div className="text-center">
+                                    <p className="text-green-300 text-sm">Today's Value</p>
+                                    <p className="text-2xl font-bold text-green-400">${currentAmount.toLocaleString()}</p>
+                                  </div>
+                                </div>
+                                
+                                <div className="p-4 bg-red-600/20 border border-red-600/30 rounded-lg">
+                                  <div className="text-center">
+                                    <p className="text-red-300 text-sm">Future Purchasing Power</p>
+                                    <p className="text-2xl font-bold text-red-400">${futureValue.toLocaleString('en-US', {maximumFractionDigits: 0})}</p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Loss Statistics */}
+                              <div className="p-4 bg-orange-600/20 border border-orange-600/30 rounded-lg">
+                                <div className="space-y-2">
+                                  <div className="flex justify-between">
+                                    <span className="text-zinc-300">Money Lost to Inflation</span>
+                                    <span className="text-orange-400 font-bold">${purchasingPowerLoss.toLocaleString('en-US', {maximumFractionDigits: 0})}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-zinc-300">Purchasing Power Lost</span>
+                                    <span className="text-orange-400 font-bold">{lossPercentage.toFixed(1)}%</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-zinc-300">Annual Loss Rate</span>
+                                    <span className="text-orange-400 font-bold">{inflationRate}%</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Visual Progress Bar */}
+                              <div className="space-y-2">
+                                <div className="flex justify-between text-sm">
+                                  <span className="text-zinc-400">Purchasing Power Remaining</span>
+                                  <span className="text-zinc-300">{(100 - lossPercentage).toFixed(1)}%</span>
+                                </div>
+                                <div className="w-full bg-zinc-700 rounded-full h-3">
+                                  <div 
+                                    className="bg-gradient-to-r from-green-500 to-red-500 h-3 rounded-full transition-all duration-500"
+                                    style={{ width: `${100 - lossPercentage}%` }}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Real-World Examples */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h4 className="text-lg font-bold text-white mb-4">What This Means in Real Life</h4>
+                    
+                    <div className="grid gap-4 md:grid-cols-3">
+                      {(() => {
+                        const currentAmount = parseFloat(inflationAmount) || 10000;
+                        const futureValue = currentAmount / Math.pow(1 + inflationRate / 100, inflationYears);
+                        
+                        const examples = [
+                          {
+                            icon: "🏠",
+                            title: "Housing",
+                            current: "Rent: $2,000/month",
+                            future: `Future: $${Math.round(2000 * Math.pow(1 + inflationRate / 100, inflationYears)).toLocaleString()}/month`
+                          },
+                          {
+                            icon: "🥛",
+                            title: "Groceries", 
+                            current: "Milk: $4.50/gallon",
+                            future: `Future: $${(4.50 * Math.pow(1 + inflationRate / 100, inflationYears)).toFixed(2)}/gallon`
+                          },
+                          {
+                            icon: "⛽",
+                            title: "Energy",
+                            current: "Gas: $3.50/gallon", 
+                            future: `Future: $${(3.50 * Math.pow(1 + inflationRate / 100, inflationYears)).toFixed(2)}/gallon`
+                          }
+                        ];
+                        
+                        return examples.map((example, i) => (
+                          <div key={i} className="p-4 bg-zinc-800 rounded-lg">
+                            <div className="text-center space-y-2">
+                              <div className="text-2xl">{example.icon}</div>
+                              <h5 className="font-semibold text-white">{example.title}</h5>
+                              <div className="text-sm space-y-1">
+                                <p className="text-green-400">{example.current}</p>
+                                <p className="text-red-400">{example.future}</p>
+                              </div>
+                            </div>
+                          </div>
+                        ));
+                      })()}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Bitcoin Protection */}
+                <Card className="bg-gradient-to-r from-orange-900/20 to-orange-800/20 border-orange-700">
+                  <CardContent className="p-6">
+                    <div className="text-center space-y-4">
+                      <h4 className="text-xl font-bold text-orange-300">🛡️ Bitcoin: Your Inflation Shield</h4>
+                      
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="space-y-3">
+                          <h5 className="font-semibold text-orange-200">The Problem with Dollars</h5>
+                          <ul className="text-left space-y-2 text-orange-100 text-sm">
+                            <li>• Government prints money whenever they want</li>
+                            <li>• Your savings lose value every year</li>
+                            <li>• No limit on how many dollars exist</li>
+                            <li>• Banks profit while your money shrinks</li>
+                          </ul>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          <h5 className="font-semibold text-orange-200">The Bitcoin Solution</h5>
+                          <ul className="text-left space-y-2 text-orange-100 text-sm">
+                            <li>• Only 21 million Bitcoin will ever exist</li>
+                            <li>• No government can print more</li>
+                            <li>• You control your own money</li>
+                            <li>• Value increases as demand grows</li>
+                          </ul>
+                        </div>
+                      </div>
+                      
+                      <div className="p-4 bg-orange-800/30 rounded-lg">
+                        <p className="text-orange-200 text-sm">
+                          <strong>Historical Fact:</strong> Since 2009, Bitcoin has gained over 160,000,000% while the dollar 
+                          has lost 30% of its purchasing power. Which would you rather hold for the next {inflationYears} years?
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Educational Insights */}
+                <Card className="bg-blue-900/20 border-blue-800">
+                  <CardContent className="p-6">
+                    <h4 className="text-lg font-bold text-blue-300 mb-4">📚 Understanding Inflation</h4>
+                    
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div>
+                        <h5 className="font-medium text-blue-200 mb-2">What Causes Inflation</h5>
+                        <ul className="space-y-1 text-zinc-300 text-sm">
+                          <li>• <strong>Money printing:</strong> More dollars chasing same goods</li>
+                          <li>• <strong>Government spending:</strong> Deficit spending creates new money</li>
+                          <li>• <strong>Low interest rates:</strong> Cheap money encourages borrowing</li>
+                          <li>• <strong>Supply shortages:</strong> Less goods, same money supply</li>
+                        </ul>
+                      </div>
+                      
+                      <div>
+                        <h5 className="font-medium text-blue-200 mb-2">Who Gets Hurt Most</h5>
+                        <ul className="space-y-1 text-zinc-300 text-sm">
+                          <li>• Savers and retirees on fixed income</li>
+                          <li>• Workers whose wages don't keep up</li>
+                          <li>• People holding cash for emergencies</li>
+                          <li>• Anyone without inflation-resistant assets</li>
+                        </ul>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-4 p-3 bg-blue-800/30 rounded-lg">
+                      <p className="text-blue-200 text-sm">
+                        <GraduationCap className="w-4 h-4 inline mr-1" />
+                        <strong>Key Insight:</strong> Inflation is a hidden tax on your savings. Every year you hold dollars, 
+                        you're guaranteed to lose purchasing power. Bitcoin offers an alternative.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             )}
           </div>
