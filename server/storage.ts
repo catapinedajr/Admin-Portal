@@ -7295,6 +7295,10 @@ Bitcoin isn't just new technology - it's a new way of thinking about money, owne
 
   // New database-driven content methods
   async getContentDay(dayIndex: number): Promise<ContentDay | undefined> {
+    // Day 0 or negative days are not valid
+    if (dayIndex <= 0) {
+      return undefined;
+    }
     const [day] = await db.select().from(contentDays).where(eq(contentDays.dayIndex, dayIndex));
     return day;
   }
@@ -7429,6 +7433,10 @@ Bitcoin isn't just new technology - it's a new way of thinking about money, owne
   }
 
   async isDayCompleted(userId: number, dayIndex: number): Promise<boolean> {
+    // Day 0 or negative days are never considered completed
+    if (dayIndex <= 0) {
+      return false;
+    }
     const progress = await this.getUserProgressByDay(userId, dayIndex);
     return progress?.dayCompleted || false;
   }
@@ -7462,6 +7470,11 @@ Bitcoin isn't just new technology - it's a new way of thinking about money, owne
   }
 
   async canAccessDay(userId: number, dayIndex: number): Promise<boolean> {
+    // Day 0 or negative days are not valid
+    if (dayIndex <= 0) {
+      return false;
+    }
+
     // Can't access future content beyond current calendar day
     const today = new Date();
     const startDate = new Date('2025-01-01'); // App start date  
@@ -7471,8 +7484,8 @@ Bitcoin isn't just new technology - it's a new way of thinking about money, owne
       return false; // Future content not available yet
     }
     
-    // Must complete all previous days before accessing this day
-    for (let prevDay = 0; prevDay < dayIndex; prevDay++) {
+    // Must complete all previous days before accessing this day (starting from Day 1)
+    for (let prevDay = 1; prevDay < dayIndex; prevDay++) {
       const isCompleted = await this.isDayCompleted(userId, prevDay);
       if (!isCompleted) {
         return false; // Previous day not completed

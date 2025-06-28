@@ -82,9 +82,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let dayIndex;
       if (req.params.dayIndex) {
         dayIndex = parseInt(req.params.dayIndex);
+        // Redirect Day 0 requests to Day 1
+        if (dayIndex <= 0) {
+          dayIndex = 1;
+        }
       } else {
         const today = new Date();
-        dayIndex = Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 365;
+        dayIndex = Math.max(1, Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 365);
       }
       const facts = await storage.getDailyContentFacts(dayIndex);
       res.json(facts);
@@ -99,9 +103,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let dayIndex;
       if (req.params.dayIndex) {
         dayIndex = parseInt(req.params.dayIndex);
+        // Redirect Day 0 requests to Day 1
+        if (dayIndex <= 0) {
+          dayIndex = 1;
+        }
       } else {
         const today = new Date();
-        dayIndex = Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 10;
+        dayIndex = Math.max(1, Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 10);
       }
       const lesson = await storage.getContentLesson(dayIndex);
       if (!lesson) {
@@ -191,7 +199,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/next-available-day/:userId", async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
-      const nextDay = await storage.getNextAvailableDay(userId);
+      let nextDay = await storage.getNextAvailableDay(userId);
+      // Ensure we never return Day 0 - minimum is Day 1
+      if (nextDay <= 0) {
+        nextDay = 1;
+      }
       res.json({ dayIndex: nextDay });
     } catch (error) {
       res.status(500).json({ message: "Failed to get next available day" });
@@ -201,11 +213,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/can-access-day/:userId/:dayIndex", async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
-      const dayIndex = parseInt(req.params.dayIndex);
+      let dayIndex = parseInt(req.params.dayIndex);
+      // Redirect Day 0 requests to Day 1
+      if (dayIndex <= 0) {
+        dayIndex = 1;
+      }
       const canAccess = await storage.canAccessDay(userId, dayIndex);
       res.json({ canAccess });
     } catch (error) {
       res.status(500).json({ message: "Failed to check day access" });
+    }
+  });
+
+  // Add the day-access endpoint that the UI expects
+  app.get("/api/day-access/:userId/:dayIndex", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      let dayIndex = parseInt(req.params.dayIndex);
+      // Redirect Day 0 requests to Day 1
+      if (dayIndex <= 0) {
+        dayIndex = 1;
+      }
+      const canAccess = await storage.canAccessDay(userId, dayIndex);
+      res.json(canAccess); // Return the boolean directly as expected by UI
+    } catch (error) {
+      res.status(500).json({ message: "Failed to check day access" });
+    }
+  });
+
+  // Add the day-completed endpoint that the UI expects
+  app.get("/api/day-completed/:userId/:dayIndex", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      let dayIndex = parseInt(req.params.dayIndex);
+      // Redirect Day 0 requests to Day 1
+      if (dayIndex <= 0) {
+        dayIndex = 1;
+      }
+      const isCompleted = await storage.isDayCompleted(userId, dayIndex);
+      res.json(isCompleted); // Return the boolean directly as expected by UI
+    } catch (error) {
+      res.status(500).json({ message: "Failed to check day completion" });
     }
   });
 
@@ -800,7 +848,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Quiz routes
   app.get('/api/quiz/daily/:dayIndex', async (req, res) => {
     try {
-      const dayIndex = parseInt(req.params.dayIndex);
+      let dayIndex = parseInt(req.params.dayIndex);
+      // Redirect Day 0 requests to Day 1
+      if (dayIndex <= 0) {
+        dayIndex = 1;
+      }
       const questions = await storage.getContentQuizzes(dayIndex);
       
       // Transform database format to UI format
