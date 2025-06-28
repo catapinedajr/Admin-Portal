@@ -3603,6 +3603,12 @@ export default function Home() {
                             <div className="text-zinc-400 text-xs mt-1">
                               Step {settlementProgress.traditional}/5 • Traditional Banking
                             </div>
+                            <div className="text-red-300 text-xs mt-2 font-medium">
+                              {settlementProgress.traditional === 2 && "Estimated: 3-5 business days"}
+                              {settlementProgress.traditional === 5 && "Total time: 3-5 business days"}
+                              {settlementProgress.traditional > 0 && settlementProgress.traditional < 2 && "Estimated: 3-5 business days"}
+                              {settlementProgress.traditional > 2 && settlementProgress.traditional < 5 && "Estimated: 3-5 business days"}
+                            </div>
                           </div>
                         </div>
                         
@@ -3617,6 +3623,10 @@ export default function Home() {
                             </div>
                             <div className="text-zinc-400 text-xs mt-1">
                               Step {settlementProgress.bitcoin}/4 • Bitcoin Network
+                            </div>
+                            <div className="text-green-300 text-xs mt-2 font-medium">
+                              {settlementProgress.bitcoin === 4 && "Total time: ~10 minutes"}
+                              {settlementProgress.bitcoin > 0 && settlementProgress.bitcoin < 4 && "Estimated: ~10 minutes"}
                             </div>
                           </div>
                         </div>
