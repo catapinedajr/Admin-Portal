@@ -324,16 +324,16 @@ export default function Home() {
   const [inflationProgress, setInflationProgress] = useState(0); // 0-6 representing years 0,1,5,10,15,20,25
   
   // Money Supply Visualization State
-  const [moneySupplyYear, setMoneySupplyYear] = useState(2024);
+  const [moneySupplyYear, setMoneySupplyYear] = useState(2025);
 
   // Money Supply Helper Functions
   const getMoneySupplyRaw = (year: number): number => {
-    // Authentic M2 Money Supply data (in trillions) - 1920 to 2024
+    // Authentic M2 Money Supply data (in trillions) - 1920 to 2025
     const dataPoints: { [key: number]: number } = {
       1920: 0.023, 1929: 0.026, 1933: 0.020, 1940: 0.040, 1945: 0.107, 
       1950: 0.117, 1960: 0.167, 1971: 0.583, 1980: 1.600, 1990: 3.200, 
       2000: 4.900, 2008: 7.500, 2010: 8.700, 2015: 12.400, 2020: 15.400, 
-      2021: 20.100, 2024: 21.000
+      2021: 20.100, 2024: 21.000, 2025: 21.200
     };
     
     // Linear interpolation between known points
@@ -347,7 +347,7 @@ export default function Home() {
         return dataPoints[years[i]] + progress * (dataPoints[years[i + 1]] - dataPoints[years[i]]);
       }
     }
-    return dataPoints[2024];
+    return dataPoints[2025];
   };
 
   const getMoneySupplyForYear = (year: number): string => {
@@ -1013,7 +1013,7 @@ export default function Home() {
           "2012: Reward dropped from 50 BTC to 25 BTC per block",
           "2016: Reward dropped from 25 BTC to 12.5 BTC per block", 
           "2020: Reward dropped from 12.5 BTC to 6.25 BTC per block",
-          "2024: Reward dropped from 6.25 BTC to 3.125 BTC per block"
+          "2024: Reward dropped from 6.25 BTC to 3.125 BTC per block (most recent)"
         ],
         visualDescription: "Imagine a giant digital clock counting down blocks. Every 210,000 blocks, an automated mechanism literally cuts the mining reward in half, like a factory automatically reducing production.",
         keyTakeaways: [
@@ -2519,17 +2519,17 @@ export default function Home() {
                     <input
                       type="range"
                       min="1920"
-                      max="2024"
+                      max="2025"
                       value={moneySupplyYear}
                       onChange={(e) => setMoneySupplyYear(parseInt(e.target.value))}
                       className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer slider"
                       style={{
-                        background: `linear-gradient(to right, #f97316 0%, #f97316 ${((moneySupplyYear - 1920) / (2024 - 1920)) * 100}%, #374151 ${((moneySupplyYear - 1920) / (2024 - 1920)) * 100}%, #374151 100%)`
+                        background: `linear-gradient(to right, #f97316 0%, #f97316 ${((moneySupplyYear - 1920) / (2025 - 1920)) * 100}%, #374151 ${((moneySupplyYear - 1920) / (2025 - 1920)) * 100}%, #374151 100%)`
                       }}
                     />
                     <div className="flex justify-between text-xs text-zinc-500">
                       <span>1920 (Gold Standard)</span>
-                      <span>2024 (Today)</span>
+                      <span>2025 (Today)</span>
                     </div>
                   </div>
 
@@ -2557,7 +2557,7 @@ export default function Home() {
                 <div className="space-y-4">
                   <h4 className="text-white font-semibold flex items-center gap-2">
                     <TrendingUp className="w-4 h-4 text-red-400" />
-                    M2 Money Supply: 104 Years of Monetary History (1920-2024)
+                    M2 Money Supply: 105 Years of Monetary History (1920-2025)
                   </h4>
                   <div className="bg-zinc-800/50 rounded-lg p-4">
                     <div className="relative h-64 w-full">
@@ -2572,7 +2572,7 @@ export default function Home() {
                         <rect width="400" height="200" fill="url(#grid)" />
                         
                         {/* Y-axis labels */}
-                        <text x="10" y="15" fill="#9ca3af" fontSize="10">$21T</text>
+                        <text x="10" y="15" fill="#9ca3af" fontSize="10">$21.2T</text>
                         <text x="10" y="55" fill="#9ca3af" fontSize="10">$15T</text>
                         <text x="10" y="95" fill="#9ca3af" fontSize="10">$10T</text>
                         <text x="10" y="135" fill="#9ca3af" fontSize="10">$5T</text>
@@ -2582,7 +2582,7 @@ export default function Home() {
                         <text x="50" y="195" fill="#9ca3af" fontSize="10">1920</text>
                         <text x="173" y="195" fill="#9ca3af" fontSize="10">1960</text>
                         <text x="295" y="195" fill="#9ca3af" fontSize="10">2000</text>
-                        <text x="370" y="195" fill="#9ca3af" fontSize="10">2024</text>
+                        <text x="370" y="195" fill="#9ca3af" fontSize="10">2025</text>
                         
                         {/* Money Supply Growth Line - Using Real Federal Reserve Data */}
                         <path
@@ -2605,13 +2605,14 @@ export default function Home() {
                               { year: 2015, m2: 12.400 },  // QE era ($12.4T)
                               { year: 2020, m2: 15.400 },  // Pre-COVID ($15.4T)
                               { year: 2021, m2: 20.100 },  // COVID peak ($20.1T)
-                              { year: 2024, m2: 21.000 }   // Current ($21T)
+                              { year: 2024, m2: 21.000 },  // 2024 ($21T)
+                              { year: 2025, m2: 21.200 }   // Current estimate ($21.2T)
                             ];
                             
                             return m2Data.map((point, index) => {
-                              // Linear time positioning: 3.077px per year (320px / 104 years)
-                              const x = 50 + ((point.year - 1920) / 104) * 320;
-                              const y = 175 - ((point.m2 - 0.023) / (21.0 - 0.023)) * 155;
+                              // Linear time positioning: 3.048px per year (320px / 105 years)
+                              const x = 50 + ((point.year - 1920) / 105) * 320;
+                              const y = 175 - ((point.m2 - 0.023) / (21.2 - 0.023)) * 155;
                               return `${index === 0 ? 'M' : 'L'} ${x},${y}`;
                             }).join(' ');
                           })()}
@@ -2759,16 +2760,16 @@ export default function Home() {
                           
                           {/* Current year indicator */}
                           <line 
-                            x1={50 + ((moneySupplyYear - 1920) / 104) * 320} 
+                            x1={50 + ((moneySupplyYear - 1920) / 105) * 320} 
                             y1="10" 
-                            x2={50 + ((moneySupplyYear - 1920) / 104) * 320} 
+                            x2={50 + ((moneySupplyYear - 1920) / 105) * 320} 
                             y2="180" 
                             stroke="#f97316" 
                             strokeWidth="2" 
                             strokeDasharray="4,4"
                           />
                           <circle 
-                            cx={50 + ((moneySupplyYear - 1920) / (2024 - 1920)) * 320} 
+                            cx={50 + ((moneySupplyYear - 1920) / (2025 - 1920)) * 320} 
                             cy={(() => {
                               // Get the actual M2 value for the selected year
                               const currentM2 = getMoneySupplyRaw(moneySupplyYear);
@@ -5475,7 +5476,7 @@ export default function Home() {
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
                     <h4 className="text-lg font-bold text-white mb-4 text-center">
-                      Real History: How $10,000 Lost 87% of Its Power (1970-2024)
+                      Real History: How $10,000 Lost 87% of Its Power (1970-2025)
                     </h4>
                     
                     <div className="bg-zinc-800/50 rounded-lg p-4">
@@ -5498,7 +5499,7 @@ export default function Home() {
                           <text x="60" y="155" fill="#9ca3af" fontSize="9">1970</text>
                           <text x="170" y="155" fill="#9ca3af" fontSize="9">1990</text>
                           <text x="280" y="155" fill="#9ca3af" fontSize="9">2010</text>
-                          <text x="360" y="155" fill="#9ca3af" fontSize="9">2024</text>
+                          <text x="360" y="155" fill="#9ca3af" fontSize="9">2025</text>
                           
                           {/* Simplified Decline Line */}
                           <path
