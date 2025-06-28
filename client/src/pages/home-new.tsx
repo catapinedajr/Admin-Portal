@@ -5259,8 +5259,8 @@ export default function Home() {
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-green-600/20 rounded-lg">
-                        <CreditCard className="w-6 h-6 text-green-400" />
+                      <div className="p-2 bg-orange-600/20 rounded-lg">
+                        <CreditCard className="w-6 h-6 text-orange-400" />
                       </div>
                       <h4 className="text-xl font-bold text-white">Master Bitcoin Transactions Without Risk</h4>
                     </div>
@@ -5272,9 +5272,9 @@ export default function Home() {
                         that could result in lost funds forever.
                       </p>
                       
-                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-green-500">
+                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-orange-500">
                         <p className="text-zinc-300 text-sm">
-                          <span className="font-semibold text-green-300">Safe Learning:</span> This simulator uses fake addresses 
+                          <span className="font-semibold text-orange-300">Safe Learning:</span> This simulator uses fake addresses 
                           and amounts so you can practice building transactions safely. Learn the entire process from address 
                           generation to confirmation tracking without any financial risk.
                         </p>
@@ -5284,7 +5284,7 @@ export default function Home() {
                         <h5 className="font-semibold text-white">Transaction Journey You'll Experience:</h5>
                         <div className="grid gap-3 sm:grid-cols-2">
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">1</div>
+                            <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">1</div>
                             <div>
                               <p className="font-medium text-white text-sm">Build Transaction</p>
                               <p className="text-zinc-400 text-xs">Set recipient address and amount</p>
@@ -5298,14 +5298,14 @@ export default function Home() {
                             </div>
                           </div>
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <div className="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-white text-xs font-bold">3</div>
+                            <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">3</div>
                             <div>
                               <p className="font-medium text-white text-sm">Sign & Broadcast</p>
                               <p className="text-zinc-400 text-xs">Authorize and send to network</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">4</div>
+                            <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">4</div>
                             <div>
                               <p className="font-medium text-white text-sm">Track Confirmations</p>
                               <p className="text-zinc-400 text-xs">Watch transaction get confirmed</p>
@@ -5322,7 +5322,7 @@ export default function Home() {
                               builder.scrollIntoView({ behavior: 'smooth' });
                             }
                           }}
-                          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
+                          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
                         >
                           <ChevronDown className="w-4 h-4 mr-2" />
                           Start Building Transaction
