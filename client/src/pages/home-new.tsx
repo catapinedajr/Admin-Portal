@@ -2910,18 +2910,18 @@ export default function Home() {
                   </div>
 
                   {/* Key Statistics Display */}
-                  <div className="grid grid-cols-2 gap-4 mt-4">
-                    <div className="bg-zinc-800/50 rounded-lg p-4 text-center">
-                      <div className="text-2xl font-bold text-orange-400 transition-all duration-700">
+                  <div className="grid grid-cols-2 gap-3 mt-4">
+                    <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
+                      <div className="text-xl font-bold text-orange-400 transition-all duration-700">
                         ${getMoneySupplyRaw(moneySupplyYear)}T
                       </div>
-                      <div className="text-zinc-400 text-sm mt-1">Total Dollars in Circulation</div>
+                      <div className="text-zinc-400 text-xs">Total Dollars in Circulation</div>
                     </div>
-                    <div className="bg-zinc-800/50 rounded-lg p-4 text-center">
-                      <div className="text-2xl font-bold text-orange-400 transition-all duration-700">
+                    <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
+                      <div className="text-xl font-bold text-orange-400 transition-all duration-700">
                         {Math.round(getMoneySupplyRaw(moneySupplyYear) / getMoneySupplyRaw(1920))}x
                       </div>
-                      <div className="text-zinc-400 text-sm mt-1">More Money Since 1920</div>
+                      <div className="text-zinc-400 text-xs">More Money Since 1920</div>
                     </div>
                   </div>
                 </div>
