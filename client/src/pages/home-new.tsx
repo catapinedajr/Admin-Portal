@@ -969,10 +969,10 @@ export default function Home() {
             title: "Core Concepts",
             paragraphs: paragraphs,
             keyPoints: [
-              "Bitcoin operates on revolutionary principles",
-              "Decentralization provides unprecedented financial freedom", 
-              "Cryptographic security ensures your funds remain safe",
-              "Global accessibility opens new possibilities for financial inclusion"
+              "Bitcoin works in a completely new way",
+              "No single control gives people freedom over their money", 
+              "Strong security keeps your money safe",
+              "Anyone with internet can use it anywhere in the world"
             ]
           }
         ];
