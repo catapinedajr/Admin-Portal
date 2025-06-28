@@ -684,15 +684,17 @@ export default function Home() {
     }>;
   } | null>(null);
   
-  const toggleFactExpansion = (factId: number) => {
-    const newExpanded = new Set(expandedFacts);
-    if (newExpanded.has(factId)) {
-      newExpanded.delete(factId);
-    } else {
-      newExpanded.add(factId);
-    }
-    setExpandedFacts(newExpanded);
-  };
+  const toggleFactExpansion = useCallback((factId: number) => {
+    setExpandedFacts(prevExpanded => {
+      const newExpanded = new Set(prevExpanded);
+      if (newExpanded.has(factId)) {
+        newExpanded.delete(factId);
+      } else {
+        newExpanded.add(factId);
+      }
+      return newExpanded;
+    });
+  }, []);
 
   const getLessonObjectives = (lessonTitle: string): string[] => {
     const objectives: Record<string, string[]> = {
@@ -2517,6 +2519,8 @@ export default function Home() {
                           const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Coins;
                           const deepDive = fact.diveDeeper || getFactDeepDive(fact.title);
                           const isExpanded = expandedFacts.has(fact.id);
+                          
+
                           
                           return (
                             <div key={fact.id} className="bg-zinc-800/50 rounded-lg overflow-hidden">
