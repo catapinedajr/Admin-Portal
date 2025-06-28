@@ -1862,16 +1862,16 @@ export default function Home() {
     {
       stage: "Address Verification", 
       title: "🎯 Verify Bitcoin Address",
-      description: "You're about to send 0.5 BTC ($21,000). Check if this address matches what you copied:",
+      description: "Compare these two addresses carefully before sending:",
       copied: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
       displayed: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w1h",
       options: [
-        { text: "Addresses match - Safe to send", correct: false },
-        { text: "Something looks wrong - I need to verify character by character", correct: true },
+        { text: "Addresses match exactly - Safe to send", correct: false },
+        { text: "Addresses are different - STOP! Potential malware attack", correct: true },
         { text: "Close enough - Send anyway", correct: false },
         { text: "First 10 characters match - Good enough", correct: false }
       ],
-      explanation: "The address was modified! The last few characters changed from 'wlh' to 'w1h'. This is a common attack where malware substitutes similar-looking characters. Always verify every character."
+      explanation: "Look at the end: Original has 'wlh' but your wallet shows 'w1h'. The 'l' changed to '1' - this is malware changing addresses! Always check every character."
     },
     {
       stage: "Scam Recognition",
@@ -4613,16 +4613,16 @@ export default function Home() {
                     {!safetyCompleted ? (
                       <div className="space-y-6">
                         {/* Progress Indicator */}
-                        <div className="flex items-center justify-between mb-6">
+                        <div className="space-y-3 mb-6">
                           <div className="flex items-center gap-3">
                             <h5 className="font-semibold text-white">Scenario {safetyStage + 1} of {safetySimulations.length}</h5>
                             <Badge variant="secondary">{safetyScore}/{safetyStage} correct</Badge>
                           </div>
-                          <div className="flex gap-1">
+                          <div className="flex flex-wrap gap-1 max-w-full">
                             {safetySimulations.map((_, index) => (
                               <div
                                 key={index}
-                                className={`w-3 h-3 rounded-full ${
+                                className={`w-3 h-3 rounded-full flex-shrink-0 ${
                                   index < safetyStage ? 'bg-green-500' : 
                                   index === safetyStage ? 'bg-orange-500' : 'bg-zinc-600'
                                 }`}
@@ -4709,13 +4709,29 @@ export default function Home() {
                             {safetyStage === 2 && (
                               <div className="space-y-4">
                                 <div className="p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
-                                  <div className="text-sm text-zinc-300 mb-3">
-                                    You're sending Bitcoin to:
+                                  <div className="space-y-4">
+                                    <div>
+                                      <div className="text-sm text-zinc-300 mb-2">
+                                        Address you copied from your friend:
+                                      </div>
+                                      <div className="text-green-300 font-mono text-xs break-all bg-zinc-800 p-2 rounded border border-green-700/50">
+                                        {safetySimulations[2]?.copied}
+                                      </div>
+                                    </div>
+                                    
+                                    <div>
+                                      <div className="text-sm text-zinc-300 mb-2">
+                                        Address your wallet is showing:
+                                      </div>
+                                      <div className="text-red-300 font-mono text-xs break-all bg-zinc-800 p-2 rounded border border-red-700/50">
+                                        {safetySimulations[2]?.displayed}
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="text-sm text-orange-300 bg-orange-900/20 p-2 rounded border border-orange-700/50">
+                                      💡 Tip: Compare these addresses character by character
+                                    </div>
                                   </div>
-                                  <div className="text-orange-300 font-mono text-xs break-all bg-zinc-800 p-2 rounded mb-3">
-                                    1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
-                                  </div>
-                                  <div className="text-sm text-zinc-300 mb-3">Your wallet shows this address to confirm:</div>
                                   <div className="space-y-2">
                                     {safetySimulations[2]?.options?.map((option, index) => (
                                       <button
