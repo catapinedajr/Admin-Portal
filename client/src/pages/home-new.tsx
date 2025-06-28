@@ -6301,9 +6301,9 @@ export default function Home() {
                         and less when it's expensive, smoothing out volatility over time.
                       </p>
                       
-                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-zinc-600">
+                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-orange-500">
                         <p className="text-zinc-300 text-sm">
-                          <span className="font-semibold text-zinc-200">Historical Advantage:</span> DCA strategies have consistently 
+                          <span className="font-semibold text-orange-300">Historical Advantage:</span> DCA strategies have consistently 
                           outperformed lump-sum investing for Bitcoin because they reduce the risk of buying at peak prices. 
                           Even during volatile periods, consistent buying builds wealth systematically.
                         </p>
@@ -6313,14 +6313,14 @@ export default function Home() {
                         <h5 className="font-semibold text-white">Test Real Historical Scenarios:</h5>
                         <div className="grid gap-3 sm:grid-cols-2">
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <Calculator className="w-5 h-5 text-blue-400" />
+                            <Calculator className="w-5 h-5 text-orange-400" />
                             <div>
                               <p className="font-medium text-white text-sm">Investment Amounts</p>
                               <p className="text-zinc-400 text-xs">$25 to $10,000 per period</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <Clock className="w-5 h-5 text-green-400" />
+                            <Clock className="w-5 h-5 text-orange-400" />
                             <div>
                               <p className="font-medium text-white text-sm">Frequencies</p>
                               <p className="text-zinc-400 text-xs">Daily, weekly, monthly, quarterly</p>
@@ -6334,7 +6334,7 @@ export default function Home() {
                             </div>
                           </div>
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <TrendingUp className="w-5 h-5 text-purple-400" />
+                            <TrendingUp className="w-5 h-5 text-orange-400" />
                             <div>
                               <p className="font-medium text-white text-sm">Real Data</p>
                               <p className="text-zinc-400 text-xs">Authentic Bitcoin price history</p>
@@ -6351,7 +6351,7 @@ export default function Home() {
                               calculator.scrollIntoView({ behavior: 'smooth' });
                             }
                           }}
-                          className="bg-zinc-700 hover:bg-zinc-600 text-white px-6 py-2"
+                          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
                         >
                           <ChevronDown className="w-4 h-4 mr-2" />
                           Start DCA Analysis
@@ -6680,7 +6680,7 @@ export default function Home() {
                     {/* Educational Insights */}
                     <Card className="bg-zinc-900 border-zinc-800">
                       <CardContent className="p-6">
-                        <h4 className="text-lg font-bold text-zinc-300 mb-4">📚 DCA Education</h4>
+                        <h4 className="text-lg font-bold text-zinc-300 mb-4">DCA Education</h4>
                         
                         <div className="grid gap-4 md:grid-cols-2">
                           <div>
