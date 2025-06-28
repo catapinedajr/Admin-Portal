@@ -2386,18 +2386,15 @@ export default function Home() {
                           ))}
                         </div>
 
-                        {/* Essential Takeaways */}
-                        <div className="bg-zinc-800/50 rounded-lg p-6 border border-zinc-700 mt-8">
-                          <h4 className="text-white font-semibold mb-6 text-lg">Why This Matters</h4>
-                          <div className="space-y-4">
-                            {getLessonTakeaways((lesson as Lesson).title).map((takeaway, idx) => (
-                              <div key={idx} className="flex items-start gap-4">
-                                <CheckCircle className="w-5 h-5 text-orange-400 mt-1 flex-shrink-0" />
-                                <span className="text-zinc-300 text-base leading-[1.7]">{cleanText(takeaway)}</span>
-                              </div>
-                            ))}
+                        {/* Why This Matters */}
+                        {(lesson as Lesson).whyItMatters && (
+                          <div className="bg-zinc-800/50 rounded-lg p-6 border border-zinc-700 mt-8">
+                            <h4 className="text-white font-semibold mb-6 text-lg">Why This Matters</h4>
+                            <div className="text-zinc-300 text-base leading-[1.7]">
+                              {cleanText((lesson as Lesson).whyItMatters)}
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
