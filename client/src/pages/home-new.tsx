@@ -314,12 +314,13 @@ export default function Home() {
   const [moreSubTab, setMoreSubTab] = useState<MoreSubTab>("store");
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   
-  // Day navigation for development testing
-  const [testDayOverride, setTestDayOverride] = useState<number | null>(null);
-  const naturalDayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24)) % 30; // Range 0-29 (0-based)
-  const baseDayIndex = testDayOverride !== null ? testDayOverride : naturalDayIndex;
-  // Convert 0-based to 1-based indexing (Day 0 becomes Day 1, etc.)
-  const currentDayIndex = Math.max(1, baseDayIndex + 1);
+  // Get current day from API
+  const { data: nextDayData } = useQuery({
+    queryKey: ['/api/next-available-day', 1],
+    queryFn: () => fetch('/api/next-available-day/1').then(res => res.json())
+  });
+  
+  const currentDayIndex = nextDayData?.dayIndex || 1;
   
   // Day access control queries
   const { data: dayAccessible = false } = useQuery({
