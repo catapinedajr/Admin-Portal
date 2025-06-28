@@ -4376,7 +4376,7 @@ export default function Home() {
                               explorer.scrollIntoView({ behavior: 'smooth' });
                             }
                           }}
-                          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
+                          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
                         >
                           <ChevronDown className="w-4 h-4 mr-2" />
                           Explore Wallet Types
@@ -7392,12 +7392,12 @@ export default function Home() {
                       </div>
 
                       {/* 24/7 Advantage */}
-                      <div className="bg-green-900/30 border border-green-700 rounded-lg p-3">
+                      <div className="bg-orange-900/30 border border-orange-700 rounded-lg p-3">
                         <div className="flex items-center space-x-2">
-                          <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-                          <span className="text-green-300 text-sm font-medium">Always Available</span>
+                          <div className="w-4 h-4 bg-orange-500 rounded-full"></div>
+                          <span className="text-orange-300 text-sm font-medium">Always Available</span>
                         </div>
-                        <p className="text-green-200 text-xs mt-1">
+                        <p className="text-orange-200 text-xs mt-1">
                           Bitcoin never sleeps. Send money anytime, anywhere.
                         </p>
                       </div>
@@ -7422,7 +7422,7 @@ export default function Home() {
                     </div>
                     
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-green-400">
+                      <div className="text-2xl font-bold text-orange-400">
                         ${(() => {
                           const networkFee = settlementAmount > 10000 ? 8 : settlementAmount > 1000 ? 5 : 2;
                           const exchangeFee = settlementAmount * 0.003;
