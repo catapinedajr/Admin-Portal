@@ -52,17 +52,21 @@ const onboardingSteps = [
           </p>
           <div className="bg-green-900/20 rounded-lg p-6 border border-green-700/30">
             <p className="text-green-200 leading-relaxed">
-              "Just 5 minutes a day. That's all it took. 
+              "Just a few minutes a day. That's all it took. 
               No cramming, no stress. Just consistent, gentle progress."
             </p>
           </div>
           <p className="text-zinc-300 leading-relaxed">
-            This experience inspired us to create HODLearn—to share this same 
-            peaceful, effective approach with others who feel overwhelmed by Bitcoin.
+            This experience inspired us to create HODLearn—combining Bitcoin's 
+            "HODL" spirit of resilience with "how to learn" simplicity.
           </p>
-          <p className="text-orange-200 text-sm">
-            You don't need to understand everything at once.
-          </p>
+          <div className="bg-orange-900/20 rounded-lg p-4 border border-orange-700/30">
+            <p className="text-orange-200 text-sm leading-relaxed">
+              Like HODLing through market storms, learning Bitcoin requires 
+              patience and persistence. But just as HODLers are rewarded, 
+              steady learners gain deep understanding.
+            </p>
+          </div>
         </div>
       </div>
     )
@@ -86,9 +90,9 @@ const onboardingSteps = [
         <div className="flex items-center justify-center gap-8 py-6">
           <div className="text-center">
             <div className="w-12 h-12 bg-blue-100/10 rounded-full flex items-center justify-center mx-auto mb-3">
-              <span className="text-blue-300 text-lg font-medium">5</span>
+              <span className="text-blue-300 text-lg font-medium">∼</span>
             </div>
-            <p className="text-blue-200 text-sm">Minutes</p>
+            <p className="text-blue-200 text-sm">Few mins</p>
           </div>
           <div className="text-zinc-500">→</div>
           <div className="text-center">
