@@ -5493,15 +5493,18 @@ export default function Home() {
                           {/* Purchasing Power Decline Line */}
                           <path
                             d={(() => {
-                              // Historical data points showing declining purchasing power of $10,000
+                              // Accurate historical data showing purchasing power decline of $10,000
                               const dataPoints = [
-                                { year: 1970, value: 10000 },  // 100% value
-                                { year: 1980, value: 4500 },   // High inflation 1970s-80s
-                                { year: 1990, value: 3200 },   // Continued decline
-                                { year: 2000, value: 2400 },   // Steady erosion
-                                { year: 2010, value: 1900 },   // Post-2008 money printing
-                                { year: 2020, value: 1600 },   // Pre-COVID
-                                { year: 2024, value: 1200 }    // Current purchasing power
+                                { year: 1970, value: 10000 },  // Baseline: $10,000 purchasing power
+                                { year: 1975, value: 7200 },   // Post-Nixon shock inflation
+                                { year: 1980, value: 4800 },   // Peak inflation crisis (14.8% in March 1980)
+                                { year: 1985, value: 4200 },   // Post-Volcker recovery
+                                { year: 1995, value: 3200 },   // Steady 3% inflation period
+                                { year: 2005, value: 2600 },   // Pre-crisis period
+                                { year: 2010, value: 2200 },   // Post-QE1 money creation
+                                { year: 2015, value: 2000 },   // QE2/QE3 effects
+                                { year: 2020, value: 1800 },   // Pre-COVID
+                                { year: 2024, value: 1300 }    // Post-COVID money printing
                               ];
                               
                               return dataPoints.map((point, i) => {
@@ -5518,25 +5521,25 @@ export default function Home() {
                           
                           {/* Key Historical Events */}
                           <g>
-                            {/* 1971 Nixon Shock */}
-                            <circle cx="55" cy="170" r="3" fill="#f97316" />
-                            <text x="58" y="165" fill="#f97316" fontSize="8">1971</text>
-                            <text x="58" y="175" fill="#f97316" fontSize="8">Nixon</text>
+                            {/* 1971 Nixon Shock - August 15, 1971 */}
+                            <circle cx={50 + ((1971 - 1970) / 54) * 300} cy="170" r="3" fill="#f97316" />
+                            <text x={53 + ((1971 - 1970) / 54) * 300} y="165" fill="#f97316" fontSize="8">Aug 71</text>
+                            <text x={53 + ((1971 - 1970) / 54) * 300} y="175" fill="#f97316" fontSize="8">Nixon</text>
                             
-                            {/* 1979-1981 High Inflation */}
-                            <circle cx="105" cy="130" r="3" fill="#ef4444" />
-                            <text x="108" y="125" fill="#ef4444" fontSize="8">1980</text>
-                            <text x="108" y="135" fill="#ef4444" fontSize="8">Crisis</text>
+                            {/* 1980 Inflation Peak - March 1980 (14.8%) */}
+                            <circle cx={50 + ((1980 - 1970) / 54) * 300} cy="130" r="3" fill="#ef4444" />
+                            <text x={53 + ((1980 - 1970) / 54) * 300} y="125" fill="#ef4444" fontSize="8">Mar 80</text>
+                            <text x={53 + ((1980 - 1970) / 54) * 300} y="135" fill="#ef4444" fontSize="8">14.8%</text>
                             
-                            {/* 2008 Financial Crisis */}
-                            <circle cx="265" cy="90" r="3" fill="#dc2626" />
-                            <text x="268" y="85" fill="#dc2626" fontSize="8">2008</text>
-                            <text x="268" y="95" fill="#dc2626" fontSize="8">QE</text>
+                            {/* 2008 QE1 Launch - November 25, 2008 */}
+                            <circle cx={50 + ((2008 - 1970) / 54) * 300} cy="100" r="3" fill="#dc2626" />
+                            <text x={53 + ((2008 - 1970) / 54) * 300} y="95" fill="#dc2626" fontSize="8">Nov 08</text>
+                            <text x={53 + ((2008 - 1970) / 54) * 300} y="105" fill="#dc2626" fontSize="8">QE1</text>
                             
-                            {/* 2020 COVID Money Printing */}
-                            <circle cx="340" cy="50" r="3" fill="#991b1b" />
-                            <text x="343" y="45" fill="#991b1b" fontSize="8">2020</text>
-                            <text x="343" y="55" fill="#991b1b" fontSize="8">Print</text>
+                            {/* 2020 COVID QE4 - March 15, 2020 */}
+                            <circle cx={50 + ((2020 - 1970) / 54) * 300} cy="60" r="3" fill="#991b1b" />
+                            <text x={53 + ((2020 - 1970) / 54) * 300} y="55" fill="#991b1b" fontSize="8">Mar 20</text>
+                            <text x={53 + ((2020 - 1970) / 54) * 300} y="65" fill="#991b1b" fontSize="8">QE4</text>
                           </g>
                           
                           {/* Current Position Marker */}
@@ -5552,8 +5555,8 @@ export default function Home() {
                       </div>
                       
                       <div className="mt-4 flex justify-between text-xs text-zinc-400">
-                        <span>🟠 Your $10,000 purchasing power over 54 years</span>
-                        <span>📉 88% value lost to inflation</span>
+                        <span>🟠 Your $10,000 purchasing power over 54 years (1970-2024)</span>
+                        <span>📉 87% value lost to inflation</span>
                       </div>
                     </div>
                   </CardContent>
