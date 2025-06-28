@@ -2152,30 +2152,59 @@ export default function Home() {
     setSelectedOption(optionIndex);
     setShowResult(true);
     
-    // Calculate score based on stage
+    // Calculate score based on stage with comprehensive validation
     let correct = false;
     const simulation = safetySimulations[safetyStage];
     
+    if (!simulation) {
+      console.error(`Invalid stage: ${safetyStage}`);
+      return;
+    }
+    
     try {
-      if (safetyStage === 0 && simulation.emails && simulation.emails[optionIndex]) {
-        // Phishing detection - select the phishing email
-        correct = simulation.emails[optionIndex].isPhishing === true;
-      } else if (safetyStage === 3 && simulation.scenarios && simulation.scenarios[optionIndex]) {
-        // Scam recognition - select the scam message
-        correct = simulation.scenarios[optionIndex].isScam === true;
-      } else if (simulation.options && simulation.options[optionIndex]) {
-        // All other stages use options structure
-        const option = simulation.options[optionIndex] as any;
-        if (safetyStage === 2) {
-          // Address verification stage
-          correct = option.correct === true;
-        } else {
-          // All other option-based stages (seed phrase, exchange, wifi, downloads, social, hardware, backup, fees, recovery)
-          correct = option.safe === true;
-        }
+      switch (safetyStage) {
+        case 0: // Phishing Detection
+          if (simulation.emails && simulation.emails[optionIndex]) {
+            correct = simulation.emails[optionIndex].isPhishing === true;
+          }
+          break;
+          
+        case 2: // Address Verification
+          if (simulation.options && simulation.options[optionIndex]) {
+            const option = simulation.options[optionIndex];
+            correct = 'correct' in option ? option.correct === true : false;
+          }
+          break;
+          
+        case 3: // Scam Recognition
+          if (simulation.scenarios && simulation.scenarios[optionIndex]) {
+            correct = simulation.scenarios[optionIndex].isScam === false;
+          }
+          break;
+          
+        case 1:  // Seed Phrase Security
+        case 4:  // Exchange Security  
+        case 5:  // WiFi Security
+        case 6:  // Software Downloads
+        case 7:  // Social Engineering
+        case 8:  // Hardware Wallet
+        case 9:  // Backup Testing
+        case 10: // Transaction Fees
+        case 11: // Recovery Scams
+          if (simulation.options && simulation.options[optionIndex]) {
+            const option = simulation.options[optionIndex];
+            correct = 'safe' in option ? option.safe === true : false;
+          }
+          break;
+          
+        default:
+          console.error(`Unhandled stage: ${safetyStage}`);
+          break;
       }
+      
+      console.log(`Stage ${safetyStage} (${simulation.stage}): Option ${optionIndex} = ${correct ? 'CORRECT' : 'WRONG'}`);
     } catch (error) {
-      console.log('Safety simulation error:', error);
+      console.error('Safety simulation validation error:', error, simulation);
       correct = false;
     }
     
