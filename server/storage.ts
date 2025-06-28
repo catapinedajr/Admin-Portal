@@ -7447,14 +7447,14 @@ Bitcoin isn't just new technology - it's a new way of thinking about money, owne
   async getNextAvailableDay(userId: number): Promise<number> {
     const completedDays = await this.getCompletedDays(userId);
     
-    // Find the first incomplete day starting from 0
-    for (let day = 0; day < 30; day++) {
+    // Find the first incomplete day starting from 1
+    for (let day = 1; day <= 180; day++) {
       if (!completedDays.includes(day)) {
         return day;
       }
     }
     
-    // If all days 0-29 are complete, return current calendar day but cap at 29
+    // If all days 1-180 are complete, return current calendar day but cap at 180
     const today = new Date();
     const startDate = new Date('2025-01-01'); // App start date
     const daysSinceStart = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));

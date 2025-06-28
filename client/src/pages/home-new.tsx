@@ -313,8 +313,8 @@ export default function Home() {
     queryFn: () => fetch(`/api/day-access/1/${currentDayIndex}`).then(res => res.json())
   });
 
-  // Check if day is locked by subscription tier (Days 0-6 free, 7+ premium)
-  const isDayLockedBySubscription = currentDayIndex > 6 && !isPremiumTier;
+  // Check if day is locked by subscription tier (Days 1-7 free, 8+ premium)
+  const isDayLockedBySubscription = currentDayIndex > 7 && !isPremiumTier;
   
   const { data: dayCompleted = false } = useQuery({
     queryKey: ['/api/day-completed', 1, currentDayIndex],
@@ -326,7 +326,7 @@ export default function Home() {
     queryFn: () => fetch('/api/next-available-day/1').then(res => res.json())
   });
   
-  const nextAvailableDay = nextAvailableDayResponse?.dayIndex ?? 0;
+  const nextAvailableDay = nextAvailableDayResponse?.dayIndex ?? 1;
 
   // Mark day as completed mutation
   const markDayCompletedMutation = useMutation({

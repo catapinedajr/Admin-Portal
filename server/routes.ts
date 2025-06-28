@@ -801,8 +801,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/quiz/daily/:dayIndex', async (req, res) => {
     try {
       const dayIndex = parseInt(req.params.dayIndex);
-      const questions = await storage.getDailyQuizQuestions(dayIndex);
-      res.json(questions);
+      const questions = await storage.getContentQuizzes(dayIndex);
+      
+      // Transform database format to UI format
+      const transformedQuestions = questions.map(q => {
+        let options;
+        try {
+          // Handle both JSON string and JSON object
+          options = typeof q.options === 'string' ? JSON.parse(q.options) : q.options;
+        } catch (error) {
+          console.error('Error parsing options:', error, 'Raw options:', q.options);
+          options = ['Option A', 'Option B', 'Option C', 'Option D']; // Fallback
+        }
+        
+        return {
+          id: q.id,
+          dayIndex: dayIndex,
+          question: q.question,
+          optionA: options[0] || '',
+          optionB: options[1] || '',
+          optionC: options[2] || '',
+          optionD: options[3] || '',
+          correctAnswer: ['A', 'B', 'C', 'D'][q.correctAnswer] || 'A',
+          explanation: q.explanation,
+          category: 'Fundamentals', // Default category since not in new schema
+          difficulty: 'beginner' // Default difficulty since not in new schema
+        };
+      });
+      
+      res.json(transformedQuestions);
     } catch (error) {
       console.error('Error fetching daily quiz questions:', error);
       res.status(500).json({ message: "Failed to fetch quiz questions" });
