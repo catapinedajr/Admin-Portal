@@ -3056,6 +3056,16 @@ export default function Home() {
                       </svg>
                     </div>
                     
+                    {/* Emphasis Text */}
+                    <div className="text-center mt-4 p-4 bg-zinc-800/30 rounded-lg border border-orange-400/20">
+                      <div className="text-2xl font-bold">
+                        <span className="text-zinc-300">THIS is </span>
+                        <span className="text-orange-400 tracking-wider">INFLATION</span>
+                      </div>
+                      <p className="text-zinc-400 text-sm mt-2">
+                        More dollars in circulation = each dollar is worth less
+                      </p>
+                    </div>
 
                   </div>
                 </div>
