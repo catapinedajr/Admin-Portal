@@ -12,32 +12,7 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const dailyFacts = pgTable("daily_facts", {
-  id: serial("id").primaryKey(),
-  title: text("title").notNull(),
-  content: text("content").notNull(),
-  category: text("category").notNull(),
-  icon: text("icon").notNull(),
-  dayIndex: integer("day_index").notNull(), // 0-based index for cycling through facts
-  diveDeeper: json("dive_deeper").$type<{
-    explanation: string;
-    examples: string[];
-    visualDescription: string;
-    keyTakeaways: string[];
-  }>(),
-});
 
-export const lessons = pgTable("lessons", {
-  id: serial("id").primaryKey(),
-  title: text("title").notNull(),
-  content: text("content").notNull(),
-  summary: text("summary").notNull(),
-  estimatedReadTime: integer("estimated_read_time").notNull(), // in minutes
-  dayIndex: integer("day_index").notNull(),
-  imageUrl: text("image_url"),
-  keyPoints: json("key_points").$type<string[]>(),
-  whyItMatters: text("why_it_matters"),
-});
 
 export const userProgress = pgTable("user_progress", {
   id: serial("id").primaryKey(),
@@ -119,20 +94,6 @@ export const bitcoinPrice = pgTable("bitcoin_price", {
   dominance: decimal("dominance", { precision: 5, scale: 2 }),
 });
 
-export const quizQuestions = pgTable("quiz_questions", {
-  id: serial("id").primaryKey(),
-  dayIndex: integer("day_index").notNull(),
-  question: text("question").notNull(),
-  optionA: text("option_a").notNull(),
-  optionB: text("option_b").notNull(),
-  optionC: text("option_c").notNull(),
-  optionD: text("option_d").notNull(),
-  correctAnswer: text("correct_answer").notNull(), // 'A', 'B', 'C', or 'D'
-  explanation: text("explanation").notNull(),
-  category: text("category").notNull(),
-  difficulty: text("difficulty").notNull(), // 'beginner', 'intermediate', 'advanced'
-});
-
 export const userQuizAnswers = pgTable("user_quiz_answers", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
@@ -141,49 +102,6 @@ export const userQuizAnswers = pgTable("user_quiz_answers", {
   isCorrect: boolean("is_correct").notNull(),
   answeredAt: timestamp("answered_at").defaultNow().notNull(),
   date: text("date").notNull(), // YYYY-MM-DD format
-});
-
-export const deepDiveTopics = pgTable("deep_dive_topics", {
-  id: serial("id").primaryKey(),
-  dayIndex: integer("day_index").notNull(),
-  title: text("title").notNull(),
-  subtitle: text("subtitle").notNull(),
-  estimatedReadTime: text("estimated_read_time").notNull(),
-  difficulty: text("difficulty").notNull(), // beginner, intermediate, advanced
-  category: text("category").notNull(),
-  content: text("content").notNull(),
-  keyTakeaways: text("key_takeaways").array().notNull(),
-  furtherReading: text("further_reading").array().notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const weeklyTopics = pgTable("weekly_topics", {
-  id: serial("id").primaryKey(),
-  weekNumber: integer("week_number").notNull().unique(), // Week number since app launch
-  title: text("title").notNull(),
-  description: text("description").notNull(),
-  content: json("content").notNull(), // Array of sections with title, content, examples
-  estimatedReadTime: integer("estimated_read_time").notNull().default(30), // in minutes
-  relatedDayIndex: integer("related_day_index"), // Links to daily lesson topics
-  category: text("category").notNull(),
-  difficulty: text("difficulty").notNull().default("intermediate"),
-  keyTakeaways: text("key_takeaways").array().notNull(), // Array of strings
-  practicalApplications: text("practical_applications").array(), // Array of real-world examples
-  quizQuestions: json("quiz_questions"), // Array of {question, options, correctAnswer, explanation}
-  furtherReading: json("further_reading"), // Array of {title, url, description}
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-});
-
-export const userWeeklyProgress = pgTable("user_weekly_progress", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
-  weekNumber: integer("week_number").notNull(),
-  startedAt: timestamp("started_at").notNull().defaultNow(),
-  completedAt: timestamp("completed_at"),
-  currentSection: integer("current_section").notNull().default(0), // Which section they're on
-  totalSections: integer("total_sections").notNull(),
-  progressPercentage: integer("progress_percentage").notNull().default(0),
-  bookmarked: boolean("bookmarked").notNull().default(false),
 });
 
 // New Content Management Tables for 180-day curriculum
@@ -257,13 +175,7 @@ export const insertUserSchema = createInsertSchema(users).omit({
   createdAt: true,
 });
 
-export const insertDailyFactSchema = createInsertSchema(dailyFacts).omit({
-  id: true,
-});
 
-export const insertLessonSchema = createInsertSchema(lessons).omit({
-  id: true,
-});
 
 export const insertUserProgressSchema = createInsertSchema(userProgress).omit({
   id: true,
@@ -292,28 +204,9 @@ export const insertBitcoinPriceSchema = createInsertSchema(bitcoinPrice).omit({
   timestamp: true,
 });
 
-export const insertQuizQuestionSchema = createInsertSchema(quizQuestions).omit({
-  id: true,
-});
-
 export const insertUserQuizAnswerSchema = createInsertSchema(userQuizAnswers).omit({
   id: true,
   answeredAt: true,
-});
-
-export const insertDeepDiveTopicSchema = createInsertSchema(deepDiveTopics).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertWeeklyTopicSchema = createInsertSchema(weeklyTopics).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertUserWeeklyProgressSchema = createInsertSchema(userWeeklyProgress).omit({
-  id: true,
-  startedAt: true,
 });
 
 // Insert schemas for new content tables
@@ -350,10 +243,6 @@ export const insertContentMetadataSchema = createInsertSchema(contentMetadata).o
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
-export type DailyFact = typeof dailyFacts.$inferSelect;
-export type InsertDailyFact = z.infer<typeof insertDailyFactSchema>;
-export type Lesson = typeof lessons.$inferSelect;
-export type InsertLesson = z.infer<typeof insertLessonSchema>;
 export type UserProgress = typeof userProgress.$inferSelect;
 export type InsertUserProgress = z.infer<typeof insertUserProgressSchema>;
 export type KnowledgeArea = typeof knowledgeAreas.$inferSelect;
@@ -366,16 +255,8 @@ export type SovereignAdoption = typeof sovereignAdoption.$inferSelect;
 export type InsertSovereignAdoption = z.infer<typeof insertSovereignAdoptionSchema>;
 export type BitcoinPrice = typeof bitcoinPrice.$inferSelect;
 export type InsertBitcoinPrice = z.infer<typeof insertBitcoinPriceSchema>;
-export type QuizQuestion = typeof quizQuestions.$inferSelect;
-export type InsertQuizQuestion = z.infer<typeof insertQuizQuestionSchema>;
 export type UserQuizAnswer = typeof userQuizAnswers.$inferSelect;
 export type InsertUserQuizAnswer = z.infer<typeof insertUserQuizAnswerSchema>;
-export type DeepDiveTopic = typeof deepDiveTopics.$inferSelect;
-export type InsertDeepDiveTopic = z.infer<typeof insertDeepDiveTopicSchema>;
-export type WeeklyTopic = typeof weeklyTopics.$inferSelect;
-export type InsertWeeklyTopic = z.infer<typeof insertWeeklyTopicSchema>;
-export type UserWeeklyProgress = typeof userWeeklyProgress.$inferSelect;
-export type InsertUserWeeklyProgress = z.infer<typeof insertUserWeeklyProgressSchema>;
 
 // Types for new content tables
 export type ContentDay = typeof contentDays.$inferSelect;
