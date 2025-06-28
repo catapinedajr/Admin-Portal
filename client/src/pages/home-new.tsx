@@ -4838,27 +4838,67 @@ export default function Home() {
                                       {safetySimulations[safetyStage]?.explanation || 'Good job identifying the security threat!'}
                                     </p>
                                     
-                                    {/* Address Verification Highlight */}
+                                    {/* Educational Explanations for Correct Answers */}
+                                    {safetyStage === 0 && (
+                                      <div className="text-green-200 text-xs mt-2">
+                                        <strong>Why:</strong> Phishing emails copy real designs but use fake domains. Always check the sender's email address carefully.
+                                      </div>
+                                    )}
+                                    {safetyStage === 1 && (
+                                      <div className="text-green-200 text-xs mt-2">
+                                        <strong>Why:</strong> Never share your seed phrase with anyone. Real support never asks for it. This is the #1 way Bitcoin gets stolen.
+                                      </div>
+                                    )}
                                     {safetyStage === 2 && (
                                       <div className="space-y-2">
                                         <div className="text-green-200 text-xs font-medium">The difference was subtle but critical:</div>
-                                        <div className="space-y-1">
-                                          <div className="text-xs">
-                                            <span className="text-zinc-400">Copied: </span>
-                                            <span className="font-mono text-green-300">
-                                              bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w<span className="bg-green-500 text-black px-1 rounded">l</span>h
-                                            </span>
-                                          </div>
-                                          <div className="text-xs">
-                                            <span className="text-zinc-400">Wallet: </span>
-                                            <span className="font-mono text-red-300">
-                                              bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w<span className="bg-red-500 text-white px-1 rounded">1</span>h
-                                            </span>
-                                          </div>
+                                        <div className="text-xs font-mono bg-black/30 p-2 rounded">
+                                          <div>Copied: ...w<span className="bg-green-500 text-black px-1">l</span>h</div>
+                                          <div>Wallet: ...w<span className="bg-red-500 text-white px-1">1</span>h</div>
                                         </div>
                                         <div className="text-green-200 text-xs">
-                                          The "l" (lowercase L) was changed to "1" (number one) - a classic attack!
+                                          Malware changed "l" to "1" - this attack steals millions annually.
                                         </div>
+                                      </div>
+                                    )}
+                                    {safetyStage === 4 && (
+                                      <div className="text-green-200 text-xs mt-2">
+                                        <strong>Why:</strong> Public WiFi can be monitored. Use your phone's data or VPN for sensitive Bitcoin activities.
+                                      </div>
+                                    )}
+                                    {safetyStage === 5 && (
+                                      <div className="text-green-200 text-xs mt-2">
+                                        <strong>Why:</strong> Only download wallets from official sources. Fake wallets steal your Bitcoin immediately.
+                                      </div>
+                                    )}
+                                    {safetyStage === 6 && (
+                                      <div className="text-green-200 text-xs mt-2">
+                                        <strong>Why:</strong> Scammers impersonate celebrities and officials. Real Bitcoin giveaways don't exist.
+                                      </div>
+                                    )}
+                                    {safetyStage === 7 && (
+                                      <div className="text-green-200 text-xs mt-2">
+                                        <strong>Why:</strong> Used hardware wallets could be tampered with. Always buy new from official manufacturers.
+                                      </div>
+                                    )}
+                                    {safetyStage === 8 && (
+                                      <div className="text-green-200 text-xs mt-2">
+                                        <strong>Why:</strong> Test your backup by restoring it on another device. Unreadable backups = lost Bitcoin.
+                                      </div>
+                                    )}
+                                    {safetyStage === 9 && (
+                                      <div className="text-green-200 text-xs mt-2">
+                                        <strong>Why:</strong> 100x higher fees suggests malicious software. Normal fees are $1-5, not $200.
+                                      </div>
+                                    )}
+                                    {safetyStage === 10 && (
+                                      <div className="text-green-200 text-xs mt-2">
+                                        <strong>Why:</strong> Recovery services are usually scams. If you have your seed phrase, you can recover yourself.
+                                      </div>
+                                    )}
+                                    {safetyStage === 11 && (
+                                      <div className="text-green-200 text-xs mt-2">
+                                        <strong>Why:</strong> These are all common scam tactics. Real Bitcoin services don't pressure you or ask for payments upfront.
                                       </div>
                                     )}
                                   </div>
@@ -4872,27 +4912,67 @@ export default function Home() {
                                       {safetySimulations[safetyStage]?.explanation || 'This could have put your Bitcoin at risk. Review the training materials above.'}
                                     </p>
                                     
-                                    {/* Address Verification Highlight for wrong answers */}
+                                    {/* Educational Explanations for Wrong Answers */}
+                                    {safetyStage === 0 && (
+                                      <div className="text-red-200 text-xs mt-2">
+                                        <strong>Risk:</strong> You would have entered your login details on a fake site, giving attackers full account access.
+                                      </div>
+                                    )}
+                                    {safetyStage === 1 && (
+                                      <div className="text-red-200 text-xs mt-2">
+                                        <strong>Risk:</strong> Sharing your seed phrase = instant Bitcoin theft. This is how most people lose their coins.
+                                      </div>
+                                    )}
                                     {safetyStage === 2 && (
                                       <div className="space-y-2">
                                         <div className="text-red-200 text-xs font-medium">Here's what you missed:</div>
-                                        <div className="space-y-1">
-                                          <div className="text-xs">
-                                            <span className="text-zinc-400">Copied: </span>
-                                            <span className="font-mono text-green-300">
-                                              bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w<span className="bg-yellow-500 text-black px-1 rounded">l</span>h
-                                            </span>
-                                          </div>
-                                          <div className="text-xs">
-                                            <span className="text-zinc-400">Wallet: </span>
-                                            <span className="font-mono text-red-300">
-                                              bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w<span className="bg-yellow-500 text-black px-1 rounded">1</span>h
-                                            </span>
-                                          </div>
+                                        <div className="text-xs font-mono bg-black/30 p-2 rounded">
+                                          <div>Copied: ...w<span className="bg-yellow-500 text-black px-1">l</span>h</div>
+                                          <div>Wallet: ...w<span className="bg-yellow-500 text-black px-1">1</span>h</div>
                                         </div>
                                         <div className="text-red-200 text-xs">
-                                          Malware changed "l" to "1" - your Bitcoin would have been stolen! Always check character by character.
+                                          Your Bitcoin would be stolen! Always verify every character.
                                         </div>
+                                      </div>
+                                    )}
+                                    {safetyStage === 4 && (
+                                      <div className="text-red-200 text-xs mt-2">
+                                        <strong>Risk:</strong> Public WiFi can be monitored. Attackers could see your private keys or passwords.
+                                      </div>
+                                    )}
+                                    {safetyStage === 5 && (
+                                      <div className="text-red-200 text-xs mt-2">
+                                        <strong>Risk:</strong> Fake wallets immediately steal your Bitcoin. Only use official sources like company websites.
+                                      </div>
+                                    )}
+                                    {safetyStage === 6 && (
+                                      <div className="text-red-200 text-xs mt-2">
+                                        <strong>Risk:</strong> You would send Bitcoin to scammers. No legitimate person gives away free Bitcoin.
+                                      </div>
+                                    )}
+                                    {safetyStage === 7 && (
+                                      <div className="text-red-200 text-xs mt-2">
+                                        <strong>Risk:</strong> Used devices could have hidden malware to steal your Bitcoin. Always buy new.
+                                      </div>
+                                    )}
+                                    {safetyStage === 8 && (
+                                      <div className="text-red-200 text-xs mt-2">
+                                        <strong>Risk:</strong> If your backup doesn't work, your Bitcoin is gone forever. Always test it first.
+                                      </div>
+                                    )}
+                                    {safetyStage === 9 && (
+                                      <div className="text-red-200 text-xs mt-2">
+                                        <strong>Risk:</strong> You would pay $200 for a $2 transaction. This wallet is likely stealing from you.
+                                      </div>
+                                    )}
+                                    {safetyStage === 10 && (
+                                      <div className="text-red-200 text-xs mt-2">
+                                        <strong>Risk:</strong> You would give scammers 50% of your Bitcoin for "help" you don't actually need.
+                                      </div>
+                                    )}
+                                    {safetyStage === 11 && (
+                                      <div className="text-red-200 text-xs mt-2">
+                                        <strong>Risk:</strong> You would fall for one of the most common Bitcoin scams. Stay skeptical of offers.
                                       </div>
                                     )}
                                   </div>
