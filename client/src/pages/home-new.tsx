@@ -2520,6 +2520,9 @@ export default function Home() {
                           const deepDive = fact.diveDeeper || getFactDeepDive(fact.title);
                           const isExpanded = expandedFacts.has(fact.id);
                           
+                          // Force show button for debugging
+                          console.log(`Fact: ${fact.title} | deepDive: ${!!deepDive} | Will render button: ${!!deepDive}`);
+                          
 
                           
 
@@ -2533,7 +2536,7 @@ export default function Home() {
                                 <div className="flex-1">
                                   <div className="flex items-center justify-between mb-2">
                                     <h4 className="font-semibold text-white">{fact.title}</h4>
-                                    {deepDive && (
+                                    {(deepDive || true) && (
                                       <Button
                                         variant="ghost"
                                         size="sm"
