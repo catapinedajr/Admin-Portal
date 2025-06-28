@@ -63,6 +63,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Simple test route
+  app.post("/api/test-generation/:dayIndex", async (req, res) => {
+    try {
+      const dayIndex = parseInt(req.params.dayIndex);
+      console.log(`📍 Test route hit for day ${dayIndex}`);
+      res.json({ message: `Test successful for Day ${dayIndex}`, dayIndex });
+    } catch (error) {
+      console.error('Test route error:', error);
+      res.status(500).json({ message: "Test route failed", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Content generation route (for testing)
+  app.post("/api/generate-content/:dayIndex", async (req, res) => {
+    try {
+      const dayIndex = parseInt(req.params.dayIndex);
+      if (isNaN(dayIndex) || dayIndex < 1 || dayIndex > 180) {
+        return res.status(400).json({ message: "Invalid day index. Must be 1-180." });
+      }
+
+      console.log(`🤖 Starting content generation for Day ${dayIndex}...`);
+      
+      // Test the import first
+      const { generateDayContent, saveDayContentToDatabase } = await import("./content-generator");
+      console.log(`✓ Content generator imported successfully`);
+      
+      // Generate content using OpenAI
+      const content = await generateDayContent(dayIndex);
+      console.log(`✓ Content generated:`, { fact: content.dailyFact.title, lesson: content.lesson.title });
+      
+      // Save to database
+      await saveDayContentToDatabase(dayIndex, content);
+      console.log(`✓ Content saved to database`);
+      
+      res.json({ 
+        message: `Content generated successfully for Day ${dayIndex}`,
+        content: content
+      });
+    } catch (error) {
+      console.error('Content generation error:', error);
+      res.status(500).json({ 
+        message: "Failed to generate content", 
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
   // Get current user (default user for simplicity)
   app.get("/api/user", async (req, res) => {
     try {
