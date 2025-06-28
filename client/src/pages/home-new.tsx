@@ -6288,8 +6288,8 @@ export default function Home() {
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-purple-600/20 rounded-lg">
-                        <BarChart3 className="w-6 h-6 text-purple-400" />
+                      <div className="p-2 bg-orange-600/20 rounded-lg">
+                        <BarChart3 className="w-6 h-6 text-orange-400" />
                       </div>
                       <h4 className="text-xl font-bold text-white">Remove Emotion and Timing Risk from Investing</h4>
                     </div>
@@ -6704,9 +6704,9 @@ export default function Home() {
                           </div>
                         </div>
                         
-                        <div className="mt-4 p-3 bg-purple-600/20 rounded-lg border border-purple-500/30">
-                          <p className="text-purple-200 text-sm">
-                            <GraduationCap className="w-4 h-4 inline mr-1 text-purple-300" />
+                        <div className="mt-4 p-3 bg-orange-600/20 rounded-lg border border-orange-500/30">
+                          <p className="text-orange-200 text-sm">
+                            <GraduationCap className="w-4 h-4 inline mr-1 text-orange-300" />
                             <strong>Pro Tip:</strong> The best DCA strategy is one you can stick to consistently. 
                             Start with an amount that won't strain your budget and increase it as your income grows.
                           </p>
@@ -7110,8 +7110,8 @@ export default function Home() {
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-cyan-600/20 rounded-lg">
-                        <Clock className="w-6 h-6 text-cyan-400" />
+                      <div className="p-2 bg-orange-600/20 rounded-lg">
+                        <Clock className="w-6 h-6 text-orange-400" />
                       </div>
                       <h4 className="text-xl font-bold text-white">Break Free from Banking's Weekend Prison</h4>
                     </div>
@@ -7123,9 +7123,9 @@ export default function Home() {
                         payments 24/7/365 without asking permission from intermediaries.
                       </p>
                       
-                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-cyan-500">
+                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-orange-500">
                         <p className="text-zinc-300 text-sm">
-                          <span className="font-semibold text-cyan-300">The Time Tax:</span> International wire transfers can take 3-5 business days 
+                          <span className="font-semibold text-orange-300">The Time Tax:</span> International wire transfers can take 3-5 business days 
                           and cost $15-50 per transaction. Bitcoin settles globally in 10 minutes for under $5, regardless of amount or destination. 
                           The old system profits from delays - Bitcoin profits from speed.
                         </p>
@@ -7173,7 +7173,7 @@ export default function Home() {
                               simulator.scrollIntoView({ behavior: 'smooth' });
                             }
                           }}
-                          className="bg-cyan-600 hover:bg-cyan-700 text-white px-6 py-2"
+                          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
                         >
                           <ChevronDown className="w-4 h-4 mr-2" />
                           Compare Settlement Speeds
