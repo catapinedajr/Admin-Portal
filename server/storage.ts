@@ -586,33 +586,301 @@ export class MemStorage implements IStorage {
       }
     ];
 
-    // Add more facts for days 17-29 to complete the 30-day curriculum
-    const additionalFactDays = [];
-    for (let day = 17; day <= 29; day++) {
-      additionalFactDays.push(
-        {
-          title: "Sound Money Principles",
-          content: "Bitcoin returns to sound money principles that reward saving and long-term thinking, unlike fiat currencies that encourage consumption.",
-          category: "Economics",
-          icon: "coins",
-          dayIndex: day
-        },
-        {
-          title: "Financial Sovereignty",
-          content: "Bitcoin enables true financial sovereignty where individuals control their wealth without depending on banks or governments.",
-          category: "Freedom",
-          icon: "crown",
-          dayIndex: day
-        },
-        {
-          title: "Global Currency",
-          content: "Bitcoin operates as the first truly global currency, working the same way everywhere without borders or discrimination.",
-          category: "Global",
-          icon: "earth",
-          dayIndex: day
-        }
-      );
-    }
+    // Days 17-29: Advanced Bitcoin concepts with unique facts for each day
+    const advancedFacts = [
+      // Day 17: Digital Signatures and Cryptographic Proof
+      {
+        title: "Digital Signatures Prove Ownership",
+        content: "Bitcoin uses digital signatures to mathematically prove that transactions are authorized by the real owner without revealing private keys.",
+        category: "Cryptography",
+        icon: "signature",
+        dayIndex: 17
+      },
+      {
+        title: "Programmable Money Rules",
+        content: "Bitcoin's monetary policy is written in code that automatically enforces rules, removing human discretion and political influence.",
+        category: "Automation",
+        icon: "code",
+        dayIndex: 17
+      },
+      {
+        title: "Network Effects Create Value",
+        content: "As more people use Bitcoin, it becomes exponentially more valuable and useful for everyone in the network.",
+        category: "Network Effects",
+        icon: "network",
+        dayIndex: 17
+      },
+
+      // Day 18: Borderless and Neutral Money
+      {
+        title: "Borderless Money System",
+        content: "Bitcoin works identically everywhere in the world without exchange rates, international fees, or currency conversion complexities.",
+        category: "Global Finance",
+        icon: "globe-2",
+        dayIndex: 18
+      },
+      {
+        title: "Deflationary Asset Properties",
+        content: "Bitcoin tends to gain purchasing power over time as demand increases while supply remains fixed, unlike inflationary currencies.",
+        category: "Deflation",
+        icon: "trending-up",
+        dayIndex: 18
+      },
+      {
+        title: "Monetary Sovereignty for Individuals",
+        content: "Bitcoin gives every person the monetary powers previously reserved for governments and central banks.",
+        category: "Sovereignty",
+        icon: "user-crown",
+        dayIndex: 18
+      },
+
+      // Day 19: Economic Freedom and Technology
+      {
+        title: "Economic Freedom Through Technology",
+        content: "Bitcoin uses mathematics and cryptography to create economic freedom that doesn't depend on politics or geography.",
+        category: "Freedom Tech",
+        icon: "unlock",
+        dayIndex: 19
+      },
+      {
+        title: "Store of Value for the Digital Age",
+        content: "Bitcoin serves as digital gold that preserves wealth while offering superior portability and verifiability.",
+        category: "Digital Gold",
+        icon: "vault",
+        dayIndex: 19
+      },
+      {
+        title: "Neutral Money for Everyone",
+        content: "Bitcoin treats all participants equally according to mathematical rules rather than human biases or political preferences.",
+        category: "Neutrality",
+        icon: "balance-scale",
+        dayIndex: 19
+      },
+
+      // Day 20: Security and Incentives
+      {
+        title: "Incentive Alignment Creates Security",
+        content: "Bitcoin's security comes from aligning economic incentives so protecting the network is profitable while attacking is expensive.",
+        category: "Game Theory",
+        icon: "shield-check",
+        dayIndex: 20
+      },
+      {
+        title: "Unstoppable Peer-to-Peer Value Transfer",
+        content: "Once broadcast, Bitcoin transactions cannot be censored, stopped, or reversed by any authority on Earth.",
+        category: "Censorship Resistance",
+        icon: "send",
+        dayIndex: 20
+      },
+      {
+        title: "Mathematical Certainty Replaces Trust",
+        content: "Bitcoin eliminates the need to trust institutions by using mathematical proof to verify everything automatically.",
+        category: "Trustless Systems",
+        icon: "calculator",
+        dayIndex: 20
+      },
+
+      // Days 21-29: Financial Revolution Concepts
+      {
+        title: "Separation of Money and State",
+        content: "Bitcoin separates money from government control, creating the first apolitical monetary system in human history.",
+        category: "Political Economy",
+        icon: "scales",
+        dayIndex: 21
+      },
+      {
+        title: "Fixed Supply Economics",
+        content: "Bitcoin's mathematically fixed supply creates deflationary economics that reward savers instead of debtors.",
+        category: "Austrian Economics",
+        icon: "lock-keyhole",
+        dayIndex: 21
+      },
+      {
+        title: "Time Chain of Value",
+        content: "Bitcoin creates an immutable record of value transfer through time, establishing digital scarcity and provable ownership.",
+        category: "Digital Scarcity",
+        icon: "clock",
+        dayIndex: 21
+      },
+
+      {
+        title: "Voluntary Adoption Network",
+        content: "Bitcoin grows through voluntary adoption rather than government mandate, creating genuine network effects and utility.",
+        category: "Voluntary Systems",
+        icon: "handshake",
+        dayIndex: 22
+      },
+      {
+        title: "Energy-Backed Security Model",
+        content: "Bitcoin converts energy into digital security, creating the most secure payment network in human history.",
+        category: "Energy Security",
+        icon: "zap-circle",
+        dayIndex: 22
+      },
+      {
+        title: "Antifragile Money Design",
+        content: "Bitcoin becomes stronger when attacked, growing more resilient with each challenge and stress test.",
+        category: "Antifragility",
+        icon: "shield-plus",
+        dayIndex: 22
+      },
+
+      {
+        title: "Individual Financial Sovereignty",
+        content: "Bitcoin enables true self-custody where individuals become their own bank without counterparty risk.",
+        category: "Self-Banking",
+        icon: "key-round",
+        dayIndex: 23
+      },
+      {
+        title: "Programmable Scarcity",
+        content: "Bitcoin programs absolute scarcity into digital form, creating the first provably scarce digital asset.",
+        category: "Programmed Scarcity",
+        icon: "cpu",
+        dayIndex: 23
+      },
+      {
+        title: "Peaceful Money Revolution",
+        content: "Bitcoin enables monetary change through voluntary adoption rather than violence or political force.",
+        category: "Peaceful Revolution",
+        icon: "dove",
+        dayIndex: 23
+      },
+
+      {
+        title: "Decentralized Monetary Policy",
+        content: "Bitcoin's monetary policy is set by mathematics and consensus, not by central bank committees or political decisions.",
+        category: "Decentralized Policy",
+        icon: "users-round",
+        dayIndex: 24
+      },
+      {
+        title: "Global Settlement Layer",
+        content: "Bitcoin serves as the final settlement layer for global value transfer, like digital central bank reserves.",
+        category: "Settlement",
+        icon: "layers-3",
+        dayIndex: 24
+      },
+      {
+        title: "Honest Price Discovery",
+        content: "Bitcoin enables honest price discovery by removing artificial manipulation and intervention from monetary systems.",
+        category: "Price Discovery",
+        icon: "trending-up-down",
+        dayIndex: 24
+      },
+
+      {
+        title: "Digital Property Rights",
+        content: "Bitcoin establishes true digital property rights that can't be confiscated, frozen, or diluted by third parties.",
+        category: "Property Rights",
+        icon: "home",
+        dayIndex: 25
+      },
+      {
+        title: "Intergenerational Wealth Transfer",
+        content: "Bitcoin enables seamless wealth transfer across generations without inheritance taxes or institutional barriers.",
+        category: "Wealth Transfer",
+        icon: "family",
+        dayIndex: 25
+      },
+      {
+        title: "Monetary Innovation Platform",
+        content: "Bitcoin serves as a foundation for monetary innovation, enabling new financial applications and services.",
+        category: "Innovation Platform",
+        icon: "lightbulb",
+        dayIndex: 25
+      },
+
+      {
+        title: "Exit from Fiat Debasement",
+        content: "Bitcoin provides an exit from fiat currency debasement, protecting wealth from monetary inflation.",
+        category: "Monetary Exit",
+        icon: "exit",
+        dayIndex: 26
+      },
+      {
+        title: "Circular Bitcoin Economy",
+        content: "As Bitcoin adoption grows, circular economies emerge where Bitcoin is earned, spent, and saved within closed loops.",
+        category: "Circular Economy",
+        icon: "recycle",
+        dayIndex: 26
+      },
+      {
+        title: "Financial Privacy Preservation",
+        content: "Bitcoin preserves financial privacy while maintaining transparency, balancing individual rights with network integrity.",
+        category: "Privacy Rights",
+        icon: "eye-off",
+        dayIndex: 26
+      },
+
+      {
+        title: "Hyperbitcoinization Pathway",
+        content: "Bitcoin's superior monetary properties create a pathway toward global adoption as the dominant money.",
+        category: "Hyperbitcoinization",
+        icon: "rocket",
+        dayIndex: 27
+      },
+      {
+        title: "Sound Money Renaissance",
+        content: "Bitcoin catalyzes a return to sound money principles that encourage saving, investment, and long-term thinking.",
+        category: "Sound Money",
+        icon: "coins",
+        dayIndex: 27
+      },
+      {
+        title: "Monetary Optimization",
+        content: "Bitcoin represents the optimization of money across all desired properties: durability, portability, divisibility, and scarcity.",
+        category: "Optimization",
+        icon: "settings",
+        dayIndex: 27
+      },
+
+      {
+        title: "Economic Calculation Enhancement",
+        content: "Bitcoin improves economic calculation by providing honest price signals free from monetary manipulation.",
+        category: "Economic Calculation",
+        icon: "calculator-plus",
+        dayIndex: 28
+      },
+      {
+        title: "Reduced Systemic Risk",
+        content: "Bitcoin's decentralized design eliminates single points of failure that create systemic risks in traditional finance.",
+        category: "Risk Reduction",
+        icon: "shield-minus",
+        dayIndex: 28
+      },
+      {
+        title: "Monetary Time Preference",
+        content: "Bitcoin's deflationary nature encourages lower time preference, promoting saving and long-term thinking over consumption.",
+        category: "Time Preference",
+        icon: "hourglass",
+        dayIndex: 28
+      },
+
+      {
+        title: "Financial Inclusion Revolution",
+        content: "Bitcoin provides financial services to the unbanked and underbanked worldwide, democratizing access to sound money.",
+        category: "Financial Inclusion",
+        icon: "users-plus",
+        dayIndex: 29
+      },
+      {
+        title: "Monetary Sovereignty Nations",
+        content: "Bitcoin enables nations to achieve monetary sovereignty and escape dependence on foreign central bank policies.",
+        category: "National Sovereignty",
+        icon: "flag",
+        dayIndex: 29
+      },
+      {
+        title: "Future of Human Coordination",
+        content: "Bitcoin demonstrates how humans can coordinate globally through mathematics rather than violence or coercion.",
+        category: "Human Coordination",
+        icon: "globe-lock",
+        dayIndex: 29
+      }
+    ];
+
+    const additionalFactDays = advancedFacts;
 
     // Combine all facts
     const allFacts = [...facts, ...additionalFactDays];
@@ -3204,6 +3472,525 @@ export class MemStorage implements IStorage {
             "New features maintain backward compatibility",
             "Extensive testing prevents breaking changes",
             "Conservative approach prioritizes security"
+          ]
+        };
+      }
+
+      // Complete all remaining advanced facts for days 21-29
+
+      if (fact.title === "Separation of Money and State") {
+        diveDeeper = {
+          explanation: "Bitcoin separates money from government control for the first time in modern history. This creates money that can't be manipulated by politicians or used as a tool of control over citizens.",
+          examples: [
+            "Government money: Can be printed to fund wars or political projects",
+            "Bitcoin: Cannot be printed or controlled by any government",
+            "Fiat currency: Value depends on political stability and decisions",
+            "Bitcoin: Value depends on mathematical rules and adoption"
+          ],
+          visualDescription: "Separating money from state is like separating religion from government - it prevents the abuse of monetary power for political purposes.",
+          keyTakeaways: [
+            "First apolitical money system in modern history",
+            "Cannot be manipulated for political purposes",
+            "Protects citizens from monetary abuse",
+            "Creates neutral, mathematical money"
+          ]
+        };
+      }
+
+      if (fact.title === "Fixed Supply Economics") {
+        diveDeeper = {
+          explanation: "Bitcoin's mathematically fixed supply creates economics that reward people who save money instead of punishing them. This encourages long-term thinking and building wealth over time.",
+          examples: [
+            "Regular money: Loses value over time, punishes savers",
+            "Bitcoin: Tends to gain value, rewards savers",
+            "Government policy: Encourages debt and consumption",
+            "Bitcoin economics: Encourages saving and investment"
+          ],
+          visualDescription: "Fixed supply economics is like having a pie that can never get bigger - as more people want slices, each slice becomes more valuable.",
+          keyTakeaways: [
+            "Rewards saving instead of spending",
+            "Encourages long-term thinking",
+            "Creates deflationary economics",
+            "Builds wealth over time for holders"
+          ]
+        };
+      }
+
+      if (fact.title === "Time Chain of Value") {
+        diveDeeper = {
+          explanation: "Bitcoin creates an unbreakable record of who owned what and when. This timeline of value can never be erased or changed, creating permanent proof of ownership throughout history.",
+          examples: [
+            "Bank records: Can be lost, changed, or destroyed",
+            "Bitcoin blockchain: Permanent record that cannot be altered",
+            "Government records: Can be censored or manipulated",
+            "Bitcoin time chain: Mathematically protected forever"
+          ],
+          visualDescription: "The time chain is like a permanent history book written in stone - every page shows exactly what happened and cannot be torn out or rewritten.",
+          keyTakeaways: [
+            "Creates immutable ownership records",
+            "Proves digital scarcity mathematically",
+            "Cannot be erased or changed",
+            "Establishes permanent property rights"
+          ]
+        };
+      }
+
+      if (fact.title === "Voluntary Adoption Network") {
+        diveDeeper = {
+          explanation: "Bitcoin grows because people choose to use it, not because they're forced to. This creates real value and utility based on people's genuine needs rather than government mandates.",
+          examples: [
+            "Government currency: Must use it or face legal consequences",
+            "Bitcoin: People use it because they find it valuable",
+            "Forced adoption: Creates resentment and resistance",
+            "Voluntary adoption: Creates genuine value and growth"
+          ],
+          visualDescription: "Voluntary adoption is like a restaurant that gets popular because the food is great, versus a cafeteria you're forced to eat at.",
+          keyTakeaways: [
+            "Growth through genuine utility and value",
+            "No force or coercion required",
+            "Creates strong network effects",
+            "Based on real user needs and preferences"
+          ]
+        };
+      }
+
+      if (fact.title === "Energy-Backed Security Model") {
+        diveDeeper = {
+          explanation: "Bitcoin converts real-world energy into digital security. The more energy used to protect Bitcoin, the more expensive it becomes for anyone to attack or hack the network.",
+          examples: [
+            "Bank vault: Physical steel walls cost money but provide security",
+            "Bitcoin: Energy walls cost money but provide digital security",
+            "House alarm: Uses electricity to protect your home",
+            "Bitcoin mining: Uses electricity to protect everyone's money"
+          ],
+          visualDescription: "Energy-backed security is like building a wall of electricity around Bitcoin - the thicker the wall, the safer everyone's money becomes.",
+          keyTakeaways: [
+            "Real energy creates real security",
+            "More energy makes attacks more expensive",
+            "Physical cost creates digital protection",
+            "Most secure payment network in history"
+          ]
+        };
+      }
+
+      if (fact.title === "Antifragile Money Design") {
+        diveDeeper = {
+          explanation: "Bitcoin gets stronger every time someone tries to attack it or ban it. Each challenge tests the system and makes it more resilient, like how muscles get stronger from exercise.",
+          examples: [
+            "Regular systems: Break down when stressed or attacked",
+            "Bitcoin: Gets stronger and more resilient when challenged",
+            "Glass: Shatters when hit hard",
+            "Bitcoin: Like a material that becomes harder when struck"
+          ],
+          visualDescription: "Bitcoin is like a mythical creature that grows stronger every time someone tries to defeat it - each attack just makes it more powerful.",
+          keyTakeaways: [
+            "Becomes stronger when challenged",
+            "Benefits from stress and attacks",
+            "Grows more resilient over time",
+            "Self-improving through adversity"
+          ]
+        };
+      }
+
+      if (fact.title === "Individual Financial Sovereignty") {
+        diveDeeper = {
+          explanation: "Bitcoin lets you become your own bank with complete control over your money. You don't need permission from anyone to save, send, or receive money anywhere in the world.",
+          examples: [
+            "Traditional banking: Need permission for many financial actions",
+            "Bitcoin self-custody: You control everything yourself",
+            "Bank account: Can be frozen or closed by others",
+            "Bitcoin wallet: Only you can access or control it"
+          ],
+          visualDescription: "Financial sovereignty is like having your own private kingdom where you make all the rules about your money instead of following someone else's rules.",
+          keyTakeaways: [
+            "Complete control over your money",
+            "No need for institutional permission",
+            "Become your own bank",
+            "True financial independence"
+          ]
+        };
+      }
+
+      if (fact.title === "Programmable Scarcity") {
+        diveDeeper = {
+          explanation: "Bitcoin programs absolute scarcity into computer code. For the first time in history, we have something digital that cannot be copied, creating true digital ownership and value.",
+          examples: [
+            "Digital files: Can be copied infinite times for free",
+            "Bitcoin: Cannot be copied or duplicated ever",
+            "Digital music: Can be pirated and shared endlessly",
+            "Bitcoin: Each coin is unique and cannot be counterfeited"
+          ],
+          visualDescription: "Programmable scarcity is like creating digital gold that has all the properties of physical gold but exists only in computer code.",
+          keyTakeaways: [
+            "First truly scarce digital asset",
+            "Cannot be copied or counterfeited",
+            "Scarcity enforced by mathematics",
+            "Creates real digital ownership"
+          ]
+        };
+      }
+
+      if (fact.title === "Peaceful Money Revolution") {
+        diveDeeper = {
+          explanation: "Bitcoin changes the monetary system through voluntary adoption rather than violence or political force. People choose Bitcoin because it works better, not because they're forced to use it.",
+          examples: [
+            "Historical monetary changes: Usually involved wars or coercion",
+            "Bitcoin adoption: Peaceful choice by individuals",
+            "Government currency reforms: Imposed by force",
+            "Bitcoin revolution: Spreads through voluntary use"
+          ],
+          visualDescription: "The Bitcoin revolution is like water gradually carving through stone - slow, peaceful, but ultimately unstoppable and transformative.",
+          keyTakeaways: [
+            "Changes money through choice, not force",
+            "Non-violent monetary revolution",
+            "Spreads through voluntary adoption",
+            "Peaceful transformation of finance"
+          ]
+        };
+      }
+
+      if (fact.title === "Decentralized Monetary Policy") {
+        diveDeeper = {
+          explanation: "Bitcoin's monetary policy is set by mathematics and computer code, not by committees of people who might make bad decisions or have conflicts of interest.",
+          examples: [
+            "Central bank committees: Humans make monetary decisions",
+            "Bitcoin protocol: Mathematics makes monetary decisions",
+            "Political monetary policy: Can change with elections",
+            "Bitcoin policy: Unchangeable mathematical rules"
+          ],
+          visualDescription: "Decentralized monetary policy is like having a perfectly fair robot manage money instead of politicians who might favor their friends.",
+          keyTakeaways: [
+            "No human discretion in monetary policy",
+            "Rules set by mathematics, not politics",
+            "Predictable and unchangeable",
+            "Eliminates monetary manipulation"
+          ]
+        };
+      }
+
+      if (fact.title === "Global Settlement Layer") {
+        diveDeeper = {
+          explanation: "Bitcoin serves as the world's first global settlement layer that works across all borders and time zones. Unlike traditional banking systems that close on weekends, Bitcoin settles transactions 24/7.",
+          examples: [
+            "Bank transfers: Stop working on weekends and holidays",
+            "Bitcoin: Works every day, all day, every year",
+            "International wires: Take days and cost hundreds",
+            "Bitcoin settlement: Works in minutes across any border"
+          ],
+          visualDescription: "Bitcoin is like having a global highway that never closes, never has traffic jams, and connects every country without toll booths or border checkpoints.",
+          keyTakeaways: [
+            "24/7 global settlement system",
+            "No weekends or holidays",
+            "Works across all borders",
+            "Always-on financial infrastructure"
+          ]
+        };
+      }
+
+      if (fact.title === "Honest Price Discovery") {
+        diveDeeper = {
+          explanation: "Bitcoin creates honest price discovery by removing central bank manipulation and artificial money printing. Prices reflect real supply and demand rather than political interventions.",
+          examples: [
+            "Stock market: Propped up by money printing",
+            "Bitcoin market: Real supply and demand only",
+            "Housing prices: Inflated by cheap credit",
+            "Bitcoin price: Reflects actual utility and adoption"
+          ],
+          visualDescription: "Honest price discovery is like having a perfectly accurate scale that always shows true weight, versus a rigged scale that someone can manipulate.",
+          keyTakeaways: [
+            "Prices reflect real supply and demand",
+            "No central bank manipulation",
+            "Market discovers true value",
+            "Eliminates artificial price distortions"
+          ]
+        };
+      }
+
+      if (fact.title === "Digital Property Rights") {
+        diveDeeper = {
+          explanation: "Bitcoin establishes true digital property rights for the first time in history. Your bitcoins are mathematically yours and cannot be taken without your permission or private keys.",
+          examples: [
+            "Digital music: Can be copied and pirated easily",
+            "Bitcoin: Cannot be copied or stolen without keys",
+            "Online accounts: Companies can delete your data",
+            "Bitcoin: Only you control your digital property"
+          ],
+          visualDescription: "Digital property rights with Bitcoin are like having a safe that only opens with your fingerprint - completely secure and exclusively yours.",
+          keyTakeaways: [
+            "First true digital property ownership",
+            "Cannot be taken without permission",
+            "Mathematically enforced ownership",
+            "Establishes digital scarcity"
+          ]
+        };
+      }
+
+      if (fact.title === "Intergenerational Wealth Transfer") {
+        diveDeeper = {
+          explanation: "Bitcoin enables people to pass wealth to future generations without government seizure, inflation erosion, or institutional intermediaries taking fees.",
+          examples: [
+            "Cash inheritance: Loses value to inflation over decades",
+            "Bitcoin: Tends to appreciate over long time periods",
+            "Bank accounts: Can be frozen or seized",
+            "Bitcoin: Cannot be confiscated if properly stored"
+          ],
+          visualDescription: "Bitcoin inheritance is like planting a tree that grows stronger over time and cannot be chopped down by anyone except the person who has the key.",
+          keyTakeaways: [
+            "Preserves wealth across generations",
+            "Protected from government seizure",
+            "No institutional intermediaries required",
+            "Appreciates rather than depreciates over time"
+          ]
+        };
+      }
+
+      if (fact.title === "Monetary Innovation Platform") {
+        diveDeeper = {
+          explanation: "Bitcoin serves as a foundation for monetary innovation, enabling new financial applications like the Lightning Network, decentralized exchanges, and programmable money features.",
+          examples: [
+            "Traditional banking: Innovation controlled by banks",
+            "Bitcoin: Open platform for anyone to build on",
+            "Credit cards: Closed system owned by companies",
+            "Lightning Network: Open system built on Bitcoin"
+          ],
+          visualDescription: "Bitcoin is like the internet for money - a basic protocol that anyone can build amazing applications on top of.",
+          keyTakeaways: [
+            "Open platform for financial innovation",
+            "Enables second-layer solutions",
+            "Permissionless development environment",
+            "Foundation for next-generation finance"
+          ]
+        };
+      }
+
+      if (fact.title === "Algorithmic Trust") {
+        diveDeeper = {
+          explanation: "Bitcoin replaces human trust with mathematical algorithms. You don't need to trust banks, governments, or other people - only the math that everyone can verify.",
+          examples: [
+            "Banking: Must trust the bank to hold your money",
+            "Bitcoin: Trust only in verifiable mathematics",
+            "Government promises: Can be broken by new leaders",
+            "Bitcoin code: Cannot be changed without consensus"
+          ],
+          visualDescription: "Algorithmic trust is like having a perfectly honest referee that never plays favorites, never lies, and follows the exact same rules every single time.",
+          keyTakeaways: [
+            "Trust replaced by verifiable mathematics",
+            "No human judgment or discretion",
+            "Anyone can verify the rules",
+            "Eliminates counterparty risk"
+          ]
+        };
+      }
+
+      if (fact.title === "Cypherpunk Vision") {
+        diveDeeper = {
+          explanation: "Bitcoin fulfills the cypherpunk vision of using cryptography to protect individual privacy and freedom from surveillance and control by governments and corporations.",
+          examples: [
+            "Cash transactions: Private but disappearing from society",
+            "Bitcoin: Digital privacy through cryptographic protection",
+            "Bank surveillance: Every transaction tracked and reported",
+            "Bitcoin: Pseudonymous transactions with optional privacy"
+          ],
+          visualDescription: "The cypherpunk vision is like building digital armor that protects your financial privacy and freedom from those who would spy on or control you.",
+          keyTakeaways: [
+            "Cryptography protects individual freedom",
+            "Resists surveillance and control",
+            "Preserves financial privacy",
+            "Empowers individual sovereignty"
+          ]
+        };
+      }
+
+      if (fact.title === "Time Preference Alignment") {
+        diveDeeper = {
+          explanation: "Bitcoin encourages low time preference thinking by rewarding people who save and plan for the future rather than consuming everything immediately.",
+          examples: [
+            "Inflation: Encourages spending money quickly",
+            "Bitcoin: Encourages saving for the future",
+            "Credit culture: Promotes immediate gratification",
+            "Bitcoin culture: Promotes long-term thinking"
+          ],
+          visualDescription: "Time preference alignment is like choosing to plant an oak tree that will be valuable in 50 years instead of picking flowers that die tomorrow.",
+          keyTakeaways: [
+            "Rewards long-term thinking",
+            "Encourages saving over consumption",
+            "Builds wealth over time",
+            "Creates positive cultural changes"
+          ]
+        };
+      }
+
+      // Add remaining advanced facts for days 26-29
+
+      if (fact.title === "Hyperbitcoinization Pathway") {
+        diveDeeper = {
+          explanation: "Hyperbitcoinization describes the process by which Bitcoin gradually replaces other forms of money as the global standard. This happens naturally as people recognize Bitcoin's superior monetary properties.",
+          examples: [
+            "Historical example: Gold replaced barter systems naturally",
+            "Modern process: Bitcoin replacing fiat currency adoption",
+            "Venezuela: Citizens choosing Bitcoin over devaluing bolivar",
+            "El Salvador: Government adopting Bitcoin as legal tender"
+          ],
+          visualDescription: "Hyperbitcoinization is like water flowing downhill - it follows the path of least resistance as people naturally choose better money.",
+          keyTakeaways: [
+            "Natural adoption of superior money",
+            "Replaces inferior monetary systems",
+            "Driven by economic necessity",
+            "Inevitable due to Bitcoin's properties"
+          ]
+        };
+      }
+
+      if (fact.title === "Sound Money Renaissance") {
+        diveDeeper = {
+          explanation: "Bitcoin brings back sound money principles that existed during the gold standard era, but with modern digital improvements. This renaissance restores economic sanity and long-term thinking.",
+          examples: [
+            "19th century: Gold standard created economic prosperity",
+            "20th century: Fiat money created boom-bust cycles",
+            "Bitcoin era: Return to sound money with digital benefits",
+            "Economic stability: Predictable money supply rules"
+          ],
+          visualDescription: "The sound money renaissance is like rediscovering a lost art that once made civilization prosperous and bringing it back with modern improvements.",
+          keyTakeaways: [
+            "Returns to proven sound money principles",
+            "Combines historical wisdom with modern technology",
+            "Restores economic stability and growth",
+            "Enables long-term economic planning"
+          ]
+        };
+      }
+
+      if (fact.title === "Monetary Optimization") {
+        diveDeeper = {
+          explanation: "Bitcoin optimizes money for maximum utility by combining the best properties of all previous forms of money while eliminating their weaknesses through mathematical precision.",
+          examples: [
+            "Gold: Scarce but hard to transport and verify",
+            "Cash: Portable but can be counterfeited",
+            "Digital payments: Fast but not private or censorship-resistant",
+            "Bitcoin: Combines all benefits while eliminating weaknesses"
+          ],
+          visualDescription: "Monetary optimization is like designing the perfect tool that combines the best features of all previous tools while fixing everything that was broken.",
+          keyTakeaways: [
+            "Combines best properties of all money types",
+            "Eliminates weaknesses through mathematics",
+            "Optimized for global digital economy",
+            "Represents pinnacle of monetary evolution"
+          ]
+        };
+      }
+
+      if (fact.title === "Economic Sovereignty Movement") {
+        diveDeeper = {
+          explanation: "Bitcoin enables entire countries and communities to achieve economic sovereignty by providing an alternative to the US dollar-dominated global financial system.",
+          examples: [
+            "Countries: Can escape dollar dependency",
+            "Communities: Can create local Bitcoin economies",
+            "Individuals: Can opt out of failing currencies",
+            "Nations: Can build independent monetary policy"
+          ],
+          visualDescription: "Economic sovereignty is like countries building their own roads instead of being forced to use highways controlled by foreign powers.",
+          keyTakeaways: [
+            "Provides alternative to dollar dominance",
+            "Enables true monetary independence",
+            "Empowers communities and nations",
+            "Creates multipolar financial world"
+          ]
+        };
+      }
+
+      if (fact.title === "Digital Native Currency") {
+        diveDeeper = {
+          explanation: "Bitcoin is the first currency designed specifically for the digital age, with properties optimized for internet-based commerce and global connectivity.",
+          examples: [
+            "Physical cash: Great for local trade, bad for internet",
+            "Digital bank transfers: Work online but slow and expensive",
+            "Bitcoin: Perfect for both local and internet commerce",
+            "Global connectivity: Works seamlessly across all digital platforms"
+          ],
+          visualDescription: "Bitcoin is like having money that was born on the internet and speaks the native language of computers, unlike old money that was awkwardly translated.",
+          keyTakeaways: [
+            "Designed specifically for digital world",
+            "Native internet money protocol",
+            "Optimized for global connectivity",
+            "Perfect fit for digital economy"
+          ]
+        };
+      }
+
+      if (fact.title === "Proof of Work Philosophy") {
+        diveDeeper = {
+          explanation: "Proof of work embodies the philosophy that value should be earned through real effort and energy expenditure, not created through printing or promises.",
+          examples: [
+            "Traditional work: Physical effort creates value",
+            "Proof of work: Energy expenditure secures Bitcoin",
+            "Fiat printing: Value created without effort",
+            "Bitcoin mining: Value earned through real work"
+          ],
+          visualDescription: "Proof of work is like requiring people to actually build something valuable before they can claim ownership, instead of just printing certificates.",
+          keyTakeaways: [
+            "Value must be earned through real effort",
+            "Energy expenditure proves genuine work",
+            "Prevents value creation without cost",
+            "Aligns with natural economic principles"
+          ]
+        };
+      }
+
+      // Final facts for days 28-29
+
+      if (fact.title === "Financial Inclusion Revolution") {
+        diveDeeper = {
+          explanation: "Bitcoin provides financial services to the billions of people worldwide who are excluded from traditional banking systems, giving them access to savings, payments, and economic participation.",
+          examples: [
+            "Unbanked populations: 1.7 billion people without bank accounts",
+            "Bitcoin access: Only needs internet connection and phone",
+            "Remittances: Cheaper money transfers to family abroad",
+            "Savings protection: Store value without bank requirements"
+          ],
+          visualDescription: "Bitcoin's financial inclusion is like building bridges that connect isolated islands to the global economy, allowing everyone to participate regardless of location or status.",
+          keyTakeaways: [
+            "Provides banking services to unbanked billions",
+            "Only requires basic technology access",
+            "Enables global economic participation",
+            "Removes traditional banking barriers"
+          ]
+        };
+      }
+
+      if (fact.title === "Monetary Sovereignty Nations") {
+        diveDeeper = {
+          explanation: "Bitcoin enables countries to achieve true monetary sovereignty by providing an alternative to the US dollar system that dominates global trade and finance.",
+          examples: [
+            "SWIFT system: Controlled by US and allies",
+            "Bitcoin network: No single country controls it",
+            "Dollar sanctions: Can cut countries from global finance",
+            "Bitcoin adoption: Creates independent financial systems"
+          ],
+          visualDescription: "Monetary sovereignty through Bitcoin is like countries building their own trade routes instead of being forced to use roads controlled by foreign powers.",
+          keyTakeaways: [
+            "Provides alternative to dollar dominance",
+            "Enables independent monetary policy",
+            "Protects from financial sanctions",
+            "Creates multipolar monetary system"
+          ]
+        };
+      }
+
+      if (fact.title === "Future of Human Coordination") {
+        diveDeeper = {
+          explanation: "Bitcoin represents a new form of human coordination that enables global cooperation without central authorities, pointing toward a future of voluntary, peaceful organization.",
+          examples: [
+            "Traditional coordination: Requires governments and institutions",
+            "Bitcoin coordination: Voluntary participation and consensus",
+            "Global projects: Usually need international treaties",
+            "Bitcoin network: Naturally coordinated global effort"
+          ],
+          visualDescription: "Bitcoin coordination is like a global symphony where thousands of musicians play together perfectly without a conductor, creating beautiful music through voluntary harmony.",
+          keyTakeaways: [
+            "Enables coordination without central authority",
+            "Demonstrates voluntary global cooperation",
+            "Points toward peaceful future organization",
+            "Proves humans can work together naturally"
           ]
         };
       }
