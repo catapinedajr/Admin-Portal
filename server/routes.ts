@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { generateMonth1Content } from "./content-generator";
+
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Get current user (default user for simplicity)
@@ -100,7 +100,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update user progress
   app.post("/api/progress", async (req, res) => {
     try {
-      const { factsViewed, lessonCompleted } = req.body;
+      const { factsViewed, lessonCompleted, dayIndex } = req.body;
       const today = new Date().toISOString().split('T')[0];
       
       const progressPercentage = Math.min(100, (factsViewed * 25) + (lessonCompleted ? 50 : 0));
@@ -108,6 +108,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const progress = await storage.createOrUpdateUserProgress({
         userId: 1,
         date: today,
+        dayIndex: dayIndex || 0,
         factsViewed: factsViewed || 0,
         lessonCompleted: lessonCompleted || false,
         progressPercentage
@@ -572,6 +573,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Mark lesson as complete
   app.post("/api/lesson/complete", async (req, res) => {
     try {
+      const { dayIndex } = req.body;
       const today = new Date().toISOString().split('T')[0];
       const user = await storage.getUser(1);
       
@@ -583,6 +585,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await storage.createOrUpdateUserProgress({
         userId: 1,
         date: today,
+        dayIndex: dayIndex || 0,
         factsViewed: 3, // Assume all facts viewed
         lessonCompleted: true,
         progressPercentage: 100
@@ -911,24 +914,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Content generation endpoint
-  app.post("/api/generate-month1-content", async (req, res) => {
-    try {
-      console.log("🚀 Starting Month 1 content generation...");
-      await generateMonth1Content();
-      res.json({ 
-        success: true, 
-        message: "Month 1 content generated successfully!" 
-      });
-    } catch (error) {
-      console.error("❌ Content generation failed:", error);
-      res.status(500).json({ 
-        success: false, 
-        message: "Failed to generate content", 
-        error: error.message 
-      });
-    }
-  });
+
 
   const httpServer = createServer(app);
   return httpServer;

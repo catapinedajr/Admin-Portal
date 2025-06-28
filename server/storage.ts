@@ -4007,7 +4007,7 @@ Bitcoin isn't just new technology - it's a new way of thinking about money, owne
     // Day-specific questions are already added above in allDayQuestions
 
     // For days 30-400, use the base questions (keeping original functionality)
-    const quizQuestions = [];
+    const quizQuestions: Omit<QuizQuestion, 'id'>[] = [];
     for (let day = 30; day < 400; day++) {
       baseQuestions.forEach((baseQuestion, index) => {
         quizQuestions.push({

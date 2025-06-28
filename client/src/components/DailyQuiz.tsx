@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, XCircle, Brain, Trophy } from "lucide-react";
+import { CheckCircle, XCircle, Brain, Trophy, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
 interface QuizQuestion {
@@ -53,9 +53,17 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
   const userId = 1; // Default user
 
   // Fetch quiz questions for today
-  const { data: questions = [], isLoading: loadingQuestions } = useQuery({
+  const { data: questions = [], isLoading: loadingQuestions, error: questionsError } = useQuery({
     queryKey: ['/api/quiz/daily', dayIndex],
-    queryFn: () => fetch(`/api/quiz/daily/${dayIndex}`).then(res => res.json()) as Promise<QuizQuestion[]>
+    queryFn: async () => {
+      const res = await fetch(`/api/quiz/daily/${dayIndex}`);
+      if (!res.ok) {
+        throw new Error(`Failed to load quiz questions: ${res.status}`);
+      }
+      return res.json() as Promise<QuizQuestion[]>;
+    },
+    retry: 3,
+    retryDelay: 1000
   });
 
   // Fetch user's previous answers for today
@@ -74,18 +82,24 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
   // Submit answer mutation
   const submitAnswerMutation = useMutation({
     mutationFn: async (answer: { userId: number; questionId: number; selectedAnswer: string; date: string }) => {
-      const response = await fetch('/api/quiz/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(answer),
-        credentials: 'include'
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      try {
+        const response = await fetch('/api/quiz/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(answer),
+          credentials: 'include'
+        });
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Failed to submit answer (${response.status}): ${errorText}`);
+        }
+        
+        return await response.json() as QuizAnswer;
+      } catch (error) {
+        console.error('Quiz submission error:', error);
+        throw error;
       }
-      
-      return await response.json() as QuizAnswer;
     },
     onSuccess: (data, variables) => {
       setSubmittedAnswers(prev => ({
@@ -97,8 +111,11 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
       queryClient.invalidateQueries({ queryKey: ['/api/quiz/score', userId, today] });
     },
     onError: (error) => {
-      console.error('Failed to submit answer:', error);
-    }
+      console.error('Failed to submit quiz answer:', error);
+      // Note: We could add toast notification here if needed
+    },
+    retry: 2,
+    retryDelay: 1000
   });
 
   const currentQuestion = questions[currentQuestionIndex];
@@ -179,12 +196,35 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
     );
   }
 
+  // Error state
+  if (questionsError) {
+    return (
+      <Card className="bg-zinc-900 border-zinc-800">
+        <CardContent className="p-6 text-center">
+          <AlertCircle className="w-12 h-12 mx-auto mb-4 text-red-500" />
+          <h3 className="text-lg font-semibold text-white mb-2">Quiz Unavailable</h3>
+          <p className="text-zinc-400 mb-4">
+            There was an issue loading today's quiz questions. This usually resolves quickly.
+          </p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+          >
+            Try Again
+          </button>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // No questions available
   if (!questions.length) {
     return (
       <Card className="bg-zinc-900 border-zinc-800">
         <CardContent className="p-6 text-center">
           <Brain className="w-12 h-12 mx-auto mb-4 text-zinc-500" />
-          <p className="text-zinc-400">No quiz questions available for today.</p>
+          <h3 className="text-lg font-semibold text-white mb-2">Quiz Not Ready</h3>
+          <p className="text-zinc-400">Quiz questions for Day {dayIndex + 1} are being prepared.</p>
         </CardContent>
       </Card>
     );
