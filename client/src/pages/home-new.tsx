@@ -2993,11 +2993,11 @@ export default function Home() {
                           </linearGradient>
                         </defs>
                         
-                        {/* Gold Standard Line - Behind other elements */}
+                        {/* Gold Standard Line */}
                         <g>
                           {(() => {
                             const nixonYear = 1971;
-                            const nixonX = 50 + ((nixonYear - 1920) / 104) * 320;
+                            const nixonX = 50 + ((nixonYear - 1920) / 105) * 320;
                             return (
                               <g>
                                 <line 
@@ -3024,48 +3024,8 @@ export default function Home() {
                           })()}
                         </g>
 
-                        {/* Key Event Markers - Clean and Simple */}
+                        {/* Current year indicator */}
                         <g>
-                          {(() => {
-                            const events = [
-                              { year: 2008, m2: 7.500, label: "2008 Crisis" },
-                              { year: 2020, m2: 15.400, label: "COVID Printing" }
-                            ];
-                            
-                            return events.map((event, index) => {
-                              const chartX = 50 + ((event.year - 1920) / 105) * 320;
-                              const chartY = 175 - ((event.m2 - 0.023) / (21.2 - 0.023)) * 155;
-                              
-                              return (
-                                <g key={index}>
-                                  {/* Simple marker circle */}
-                                  <circle 
-                                    cx={chartX} 
-                                    cy={chartY} 
-                                    r="4" 
-                                    fill="#f97316" 
-                                    stroke="#ffffff" 
-                                    strokeWidth="2"
-                                    className="transition-all duration-300 hover:r-6"
-                                  />
-                                  
-                                  {/* Clean label */}
-                                  <text 
-                                    x={chartX} 
-                                    y={chartY - 12} 
-                                    fill="#f97316" 
-                                    fontSize="9" 
-                                    fontWeight="bold"
-                                    textAnchor="middle"
-                                  >
-                                    {event.label}
-                                  </text>
-                                </g>
-                              );
-                            });
-                          })()}
-                          
-                          {/* Current year indicator */}
                           <line 
                             x1={50 + ((moneySupplyYear - 1920) / 105) * 320} 
                             y1="10" 
