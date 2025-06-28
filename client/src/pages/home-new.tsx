@@ -301,7 +301,7 @@ const bitcoinTerms = [
 
 type MainSection = "learn" | "finance" | "simulations" | "more";
 type LearnSubTab = "today" | "reference";
-type SimulationsSubTab = "wallet" | "safety" | "transactions" | "hodl" | "dca" | "inflation" | "remittances";
+type SimulationsSubTab = "wallet" | "safety" | "transactions" | "hodl" | "dca" | "inflation" | "settlement";
 type MoreSubTab = "store";
 
 export default function Home() {
@@ -382,13 +382,13 @@ export default function Home() {
   const [inflationYears, setInflationYears] = useState<number>(10);
   const [inflationRate, setInflationRate] = useState<number>(3.0);
   
-  // Remittances Simulator State
-  const [remittanceAmount, setRemittanceAmount] = useState<number>(1000);
-  const [remittanceFromCountry, setRemittanceFromCountry] = useState<string>("usa");
-  const [remittanceToCountry, setRemittanceToCountry] = useState<string>("philippines");
-  const [remittanceProvider, setRemittanceProvider] = useState<string>("western-union");
-  const [isRemittanceRunning, setIsRemittanceRunning] = useState<boolean>(false);
-  const [remittanceProgress, setRemittanceProgress] = useState<{traditional: number, bitcoin: number}>({traditional: 0, bitcoin: 0});
+  // Settlement Simulator State
+  const [settlementAmount, setSettlementAmount] = useState<number>(1000);
+  const [settlementDay, setSettlementDay] = useState<string>("friday");
+  const [settlementTime, setSettlementTime] = useState<string>("17:00");
+  const [settlementDestination, setSettlementDestination] = useState<string>("international");
+  const [isSettlementRunning, setIsSettlementRunning] = useState<boolean>(false);
+  const [settlementProgress, setSettlementProgress] = useState<{traditional: number, bitcoin: number}>({traditional: 0, bitcoin: 0});
   const [inflationSliderYear, setInflationSliderYear] = useState<number>(0);
   const [transferCount, setTransferCount] = useState<string>("2");
   const [transferAmount, setTransferAmount] = useState<string>("1000");
@@ -4289,13 +4289,13 @@ export default function Home() {
                   Inflation
                 </Button>
                 <Button
-                  variant={simulationsSubTab === "remittances" ? "secondary" : "ghost"}
+                  variant={simulationsSubTab === "settlement" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => setSimulationsSubTab("remittances")}
+                  onClick={() => setSimulationsSubTab("settlement")}
                   className="text-xs px-3 py-1"
                 >
-                  <Globe className="w-3 h-3 mr-1" />
-                  Remittances
+                  <Clock className="w-3 h-3 mr-1" />
+                  Settlement
                 </Button>
               </div>
             </div>
@@ -5259,8 +5259,8 @@ export default function Home() {
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-orange-600/20 rounded-lg">
-                        <CreditCard className="w-6 h-6 text-orange-400" />
+                      <div className="p-2 bg-green-600/20 rounded-lg">
+                        <CreditCard className="w-6 h-6 text-green-400" />
                       </div>
                       <h4 className="text-xl font-bold text-white">Master Bitcoin Transactions Without Risk</h4>
                     </div>
@@ -5272,9 +5272,9 @@ export default function Home() {
                         that could result in lost funds forever.
                       </p>
                       
-                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-orange-500">
+                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-green-500">
                         <p className="text-zinc-300 text-sm">
-                          <span className="font-semibold text-orange-300">Safe Learning:</span> This simulator uses fake addresses 
+                          <span className="font-semibold text-green-300">Safe Learning:</span> This simulator uses fake addresses 
                           and amounts so you can practice building transactions safely. Learn the entire process from address 
                           generation to confirmation tracking without any financial risk.
                         </p>
@@ -5284,7 +5284,7 @@ export default function Home() {
                         <h5 className="font-semibold text-white">Transaction Journey You'll Experience:</h5>
                         <div className="grid gap-3 sm:grid-cols-2">
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">1</div>
+                            <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">1</div>
                             <div>
                               <p className="font-medium text-white text-sm">Build Transaction</p>
                               <p className="text-zinc-400 text-xs">Set recipient address and amount</p>
@@ -5298,14 +5298,14 @@ export default function Home() {
                             </div>
                           </div>
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">3</div>
+                            <div className="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-white text-xs font-bold">3</div>
                             <div>
                               <p className="font-medium text-white text-sm">Sign & Broadcast</p>
                               <p className="text-zinc-400 text-xs">Authorize and send to network</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">4</div>
+                            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">4</div>
                             <div>
                               <p className="font-medium text-white text-sm">Track Confirmations</p>
                               <p className="text-zinc-400 text-xs">Watch transaction get confirmed</p>
@@ -5322,7 +5322,7 @@ export default function Home() {
                               builder.scrollIntoView({ behavior: 'smooth' });
                             }
                           }}
-                          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
+                          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
                         >
                           <ChevronDown className="w-4 h-4 mr-2" />
                           Start Building Transaction
@@ -7098,54 +7098,54 @@ export default function Home() {
               </div>
             )}
 
-            {/* Global Remittances Simulator */}
-            {isPremiumTier && simulationsSubTab === "remittances" && (
+            {/* Settlement Speed Simulator */}
+            {isPremiumTier && simulationsSubTab === "settlement" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
-                  <h3 className="text-xl font-bold text-white">Global Remittances Simulator</h3>
-                  <p className="text-zinc-400">Compare sending money abroad: traditional services vs Bitcoin</p>
+                  <h3 className="text-xl font-bold text-white">Payment Settlement Simulator</h3>
+                  <p className="text-zinc-400">Compare traditional banking vs Bitcoin settlement times and costs</p>
                 </div>
 
-                {/* Why Remittances Matter */}
+                {/* Why Settlement Speed Matters */}
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-4">
                       <div className="p-2 bg-orange-600/20 rounded-lg">
-                        <Globe className="w-6 h-6 text-orange-400" />
+                        <Clock className="w-6 h-6 text-orange-400" />
                       </div>
-                      <h4 className="text-xl font-bold text-white">Break the Global Money Transfer Monopoly</h4>
+                      <h4 className="text-xl font-bold text-white">Break Free from Banking's Weekend Prison</h4>
                     </div>
                     
                     <div className="space-y-4">
                       <p className="text-zinc-300 leading-relaxed">
-                        $689 billion in remittances flow globally each year, with families paying outrageous fees to send money home. 
-                        Traditional services like Western Union charge 5-15% fees and take days to complete transfers. 
-                        Bitcoin enables instant global transfers for under 1% cost - no middlemen required.
+                        Traditional banking operates like it's still 1950 - closing at 5pm, taking weekends off, and holding your money 
+                        hostage for days while they profit from the float. Bitcoin never sleeps, never takes holidays, and settles 
+                        payments 24/7/365 without asking permission from intermediaries.
                       </p>
                       
                       <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-orange-500">
                         <p className="text-zinc-300 text-sm">
-                          <span className="font-semibold text-orange-300">Real Impact:</span> A worker sending $500/month to family 
-                          loses $600-900 annually to traditional fees. With Bitcoin, the same transfers cost $60-120 total. 
-                          That's $500-800 more money reaching the people who need it most.
+                          <span className="font-semibold text-orange-300">The Time Tax:</span> International wire transfers can take 3-5 business days 
+                          and cost $15-50 per transaction. Bitcoin settles globally in 10 minutes for under $5, regardless of amount or destination. 
+                          The old system profits from delays - Bitcoin profits from speed.
                         </p>
                       </div>
                       
                       <div className="space-y-3">
-                        <h5 className="font-semibold text-white">Compare Real-World Scenarios:</h5>
+                        <h5 className="font-semibold text-white">Settlement Comparison You'll Experience:</h5>
                         <div className="grid gap-3 sm:grid-cols-2">
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
                             <Building2 className="w-5 h-5 text-red-400" />
                             <div>
-                              <p className="font-medium text-white text-sm">Western Union / Banks</p>
-                              <p className="text-zinc-400 text-xs">5-15% fees, 1-5 days, limited hours</p>
+                              <p className="font-medium text-white text-sm">Traditional Banking</p>
+                              <p className="text-zinc-400 text-xs">3-5 days, $15-50 fees, business hours only</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
                             <Bitcoin className="w-5 h-5 text-orange-400" />
                             <div>
                               <p className="font-medium text-white text-sm">Bitcoin Network</p>
-                              <p className="text-zinc-400 text-xs">Under 1% fees, 10 minutes, 24/7 global</p>
+                              <p className="text-zinc-400 text-xs">10 minutes, $1-5 fees, 24/7/365</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
@@ -7168,7 +7168,7 @@ export default function Home() {
                       <div className="flex justify-center pt-2">
                         <Button
                           onClick={() => {
-                            const simulator = document.querySelector('[data-remittances-simulator]');
+                            const simulator = document.querySelector('[data-settlement-simulator]');
                             if (simulator) {
                               simulator.scrollIntoView({ behavior: 'smooth' });
                             }
@@ -7176,170 +7176,218 @@ export default function Home() {
                           className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
                         >
                           <ChevronDown className="w-4 h-4 mr-2" />
-                          Calculate Your Savings
+                          Compare Settlement Speeds
                         </Button>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                {/* Global Remittances Calculator */}
-                <div className="space-y-6" data-remittances-simulator>
-                  <div className="grid gap-4 md:grid-cols-3">
-                    {/* Transfer Amount */}
-                    <Card className="bg-zinc-900 border-zinc-800 p-4">
-                      <div className="space-y-2">
-                        <label className="text-white font-semibold text-sm">Transfer Amount</label>
-                        <select
-                          value={remittanceAmount}
-                          onChange={(e) => setRemittanceAmount(Number(e.target.value))}
-                          className="w-full bg-zinc-800 text-white border-zinc-700 rounded p-2 text-sm"
-                        >
-                          <option value={200}>$200</option>
-                          <option value={500}>$500</option>
-                          <option value={1000}>$1,000</option>
-                          <option value={2000}>$2,000</option>
-                          <option value={5000}>$5,000</option>
-                        </select>
-                      </div>
-                    </Card>
+                {/* Input Controls */}
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4" data-settlement-simulator>
+                  {/* Amount */}
+                  <Card className="bg-zinc-900 border-zinc-800 p-4">
+                    <div className="space-y-2">
+                      <label className="text-white font-semibold text-sm">Payment Amount</label>
+                      <select
+                        value={settlementAmount}
+                        onChange={(e) => setSettlementAmount(Number(e.target.value))}
+                        className="w-full bg-zinc-800 text-white border-zinc-700 rounded p-2 text-sm"
+                      >
+                        <option value={500}>$500</option>
+                        <option value={1000}>$1,000</option>
+                        <option value={5000}>$5,000</option>
+                        <option value={10000}>$10,000</option>
+                        <option value={25000}>$25,000</option>
+                        <option value={50000}>$50,000</option>
+                      </select>
+                    </div>
+                  </Card>
 
-                    {/* From Country */}
-                    <Card className="bg-zinc-900 border-zinc-800 p-4">
-                      <div className="space-y-2">
-                        <label className="text-white font-semibold text-sm">From</label>
-                        <select
-                          value={remittanceFromCountry}
-                          onChange={(e) => setRemittanceFromCountry(e.target.value)}
-                          className="w-full bg-zinc-800 text-white border-zinc-700 rounded p-2 text-sm"
-                        >
-                          <option value="usa">🇺🇸 USA</option>
-                          <option value="canada">🇨🇦 Canada</option>
-                          <option value="uk">🇬🇧 UK</option>
-                          <option value="germany">🇩🇪 Germany</option>
-                        </select>
-                      </div>
-                    </Card>
+                  {/* Day of Week */}
+                  <Card className="bg-zinc-900 border-zinc-800 p-4">
+                    <div className="space-y-2">
+                      <label className="text-white font-semibold text-sm">Send Day</label>
+                      <select
+                        value={settlementDay}
+                        onChange={(e) => setSettlementDay(e.target.value)}
+                        className="w-full bg-zinc-800 text-white border-zinc-700 rounded p-2 text-sm"
+                      >
+                        <option value="monday">Monday</option>
+                        <option value="tuesday">Tuesday</option>
+                        <option value="wednesday">Wednesday</option>
+                        <option value="thursday">Thursday</option>
+                        <option value="friday">Friday</option>
+                        <option value="saturday">Saturday</option>
+                        <option value="sunday">Sunday</option>
+                      </select>
+                    </div>
+                  </Card>
 
-                    {/* To Country */}
-                    <Card className="bg-zinc-900 border-zinc-800 p-4">
-                      <div className="space-y-2">
-                        <label className="text-white font-semibold text-sm">To</label>
-                        <select
-                          value={remittanceToCountry}
-                          onChange={(e) => setRemittanceToCountry(e.target.value)}
-                          className="w-full bg-zinc-800 text-white border-zinc-700 rounded p-2 text-sm"
-                        >
-                          <option value="philippines">🇵🇭 Philippines</option>
-                          <option value="mexico">🇲🇽 Mexico</option>
-                          <option value="india">🇮🇳 India</option>
-                          <option value="nigeria">🇳🇬 Nigeria</option>
-                          <option value="guatemala">🇬🇹 Guatemala</option>
-                        </select>
-                      </div>
-                    </Card>
-                  </div>
+                  {/* Time */}
+                  <Card className="bg-zinc-900 border-zinc-800 p-4">
+                    <div className="space-y-2">
+                      <label className="text-white font-semibold text-sm">Send Time</label>
+                      <select
+                        value={settlementTime}
+                        onChange={(e) => setSettlementTime(e.target.value)}
+                        className="w-full bg-zinc-800 text-white border-zinc-700 rounded p-2 text-sm"
+                      >
+                        <option value="09:00">9:00 AM</option>
+                        <option value="12:00">12:00 PM</option>
+                        <option value="15:00">3:00 PM</option>
+                        <option value="17:00">5:00 PM</option>
+                        <option value="19:00">7:00 PM</option>
+                        <option value="22:00">10:00 PM</option>
+                      </select>
+                    </div>
+                  </Card>
+
+                  {/* Destination */}
+                  <Card className="bg-zinc-900 border-zinc-800 p-4">
+                    <div className="space-y-2">
+                      <label className="text-white font-semibold text-sm">Destination</label>
+                      <select
+                        value={settlementDestination}
+                        onChange={(e) => setSettlementDestination(e.target.value)}
+                        className="w-full bg-zinc-800 text-white border-zinc-700 rounded p-2 text-sm"
+                      >
+                        <option value="domestic">Domestic (US)</option>
+                        <option value="international">International</option>
+                        <option value="developing">Developing Country</option>
+                      </select>
+                    </div>
+                  </Card>
                 </div>
 
-                {/* Global Remittances Comparison */}
+                {/* Settlement Comparison */}
                 <div className="grid gap-6 md:grid-cols-2">
-                  {/* Traditional Money Transfer */}
+                  {/* Traditional Banking */}
                   <Card className="bg-gradient-to-br from-red-900/20 to-orange-900/20 border-red-800/50 p-6">
                     <div className="space-y-4">
                       <div className="flex items-center space-x-3">
                         <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
-                          <Building2 className="w-4 h-4 text-white" />
+                          <Clock className="w-4 h-4 text-white" />
                         </div>
-                        <h4 className="text-lg font-bold text-white">Western Union / Banks</h4>
+                        <h4 className="text-lg font-bold text-white">Traditional Banking</h4>
                       </div>
 
-                      {/* Traditional Remittances Results */}
+                      {/* Calculated Traditional Results */}
                       <div className="space-y-3">
-                        {(() => {
-                          // Calculate fees based on country and amount
-                          const getFeeRate = () => {
-                            switch(remittanceToCountry) {
-                              case 'philippines': return 0.08; // 8% typical
-                              case 'mexico': return 0.06; // 6% typical
-                              case 'india': return 0.07; // 7% typical
-                              case 'nigeria': return 0.12; // 12% typical
-                              case 'guatemala': return 0.10; // 10% typical
-                              default: return 0.08;
-                            }
-                          };
-                          
-                          const feeRate = getFeeRate();
-                          const totalFees = Math.round(remittanceAmount * feeRate);
-                          const recipientReceives = remittanceAmount - totalFees;
-                          
-                          return (
-                            <>
-                              <div className="flex justify-between">
-                                <span className="text-zinc-300">Transfer Time:</span>
-                                <span className="text-red-400 font-bold">1-5 days</span>
-                              </div>
+                        <div className="flex justify-between">
+                          <span className="text-zinc-300">Settlement Time:</span>
+                          <span className="text-red-400 font-bold">
+                            {(() => {
+                              const isWeekend = settlementDay === 'saturday' || settlementDay === 'sunday';
+                              const isAfterHours = parseInt(settlementTime.split(':')[0]) >= 17 || parseInt(settlementTime.split(':')[0]) < 9;
+                              const isInternational = settlementDestination !== 'domestic';
+                              
+                              if (isWeekend) return "2-4 business days";
+                              if (isAfterHours && isInternational) return "2-5 business days";
+                              if (isInternational) return "1-3 business days";
+                              if (isAfterHours) return "1-2 business days";
+                              return "Same day";
+                            })()}
+                          </span>
+                        </div>
 
-                              <div className="flex justify-between">
-                                <span className="text-zinc-300">Total Fees:</span>
-                                <span className="text-red-400 font-bold">${totalFees} ({(feeRate * 100).toFixed(1)}%)</span>
-                              </div>
+                        <div className="flex justify-between">
+                          <span className="text-zinc-300">Fees:</span>
+                          <span className="text-red-400 font-bold">
+                            ${(() => {
+                              const baseFee = settlementDestination === 'domestic' ? 25 : 45;
+                              const percentageFee = settlementAmount * (settlementDestination === 'domestic' ? 0.001 : 0.003);
+                              return (baseFee + percentageFee).toFixed(0);
+                            })()}
+                          </span>
+                        </div>
 
-                              <div className="flex justify-between">
-                                <span className="text-zinc-300">Exchange Rate Markup:</span>
-                                <span className="text-red-400 font-bold">2-4% hidden</span>
-                              </div>
+                        <div className="flex justify-between">
+                          <span className="text-zinc-300">Exchange Rate Markup:</span>
+                          <span className="text-red-400 font-bold">
+                            {settlementDestination === 'domestic' ? 'N/A' : '2-4%'}
+                          </span>
+                        </div>
 
-                              <div className="flex justify-between">
-                                <span className="text-zinc-300">Requirements:</span>
-                                <span className="text-red-400 font-bold text-xs">ID, forms, physical location</span>
-                              </div>
+                        <div className="flex justify-between">
+                          <span className="text-zinc-300">Available Hours:</span>
+                          <span className="text-red-400 font-bold">9 AM - 5 PM, Mon-Fri</span>
+                        </div>
 
-                              <div className="flex justify-between border-t border-red-800/50 pt-2">
-                                <span className="text-zinc-300 font-bold">Family Receives:</span>
-                                <span className="text-red-400 font-bold text-lg">${recipientReceives.toLocaleString()}</span>
-                              </div>
-                            </>
-                          );
-                        })()}
+                        <div className="flex justify-between border-t border-red-800/50 pt-2">
+                          <span className="text-zinc-300 font-bold">Total Cost:</span>
+                          <span className="text-red-400 font-bold text-lg">
+                            ${(() => {
+                              const baseFee = settlementDestination === 'domestic' ? 25 : 45;
+                              const percentageFee = settlementAmount * (settlementDestination === 'domestic' ? 0.001 : 0.003);
+                              const exchangeFee = settlementDestination === 'domestic' ? 0 : settlementAmount * 0.03;
+                              return (baseFee + percentageFee + exchangeFee).toFixed(0);
+                            })()}
+                          </span>
+                        </div>
                       </div>
+
+                      {/* Weekend Warning */}
+                      {(settlementDay === 'saturday' || settlementDay === 'sunday') && (
+                        <div className="bg-red-900/30 border border-red-700 rounded-lg p-3">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
+                            <span className="text-red-300 text-sm font-medium">Weekend Delay</span>
+                          </div>
+                          <p className="text-red-200 text-xs mt-1">
+                            Banks are closed. Payment will begin processing Monday morning.
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </Card>
 
-                  {/* Bitcoin Network */}
+                  {/* Bitcoin */}
                   <Card className="bg-gradient-to-br from-orange-900/20 to-yellow-900/20 border-orange-800/50 p-6">
                     <div className="space-y-4">
                       <div className="flex items-center space-x-3">
                         <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
-                          <Bitcoin className="w-4 h-4 text-white" />
+                          <Zap className="w-4 h-4 text-white" />
                         </div>
                         <h4 className="text-lg font-bold text-white">Bitcoin Network</h4>
                       </div>
 
-                      {/* Bitcoin Remittances Results */}
+                      {/* Bitcoin Results */}
                       <div className="space-y-3">
                         <div className="flex justify-between">
-                          <span className="text-zinc-300">Transfer Time:</span>
-                          <span className="text-green-400 font-bold">10 minutes</span>
+                          <span className="text-zinc-300">Settlement Time:</span>
+                          <span className="text-green-400 font-bold">~10 minutes</span>
                         </div>
 
                         <div className="flex justify-between">
                           <span className="text-zinc-300">Network Fee:</span>
-                          <span className="text-green-400 font-bold">$2-8 (0.4%)</span>
+                          <span className="text-green-400 font-bold">
+                            ${(() => {
+                              const btcFee = settlementAmount > 10000 ? 8 : settlementAmount > 1000 ? 5 : 2;
+                              return btcFee;
+                            })()}
+                          </span>
                         </div>
 
                         <div className="flex justify-between">
-                          <span className="text-zinc-300">Exchange Rate:</span>
-                          <span className="text-green-400 font-bold">Market rate (no markup)</span>
+                          <span className="text-zinc-300">Exchange Rate Markup:</span>
+                          <span className="text-green-400 font-bold">0.1-0.5%</span>
                         </div>
 
                         <div className="flex justify-between">
-                          <span className="text-zinc-300">Requirements:</span>
-                          <span className="text-green-400 font-bold text-xs">Just a Bitcoin wallet</span>
+                          <span className="text-zinc-300">Available Hours:</span>
+                          <span className="text-green-400 font-bold">24/7/365</span>
                         </div>
 
                         <div className="flex justify-between border-t border-orange-800/50 pt-2">
-                          <span className="text-zinc-300 font-bold">Family Receives:</span>
-                          <span className="text-green-400 font-bold text-lg">${(remittanceAmount - 5).toLocaleString()}</span>
+                          <span className="text-zinc-300 font-bold">Total Cost:</span>
+                          <span className="text-green-400 font-bold text-lg">
+                            ${(() => {
+                              const networkFee = settlementAmount > 10000 ? 8 : settlementAmount > 1000 ? 5 : 2;
+                              const exchangeFee = settlementAmount * 0.003; // 0.3% average
+                              return (networkFee + exchangeFee).toFixed(0);
+                            })()}
+                          </span>
                         </div>
                       </div>
 
@@ -7347,153 +7395,110 @@ export default function Home() {
                       <div className="bg-orange-900/30 border border-orange-700 rounded-lg p-3">
                         <div className="flex items-center space-x-2">
                           <div className="w-4 h-4 bg-orange-500 rounded-full"></div>
-                          <span className="text-orange-300 text-sm font-medium">24/7 Global Network</span>
+                          <span className="text-orange-300 text-sm font-medium">Always Available</span>
                         </div>
                         <p className="text-orange-200 text-xs mt-1">
-                          Bitcoin never sleeps. Send money instantly, any time, anywhere.
+                          Bitcoin never sleeps. Send money anytime, anywhere.
                         </p>
                       </div>
                     </div>
                   </Card>
                 </div>
 
-                {/* Annual Savings Comparison */}
-                <Card className="bg-zinc-900 border-zinc-800">
-                  <CardContent className="p-6">
-                    <div className="text-center space-y-4">
-                      <h4 className="text-xl font-bold text-white">Annual Savings for Regular Senders</h4>
-                      <p className="text-zinc-400">If you send ${remittanceAmount} every month...</p>
-                      
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div className="bg-red-900/20 border border-red-800/50 rounded-lg p-4">
-                          <div className="text-red-400 font-bold text-2xl">
-                            ${(() => {
-                              const getFeeRate = () => {
-                                switch(remittanceToCountry) {
-                                  case 'philippines': return 0.08;
-                                  case 'mexico': return 0.06;
-                                  case 'india': return 0.07;
-                                  case 'nigeria': return 0.12;
-                                  case 'guatemala': return 0.10;
-                                  default: return 0.08;
-                                }
-                              };
-                              const annualFees = Math.round(remittanceAmount * getFeeRate() * 12);
-                              return annualFees.toLocaleString();
-                            })()}
-                          </div>
-                          <div className="text-red-300 text-sm">Traditional services</div>
-                        </div>
-                        
-                        <div className="bg-green-900/20 border border-green-800/50 rounded-lg p-4">
-                          <div className="text-green-400 font-bold text-2xl">$60</div>
-                          <div className="text-green-300 text-sm">Bitcoin network</div>
-                        </div>
+                {/* Savings Comparison */}
+                <Card className="bg-zinc-900 border-zinc-800 p-6">
+                  <h4 className="text-lg font-bold text-white mb-4">Cost Savings Analysis</h4>
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-red-400">
+                        ${(() => {
+                          const baseFee = settlementDestination === 'domestic' ? 25 : 45;
+                          const percentageFee = settlementAmount * (settlementDestination === 'domestic' ? 0.001 : 0.003);
+                          const exchangeFee = settlementDestination === 'domestic' ? 0 : settlementAmount * 0.03;
+                          return (baseFee + percentageFee + exchangeFee).toFixed(0);
+                        })()}
                       </div>
-                      
-                      <div className="bg-orange-900/20 border border-orange-800/50 rounded-lg p-4">
-                        <div className="text-orange-300 font-bold text-lg">
-                          Annual Savings: ${(() => {
-                            const getFeeRate = () => {
-                              switch(remittanceToCountry) {
-                                case 'philippines': return 0.08;
-                                case 'mexico': return 0.06;
-                                case 'india': return 0.07;
-                                case 'nigeria': return 0.12;
-                                case 'guatemala': return 0.10;
-                                default: return 0.08;
-                              }
-                            };
-                            const traditionalAnnual = Math.round(remittanceAmount * getFeeRate() * 12);
-                            const bitcoinAnnual = 60;
-                            const savings = traditionalAnnual - bitcoinAnnual;
-                            return savings.toLocaleString();
-                          })()}
-                        </div>
-                        <div className="text-orange-200 text-sm">Money that stays with your family instead of middlemen</div>
-                      </div>
+                      <div className="text-zinc-400 text-sm">Traditional Cost</div>
                     </div>
-                  </CardContent>
+                    
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-orange-400">
+                        ${(() => {
+                          const networkFee = settlementAmount > 10000 ? 8 : settlementAmount > 1000 ? 5 : 2;
+                          const exchangeFee = settlementAmount * 0.003;
+                          return (networkFee + exchangeFee).toFixed(0);
+                        })()}
+                      </div>
+                      <div className="text-zinc-400 text-sm">Bitcoin Cost</div>
+                    </div>
+                    
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-orange-400">
+                        ${(() => {
+                          const traditionalCost = (() => {
+                            const baseFee = settlementDestination === 'domestic' ? 25 : 45;
+                            const percentageFee = settlementAmount * (settlementDestination === 'domestic' ? 0.001 : 0.003);
+                            const exchangeFee = settlementDestination === 'domestic' ? 0 : settlementAmount * 0.03;
+                            return baseFee + percentageFee + exchangeFee;
+                          })();
+                          const bitcoinCost = (() => {
+                            const networkFee = settlementAmount > 10000 ? 8 : settlementAmount > 1000 ? 5 : 2;
+                            const exchangeFee = settlementAmount * 0.003;
+                            return networkFee + exchangeFee;
+                          })();
+                          return (traditionalCost - bitcoinCost).toFixed(0);
+                        })()}
+                      </div>
+                      <div className="text-zinc-400 text-sm">You Save</div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 text-center">
+                    <div className="text-orange-400 font-bold text-lg">
+                      {(() => {
+                        const traditionalCost = (() => {
+                          const baseFee = settlementDestination === 'domestic' ? 25 : 45;
+                          const percentageFee = settlementAmount * (settlementDestination === 'domestic' ? 0.001 : 0.003);
+                          const exchangeFee = settlementDestination === 'domestic' ? 0 : settlementAmount * 0.03;
+                          return baseFee + percentageFee + exchangeFee;
+                        })();
+                        const bitcoinCost = (() => {
+                          const networkFee = settlementAmount > 10000 ? 8 : settlementAmount > 1000 ? 5 : 2;
+                          const exchangeFee = settlementAmount * 0.003;
+                          return networkFee + exchangeFee;
+                        })();
+                        const savingsPercent = ((traditionalCost - bitcoinCost) / traditionalCost * 100);
+                        return `${savingsPercent.toFixed(0)}% cheaper with Bitcoin`;
+                      })()}
+                    </div>
+                  </div>
                 </Card>
-              </div>
-            )}
 
-            {/* Settlement Speed Demo */}
-            {simulationsSubTab === "remittances" && (
-              <div className="space-y-6">
-                <div className="text-center space-y-2">
-                  <h3 className="text-xl font-bold text-white">Settlement Simulator</h3>
-                  <p className="text-zinc-400">See the difference between traditional banking and Bitcoin</p>
-                </div>
-
-                {/* Demo Controls */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-zinc-300 mb-2">Payment Amount</label>
-                    <Select value={settlementAmount} onValueChange={setSettlementAmount}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="100">$100</SelectItem>
-                        <SelectItem value="500">$500</SelectItem>
-                        <SelectItem value="1000">$1,000</SelectItem>
-                        <SelectItem value="5000">$5,000</SelectItem>
-                        <SelectItem value="10000">$10,000</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-zinc-300 mb-2">Day of Week</label>
-                    <Select value={settlementDay} onValueChange={setSettlementDay}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="monday">Monday</SelectItem>
-                        <SelectItem value="tuesday">Tuesday</SelectItem>
-                        <SelectItem value="wednesday">Wednesday</SelectItem>
-                        <SelectItem value="thursday">Thursday</SelectItem>
-                        <SelectItem value="friday">Friday</SelectItem>
-                        <SelectItem value="saturday">Saturday</SelectItem>
-                        <SelectItem value="sunday">Sunday</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-zinc-300 mb-2">Destination</label>
-                    <Select value={settlementDestination} onValueChange={setSettlementDestination}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="domestic">Same Country</SelectItem>
-                        <SelectItem value="international">International</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                {/* Settlement Comparison */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Traditional Banking */}
-                  <Card className="bg-zinc-800/50 border-red-500/20">
-                    <CardHeader>
-                      <CardTitle className="text-red-400 flex items-center gap-2">
-                        <Building2 className="w-5 h-5" />
-                        Traditional Banking
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="space-y-3">
-                        <h5 className="font-semibold text-red-400">Settlement Process</h5>
-                        <div className="space-y-2 text-sm">
-                          <div className="flex items-center space-x-2">
-                            <div className="w-2 h-2 bg-red-400 rounded-full"></div>
-                            <span className="text-zinc-300">SWIFT network messaging</span>
-                          </div>
+                {/* Settlement Process Visualization */}
+                <Card className="bg-zinc-900 border-zinc-800 p-6">
+                  <h4 className="text-lg font-bold text-white mb-4">How Settlement Works</h4>
+                  
+                  <div className="grid gap-6 md:grid-cols-2">
+                    {/* Traditional Process */}
+                    <div className="space-y-3">
+                      <h5 className="font-semibold text-red-400">Traditional Banking</h5>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                          <span className="text-zinc-300">Your bank holds your money</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                          <span className="text-zinc-300">Bank contacts correspondent bank</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                          <span className="text-zinc-300">Multiple intermediary banks involved</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                          <span className="text-zinc-300">SWIFT network messaging</span>
+                        </div>
                         <div className="flex items-center space-x-2">
                           <div className="w-2 h-2 bg-red-400 rounded-full"></div>
                           <span className="text-zinc-300">Compliance and AML checks</span>

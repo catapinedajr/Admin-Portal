@@ -3,9 +3,9 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-// import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
+import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { useEffect } from "react";
-import Home from "@/pages/home-simple";
+import Home from "@/pages/home-new";
 import Onboarding from "@/pages/onboarding";
 import NotFound from "@/pages/not-found";
 
@@ -36,10 +36,12 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
+      <SubscriptionProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </SubscriptionProvider>
     </QueryClientProvider>
   );
 }
