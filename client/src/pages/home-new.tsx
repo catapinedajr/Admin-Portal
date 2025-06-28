@@ -28,6 +28,9 @@ import {
   Quote,
   ExternalLink,
   Globe,
+  Smartphone,
+  Monitor,
+  HardDrive,
   Users,
   FileText,
   Calendar,
@@ -1859,15 +1862,16 @@ export default function Home() {
     {
       stage: "Address Verification", 
       title: "🎯 Verify Bitcoin Address",
-      description: "You're about to send 0.5 BTC. Check if this address matches what you copied:",
+      description: "You're about to send 0.5 BTC ($21,000). Check if this address matches what you copied:",
       copied: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
-      displayed: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+      displayed: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w1h", // Malicious change: 'l' to '1'
       options: [
-        { text: "Addresses match - Safe to send", correct: true },
+        { text: "Addresses match - Safe to send", correct: false },
+        { text: "Something looks wrong - I need to verify character by character", correct: true },
         { text: "Close enough - Send anyway", correct: false },
-        { text: "First 10 characters match - Good enough", correct: false },
-        { text: "Let me double-check character by character", correct: true }
-      ]
+        { text: "First 10 characters match - Good enough", correct: false }
+      ],
+      explanation: "The address was modified! The last few characters changed from 'wlh' to 'w1h'. This is a common attack where malware substitutes similar-looking characters. Always verify every character."
     },
     {
       stage: "Scam Recognition",
@@ -4043,84 +4047,177 @@ export default function Home() {
             {/* Safety Training - Only show for premium users */}
             {isPremiumTier && simulationsSubTab === "safety" && (
               <div className="space-y-6">
-                <div className="text-center space-y-2">
-                  <h3 className="text-xl font-bold text-white">Bitcoin Security Best Practices</h3>
-                  <p className="text-zinc-400">Learn essential security measures to protect your Bitcoin</p>
+                <div className="text-center space-y-4">
+                  <h3 className="text-xl font-bold text-white">🛡️ Bitcoin Security Training Center</h3>
+                  <p className="text-zinc-400">Master essential security skills to protect your Bitcoin from real-world threats</p>
+                  
+                  {/* Prominent Safety Test Navigation */}
+                  <div className="flex justify-center">
+                    <Button
+                      onClick={() => {
+                        // Scroll to safety test section
+                        const testSection = document.getElementById('safety-skills-test');
+                        if (testSection) {
+                          testSection.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }}
+                      className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-6 py-3 text-lg font-semibold"
+                    >
+                      🎯 Test Your Security Skills
+                    </Button>
+                  </div>
+                  
+                  <div className="text-sm text-zinc-500">
+                    Complete all training modules, then test your knowledge with real-world scenarios
+                  </div>
                 </div>
 
-                <div className="grid gap-6 md:grid-cols-2">
-                  <Card className="bg-zinc-900 border-zinc-800">
-                    <CardContent className="p-6">
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                          <div className="p-2 bg-green-600/20 rounded-lg">
-                            <Shield className="w-6 h-6 text-green-400" />
-                          </div>
-                          <h4 className="text-lg font-bold text-white">Wallet Security Rules</h4>
+                {/* Security vs Convenience Spectrum */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h4 className="text-lg font-bold text-white mb-4">🎯 Choose Your Wallet Based on Your Needs</h4>
+                    <p className="text-zinc-400 text-sm mb-6">Different situations require different security levels. Here's how to match your wallet to your use case:</p>
+                    
+                    <div className="grid gap-4 md:grid-cols-3">
+                      {/* Daily Spending - Mobile */}
+                      <div className="p-4 bg-gradient-to-br from-blue-900/30 to-blue-800/30 border border-blue-700/50 rounded-lg">
+                        <div className="flex items-center gap-2 mb-3">
+                          <UserIcon className="w-5 h-5 text-blue-400" />
+                          <h5 className="font-semibold text-white">Daily Spending</h5>
                         </div>
+                        <div className="space-y-2 text-sm">
+                          <p className="text-blue-300 font-medium">Mobile Wallet</p>
+                          <p className="text-zinc-400">Amount: $10-$500</p>
+                          <p className="text-zinc-400">Use: Coffee, lunch, small purchases</p>
+                          <p className="text-green-400 text-xs">✓ Convenient, quick payments</p>
+                          <p className="text-orange-400 text-xs">⚠ Higher theft risk</p>
+                        </div>
+                      </div>
+
+                      {/* Medium Storage - Desktop */}
+                      <div className="p-4 bg-gradient-to-br from-orange-900/30 to-orange-800/30 border border-orange-700/50 rounded-lg">
+                        <div className="flex items-center gap-2 mb-3">
+                          <Globe className="w-5 h-5 text-orange-400" />
+                          <h5 className="font-semibold text-white">Medium Storage</h5>
+                        </div>
+                        <div className="space-y-2 text-sm">
+                          <p className="text-orange-300 font-medium">Desktop Wallet</p>
+                          <p className="text-zinc-400">Amount: $500-$10,000</p>
+                          <p className="text-zinc-400">Use: Trading, regular transactions</p>
+                          <p className="text-green-400 text-xs">✓ Good balance of security/convenience</p>
+                          <p className="text-orange-400 text-xs">⚠ Computer malware risk</p>
+                        </div>
+                      </div>
+
+                      {/* Long-term Storage - Hardware */}
+                      <div className="p-4 bg-gradient-to-br from-green-900/30 to-green-800/30 border border-green-700/50 rounded-lg">
+                        <div className="flex items-center gap-2 mb-3">
+                          <Shield className="w-5 h-5 text-green-400" />
+                          <h5 className="font-semibold text-white">Long-term Storage</h5>
+                        </div>
+                        <div className="space-y-2 text-sm">
+                          <p className="text-green-300 font-medium">Hardware Wallet</p>
+                          <p className="text-zinc-400">Amount: $10,000+</p>
+                          <p className="text-zinc-400">Use: Savings, HODLing</p>
+                          <p className="text-green-400 text-xs">✓ Maximum security (offline)</p>
+                          <p className="text-orange-400 text-xs">⚠ Less convenient for daily use</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-6 p-4 bg-zinc-800/50 rounded-lg">
+                      <h6 className="font-semibold text-white mb-2">💡 Pro Tip: The Three-Wallet Strategy</h6>
+                      <p className="text-zinc-400 text-sm">
+                        Most experienced Bitcoin users combine all three: mobile wallet for daily spending, desktop wallet for regular transactions, 
+                        and hardware wallet for long-term savings. This gives you both security and convenience.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Social Engineering Awareness */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-red-600/20 rounded-lg">
+                        <AlertTriangle className="w-6 h-6 text-red-400" />
+                      </div>
+                      <h4 className="text-lg font-bold text-white">🧠 Social Engineering: The #1 Bitcoin Threat</h4>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div className="p-4 bg-red-900/20 border border-red-700/50 rounded-lg">
+                        <h5 className="font-semibold text-red-300 mb-2">📊 2025 Threat Statistics</h5>
+                        <div className="grid grid-cols-2 gap-4 text-sm">
+                          <div>
+                            <p className="text-white font-medium">$2.1 Billion Stolen</p>
+                            <p className="text-zinc-400">Through social engineering in 2025</p>
+                          </div>
+                          <div>
+                            <p className="text-white font-medium">135% Increase</p>
+                            <p className="text-zinc-400">In crypto-draining malware</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid gap-4 md:grid-cols-2">
                         <div className="space-y-3">
-                          <div className="flex items-start gap-2">
-                            <CheckCircle className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
-                            <div>
-                              <p className="text-white text-sm font-medium">Never share your private keys</p>
-                              <p className="text-zinc-400 text-xs">Anyone with your private key can steal your Bitcoin</p>
+                          <h6 className="font-semibold text-white">Most Common Attacks:</h6>
+                          <div className="space-y-2">
+                            <div className="flex items-start gap-2">
+                              <div className="w-2 h-2 bg-red-400 rounded-full mt-2"></div>
+                              <div>
+                                <p className="text-white text-sm font-medium">Romance/Pig Butchering</p>
+                                <p className="text-zinc-400 text-xs">Building relationships to steal crypto</p>
+                              </div>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <div className="w-2 h-2 bg-red-400 rounded-full mt-2"></div>
+                              <div>
+                                <p className="text-white text-sm font-medium">Celebrity Deepfakes</p>
+                                <p className="text-zinc-400 text-xs">AI-generated videos promoting fake giveaways</p>
+                              </div>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <div className="w-2 h-2 bg-red-400 rounded-full mt-2"></div>
+                              <div>
+                                <p className="text-white text-sm font-medium">Fake Support Staff</p>
+                                <p className="text-zinc-400 text-xs">Impersonating legitimate customer service</p>
+                              </div>
                             </div>
                           </div>
-                          <div className="flex items-start gap-2">
-                            <CheckCircle className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
-                            <div>
-                              <p className="text-white text-sm font-medium">Use hardware wallets for large amounts</p>
-                              <p className="text-zinc-400 text-xs">Hardware wallets keep keys offline and secure</p>
+                        </div>
+
+                        <div className="space-y-3">
+                          <h6 className="font-semibold text-white">Defense Strategies:</h6>
+                          <div className="space-y-2">
+                            <div className="flex items-start gap-2">
+                              <CheckCircle className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
+                              <div>
+                                <p className="text-white text-sm font-medium">Verify through multiple channels</p>
+                                <p className="text-zinc-400 text-xs">Never trust a single contact method</p>
+                              </div>
                             </div>
-                          </div>
-                          <div className="flex items-start gap-2">
-                            <CheckCircle className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
-                            <div>
-                              <p className="text-white text-sm font-medium">Write down your seed phrase</p>
-                              <p className="text-zinc-400 text-xs">Store backup in a safe, physical location</p>
+                            <div className="flex items-start gap-2">
+                              <CheckCircle className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
+                              <div>
+                                <p className="text-white text-sm font-medium">Take time to think</p>
+                                <p className="text-zinc-400 text-xs">Urgency is a manipulation tactic</p>
+                              </div>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <CheckCircle className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
+                              <div>
+                                <p className="text-white text-sm font-medium">Never share private keys</p>
+                                <p className="text-zinc-400 text-xs">No legitimate service ever needs them</p>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="bg-zinc-900 border-zinc-800">
-                    <CardContent className="p-6">
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                          <div className="p-2 bg-red-600/20 rounded-lg">
-                            <AlertTriangle className="w-6 h-6 text-red-400" />
-                          </div>
-                          <h4 className="text-lg font-bold text-white">Common Scams to Avoid</h4>
-                        </div>
-                        <div className="space-y-3">
-                          <div className="flex items-start gap-2">
-                            <AlertTriangle className="w-4 h-4 text-red-400 mt-1 flex-shrink-0" />
-                            <div>
-                              <p className="text-white text-sm font-medium">Fake websites and apps</p>
-                              <p className="text-zinc-400 text-xs">Always verify URLs and download from official sources</p>
-                            </div>
-                          </div>
-                          <div className="flex items-start gap-2">
-                            <AlertTriangle className="w-4 h-4 text-red-400 mt-1 flex-shrink-0" />
-                            <div>
-                              <p className="text-white text-sm font-medium">Phishing emails</p>
-                              <p className="text-zinc-400 text-xs">Never click links asking for private keys or passwords</p>
-                            </div>
-                          </div>
-                          <div className="flex items-start gap-2">
-                            <AlertTriangle className="w-4 h-4 text-red-400 mt-1 flex-shrink-0" />
-                            <div>
-                              <p className="text-white text-sm font-medium">Too-good-to-be-true offers</p>
-                              <p className="text-zinc-400 text-xs">No legitimate service promises guaranteed returns</p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
+                    </div>
+                  </CardContent>
+                </Card>
 
                 {/* Interactive Wallet Explorer */}
                 <Card className="bg-zinc-900 border-zinc-800">
@@ -4239,53 +4336,281 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                {/* Interactive Safety Quiz */}
-                <Card className="bg-zinc-900 border-zinc-800">
+                {/* Interactive Safety Skills Test */}
+                <Card id="safety-skills-test" className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
-                    <h4 className="text-lg font-bold text-white mb-4">Test Your Security Knowledge</h4>
-                    <div className="space-y-6">
-                      {safetyQuestions.map((q, index) => (
-                        <div key={index} className="space-y-3">
-                          <h5 className="font-medium text-white">{index + 1}. {q.question}</h5>
-                          <div className="grid gap-2">
-                            {q.options.map((option, optIndex) => (
-                              <Button
-                                key={optIndex}
-                                variant={safetyQuizScore > index && optIndex === q.correct ? "default" : "outline"}
-                                className={`justify-start text-left ${
-                                  safetyQuizScore > index 
-                                    ? optIndex === q.correct 
-                                      ? "bg-green-600 border-green-500 text-white" 
-                                      : "border-zinc-700 text-zinc-400"
-                                    : "border-zinc-700 text-zinc-300 hover:border-orange-500"
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-orange-600/20 rounded-lg">
+                        <Shield className="w-6 h-6 text-orange-400" />
+                      </div>
+                      <h4 className="text-xl font-bold text-white">🎯 Security Skills Test</h4>
+                    </div>
+                    <p className="text-zinc-400 mb-6">Apply what you've learned! Test your ability to identify real-world Bitcoin security threats.</p>
+                    {/* Phishing Email Simulator */}
+                    {!safetyCompleted ? (
+                      <div className="space-y-6">
+                        {/* Progress Indicator */}
+                        <div className="flex items-center justify-between mb-6">
+                          <div className="flex items-center gap-3">
+                            <h5 className="font-semibold text-white">Scenario {safetyStage + 1} of {safetySimulations.length}</h5>
+                            <Badge variant="secondary">{safetyScore}/{safetyStage} correct</Badge>
+                          </div>
+                          <div className="flex gap-1">
+                            {safetySimulations.map((_, index) => (
+                              <div
+                                key={index}
+                                className={`w-3 h-3 rounded-full ${
+                                  index < safetyStage ? 'bg-green-500' : 
+                                  index === safetyStage ? 'bg-orange-500' : 'bg-zinc-600'
                                 }`}
-                                onClick={() => {
-                                  if (safetyQuizScore === index && optIndex === q.correct) {
-                                    setSafetyQuizScore(index + 1);
-                                  }
-                                }}
-                                disabled={safetyQuizScore > index}
-                              >
-                                {String.fromCharCode(65 + optIndex)}. {option}
-                              </Button>
+                              />
                             ))}
                           </div>
-                          {safetyQuizScore > index && (
-                            <div className="p-3 bg-green-600/10 border border-green-600/20 rounded-lg">
-                              <p className="text-green-300 text-sm font-medium">Correct!</p>
-                              <p className="text-green-100 text-sm">{q.explanation}</p>
+                        </div>
+
+                        {/* Current Simulation */}
+                        <Card className="bg-zinc-800 border-zinc-700">
+                          <CardContent className="p-6">
+                            <h6 className="font-semibold text-white mb-3">{safetySimulations[safetyStage]?.title}</h6>
+                            <p className="text-zinc-400 text-sm mb-4">{safetySimulations[safetyStage]?.description}</p>
+
+                            {/* Phishing Email Simulation */}
+                            {safetyStage === 0 && (
+                              <div className="space-y-4">
+                                <div className="p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
+                                  <div className="text-xs text-zinc-500 mb-2">Email Inbox - Which email is dangerous?</div>
+                                  <div className="space-y-2">
+                                    {safetySimulations[0]?.emails?.map((email, index) => (
+                                      <button
+                                        key={index}
+                                        onClick={() => setSelectedOption(index)}
+                                        className={`w-full p-3 border rounded-lg text-left transition-colors ${
+                                          selectedOption === index 
+                                            ? 'border-orange-500 bg-orange-500/10' 
+                                            : 'border-zinc-600 hover:border-zinc-500'
+                                        }`}
+                                      >
+                                        <div className="flex justify-between items-start mb-1">
+                                          <span className="text-white text-sm font-medium">{email.from}</span>
+                                          <span className="text-zinc-500 text-xs">Today, 2:30 PM</span>
+                                        </div>
+                                        <div className="text-white text-sm mb-1">{email.subject}</div>
+                                        <div className="text-zinc-400 text-xs">{email.preview}</div>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Seed Phrase Storage Simulation */}
+                            {safetyStage === 1 && (
+                              <div className="space-y-4">
+                                <div className="p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
+                                  <div className="text-sm text-zinc-300 mb-3">
+                                    You just received your 12-word seed phrase. Where should you store it?
+                                  </div>
+                                  <div className="p-3 bg-zinc-800 rounded border border-dashed border-zinc-500 mb-4">
+                                    <div className="text-xs text-zinc-500 mb-2">Your Seed Phrase:</div>
+                                    <div className="grid grid-cols-4 gap-2 text-xs text-orange-300 font-mono">
+                                      <span>1. abandon</span><span>2. ability</span><span>3. able</span><span>4. about</span>
+                                      <span>5. above</span><span>6. absent</span><span>7. absorb</span><span>8. abstract</span>
+                                      <span>9. absurd</span><span>10. abuse</span><span>11. access</span><span>12. accident</span>
+                                    </div>
+                                  </div>
+                                  <div className="space-y-2">
+                                    {safetySimulations[1]?.options?.map((option, index) => (
+                                      <button
+                                        key={index}
+                                        onClick={() => setSelectedOption(index)}
+                                        className={`w-full p-3 border rounded-lg text-left transition-colors ${
+                                          selectedOption === index 
+                                            ? 'border-orange-500 bg-orange-500/10' 
+                                            : 'border-zinc-600 hover:border-zinc-500'
+                                        }`}
+                                      >
+                                        <div className="text-white text-sm font-medium mb-1">{option.method}</div>
+                                        <div className="text-zinc-400 text-xs">{option.security}</div>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Address Verification Simulation */}
+                            {safetyStage === 2 && (
+                              <div className="space-y-4">
+                                <div className="p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
+                                  <div className="text-sm text-zinc-300 mb-3">
+                                    You're sending Bitcoin to: <span className="text-orange-300 font-mono">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</span>
+                                  </div>
+                                  <div className="text-sm text-zinc-300 mb-3">Your wallet shows this address to confirm:</div>
+                                  <div className="space-y-2">
+                                    {safetySimulations[2]?.options?.map((option, index) => (
+                                      <button
+                                        key={index}
+                                        onClick={() => setSelectedOption(index)}
+                                        className={`w-full p-3 border rounded-lg text-left transition-colors ${
+                                          selectedOption === index 
+                                            ? 'border-orange-500 bg-orange-500/10' 
+                                            : 'border-zinc-600 hover:border-zinc-500'
+                                        }`}
+                                      >
+                                        <div className="text-orange-300 text-sm font-mono mb-1">{option.text}</div>
+                                        <div className="text-zinc-400 text-xs">Click to verify this address</div>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Social Engineering Simulation */}
+                            {safetyStage === 3 && (
+                              <div className="space-y-4">
+                                <div className="p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
+                                  <div className="text-sm text-zinc-300 mb-3">
+                                    You receive this message on Telegram. What should you do?
+                                  </div>
+                                  <div className="p-3 bg-blue-900/20 border border-blue-700/50 rounded-lg mb-4">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <div className="w-6 h-6 bg-blue-500 rounded-full"></div>
+                                      <span className="text-blue-300 text-sm">@crypto_support_official</span>
+                                      <span className="text-green-400 text-xs">✓</span>
+                                    </div>
+                                    <div className="text-white text-sm">
+                                      "Hi! We detected unusual activity on your Coinbase account. Please click this link to verify your identity within 24 hours or your account will be permanently suspended: [link]"
+                                    </div>
+                                  </div>
+                                  <div className="space-y-2">
+                                    {safetySimulations[3]?.scenarios?.map((scenario, index) => (
+                                      <button
+                                        key={index}
+                                        onClick={() => setSelectedOption(index)}
+                                        className={`w-full p-3 border rounded-lg text-left transition-colors ${
+                                          selectedOption === index 
+                                            ? 'border-orange-500 bg-orange-500/10' 
+                                            : 'border-zinc-600 hover:border-zinc-500'
+                                        }`}
+                                      >
+                                        <div className="text-white text-sm">{scenario.action}</div>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Action Buttons */}
+                            <div className="flex gap-3 pt-4">
+                              <Button
+                                onClick={() => {
+                                  if (selectedOption !== null) {
+                                    checkSafetyAnswer(selectedOption);
+                                    setShowResult(true);
+                                  }
+                                }}
+                                disabled={selectedOption === null || showResult}
+                                className="bg-orange-600 hover:bg-orange-700"
+                              >
+                                Submit Answer
+                              </Button>
+                              
+                              {showResult && (
+                                <Button
+                                  onClick={nextSafetyStage}
+                                  variant="outline"
+                                  className="border-zinc-600"
+                                >
+                                  {safetyStage < safetySimulations.length - 1 ? 'Next Scenario' : 'Finish Test'}
+                                </Button>
+                              )}
+                            </div>
+
+                            {/* Result Feedback */}
+                            {showResult && (
+                              <div className={`mt-4 p-4 rounded-lg border ${
+                                safetyScore > safetyStage ? 'bg-green-900/20 border-green-700' : 'bg-red-900/20 border-red-700'
+                              }`}>
+                                {safetyScore > safetyStage ? (
+                                  <div>
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <CheckCircle className="w-5 h-5 text-green-400" />
+                                      <span className="text-green-300 font-medium">Correct!</span>
+                                    </div>
+                                    <p className="text-green-100 text-sm">
+                                      {safetySimulations[safetyStage]?.explanation || 'Good job identifying the security threat!'}
+                                    </p>
+                                  </div>
+                                ) : (
+                                  <div>
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <AlertTriangle className="w-5 h-5 text-red-400" />
+                                      <span className="text-red-300 font-medium">Be Careful!</span>
+                                    </div>
+                                    <p className="text-red-100 text-sm">
+                                      {safetySimulations[safetyStage]?.explanation || 'This could have put your Bitcoin at risk. Review the training materials above.'}
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      </div>
+                    ) : (
+                      /* Final Results */
+                      <div className="text-center space-y-4">
+                        <div className={`p-6 rounded-lg border ${
+                          safetyScore >= safetySimulations.length * 0.8 
+                            ? 'bg-green-900/20 border-green-700' 
+                            : safetyScore >= safetySimulations.length * 0.6
+                            ? 'bg-orange-900/20 border-orange-700'
+                            : 'bg-red-900/20 border-red-700'
+                        }`}>
+                          {safetyScore >= safetySimulations.length * 0.8 ? (
+                            <div>
+                              <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-3" />
+                              <h5 className="text-xl font-bold text-green-300 mb-2">Security Expert! 🛡️</h5>
+                              <p className="text-green-100 mb-4">
+                                Score: {safetyScore}/{safetySimulations.length} - Your Bitcoin will be safe!
+                              </p>
+                            </div>
+                          ) : safetyScore >= safetySimulations.length * 0.6 ? (
+                            <div>
+                              <AlertTriangle className="w-12 h-12 text-orange-400 mx-auto mb-3" />
+                              <h5 className="text-xl font-bold text-orange-300 mb-2">Good Start! ⚠️</h5>
+                              <p className="text-orange-100 mb-4">
+                                Score: {safetyScore}/{safetySimulations.length} - Review the training materials above.
+                              </p>
+                            </div>
+                          ) : (
+                            <div>
+                              <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-3" />
+                              <h5 className="text-xl font-bold text-red-300 mb-2">Practice More! 🚨</h5>
+                              <p className="text-red-100 mb-4">
+                                Score: {safetyScore}/{safetySimulations.length} - Your Bitcoin could be at risk!
+                              </p>
                             </div>
                           )}
+                          
+                          <Button
+                            onClick={() => {
+                              setSafetyStage(0);
+                              setSafetyScore(0);
+                              setSelectedOption(null);
+                              setShowResult(false);
+                              setSafetyCompleted(false);
+                            }}
+                            variant="outline"
+                            className="border-zinc-600"
+                          >
+                            Retake Test
+                          </Button>
                         </div>
-                      ))}
-                      {safetyQuizScore === safetyQuestions.length && (
-                        <div className="p-4 bg-green-600/20 border border-green-500 rounded-lg text-center">
-                          <CheckCircle className="w-8 h-8 text-green-400 mx-auto mb-2" />
-                          <h5 className="font-bold text-green-300 mb-1">Perfect Score! 🎉</h5>
-                          <p className="text-green-100 text-sm">You've mastered Bitcoin security basics. Your funds will be safe!</p>
-                        </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </div>
