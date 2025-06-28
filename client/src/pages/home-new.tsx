@@ -1876,7 +1876,7 @@ export default function Home() {
     {
       stage: "Scam Recognition",
       title: "🚨 Spot the Bitcoin Scam", 
-      description: "Which of these messages is definitely a scam?",
+      description: "Click on the legitimate (safe) message - avoid the scams!",
       scenarios: [
         {
           message: "Elon Musk is giving away Bitcoin! Send 0.1 BTC to get 1 BTC back! Limited time offer!",
@@ -1893,7 +1893,8 @@ export default function Home() {
           isScam: true,
           tactics: ["Classic advance fee fraud", "Unrealistic returns", "Emotional manipulation"]
         }
-      ]
+      ],
+      explanation: "The Bitcoin meetup message is legitimate and safe - it's just an educational gathering. The other two are classic scams: the 'Elon giveaway' uses celebrity impersonation and impossible returns, while the 'prince' message is a traditional advance fee fraud adapted for Bitcoin."
     },
     {
       stage: "Exchange Security",
@@ -4759,7 +4760,7 @@ export default function Home() {
                               <div className="space-y-4">
                                 <div className="p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
                                   <div className="text-sm text-zinc-300 mb-4">
-                                    Which of these messages is definitely a Bitcoin scam? Click on the scam message:
+                                    Which message is legitimate and safe? Click on the safe message (avoid the two scams):
                                   </div>
                                   <div className="space-y-3">
                                     {safetySimulations[3]?.scenarios?.map((scenario, index) => (
