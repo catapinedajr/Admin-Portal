@@ -5496,20 +5496,7 @@ export default function Home() {
             )}
 
 
-            {/* Transaction Builder */}
-            {simulationsSubTab === "transaction" && (
-              <TransactionBuilder />
-            )}
 
-            {/* Wallet Safety */}
-            {simulationsSubTab === "safety" && (
-              <WalletSafety />
-            )}
-
-            {/* HODLing Strategy */}
-            {simulationsSubTab === "hodl" && (
-              <HODLingSimulator />
-            )}
           </div>
         )}
       </main>
