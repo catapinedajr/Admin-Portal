@@ -4421,9 +4421,18 @@ export default function Home() {
                       <p className="text-zinc-300 text-sm leading-relaxed mb-3">
                         <span className="font-semibold text-white">Bitcoin wallets</span> are software or hardware tools that store your private keys—the secret codes that prove you own your Bitcoin. Unlike a physical wallet that holds cash, Bitcoin wallets don't actually store Bitcoin itself. Instead, they manage the cryptographic keys that give you access to your Bitcoin on the blockchain.
                       </p>
-                      <p className="text-zinc-300 text-sm leading-relaxed">
+                      <p className="text-zinc-300 text-sm leading-relaxed mb-4">
                         <span className="font-semibold text-orange-300">Why this matters:</span> Your choice of wallet directly impacts your security, convenience, and true ownership of Bitcoin. Different wallet types offer different trade-offs between security and ease of use, making it crucial to understand your options before storing any Bitcoin.
                       </p>
+                      <div className="flex justify-center">
+                        <Button
+                          onClick={() => setActiveTab('more')}
+                          className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 text-sm"
+                        >
+                          <Shield className="w-4 h-4 mr-2" />
+                          Shop Recommended Hardware Wallets
+                        </Button>
+                      </div>
                     </div>
                     
                     <p className="text-zinc-400 text-sm mb-6">Click on any wallet type below to learn detailed information</p>
