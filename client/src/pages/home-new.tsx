@@ -3321,13 +3321,13 @@ export default function Home() {
                             )}
                           </div>
 
-                          {/* Bitcoin Step 1 */}
-                          <div className={`p-3 rounded-lg border transition-all duration-500 ${
+                          {/* Bitcoin Step 1 - Enlarged */}
+                          <div className={`p-4 rounded-lg border transition-all duration-500 min-h-[120px] ${
                             settlementProgress.bitcoin >= 1 
                               ? 'bg-green-800/30 border-green-600/50' 
                               : 'bg-zinc-800 border-zinc-700'
                           }`}>
-                            <div className="flex items-center gap-2 mb-2">
+                            <div className="flex items-center gap-2 mb-3">
                               <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold transition-all duration-500 ${
                                 settlementProgress.bitcoin >= 1 ? 'bg-green-500' : 'bg-zinc-600'
                               }`}>
@@ -3336,18 +3336,18 @@ export default function Home() {
                               <span className={`font-medium text-sm transition-colors duration-500 ${
                                 settlementProgress.bitcoin >= 1 ? 'text-green-200' : 'text-zinc-400'
                               }`}>
-                                Broadcast to network
+                                Broadcast to Network
                               </span>
                             </div>
-                            <div className={`text-xs transition-colors duration-500 ${
+                            <div className={`text-xs mb-3 transition-colors duration-500 ${
                               settlementProgress.bitcoin >= 1 ? 'text-green-300' : 'text-zinc-500'
                             }`}>
-                              Instantly shared with global network
+                              Instantly broadcast to global network
                             </div>
-                            {settlementProgress.bitcoin === 1 && animationActive && (
-                              <div className="mt-2 flex items-center gap-2 text-green-400 text-xs">
+                            {settlementProgress.bitcoin >= 1 && (
+                              <div className="mt-2 flex items-center gap-2 text-green-400 text-xs bg-green-900/30 rounded px-2 py-1">
                                 <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
-                                Processing...
+                                ✅ Transaction globally visible
                               </div>
                             )}
                           </div>
@@ -3386,13 +3386,13 @@ export default function Home() {
                             )}
                           </div>
 
-                          {/* Bitcoin Step 2 */}
-                          <div className={`p-3 rounded-lg border transition-all duration-500 ${
+                          {/* Bitcoin Step 2 - Double Height with Always Visible Miners */}
+                          <div className={`p-4 rounded-lg border transition-all duration-500 min-h-[160px] ${
                             settlementProgress.bitcoin >= 2 
                               ? 'bg-green-800/30 border-green-600/50' 
                               : 'bg-zinc-800 border-zinc-700'
                           }`}>
-                            <div className="flex items-center gap-2 mb-2">
+                            <div className="flex items-center gap-2 mb-3">
                               <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold transition-all duration-500 ${
                                 settlementProgress.bitcoin >= 2 ? 'bg-green-500' : 'bg-zinc-600'
                               }`}>
@@ -3401,18 +3401,40 @@ export default function Home() {
                               <span className={`font-medium text-sm transition-colors duration-500 ${
                                 settlementProgress.bitcoin >= 2 ? 'text-green-200' : 'text-zinc-400'
                               }`}>
-                                Confirmed ✓
+                                Network Consensus
                               </span>
                             </div>
-                            <div className={`text-xs transition-colors duration-500 ${
+                            <div className={`text-xs mb-3 transition-colors duration-500 ${
                               settlementProgress.bitcoin >= 2 ? 'text-green-300' : 'text-zinc-500'
                             }`}>
-                              Transfer complete - money arrived
+                              Global miners validate transaction
                             </div>
-                            {settlementProgress.bitcoin === 2 && animationActive && (
-                              <div className="mt-2 flex items-center gap-2 text-green-400 text-xs">
-                                <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
-                                Broadcasting...
+                            
+                            {/* Always Visible Miner Consensus Animation */}
+                            {settlementProgress.bitcoin >= 2 && (
+                              <div className="space-y-3">
+                                <div className="flex items-center gap-2 text-green-400 text-xs">
+                                  <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
+                                  Consensus achieved - transfer confirmed
+                                </div>
+                                
+                                {/* Miner Grid - Always Visible */}
+                                <div className="grid grid-cols-3 gap-1.5">
+                                  {[1, 2, 3, 4, 5, 6].map((miner) => (
+                                    <div
+                                      key={miner}
+                                      className="flex items-center gap-1 text-[10px] text-green-400 transition-all duration-300"
+                                    >
+                                      <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                                      <span>Miner {miner}</span>
+                                      <span className="text-green-400">✓</span>
+                                    </div>
+                                  ))}
+                                </div>
+                                
+                                <div className="text-green-300 text-xs font-medium bg-green-900/30 rounded px-2 py-1">
+                                  ✅ 6/6 global confirmations received
+                                </div>
                               </div>
                             )}
                           </div>
@@ -3460,7 +3482,7 @@ export default function Home() {
                               <span className={`font-medium text-sm transition-colors duration-500 ${
                                 settlementProgress.bitcoin >= 3 ? 'text-green-200' : 'text-zinc-400'
                               }`}>
-                                ⚡ Network Confirms Transfer
+                                Network Confirms Transfer
                               </span>
                             </div>
                             <div className={`text-xs transition-colors duration-500 ${
@@ -3519,7 +3541,7 @@ export default function Home() {
                               <span className={`font-medium text-sm transition-colors duration-500 ${
                                 settlementProgress.bitcoin >= 4 ? 'text-green-200' : 'text-zinc-400'
                               }`}>
-                                ✅ Transfer Complete
+                                Transfer Complete
                               </span>
                             </div>
                             <div className={`text-xs transition-colors duration-500 ${
@@ -3552,7 +3574,7 @@ export default function Home() {
                               <span className={`font-medium text-sm transition-colors duration-500 ${
                                 settlementProgress.traditional >= 5 ? 'text-red-200' : 'text-zinc-400'
                               }`}>
-                                🏦 Final Bank Approval
+                                Final Bank Approval
                               </span>
                             </div>
                             <div className={`text-xs transition-colors duration-500 ${
@@ -3627,7 +3649,7 @@ export default function Home() {
                         <div className="text-zinc-300 leading-relaxed max-w-2xl mx-auto">
                           Traditional banking turns a simple transfer into a 5-institution relay race spanning days. 
                           Bitcoin eliminates all intermediaries with direct, cryptographic settlement in minutes. 
-                          <span className="text-orange-400 font-medium">This is why Bitcoin is the future of money.</span>
+                          <span className="text-orange-400 font-medium">This is another reason why Bitcoin is the future of money.</span>
                         </div>
                       </div>
                     </div>
