@@ -6301,9 +6301,9 @@ export default function Home() {
                         and less when it's expensive, smoothing out volatility over time.
                       </p>
                       
-                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-purple-500">
+                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-zinc-600">
                         <p className="text-zinc-300 text-sm">
-                          <span className="font-semibold text-purple-300">Historical Advantage:</span> DCA strategies have consistently 
+                          <span className="font-semibold text-zinc-200">Historical Advantage:</span> DCA strategies have consistently 
                           outperformed lump-sum investing for Bitcoin because they reduce the risk of buying at peak prices. 
                           Even during volatile periods, consistent buying builds wealth systematically.
                         </p>
@@ -6351,7 +6351,7 @@ export default function Home() {
                               calculator.scrollIntoView({ behavior: 'smooth' });
                             }
                           }}
-                          className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2"
+                          className="bg-zinc-700 hover:bg-zinc-600 text-white px-6 py-2"
                         >
                           <ChevronDown className="w-4 h-4 mr-2" />
                           Start DCA Analysis
@@ -6615,8 +6615,8 @@ export default function Home() {
                         
                         <div className="grid gap-4 md:grid-cols-2">
                           {/* DCA Strategy */}
-                          <div className="p-4 bg-green-600/10 border border-green-600/20 rounded-lg">
-                            <h5 className="font-medium text-green-300 mb-3 flex items-center gap-2">
+                          <div className="p-4 bg-zinc-800/50 border border-zinc-700 rounded-lg">
+                            <h5 className="font-medium text-zinc-300 mb-3 flex items-center gap-2">
                               <TrendingUp className="w-4 h-4" />
                               Dollar-Cost Averaging
                             </h5>
@@ -6645,8 +6645,8 @@ export default function Home() {
                           </div>
 
                           {/* Lump Sum Comparison */}
-                          <div className="p-4 bg-orange-600/10 border border-orange-600/20 rounded-lg">
-                            <h5 className="font-medium text-orange-300 mb-3 flex items-center gap-2">
+                          <div className="p-4 bg-zinc-800/50 border border-zinc-700 rounded-lg">
+                            <h5 className="font-medium text-zinc-300 mb-3 flex items-center gap-2">
                               <Zap className="w-4 h-4" />
                               Lump Sum (Start Date)
                             </h5>
