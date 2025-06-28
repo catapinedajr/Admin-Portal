@@ -186,6 +186,72 @@ export const userWeeklyProgress = pgTable("user_weekly_progress", {
   bookmarked: boolean("bookmarked").notNull().default(false),
 });
 
+// New Content Management Tables for 180-day curriculum
+export const contentDays = pgTable("content_days", {
+  id: serial("id").primaryKey(),
+  dayIndex: integer("day_index").notNull().unique(),
+  title: text("title").notNull(),
+  readingLevel: text("reading_level").notNull(), // "9th grade", "10th grade", etc.
+  culturalStage: text("cultural_stage").notNull(), // "Normie → Pre-coiner", etc.
+  theme: text("theme").notNull(), // "Bitcoin basics", "Austrian economics", etc.
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const contentFacts = pgTable("content_facts", {
+  id: serial("id").primaryKey(),
+  dayId: integer("day_id").notNull().references(() => contentDays.id),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  category: text("category").notNull(),
+  icon: text("icon").notNull(),
+  orderIndex: integer("order_index").notNull().default(0), // for multiple facts per day
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const contentDiveDeeper = pgTable("content_dive_deeper", {
+  id: serial("id").primaryKey(),
+  factId: integer("fact_id").notNull().references(() => contentFacts.id, { onDelete: "cascade" }),
+  explanation: text("explanation").notNull(),
+  examples: json("examples").$type<string[]>().notNull(),
+  visualDescription: text("visual_description").notNull(),
+  keyTakeaways: json("key_takeaways").$type<string[]>().notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const contentLessons = pgTable("content_lessons", {
+  id: serial("id").primaryKey(),
+  dayId: integer("day_id").notNull().references(() => contentDays.id),
+  title: text("title").notNull(),
+  content: text("content").notNull(), // Main narrative lesson content
+  keyTakeaways: json("key_takeaways").$type<string[]>().notNull(),
+  estimatedReadTime: integer("estimated_read_time").notNull().default(3), // minutes
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const contentQuizzes = pgTable("content_quizzes", {
+  id: serial("id").primaryKey(),
+  dayId: integer("day_id").notNull().references(() => contentDays.id),
+  question: text("question").notNull(),
+  options: json("options").$type<string[]>().notNull(),
+  correctAnswer: integer("correct_answer").notNull(),
+  explanation: text("explanation").notNull(),
+  orderIndex: integer("order_index").notNull().default(0), // for multiple questions per day
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const contentMetadata = pgTable("content_metadata", {
+  id: serial("id").primaryKey(),
+  dayId: integer("day_id").notNull().references(() => contentDays.id),
+  generationPrompt: text("generation_prompt"), // Store the prompt used to generate this content
+  generationDate: timestamp("generation_date"),
+  qualityScore: integer("quality_score"), // 1-10 rating for content quality
+  reviewStatus: text("review_status").notNull().default("pending"), // pending, approved, needs_revision
+  reviewNotes: text("review_notes"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -250,6 +316,38 @@ export const insertUserWeeklyProgressSchema = createInsertSchema(userWeeklyProgr
   startedAt: true,
 });
 
+// Insert schemas for new content tables
+export const insertContentDaySchema = createInsertSchema(contentDays).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertContentFactSchema = createInsertSchema(contentFacts).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertContentDiveDeeperSchema = createInsertSchema(contentDiveDeeper).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertContentLessonSchema = createInsertSchema(contentLessons).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertContentQuizSchema = createInsertSchema(contentQuizzes).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertContentMetadataSchema = createInsertSchema(contentMetadata).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type DailyFact = typeof dailyFacts.$inferSelect;
@@ -278,3 +376,17 @@ export type WeeklyTopic = typeof weeklyTopics.$inferSelect;
 export type InsertWeeklyTopic = z.infer<typeof insertWeeklyTopicSchema>;
 export type UserWeeklyProgress = typeof userWeeklyProgress.$inferSelect;
 export type InsertUserWeeklyProgress = z.infer<typeof insertUserWeeklyProgressSchema>;
+
+// Types for new content tables
+export type ContentDay = typeof contentDays.$inferSelect;
+export type InsertContentDay = z.infer<typeof insertContentDaySchema>;
+export type ContentFact = typeof contentFacts.$inferSelect;
+export type InsertContentFact = z.infer<typeof insertContentFactSchema>;
+export type ContentDiveDeeper = typeof contentDiveDeeper.$inferSelect;
+export type InsertContentDiveDeeper = z.infer<typeof insertContentDiveDeeperSchema>;
+export type ContentLesson = typeof contentLessons.$inferSelect;
+export type InsertContentLesson = z.infer<typeof insertContentLessonSchema>;
+export type ContentQuiz = typeof contentQuizzes.$inferSelect;
+export type InsertContentQuiz = z.infer<typeof insertContentQuizSchema>;
+export type ContentMetadata = typeof contentMetadata.$inferSelect;
+export type InsertContentMetadata = z.infer<typeof insertContentMetadataSchema>;
