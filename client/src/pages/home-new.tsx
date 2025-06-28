@@ -305,7 +305,9 @@ export default function Home() {
   // Day navigation for development testing
   const [testDayOverride, setTestDayOverride] = useState<number | null>(null);
   const naturalDayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24)) % 30; // Range 0-29 (0-based)
-  const currentDayIndex = testDayOverride !== null ? testDayOverride : naturalDayIndex;
+  const baseDayIndex = testDayOverride !== null ? testDayOverride : naturalDayIndex;
+  // Convert 0-based to 1-based indexing (Day 0 becomes Day 1, etc.)
+  const currentDayIndex = Math.max(1, baseDayIndex + 1);
   
   // Day access control queries
   const { data: dayAccessible = false } = useQuery({
@@ -2418,7 +2420,7 @@ export default function Home() {
                 <div className="inline-flex items-center gap-2 bg-zinc-800/50 rounded-lg px-4 py-2 border border-zinc-700/50">
                   <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
                   <span className="text-zinc-300 text-sm">
-                    Day {currentDayIndex + 1} of learning Bitcoin
+                    Day {currentDayIndex} of learning Bitcoin
                   </span>
                 </div>
                 {user?.currentStreak && user.currentStreak > 0 && (
@@ -2443,8 +2445,8 @@ export default function Home() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setTestDayOverride(Math.max(0, currentDayIndex - 1))}
-                    disabled={currentDayIndex <= 0}
+                    onClick={() => setTestDayOverride(Math.max(1, currentDayIndex - 1))}
+                    disabled={currentDayIndex <= 1}
                     className="text-xs px-2 py-1"
                   >
                     ←
