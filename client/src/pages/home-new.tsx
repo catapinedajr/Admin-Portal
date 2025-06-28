@@ -4791,25 +4791,96 @@ export default function Home() {
 
             {/* Transaction Simulator - Only show for premium users */}
             {isPremiumTier && simulationsSubTab === "transactions" && (
-                      <div className="space-y-6">
-                        {/* Progress Indicator */}
-                        <div className="space-y-3 mb-6">
-                          <div className="flex items-center gap-3">
-                            <h5 className="font-semibold text-white">Scenario {safetyStage + 1} of {safetySimulations.length}</h5>
-                            <Badge variant="secondary">{safetyScore}/{safetyStage} correct</Badge>
-                          </div>
-                          <div className="flex flex-wrap gap-1 max-w-full">
-                            {safetySimulations.map((_, index) => (
-                              <div
-                                key={index}
-                                className={`w-3 h-3 rounded-full flex-shrink-0 ${
-                                  index < safetyStage ? 'bg-green-500' : 
-                                  index === safetyStage ? 'bg-orange-500' : 'bg-zinc-600'
-                                }`}
-                              />
-                            ))}
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">Interactive Bitcoin Transaction Builder</h3>
+                  <p className="text-zinc-400">Build and customize a Bitcoin transaction step-by-step</p>
+                </div>
+
+                {/* Interactive Transaction Builder */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h4 className="text-lg font-bold text-white mb-4">Build Your Transaction</h4>
+                    
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="from" className="text-white text-sm font-medium mb-2 block">From Address</Label>
+                          <Input
+                            id="from"
+                            value={transactionInputs.from}
+                            onChange={(e) => updateTransactionInput('from', e.target.value)}
+                            placeholder="Your Bitcoin address"
+                            className="bg-zinc-800 border-zinc-600 text-white"
+                          />
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor="to" className="text-white text-sm font-medium mb-2 block">To Address</Label>
+                          <div className="flex gap-2">
+                            <Input
+                              id="to"
+                              value={transactionInputs.to}
+                              onChange={(e) => updateTransactionInput('to', e.target.value)}
+                              placeholder="Recipient address"
+                              className="bg-zinc-800 border-zinc-600 text-white flex-1"
+                            />
+                            <Button
+                              onClick={simulatePasteFromClipboard}
+                              variant="outline"
+                              size="sm"
+                              className="shrink-0 min-w-0 border-zinc-600 text-zinc-300 hover:bg-zinc-700"
+                            >
+                              Paste
+                            </Button>
                           </div>
                         </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="amount" className="text-white text-sm font-medium mb-2 block">Amount (BTC)</Label>
+                          <Input
+                            id="amount"
+                            type="number"
+                            step="0.00000001"
+                            value={transactionInputs.amount}
+                            onChange={(e) => updateTransactionInput('amount', e.target.value)}
+                            placeholder="0.00000000"
+                            className="bg-zinc-800 border-zinc-600 text-white"
+                          />
+                          <div className="text-xs text-zinc-500 mt-1">
+                            ≈ ${getUSDValue(transactionInputs.amount).toLocaleString()} USD
+                          </div>
+                        </div>
+
+                        <div>
+                          <Label className="text-white text-sm font-medium mb-2 block">Transaction Fee</Label>
+                          <div className="space-y-2">
+                            <div className="text-sm text-white">{transactionInputs.fee} sat/vB</div>
+                            <div className="text-xs text-zinc-500">
+                              ≈ {calculateTransactionFee()} BTC
+                            </div>
+                            <div className="text-xs text-zinc-500">
+                              ≈ ${getUSDValue(calculateTransactionFee()).toLocaleString()} USD
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {transactionState === 'building' && (
+                        <Button
+                          onClick={proceedToPreview}
+                          className="w-full bg-orange-600 hover:bg-orange-700 text-white"
+                        >
+                          Review Transaction
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
 
                         {/* Current Simulation */}
                         <Card className="bg-zinc-800 border-zinc-700">
