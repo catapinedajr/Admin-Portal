@@ -2521,7 +2521,7 @@ export default function Home() {
                           const isExpanded = expandedFacts.has(fact.id);
                           
                           // Force show button for debugging
-                          console.log(`Fact: ${fact.title} | deepDive: ${!!deepDive} | Will render button: ${!!deepDive}`);
+                          console.log(`Fact: ${fact.title} | deepDive: ${!!deepDive} | isExpanded: ${isExpanded} | Will show content: ${isExpanded && !!deepDive}`);
                           
 
                           
@@ -2536,11 +2536,14 @@ export default function Home() {
                                 <div className="flex-1">
                                   <div className="flex items-center justify-between mb-2">
                                     <h4 className="font-semibold text-white">{fact.title}</h4>
-                                    {(deepDive || true) && (
+                                    {deepDive && (
                                       <Button
                                         variant="ghost"
                                         size="sm"
-                                        onClick={() => toggleFactExpansion(fact.id)}
+                                        onClick={() => {
+                                          console.log('Button clicked for fact:', fact.id, fact.title);
+                                          toggleFactExpansion(fact.id);
+                                        }}
                                         className="text-orange-400 hover:text-orange-300 px-2 bg-orange-500/10 border border-orange-500/30"
                                       >
                                         {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
