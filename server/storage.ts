@@ -617,12 +617,301 @@ export class MemStorage implements IStorage {
     // Combine all facts
     const allFacts = [...facts, ...additionalFactDays];
 
-    // Temporarily restore static facts since AI generation is disabled
+    // Create facts with comprehensive dive deeper content
     allFacts.forEach(fact => {
+      let diveDeeper = null;
+      
+      // Add dive deeper content based on the fact title
+      if (fact.title === "What is Bitcoin?") {
+        diveDeeper = {
+          explanation: "Bitcoin is the first successful digital money that works without any central authority. Unlike traditional money that requires banks or governments to control it, Bitcoin uses a network of thousands of computers worldwide to maintain security and verify transactions. This creates a new type of money that belongs to everyone and no one at the same time.",
+          examples: [
+            "Traditional money: Banks control your account and can freeze it anytime",
+            "Bitcoin: You control your own money with your private keys",
+            "Traditional money: Governments can print unlimited amounts",
+            "Bitcoin: Only 21 million will ever exist, no exceptions"
+          ],
+          visualDescription: "Imagine Bitcoin as a global ledger book that thousands of people keep copies of. When someone makes a transaction, all the copies get updated simultaneously. No single person can change the book because everyone else would notice the difference.",
+          keyTakeaways: [
+            "Bitcoin works without banks or governments controlling it",
+            "Only 21 million Bitcoin will ever exist",
+            "You can use Bitcoin anywhere in the world with internet",
+            "Thousands of computers keep Bitcoin secure and honest"
+          ]
+        };
+      }
+
+      if (fact.title === "Bitcoin is Limited") {
+        diveDeeper = {
+          explanation: "Bitcoin's 21 million coin limit is written into its code and enforced by thousands of computers worldwide. Unlike government currencies that lose value when more is printed, Bitcoin becomes more scarce over time as demand grows but supply stays fixed.",
+          examples: [
+            "US Dollar: Government printed 40% of all existing dollars in 2020-2021",
+            "Bitcoin: Exactly 21 million coins, decreasing inflation every 4 years",
+            "Venezuelan Bolívar: Lost 99% of its value due to money printing",
+            "Bitcoin: Maintains scarcity through mathematical certainty"
+          ],
+          visualDescription: "Think of Bitcoin like a limited edition collectible where the total number is fixed forever. Even if millions of people want it, no more can ever be created, making each one more valuable over time.",
+          keyTakeaways: [
+            "Fixed supply of 21 million protects against inflation",
+            "No government or organization can create more Bitcoin",
+            "Scarcity is enforced by mathematical code, not human promises",
+            "Your Bitcoin can't be diluted by money printing"
+          ]
+        };
+      }
+
+      if (fact.title === "You Own Your Bitcoin") {
+        diveDeeper = {
+          explanation: "When you control your Bitcoin private keys, you have complete ownership that no one can take away. This is different from traditional banking where the bank actually owns your account and can freeze or restrict it at any time.",
+          examples: [
+            "Traditional banking: Bank holds your money and controls access",
+            "Bitcoin: You hold your own money with your private keys",
+            "Traditional accounts: Banks can freeze or restrict your account",
+            "Bitcoin: Only you can access your money if you control your keys"
+          ],
+          visualDescription: "Imagine having a digital safe that only you know the combination to, and that can't be broken into or controlled by anyone else, no matter what laws they pass or what they threaten.",
+          keyTakeaways: [
+            "Private key control means true ownership",
+            "No institution can freeze or seize your Bitcoin",
+            "You are your own bank with complete control",
+            "Ownership is enforced by mathematics, not laws"
+          ]
+        };
+      }
+      
+      if (fact.title === "The Shared Notebook") {
+        diveDeeper = {
+          explanation: "The blockchain is like a notebook that everyone can read but no one can erase or fake. Every page (block) contains a list of transactions, and each page references the previous page, creating an unbreakable chain. This design makes it impossible to change history without everyone noticing.",
+          examples: [
+            "Traditional banking: Only the bank sees your transaction history",
+            "Bitcoin blockchain: Everyone can verify every transaction ever made",
+            "Traditional systems: Banks can change records in their private databases",
+            "Bitcoin: Once written, transaction records can never be changed"
+          ],
+          visualDescription: "Picture a notebook where every page is numbered and references the previous page number. If someone tries to tear out or change an old page, the page numbers won't match up, and everyone will know something's wrong.",
+          keyTakeaways: [
+            "Blockchain is a permanent record that can't be changed",
+            "Everyone can verify transactions independently",
+            "No single entity controls the blockchain",
+            "Transparency creates trust without requiring institutions"
+          ]
+        };
+      }
+
+      if (fact.title === "Your Money Keeps Its Value") {
+        diveDeeper = {
+          explanation: "Bitcoin's 21 million coin limit is written into its code and enforced by thousands of computers worldwide. Unlike government currencies that lose value when more is printed, Bitcoin becomes more scarce over time as demand grows but supply stays fixed.",
+          examples: [
+            "US Dollar: Government printed 40% of all existing dollars in 2020-2021",
+            "Bitcoin: Exactly 21 million coins, decreasing inflation every 4 years",
+            "Venezuelan Bolívar: Lost 99% of its value due to money printing",
+            "Bitcoin: Maintains scarcity through mathematical certainty"
+          ],
+          visualDescription: "Think of Bitcoin like a limited edition collectible where the total number is fixed forever. Even if millions of people want it, no more can ever be created, making each one more valuable over time.",
+          keyTakeaways: [
+            "Fixed supply of 21 million protects against inflation",
+            "No government or organization can create more Bitcoin",
+            "Scarcity is enforced by mathematical code, not human promises",
+            "Your Bitcoin can't be diluted by money printing"
+          ]
+        };
+      }
+
+      if (fact.title === "Digital Puzzle Solving") {
+        diveDeeper = {
+          explanation: "Bitcoin mining is like a global lottery where miners compete to solve mathematical puzzles. The winner gets to add the next block of transactions and earn new Bitcoin. This process secures the network because changing old transactions would require re-solving all the puzzles, which costs enormous amounts of energy.",
+          examples: [
+            "Traditional banking: Banks verify transactions using trusted employees",
+            "Bitcoin: Miners verify transactions by solving energy-intensive puzzles",
+            "Traditional systems: Security depends on physical vaults and guards",
+            "Bitcoin: Security comes from the total energy cost to attack the network"
+          ],
+          visualDescription: "Imagine thousands of people racing to solve crossword puzzles. The first person to solve it correctly gets a prize and the right to write the next page in the global transaction book. To cheat, someone would need to solve puzzles faster than everyone else combined.",
+          keyTakeaways: [
+            "Mining secures Bitcoin by making attacks extremely expensive",
+            "Miners compete to process transactions and earn rewards",
+            "Energy expenditure creates real-world security for digital money",
+            "The more miners participate, the more secure Bitcoin becomes"
+          ]
+        };
+      }
+
+      if (fact.title === "Your Digital Wallet") {
+        diveDeeper = {
+          explanation: "A Bitcoin wallet is like a digital safe that only you can open. Your private key is like the combination - anyone who knows it can access your Bitcoin. Your public key is like your email address - you can share it with others so they can send you Bitcoin.",
+          examples: [
+            "Traditional banking: Bank holds your money and controls access",
+            "Bitcoin wallet: You hold your own money with your private keys",
+            "Traditional accounts: Banks can freeze or restrict your account",
+            "Bitcoin: Only you can access your money if you control your keys"
+          ],
+          visualDescription: "Picture a mailbox where you give people your address (public key) so they can send you mail (Bitcoin), but only you have the key (private key) to open the mailbox and access what's inside.",
+          keyTakeaways: [
+            "Private keys give you complete control over your Bitcoin",
+            "Losing your private key means losing access to your Bitcoin forever",
+            "Public keys are safe to share for receiving Bitcoin",
+            "Not your keys, not your coins - control is everything"
+          ]
+        };
+      }
+
+      if (fact.title === "How to Send Bitcoin") {
+        diveDeeper = {
+          explanation: "Sending Bitcoin is like mailing a letter, but instead of writing an address on an envelope, you're broadcasting a signed message to thousands of computers worldwide. These computers verify your signature and update everyone's copy of the ledger to show the transaction.",
+          examples: [
+            "Traditional transfer: Bank moves numbers between internal accounts",
+            "Bitcoin: Cryptographic proof broadcasts to global network",
+            "Traditional: Banks can reverse or block transactions",
+            "Bitcoin: Transactions are final once confirmed by the network"
+          ],
+          visualDescription: "Imagine announcing to a room full of accountants that you're transferring money to someone. Each accountant writes down the transaction in their ledger. The transaction is only valid if the majority of accountants agree it's legitimate.",
+          keyTakeaways: [
+            "Bitcoin transactions are broadcast to the entire network",
+            "Digital signatures prove you authorized the transaction",
+            "Transactions are irreversible once confirmed",
+            "No intermediary needed - direct peer-to-peer transfer"
+          ]
+        };
+      }
+
+      if (fact.title === "The Great Halving") {
+        diveDeeper = {
+          explanation: "Every four years, the amount of new Bitcoin created gets cut in half automatically. This is programmed into Bitcoin's code and creates increasing scarcity over time. It's like if gold miners could only find half as much gold every four years, making existing gold more valuable.",
+          examples: [
+            "2009-2012: 50 new Bitcoin every 10 minutes",
+            "2012-2016: 25 new Bitcoin every 10 minutes",
+            "2016-2020: 12.5 new Bitcoin every 10 minutes",
+            "2020-2024: 6.25 new Bitcoin every 10 minutes"
+          ],
+          visualDescription: "Picture a faucet that drips valuable coins. Every four years, the faucet automatically adjusts to drip at half the previous rate. Eventually, the faucet will stop dripping entirely, but people will still value the coins that already exist.",
+          keyTakeaways: [
+            "Bitcoin becomes more scarce every four years automatically",
+            "Halving is built into the code, not controlled by humans",
+            "Reduced new supply often increases Bitcoin's value",
+            "Around 2140, no new Bitcoin will be created ever"
+          ]
+        };
+      }
+
+      if (fact.title === "Regular Money Loses Value") {
+        diveDeeper = {
+          explanation: "Inflation happens when governments print more money, making each existing dollar worth less. This is like diluting orange juice with water - you have more liquid, but each sip has less orange flavor. Bitcoin can't be diluted because no one can create more of it.",
+          examples: [
+            "1971: $1 could buy what $6.50 can buy today",
+            "Since 2000: US dollar lost 35% of its purchasing power",
+            "Venezuela 2018: Inflation rate reached 1,000,000%",
+            "Bitcoin: Same 21 million limit since day one"
+          ],
+          visualDescription: "Imagine if someone could photocopy dollar bills perfectly. Soon everyone would have lots of dollars, but stores would charge more because dollars would be everywhere. Bitcoin can't be photocopied or created out of thin air.",
+          keyTakeaways: [
+            "Money printing reduces the value of existing money",
+            "Bitcoin's fixed supply protects against this devaluation",
+            "Historical data shows steady purchasing power decline",
+            "Scarcity preservation is Bitcoin's key advantage"
+          ]
+        };
+      }
+
+      if (fact.title === "Lightning Fast") {
+        diveDeeper = {
+          explanation: "Lightning Network is like having a tab at your favorite coffee shop. Instead of paying for each coffee individually, you open a tab, buy multiple coffees throughout the week, then settle the total bill at the end. Lightning works the same way but with Bitcoin.",
+          examples: [
+            "Traditional Bitcoin: Each transaction recorded on global ledger",
+            "Lightning: Many transactions bundled into one settlement",
+            "Banking analogy: Like writing one check instead of paying cash for every purchase",
+            "Real usage: Instant payments for coffee, tips, or streaming content"
+          ],
+          visualDescription: "Picture two people with a shared notebook where they keep track of IOUs. They can exchange money back and forth instantly by updating the notebook. Only when they're done do they settle up with real cash.",
+          keyTakeaways: [
+            "Lightning enables instant Bitcoin payments",
+            "Transactions cost fractions of a penny",
+            "Built on top of Bitcoin's security foundation",
+            "Perfect for small, frequent payments"
+          ]
+        };
+      }
+
+      if (fact.title === "Why Bitcoin Matters") {
+        diveDeeper = {
+          explanation: "Bitcoin matters because it solves fundamental problems with money that have existed for thousands of years. For the first time in history, we have money that can't be controlled, manipulated, or devalued by any government or institution.",
+          examples: [
+            "Problem: Governments can freeze bank accounts → Bitcoin: You control your own money",
+            "Problem: Money loses value through printing → Bitcoin: Fixed supply of 21 million",
+            "Problem: International transfers take days → Bitcoin: Transfers in minutes globally",
+            "Problem: Banks exclude billions of people → Bitcoin: Anyone with internet can use it"
+          ],
+          visualDescription: "Imagine if there was a form of gold that you could teleport instantly anywhere in the world, that couldn't be counterfeited, and that no government could confiscate or control. That's essentially what Bitcoin represents in digital form.",
+          keyTakeaways: [
+            "First money system that works without central control",
+            "Solves problems that have existed throughout monetary history",
+            "Gives individuals unprecedented financial sovereignty",
+            "Represents a fundamental evolution in how money works"
+          ]
+        };
+      }
+
+      // Add dive deeper for additional fact categories
+      if (fact.title === "Sound Money Principles") {
+        diveDeeper = {
+          explanation: "Sound money maintains its value over time and encourages saving rather than spending. Unlike modern fiat currencies that lose value through inflation, sound money rewards patience and long-term thinking.",
+          examples: [
+            "Gold standard era: Prices remained stable for decades",
+            "Modern fiat: Dollar lost 96% of value since 1913",
+            "Bitcoin: Designed to appreciate as adoption grows",
+            "Savings behavior: Sound money encourages saving, fiat encourages spending"
+          ],
+          visualDescription: "Think of sound money as a reliable measuring stick that doesn't shrink over time. If you saved money under your mattress for 20 years, it should still buy roughly the same amount of goods.",
+          keyTakeaways: [
+            "Sound money maintains purchasing power over time",
+            "Encourages saving and long-term planning",
+            "Bitcoin returns to sound money principles",
+            "Protects wealth from currency debasement"
+          ]
+        };
+      }
+
+      if (fact.title === "Financial Sovereignty") {
+        diveDeeper = {
+          explanation: "Financial sovereignty means complete control over your money without depending on banks, governments, or other institutions. With Bitcoin, you can be your own bank and make financial decisions without asking permission.",
+          examples: [
+            "Traditional: Banks can freeze accounts during political unrest",
+            "Bitcoin: Your keys, your control, regardless of politics",
+            "Traditional: Government can seize assets through laws",
+            "Bitcoin: Mathematical protection from seizure"
+          ],
+          visualDescription: "Imagine having a safe that only you know the combination to, that can't be broken into, and that works the same way everywhere in the world. That's the level of control Bitcoin provides.",
+          keyTakeaways: [
+            "Complete control over your financial assets",
+            "No dependence on traditional financial institutions",
+            "Protection from political and economic instability",
+            "True ownership in the digital age"
+          ]
+        };
+      }
+
+      if (fact.title === "Global Currency") {
+        diveDeeper = {
+          explanation: "Bitcoin is the first truly global currency that works the same way everywhere. Unlike national currencies that stop at borders, Bitcoin operates on a worldwide network that treats everyone equally.",
+          examples: [
+            "US Dollar: Primarily useful in United States",
+            "Bitcoin: Works identically in Japan, Nigeria, or Brazil",
+            "Euro: Limited to European Union countries",
+            "Bitcoin: Same rules and access globally"
+          ],
+          visualDescription: "Picture a universal language that everyone in the world can speak and understand, regardless of their native tongue. Bitcoin is like that for money - a universal financial language.",
+          keyTakeaways: [
+            "First currency that works identically worldwide",
+            "No exchange rates or conversion needed",
+            "Equal access regardless of nationality",
+            "Enables truly global commerce"
+          ]
+        };
+      }
+
       const newFact: DailyFact = { 
         ...fact, 
         id: this.currentFactId++,
-        diveDeeper: null // Static facts don't have dive deeper content yet
+        diveDeeper
       };
       this.dailyFacts.set(newFact.id, newFact);
     });
