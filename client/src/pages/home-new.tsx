@@ -4320,68 +4320,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Security vs Convenience Spectrum */}
-                <Card className="bg-zinc-900 border-zinc-800">
-                  <CardContent className="p-6">
-                    <h4 className="text-lg font-bold text-white mb-4">🎯 Choose Your Wallet Based on Your Needs</h4>
-                    <p className="text-zinc-400 text-sm mb-6">Different situations require different security levels. Here's how to match your wallet to your use case:</p>
-                    
-                    <div className="grid gap-4 md:grid-cols-3">
-                      {/* Daily Spending - Mobile */}
-                      <div className="p-4 bg-gradient-to-br from-blue-900/30 to-blue-800/30 border border-blue-700/50 rounded-lg">
-                        <div className="flex items-center gap-2 mb-3">
-                          <UserIcon className="w-5 h-5 text-blue-400" />
-                          <h5 className="font-semibold text-white">Daily Spending</h5>
-                        </div>
-                        <div className="space-y-2 text-sm">
-                          <p className="text-blue-300 font-medium">Mobile Wallet</p>
-                          <p className="text-zinc-400">Amount: $10-$500</p>
-                          <p className="text-zinc-400">Use: Coffee, lunch, small purchases</p>
-                          <p className="text-green-400 text-xs">✓ Convenient, quick payments</p>
-                          <p className="text-orange-400 text-xs">⚠ Higher theft risk</p>
-                        </div>
-                      </div>
 
-                      {/* Medium Storage - Desktop */}
-                      <div className="p-4 bg-gradient-to-br from-orange-900/30 to-orange-800/30 border border-orange-700/50 rounded-lg">
-                        <div className="flex items-center gap-2 mb-3">
-                          <Globe className="w-5 h-5 text-orange-400" />
-                          <h5 className="font-semibold text-white">Medium Storage</h5>
-                        </div>
-                        <div className="space-y-2 text-sm">
-                          <p className="text-orange-300 font-medium">Desktop Wallet</p>
-                          <p className="text-zinc-400">Amount: $500-$10,000</p>
-                          <p className="text-zinc-400">Use: Trading, regular transactions</p>
-                          <p className="text-green-400 text-xs">✓ Good balance of security/convenience</p>
-                          <p className="text-orange-400 text-xs">⚠ Computer malware risk</p>
-                        </div>
-                      </div>
-
-                      {/* Long-term Storage - Hardware */}
-                      <div className="p-4 bg-gradient-to-br from-green-900/30 to-green-800/30 border border-green-700/50 rounded-lg">
-                        <div className="flex items-center gap-2 mb-3">
-                          <Shield className="w-5 h-5 text-green-400" />
-                          <h5 className="font-semibold text-white">Long-term Storage</h5>
-                        </div>
-                        <div className="space-y-2 text-sm">
-                          <p className="text-green-300 font-medium">Hardware Wallet</p>
-                          <p className="text-zinc-400">Amount: $10,000+</p>
-                          <p className="text-zinc-400">Use: Savings, HODLing</p>
-                          <p className="text-green-400 text-xs">✓ Maximum security (offline)</p>
-                          <p className="text-orange-400 text-xs">⚠ Less convenient for daily use</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-6 p-4 bg-zinc-800/50 rounded-lg">
-                      <h6 className="font-semibold text-white mb-2">💡 Pro Tip: The Three-Wallet Strategy</h6>
-                      <p className="text-zinc-400 text-sm">
-                        Most experienced Bitcoin users combine all three: mobile wallet for daily spending, desktop wallet for regular transactions, 
-                        and hardware wallet for long-term savings. This gives you both security and convenience.
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
 
                 {/* Social Engineering Awareness */}
                 <Card className="bg-zinc-900 border-zinc-800">
