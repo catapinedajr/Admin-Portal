@@ -1917,6 +1917,719 @@ export class MemStorage implements IStorage {
         };
       }
 
+      if (fact.title === "Sound Money Principles") {
+        diveDeeper = {
+          explanation: "Sound money holds its value over time and can't be created out of thin air. Bitcoin follows these principles by having a fixed supply that can't be increased, unlike regular money that governments can print whenever they want.",
+          examples: [
+            "Gold was sound money because it was scarce and hard to find",
+            "Paper money started backed by gold but governments removed that backing",
+            "Bitcoin brings back sound money with mathematics instead of promises",
+            "Only 21 million bitcoins will ever exist, making it truly scarce"
+          ],
+          visualDescription: "Think of sound money like a measuring stick that never changes length. You can always count on it to measure value fairly, unlike a rubber ruler that stretches and shrinks.",
+          keyTakeaways: [
+            "Sound money keeps its value over long periods",
+            "Bitcoin returns to sound money principles",
+            "Fixed supply prevents value dilution",
+            "Mathematics replaces human promises"
+          ]
+        };
+      }
+
+      if (fact.title === "Global Currency") {
+        diveDeeper = {
+          explanation: "Bitcoin works exactly the same way in every country around the world. Unlike local currencies that change when you cross borders, Bitcoin is universal money that everyone can use regardless of where they live.",
+          examples: [
+            "Send money from America to Japan instantly with same rules",
+            "No exchange rates or conversion fees between countries",
+            "Works in countries with unstable local currencies",
+            "Poor people in any country can access same financial system"
+          ],
+          visualDescription: "Imagine having one type of money that works everywhere on Earth, like having a universal language that everyone understands regardless of their native tongue.",
+          keyTakeaways: [
+            "Same rules and features work everywhere",
+            "No borders or geographic restrictions",
+            "Eliminates currency exchange complications",
+            "Provides financial access to everyone globally"
+          ]
+        };
+      }
+
+      if (fact.title === "Bitcoin is Limited") {
+        diveDeeper = {
+          explanation: "Bitcoin has a hard limit of 21 million coins that can never be changed. This is written into Bitcoin's code and protected by thousands of computers worldwide. Unlike regular money where governments can print more anytime, Bitcoin's limit cannot be increased.",
+          examples: [
+            "Regular money: Governments printed trillions during COVID",
+            "Bitcoin: Only 21 million will ever exist, no exceptions",
+            "Baseball cards: Limited edition cards are worth more",
+            "Bitcoin: Scarcity built into the system makes it valuable"
+          ],
+          visualDescription: "Think of Bitcoin like a limited edition collectible where only 21 million pieces will ever be made, and the factory that makes them will shut down forever when they reach that number.",
+          keyTakeaways: [
+            "Maximum 21 million bitcoins will ever exist",
+            "This limit is unchangeable and permanent",
+            "Scarcity makes Bitcoin different from regular money",
+            "No central authority can create more bitcoins"
+          ]
+        };
+      }
+
+      if (fact.title === "You Own Your Bitcoin") {
+        diveDeeper = {
+          explanation: "When you control your Bitcoin properly, it's truly yours in a way that bank money isn't. Banks can freeze accounts, governments can seize assets, but nobody can take Bitcoin that you control with your private keys.",
+          examples: [
+            "Bank account: Bank can freeze it anytime",
+            "Bitcoin: Only you can move it with your private key",
+            "Cash in hand: Yours to spend freely",
+            "Bitcoin in your wallet: Digital version of cash in hand"
+          ],
+          visualDescription: "Imagine having money that works like cash in your physical wallet, but digital. Just like no one can take cash from your pocket without your permission, no one can take properly stored Bitcoin without your private key.",
+          keyTakeaways: [
+            "True ownership means you control the private keys",
+            "No bank or government can freeze your Bitcoin",
+            "Your Bitcoin is like digital cash you carry",
+            "Ownership comes with responsibility for security"
+          ]
+        };
+      }
+
+      if (fact.title === "The Shared Notebook") {
+        diveDeeper = {
+          explanation: "The Bitcoin blockchain is like a giant notebook that everyone in the world can read, but no one can erase or change what's already written. Every Bitcoin transaction gets recorded in this notebook, creating a permanent history that everyone can verify.",
+          examples: [
+            "Traditional ledger: Only the bank can see and control it",
+            "Bitcoin blockchain: Everyone can see every transaction",
+            "School gradebook: Only teacher can change grades",
+            "Bitcoin records: No one can change past transactions"
+          ],
+          visualDescription: "Picture a massive library where every transaction is written in permanent ink in books that thousands of librarians around the world keep identical copies of. If someone tries to change one book, everyone else can see it doesn't match.",
+          keyTakeaways: [
+            "All Bitcoin transactions are publicly recorded",
+            "Past transactions cannot be changed or deleted",
+            "Thousands of computers verify the records",
+            "Transparency prevents fraud and cheating"
+          ]
+        };
+      }
+
+      if (fact.title === "No Middleman Needed") {
+        diveDeeper = {
+          explanation: "Bitcoin allows you to send value directly to another person without needing a bank, payment company, or government to approve it. This peer-to-peer system works through mathematical proof instead of trusted institutions.",
+          examples: [
+            "Sending cash: Hand it directly to someone",
+            "Bank transfer: Bank must approve and process it",
+            "Bitcoin: Send directly without asking permission",
+            "Email: Send messages directly to anyone worldwide"
+          ],
+          visualDescription: "Think of Bitcoin like being able to hand cash directly to someone on the other side of the world instantly, without needing any postal service, bank, or middleman to deliver it for you.",
+          keyTakeaways: [
+            "Direct person-to-person value transfer",
+            "No banks or institutions needed",
+            "Operates through mathematical proof",
+            "Eliminates censorship and control points"
+          ]
+        };
+      }
+
+      if (fact.title === "Super Secure Math") {
+        diveDeeper = {
+          explanation: "Bitcoin uses the same type of math codes that protect military secrets and online banking. These codes are so strong that even the world's most powerful computers working together for millions of years couldn't break them.",
+          examples: [
+            "Your online banking uses similar math for security",
+            "Military communications use this type of encryption",
+            "Bitcoin private keys are harder to guess than lottery numbers",
+            "Breaking Bitcoin's math would require more energy than the sun produces"
+          ],
+          visualDescription: "Imagine a lock so complex that you would need to try every possible key in the universe, and even then it would take longer than the age of the universe to find the right one.",
+          keyTakeaways: [
+            "Uses military-grade mathematical security",
+            "Practically impossible to hack or break",
+            "Same security technology banks and governments use",
+            "Gets stronger as computers get more powerful"
+          ]
+        };
+      }
+
+      if (fact.title === "Your Money Keeps Its Value") {
+        diveDeeper = {
+          explanation: "Regular money loses buying power when governments print more of it. It's like adding water to juice - the more you add, the weaker it gets. Bitcoin can't be 'watered down' because no one can make more than the 21 million limit.",
+          examples: [
+            "1913: A dollar could buy what $30 buys today",
+            "2020: Governments printed trillions, reducing money's value",
+            "Bitcoin: Fixed supply means no value dilution",
+            "Gold: Used to keep value, but governments can find more"
+          ],
+          visualDescription: "Think of value like juice concentrate. Regular money gets watered down over time, making it weaker. Bitcoin is like concentrate that can never be diluted - it stays strong.",
+          keyTakeaways: [
+            "Fixed supply protects against value loss",
+            "Government money printing reduces purchasing power",
+            "Bitcoin's mathematical limit preserves value",
+            "Scarcity tends to increase value over time"
+          ]
+        };
+      }
+
+      if (fact.title === "Always Open") {
+        diveDeeper = {
+          explanation: "Bitcoin never closes, takes holidays, or goes offline for maintenance. While banks close on weekends and holidays, Bitcoin works 24 hours a day, 7 days a week, 365 days a year, anywhere in the world.",
+          examples: [
+            "Banks: Closed evenings, weekends, and holidays",
+            "Bitcoin: Works at 3 AM on Christmas Day",
+            "International transfers: Can take days through banks",
+            "Bitcoin: Arrives in minutes any time of day"
+          ],
+          visualDescription: "Imagine a store that never closes its doors - not for lunch, not for holidays, not even for blizzards. That's how Bitcoin operates, always ready to serve anyone, anytime.",
+          keyTakeaways: [
+            "Operates 24/7 without interruption",
+            "No banking hours or holiday closures",
+            "Global access from any internet connection",
+            "Always available when you need it"
+          ]
+        };
+      }
+
+      if (fact.title === "Nobody Can Stop You") {
+        diveDeeper = {
+          explanation: "Bitcoin transactions can't be blocked, reversed, or censored by anyone. Once you send Bitcoin, it's final - no bank can stop it, no government can reverse it, and no company can freeze it.",
+          examples: [
+            "Banks can deny wire transfers for any reason",
+            "Payment companies can shut down accounts",
+            "Governments can freeze assets during conflicts",
+            "Bitcoin transactions proceed regardless of politics"
+          ],
+          visualDescription: "It's like having unstoppable money - once you decide to send it, nothing in the world can prevent it from reaching its destination, just like dropping a letter in the mail that no one can intercept.",
+          keyTakeaways: [
+            "Transactions cannot be censored or stopped",
+            "No authority can reverse completed payments",
+            "Provides financial freedom from interference",
+            "Works regardless of political situations"
+          ]
+        };
+      }
+
+      if (fact.title === "Digital Puzzle Solving") {
+        diveDeeper = {
+          explanation: "Bitcoin mining is like a worldwide puzzle contest where computers race to solve math problems. The winner gets to add new transactions to Bitcoin's record book and earns some new bitcoins as a prize.",
+          examples: [
+            "Sudoku puzzle: Requires work to solve, easy to verify",
+            "Bitcoin puzzle: Requires computer work, easy to check",
+            "Lottery: Random winner, but everyone can see the result",
+            "Mining: Computer lottery with verifiable math work"
+          ],
+          visualDescription: "Imagine millions of computers worldwide racing to solve a giant math puzzle every 10 minutes. The first to solve it wins the right to write the next page in Bitcoin's history book.",
+          keyTakeaways: [
+            "Computers compete to solve mathematical puzzles",
+            "Winners get to record transactions and earn Bitcoin",
+            "Process secures the network through work",
+            "Anyone can verify the solutions are correct"
+          ]
+        };
+      }
+
+      if (fact.title === "Earning Your Bitcoin") {
+        diveDeeper = {
+          explanation: "People who help secure the Bitcoin network by running mining computers earn new bitcoins as a reward. This is how new bitcoins enter the world - they're given to people who contribute computer power to keep the system safe.",
+          examples: [
+            "Gold mining: Dig up gold from the ground with work",
+            "Bitcoin mining: Earn bitcoins by solving computer puzzles",
+            "Security guard: Get paid to protect something valuable",
+            "Bitcoin miner: Get paid to protect the Bitcoin network"
+          ],
+          visualDescription: "Think of Bitcoin miners like digital security guards who get paid in brand new bitcoins for keeping the network safe and processing everyone's transactions.",
+          keyTakeaways: [
+            "Mining creates new bitcoins as rewards",
+            "Miners earn bitcoin by securing the network",
+            "This is how new bitcoins enter circulation",
+            "Mining provides economic incentive for security"
+          ]
+        };
+      }
+
+      if (fact.title === "Keeps Getting Harder") {
+        diveDeeper = {
+          explanation: "Bitcoin automatically adjusts how hard the puzzles are to keep blocks coming every 10 minutes. If more miners join, the puzzles get harder. If miners leave, they get easier. This keeps Bitcoin running smoothly no matter what.",
+          examples: [
+            "Video game: Gets harder as you get better at it",
+            "Bitcoin: Gets harder as more miners join",
+            "Traffic light: Changes timing based on traffic volume",
+            "Mining difficulty: Changes based on total mining power"
+          ],
+          visualDescription: "Imagine a smart video game that automatically adjusts difficulty so levels always take exactly 10 minutes to complete, regardless of how many players are playing.",
+          keyTakeaways: [
+            "Difficulty adjusts every 2,016 blocks",
+            "Maintains steady 10-minute block times",
+            "More miners means higher difficulty",
+            "Self-regulating system needs no human control"
+          ]
+        };
+      }
+
+      if (fact.title === "Your Digital Wallet") {
+        diveDeeper = {
+          explanation: "A Bitcoin wallet is like a digital keychain that holds the secret codes needed to spend your Bitcoin. The Bitcoin itself stays recorded on the blockchain, but your wallet holds the keys that prove you own it.",
+          examples: [
+            "Physical wallet: Holds cash and cards",
+            "Bitcoin wallet: Holds private keys, not actual coins",
+            "Car keys: Prove you can use the car",
+            "Bitcoin keys: Prove you can spend the Bitcoin"
+          ],
+          visualDescription: "Think of a Bitcoin wallet like a keychain with secret keys to digital safe deposit boxes. The money stays in the boxes (blockchain), but you need the keys (wallet) to open them.",
+          keyTakeaways: [
+            "Wallets store private keys, not Bitcoin itself",
+            "Different wallet types for different needs",
+            "Private keys prove ownership of Bitcoin",
+            "Lose the keys, lose access to Bitcoin forever"
+          ]
+        };
+      }
+
+      if (fact.title === "Your Secret Code") {
+        diveDeeper = {
+          explanation: "Your private key is like the secret password to your Bitcoin. It's a super long number that only you should know. Anyone who gets this number can spend your Bitcoin, so keeping it secret and safe is extremely important.",
+          examples: [
+            "Bank PIN: Short secret number for your account",
+            "Private key: Super long secret number for Bitcoin",
+            "House key: Only you should have a copy",
+            "Private key: Only you should know the number"
+          ],
+          visualDescription: "Imagine your private key like the world's longest, most complex password that unlocks your digital treasure chest. Anyone who gets this password can take everything inside.",
+          keyTakeaways: [
+            "Private keys control your Bitcoin completely",
+            "Never share your private key with anyone",
+            "Lost private keys mean lost Bitcoin forever",
+            "Write down backup words in safe place"
+          ]
+        };
+      }
+
+      if (fact.title === "You Must Control Your Key") {
+        diveDeeper = {
+          explanation: "If someone else holds your private key, they really control your Bitcoin, not you. This is why it's important to use wallets where you control the keys rather than leaving Bitcoin on exchanges or other services.",
+          examples: [
+            "Hotel safe: Hotel has backup code to your valuables",
+            "Exchange wallet: Exchange controls your Bitcoin",
+            "Personal safe: Only you have the combination",
+            "Self-custody wallet: Only you control the keys"
+          ],
+          visualDescription: "It's like the difference between keeping money in your own safe versus someone else's safe. Even if they promise it's yours, they still have the keys to open it.",
+          keyTakeaways: [
+            "True ownership requires private key control",
+            "Exchanges and services can freeze your funds",
+            "Self-custody provides maximum security",
+            "Your keys, your coins - their keys, their coins"
+          ]
+        };
+      }
+
+      // Continue with the remaining 40+ fact titles systematically
+
+      if (fact.title === "How to Send Bitcoin") {
+        diveDeeper = {
+          explanation: "Sending Bitcoin is like sending a digital package that needs the right address and enough postage. You enter the recipient's Bitcoin address, choose how much to send, set the fee level, and broadcast it to the network.",
+          examples: [
+            "Email: Need correct email address to deliver message",
+            "Bitcoin: Need correct Bitcoin address to send payment",
+            "Mailing package: Higher shipping cost for faster delivery",
+            "Bitcoin fee: Higher fee for faster confirmation"
+          ],
+          visualDescription: "Think of sending Bitcoin like mailing a valuable package - you need the exact address, proper postage, and once it's sent, you can track its delivery but can't change the destination.",
+          keyTakeaways: [
+            "Recipient's Bitcoin address must be exactly correct",
+            "Transaction fees determine confirmation speed",
+            "Transactions are irreversible once sent",
+            "Network confirms transactions through mining"
+          ]
+        };
+      }
+
+      if (fact.title === "Paying the Network") {
+        diveDeeper = {
+          explanation: "Bitcoin transaction fees pay the miners who process your transaction and add it to the blockchain. Higher fees incentivize miners to include your transaction faster, while lower fees might take longer during busy periods.",
+          examples: [
+            "Express shipping: Pay more for faster delivery",
+            "Bitcoin fees: Pay more for faster confirmation",
+            "Tip at restaurant: Better service with higher tip",
+            "Miner priority: Higher fees get processed first"
+          ],
+          visualDescription: "Imagine transaction fees like tipping delivery drivers - tip more and your package gets priority delivery, tip less and it arrives when the driver has time.",
+          keyTakeaways: [
+            "Fees incentivize miners to process transactions",
+            "Higher fees typically mean faster confirmation",
+            "Fee market creates efficient priority system",
+            "You control how much fee to pay"
+          ]
+        };
+      }
+
+      if (fact.title === "Waiting for Confirmation") {
+        diveDeeper = {
+          explanation: "Bitcoin confirmations are like layers of security on your transaction. Each confirmation means another block has been added on top of yours, making it exponentially harder to reverse. Most people wait for 1-6 confirmations depending on the amount.",
+          examples: [
+            "Concrete layers: Each layer makes foundation stronger",
+            "Bitcoin confirmations: Each block makes transaction more secure",
+            "Committee vote: More votes make decision more final",
+            "Blockchain consensus: More confirmations mean more certainty"
+          ],
+          visualDescription: "Think of confirmations like burying a time capsule deeper underground - with each shovel of dirt (new block), it becomes exponentially harder for someone to dig it up and change it.",
+          keyTakeaways: [
+            "More confirmations mean higher security",
+            "6 confirmations considered very secure",
+            "First confirmation usually sufficient for small amounts",
+            "Large amounts should wait for multiple confirmations"
+          ]
+        };
+      }
+
+      if (fact.title === "The Great Halving") {
+        diveDeeper = {
+          explanation: "Every 210,000 blocks (about 4 years), Bitcoin automatically cuts the mining reward in half. This programmed scarcity reduces the rate of new Bitcoin creation, making existing Bitcoin more scarce over time.",
+          examples: [
+            "Gold mine: Produces less gold as easier deposits run out",
+            "Bitcoin halving: Produces fewer new bitcoins every 4 years",
+            "Limited edition: Fewer copies made means higher value",
+            "Bitcoin scarcity: Fewer new coins means increased rarity"
+          ],
+          visualDescription: "Imagine a magic money printer that automatically cuts its printing speed in half every four years until it eventually stops forever - that's how Bitcoin's supply works.",
+          keyTakeaways: [
+            "Occurs every 210,000 blocks (~4 years)",
+            "Reduces new Bitcoin supply by 50%",
+            "Built into Bitcoin's code and unchangeable",
+            "Creates increasing scarcity over time"
+          ]
+        };
+      }
+
+      if (fact.title === "No More After 21 Million") {
+        diveDeeper = {
+          explanation: "Bitcoin has a hard-coded limit of exactly 21 million coins. Once all are mined (around 2140), no new bitcoins will ever be created. This makes Bitcoin the first money in history with a truly fixed, unchangeable supply limit.",
+          examples: [
+            "Limited edition collectibles: Only X amount ever made",
+            "Bitcoin: Only 21 million will ever exist",
+            "Gold: New mines can always be discovered",
+            "Bitcoin: Mathematical limit cannot be exceeded"
+          ],
+          visualDescription: "Think of Bitcoin like a master artist who will only ever create 21 million paintings - once the last one is finished, no more will ever be made, making each one increasingly precious.",
+          keyTakeaways: [
+            "Exactly 21 million maximum forever",
+            "No central authority can change this limit",
+            "Final bitcoin mined around year 2140",
+            "Creates ultimate scarcity in digital form"
+          ]
+        };
+      }
+
+      // Add the critical missing ones that users are testing right now
+
+      if (fact.title === "Saves Your Money's Value") {
+        diveDeeper = {
+          explanation: "While regular money loses buying power through inflation, Bitcoin's fixed supply helps preserve value over time. When governments print more money, each dollar becomes worth less. Bitcoin can't be printed, so it maintains purchasing power better.",
+          examples: [
+            "1970s: Gas cost 50 cents, now costs $4 (inflation)",
+            "Bitcoin 2010: $0.10, 2024: $50,000+ (deflation)",
+            "Savings account: Loses value to inflation",
+            "Bitcoin savings: Tends to gain value over time"
+          ],
+          visualDescription: "Think of Bitcoin as a life preserver that keeps your wealth from sinking in the ocean of inflation that drowns regular money over time.",
+          keyTakeaways: [
+            "Fixed supply protects against monetary inflation",
+            "Historical trend shows value preservation",
+            "Deflationary asset in inflationary world",
+            "Long-term store of value properties"
+          ]
+        };
+      }
+
+      if (fact.title === "Regular Money Loses Value") {
+        diveDeeper = {
+          explanation: "When governments print more money, each existing dollar becomes worth less. This hidden tax on savers has reduced the dollar's purchasing power by 96% since 1913. Bitcoin cannot be inflated away because no one can create more.",
+          examples: [
+            "1950s: Movie ticket cost 50 cents, now $15",
+            "1980s: House cost $50,000, now $500,000",
+            "2020: Government printed $6 trillion in one year",
+            "Bitcoin: Same 21 million limit since day one"
+          ],
+          visualDescription: "Imagine regular money as ice cubes that slowly melt away, while Bitcoin is like a diamond that stays solid and valuable forever.",
+          keyTakeaways: [
+            "Money printing dilutes value of existing money",
+            "Inflation is a hidden tax on savers",
+            "96% of dollar's value lost since 1913",
+            "Bitcoin's fixed supply prevents this problem"
+          ]
+        };
+      }
+
+      if (fact.title === "Banks Control Your Money") {
+        diveDeeper = {
+          explanation: "Traditional banks can freeze accounts, limit withdrawals, charge fees, and even lose your money. You need their permission for many transactions. Bitcoin removes this control, giving you direct ownership like having cash in your pocket.",
+          examples: [
+            "Bank holidays: Can't access your money",
+            "Account freezing: Bank decides you can't spend",
+            "Wire limits: Bank controls how much you can send",
+            "Bitcoin: Available 24/7 with no permission needed"
+          ],
+          visualDescription: "Banks are like having a strict parent control your allowance, while Bitcoin is like having your own money that you can spend however and whenever you want.",
+          keyTakeaways: [
+            "Banks have ultimate control over 'your' money",
+            "Bitcoin eliminates need for banking permission",
+            "Self-custody means true ownership",
+            "No third party can freeze or limit Bitcoin"
+          ]
+        };
+      }
+
+      if (fact.title === "Bitcoin Helps Everyone") {
+        diveDeeper = {
+          explanation: "Bitcoin provides financial services to anyone with internet access, regardless of credit score, bank account, or geographic location. It's especially helpful for people in countries with unstable currencies or restrictive banking systems.",
+          examples: [
+            "Unbanked populations: Can use Bitcoin without bank account",
+            "Remittances: Send money across borders without Western Union",
+            "Hyperinflation: Protect savings when local currency fails",
+            "Financial censorship: Access money when banks won't serve you"
+          ],
+          visualDescription: "Bitcoin is like a financial lifeline thrown to anyone drowning in the limitations of traditional banking, regardless of who they are or where they live.",
+          keyTakeaways: [
+            "Provides financial inclusion globally",
+            "No discrimination based on location or status",
+            "Especially valuable in unstable economies",
+            "Empowers individuals over institutions"
+          ]
+        };
+      }
+
+      // Add all remaining critical facts that users are actively testing
+
+      if (fact.title === "Bitcoin Transactions are Simple") {
+        diveDeeper = {
+          explanation: "Bitcoin transactions contain just the essential information: sender, receiver, amount, and digital signature. This simplicity makes them easy to verify, process quickly, and understand clearly without complex banking paperwork.",
+          examples: [
+            "Bank transfer: Requires forms, approvals, intermediaries",
+            "Bitcoin: Just address, amount, and digital signature",
+            "Writing a check: Fill out multiple fields and information",
+            "Bitcoin: Simple digital equivalent of handing cash"
+          ],
+          visualDescription: "Think of Bitcoin transactions like digital cash handovers - just 'from me to you, this amount, signed' - no complicated forms or middleman approvals needed.",
+          keyTakeaways: [
+            "Transactions contain only essential information",
+            "No complex paperwork or approvals needed",
+            "Easy to verify and understand",
+            "Simplicity enables global accessibility"
+          ]
+        };
+      }
+
+      if (fact.title === "Paying to Use the Network") {
+        diveDeeper = {
+          explanation: "Bitcoin transaction fees compensate miners for processing transactions and securing the network. These fees create a market where users can choose between paying more for faster service or less for slower processing.",
+          examples: [
+            "Express mail: Pay more for faster delivery",
+            "Regular mail: Pay less but takes longer",
+            "Bitcoin high fee: Fast confirmation in next block",
+            "Bitcoin low fee: Confirmation when network is less busy"
+          ],
+          visualDescription: "Bitcoin fees work like shipping options - express delivery costs more but arrives faster, while standard shipping is cheaper but takes longer.",
+          keyTakeaways: [
+            "Fees compensate miners for their work",
+            "Higher fees typically mean faster processing",
+            "Users choose their preferred speed/cost balance",
+            "Fee market creates efficient priority system"
+          ]
+        };
+      }
+
+      if (fact.title === "Making Sure It's Real") {
+        diveDeeper = {
+          explanation: "Bitcoin uses multiple verification steps to ensure transactions are valid. The network checks digital signatures, account balances, and transaction history before accepting any payment, making fraud practically impossible.",
+          examples: [
+            "Cash payment: Hard to verify if bills are real",
+            "Check payment: Might bounce if no funds",
+            "Credit card: Can be charged back or fraudulent",
+            "Bitcoin: Mathematical proof prevents all fraud"
+          ],
+          visualDescription: "Bitcoin verification is like having thousands of expert accountants instantly check every transaction to make sure the math is perfect and no one is cheating.",
+          keyTakeaways: [
+            "Multiple verification steps prevent fraud",
+            "Network consensus ensures validity",
+            "Mathematical proof replaces trust",
+            "Fraudulent transactions are rejected automatically"
+          ]
+        };
+      }
+
+      if (fact.title === "The Mystery Creator") {
+        diveDeeper = {
+          explanation: "Bitcoin was created by someone using the name Satoshi Nakamoto, but their real identity remains unknown. They disappeared from public view in 2011, leaving Bitcoin to develop as a truly decentralized system without a leader.",
+          examples: [
+            "Most inventions: Known creator who controls development",
+            "Bitcoin: Anonymous creator who stepped away",
+            "Company CEO: Makes decisions for the organization",
+            "Bitcoin: No single person in charge"
+          ],
+          visualDescription: "Imagine someone inventing the internet and then completely disappearing, leaving their creation to grow and evolve on its own - that's what Satoshi did with Bitcoin.",
+          keyTakeaways: [
+            "Creator's identity remains unknown",
+            "Satoshi disappeared to ensure decentralization",
+            "No single person controls Bitcoin's development",
+            "Community-driven evolution since 2011"
+          ]
+        };
+      }
+
+      if (fact.title === "Bitcoin's Birthday") {
+        diveDeeper = {
+          explanation: "Bitcoin's first block was mined on January 3, 2009, during the global financial crisis. This timing wasn't accidental - the block contained a newspaper headline about bank bailouts, showing Bitcoin as an alternative to the failing financial system.",
+          examples: [
+            "2008: Banks needed government bailouts to survive",
+            "2009: Bitcoin launched as alternative to banking",
+            "Traditional system: Required bailouts when it failed",
+            "Bitcoin: Designed to work without bailouts or central control"
+          ],
+          visualDescription: "Bitcoin was born like a lifeboat launched during a shipwreck, designed to save people from the sinking traditional financial system.",
+          keyTakeaways: [
+            "Launched January 3, 2009",
+            "Timing coincided with financial crisis",
+            "Created as alternative to traditional banking",
+            "Genesis block referenced bank bailout headlines"
+          ]
+        };
+      }
+
+      if (fact.title === "The Famous Pizza") {
+        diveDeeper = {
+          explanation: "On May 22, 2010, programmer Laszlo Hanyecz bought two pizzas for 10,000 bitcoins - the first real-world Bitcoin transaction. This day is celebrated as Bitcoin Pizza Day, marking when Bitcoin first became actual money instead of just computer code.",
+          examples: [
+            "2010: 10,000 bitcoins bought 2 pizzas ($25)",
+            "2024: Those same bitcoins worth $500+ million",
+            "Historic significance: Proved Bitcoin could buy real things",
+            "Pizza Day: Annual celebration of Bitcoin's first purchase"
+          ],
+          visualDescription: "The pizza purchase was like Bitcoin's first baby steps - proving it could walk in the real world and buy actual things, not just exist as numbers on a computer.",
+          keyTakeaways: [
+            "First real-world Bitcoin transaction",
+            "10,000 bitcoins for two pizzas",
+            "May 22 celebrated as Bitcoin Pizza Day",
+            "Demonstrated Bitcoin's practical utility"
+          ]
+        };
+      }
+
+      // Complete the remaining critical fact titles
+
+      if (fact.title === "Slow But Secure") {
+        diveDeeper = {
+          explanation: "Bitcoin prioritizes security over speed by taking about 10 minutes for each transaction block. This deliberate slowness allows time for global consensus and makes the network extremely secure against attacks or fraud attempts.",
+          examples: [
+            "Bank transfer: Fast processing but can be reversed",
+            "Bitcoin: Slower processing but irreversible security",
+            "Armored truck: Moves slowly but protects valuable cargo",
+            "Bitcoin: Moves carefully but protects digital value"
+          ],
+          visualDescription: "Bitcoin is like a heavily armored bank vault on wheels - it moves slowly and carefully, but once it arrives, your money is absolutely secure and can't be stolen.",
+          keyTakeaways: [
+            "Security prioritized over transaction speed",
+            "10-minute blocks allow global consensus",
+            "Deliberate design choice for maximum protection",
+            "Trade-off between speed and security"
+          ]
+        };
+      }
+
+      if (fact.title === "Can't Have Everything") {
+        diveDeeper = {
+          explanation: "Bitcoin makes deliberate trade-offs to optimize for what matters most. It chooses security over speed, decentralization over efficiency, and immutability over convenience. These trade-offs create a system that excels at being unstoppable money.",
+          examples: [
+            "Fast food: Quick but not always healthy",
+            "Home cooking: Takes time but better nutrition",
+            "Bitcoin: Slower but maximum security and ownership",
+            "Traditional systems: Faster but less secure and more controlled"
+          ],
+          visualDescription: "Bitcoin is like choosing a strong, reliable truck over a fast sports car when you need to transport something valuable across dangerous terrain - speed isn't worth the risk.",
+          keyTakeaways: [
+            "Deliberate trade-offs optimize for key properties",
+            "Security and decentralization prioritized",
+            "Not designed to be fastest payment system",
+            "Excellence in digital store of value properties"
+          ]
+        };
+      }
+
+      if (fact.title === "Lightning Fast Layer") {
+        diveDeeper = {
+          explanation: "The Lightning Network is built on top of Bitcoin to enable instant, cheap payments while maintaining Bitcoin's security. It works by opening payment channels that can process thousands of transactions off the main blockchain.",
+          examples: [
+            "Main road: Bitcoin blockchain (secure but slower)",
+            "Express lane: Lightning Network (fast but uses main road security)",
+            "Bank: Many small transactions, occasional large settlement",
+            "Lightning: Many instant payments, periodic Bitcoin settlements"
+          ],
+          visualDescription: "Lightning is like an express lane built above the secure Bitcoin highway - you can zoom along instantly for small trips, but you're still protected by the strong foundation below.",
+          keyTakeaways: [
+            "Second layer built on top of Bitcoin",
+            "Enables instant, low-cost transactions",
+            "Maintains Bitcoin's underlying security",
+            "Solves small payment use cases"
+          ]
+        };
+      }
+
+      if (fact.title === "No Central Control") {
+        diveDeeper = {
+          explanation: "Bitcoin has no CEO, headquarters, or central authority making decisions. It's controlled by everyone who uses it through mathematical consensus, making it impossible for any single entity to control or shut down.",
+          examples: [
+            "Company: CEO makes all major decisions",
+            "Bitcoin: Users collectively make decisions through code",
+            "Government currency: Central bank controls supply",
+            "Bitcoin: Mathematical rules control everything"
+          ],
+          visualDescription: "Bitcoin is like a river that flows according to natural laws rather than being controlled by any dam or authority - it follows the path that math and consensus determine.",
+          keyTakeaways: [
+            "No single entity controls Bitcoin",
+            "Decentralized decision-making through consensus",
+            "Mathematical rules replace human authority",
+            "Cannot be shut down or controlled centrally"
+          ]
+        };
+      }
+
+      if (fact.title === "Math Never Lies") {
+        diveDeeper = {
+          explanation: "Bitcoin relies on mathematical proof rather than trust in people or institutions. The rules are written in code that everyone can verify, creating a system where human corruption or error cannot change the fundamental properties.",
+          examples: [
+            "Human promise: Can be broken or forgotten",
+            "Mathematical proof: Always produces same result",
+            "Bank ledger: Can be altered by insiders",
+            "Bitcoin ledger: Protected by unbreakable math"
+          ],
+          visualDescription: "Bitcoin is like having the laws of physics govern your money instead of having human politicians write rules they can change whenever convenient.",
+          keyTakeaways: [
+            "Mathematical proof replaces human trust",
+            "Code rules cannot be arbitrarily changed",
+            "Eliminates human error and corruption",
+            "Objective mathematical consensus"
+          ]
+        };
+      }
+
+      // Add final missing titles to complete comprehensive coverage
+      
+      if (fact.title === "Digital Gold Properties") {
+        diveDeeper = {
+          explanation: "Bitcoin shares many properties with gold that made it valuable money throughout history: scarcity, durability, divisibility, and difficulty to counterfeit. However, Bitcoin improves on gold by being easily transportable and verifiable.",
+          examples: [
+            "Gold: Heavy to transport, Bitcoin: Weightless",
+            "Gold: Hard to verify purity, Bitcoin: Instantly verifiable",
+            "Gold: Difficult to divide precisely, Bitcoin: Infinitely divisible",
+            "Both: Scarce, durable, and valuable store of wealth"
+          ],
+          visualDescription: "Bitcoin is like gold that learned to fly - it keeps all the valuable properties that made gold precious for thousands of years, but adds the ability to travel instantly anywhere in the world.",
+          keyTakeaways: [
+            "Combines gold's store of value properties",
+            "Adds digital advantages like portability",
+            "Maintains scarcity and durability",
+            "Improves on gold's practical limitations"
+          ]
+        };
+      }
+
       const newFact: DailyFact = { 
         ...fact, 
         id: this.currentFactId++,
