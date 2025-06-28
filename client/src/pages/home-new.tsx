@@ -2028,22 +2028,22 @@ export default function Home() {
     {
       stage: "Transaction Fees",
       title: "💰 Fee Manipulation",
-      description: "You're sending $50 worth of Bitcoin and the wallet suggests a $200 fee. What should you do?",
+      description: "You're sending $50 worth of Bitcoin. Your wallet suggests a $200 fee, but you checked other sources and normal fees are $2. What should you do?",
       options: [
         {
-          method: "Pay the fee since it's what the wallet recommends",
+          method: "Pay the $200 fee since the wallet knows best",
           safe: false
         },
         {
-          method: "Check multiple fee estimators and compare",
+          method: "Never use this wallet again - it might be malicious",
           safe: true
         },
         {
-          method: "Wait for fees to go down",
+          method: "Try sending anyway with the high fee",
           safe: false
         },
         {
-          method: "Use a different wallet",
+          method: "Ignore the fee warning and send anyway",
           safe: false
         }
       ]
