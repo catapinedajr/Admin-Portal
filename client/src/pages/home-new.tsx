@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -333,6 +333,11 @@ export default function Home() {
       });
     }
   });
+
+  // Stable callback for quiz completion to prevent infinite loops
+  const handleQuizCompletion = useCallback(() => {
+    markDayCompletedMutation.mutate(currentDayIndex);
+  }, [markDayCompletedMutation, currentDayIndex]);
 
   const [convictionSubTab, setConvictionSubTab] = useState<"whitepaper" | "books" | "videos">("whitepaper");
   const [showSplash, setShowSplash] = useState(true);
@@ -2404,7 +2409,7 @@ export default function Home() {
                 <div data-testid="daily-quiz">
                   <DailyQuiz 
                     dayIndex={currentDayIndex} 
-                    onCompletion={() => markDayCompletedMutation.mutate(currentDayIndex)}
+                    onCompletion={handleQuizCompletion}
                   />
                 </div>
               </div>

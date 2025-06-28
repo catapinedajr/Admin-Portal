@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -47,6 +47,7 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
   const [submittedAnswers, setSubmittedAnswers] = useState<Record<number, QuizAnswer>>({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const queryClient = useQueryClient();
+  const completionTriggeredRef = useRef(false);
   
   const today = new Date().toISOString().split('T')[0];
   const userId = 1; // Default user
@@ -129,7 +130,8 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       // Quiz is complete - check if all questions answered and trigger completion if needed
-      if (userAnswers.length === questions.length && onCompletion) {
+      if (userAnswers.length === questions.length && onCompletion && !completionTriggeredRef.current) {
+        completionTriggeredRef.current = true;
         onCompletion();
       }
     }
@@ -143,11 +145,17 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
 
   // Check for quiz completion when all questions are answered
   useEffect(() => {
-    if (questions.length > 0 && userAnswers.length === questions.length && onCompletion) {
+    if (questions.length > 0 && userAnswers.length === questions.length && onCompletion && !completionTriggeredRef.current) {
       // All questions answered, trigger completion callback
+      completionTriggeredRef.current = true;
       onCompletion();
     }
   }, [questions.length, userAnswers.length, onCompletion]);
+
+  // Reset completion tracking when dayIndex changes
+  useEffect(() => {
+    completionTriggeredRef.current = false;
+  }, [dayIndex]);
 
   if (loadingQuestions) {
     return (
