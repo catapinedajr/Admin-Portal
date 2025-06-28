@@ -1797,7 +1797,7 @@ export default function Home() {
   const [showResult, setShowResult] = useState(false);
   const [safetyCompleted, setSafetyCompleted] = useState(false);
 
-  // Multi-stage Safety Simulation Data
+  // Comprehensive 12-Stage Safety Simulation Data
   const safetySimulations = [
     {
       stage: "Phishing Detection",
@@ -1864,7 +1864,7 @@ export default function Home() {
       title: "🎯 Verify Bitcoin Address",
       description: "You're about to send 0.5 BTC ($21,000). Check if this address matches what you copied:",
       copied: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
-      displayed: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w1h", // Malicious change: 'l' to '1'
+      displayed: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w1h",
       options: [
         { text: "Addresses match - Safe to send", correct: false },
         { text: "Something looks wrong - I need to verify character by character", correct: true },
@@ -1894,6 +1894,254 @@ export default function Home() {
           tactics: ["Classic advance fee fraud", "Unrealistic returns", "Emotional manipulation"]
         }
       ]
+    },
+    {
+      stage: "Exchange Security",
+      title: "🏪 Exchange Safety Check",
+      description: "You want to buy Bitcoin. Which exchange option is safest?",
+      options: [
+        {
+          method: "Brand new exchange offering 50% signup bonus",
+          security: "Very Dangerous",
+          explanation: "New, unproven exchanges with unrealistic bonuses are often scams. Stick to established, regulated exchanges.",
+          safe: false
+        },
+        {
+          method: "Well-known exchange like Coinbase or Kraken",
+          security: "Much Safer",
+          explanation: "Established exchanges have track records, insurance, and regulatory compliance. Still withdraw to your own wallet.",
+          safe: true
+        },
+        {
+          method: "Random exchange found through Google ads",
+          security: "Very Dangerous", 
+          explanation: "Scammers buy Google ads to promote fake exchanges. Never trust ads for financial services.",
+          safe: false
+        },
+        {
+          method: "Exchange recommended in a Telegram group",
+          security: "Dangerous",
+          explanation: "Telegram recommendations are often paid promotions or scams. Do your own research on exchanges.",
+          safe: false
+        }
+      ]
+    },
+    {
+      stage: "WiFi Security",
+      title: "📶 Public WiFi Warning",
+      description: "You're at a coffee shop and want to check your Bitcoin wallet. What's the safest approach?",
+      options: [
+        {
+          method: "Connect to free public WiFi and log in normally",
+          security: "Very Dangerous",
+          explanation: "Public WiFi can be monitored. Your login details and private keys could be intercepted by attackers.",
+          safe: false
+        },
+        {
+          method: "Use your phone's mobile data instead",
+          security: "Much Safer",
+          explanation: "Mobile data is encrypted and much harder to intercept than public WiFi networks.",
+          safe: true
+        },
+        {
+          method: "Use public WiFi but only check prices, not access wallet",
+          security: "Safer",
+          explanation: "Checking prices is lower risk, but still avoid logging into any Bitcoin-related accounts on public WiFi.",
+          safe: false
+        },
+        {
+          method: "Connect through a VPN on public WiFi",
+          security: "Better",
+          explanation: "VPNs help, but mobile data is still safer. If you must use WiFi, a VPN is essential.",
+          safe: false
+        }
+      ]
+    },
+    {
+      stage: "Software Downloads",
+      title: "💾 Safe Wallet Downloads",
+      description: "You need to download a Bitcoin wallet. Where do you get it?",
+      options: [
+        {
+          method: "Google search and click the first result",
+          security: "Dangerous",
+          explanation: "Search results can contain malicious fake wallets. Scammers pay for top ad placement.",
+          safe: false
+        },
+        {
+          method: "Official website directly (electrum.org, bitcoin.org)",
+          security: "Very Safe",
+          explanation: "Always go directly to official websites. Bookmark them for future use to avoid typos.",
+          safe: true
+        },
+        {
+          method: "Download from a Bitcoin forum recommendation",
+          security: "Risky",
+          explanation: "Forum posts can be fake recommendations. Always verify through official channels.",
+          safe: false
+        },
+        {
+          method: "App store or Google Play",
+          security: "Safer",
+          explanation: "App stores screen for malware, but fake apps still exist. Verify the developer and reviews carefully.",
+          safe: false
+        }
+      ]
+    },
+    {
+      stage: "Social Engineering",
+      title: "🎭 Social Engineering Defense",
+      description: "Someone calls claiming to be from your exchange, asking for your 2FA code. What do you do?",
+      options: [
+        {
+          method: "Give them the code since they knew my email",
+          security: "Very Dangerous",
+          explanation: "Legitimate exchanges never ask for 2FA codes. This is a classic social engineering attack.",
+          safe: false
+        },
+        {
+          method: "Hang up and call the exchange directly",
+          security: "Very Safe",
+          explanation: "Always hang up and call the official number. Scammers can spoof caller ID and know your email.",
+          safe: true
+        },
+        {
+          method: "Ask them to verify my account details first",
+          security: "Dangerous",
+          explanation: "Don't engage with potential scammers. They may have some of your information already.",
+          safe: false
+        },
+        {
+          method: "Tell them to email me instead",
+          security: "Risky",
+          explanation: "This continues the interaction. Best to end the call immediately and verify independently.",
+          safe: false
+        }
+      ]
+    },
+    {
+      stage: "Hardware Wallet",
+      title: "🔧 Hardware Wallet Safety",
+      description: "You bought a hardware wallet on eBay. What should you do before using it?",
+      options: [
+        {
+          method: "Use it immediately since it's sealed",
+          security: "Very Dangerous",
+          explanation: "Used hardware wallets can be compromised. Sealed packaging can be faked.",
+          safe: false
+        },
+        {
+          method: "Buy a new one from the official manufacturer",
+          security: "Very Safe",
+          explanation: "Hardware wallets should only be bought new from official sources, never secondhand.",
+          safe: true
+        },
+        {
+          method: "Reset it and generate new seed phrase",
+          security: "Still Dangerous",
+          explanation: "The device firmware could be modified. Hardware compromise can survive factory resets.",
+          safe: false
+        },
+        {
+          method: "Test it with small amounts first",
+          security: "Dangerous",
+          explanation: "Any amount sent to a compromised device is at risk. Don't trust secondhand hardware wallets.",
+          safe: false
+        }
+      ]
+    },
+    {
+      stage: "Backup Testing",
+      title: "💾 Backup Verification",
+      description: "You wrote down your seed phrase. How do you verify it's correct?",
+      options: [
+        {
+          method: "Wait until you need to restore the wallet",
+          security: "Very Dangerous",
+          explanation: "By then it's too late if there's an error. You could lose all your Bitcoin permanently.",
+          safe: false
+        },
+        {
+          method: "Test restore on the same device immediately",
+          security: "Much Safer",
+          explanation: "Always test your backup works before sending Bitcoin to the wallet. This catches writing errors.",
+          safe: true
+        },
+        {
+          method: "Take a photo of the seed phrase as backup",
+          security: "Very Dangerous",
+          explanation: "Never digitally store seed phrases. Photos can be backed up to cloud or stolen.",
+          safe: false
+        },
+        {
+          method: "Share with trusted family member to verify",
+          security: "Dangerous",
+          explanation: "Seed phrases should never be shared. Anyone with access can steal your Bitcoin.",
+          safe: false
+        }
+      ]
+    },
+    {
+      stage: "Transaction Fees",
+      title: "💰 Fee Manipulation",
+      description: "You're sending Bitcoin and the wallet suggests a $200 fee for a $50 transaction. What's happening?",
+      options: [
+        {
+          method: "Pay the fee since it's what the wallet recommends",
+          security: "Dangerous",
+          explanation: "This could be malware manipulating fees to drain your wallet. Always verify fees manually.",
+          safe: false
+        },
+        {
+          method: "Check multiple fee estimators and compare",
+          security: "Much Safer",
+          explanation: "Cross-reference fees with mempool.space or other tools. $200 for $50 transaction is extremely suspicious.",
+          safe: true
+        },
+        {
+          method: "Wait for fees to go down",
+          security: "Better",
+          explanation: "Fees do fluctuate, but $200 for $50 suggests something is wrong. Investigate before waiting.",
+          safe: false
+        },
+        {
+          method: "Use a different wallet",
+          security: "Good thinking",
+          explanation: "If one wallet shows suspicious fees, trying another can help identify if it's malware or network congestion.",
+          safe: false
+        }
+      ]
+    },
+    {
+      stage: "Recovery Scams", 
+      title: "🔍 Recovery Service Red Flags",
+      description: "You lost access to your wallet. Someone offers to recover it for 50% of the funds. Red flag?",
+      options: [
+        {
+          method: "Agree since 50% is better than 0%",
+          security: "Very Dangerous",
+          explanation: "Recovery scams are common. Legitimate services don't ask for percentages upfront.",
+          safe: false
+        },
+        {
+          method: "Ask for references and research the company",
+          security: "Safer approach",
+          explanation: "If you must use recovery services, thoroughly research them. Most 'recovery' offers are scams.",
+          safe: false
+        },
+        {
+          method: "Decline and try to recover yourself",
+          security: "Much Safer",
+          explanation: "Most recovery offers are scams. If you have your seed phrase, you can recover yourself.",
+          safe: true
+        },
+        {
+          method: "Negotiate for a lower percentage",
+          security: "Still Dangerous",
+          explanation: "Don't engage with potential scammers. This validates your desperation and makes you a bigger target.",
+          safe: false
+        }
+      ]
     }
   ];
 
@@ -1911,17 +2159,19 @@ export default function Home() {
       if (safetyStage === 0 && simulation.emails && simulation.emails[optionIndex]) {
         // Phishing detection - select the phishing email
         correct = simulation.emails[optionIndex].isPhishing === true;
-      } else if (safetyStage === 1 && simulation.options && simulation.options[optionIndex]) {
-        // Seed phrase storage - select the safe option  
-        const option = simulation.options[optionIndex] as any;
-        correct = option.safe === true;
-      } else if (safetyStage === 2 && simulation.options && simulation.options[optionIndex]) {
-        // Address verification - select the correct verification choice
-        const option = simulation.options[optionIndex] as any;
-        correct = option.correct === true;
       } else if (safetyStage === 3 && simulation.scenarios && simulation.scenarios[optionIndex]) {
         // Scam recognition - select the scam message
         correct = simulation.scenarios[optionIndex].isScam === true;
+      } else if (simulation.options && simulation.options[optionIndex]) {
+        // All other stages use options structure
+        const option = simulation.options[optionIndex] as any;
+        if (safetyStage === 2) {
+          // Address verification stage
+          correct = option.correct === true;
+        } else {
+          // All other option-based stages (seed phrase, exchange, wifi, downloads, social, hardware, backup, fees, recovery)
+          correct = option.safe === true;
+        }
       }
     } catch (error) {
       console.log('Safety simulation error:', error);
@@ -4460,7 +4710,10 @@ export default function Home() {
                               <div className="space-y-4">
                                 <div className="p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
                                   <div className="text-sm text-zinc-300 mb-3">
-                                    You're sending Bitcoin to: <span className="text-orange-300 font-mono">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</span>
+                                    You're sending Bitcoin to:
+                                  </div>
+                                  <div className="text-orange-300 font-mono text-xs break-all bg-zinc-800 p-2 rounded mb-3">
+                                    1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
                                   </div>
                                   <div className="text-sm text-zinc-300 mb-3">Your wallet shows this address to confirm:</div>
                                   <div className="space-y-2">
@@ -4514,6 +4767,74 @@ export default function Home() {
                                         }`}
                                       >
                                         <div className="text-white text-sm">{scenario.message}</div>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Generic Options-based Simulations (stages 4-11) */}
+                            {safetyStage >= 4 && safetyStage <= 11 && (
+                              <div className="space-y-4">
+                                <div className="p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
+                                  {safetyStage === 4 && (
+                                    <div className="text-sm text-zinc-300 mb-3">
+                                      You want to buy Bitcoin for the first time. Choose the safest approach:
+                                    </div>
+                                  )}
+                                  {safetyStage === 5 && (
+                                    <div className="text-sm text-zinc-300 mb-3">
+                                      You're at a coffee shop and want to check your Bitcoin wallet:
+                                    </div>
+                                  )}
+                                  {safetyStage === 6 && (
+                                    <div className="text-sm text-zinc-300 mb-3">
+                                      You need to download a Bitcoin wallet. Where do you get it?
+                                    </div>
+                                  )}
+                                  {safetyStage === 7 && (
+                                    <div className="text-sm text-zinc-300 mb-3">
+                                      Someone calls claiming to be from your exchange, asking for your 2FA code:
+                                    </div>
+                                  )}
+                                  {safetyStage === 8 && (
+                                    <div className="text-sm text-zinc-300 mb-3">
+                                      You bought a hardware wallet on eBay. What should you do before using it?
+                                    </div>
+                                  )}
+                                  {safetyStage === 9 && (
+                                    <div className="text-sm text-zinc-300 mb-3">
+                                      You wrote down your seed phrase. How do you verify it's correct?
+                                    </div>
+                                  )}
+                                  {safetyStage === 10 && (
+                                    <div className="text-sm text-zinc-300 mb-3">
+                                      Your wallet suggests a $200 fee for a $50 Bitcoin transaction. What's happening?
+                                    </div>
+                                  )}
+                                  {safetyStage === 11 && (
+                                    <div className="text-sm text-zinc-300 mb-3">
+                                      You lost access to your wallet. Someone offers to recover it for 50% of the funds:
+                                    </div>
+                                  )}
+                                  <div className="space-y-2">
+                                    {currentSimulation?.options?.map((option, index) => (
+                                      <button
+                                        key={index}
+                                        onClick={() => setSelectedOption(index)}
+                                        className={`w-full p-3 border rounded-lg text-left transition-colors ${
+                                          selectedOption === index 
+                                            ? 'border-orange-500 bg-orange-500/10' 
+                                            : 'border-zinc-600 hover:border-zinc-500'
+                                        }`}
+                                      >
+                                        <div className="text-white text-sm font-medium mb-1">
+                                          {'method' in option ? option.method : 'Option'}
+                                        </div>
+                                        <div className="text-zinc-400 text-xs">
+                                          {'security' in option ? option.security : 'Security level'}
+                                        </div>
                                       </button>
                                     ))}
                                   </div>
@@ -4592,7 +4913,10 @@ export default function Home() {
                               <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-3" />
                               <h5 className="text-xl font-bold text-green-300 mb-2">Security Expert! 🛡️</h5>
                               <p className="text-green-100 mb-4">
-                                Score: {safetyScore}/{safetySimulations.length} - Your Bitcoin will be safe!
+                                Score: {safetyScore}/{safetySimulations.length} ({Math.round((safetyScore/safetySimulations.length)*100)}%) - Your Bitcoin will be safe!
+                              </p>
+                              <p className="text-green-100 text-sm">
+                                You've mastered Bitcoin security fundamentals. You can confidently protect your assets from the most common threats.
                               </p>
                             </div>
                           ) : safetyScore >= safetySimulations.length * 0.6 ? (
