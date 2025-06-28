@@ -2630,6 +2630,354 @@ export class MemStorage implements IStorage {
         };
       }
 
+      // Continue with days 12-30 fact titles
+
+      if (fact.title === "Energy Makes It Safe") {
+        diveDeeper = {
+          explanation: "Bitcoin uses a lot of energy because that energy creates security. The more energy spent mining Bitcoin, the more expensive it becomes to attack the network. This energy cost is what makes Bitcoin transactions irreversible and trustworthy.",
+          examples: [
+            "Bank vault: Thick steel walls cost money but provide security",
+            "Bitcoin: Energy costs money but provides digital security",
+            "Home alarm: Uses electricity to protect your house",
+            "Bitcoin mining: Uses electricity to protect the network"
+          ],
+          visualDescription: "Think of Bitcoin's energy use like a digital fortress - the more energy powering the walls, the stronger and more secure the fortress becomes against any attackers.",
+          keyTakeaways: [
+            "Energy consumption creates network security",
+            "More energy makes attacks more expensive",
+            "Security cost is proportional to protection value",
+            "Energy secures trillions in digital value"
+          ]
+        };
+      }
+
+      if (fact.title === "Only 21 Million Ever") {
+        diveDeeper = {
+          explanation: "Bitcoin's supply is permanently capped at 21 million coins through mathematical code that cannot be changed. This makes it the first form of money in history with a truly fixed, verifiable supply limit that no authority can override.",
+          examples: [
+            "Government money: Can always print more when convenient",
+            "Bitcoin: Mathematically impossible to create more",
+            "Gold supply: New discoveries can increase total amount",
+            "Bitcoin supply: Fixed forever at exactly 21 million"
+          ],
+          visualDescription: "Imagine if there were only 21 million rare paintings that could ever exist, and everyone could verify this limit was real and unchangeable - that's Bitcoin's scarcity.",
+          keyTakeaways: [
+            "Hard cap of exactly 21 million bitcoins",
+            "Impossible to increase this limit",
+            "First truly fixed-supply money in history",
+            "Scarcity is mathematically guaranteed"
+          ]
+        };
+      }
+
+      if (fact.title === "Not Your Keys, Not Your Coins") {
+        diveDeeper = {
+          explanation: "This famous Bitcoin saying means that if you don't control the private keys to your Bitcoin, you don't really own it. Whoever controls the keys can spend the Bitcoin, regardless of who thinks they own it.",
+          examples: [
+            "Bank account: Bank controls your access to funds",
+            "Bitcoin exchange: Exchange controls your Bitcoin keys",
+            "Cash in hand: You physically control your money",
+            "Self-custody Bitcoin: You digitally control your money"
+          ],
+          visualDescription: "It's like the difference between keeping gold in your own safe versus keeping it in someone else's safe - even if they promise it's yours, they have the key to take it.",
+          keyTakeaways: [
+            "Private key control equals true ownership",
+            "Third parties can freeze or seize funds they control",
+            "Self-custody provides maximum security",
+            "Responsibility comes with true ownership"
+          ]
+        };
+      }
+
+      if (fact.title === "Pseudonymous Transactions") {
+        diveDeeper = {
+          explanation: "Bitcoin transactions are pseudonymous, meaning they're linked to addresses rather than real names. While all transactions are public, the identities behind the addresses aren't automatically known, providing a balance of transparency and privacy.",
+          examples: [
+            "Cash: Anonymous but hard to track large amounts",
+            "Bank transfer: Private but bank knows everything",
+            "Bitcoin: Public transactions, private identities",
+            "Internet username: Public actions, hidden real name"
+          ],
+          visualDescription: "Bitcoin transactions are like watching masked performers on stage - you can see all their actions clearly, but you don't know who's behind the mask unless they reveal themselves.",
+          keyTakeaways: [
+            "Addresses are public, identities are private",
+            "All transactions are transparent and verifiable",
+            "Privacy through pseudonymous addresses",
+            "Better than both cash and banking for most needs"
+          ]
+        };
+      }
+
+      if (fact.title === "Metcalfe's Law") {
+        diveDeeper = {
+          explanation: "Metcalfe's Law states that a network becomes more valuable as more people join it. Bitcoin follows this pattern - as more people use Bitcoin, it becomes more useful, more accepted, and more valuable to everyone in the network.",
+          examples: [
+            "Telephone: One phone is useless, millions create value",
+            "Internet: More users make it more valuable for everyone",
+            "Bitcoin: More users increase utility and acceptance",
+            "Social media: Platform value grows with user count"
+          ],
+          visualDescription: "Bitcoin is like a growing city - the more people who move there, the more shops, services, and opportunities become available for everyone who lives there.",
+          keyTakeaways: [
+            "Network value grows with user adoption",
+            "More users create more utility for everyone",
+            "Adoption drives both value and functionality",
+            "Self-reinforcing growth cycle"
+          ]
+        };
+      }
+
+      if (fact.title === "Bitcoin Innovation") {
+        diveDeeper = {
+          explanation: "Bitcoin continues to evolve through improvements and new layers built on top of it. Innovations like the Lightning Network, smart contracts, and scaling solutions make Bitcoin more useful while maintaining its core security properties.",
+          examples: [
+            "Internet: Started basic, added video, social media, apps",
+            "Bitcoin: Started with payments, adding smart features",
+            "Highway system: Base roads plus express lanes and bridges",
+            "Bitcoin: Base layer plus Lightning and other improvements"
+          ],
+          visualDescription: "Bitcoin development is like building a city - you start with strong foundations, then add roads, bridges, and new neighborhoods while keeping the core infrastructure solid.",
+          keyTakeaways: [
+            "Bitcoin evolves through layered improvements",
+            "Core security properties remain unchanged",
+            "Innovation happens on top of solid foundation",
+            "Continuous development by global community"
+          ]
+        };
+      }
+
+      // Add remaining fact titles for comprehensive coverage through day 30
+
+      if (fact.title === "Digital Signatures Prove Ownership") {
+        diveDeeper = {
+          explanation: "Bitcoin uses digital signatures to prove that transactions are authorized by the real owner. These mathematical proofs are like unforgeable digital autographs that prove you have the right to spend specific bitcoins without revealing your private key.",
+          examples: [
+            "Physical signature: Can be forged or copied",
+            "Digital signature: Mathematically impossible to forge",
+            "Driver's license: Shows you're authorized to drive",
+            "Bitcoin signature: Shows you're authorized to spend"
+          ],
+          visualDescription: "Digital signatures work like having a magic pen that only you can use, and everyone can verify it's really your writing, but no one can copy your pen or forge your signature.",
+          keyTakeaways: [
+            "Mathematical proof of transaction authorization",
+            "Impossible to forge or counterfeit",
+            "Proves ownership without revealing private keys",
+            "Essential security feature of Bitcoin"
+          ]
+        };
+      }
+
+      if (fact.title === "Programmable Money Rules") {
+        diveDeeper = {
+          explanation: "Bitcoin's rules are written in computer code that automatically enforces the monetary policy. Unlike traditional money where humans make decisions about supply and rules, Bitcoin's code ensures the rules never change and apply equally to everyone.",
+          examples: [
+            "Central bank: Humans decide when to print money",
+            "Bitcoin: Code automatically controls new issuance",
+            "Government policy: Can change with new leadership",
+            "Bitcoin rules: Unchangeable mathematical certainty"
+          ],
+          visualDescription: "Bitcoin is like having a perfect robot banker that follows the exact same rules forever, never plays favorites, never makes mistakes, and can't be bribed or corrupted.",
+          keyTakeaways: [
+            "Rules enforced by code, not humans",
+            "Monetary policy is predictable and unchangeable",
+            "No favoritism or arbitrary decisions",
+            "Mathematical certainty replaces political uncertainty"
+          ]
+        };
+      }
+
+      if (fact.title === "Network Effects Create Value") {
+        diveDeeper = {
+          explanation: "As more people use Bitcoin, it becomes more valuable for everyone. More users mean more merchants accept it, more developers improve it, more infrastructure supports it, and more liquidity makes it easier to use.",
+          examples: [
+            "Telephone network: More phones make each phone more useful",
+            "Bitcoin network: More users make Bitcoin more useful",
+            "Language: More speakers make the language more valuable",
+            "Money: More acceptance makes money more useful"
+          ],
+          visualDescription: "Bitcoin adoption is like a snowball rolling downhill - as it gets bigger, it picks up speed and becomes harder to stop, growing faster and faster with each new person who joins.",
+          keyTakeaways: [
+            "More users increase utility for everyone",
+            "Adoption creates self-reinforcing cycles",
+            "Network size drives acceptance and infrastructure",
+            "Value grows with practical usefulness"
+          ]
+        };
+      }
+
+      if (fact.title === "Borderless Money System") {
+        diveDeeper = {
+          explanation: "Bitcoin works exactly the same way whether you're sending money across the street or across the world. There are no international exchange rates, currency conversion fees, or different rules for different countries - it's truly global money.",
+          examples: [
+            "International wire: Different rules, fees, delays per country",
+            "Bitcoin: Same rules everywhere, no borders",
+            "Travel money: Need to exchange currencies in each country",
+            "Bitcoin: One currency that works everywhere"
+          ],
+          visualDescription: "Bitcoin is like having a universal key that opens any door in the world - no matter what country you're in, the key works exactly the same way.",
+          keyTakeaways: [
+            "Same functionality worldwide",
+            "No exchange rates or conversion needed",
+            "No international transfer complications",
+            "Truly global monetary system"
+          ]
+        };
+      }
+
+      if (fact.title === "Deflationary Asset Properties") {
+        diveDeeper = {
+          explanation: "Unlike regular money that loses value over time through inflation, Bitcoin tends to gain value as demand increases while supply remains fixed. This makes it deflationary - the opposite of traditional currencies that inflate away your savings.",
+          examples: [
+            "Dollar: More printed each year, buys less over time",
+            "Bitcoin: Fixed supply, tends to buy more over time",
+            "Collectibles: Limited supply often increases value",
+            "Bitcoin: Ultimate limited supply digital collectible"
+          ],
+          visualDescription: "Think of Bitcoin like a rare vintage wine - while regular money spoils and loses value over time, Bitcoin tends to age well and become more valuable with patience.",
+          keyTakeaways: [
+            "Fixed supply creates deflationary pressure",
+            "Tends to gain purchasing power over time",
+            "Opposite of inflationary government money",
+            "Rewards saving instead of punishing it"
+          ]
+        };
+      }
+
+      if (fact.title === "Monetary Sovereignty for Individuals") {
+        diveDeeper = {
+          explanation: "Bitcoin gives individuals the same monetary powers that were previously only available to governments and banks. You can store value, send payments, and control money without needing permission from any institution.",
+          examples: [
+            "Government: Can print money and control currency",
+            "Individual with Bitcoin: Can control their own money",
+            "Bank: Can approve or deny your transactions",
+            "Bitcoin user: Can transact without approval"
+          ],
+          visualDescription: "Bitcoin is like giving every person their own printing press for money - except instead of printing, you earn your share through participation in a fair, limited system.",
+          keyTakeaways: [
+            "Individual control over monetary decisions",
+            "No need for institutional permission",
+            "Personal financial sovereignty",
+            "Democratic access to sound money"
+          ]
+        };
+      }
+
+      // Complete all remaining fact titles to ensure comprehensive coverage
+
+      if (fact.title === "Economic Freedom Through Technology") {
+        diveDeeper = {
+          explanation: "Bitcoin uses technology to create economic freedom that doesn't depend on politics, geography, or social status. Anyone with internet access can participate in the global Bitcoin economy regardless of their government's policies.",
+          examples: [
+            "Traditional banking: Requires government permission and approval",
+            "Bitcoin: Requires only internet and basic knowledge",
+            "International business: Complex regulations and restrictions",
+            "Bitcoin commerce: Simple global peer-to-peer transactions"
+          ],
+          visualDescription: "Bitcoin is like having a passport to a global economy that no government can revoke - once you understand it, you have access to financial freedom anywhere in the world.",
+          keyTakeaways: [
+            "Technology enables economic participation",
+            "Freedom independent of political systems",
+            "Global access regardless of location",
+            "Economic empowerment through mathematics"
+          ]
+        };
+      }
+
+      if (fact.title === "Store of Value for the Digital Age") {
+        diveDeeper = {
+          explanation: "Bitcoin serves as digital store of value that maintains purchasing power over time, similar to how gold has historically preserved wealth. However, Bitcoin offers advantages like portability and verifiability that physical assets cannot match.",
+          examples: [
+            "Gold: Heavy, hard to transport, difficult to verify",
+            "Bitcoin: Weightless, instant transport, easy verification",
+            "Real estate: Tied to location, high transaction costs",
+            "Bitcoin: Global, low transaction costs, high liquidity"
+          ],
+          visualDescription: "Bitcoin is like having gold that you can email to anyone in the world instantly, while being certain it's real gold and not a fake.",
+          keyTakeaways: [
+            "Digital alternative to traditional stores of value",
+            "Combines preservation with modern convenience",
+            "Superior portability and verifiability",
+            "Maintains value without physical limitations"
+          ]
+        };
+      }
+
+      if (fact.title === "Neutral Money for Everyone") {
+        diveDeeper = {
+          explanation: "Bitcoin doesn't discriminate based on race, nationality, religion, politics, or social status. It works the same for everyone and treats all participants equally according to mathematical rules rather than human biases.",
+          examples: [
+            "Banking system: Can discriminate based on location or status",
+            "Bitcoin: Treats everyone according to same mathematical rules",
+            "Government currency: Reflects political preferences",
+            "Bitcoin: Politically and socially neutral technology"
+          ],
+          visualDescription: "Bitcoin is like a perfectly fair judge that applies the exact same rules to everyone, regardless of who they are, where they're from, or what they believe.",
+          keyTakeaways: [
+            "No discrimination or favoritism",
+            "Equal treatment based on mathematical rules",
+            "Politically and socially neutral",
+            "Universal access and fairness"
+          ]
+        };
+      }
+
+      if (fact.title === "Incentive Alignment Creates Security") {
+        diveDeeper = {
+          explanation: "Bitcoin's security comes from aligning economic incentives so that protecting the network is profitable while attacking it is expensive. Miners earn money by following the rules and lose money by breaking them.",
+          examples: [
+            "Security guard: Paid to protect, fired for stealing",
+            "Bitcoin miner: Rewarded for security, punished for attacks",
+            "Bank vault: Strong walls but guards might be corrupted",
+            "Bitcoin: Mathematical incentives prevent corruption"
+          ],
+          visualDescription: "Bitcoin security is like a system where the guards get paid more for protecting the treasure than they could ever steal, making honest behavior the most profitable choice.",
+          keyTakeaways: [
+            "Economic incentives drive security",
+            "Attacking the network is unprofitable",
+            "Self-interested behavior protects everyone",
+            "Incentive alignment creates robust system"
+          ]
+        };
+      }
+
+      if (fact.title === "Unstoppable Peer-to-Peer Value Transfer") {
+        diveDeeper = {
+          explanation: "Once a Bitcoin transaction is properly broadcast to the network, no authority on Earth can stop it from being processed. This creates unstoppable money that works regardless of politics, sanctions, or institutional interference.",
+          examples: [
+            "Bank wire: Can be stopped by banks or governments",
+            "Bitcoin transaction: Cannot be stopped once broadcast",
+            "Payment app: Company can freeze or reverse payments",
+            "Bitcoin: Irreversible and unstoppable by design"
+          ],
+          visualDescription: "Bitcoin transactions are like messages in bottles thrown into an ocean of computers - once they're out there, no one can stop them from reaching their destination.",
+          keyTakeaways: [
+            "Transactions cannot be censored or stopped",
+            "Works regardless of political interference",
+            "Irreversible and final settlement",
+            "True peer-to-peer value transfer"
+          ]
+        };
+      }
+
+      if (fact.title === "Mathematical Certainty Replaces Trust") {
+        diveDeeper = {
+          explanation: "Bitcoin eliminates the need to trust people or institutions by using mathematical proof to verify everything. Instead of hoping someone is honest, you can verify mathematically that the system works correctly.",
+          examples: [
+            "Bank statement: You trust the bank's records",
+            "Bitcoin blockchain: You can verify every transaction yourself",
+            "Government promise: Requires faith in political system",
+            "Bitcoin code: Requires only understanding of mathematics"
+          ],
+          visualDescription: "Bitcoin is like replacing a pinky promise with a mathematical proof - instead of hoping someone keeps their word, you have certainty that the math always works.",
+          keyTakeaways: [
+            "Mathematical proof replaces human trust",
+            "Verifiable by anyone with basic tools",
+            "Eliminates need for trusted intermediaries",
+            "Objective truth through mathematics"
+          ]
+        };
+      }
+
       const newFact: DailyFact = { 
         ...fact, 
         id: this.currentFactId++,
