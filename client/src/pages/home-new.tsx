@@ -299,10 +299,9 @@ export default function Home() {
   const [moreSubTab, setMoreSubTab] = useState<MoreSubTab>("store");
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   
-  // Day navigation for testing generated content (defaulting to Month 1 range)
-  const [testDayOverride, setTestDayOverride] = useState<number | null>(0);
+  // Use natural day progression (0-29 for Month 1)
   const naturalDayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24)) % 30; // Range 0-29 (0-based)
-  const currentDayIndex = testDayOverride !== null ? testDayOverride : naturalDayIndex;
+  const currentDayIndex = naturalDayIndex;
   
   // Day access control queries
   const { data: dayAccessible = false } = useQuery({
@@ -2206,89 +2205,9 @@ export default function Home() {
               </div>
             )}
 
-            {/* Day Access Control Navigation */}
-            {learnSubTab === "today" && (
-              <div className="flex justify-center">
-                <div className="flex items-center gap-3 bg-zinc-800/30 rounded-lg p-3 border border-zinc-700">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setTestDayOverride(prev => Math.max(0, (prev || currentDayIndex) - 1))}
-                    disabled={currentDayIndex <= 0}
-                    className="text-xs px-2 py-1 disabled:opacity-50"
-                  >
-                    <ArrowLeft className="w-3 h-3" />
-                    Prev Day
-                  </Button>
-                  
-                  <div className="text-center">
-                    <div className="text-xs text-zinc-400">Day {currentDayIndex + 1}</div>
-                    <div className="text-sm font-medium text-white">
-                      {dayCompleted ? (
-                        <span className="flex items-center gap-1 text-green-400">
-                          <CheckCircle className="w-3 h-3" />
-                          Complete
-                        </span>
-                      ) : dayAccessible ? (
-                        <span className="text-orange-400">Available</span>
-                      ) : (
-                        <span className="flex items-center gap-1 text-zinc-500">
-                          <Lock className="w-3 h-3" />
-                          Locked
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      const nextDay = Math.min(29, currentDayIndex + 1);
-                      setTestDayOverride(nextDay);
-                    }}
-                    disabled={currentDayIndex >= nextAvailableDay}
-                    className="text-xs px-2 py-1 disabled:opacity-50"
-                    title={currentDayIndex >= nextAvailableDay ? "Complete today's lesson first" : "Next day"}
-                  >
-                    Next Day
-                    <ArrowRight className="w-3 h-3" />
-                  </Button>
-                  
-                  {dayCompleted && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setTestDayOverride(nextAvailableDay)}
-                      className="text-xs px-2 py-1 text-orange-400 hover:text-orange-300"
-                    >
-                      Go to Current
-                    </Button>
-                  )}
-                </div>
-              </div>
-            )}
 
-            {/* Access Control Message */}
-            {learnSubTab === "today" && !dayAccessible && (
-              <div className="flex justify-center">
-                <Card className="bg-zinc-900 border-zinc-700 max-w-md">
-                  <CardContent className="p-4 text-center">
-                    <Lock className="w-8 h-8 text-zinc-500 mx-auto mb-2" />
-                    <h3 className="text-lg font-semibold text-white mb-2">Day {currentDayIndex + 1} Locked</h3>
-                    <p className="text-zinc-400 text-sm mb-3">
-                      Complete previous days to unlock this lesson. One day per calendar day keeps you engaged and builds lasting habits.
-                    </p>
-                    <Button
-                      onClick={() => setTestDayOverride(nextAvailableDay)}
-                      className="bg-orange-600 hover:bg-orange-700"
-                    >
-                      Go to Day {nextAvailableDay + 1}
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
+
+
 
             {/* Today's Learning */}
             {learnSubTab === "today" && (
