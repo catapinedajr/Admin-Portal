@@ -178,31 +178,10 @@ export class MemStorage implements IStorage {
 
     this.seedData();
     
-    // Auto-generate Month 1 content if missing (async, doesn't block startup)
-    setTimeout(() => this.ensureMonth1Content(), 1000);
+    // Static data system only - no AI generation needed
   }
 
-  private async ensureMonth1Content() {
-    try {
-      // Check if any Day 0-29 content is missing
-      const missingDays = [];
-      for (let day = 0; day < 30; day++) {
-        const quizCount = await this.getDailyQuizQuestions(day);
-        if (quizCount.length === 0) {
-          missingDays.push(day);
-        }
-      }
-      
-      if (missingDays.length > 0) {
-        console.log(`⏸️ Auto-generation temporarily disabled. Missing days: ${missingDays.slice(0, 5).join(', ')}`);
-        // Auto-generation temporarily disabled while fixing structure
-        // const { generateMonth1Content } = await import('./content-generator');
-        // await generateMonth1Content();
-      }
-    } catch (error) {
-      console.log(`⚠️ Auto-generation skipped: ${error.message}`);
-    }
-  }
+  // AI content generation system removed - using consistent static data only
 
   private seedData() {
     // Restore daily facts since AI generation is temporarily disabled  
@@ -1444,6 +1423,42 @@ The future of Bitcoin depends on continued adoption, technological development, 
         optionD: "Whenever needed",
         correctAnswer: "B",
         explanation: "Today's lesson explains that the blockchain process repeats every 10 minutes on average, creating an unstoppable chain of verified transactions.",
+        category: "Technology",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 1,
+        question: "According to today's lesson, what makes Bitcoin peer-to-peer?",
+        optionA: "It requires banks as intermediaries",
+        optionB: "Transactions go directly between people without middlemen",
+        optionC: "Only peers can use it",
+        optionD: "It needs government approval",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin is peer-to-peer because transactions go directly from your wallet to theirs without banks or other middlemen.",
+        category: "Technology",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 1,
+        question: "Based on today's cryptography lesson, what makes Bitcoin virtually impossible to hack?",
+        optionA: "Government protection",
+        optionB: "Bank security systems",
+        optionC: "Advanced mathematics called cryptography",
+        optionD: "Physical security guards",
+        correctAnswer: "C",
+        explanation: "Today's lesson explains that Bitcoin uses advanced mathematics called cryptography to secure transactions, making it virtually impossible to hack or counterfeit.",
+        category: "Security",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 1,
+        question: "According to today's content, how many computers worldwide share the Bitcoin blockchain ledger?",
+        optionA: "Just a few hundred",
+        optionB: "About one thousand",
+        optionC: "Thousands of computers worldwide",
+        optionD: "Only one central server",
+        correctAnswer: "C",
+        explanation: "Today's lesson explains that Bitcoin transactions are recorded on a blockchain shared across thousands of computers worldwide, making it impossible to fake or duplicate Bitcoin.",
         category: "Technology",
         difficulty: "beginner"
       },
