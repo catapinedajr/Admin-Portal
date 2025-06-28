@@ -224,7 +224,7 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
         <CardContent className="p-6 text-center">
           <Brain className="w-12 h-12 mx-auto mb-4 text-zinc-500" />
           <h3 className="text-lg font-semibold text-white mb-2">Quiz Not Ready</h3>
-          <p className="text-zinc-400">Quiz questions for Day {dayIndex + 1} are being prepared.</p>
+          <p className="text-zinc-400">Quiz questions for Day {dayIndex} are being prepared.</p>
         </CardContent>
       </Card>
     );

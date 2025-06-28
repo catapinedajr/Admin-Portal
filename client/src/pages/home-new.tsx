@@ -2451,7 +2451,7 @@ export default function Home() {
                   </Button>
                   
                   <span className="text-xs text-white px-2">
-                    Day {currentDayIndex + 1}
+                    Day {currentDayIndex}
                   </span>
                   
                   <Button
