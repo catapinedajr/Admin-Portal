@@ -4471,11 +4471,11 @@ export default function Home() {
 
                               <div className="grid gap-4 md:grid-cols-2">
                                 <div className="space-y-2">
-                                  <h6 className="font-medium text-green-300">Advantages</h6>
+                                  <h6 className="font-medium text-orange-300">Advantages</h6>
                                   <ul className="space-y-1">
                                     {selectedWallet.pros.map((pro, idx) => (
                                       <li key={idx} className="text-zinc-300 text-sm flex items-start gap-2">
-                                        <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                                        <CheckCircle className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
                                         <span>{pro}</span>
                                       </li>
                                     ))}
@@ -4558,14 +4558,14 @@ export default function Home() {
                         <h5 className="font-semibold text-white">What You'll Find Below:</h5>
                         <div className="grid gap-3 sm:grid-cols-2">
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <Shield className="w-5 h-5 text-blue-400" />
+                            <Shield className="w-5 h-5 text-orange-400" />
                             <div>
                               <p className="font-medium text-white text-sm">Security Essentials</p>
                               <p className="text-zinc-400 text-xs">Complete guide covering all security fundamentals</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <Target className="w-5 h-5 text-green-400" />
+                            <Target className="w-5 h-5 text-orange-400" />
                             <div>
                               <p className="font-medium text-white text-sm">Security Simulator</p>
                               <p className="text-zinc-400 text-xs">Test your skills with 12 real-world scenarios</p>
@@ -4733,11 +4733,11 @@ export default function Home() {
                         <h5 className="font-semibold text-white text-lg">Software Security Essentials</h5>
                         <div className="bg-zinc-800/50 rounded-lg p-4 space-y-2">
                           <div className="flex items-start gap-2">
-                            <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                            <CheckCircle className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
                             <span className="text-zinc-300 text-sm">Keep wallet software updated to latest security patches</span>
                           </div>
                           <div className="flex items-start gap-2">
-                            <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                            <CheckCircle className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
                             <span className="text-zinc-300 text-sm">Verify software downloads using digital signatures when available</span>
                           </div>
                           <div className="flex items-start gap-2">
@@ -4745,7 +4745,7 @@ export default function Home() {
                             <span className="text-zinc-300 text-sm">Avoid counterfeit wallet apps - download from official sources only</span>
                           </div>
                           <div className="flex items-start gap-2">
-                            <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                            <CheckCircle className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
                             <span className="text-zinc-300 text-sm">Use dedicated computer for Bitcoin operations when handling large amounts</span>
                           </div>
                         </div>
@@ -4784,7 +4784,7 @@ export default function Home() {
                               <div
                                 key={index}
                                 className={`w-3 h-3 rounded-full flex-shrink-0 ${
-                                  index < safetyStage ? 'bg-green-500' : 
+                                  index < safetyStage ? 'bg-orange-500' : 
                                   index === safetyStage ? 'bg-orange-500' : 'bg-zinc-600'
                                 }`}
                               />
@@ -7149,14 +7149,14 @@ export default function Home() {
                             </div>
                           </div>
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <Globe className="w-5 h-5 text-blue-400" />
+                            <Globe className="w-5 h-5 text-orange-400" />
                             <div>
                               <p className="font-medium text-white text-sm">International Transfers</p>
                               <p className="text-zinc-400 text-xs">Same speed globally with Bitcoin</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <Calendar className="w-5 h-5 text-green-400" />
+                            <Calendar className="w-5 h-5 text-orange-400" />
                             <div>
                               <p className="font-medium text-white text-sm">Weekend Testing</p>
                               <p className="text-zinc-400 text-xs">See banking's weekend blackout</p>
