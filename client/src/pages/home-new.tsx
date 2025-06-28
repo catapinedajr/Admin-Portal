@@ -2522,6 +2522,8 @@ export default function Home() {
                           
 
                           
+
+                          
                           return (
                             <div key={fact.id} className="bg-zinc-800/50 rounded-lg overflow-hidden">
                               <div className="flex items-start gap-4 p-4">
@@ -2536,7 +2538,7 @@ export default function Home() {
                                         variant="ghost"
                                         size="sm"
                                         onClick={() => toggleFactExpansion(fact.id)}
-                                        className="text-orange-400 hover:text-orange-300 px-2"
+                                        className="text-orange-400 hover:text-orange-300 px-2 bg-orange-500/10 border border-orange-500/30"
                                       >
                                         {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                                         Dive Deeper
