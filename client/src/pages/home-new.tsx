@@ -4959,12 +4959,12 @@ export default function Home() {
                                     )}
                                     {safetyStage === 10 && (
                                       <div className="text-green-200 text-xs mt-2">
-                                        <strong>Why:</strong> Recovery services are usually scams. If you have your seed phrase, you can recover yourself.
+                                        <strong>Why:</strong> 100x higher fees suggests malicious software. Normal fees are $1-5, not $200.
                                       </div>
                                     )}
                                     {safetyStage === 11 && (
                                       <div className="text-green-200 text-xs mt-2">
-                                        <strong>Why:</strong> These are all common scam tactics. Real Bitcoin services don't pressure you or ask for payments upfront.
+                                        <strong>Why:</strong> Recovery services are usually scams. If you have your seed phrase, you can recover yourself.
                                       </div>
                                     )}
                                   </div>
@@ -5033,12 +5033,12 @@ export default function Home() {
                                     )}
                                     {safetyStage === 10 && (
                                       <div className="text-red-200 text-xs mt-2">
-                                        <strong>Risk:</strong> You would give scammers 50% of your Bitcoin for "help" you don't actually need.
+                                        <strong>Risk:</strong> You would pay $200 for a $2 transaction. This wallet is likely stealing from you.
                                       </div>
                                     )}
                                     {safetyStage === 11 && (
                                       <div className="text-red-200 text-xs mt-2">
-                                        <strong>Risk:</strong> You would fall for one of the most common Bitcoin scams. Stay skeptical of offers.
+                                        <strong>Risk:</strong> You would give scammers 50% of your Bitcoin for "help" you don't actually need.
                                       </div>
                                     )}
                                   </div>
