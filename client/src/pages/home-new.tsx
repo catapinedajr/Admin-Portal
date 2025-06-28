@@ -315,94 +315,7 @@ export default function Home() {
   const [settlementDestination, setSettlementDestination] = useState<string>("international");
   const [isSettlementRunning, setIsSettlementRunning] = useState<boolean>(false);
   const [settlementProgress, setSettlementProgress] = useState<{traditional: number, bitcoin: number}>({traditional: 0, bitcoin: 0});
-  const [settlementAnimationStep, setSettlementAnimationStep] = useState<number>(0);
-  const [settlementAnimationActive, setSettlementAnimationActive] = useState<boolean>(false);
   const [inflationSliderYear, setInflationSliderYear] = useState<number>(0);
-
-  // Settlement Animation Function
-  const startSettlementAnimation = () => {
-    setSettlementAnimationActive(true);
-    setSettlementAnimationStep(0);
-    
-    const isWeekend = settlementDay === 'saturday' || settlementDay === 'sunday';
-    const isAfterHours = parseInt(settlementTime.split(':')[0]) >= 17 || parseInt(settlementTime.split(':')[0]) < 9;
-    const isInternational = settlementDestination !== 'domestic';
-    
-    // Bitcoin always takes ~10 seconds (representing 10 minutes)
-    const bitcoinSteps = [
-      { step: 1, delay: 1000, message: "Transaction created" },
-      { step: 2, delay: 2000, message: "Broadcasting to network" },
-      { step: 3, delay: 4000, message: "Miners processing" },
-      { step: 4, delay: 6000, message: "Block confirmation" },
-      { step: 5, delay: 8000, message: "Settlement complete!" }
-    ];
-    
-    // Traditional banking timeline depends on conditions
-    let traditionalSteps: any[] = [];
-    
-    if (isWeekend) {
-      traditionalSteps = [
-        { step: 1, delay: 2000, message: "Weekend delay..." },
-        { step: 2, delay: 8000, message: "Monday: Processing begins" },
-        { step: 3, delay: 12000, message: "Correspondent bank contacted" },
-        { step: 4, delay: 16000, message: "Compliance checks" },
-        { step: 5, delay: 20000, message: "International routing" },
-        { step: 6, delay: 24000, message: "Settlement complete" }
-      ];
-    } else if (isAfterHours && isInternational) {
-      traditionalSteps = [
-        { step: 1, delay: 3000, message: "After hours delay" },
-        { step: 2, delay: 8000, message: "Next business day processing" },
-        { step: 3, delay: 12000, message: "International routing" },
-        { step: 4, delay: 16000, message: "Currency conversion" },
-        { step: 5, delay: 20000, message: "Settlement complete" }
-      ];
-    } else if (isInternational) {
-      traditionalSteps = [
-        { step: 1, delay: 2000, message: "Processing initiated" },
-        { step: 2, delay: 6000, message: "SWIFT messaging" },
-        { step: 3, delay: 10000, message: "Correspondent banks" },
-        { step: 4, delay: 14000, message: "Currency conversion" },
-        { step: 5, delay: 18000, message: "Settlement complete" }
-      ];
-    } else {
-      traditionalSteps = [
-        { step: 1, delay: 2000, message: "Processing initiated" },
-        { step: 2, delay: 5000, message: "Bank verification" },
-        { step: 3, delay: 8000, message: "ACH processing" },
-        { step: 4, delay: 12000, message: "Settlement complete" }
-      ];
-    }
-    
-    // Animate Bitcoin steps
-    bitcoinSteps.forEach(({ step, delay }) => {
-      setTimeout(() => {
-        if (step <= 5) {
-          setSettlementProgress(prev => ({ ...prev, bitcoin: (step / 5) * 100 }));
-        }
-      }, delay);
-    });
-    
-    // Animate Traditional steps
-    traditionalSteps.forEach(({ step, delay }) => {
-      setTimeout(() => {
-        if (step <= traditionalSteps.length) {
-          setSettlementProgress(prev => ({ ...prev, traditional: (step / traditionalSteps.length) * 100 }));
-        }
-      }, delay);
-    });
-    
-    // Reset after animation completes
-    const maxDelay = Math.max(
-      bitcoinSteps[bitcoinSteps.length - 1].delay + 2000,
-      traditionalSteps[traditionalSteps.length - 1].delay + 2000
-    );
-    
-    setTimeout(() => {
-      setSettlementAnimationActive(false);
-      setSettlementProgress({ traditional: 0, bitcoin: 0 });
-    }, maxDelay);
-  };
   const [transferCount, setTransferCount] = useState<string>("2");
   const [transferAmount, setTransferAmount] = useState<string>("1000");
   const [speedRaceActive, setSpeedRaceActive] = useState<boolean>(false);
@@ -569,7 +482,25 @@ export default function Home() {
     return (cpiData[1920] / currentCPI) * 100;
   };
 
+  // Settlement Animation Logic
+  const startSettlementAnimation = () => {
+    setSpeedRaceActive(true);
+    setAnimationActive(true);
+    setSettlementProgress({ traditional: 0, bitcoin: 0 });
 
+    // Bitcoin animation: completes all 4 steps in 10 seconds (out of 30)
+    const bitcoinSteps = [
+      { step: 1, delay: 1000 },   // Step 1 at 1 second
+      { step: 2, delay: 2000 },   // Step 2 at 2 seconds  
+      { step: 3, delay: 8000 },   // Step 3 at 8 seconds (mining)
+      { step: 4, delay: 10000 }   // Step 4 at 10 seconds (complete)
+    ];
+
+    // Traditional banking: only gets to step 2 in 30 seconds (stuck in compliance)
+    const traditionalSteps = [
+      { step: 1, delay: 5000 },   // Step 1 at 5 seconds (branch visit)
+      { step: 2, delay: 15000 }   // Step 2 at 15 seconds (still in compliance)
+    ];
 
     // Animate Bitcoin steps
     bitcoinSteps.forEach(({ step, delay }) => {
@@ -5833,132 +5764,6 @@ export default function Home() {
                     </div>
                   </Card>
                 </div>
-
-                {/* Settlement Race Animation */}
-                <Card className="bg-zinc-900 border-zinc-800 p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-lg font-bold text-white">Settlement Speed Race</h4>
-                    <Button
-                      onClick={() => {
-                        setSettlementAnimationActive(true);
-                        setSettlementProgress({ traditional: 0, bitcoin: 0 });
-                        
-                        const isWeekend = settlementDay === 'saturday' || settlementDay === 'sunday';
-                        const isAfterHours = parseInt(settlementTime.split(':')[0]) >= 17 || parseInt(settlementTime.split(':')[0]) < 9;
-                        
-                        // Bitcoin animation: fast completion
-                        [20, 40, 60, 80, 100].forEach((progress, i) => {
-                          setTimeout(() => {
-                            setSettlementProgress(prev => ({ ...prev, bitcoin: progress }));
-                          }, (i + 1) * 2000);
-                        });
-                        
-                        // Traditional banking: slow and gets stuck on weekends
-                        if (isWeekend) {
-                          [10, 15].forEach((progress, i) => {
-                            setTimeout(() => {
-                              setSettlementProgress(prev => ({ ...prev, traditional: progress }));
-                            }, (i + 1) * 5000);
-                          });
-                        } else {
-                          [15, 30, 50, 70, 85].forEach((progress, i) => {
-                            setTimeout(() => {
-                              setSettlementProgress(prev => ({ ...prev, traditional: progress }));
-                            }, (i + 1) * 4000);
-                          });
-                        }
-                        
-                        // Reset after 25 seconds
-                        setTimeout(() => {
-                          setSettlementAnimationActive(false);
-                        }, 25000);
-                      }}
-                      disabled={settlementAnimationActive}
-                      className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
-                    >
-                      {settlementAnimationActive ? "Racing..." : "Start Race"}
-                    </Button>
-                  </div>
-
-                  <div className="grid gap-4 md:grid-cols-2">
-                    {/* Traditional Banking Progress */}
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-6 h-6 bg-red-600 rounded-full flex items-center justify-center">
-                          <Building2 className="w-3 h-3 text-white" />
-                        </div>
-                        <span className="text-red-400 font-semibold">Traditional Banking</span>
-                      </div>
-                      
-                      <div className="w-full bg-zinc-800 rounded-full h-4 overflow-hidden">
-                        <div 
-                          className="h-4 bg-gradient-to-r from-red-500 to-red-600 rounded-full transition-all duration-1000 ease-out"
-                          style={{ width: `${settlementProgress.traditional}%` }}
-                        />
-                      </div>
-                      
-                      <div className="text-xs text-zinc-400">
-                        {settlementAnimationActive ? (
-                          (() => {
-                            const isWeekend = settlementDay === 'saturday' || settlementDay === 'sunday';
-                            const isAfterHours = parseInt(settlementTime.split(':')[0]) >= 17 || parseInt(settlementTime.split(':')[0]) < 9;
-                            const isInternational = settlementDestination !== 'domestic';
-                            
-                            if (settlementProgress.traditional < 20) return "Initiating transfer...";
-                            if (isWeekend && settlementProgress.traditional < 40) return "Weekend delay - waiting for Monday";
-                            if (settlementProgress.traditional < 40) return "Contacting correspondent banks...";
-                            if (settlementProgress.traditional < 60) return "SWIFT network processing...";
-                            if (settlementProgress.traditional < 80) return "Compliance checks in progress...";
-                            if (settlementProgress.traditional < 100) return "Final settlement processing...";
-                            return "Transfer complete!";
-                          })()
-                        ) : "Ready to send"}
-                      </div>
-                    </div>
-
-                    {/* Bitcoin Progress */}
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
-                          <Zap className="w-3 h-3 text-white" />
-                        </div>
-                        <span className="text-orange-400 font-semibold">Bitcoin Network</span>
-                      </div>
-                      
-                      <div className="w-full bg-zinc-800 rounded-full h-4 overflow-hidden">
-                        <div 
-                          className="h-4 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full transition-all duration-1000 ease-out"
-                          style={{ width: `${settlementProgress.bitcoin}%` }}
-                        />
-                      </div>
-                      
-                      <div className="text-xs text-zinc-400">
-                        {settlementAnimationActive ? (
-                          (() => {
-                            if (settlementProgress.bitcoin < 20) return "Creating transaction...";
-                            if (settlementProgress.bitcoin < 40) return "Broadcasting to network...";
-                            if (settlementProgress.bitcoin < 60) return "Miners processing...";
-                            if (settlementProgress.bitcoin < 80) return "Block confirmation...";
-                            if (settlementProgress.bitcoin < 100) return "Final confirmation...";
-                            return "Transfer complete!";
-                          })()
-                        ) : "Ready to send"}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Race Results */}
-                  {!settlementAnimationActive && (settlementProgress.traditional > 0 || settlementProgress.bitcoin > 0) && (
-                    <div className="mt-4 p-3 bg-orange-900/20 border border-orange-700 rounded-lg">
-                      <div className="text-center">
-                        <span className="text-orange-400 font-bold text-lg">🏆 Bitcoin Wins!</span>
-                        <p className="text-zinc-300 text-sm mt-1">
-                          Bitcoin completed in ~10 minutes while traditional banking is still processing
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </Card>
 
                 {/* Savings Comparison */}
                 <Card className="bg-zinc-900 border-zinc-800 p-6">
