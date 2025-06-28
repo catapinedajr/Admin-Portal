@@ -2565,7 +2565,7 @@ export default function Home() {
                                     <div className="flex justify-end">
                                       <button
                                         onClick={() => toggleFactExpansion(fact.id)}
-                                        className="text-orange-400 hover:text-orange-300 text-xs flex items-center gap-1 transition-colors"
+                                        className="text-orange-400 hover:text-orange-300 text-sm flex items-center gap-1 transition-colors"
                                       >
                                         <span>Dive Deeper</span>
                                         {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
