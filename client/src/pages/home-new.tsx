@@ -4507,7 +4507,7 @@ export default function Home() {
                           }}
                           className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
                         >
-                          <ArrowDown className="w-4 h-4 mr-2" />
+                          <ChevronDown className="w-4 h-4 mr-2" />
                           Skip to Security Simulator
                         </Button>
                       </div>
