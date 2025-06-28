@@ -6678,13 +6678,13 @@ export default function Home() {
                     </Card>
 
                     {/* Educational Insights */}
-                    <Card className="bg-blue-900/20 border-blue-800">
+                    <Card className="bg-zinc-900 border-zinc-800">
                       <CardContent className="p-6">
-                        <h4 className="text-lg font-bold text-blue-300 mb-4">📚 DCA Education</h4>
+                        <h4 className="text-lg font-bold text-zinc-300 mb-4">📚 DCA Education</h4>
                         
                         <div className="grid gap-4 md:grid-cols-2">
                           <div>
-                            <h5 className="font-medium text-blue-200 mb-2">Why DCA Works</h5>
+                            <h5 className="font-medium text-zinc-300 mb-2">Why DCA Works</h5>
                             <ul className="space-y-1 text-zinc-300 text-sm">
                               <li>• <strong>Volatility smoothing:</strong> Reduces impact of price swings</li>
                               <li>• <strong>Lower average cost:</strong> Buys more when prices are low</li>
@@ -6694,7 +6694,7 @@ export default function Home() {
                           </div>
                           
                           <div>
-                            <h5 className="font-medium text-blue-200 mb-2">Key Insights</h5>
+                            <h5 className="font-medium text-zinc-300 mb-2">Key Insights</h5>
                             <ul className="space-y-1 text-zinc-300 text-sm">
                               <li>• Time in market beats timing the market</li>
                               <li>• Consistency builds wealth over time</li>
