@@ -2558,21 +2558,22 @@ export default function Home() {
                                   <IconComponent className="w-5 h-5 text-orange-400" />
                                 </div>
                                 <div className="flex-1">
-                                  <div className="flex items-center justify-between mb-2">
-                                    <h4 className="font-semibold text-white">{fact.title}</h4>
-                                    {deepDive && (
+                                  <h4 className="font-semibold text-white mb-2">{fact.title}</h4>
+                                  <p className="text-zinc-300 text-sm mb-3">{fact.content}</p>
+                                  
+                                  {deepDive && (
+                                    <div className="flex justify-end">
                                       <Button
                                         variant="ghost"
                                         size="sm"
                                         onClick={() => toggleFactExpansion(fact.id)}
-                                        className="text-orange-400 hover:text-orange-300 px-2 bg-orange-500/10 border border-orange-500/30"
+                                        className="text-orange-400 hover:text-orange-300 px-3 py-1 bg-orange-500/10 border border-orange-500/30 text-xs"
                                       >
-                                        {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                                        {isExpanded ? <ChevronUp className="w-3 h-3 mr-1" /> : <ChevronDown className="w-3 h-3 mr-1" />}
                                         Dive Deeper
                                       </Button>
-                                    )}
-                                  </div>
-                                  <p className="text-zinc-300 text-sm">{fact.content}</p>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                               
