@@ -842,10 +842,10 @@ export class MemStorage implements IStorage {
           ],
           visualDescription: "Imagine if there was a form of gold that you could teleport instantly anywhere in the world, that couldn't be counterfeited, and that no government could confiscate or control. That's essentially what Bitcoin represents in digital form.",
           keyTakeaways: [
-            "First money system that works without central control",
-            "Solves problems that have existed throughout monetary history",
-            "Gives individuals unprecedented financial sovereignty",
-            "Represents a fundamental evolution in how money works"
+            "First money that works without anyone in charge",
+            "Fixes problems money has always had",
+            "Gives people complete control over their money",
+            "Changes how money works forever"
           ]
         };
       }
@@ -919,9 +919,9 @@ export class MemStorage implements IStorage {
           visualDescription: "Picture having a magic wallet that only responds to your voice. No matter who wants to take it, freeze it, or control it, the wallet only listens to you. That's how Bitcoin works with your secret code.",
           keyTakeaways: [
             "You have complete control over your Bitcoin",
-            "No authority can freeze or block your Bitcoin",
+            "No one can freeze or block your Bitcoin",
             "Your money, your rules, your decisions",
-            "True financial independence from institutions"
+            "True freedom from banks and governments"
           ]
         };
       }
@@ -975,10 +975,10 @@ export class MemStorage implements IStorage {
           ],
           visualDescription: "Think of your private key like the combination to the world's most secure safe. The combination is so long and random that all the computers on Earth couldn't guess it in a billion years.",
           keyTakeaways: [
-            "Private key is your ownership proof for Bitcoin",
+            "Private key proves you own your Bitcoin",
             "Keep it secret and safe at all times",
-            "No one can recover it if you lose it",
-            "Mathematically impossible for others to guess"
+            "No one can get it back if you lose it",
+            "Impossible for others to guess"
           ]
         };
       }
@@ -1013,10 +1013,10 @@ export class MemStorage implements IStorage {
           ],
           visualDescription: "Think of Bitcoin fees like paying a delivery service. The more you tip, the faster your package gets delivered. The tip goes directly to the delivery person, not to a big company.",
           keyTakeaways: [
-            "Fees reward people who secure the Bitcoin network",
-            "Higher fees mean faster confirmation times",
-            "Fees are usually much cheaper than traditional payments",
-            "You can choose how much fee to pay"
+            "Fees pay people who keep Bitcoin safe",
+            "Higher fees make transactions go faster",
+            "Fees cost much less than regular payments",
+            "You decide how much fee to pay"
           ]
         };
       }
@@ -1032,10 +1032,10 @@ export class MemStorage implements IStorage {
           ],
           visualDescription: "Think of Bitcoin confirmation like waiting for a check to clear, but instead of days, it takes just 10 minutes and then it's permanent forever.",
           keyTakeaways: [
-            "Bitcoin transactions take about 10 minutes to confirm",
-            "Waiting time helps prevent fraud and cheating",
-            "Once confirmed, transactions are permanent",
-            "Much faster than traditional bank settlements"
+            "Bitcoin takes about 10 minutes to confirm payments",
+            "Waiting time stops fraud and cheating",
+            "Once confirmed, payments are permanent",
+            "Much faster than regular bank transfers"
           ]
         };
       }
@@ -1052,9 +1052,9 @@ export class MemStorage implements IStorage {
           visualDescription: "Imagine a gold mine that automatically produces half as much gold every four years. Eventually, very little new gold comes out, making existing gold more valuable.",
           keyTakeaways: [
             "Mining rewards get cut in half every four years",
-            "Makes Bitcoin increasingly scarce over time",
+            "Makes Bitcoin more rare over time",
             "Built into the code and cannot be changed",
-            "Often leads to price increases due to reduced supply"
+            "Often makes Bitcoin price go up"
           ]
         };
       }
