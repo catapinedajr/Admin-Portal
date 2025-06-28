@@ -307,6 +307,7 @@ export default function Home() {
   const [inflationAmount, setInflationAmount] = useState<string>("10000");
   const [inflationYears, setInflationYears] = useState<number>(10);
   const [inflationRate, setInflationRate] = useState<number>(3.0);
+  const [inflationSliderYear, setInflationSliderYear] = useState<number>(0);
   const [transferCount, setTransferCount] = useState<string>("2");
   const [transferAmount, setTransferAmount] = useState<string>("1000");
   const [speedRaceActive, setSpeedRaceActive] = useState<boolean>(false);
@@ -5219,141 +5220,349 @@ export default function Home() {
             {simulationsSubTab === "inflation" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
-                  <h3 className="text-xl font-bold text-white">Inflation Impact Calculator</h3>
-                  <p className="text-zinc-400">See how inflation affects your money's purchasing power over time</p>
+                  <h3 className="text-xl font-bold text-white">Interactive Inflation Timeline</h3>
+                  <p className="text-zinc-400">Watch your money's purchasing power disappear over time</p>
                 </div>
 
-                {/* Inflation Calculator */}
+                {/* Enhanced Interactive Inflation Visualization */}
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
-                    <div className="grid gap-6 md:grid-cols-2">
-                      {/* Input Controls */}
+                    <div className="space-y-6">
+                      {/* Input Controls Row */}
+                      <div className="grid gap-4 md:grid-cols-3">
+                        <div>
+                          <label className="block text-white font-medium mb-2">Starting Amount</label>
+                          <div className="relative">
+                            <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                            <input
+                              type="number"
+                              value={inflationAmount}
+                              onChange={(e) => setInflationAmount(e.target.value)}
+                              className="w-full pl-10 pr-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white"
+                              placeholder="10000"
+                              min="1000"
+                              step="1000"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-white font-medium mb-2">Inflation Rate</label>
+                          <select
+                            value={inflationRate}
+                            onChange={(e) => setInflationRate(parseFloat(e.target.value))}
+                            className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white"
+                          >
+                            <option value={2.0}>2% (Fed Target)</option>
+                            <option value={3.0}>3% (Historical)</option>
+                            <option value={4.0}>4% (Recent Average)</option>
+                            <option value={6.0}>6% (1970s-80s)</option>
+                            <option value={8.0}>8% (Current Crisis)</option>
+                            <option value={12.0}>12% (Hyperinflation)</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-white font-medium mb-2">Time Period</label>
+                          <select
+                            value={inflationYears}
+                            onChange={(e) => setInflationYears(parseInt(e.target.value))}
+                            className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white"
+                          >
+                            <option value={10}>10 years</option>
+                            <option value={20}>20 years</option>
+                            <option value={30}>30 years</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Time Slider Visualization */}
                       <div className="space-y-4">
-                        <h4 className="text-lg font-bold text-white mb-4">Calculate Your Loss</h4>
+                        <div className="flex justify-between items-center">
+                          <h4 className="text-white font-semibold">Time Travel: Watch Your Money Disappear</h4>
+                          <div className="text-orange-400 font-bold">
+                            Year {inflationSliderYear}
+                          </div>
+                        </div>
                         
+                        {/* Enhanced Time Slider */}
                         <div className="space-y-3">
-                          <div>
-                            <label className="block text-white font-medium mb-2">Today's Dollar Amount</label>
-                            <div className="relative">
-                              <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-400" />
-                              <input
-                                type="number"
-                                value={inflationAmount}
-                                onChange={(e) => setInflationAmount(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white"
-                                placeholder="10000"
-                                min="1"
-                                step="1000"
-                              />
-                            </div>
-                          </div>
-
-                          <div>
-                            <label className="block text-white font-medium mb-2">Years Forward</label>
-                            <select
-                              value={inflationYears}
-                              onChange={(e) => setInflationYears(parseInt(e.target.value))}
-                              className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white"
-                            >
-                              <option value={5}>5 years</option>
-                              <option value={10}>10 years</option>
-                              <option value={15}>15 years</option>
-                              <option value={20}>20 years</option>
-                              <option value={25}>25 years</option>
-                              <option value={30}>30 years</option>
-                            </select>
-                          </div>
-
-                          <div>
-                            <label className="block text-white font-medium mb-2">Annual Inflation Rate</label>
-                            <select
-                              value={inflationRate}
-                              onChange={(e) => setInflationRate(parseFloat(e.target.value))}
-                              className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white"
-                            >
-                              <option value={2.0}>2% (Fed Target)</option>
-                              <option value={3.0}>3% (Historical)</option>
-                              <option value={4.0}>4% (Recent Average)</option>
-                              <option value={6.0}>6% (1970s-80s)</option>
-                              <option value={8.0}>8% (Current Crisis)</option>
-                              <option value={12.0}>12% (Hyperinflation)</option>
-                            </select>
+                          <input
+                            type="range"
+                            min="0"
+                            max={inflationYears}
+                            value={inflationSliderYear}
+                            onChange={(e) => setInflationSliderYear(parseInt(e.target.value))}
+                            className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer slider"
+                            style={{
+                              background: `linear-gradient(to right, #22c55e 0%, #f97316 ${(inflationSliderYear / inflationYears) * 100}%, #374151 ${(inflationSliderYear / inflationYears) * 100}%, #374151 100%)`
+                            }}
+                          />
+                          <div className="flex justify-between text-xs text-zinc-400">
+                            <span>Today</span>
+                            <span>{Math.floor(inflationYears/3)} years</span>
+                            <span>{Math.floor(inflationYears*2/3)} years</span>
+                            <span>{inflationYears} years</span>
                           </div>
                         </div>
                       </div>
 
-                      {/* Results Display */}
-                      <div className="space-y-4">
-                        <h4 className="text-lg font-bold text-white mb-4">Your Purchasing Power Loss</h4>
-                        
-                        {(() => {
-                          const currentAmount = parseFloat(inflationAmount) || 10000;
-                          const futureValue = currentAmount / Math.pow(1 + inflationRate / 100, inflationYears);
-                          const purchasingPowerLoss = currentAmount - futureValue;
-                          const lossPercentage = (purchasingPowerLoss / currentAmount) * 100;
+                      {/* Visual Dollar Representation */}
+                      <div className="grid gap-6 md:grid-cols-2">
+                        <div className="space-y-4">
+                          <h5 className="text-white font-medium">Your Money's Value</h5>
                           
-                          return (
-                            <div className="space-y-4">
-                              {/* Current vs Future Value */}
-                              <div className="grid gap-3">
-                                <div className="p-4 bg-green-600/20 border border-green-600/30 rounded-lg">
-                                  <div className="text-center">
-                                    <p className="text-green-300 text-sm">Today's Value</p>
-                                    <p className="text-2xl font-bold text-green-400">${currentAmount.toLocaleString()}</p>
-                                  </div>
-                                </div>
-                                
-                                <div className="p-4 bg-red-600/20 border border-red-600/30 rounded-lg">
-                                  <div className="text-center">
-                                    <p className="text-red-300 text-sm">Future Purchasing Power</p>
-                                    <p className="text-2xl font-bold text-red-400">${futureValue.toLocaleString('en-US', {maximumFractionDigits: 0})}</p>
-                                  </div>
-                                </div>
+                          {/* Enhanced Dollar Visualization */}
+                          <div className="bg-gradient-to-r from-green-900/30 to-red-900/30 rounded-lg p-6 border border-zinc-700">
+                            <div className="flex items-center gap-6">
+                              {/* Fading Dollar */}
+                              <div className="flex-shrink-0">
+                                {(() => {
+                                  const currentAmount = parseFloat(inflationAmount) || 10000;
+                                  const futureValue = currentAmount / Math.pow(1 + inflationRate / 100, inflationSliderYear);
+                                  const remainingPercentage = (futureValue / currentAmount) * 100;
+                                  
+                                  return (
+                                    <svg 
+                                      width="100" 
+                                      height="42" 
+                                      viewBox="0 0 250 105" 
+                                      className="mx-auto"
+                                      style={{ 
+                                        opacity: remainingPercentage / 100,
+                                        filter: `saturate(${remainingPercentage / 100}) contrast(${0.8 + remainingPercentage / 500})`
+                                      }}
+                                    >
+                                      {/* Dollar bill design */}
+                                      <rect x="5" y="5" width="240" height="95" rx="8" ry="8" 
+                                            fill="#2d5a27" stroke="#1a3d1a" strokeWidth="2"/>
+                                      
+                                      {/* Intricate border pattern */}
+                                      <rect x="15" y="15" width="220" height="75" rx="4" ry="4" 
+                                            fill="none" stroke="#4ade80" strokeWidth="1" 
+                                            strokeDasharray="3,2" opacity="0.8"/>
+                                      
+                                      {/* Central $1 */}
+                                      <text x="125" y="60" textAnchor="middle" 
+                                            fill="#4ade80" fontSize="28" fontWeight="bold" 
+                                            fontFamily="serif">$1</text>
+                                      
+                                      {/* Corner decorations */}
+                                      <circle cx="40" cy="30" r="8" fill="none" stroke="#4ade80" strokeWidth="1"/>
+                                      <circle cx="210" cy="30" r="8" fill="none" stroke="#4ade80" strokeWidth="1"/>
+                                      <circle cx="40" cy="75" r="8" fill="none" stroke="#4ade80" strokeWidth="1"/>
+                                      <circle cx="210" cy="75" r="8" fill="none" stroke="#4ade80" strokeWidth="1"/>
+                                      
+                                      {/* Serial number style text */}
+                                      <text x="125" y="25" textAnchor="middle" 
+                                            fill="#4ade80" fontSize="8" opacity="0.7">
+                                        FEDERAL RESERVE NOTE
+                                      </text>
+                                      <text x="125" y="85" textAnchor="middle" 
+                                            fill="#4ade80" fontSize="8" opacity="0.7">
+                                        THE UNITED STATES OF AMERICA
+                                      </text>
+                                    </svg>
+                                  );
+                                })()}
                               </div>
 
-                              {/* Loss Statistics */}
-                              <div className="p-4 bg-orange-600/20 border border-orange-600/30 rounded-lg">
-                                <div className="space-y-2">
-                                  <div className="flex justify-between">
-                                    <span className="text-zinc-300">Money Lost to Inflation</span>
-                                    <span className="text-orange-400 font-bold">${purchasingPowerLoss.toLocaleString('en-US', {maximumFractionDigits: 0})}</span>
-                                  </div>
-                                  <div className="flex justify-between">
-                                    <span className="text-zinc-300">Purchasing Power Lost</span>
-                                    <span className="text-orange-400 font-bold">{lossPercentage.toFixed(1)}%</span>
-                                  </div>
-                                  <div className="flex justify-between">
-                                    <span className="text-zinc-300">Annual Loss Rate</span>
-                                    <span className="text-orange-400 font-bold">{inflationRate}%</span>
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Visual Progress Bar */}
-                              <div className="space-y-2">
-                                <div className="flex justify-between text-sm">
-                                  <span className="text-zinc-400">Purchasing Power Remaining</span>
-                                  <span className="text-zinc-300">{(100 - lossPercentage).toFixed(1)}%</span>
-                                </div>
-                                <div className="w-full bg-zinc-700 rounded-full h-3">
-                                  <div 
-                                    className="bg-gradient-to-r from-green-500 to-red-500 h-3 rounded-full transition-all duration-500"
-                                    style={{ width: `${100 - lossPercentage}%` }}
-                                  />
-                                </div>
+                              {/* Current Value Display */}
+                              <div className="flex-1">
+                                {(() => {
+                                  const currentAmount = parseFloat(inflationAmount) || 10000;
+                                  const futureValue = currentAmount / Math.pow(1 + inflationRate / 100, inflationSliderYear);
+                                  const remainingPercentage = (futureValue / currentAmount) * 100;
+                                  
+                                  return (
+                                    <div>
+                                      <div className="text-2xl font-bold mb-2">
+                                        <span className="text-orange-400">
+                                          ${futureValue.toLocaleString('en-US', {maximumFractionDigits: 0})}
+                                        </span>
+                                      </div>
+                                      <div className="text-sm text-zinc-300 mb-2">
+                                        {remainingPercentage.toFixed(1)}% purchasing power left
+                                      </div>
+                                      <div className="text-xs text-zinc-500">
+                                        {inflationSliderYear === 0 ? "Full purchasing power" : 
+                                         remainingPercentage > 80 ? "Still strong value" :
+                                         remainingPercentage > 60 ? "Noticeable decline" :
+                                         remainingPercentage > 40 ? "Significant loss" :
+                                         remainingPercentage > 20 ? "Major devaluation" :
+                                         "Severely weakened"}
+                                      </div>
+                                    </div>
+                                  );
+                                })()}
                               </div>
                             </div>
-                          );
-                        })()}
+                          </div>
+                        </div>
+
+                        {/* Real-World Impact */}
+                        <div className="space-y-4">
+                          <h5 className="text-white font-medium">What This Buys You</h5>
+                          
+                          <div className="space-y-3">
+                            {(() => {
+                              const currentAmount = parseFloat(inflationAmount) || 10000;
+                              const futureValue = currentAmount / Math.pow(1 + inflationRate / 100, inflationSliderYear);
+                              
+                              const examples = [
+                                {
+                                  icon: "🏠",
+                                  item: "Rent payments",
+                                  basePrice: 2000,
+                                  current: Math.floor(currentAmount / 2000),
+                                  future: Math.floor(futureValue / 2000)
+                                },
+                                {
+                                  icon: "🥛",
+                                  item: "Milk gallons",
+                                  basePrice: 4.50,
+                                  current: Math.floor(currentAmount / 4.50),
+                                  future: Math.floor(futureValue / 4.50)
+                                },
+                                {
+                                  icon: "⛽",
+                                  item: "Gas gallons",
+                                  basePrice: 3.50,
+                                  current: Math.floor(currentAmount / 3.50),
+                                  future: Math.floor(futureValue / 3.50)
+                                }
+                              ];
+                              
+                              return examples.map((example, i) => (
+                                <div key={i} className="flex items-center justify-between p-3 bg-zinc-800 rounded-lg">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-lg">{example.icon}</span>
+                                    <span className="text-zinc-300 text-sm">{example.item}</span>
+                                  </div>
+                                  <div className="text-right">
+                                    <div className="text-sm">
+                                      <span className={inflationSliderYear === 0 ? "text-green-400" : "text-orange-400"}>
+                                        {inflationSliderYear === 0 ? example.current.toLocaleString() : example.future.toLocaleString()}
+                                      </span>
+                                    </div>
+                                    {inflationSliderYear > 0 && (
+                                      <div className="text-xs text-red-400">
+                                        -{(example.current - example.future).toLocaleString()} fewer
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              ));
+                            })()}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                {/* Real-World Examples */}
+                {/* Historical Inflation Timeline Chart */}
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
-                    <h4 className="text-lg font-bold text-white mb-4">What This Means in Real Life</h4>
+                    <h4 className="text-lg font-bold text-white mb-4">Historical Inflation Impact: $10,000 Over Time</h4>
+                    
+                    <div className="bg-zinc-800/50 rounded-lg p-4">
+                      <div className="relative h-64 w-full">
+                        <svg viewBox="0 0 400 200" className="w-full h-full">
+                          {/* Grid Lines */}
+                          <defs>
+                            <pattern id="inflationGrid" width="40" height="20" patternUnits="userSpaceOnUse">
+                              <path d="M 40 0 L 0 0 0 20" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.3"/>
+                            </pattern>
+                          </defs>
+                          <rect width="400" height="200" fill="url(#inflationGrid)" />
+                          
+                          {/* Y-axis labels */}
+                          <text x="10" y="15" fill="#9ca3af" fontSize="10">$10,000</text>
+                          <text x="10" y="55" fill="#9ca3af" fontSize="10">$7,500</text>
+                          <text x="10" y="95" fill="#9ca3af" fontSize="10">$5,000</text>
+                          <text x="10" y="135" fill="#9ca3af" fontSize="10">$2,500</text>
+                          <text x="10" y="175" fill="#9ca3af" fontSize="10">$0</text>
+                          
+                          {/* X-axis labels */}
+                          <text x="50" y="195" fill="#9ca3af" fontSize="10">1970</text>
+                          <text x="150" y="195" fill="#9ca3af" fontSize="10">1990</text>
+                          <text x="250" y="195" fill="#9ca3af" fontSize="10">2010</text>
+                          <text x="350" y="195" fill="#9ca3af" fontSize="10">2024</text>
+                          
+                          {/* Purchasing Power Decline Line */}
+                          <path
+                            d={(() => {
+                              // Historical data points showing declining purchasing power of $10,000
+                              const dataPoints = [
+                                { year: 1970, value: 10000 },  // 100% value
+                                { year: 1980, value: 4500 },   // High inflation 1970s-80s
+                                { year: 1990, value: 3200 },   // Continued decline
+                                { year: 2000, value: 2400 },   // Steady erosion
+                                { year: 2010, value: 1900 },   // Post-2008 money printing
+                                { year: 2020, value: 1600 },   // Pre-COVID
+                                { year: 2024, value: 1200 }    // Current purchasing power
+                              ];
+                              
+                              return dataPoints.map((point, i) => {
+                                const x = 50 + ((point.year - 1970) / 54) * 300; // Scale to chart width
+                                const y = 175 - ((point.value / 10000) * 155); // Scale to chart height
+                                return `${i === 0 ? 'M' : 'L'} ${x},${y}`;
+                              }).join(' ');
+                            })()}
+                            stroke="#ef4444"
+                            strokeWidth="3"
+                            fill="none"
+                            className="drop-shadow-sm"
+                          />
+                          
+                          {/* Key Historical Events */}
+                          <g>
+                            {/* 1971 Nixon Shock */}
+                            <circle cx="55" cy="170" r="3" fill="#f97316" />
+                            <text x="58" y="165" fill="#f97316" fontSize="8">1971</text>
+                            <text x="58" y="175" fill="#f97316" fontSize="8">Nixon</text>
+                            
+                            {/* 1979-1981 High Inflation */}
+                            <circle cx="105" cy="130" r="3" fill="#ef4444" />
+                            <text x="108" y="125" fill="#ef4444" fontSize="8">1980</text>
+                            <text x="108" y="135" fill="#ef4444" fontSize="8">Crisis</text>
+                            
+                            {/* 2008 Financial Crisis */}
+                            <circle cx="265" cy="90" r="3" fill="#dc2626" />
+                            <text x="268" y="85" fill="#dc2626" fontSize="8">2008</text>
+                            <text x="268" y="95" fill="#dc2626" fontSize="8">QE</text>
+                            
+                            {/* 2020 COVID Money Printing */}
+                            <circle cx="340" cy="50" r="3" fill="#991b1b" />
+                            <text x="343" y="45" fill="#991b1b" fontSize="8">2020</text>
+                            <text x="343" y="55" fill="#991b1b" fontSize="8">Print</text>
+                          </g>
+                          
+                          {/* Current Position Marker */}
+                          <circle 
+                            cx={50 + ((2024 - 1970) / 54) * 300} 
+                            cy={175 - ((1200 / 10000) * 155)} 
+                            r="5" 
+                            fill="#f97316" 
+                            stroke="#ffffff" 
+                            strokeWidth="2"
+                          />
+                        </svg>
+                      </div>
+                      
+                      <div className="mt-4 flex justify-between text-xs text-zinc-400">
+                        <span>🟠 Your $10,000 purchasing power over 54 years</span>
+                        <span>📉 88% value lost to inflation</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Real-World Impact Examples */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h4 className="text-lg font-bold text-white mb-4">What Your Money Can't Buy Anymore</h4>
                     
                     <div className="grid gap-4 md:grid-cols-3">
                       {(() => {
