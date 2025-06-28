@@ -7,197 +7,170 @@ import { useLocation } from "wouter";
 const onboardingSteps = [
   {
     id: 1,
-    title: "The Problem: Bitcoin Can Feel Like Too Much",
-    subtitle: "You're not alone if you feel overwhelmed—we understand",
+    title: "Learning Bitcoin, One Day at a Time",
+    subtitle: "How we learned Bitcoin—and how you can too",
     content: (
-      <div className="space-y-6">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-orange-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Bitcoin className="w-8 h-8 text-orange-400" />
-          </div>
+      <div className="space-y-8 text-center">
+        <div className="w-20 h-20 bg-orange-100/10 rounded-full flex items-center justify-center mx-auto">
+          <Bitcoin className="w-10 h-10 text-orange-300" />
         </div>
-        <div className="space-y-4">
-          <p className="text-zinc-300 leading-relaxed">
-            We know Bitcoin's promise—fighting inflation, owning your finances, breaking free from centralized control—sounds incredible, 
-            but it's also intimidating.
+        <div className="space-y-6 max-w-md mx-auto">
+          <p className="text-zinc-200 text-lg leading-relaxed">
+            When we first discovered Bitcoin, it felt impossible to understand.
           </p>
           <p className="text-zinc-300 leading-relaxed">
-            Over 9 out of 10 people feel paralyzed by complex jargon, tech hurdles, and the fear of making costly mistakes. 
-            You're not alone if you're anxious about losing money, feeling left behind, or navigating the hype.
+            The technology seemed complex. The economics were confusing. 
+            We felt overwhelmed by all the information.
           </p>
-          <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-orange-600">
-            <p className="text-orange-300 font-medium text-sm">
-              Starting with Bitcoin can feel overwhelming, and that's okay.
+          <div className="bg-zinc-800/30 rounded-lg p-6 border border-zinc-700/50">
+            <p className="text-orange-200 leading-relaxed">
+              So we decided to learn just a little bit each day. 
+              One concept at a time. No pressure, no rush.
             </p>
           </div>
+          <p className="text-zinc-400 text-sm">
+            That simple approach changed everything.
+          </p>
         </div>
       </div>
     )
   },
   {
     id: 2,
-    title: "Our Solution: HODLearn's Caring Guidance",
-    subtitle: "We make Bitcoin learning gentle, private, and stress-free",
+    title: "The Power of Small, Daily Steps",
+    subtitle: "What we discovered changed everything",
     content: (
-      <div className="space-y-6">
-        <div className="space-y-4">
-          <p className="text-zinc-300 leading-relaxed">
-            HODLearn, inspired by Bitcoin's "HODL" resilience and "how to learn" simplicity, is here to ease your way.
+      <div className="space-y-8 text-center">
+        <div className="space-y-6 max-w-lg mx-auto">
+          <p className="text-zinc-200 text-lg leading-relaxed">
+            After months of chipping away at Bitcoin knowledge, something magical happened.
           </p>
           <p className="text-zinc-300 leading-relaxed">
-            We deliver daily facts, short lessons, and quick quizzes to keep you moving forward, plus safe simulations 
-            to practice transactions, DCA, and HODL strategies.
+            The pieces started connecting. Concepts that once felt impossible 
+            became clear. We began to understand not just what Bitcoin is, 
+            but why it matters.
           </p>
-        </div>
-        
-        <div className="bg-green-950/30 border border-green-800/50 rounded-lg p-4">
-          <h4 className="text-green-300 font-semibold mb-3">Why HODLearn Works</h4>
-          <div className="space-y-2 text-zinc-300 text-sm">
-            <div>• <strong>Daily Encouragement:</strong> Facts, lessons, and quizzes make progress feel doable</div>
-            <div>• <strong>Safe Exploration:</strong> Simulations for transactions, DCA, and HODL build skills</div>
-            <div>• <strong>Inflation Shield:</strong> Learn Bitcoin's protection for your hard-earned money</div>
-            <div>• <strong>No Pressure:</strong> Private learning, free from noise or comparison</div>
+          <div className="bg-green-900/20 rounded-lg p-6 border border-green-700/30">
+            <p className="text-green-200 leading-relaxed">
+              "Just 5 minutes a day. That's all it took. 
+              No cramming, no stress. Just consistent, gentle progress."
+            </p>
           </div>
+          <p className="text-zinc-300 leading-relaxed">
+            This experience inspired us to create HODLearn—to share this same 
+            peaceful, effective approach with others who feel overwhelmed by Bitcoin.
+          </p>
+          <p className="text-orange-200 text-sm">
+            You don't need to understand everything at once.
+          </p>
         </div>
-        
-        <p className="text-orange-300 text-center font-medium">
-          It's private, self-paced learning designed to lift your confidence, not add stress.
-        </p>
       </div>
     )
   },
   {
     id: 3,
-    title: "Your Journey, Your Pace",
-    subtitle: "We meet you exactly where you are right now",
+    title: "How It Works",
+    subtitle: "Your gentle path to Bitcoin understanding",
     content: (
-      <div className="space-y-6">
-        <div className="space-y-4">
-          <p className="text-zinc-300 leading-relaxed">
-            Whether you're worried about shrinking savings or dreaming of financial freedom, HODLearn meets you right where you are.
+      <div className="space-y-8 text-center">
+        <div className="space-y-6 max-w-md mx-auto">
+          <p className="text-zinc-200 text-lg leading-relaxed">
+            HODLearn follows the same approach that worked for us.
           </p>
           <p className="text-zinc-300 leading-relaxed">
-            With daily support and hands-on practice, you'll learn without fear or judgment, growing at a speed that feels comfortable for you.
+            Each day, you'll get one simple fact, one short lesson, 
+            and a quick quiz. No overwhelm, no pressure.
           </p>
         </div>
         
-        <div className="grid gap-4">
-          <div className="flex items-center gap-4 p-4 bg-zinc-800/50 rounded-lg border-l-4 border-blue-600">
-            <div className="w-10 h-10 bg-blue-600/20 rounded-lg flex items-center justify-center">
-              <BookOpen className="w-5 h-5 text-blue-400" />
+        <div className="flex items-center justify-center gap-8 py-6">
+          <div className="text-center">
+            <div className="w-12 h-12 bg-blue-100/10 rounded-full flex items-center justify-center mx-auto mb-3">
+              <span className="text-blue-300 text-lg font-medium">5</span>
             </div>
-            <div>
-              <h4 className="text-white font-medium">Gentle Daily Steps</h4>
-              <p className="text-zinc-400 text-sm">Just 5 minutes a day with bite-sized facts and lessons</p>
-            </div>
+            <p className="text-blue-200 text-sm">Minutes</p>
           </div>
-          
-          <div className="flex items-center gap-4 p-4 bg-zinc-800/50 rounded-lg border-l-4 border-green-600">
-            <div className="w-10 h-10 bg-green-600/20 rounded-lg flex items-center justify-center">
-              <Shield className="w-5 h-5 text-green-400" />
+          <div className="text-zinc-500">→</div>
+          <div className="text-center">
+            <div className="w-12 h-12 bg-green-100/10 rounded-full flex items-center justify-center mx-auto mb-3">
+              <span className="text-green-300 text-lg font-medium">1</span>
             </div>
-            <div>
-              <h4 className="text-white font-medium">Safe Practice Space</h4>
-              <p className="text-zinc-400 text-sm">Risk-free simulations to build confidence before real decisions</p>
-            </div>
+            <p className="text-green-200 text-sm">Concept</p>
           </div>
-          
-          <div className="flex items-center gap-4 p-4 bg-zinc-800/50 rounded-lg border-l-4 border-orange-600">
-            <div className="w-10 h-10 bg-orange-600/20 rounded-lg flex items-center justify-center">
-              <Users className="w-5 h-5 text-orange-400" />
+          <div className="text-zinc-500">→</div>
+          <div className="text-center">
+            <div className="w-12 h-12 bg-orange-100/10 rounded-full flex items-center justify-center mx-auto mb-3">
+              <span className="text-orange-300 text-lg font-medium">∞</span>
             </div>
-            <div>
-              <h4 className="text-white font-medium">You're Not Alone</h4>
-              <p className="text-zinc-400 text-sm">Caring guidance every step without pressure or judgment</p>
-            </div>
+            <p className="text-orange-200 text-sm">Understanding</p>
           </div>
+        </div>
+
+        <div className="bg-zinc-800/30 rounded-lg p-6 border border-zinc-700/50 max-w-lg mx-auto">
+          <p className="text-zinc-200 leading-relaxed">
+            Just like drops of water can carve through stone, 
+            small daily lessons will build deep understanding over time.
+          </p>
         </div>
       </div>
     )
   },
   {
     id: 4,
-    title: "How You'll Learn With Us",
-    subtitle: "Simple daily habits that build real understanding",
+    title: "You Can Do This",
+    subtitle: "Every expert started exactly where you are now",
     content: (
-      <div className="space-y-6">
-        <div className="text-center space-y-4">
-          <div className="flex items-center justify-center gap-4">
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold">5</span>
-              </div>
-              <span className="text-green-400 text-sm mt-1">Minutes</span>
-            </div>
-            <ArrowRight className="w-4 h-4 text-zinc-400" />
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold">1</span>
-              </div>
-              <span className="text-blue-400 text-sm mt-1">Day</span>
-            </div>
-            <ArrowRight className="w-4 h-4 text-zinc-400" />
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-orange-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold">∞</span>
-              </div>
-              <span className="text-orange-400 text-sm mt-1">Confidence</span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-green-950/30 border border-green-800/50 rounded-lg p-6 text-center">
-          <h4 className="text-green-300 font-semibold mb-2">Start with just 5 minutes a day</h4>
-          <p className="text-zinc-300 text-sm leading-relaxed">
-            Consistent daily learning beats cramming. Small steps every day build lasting confidence 
-            without the overwhelm that stops most people.
+      <div className="space-y-8 text-center">
+        <div className="space-y-6 max-w-lg mx-auto">
+          <p className="text-zinc-200 text-lg leading-relaxed">
+            The same way we learned Bitcoin is the same way you can learn it.
           </p>
-        </div>
-        
-        <div className="grid gap-3 md:grid-cols-3 text-center">
-          <div className="p-4 bg-zinc-800/50 rounded-lg border border-zinc-700">
-            <Zap className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
-            <div className="text-yellow-300 font-medium text-sm mb-1">Daily Facts</div>
-            <div className="text-zinc-400 text-xs">Bite-sized learning</div>
+          <p className="text-zinc-300 leading-relaxed">
+            You don't need a background in technology or finance. 
+            You don't need to be good at math. You just need to be curious 
+            and willing to spend a few minutes each day learning.
+          </p>
+          <div className="bg-blue-900/20 rounded-lg p-6 border border-blue-700/30">
+            <p className="text-blue-200 leading-relaxed">
+              "The best time to plant a tree was 20 years ago. 
+              The second best time is now."
+            </p>
           </div>
-          <div className="p-4 bg-zinc-800/50 rounded-lg border border-zinc-700">
-            <Calculator className="w-6 h-6 text-blue-400 mx-auto mb-2" />
-            <div className="text-blue-300 font-medium text-sm mb-1">Safe Practice</div>
-            <div className="text-zinc-400 text-xs">Risk-free simulations</div>
-          </div>
-          <div className="p-4 bg-zinc-800/50 rounded-lg border border-zinc-700">
-            <TrendingUp className="w-6 h-6 text-green-400 mx-auto mb-2" />
-            <div className="text-green-300 font-medium text-sm mb-1">Real Context</div>
-            <div className="text-zinc-400 text-xs">Why Bitcoin matters</div>
-          </div>
+          <p className="text-zinc-300 leading-relaxed">
+            Every day you wait is another day you could have been 
+            chipping away at understanding Bitcoin. But today, 
+            you can start that journey.
+          </p>
+          <p className="text-orange-200 text-sm">
+            We believe in you, even if you don't believe in yourself yet.
+          </p>
         </div>
       </div>
     )
   },
   {
     id: 5,
-    title: "Take a Small Step Today",
-    subtitle: "You don't have to face Bitcoin alone—we're here to help",
+    title: "Ready to Begin?",
+    subtitle: "Your Bitcoin learning journey starts with a single step",
     content: (
-      <div className="text-center space-y-6">
-        <div className="w-20 h-20 bg-orange-600/20 rounded-full flex items-center justify-center mx-auto">
-          <Bitcoin className="w-10 h-10 text-orange-400" />
+      <div className="text-center space-y-8">
+        <div className="w-24 h-24 bg-orange-100/10 rounded-full flex items-center justify-center mx-auto">
+          <Bitcoin className="w-12 h-12 text-orange-300" />
         </div>
-        <div className="space-y-4">
-          <p className="text-zinc-300 text-lg leading-relaxed">
-            You don't have to face Bitcoin alone. HODLearn is your partner, helping you embrace financial empowerment 
-            with clarity and care, one gentle step at a time.
+        <div className="space-y-6 max-w-md mx-auto">
+          <p className="text-zinc-200 text-xl leading-relaxed">
+            Your journey to understanding Bitcoin begins now.
           </p>
-          <div className="bg-orange-950/30 border border-orange-800/50 rounded-lg p-4">
-            <p className="text-orange-300 font-medium mb-2">You're Ready to Start</p>
-            <p className="text-zinc-300 text-sm leading-relaxed">
-              This is education designed to build your confidence, not investment advice that creates pressure. 
-              Learn at your own pace, ask questions, and celebrate small wins.
+          <p className="text-zinc-300 leading-relaxed">
+            Take it one day at a time. Be patient with yourself. 
+            Trust the process. Before you know it, Bitcoin will make sense.
+          </p>
+          <div className="bg-green-900/20 rounded-lg p-6 border border-green-700/30">
+            <p className="text-green-200 leading-relaxed text-lg">
+              Welcome to HODLearn.
             </p>
-          </div>
-          <div className="bg-green-950/30 border border-green-800/50 rounded-lg p-4">
-            <p className="text-green-300 font-medium text-sm">
-              Remember: Every expert was once a beginner who felt overwhelmed too.
+            <p className="text-zinc-300 text-sm mt-2">
+              We're here to guide you every step of the way.
             </p>
           </div>
         </div>
