@@ -3221,7 +3221,7 @@ export default function Home() {
               <CardHeader className="pb-4">
                 <CardTitle className="text-white flex items-center gap-3 text-xl">
                   <Clock className="w-5 h-5 text-orange-400" />
-                  And it's fast and easier to control too
+                  Plus, it's faster and you stay in control
                 </CardTitle>
                 <p className="text-zinc-400 text-sm">Watch $50,000 travel from New York to London - see the complexity difference</p>
               </CardHeader>
