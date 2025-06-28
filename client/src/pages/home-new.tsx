@@ -61,6 +61,10 @@ import { BitcoinTerm, AutoGlossary } from "@/components/BitcoinGlossary";
 import { useToast } from "@/hooks/use-toast";
 import { ProgressIndicator, AchievementBadge, LearningAnalytics } from "@/components/ProgressIndicator";
 import AchievementSystem from "@/components/AchievementSystem";
+import { useSubscription } from "@/contexts/SubscriptionContext";
+import LockedContent from "@/components/LockedContent";
+import UpgradeModal from "@/components/UpgradeModal";
+import DevSubscriptionToggle from "@/components/DevSubscriptionToggle";
 
 // Weekly Quiz Component
 interface WeeklyQuizProps {
@@ -288,10 +292,12 @@ type MoreSubTab = "store";
 export default function Home() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { isPremiumTier } = useSubscription();
   const [activeSection, setActiveSection] = useState<MainSection>("learn");
   const [learnSubTab, setLearnSubTab] = useState<LearnSubTab>("today");
   const [simulationsSubTab, setSimulationsSubTab] = useState<SimulationsSubTab>("safety");
   const [moreSubTab, setMoreSubTab] = useState<MoreSubTab>("store");
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   
   // Day navigation for testing generated content (defaulting to Month 1 range)
   const [testDayOverride, setTestDayOverride] = useState<number | null>(0);
@@ -303,6 +309,9 @@ export default function Home() {
     queryKey: ['/api/day-access', 1, currentDayIndex], // userId=1 (default user)
     queryFn: () => fetch(`/api/day-access/1/${currentDayIndex}`).then(res => res.json())
   });
+
+  // Check if day is locked by subscription tier (Days 0-6 free, 7+ premium)
+  const isDayLockedBySubscription = currentDayIndex > 6 && !isPremiumTier;
   
   const { data: dayCompleted = false } = useQuery({
     queryKey: ['/api/day-completed', 1, currentDayIndex],
@@ -2287,8 +2296,34 @@ export default function Home() {
                   <p className="text-zinc-400">Daily facts, lessons, and knowledge tests</p>
                 </div>
 
-                {/* Daily Facts */}
-                {dailyFacts && Array.isArray(dailyFacts) && dailyFacts.length > 0 && (
+                {/* Paywall Check */}
+                {isDayLockedBySubscription && (
+                  <Card className="bg-zinc-900/95 border-orange-500/20">
+                    <CardContent className="p-8 text-center">
+                      <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Lock className="w-8 h-8 text-white" />
+                      </div>
+                      <h3 className="text-xl font-bold text-white mb-2">
+                        Day {currentDayIndex + 1} - Premium Content
+                      </h3>
+                      <p className="text-zinc-400 mb-4">
+                        You've completed the free 7-day introduction! Upgrade to premium to unlock the complete 30-day Bitcoin curriculum.
+                      </p>
+                      <Button 
+                        onClick={() => setShowUpgradeModal(true)}
+                        className="bg-orange-500 hover:bg-orange-600 text-white px-8"
+                      >
+                        Upgrade to Premium - $9.99/month
+                      </Button>
+                      <p className="text-xs text-zinc-500 mt-3">
+                        Cancel anytime • Unlock all content
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Daily Facts - Only show if not locked by subscription */}
+                {!isDayLockedBySubscription && dailyFacts && Array.isArray(dailyFacts) && dailyFacts.length > 0 && (
                   <Card className="bg-zinc-900 border-zinc-800">
                     <CardContent className="p-6">
                       <h3 className="text-lg font-bold text-white mb-4">Essential Bitcoin Facts</h3>
@@ -2370,8 +2405,8 @@ export default function Home() {
                   </Card>
                 )}
 
-                {/* Enhanced Daily Lesson */}
-                {lesson && (
+                {/* Enhanced Daily Lesson - Only show if not locked by subscription */}
+                {!isDayLockedBySubscription && lesson && (
                   <Card className="bg-zinc-900 border-zinc-800">
                     <CardContent className="p-6">
                       <div className="space-y-6">
@@ -2438,13 +2473,15 @@ export default function Home() {
                   </Card>
                 )}
 
-                {/* Daily Quiz */}
-                <div data-testid="daily-quiz">
-                  <DailyQuiz 
-                    dayIndex={currentDayIndex} 
-                    onCompletion={handleQuizCompletion}
-                  />
-                </div>
+                {/* Daily Quiz - Only show if not locked by subscription */}
+                {!isDayLockedBySubscription && (
+                  <div data-testid="daily-quiz">
+                    <DailyQuiz 
+                      dayIndex={currentDayIndex} 
+                      onCompletion={handleQuizCompletion}
+                    />
+                  </div>
+                )}
               </div>
             )}
 
@@ -3813,9 +3850,36 @@ export default function Home() {
         {/* Practice Section */}
         {activeSection === "simulations" && (
           <div className="space-y-6">
-            {/* Practice Sub-navigation */}
-            <div className="flex justify-center">
-              <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2">
+            {/* Simulators Paywall Check */}
+            {!isPremiumTier && (
+              <Card className="bg-zinc-900/95 border-orange-500/20">
+                <CardContent className="p-8 text-center">
+                  <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Calculator className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">
+                    Premium Simulators
+                  </h3>
+                  <p className="text-zinc-400 mb-4">
+                    Interactive Bitcoin simulations are available to premium users. Practice with real-world scenarios and deepen your understanding.
+                  </p>
+                  <Button 
+                    onClick={() => setShowUpgradeModal(true)}
+                    className="bg-orange-500 hover:bg-orange-600 text-white px-8"
+                  >
+                    Unlock All Simulators - $9.99/month
+                  </Button>
+                  <p className="text-xs text-zinc-500 mt-3">
+                    Cancel anytime • Access all interactive tools
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Practice Sub-navigation - Only show for premium users */}
+            {isPremiumTier && (
+              <div className="flex justify-center">
+                <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2">
                 <Button
                   variant={simulationsSubTab === "safety" ? "secondary" : "ghost"}
                   size="sm"
@@ -3872,9 +3936,10 @@ export default function Home() {
                 </Button>
               </div>
             </div>
+            )}
 
-            {/* Safety Training */}
-            {simulationsSubTab === "safety" && (
+            {/* Safety Training - Only show for premium users */}
+            {isPremiumTier && simulationsSubTab === "safety" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h3 className="text-xl font-bold text-white">Bitcoin Security Best Practices</h3>
@@ -4124,8 +4189,8 @@ export default function Home() {
               </div>
             )}
 
-            {/* Transaction Simulator */}
-            {simulationsSubTab === "transactions" && (
+            {/* Transaction Simulator - Only show for premium users */}
+            {isPremiumTier && simulationsSubTab === "transactions" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h3 className="text-xl font-bold text-white">Interactive Bitcoin Transaction Builder</h3>
@@ -4574,7 +4639,7 @@ export default function Home() {
             )}
 
             {/* Compact HODL Challenge Simulator */}
-            {simulationsSubTab === "hodl" && (
+            {isPremiumTier && simulationsSubTab === "hodl" && (
               <div className="space-y-6">
                 {/* HODL Calculator Section */}
                 <Card className="bg-zinc-900 border-zinc-800">
@@ -4942,7 +5007,7 @@ export default function Home() {
             )}
 
             {/* Interactive DCA Calculator */}
-            {simulationsSubTab === "dca" && (
+            {isPremiumTier && simulationsSubTab === "dca" && (
               <div className="space-y-4">
                 <div className="text-center space-y-1">
                   <h3 className="text-lg font-bold text-white">DCA Calculator</h3>
@@ -5307,7 +5372,7 @@ export default function Home() {
             )}
 
             {/* Interactive Inflation Simulator - Redesigned */}
-            {simulationsSubTab === "inflation" && (
+            {isPremiumTier && simulationsSubTab === "inflation" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h3 className="text-xl font-bold text-white">💸 Interactive Inflation Destroyer</h3>
@@ -5610,7 +5675,7 @@ export default function Home() {
             )}
 
             {/* Settlement Speed Simulator */}
-            {simulationsSubTab === "settlement" && (
+            {isPremiumTier && simulationsSubTab === "settlement" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h3 className="text-xl font-bold text-white">Payment Settlement Simulator</h3>
@@ -5988,11 +6053,114 @@ export default function Home() {
                 </Card>
               </div>
             )}
+          </div>
+        )}
 
+        {/* More Section */}
+        {activeSection === "more" && (
+          <div className="space-y-6">
+            {/* More Sub-navigation */}
+            <div className="flex justify-center">
+              <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2">
+                <Button
+                  variant={moreSubTab === "store" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setMoreSubTab("store")}
+                  className="text-xs px-3 py-1"
+                >
+                  <ShoppingCart className="w-3 h-3 mr-1" />
+                  Store
+                </Button>
+              </div>
+            </div>
 
+            {/* Store Section */}
+            {moreSubTab === "store" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">Bitcoin Learning Store</h3>
+                  <p className="text-zinc-400">Essential tools and resources for your Bitcoin journey</p>
+                </div>
+
+                {/* Store Items */}
+                <div className="grid gap-6 md:grid-cols-2">
+                  {/* Hardware Wallets */}
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <h4 className="text-lg font-bold text-white mb-4">Hardware Wallets</h4>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between p-4 bg-zinc-800 rounded-lg">
+                          <div>
+                            <h5 className="font-semibold text-white">Ledger Nano X</h5>
+                            <p className="text-sm text-zinc-400">Secure hardware wallet</p>
+                          </div>
+                          <Button size="sm" className="bg-orange-500 hover:bg-orange-600">
+                            $149
+                          </Button>
+                        </div>
+                        <div className="flex items-center justify-between p-4 bg-zinc-800 rounded-lg">
+                          <div>
+                            <h5 className="font-semibold text-white">Trezor Model T</h5>
+                            <p className="text-sm text-zinc-400">Advanced security features</p>
+                          </div>
+                          <Button size="sm" className="bg-orange-500 hover:bg-orange-600">
+                            $219
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Books */}
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <h4 className="text-lg font-bold text-white mb-4">Essential Reading</h4>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between p-4 bg-zinc-800 rounded-lg">
+                          <div>
+                            <h5 className="font-semibold text-white">Broken Money by Lyn Alden</h5>
+                            <p className="text-sm text-zinc-400">Modern monetary analysis</p>
+                          </div>
+                          <Button size="sm" className="bg-orange-500 hover:bg-orange-600">
+                            $25
+                          </Button>
+                        </div>
+                        <div className="flex items-center justify-between p-4 bg-zinc-800 rounded-lg">
+                          <div>
+                            <h5 className="font-semibold text-white">The Bitcoin Standard</h5>
+                            <p className="text-sm text-zinc-400">Bitcoin economics masterpiece</p>
+                          </div>
+                          <Button size="sm" className="bg-orange-500 hover:bg-orange-600">
+                            $20
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Affiliate Disclosure */}
+                <div className="text-center">
+                  <p className="text-xs text-zinc-500">
+                    We may earn a commission from purchases made through these links. This helps support HODLearn's educational mission.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </main>
+      
+      {/* Development Tools */}
+      <DevSubscriptionToggle />
+      
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        trigger="day-limit"
+        lockedFeature={`Day ${currentDayIndex + 1}`}
+      />
     </div>
   );
 }
