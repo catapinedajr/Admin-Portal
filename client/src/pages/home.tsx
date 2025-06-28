@@ -37,7 +37,7 @@ import {
   BarChart3,
   Clock
 } from "lucide-react";
-import type { User, DailyFact, Lesson, UserProgress, ConvictionContent } from "@shared/schema";
+import type { User, ContentFact, ContentLesson, UserProgress, ConvictionContent } from "@shared/schema";
 import DailyQuiz from "@/components/DailyQuiz";
 
 const iconMap = {

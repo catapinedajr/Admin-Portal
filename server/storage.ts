@@ -40,16 +40,8 @@ import {
   type InsertSovereignAdoption,
   type BitcoinPrice,
   type InsertBitcoinPrice,
-  type QuizQuestion,
-  type InsertQuizQuestion,
   type UserQuizAnswer,
-  type InsertUserQuizAnswer,
-  type DeepDiveTopic,
-  type InsertDeepDiveTopic,
-  type WeeklyTopic,
-  type InsertWeeklyTopic,
-  type UserWeeklyProgress,
-  type InsertUserWeeklyProgress
+  type InsertUserQuizAnswer
 } from "@shared/schema";
 
 import { db } from "./db";
@@ -63,15 +55,12 @@ export interface IStorage {
   updateUserStreak(userId: number, currentStreak: number, longestStreak: number): Promise<void>;
   updateUserProgress(userId: number, completedLessons: number, lastActivityDate: string): Promise<void>;
 
-  // Daily facts methods
-  getDailyFacts(dayIndex: number): Promise<DailyFact[]>;
-  getAllDailyFacts(): Promise<DailyFact[]>;
-  createDailyFact(fact: InsertDailyFact): Promise<DailyFact>;
-
-  // Lessons methods
-  getLesson(dayIndex: number): Promise<Lesson | undefined>;
-  getAllLessons(): Promise<Lesson[]>;
-  createLesson(lesson: InsertLesson): Promise<Lesson>;
+  // Content methods
+  getContentDay(dayIndex: number): Promise<ContentDay | undefined>;
+  getDailyContentFacts(dayIndex: number): Promise<DailyContentFact[]>;
+  getContentLesson(dayIndex: number): Promise<ContentLesson | undefined>;
+  getContentQuizzes(dayIndex: number): Promise<ContentQuiz[]>;
+  getDailyContentComplete(dayIndex: number): Promise<DailyContentComplete | null>;
 
   // User progress methods
   getUserProgress(userId: number, date: string): Promise<UserProgress | undefined>;

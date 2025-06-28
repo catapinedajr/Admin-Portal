@@ -7417,11 +7417,83 @@ export default function Home() {
                 </Card>
               </div>
             )}
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <div className="w-2 h-2 bg-red-400 rounded-full"></div>
-                          <span className="text-zinc-300">SWIFT network messaging</span>
-                        </div>
+
+            {/* Settlement Speed Demo */}
+            {simulationsSubTab === "remittances" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">Settlement Simulator</h3>
+                  <p className="text-zinc-400">See the difference between traditional banking and Bitcoin</p>
+                </div>
+
+                {/* Demo Controls */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-zinc-300 mb-2">Payment Amount</label>
+                    <Select value={settlementAmount} onValueChange={setSettlementAmount}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="100">$100</SelectItem>
+                        <SelectItem value="500">$500</SelectItem>
+                        <SelectItem value="1000">$1,000</SelectItem>
+                        <SelectItem value="5000">$5,000</SelectItem>
+                        <SelectItem value="10000">$10,000</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-zinc-300 mb-2">Day of Week</label>
+                    <Select value={settlementDay} onValueChange={setSettlementDay}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="monday">Monday</SelectItem>
+                        <SelectItem value="tuesday">Tuesday</SelectItem>
+                        <SelectItem value="wednesday">Wednesday</SelectItem>
+                        <SelectItem value="thursday">Thursday</SelectItem>
+                        <SelectItem value="friday">Friday</SelectItem>
+                        <SelectItem value="saturday">Saturday</SelectItem>
+                        <SelectItem value="sunday">Sunday</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-zinc-300 mb-2">Destination</label>
+                    <Select value={settlementDestination} onValueChange={setSettlementDestination}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="domestic">Same Country</SelectItem>
+                        <SelectItem value="international">International</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* Settlement Comparison */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Traditional Banking */}
+                  <Card className="bg-zinc-800/50 border-red-500/20">
+                    <CardHeader>
+                      <CardTitle className="text-red-400 flex items-center gap-2">
+                        <Building2 className="w-5 h-5" />
+                        Traditional Banking
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-3">
+                        <h5 className="font-semibold text-red-400">Settlement Process</h5>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                            <span className="text-zinc-300">SWIFT network messaging</span>
+                          </div>
                         <div className="flex items-center space-x-2">
                           <div className="w-2 h-2 bg-red-400 rounded-full"></div>
                           <span className="text-zinc-300">Compliance and AML checks</span>
