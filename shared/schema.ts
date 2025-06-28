@@ -144,6 +144,7 @@ export const contentLessons = pgTable("content_lessons", {
   title: text("title").notNull(),
   content: text("content").notNull(), // Main narrative lesson content
   keyTakeaways: json("key_takeaways").$type<string[]>().notNull(),
+  whyItMatters: text("why_it_matters"), // "Why This Matters" section content
   estimatedReadTime: integer("estimated_read_time").notNull().default(3), // minutes
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
