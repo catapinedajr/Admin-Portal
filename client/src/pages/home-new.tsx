@@ -4309,8 +4309,85 @@ export default function Home() {
                   <p className="text-zinc-400">Understand Bitcoin wallets and choose the right storage solution for your needs</p>
                 </div>
 
-                {/* Wallet Definition */}
+                {/* Why Wallet Choice Matters Introduction */}
                 <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-blue-600/20 rounded-lg">
+                        <Wallet className="w-6 h-6 text-blue-400" />
+                      </div>
+                      <h4 className="text-xl font-bold text-white">Your Wallet Choice Shapes Your Bitcoin Experience</h4>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <p className="text-zinc-300 leading-relaxed">
+                        Your Bitcoin wallet is more than just storage - it's your gateway to financial sovereignty. 
+                        Unlike traditional banks that hold your money, Bitcoin wallets give you direct control over your private keys, 
+                        making you the sole owner of your wealth.
+                      </p>
+                      
+                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-blue-500">
+                        <p className="text-zinc-300 text-sm">
+                          <span className="font-semibold text-blue-300">Key Insight:</span> Different wallet types offer different trade-offs 
+                          between security, convenience, and cost. Your choice depends on how much Bitcoin you hold, how often you use it, 
+                          and your technical comfort level.
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <h5 className="font-semibold text-white">What You'll Discover:</h5>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <Smartphone className="w-5 h-5 text-green-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Mobile Wallets</p>
+                              <p className="text-zinc-400 text-xs">Perfect for daily spending and convenience</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <Monitor className="w-5 h-5 text-blue-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Desktop Wallets</p>
+                              <p className="text-zinc-400 text-xs">Balance of security and functionality</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <HardDrive className="w-5 h-5 text-orange-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Hardware Wallets</p>
+                              <p className="text-zinc-400 text-xs">Maximum security for long-term storage</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <Building2 className="w-5 h-5 text-red-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Exchange Wallets</p>
+                              <p className="text-zinc-400 text-xs">Convenient but with custody trade-offs</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-center pt-2">
+                        <Button
+                          onClick={() => {
+                            const explorer = document.querySelector('[data-wallet-explorer]');
+                            if (explorer) {
+                              explorer.scrollIntoView({ behavior: 'smooth' });
+                            }
+                          }}
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
+                        >
+                          <ChevronDown className="w-4 h-4 mr-2" />
+                          Explore Wallet Types
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Wallet Definition */}
+                <Card className="bg-zinc-900 border-zinc-800" data-wallet-explorer>
                   <CardContent className="p-6">
                     <div className="p-4 bg-zinc-800/50 rounded-lg border border-zinc-700 mb-6">
                       <p className="text-zinc-300 text-sm leading-relaxed mb-3">
