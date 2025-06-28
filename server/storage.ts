@@ -1370,8 +1370,84 @@ The future of Bitcoin depends on continued adoption, technological development, 
       }
     ];
 
-    // Create day-specific quiz questions starting from day 10 (days 0-29 use AI-generated content)
+    // Create day-specific quiz questions for all days 0-29 with content-specific questions
     const daySpecificQuestions = [
+      // Day 0: Understanding Bitcoin (Based on "What is Bitcoin?", "Digital Scarcity", "Why Bitcoin Matters")
+      {
+        dayIndex: 0,
+        question: "According to today's lesson, what problem does Bitcoin solve regarding digital money?",
+        optionA: "Making transactions faster",
+        optionB: "The double-spending problem",
+        optionC: "Reducing transaction fees",
+        optionD: "Creating more money",
+        correctAnswer: "B",
+        explanation: "Bitcoin solves the double-spending problem - preventing someone from copying digital money and spending it twice, which was the main challenge before Bitcoin.",
+        category: "Fundamentals",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 0,
+        question: "Based on today's content, what makes Bitcoin's scarcity special?",
+        optionA: "Banks control the supply",
+        optionB: "Government decides how much to print",
+        optionC: "Maximum of 21 million coins will ever exist",
+        optionD: "Supply changes based on demand",
+        correctAnswer: "C",
+        explanation: "Today's lesson explains that Bitcoin has a maximum supply of 21 million coins that will ever exist, creating digital scarcity like digital gold.",
+        category: "Fundamentals",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 0,
+        question: "According to today's lesson, how does Bitcoin give you financial control?",
+        optionA: "Banks manage your account better",
+        optionB: "Government protects your money",
+        optionC: "No one can freeze your account or stop your transactions",
+        optionD: "Credit cards become unnecessary",
+        correctAnswer: "C",
+        explanation: "Today's content explains that Bitcoin gives complete control over your money - no one can freeze your account, reverse transactions, or stop you from sending money anywhere.",
+        category: "Purpose",
+        difficulty: "beginner"
+      },
+
+      // Day 1: How Bitcoin Works (Based on "The Blockchain" content)
+      {
+        dayIndex: 1,
+        question: "Based on today's blockchain lesson, what makes the blockchain secure?",
+        optionA: "Banks verify every transaction",
+        optionB: "Government oversight and regulation",
+        optionC: "Changing past transactions would require controlling over half of all mining power",
+        optionD: "Only trusted parties can access it",
+        correctAnswer: "C",
+        explanation: "Today's lesson explains that blockchain security comes from the fact that changing any past transaction would require controlling more than half of all mining power worldwide, which is economically impossible.",
+        category: "Technology",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 1,
+        question: "According to today's lesson, what happens when you send Bitcoin?",
+        optionA: "Your bank processes the payment",
+        optionB: "Your wallet broadcasts the transaction to thousands of computers",
+        optionC: "A central authority approves it",
+        optionD: "The government validates it",
+        correctAnswer: "B",
+        explanation: "Today's blockchain lesson explains that when you send Bitcoin, your wallet creates a transaction and broadcasts it to the entire network, like announcing to thousands of accountants simultaneously.",
+        category: "Technology",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 1,
+        question: "Based on today's content, how often does the Bitcoin network create new blocks?",
+        optionA: "Every minute",
+        optionB: "Every 10 minutes on average",
+        optionC: "Every hour",
+        optionD: "Whenever needed",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that the blockchain process repeats every 10 minutes on average, creating an unstoppable chain of verified transactions.",
+        category: "Technology",
+        difficulty: "beginner"
+      },
+
       // Day 10: Bitcoin Scalability
       {
         dayIndex: 10,
@@ -1426,6 +1502,42 @@ The future of Bitcoin depends on continued adoption, technological development, 
         category: "Economics",
         difficulty: "intermediate"
       },
+      {
+        dayIndex: 2,
+        question: "According to today's lesson, what percentage has the US dollar declined since 1971?",
+        optionA: "Over 85%",
+        optionB: "About 50%",
+        optionC: "Less than 25%",
+        optionD: "It has increased in value",
+        correctAnswer: "A",
+        explanation: "Today's lesson states that the purchasing power of the US dollar has declined over 85% since 1971 when the gold standard ended.",
+        category: "Economics",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 2,
+        question: "Based on today's content, how many people worldwide lack access to banking services?",
+        optionA: "About 500 million",
+        optionB: "Over 2 billion people",
+        optionC: "Around 1 billion",
+        optionD: "Less than 100 million",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that over 2 billion people worldwide lack access to basic banking services, locked out of participating in international commerce.",
+        category: "Financial Inclusion",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 2,
+        question: "According to today's lesson, what makes Bitcoin 'permissionless'?",
+        optionA: "Government approval is required",
+        optionB: "Banks must verify your identity",
+        optionC: "Anyone with internet access can participate",
+        optionD: "Only certain countries allow it",
+        correctAnswer: "C",
+        explanation: "Today's content explains that Bitcoin's permissionless nature means anyone with internet access can participate regardless of location, politics, or institutional approval.",
+        category: "Technology",
+        difficulty: "beginner"
+      },
 
       // Day 3: Bitcoin Mining & Security
 
@@ -1451,6 +1563,54 @@ The future of Bitcoin depends on continued adoption, technological development, 
         correctAnswer: "C",
         explanation: "Bitcoin automatically adjusts mining difficulty every 2 weeks to maintain consistent 10-minute block times.",
         category: "Technology",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 3,
+        question: "According to today's lesson, what is the golden rule of Bitcoin?",
+        optionA: "Buy low, sell high",
+        optionB: "Not your keys, not your coins",
+        optionC: "Always use exchanges",
+        optionD: "Mine more Bitcoin",
+        correctAnswer: "B",
+        explanation: "Today's lesson emphasizes Bitcoin's golden rule: 'Not your keys, not your coins' - if you don't control the private keys, you don't truly own the Bitcoin.",
+        category: "Security",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 3,
+        question: "Based on today's content, what does a Bitcoin wallet actually contain?",
+        optionA: "Physical Bitcoin coins",
+        optionB: "The entire blockchain",
+        optionC: "Private keys that prove ownership",
+        optionD: "Government certificates",
+        correctAnswer: "C",
+        explanation: "Today's lesson explains that a Bitcoin wallet contains the private keys that prove you own Bitcoin on the blockchain, not the Bitcoin itself.",
+        category: "Wallets & Security",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 3,
+        question: "According to today's lesson, how many words are typically in a seed phrase backup?",
+        optionA: "6 to 8 words",
+        optionB: "12 to 24 words",
+        optionC: "30 to 50 words",
+        optionD: "100 words or more",
+        correctAnswer: "B",
+        explanation: "Today's content states that seed phrases are typically 12 to 24 words that can mathematically restore your entire wallet if your device is lost.",
+        category: "Security",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 3,
+        question: "Based on today's lesson, why is keeping Bitcoin on exchanges long-term risky?",
+        optionA: "Exchanges have high fees",
+        optionB: "You don't control the private keys",
+        optionC: "Exchanges are slow",
+        optionD: "Exchanges don't support Bitcoin",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that keeping Bitcoin on exchanges is risky because you're trusting a third party with complete control over your funds - you don't control the private keys.",
+        category: "Security",
         difficulty: "intermediate"
       },
 
@@ -1491,6 +1651,42 @@ The future of Bitcoin depends on continued adoption, technological development, 
         category: "Security",
         difficulty: "intermediate"
       },
+      {
+        dayIndex: 4,
+        question: "According to today's lesson, what are the three critical functions of Bitcoin mining?",
+        optionA: "Create money, pay taxes, store data",
+        optionB: "Validate transactions, secure network, issue new Bitcoin",
+        optionC: "Trade Bitcoin, set prices, manage exchanges",
+        optionD: "Store wallets, process payments, collect fees",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that mining serves three critical functions: validates transactions, secures the network through energy expenditure, and issues new Bitcoin as rewards.",
+        category: "Mining",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 4,
+        question: "Based on today's content, how much Bitcoin does a miner currently receive per block?",
+        optionA: "50 BTC per block",
+        optionB: "25 BTC per block", 
+        optionC: "6.25 BTC per block",
+        optionD: "3.125 BTC per block",
+        correctAnswer: "C",
+        explanation: "Today's lesson states that miners currently receive 6.25 BTC per block, which will be reduced to 3.125 BTC at the next halving.",
+        category: "Mining",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 4,
+        question: "According to today's lesson, how often does Bitcoin's halving cycle occur?",
+        optionA: "Every 2 years",
+        optionB: "Every 4 years (210,000 blocks)",
+        optionC: "Every 6 years",
+        optionD: "Every 10 years",
+        correctAnswer: "B",
+        explanation: "Today's content explains that halving occurs every four years (precisely every 210,000 blocks), automatically cutting the mining reward in half.",
+        category: "Economics",
+        difficulty: "beginner"
+      },
 
       // Day 5: Store of Value & Digital Gold
       {
@@ -1527,6 +1723,42 @@ The future of Bitcoin depends on continued adoption, technological development, 
         correctAnswer: "A",
         explanation: "Bitcoin can be divided into 100 million units called satoshis, while dividing gold requires expensive industrial processes.",
         category: "Technology",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 5,
+        question: "According to today's lesson, how many critical characteristics determine the success of money throughout history?",
+        optionA: "Three characteristics",
+        optionB: "Five characteristics",
+        optionC: "Seven characteristics",
+        optionD: "Ten characteristics",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that the best forms of money have consistently shared five critical characteristics: scarcity, durability, portability, divisibility, and verifiability.",
+        category: "Economics",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 5,
+        question: "Based on today's content, what revolutionary advantage does Bitcoin have that was impossible in the physical world?",
+        optionA: "It's heavy and hard to move",
+        optionB: "It requires expensive vaults",
+        optionC: "It's fully programmable and can be sent automatically",
+        optionD: "It needs trusted intermediaries",
+        correctAnswer: "C",
+        explanation: "Today's lesson highlights that Bitcoin is fully programmable, meaning it can be sent automatically based on predetermined conditions without human intervention - impossible with physical money.",
+        category: "Technology",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 5,
+        question: "According to today's lesson, what happens as more people recognize Bitcoin's superior monetary properties?",
+        optionA: "Supply increases to meet demand",
+        optionB: "The network becomes less secure",
+        optionC: "Demand increases while supply remains fixed, creating upward price pressure",
+        optionD: "Bitcoin becomes centralized",
+        correctAnswer: "C",
+        explanation: "Today's content explains that the network effect means more recognition increases demand while supply remains mathematically fixed at 21 million, creating upward price pressure over time.",
+        category: "Economics",
         difficulty: "intermediate"
       },
 
@@ -1567,6 +1799,42 @@ The future of Bitcoin depends on continued adoption, technological development, 
         category: "Security",
         difficulty: "intermediate"
       },
+      {
+        dayIndex: 6,
+        question: "According to today's lesson, how do Lightning payments confirm compared to base layer Bitcoin?",
+        optionA: "They take 10 minutes like regular Bitcoin",
+        optionB: "They confirm in milliseconds",
+        optionC: "They take 1 hour",
+        optionD: "They never confirm",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Lightning payments confirm in milliseconds rather than minutes, making Bitcoin practical for daily transactions.",
+        category: "Technology",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 6,
+        question: "Based on today's content, how do payment channels work in Lightning Network?",
+        optionA: "Each payment is broadcast to the entire network",
+        optionB: "Banks process all payments",
+        optionC: "Two parties lock Bitcoin and send payments back and forth instantly",
+        optionD: "All payments require mining",
+        correctAnswer: "C",
+        explanation: "Today's lesson describes how two parties can lock Bitcoin in a shared account and send payments back and forth instantly without broadcasting every transaction.",
+        category: "Technology",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 6,
+        question: "According to today's lesson, what applications is Lightning already powering today?",
+        optionA: "Only large bank transfers",
+        optionB: "Content creator tips, merchant payments, remittances, and gaming purchases",
+        optionC: "Only mining operations",
+        optionD: "Only government transactions",
+        correctAnswer: "B",
+        explanation: "Today's content shows Lightning is already powering diverse applications: content creator micropayments, merchant point-of-sale, cross-border remittances, and gaming purchases.",
+        category: "Applications",
+        difficulty: "beginner"
+      },
 
       // Day 7: Traditional Finance vs Bitcoin
       {
@@ -1603,6 +1871,42 @@ The future of Bitcoin depends on continued adoption, technological development, 
         correctAnswer: "C",
         explanation: "Bitcoin only requires internet access, providing financial services to anyone with an internet connection.",
         category: "Inclusion",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 7,
+        question: "According to today's lesson, what major change occurred in 1971 that affected the monetary system?",
+        optionA: "Bitcoin was created",
+        optionB: "President Nixon ended the gold standard",
+        optionC: "Banks were invented",
+        optionD: "The internet was created",
+        correctAnswer: "B",
+        explanation: "Today's content explains that in 1971, President Nixon ended the gold standard, creating the modern fiat money system that Bitcoin addresses.",
+        category: "History",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 7,
+        question: "Based on today's lesson, what is 'financial deplatforming'?",
+        optionA: "Building financial platforms",
+        optionB: "Creating new banking services",
+        optionC: "Using financial control as a tool of political power",
+        optionD: "Improving banking technology",
+        correctAnswer: "C",
+        explanation: "Today's lesson explains that financial deplatforming has become a tool of political control, where authorities can cut people off from the financial system based on political considerations.",
+        category: "Politics",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 7,
+        question: "According to today's content, how does Bitcoin address systematic exclusion from the global economy?",
+        optionA: "It requires government approval",
+        optionB: "It's only available in certain countries",
+        optionC: "It operates globally with the same rules everywhere",
+        optionD: "It needs traditional banking",
+        correctAnswer: "C",
+        explanation: "Today's lesson explains that Bitcoin's global operation means the same rules apply everywhere, eliminating borders and discrimination that exclude people from the global economy.",
+        category: "Global Impact",
         difficulty: "beginner"
       },
 
@@ -1644,6 +1948,42 @@ The future of Bitcoin depends on continued adoption, technological development, 
         category: "Transactions",
         difficulty: "beginner"
       },
+      {
+        dayIndex: 8,
+        question: "According to today's lesson about transactions, what does a digital signature prove?",
+        optionA: "The transaction amount",
+        optionB: "That the sender owns the private key and authorizes the transaction",
+        optionC: "The receiver's identity",
+        optionD: "The current Bitcoin price",
+        correctAnswer: "B",
+        explanation: "Today's content explains that digital signatures cryptographically prove the sender owns the private key and authorizes the specific transaction.",
+        category: "Security",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 8,
+        question: "Based on today's lesson, what happens after you broadcast a Bitcoin transaction?",
+        optionA: "It immediately appears in your wallet",
+        optionB: "Banks process it overnight",
+        optionC: "It goes to a memory pool and waits to be included in a block",
+        optionD: "Government approves it",
+        correctAnswer: "C",
+        explanation: "Today's lesson explains that broadcast transactions go to the memory pool (mempool) where they wait to be selected by miners for inclusion in the next block.",
+        category: "Technology",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 8,
+        question: "According to today's content, why might you choose a higher transaction fee?",
+        optionA: "To support the government",
+        optionB: "To get priority processing from miners",
+        optionC: "To hide your identity",
+        optionD: "To increase Bitcoin's value",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that higher transaction fees incentivize miners to prioritize your transaction for faster inclusion in the next block.",
+        category: "Economics",
+        difficulty: "beginner"
+      },
 
       // Day 9: Bitcoin History
       {
@@ -1679,6 +2019,42 @@ The future of Bitcoin depends on continued adoption, technological development, 
         optionD: "Coffee",
         correctAnswer: "B",
         explanation: "On May 22, 2010, Laszlo Hanyecz bought two pizzas for 10,000 Bitcoin, now celebrated as Bitcoin Pizza Day.",
+        category: "History",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 9,
+        question: "According to today's lesson, what pseudonym did Bitcoin's creator use?",
+        optionA: "Anonymous",
+        optionB: "Satoshi Nakamoto",
+        optionC: "Crypto Creator",
+        optionD: "Digital Pioneer",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin was created by someone using the pseudonym Satoshi Nakamoto, whose real identity remains unknown.",
+        category: "History",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 9,
+        question: "Based on today's content, what crisis inspired Bitcoin's creation?",
+        optionA: "The dot-com bubble",
+        optionB: "The 2008 financial crisis",
+        optionC: "World War II",
+        optionD: "The Great Depression",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin was created in response to the 2008 financial crisis, which revealed serious flaws in the traditional banking system.",
+        category: "History",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 9,
+        question: "According to today's lesson, what makes May 22nd special in Bitcoin history?",
+        optionA: "The first block was mined",
+        optionB: "Satoshi disappeared",
+        optionC: "The first commercial Bitcoin transaction (Pizza Day)",
+        optionD: "Bitcoin reached $1",
+        correctAnswer: "C",
+        explanation: "Today's content explains that May 22nd is celebrated as Bitcoin Pizza Day, commemorating the first real-world commercial use of Bitcoin.",
         category: "History",
         difficulty: "intermediate"
       },
