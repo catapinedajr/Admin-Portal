@@ -4299,227 +4299,26 @@ export default function Home() {
                   <h3 className="text-xl font-bold text-white">Bitcoin Security Training Center</h3>
                   <p className="text-zinc-400">Master essential security skills to protect your Bitcoin from real-world threats</p>
                   
-
+                  {/* Prominent Safety Test Navigation */}
+                  <div className="flex justify-center">
+                    <Button
+                      onClick={() => {
+                        // Scroll to safety test section
+                        const testSection = document.getElementById('safety-skills-test');
+                        if (testSection) {
+                          testSection.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }}
+                      className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 text-lg font-semibold"
+                    >
+                      Test Your Security Skills
+                    </Button>
+                  </div>
+                  
+                  <div className="text-sm text-zinc-500">
+                    Complete all training modules, then test your knowledge with real-world scenarios
+                  </div>
                 </div>
-
-                {/* Security Skills Test - Moved to top */}
-                <Card className="bg-zinc-900 border-zinc-800">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-orange-600/20 rounded-lg">
-                        <Shield className="w-6 h-6 text-orange-400" />
-                      </div>
-                      <h4 className="text-xl font-bold text-white">Security Skills Test</h4>
-                    </div>
-                    <p className="text-zinc-400 mb-6">Test your ability to identify real-world Bitcoin security threats across 12 scenarios.</p>
-                    
-                    {!safetyCompleted ? (
-                      <div className="space-y-6">
-                        {/* Progress Indicator */}
-                        <div className="space-y-3 mb-6">
-                          <div className="flex items-center gap-3">
-                            <h5 className="font-semibold text-white">Scenario {safetyStage + 1} of {safetySimulations.length}</h5>
-                            <Badge variant="secondary">{safetyScore}/{safetyStage} correct</Badge>
-                          </div>
-                          <div className="flex gap-1">
-                            {Array.from({ length: safetySimulations.length }, (_, i) => (
-                              <div
-                                key={i}
-                                className={`h-1 flex-1 rounded ${
-                                  i <= safetyStage ? 'bg-orange-500' : 'bg-zinc-600'
-                                }`}
-                              />
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Current Simulation */}
-                        <Card className="bg-zinc-800 border-zinc-700">
-                          <CardContent className="p-4 sm:p-6">
-                            <div className="flex justify-between items-center mb-3">
-                              <h6 className="font-semibold text-white text-sm sm:text-base">{safetySimulations[safetyStage]?.title}</h6>
-                              <span className="text-xs text-zinc-400">{safetyStage + 1}/12</span>
-                            </div>
-                            <p className="text-zinc-400 text-xs sm:text-sm mb-4 leading-relaxed">{safetySimulations[safetyStage]?.description}</p>
-
-                            {/* Dynamic scenario content */}
-                            <div className="space-y-3">
-                              <div className="p-3 sm:p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
-                                <div className="space-y-2">
-                                  {/* This will be populated with scenario-specific content */}
-                                  <div className="text-xs text-zinc-500 mb-3">
-                                    {safetyStage === 0 && "Email Inbox - Which email is dangerous?"}
-                                    {safetyStage === 1 && "You just received your 12-word seed phrase. Where should you store it?"}
-                                    {safetyStage === 2 && "Address verification scenario"}
-                                    {safetyStage >= 3 && "Select the best security practice:"}
-                                  </div>
-                                  
-                                  {safetySimulations[safetyStage]?.emails?.map((email, index) => (
-                                    <button
-                                      key={index}
-                                      onClick={() => setSelectedOption(index)}
-                                      className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
-                                        selectedOption === index 
-                                          ? 'border-orange-500 bg-orange-500/10' 
-                                          : 'border-zinc-600 hover:border-zinc-500'
-                                      }`}
-                                    >
-                                      <div className="flex justify-between items-start mb-1">
-                                        <span className="font-medium text-white text-xs sm:text-sm">{email.from}</span>
-                                        <span className="text-xs text-zinc-500">Today</span>
-                                      </div>
-                                      <div className="font-medium text-white text-xs sm:text-sm mb-1">{email.subject}</div>
-                                      <div className="text-zinc-300 text-xs leading-relaxed">{email.preview}</div>
-                                    </button>
-                                  )) || safetySimulations[safetyStage]?.options?.map((option, index) => (
-                                    <button
-                                      key={index}
-                                      onClick={() => setSelectedOption(index)}
-                                      className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
-                                        selectedOption === index 
-                                          ? 'border-orange-500 bg-orange-500/10' 
-                                          : 'border-zinc-600 hover:border-zinc-500'
-                                      }`}
-                                    >
-                                      <div className="text-orange-300 text-xs sm:text-sm">
-                                        {'text' in option ? option.text : 'Option'}
-                                      </div>
-                                    </button>
-                                  ))}
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Answer Selection Controls */}
-                            <div className="flex justify-between items-center mt-6 pt-4 border-t border-zinc-600">
-                              <div className="flex gap-2">
-                                {showResult && (
-                                  <Button
-                                    onClick={() => {
-                                      if (safetyStage < safetySimulations.length - 1) {
-                                        setSafetyStage(safetyStage + 1);
-                                        setSelectedOption(null);
-                                        setShowResult(false);
-                                      } else {
-                                        setSafetyCompleted(true);
-                                      }
-                                    }}
-                                    className="bg-orange-600 hover:bg-orange-700 text-white text-xs sm:text-sm px-4 py-2"
-                                  >
-                                    {safetyStage < safetySimulations.length - 1 ? 'Next Scenario' : 'View Results'}
-                                  </Button>
-                                )}
-                              </div>
-                              
-                              {!showResult && (
-                                <Button
-                                  onClick={() => {
-                                    if (selectedOption !== null) {
-                                      // Basic scoring logic
-                                      let isCorrect = false;
-                                      switch (safetyStage) {
-                                        case 0: isCorrect = selectedOption === 0; break;
-                                        case 1: isCorrect = selectedOption === 2; break; 
-                                        case 2: isCorrect = selectedOption === 0; break;
-                                        default: isCorrect = selectedOption === 1; break;
-                                      }
-                                      
-                                      if (isCorrect) {
-                                        setSafetyScore(safetyScore + 1);
-                                      }
-                                      setShowResult(true);
-                                    }
-                                  }}
-                                  disabled={selectedOption === null}
-                                  className="bg-orange-600 hover:bg-orange-700 disabled:bg-zinc-600 disabled:cursor-not-allowed text-white text-xs sm:text-sm px-4 py-2"
-                                >
-                                  Submit Answer
-                                </Button>
-                              )}
-                            </div>
-
-                            {/* Result Display */}
-                            {showResult && (
-                              <div className="mt-4 p-3 sm:p-4 bg-zinc-800 rounded-lg border border-zinc-600">
-                                <div className="text-center">
-                                  <div className="text-sm text-zinc-300 mb-2">
-                                    {(() => {
-                                      let isCorrect = false;
-                                      switch (safetyStage) {
-                                        case 0: isCorrect = selectedOption === 0; break;
-                                        case 1: isCorrect = selectedOption === 2; break; 
-                                        case 2: isCorrect = selectedOption === 0; break;
-                                        default: isCorrect = selectedOption === 1; break;
-                                      }
-                                      return isCorrect ? '✓ Correct!' : '✗ Incorrect';
-                                    })()}
-                                  </div>
-                                  <div className="text-xs text-zinc-400 leading-relaxed">
-                                    Security requires constant vigilance and following best practices.
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                          </CardContent>
-                        </Card>
-                      </div>
-                    ) : (
-                      /* Final Results */
-                      <div className="text-center space-y-3">
-                        <div className="p-4 sm:p-6 rounded-lg border bg-zinc-800/50 border-zinc-700">
-                          {safetyScore >= safetySimulations.length * 0.8 ? (
-                            <div>
-                              <CheckCircle className="w-8 h-8 sm:w-12 sm:h-12 text-zinc-400 mx-auto mb-2 sm:mb-3" />
-                              <h5 className="text-lg sm:text-xl font-bold text-white mb-2">Security Expert</h5>
-                              <p className="text-zinc-300 mb-3 text-sm sm:text-base">
-                                Score: {safetyScore}/{safetySimulations.length} ({Math.round((safetyScore/safetySimulations.length)*100)}%) - Your Bitcoin will be safe!
-                              </p>
-                              <p className="text-zinc-300 text-xs sm:text-sm leading-relaxed">
-                                You've mastered Bitcoin security fundamentals. You can confidently protect your assets from the most common threats.
-                              </p>
-                            </div>
-                          ) : safetyScore >= safetySimulations.length * 0.6 ? (
-                            <div>
-                              <AlertTriangle className="w-8 h-8 sm:w-12 sm:h-12 text-zinc-400 mx-auto mb-2 sm:mb-3" />
-                              <h5 className="text-lg sm:text-xl font-bold text-white mb-2">Good Start</h5>
-                              <p className="text-zinc-300 mb-3 text-sm sm:text-base">
-                                Score: {safetyScore}/{safetySimulations.length} ({Math.round((safetyScore/safetySimulations.length)*100)}%) - Review the training materials above.
-                              </p>
-                              <p className="text-zinc-300 text-xs sm:text-sm leading-relaxed">
-                                You understand some security basics, but there's room for improvement to keep your Bitcoin truly safe.
-                              </p>
-                            </div>
-                          ) : (
-                            <div>
-                              <AlertTriangle className="w-8 h-8 sm:w-12 sm:h-12 text-zinc-400 mx-auto mb-2 sm:mb-3" />
-                              <h5 className="text-lg sm:text-xl font-bold text-white mb-2">Practice More</h5>
-                              <p className="text-zinc-300 mb-3 text-sm sm:text-base">
-                                Score: {safetyScore}/{safetySimulations.length} ({Math.round((safetyScore/safetySimulations.length)*100)}%) - Your Bitcoin could be at risk!
-                              </p>
-                              <p className="text-zinc-300 text-xs sm:text-sm leading-relaxed">
-                                Review the security fundamentals before handling real Bitcoin. Practice makes perfect.
-                              </p>
-                            </div>
-                          )}
-                        </div>
-
-                        <Button
-                          onClick={() => {
-                            setSafetyStage(0);
-                            setSafetyScore(0);
-                            setSelectedOption(null);
-                            setShowResult(false);
-                            setSafetyCompleted(false);
-                          }}
-                          variant="outline"
-                          className="border-zinc-600 text-zinc-300 hover:bg-zinc-800 text-xs sm:text-sm"
-                        >
-                          Retake Test
-                        </Button>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
 
                 {/* Security vs Convenience Spectrum */}
                 <Card className="bg-zinc-900 border-zinc-800">
@@ -4785,102 +4584,37 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                {/* Duplicate Safety Skills Test removed - moved to top of section */}
-              </div>
-            )}
-
-            {/* Transaction Simulator - Only show for premium users */}
-            {isPremiumTier && simulationsSubTab === "transactions" && (
-              <div className="space-y-6">
-                <div className="text-center space-y-2">
-                  <h3 className="text-xl font-bold text-white">Interactive Bitcoin Transaction Builder</h3>
-                  <p className="text-zinc-400">Build and customize a Bitcoin transaction step-by-step</p>
-                </div>
-
-                {/* Interactive Transaction Builder */}
-                <Card className="bg-zinc-900 border-zinc-800">
+                {/* Interactive Safety Skills Test */}
+                <Card id="safety-skills-test" className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
-                    <h4 className="text-lg font-bold text-white mb-4">Build Your Transaction</h4>
-                    
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="from" className="text-white text-sm font-medium mb-2 block">From Address</Label>
-                          <Input
-                            id="from"
-                            value={transactionInputs.from}
-                            onChange={(e) => updateTransactionInput('from', e.target.value)}
-                            placeholder="Your Bitcoin address"
-                            className="bg-zinc-800 border-zinc-600 text-white"
-                          />
-                        </div>
-                        
-                        <div>
-                          <Label htmlFor="to" className="text-white text-sm font-medium mb-2 block">To Address</Label>
-                          <div className="flex gap-2">
-                            <Input
-                              id="to"
-                              value={transactionInputs.to}
-                              onChange={(e) => updateTransactionInput('to', e.target.value)}
-                              placeholder="Recipient address"
-                              className="bg-zinc-800 border-zinc-600 text-white flex-1"
-                            />
-                            <Button
-                              onClick={simulatePasteFromClipboard}
-                              variant="outline"
-                              size="sm"
-                              className="shrink-0 min-w-0 border-zinc-600 text-zinc-300 hover:bg-zinc-700"
-                            >
-                              Paste
-                            </Button>
-                          </div>
-                        </div>
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-orange-600/20 rounded-lg">
+                        <Shield className="w-6 h-6 text-orange-400" />
                       </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="amount" className="text-white text-sm font-medium mb-2 block">Amount (BTC)</Label>
-                          <Input
-                            id="amount"
-                            type="number"
-                            step="0.00000001"
-                            value={transactionInputs.amount}
-                            onChange={(e) => updateTransactionInput('amount', e.target.value)}
-                            placeholder="0.00000000"
-                            className="bg-zinc-800 border-zinc-600 text-white"
-                          />
-                          <div className="text-xs text-zinc-500 mt-1">
-                            ≈ ${getUSDValue(transactionInputs.amount).toLocaleString()} USD
-                          </div>
-                        </div>
-
-                        <div>
-                          <Label className="text-white text-sm font-medium mb-2 block">Transaction Fee</Label>
-                          <div className="space-y-2">
-                            <div className="text-sm text-white">{transactionInputs.fee} sat/vB</div>
-                            <div className="text-xs text-zinc-500">
-                              ≈ {calculateTransactionFee()} BTC
-                            </div>
-                            <div className="text-xs text-zinc-500">
-                              ≈ ${getUSDValue(calculateTransactionFee()).toLocaleString()} USD
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {transactionState === 'building' && (
-                        <Button
-                          onClick={proceedToPreview}
-                          className="w-full bg-orange-600 hover:bg-orange-700 text-white"
-                        >
-                          Review Transaction
-                        </Button>
-                      )}
+                      <h4 className="text-xl font-bold text-white">Security Skills Test</h4>
                     </div>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
+                    <p className="text-zinc-400 mb-6">Apply what you've learned! Test your ability to identify real-world Bitcoin security threats.</p>
+                    {/* Phishing Email Simulator */}
+                    {!safetyCompleted ? (
+                      <div className="space-y-6">
+                        {/* Progress Indicator */}
+                        <div className="space-y-3 mb-6">
+                          <div className="flex items-center gap-3">
+                            <h5 className="font-semibold text-white">Scenario {safetyStage + 1} of {safetySimulations.length}</h5>
+                            <Badge variant="secondary">{safetyScore}/{safetyStage} correct</Badge>
+                          </div>
+                          <div className="flex flex-wrap gap-1 max-w-full">
+                            {safetySimulations.map((_, index) => (
+                              <div
+                                key={index}
+                                className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                                  index < safetyStage ? 'bg-green-500' : 
+                                  index === safetyStage ? 'bg-orange-500' : 'bg-zinc-600'
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
 
                         {/* Current Simulation */}
                         <Card className="bg-zinc-800 border-zinc-700">
