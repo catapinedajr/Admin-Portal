@@ -2873,9 +2873,9 @@ export default function Home() {
               <CardHeader className="pb-4">
                 <CardTitle className="text-white flex items-center gap-3 text-xl">
                   <TrendingDown className="w-5 h-5 text-orange-400" />
-                  Watch Your Money Lose Value in Real Time
+                  How Much Money Has Been Printed Over Time
                 </CardTitle>
-                <p className="text-zinc-400 text-sm">Interactive timeline showing how money printing destroys purchasing power since 1971</p>
+                <p className="text-zinc-400 text-sm">See how the government has created more and more dollars since 1920, making each dollar worth less</p>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Year Slider Control */}
