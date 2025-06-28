@@ -4599,7 +4599,7 @@ export default function Home() {
                                 const amount = parseInt(numericValue) || 0;
                                 setHodlInputs(prev => ({...prev, initialAmount: amount}));
                               }}
-                              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg pl-8 pr-4 py-3 text-white font-mono"
+                              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg pl-8 pr-4 py-2 text-white font-mono"
                               placeholder="Enter amount"
                             />
                           </div>
