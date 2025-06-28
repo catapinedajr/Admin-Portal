@@ -1042,6 +1042,7 @@ export default function Home() {
     ];
   };
 
+  // All diveDeeper content is now centralized in storage - no frontend fallback needed
   const getFactDeepDive = (factTitle: string) => {
     const deepDives: Record<string, {
       explanation: string;
@@ -1500,7 +1501,7 @@ export default function Home() {
         ]
       }
     };
-    return deepDives[factTitle];
+    return undefined; // Content now comes from storage only
   };
 
   const toggleTopicExpansion = (topicId: string) => {
@@ -2517,7 +2518,7 @@ export default function Home() {
                       <div className="space-y-4">
                         {(dailyFacts as DailyFact[]).map((fact: DailyFact) => {
                           const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Coins;
-                          const deepDive = fact.diveDeeper || getFactDeepDive(fact.title);
+                          const deepDive = fact.diveDeeper; // Only use storage data - no frontend fallback
                           const isExpanded = expandedFacts.has(fact.id);
                           
 
