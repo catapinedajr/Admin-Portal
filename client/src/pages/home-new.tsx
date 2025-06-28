@@ -4684,9 +4684,7 @@ export default function Home() {
                                       </div>
                                     </div>
                                     
-                                    <div className="text-sm text-orange-300 bg-orange-900/20 p-2 rounded border border-orange-700/50">
-                                      💡 Tip: Compare these addresses character by character
-                                    </div>
+
                                   </div>
                                   <div className="space-y-2">
                                     {safetySimulations[2]?.options?.map((option, index) => (
@@ -4699,10 +4697,9 @@ export default function Home() {
                                             : 'border-zinc-600 hover:border-zinc-500'
                                         }`}
                                       >
-                                        <div className="text-orange-300 text-sm font-mono mb-1">
+                                        <div className="text-orange-300 text-sm font-mono">
                                           {'text' in option ? option.text : 'Option'}
                                         </div>
-                                        <div className="text-zinc-400 text-xs">Click to verify this address</div>
                                       </button>
                                     ))}
                                   </div>
@@ -4731,11 +4728,6 @@ export default function Home() {
                                         <div className="text-white text-sm leading-relaxed">
                                           "{scenario.message}"
                                         </div>
-                                        {scenario.isScam && (
-                                          <div className="text-red-400 text-xs mt-2 opacity-70">
-                                            {scenario.tactics?.join(" • ")}
-                                          </div>
-                                        )}
                                       </button>
                                     ))}
                                   </div>
@@ -4798,11 +4790,8 @@ export default function Home() {
                                             : 'border-zinc-600 hover:border-zinc-500'
                                         }`}
                                       >
-                                        <div className="text-white text-sm font-medium mb-1">
+                                        <div className="text-white text-sm font-medium">
                                           {'method' in option ? option.method : 'Option'}
-                                        </div>
-                                        <div className="text-zinc-400 text-xs">
-                                          {'security' in option ? option.security : 'Security level'}
                                         </div>
                                       </button>
                                     ))}
