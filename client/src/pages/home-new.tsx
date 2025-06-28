@@ -5056,45 +5056,7 @@ export default function Home() {
                 {/* Results Display */}
                 {dcaResults && (
                   <>
-                    {/* Compact Results */}
-                    <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
-                      <Card className="bg-blue-900/20 border-blue-800">
-                        <CardContent className="p-3 text-center">
-                          <DollarSign className="w-5 h-5 text-blue-400 mx-auto mb-1" />
-                          <h5 className="font-medium text-white mb-1 text-xs">Invested</h5>
-                          <p className="text-blue-400 font-bold">${Math.round(dcaResults.totalInvested).toLocaleString()}</p>
-                        </CardContent>
-                      </Card>
-                      
-                      <Card className="bg-orange-900/20 border-orange-800">
-                        <CardContent className="p-3 text-center">
-                          <Coins className="w-5 h-5 text-orange-400 mx-auto mb-1" />
-                          <h5 className="font-medium text-white mb-1 text-xs">Bitcoin</h5>
-                          <p className="text-orange-400 font-bold">{dcaResults.totalBitcoin.toLocaleString('en-US', {maximumFractionDigits: 4, minimumFractionDigits: 4})} BTC</p>
-                        </CardContent>
-                      </Card>
-                      
-                      <Card className="bg-green-900/20 border-green-800">
-                        <CardContent className="p-3 text-center">
-                          <TrendingUp className="w-5 h-5 text-green-400 mx-auto mb-1" />
-                          <h5 className="font-medium text-white mb-1 text-xs">Value</h5>
-                          <p className="text-green-400 font-bold">${Math.round(dcaResults.currentValue).toLocaleString()}</p>
-                        </CardContent>
-                      </Card>
-                      
-                      <Card className={`border ${dcaResults.totalGain >= 0 ? 'bg-green-900/20 border-green-800' : 'bg-red-900/20 border-red-800'}`}>
-                        <CardContent className="p-3 text-center">
-                          {dcaResults.totalGain >= 0 ? 
-                            <TrendingUp className="w-5 h-5 text-green-400 mx-auto mb-1" /> :
-                            <TrendingDown className="w-5 h-5 text-red-400 mx-auto mb-1" />
-                          }
-                          <h5 className="font-medium text-white mb-1 text-xs">Return</h5>
-                          <p className={`font-bold ${dcaResults.totalGain >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                            {dcaResults.percentageReturn >= 0 ? '+' : ''}{Math.round(dcaResults.percentageReturn)}%
-                          </p>
-                        </CardContent>
-                      </Card>
-                    </div>
+
 
                     {/* Interactive Price Chart Visualization */}
                     <Card className="bg-zinc-900 border-zinc-800">
