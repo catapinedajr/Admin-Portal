@@ -2276,7 +2276,13 @@ export default function Home() {
 
   const { data: lesson } = useQuery({
     queryKey: ['/api/lesson', currentDayIndex], 
-    queryFn: () => fetch(`/api/lesson/${currentDayIndex}`).then(res => res.json()),
+    queryFn: async () => {
+      const response = await fetch(`/api/lesson/${currentDayIndex}`);
+      if (!response.ok) {
+        return null; // Return null for missing lessons instead of throwing error
+      }
+      return response.json();
+    },
   });
 
   const { data: user } = useQuery<User>({
@@ -2612,6 +2618,18 @@ export default function Home() {
                             </div>
                           );
                         })}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* No Lesson Available Message */}
+                {!isDayLockedBySubscription && !lesson && (
+                  <Card className="bg-zinc-900 border-zinc-800">
+                    <CardContent className="p-6">
+                      <div className="text-center space-y-4">
+                        <h3 className="text-xl font-bold text-white">Content Coming Soon</h3>
+                        <p className="text-zinc-400">Lesson content for Day {currentDayIndex} is not yet available. Please check back later or navigate to a different day.</p>
                       </div>
                     </CardContent>
                   </Card>
