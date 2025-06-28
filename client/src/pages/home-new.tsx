@@ -142,7 +142,7 @@ function WeeklyQuiz({ questions, weekNumber }: WeeklyQuizProps) {
           <div className="text-2xl font-bold text-orange-400 mb-4">
             {correctAnswers}/{questions.length} ({scorePercentage}%)
           </div>
-          <Badge className={`text-sm ${scorePercentage >= 80 ? 'bg-green-600' : scorePercentage >= 60 ? 'bg-orange-600' : 'bg-red-600'}`}>
+          <Badge className={`text-sm ${scorePercentage >= 80 ? 'bg-orange-600' : scorePercentage >= 60 ? 'bg-orange-600/70' : 'bg-zinc-600'}`}>
             {scorePercentage >= 80 ? 'Excellent!' : scorePercentage >= 60 ? 'Good Job!' : 'Keep Learning!'}
           </Badge>
         </div>
@@ -152,9 +152,9 @@ function WeeklyQuiz({ questions, weekNumber }: WeeklyQuizProps) {
             <div key={index} className="border border-zinc-700 rounded-lg p-4">
               <div className="flex items-start gap-3 mb-2">
                 {selectedAnswers[index] === question.correctAnswer ? (
-                  <CheckCircle className="w-5 h-5 text-green-400 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-orange-400 mt-0.5" />
                 ) : (
-                  <Target className="w-5 h-5 text-red-400 mt-0.5" />
+                  <Target className="w-5 h-5 text-orange-400 mt-0.5" />
                 )}
                 <div className="flex-1">
                   <p className="text-white font-medium mb-2">{question.question}</p>
@@ -162,7 +162,7 @@ function WeeklyQuiz({ questions, weekNumber }: WeeklyQuizProps) {
                     Your answer: {question.options[selectedAnswers[index]]}
                   </p>
                   {selectedAnswers[index] !== question.correctAnswer && (
-                    <p className="text-sm text-green-400 mb-2">
+                    <p className="text-sm text-orange-400 mb-2">
                       Correct answer: {question.options[question.correctAnswer]}
                     </p>
                   )}
@@ -768,15 +768,15 @@ export default function Home() {
           example: "In 2021, El Salvador's President Nayib Bukele sent $30 worth of Bitcoin to students across the country in under 10 minutes - something that would have taken days through traditional banking and cost $15+ in fees per transaction.",
           checkpoint: "Can you explain why Bitcoin transactions don't need banks to work?",
           diagram: `<svg width="300" height="120" viewBox="0 0 300 120" className="mx-auto">
-            <rect x="20" y="20" width="60" height="40" rx="8" fill="#3b82f6" opacity="0.3" stroke="#3b82f6"/>
-            <text x="50" y="45" text-anchor="middle" fill="#3b82f6" fontSize="12">Your Wallet</text>
-            <rect x="220" y="20" width="60" height="40" rx="8" fill="#10b981" opacity="0.3" stroke="#10b981"/>
-            <text x="250" y="45" text-anchor="middle" fill="#10b981" fontSize="12">Friend's Wallet</text>
-            <path d="M 80 40 Q 150 20 220 40" stroke="#f59e0b" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
-            <text x="150" y="35" text-anchor="middle" fill="#f59e0b" fontSize="11">Direct Transfer</text>
-            <circle cx="150" cy="80" r="25" fill="#6366f1" opacity="0.2" stroke="#6366f1"/>
-            <text x="150" y="85" text-anchor="middle" fill="#6366f1" fontSize="10">Bitcoin Network</text>
-            <defs><marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#f59e0b"/></marker></defs>
+            <rect x="20" y="20" width="60" height="40" rx="8" fill="#f97316" opacity="0.3" stroke="#f97316"/>
+            <text x="50" y="45" text-anchor="middle" fill="#f97316" fontSize="12">Your Wallet</text>
+            <rect x="220" y="20" width="60" height="40" rx="8" fill="#f97316" opacity="0.3" stroke="#f97316"/>
+            <text x="250" y="45" text-anchor="middle" fill="#f97316" fontSize="12">Friend's Wallet</text>
+            <path d="M 80 40 Q 150 20 220 40" stroke="#f97316" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
+            <text x="150" y="35" text-anchor="middle" fill="#f97316" fontSize="11">Direct Transfer</text>
+            <circle cx="150" cy="80" r="25" fill="#f97316" opacity="0.2" stroke="#f97316"/>
+            <text x="150" y="85" text-anchor="middle" fill="#f97316" fontSize="10">Bitcoin Network</text>
+            <defs><marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#f97316"/></marker></defs>
           </svg>`,
           diagramCaption: "Bitcoin enables direct peer-to-peer transactions without intermediaries"
         },
@@ -800,18 +800,18 @@ export default function Home() {
           example: "Imagine millions of computers worldwide racing to solve the same puzzle. The first to solve it gets to write the next page in Bitcoin's transaction book and earns 3.125 Bitcoin (worth over $200,000 at current prices) as a reward.",
           checkpoint: "Why do you think miners are willing to spend electricity to solve these puzzles?",
           diagram: `<svg width="320" height="140" viewBox="0 0 320 140" className="mx-auto">
-            <rect x="20" y="20" width="50" height="30" rx="4" fill="#ef4444" opacity="0.3" stroke="#ef4444"/>
-            <text x="45" y="38" text-anchor="middle" fill="#ef4444" fontSize="10">Miner 1</text>
-            <rect x="90" y="20" width="50" height="30" rx="4" fill="#f59e0b" opacity="0.3" stroke="#f59e0b"/>
-            <text x="115" y="38" text-anchor="middle" fill="#f59e0b" fontSize="10">Miner 2</text>
-            <rect x="160" y="20" width="50" height="30" rx="4" fill="#10b981" opacity="0.3" stroke="#10b981"/>
-            <text x="185" y="38" text-anchor="middle" fill="#10b981" fontSize="10">Winner!</text>
+            <rect x="20" y="20" width="50" height="30" rx="4" fill="#f97316" opacity="0.3" stroke="#f97316"/>
+            <text x="45" y="38" text-anchor="middle" fill="#f97316" fontSize="10">Miner 1</text>
+            <rect x="90" y="20" width="50" height="30" rx="4" fill="#f97316" opacity="0.3" stroke="#f97316"/>
+            <text x="115" y="38" text-anchor="middle" fill="#f97316" fontSize="10">Miner 2</text>
+            <rect x="160" y="20" width="50" height="30" rx="4" fill="#f97316" opacity="0.3" stroke="#f97316"/>
+            <text x="185" y="38" text-anchor="middle" fill="#f97316" fontSize="10">Winner!</text>
             <rect x="230" y="20" width="50" height="30" rx="4" fill="#6b7280" opacity="0.3" stroke="#6b7280"/>
             <text x="255" y="38" text-anchor="middle" fill="#6b7280" fontSize="10">Miner N</text>
-            <rect x="120" y="80" width="80" height="40" rx="8" fill="#3b82f6" opacity="0.3" stroke="#3b82f6"/>
-            <text x="160" y="105" text-anchor="middle" fill="#3b82f6" fontSize="12">New Block Added</text>
-            <path d="M 185 50 L 180 80" stroke="#10b981" strokeWidth="3" markerEnd="url(#arrowhead2)"/>
-            <defs><marker id="arrowhead2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#10b981"/></marker></defs>
+            <rect x="120" y="80" width="80" height="40" rx="8" fill="#f97316" opacity="0.3" stroke="#f97316"/>
+            <text x="160" y="105" text-anchor="middle" fill="#f97316" fontSize="12">New Block Added</text>
+            <path d="M 185 50 L 180 80" stroke="#f97316" strokeWidth="3" markerEnd="url(#arrowhead2)"/>
+            <defs><marker id="arrowhead2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#f97316"/></marker></defs>
           </svg>`,
           diagramCaption: "Miners compete to solve puzzles and add new blocks to the blockchain"
         },
@@ -1559,7 +1559,7 @@ export default function Home() {
       setTransactionInputs(prev => ({ ...prev, toAddress: randomClipboard.address }));
       // Show a brief toast-like notification
       const notification = document.createElement('div');
-      notification.className = 'fixed top-4 right-4 bg-green-800 text-green-100 px-4 py-2 rounded-lg text-sm z-50 transition-opacity';
+      notification.className = 'fixed top-4 right-4 bg-orange-800 text-orange-100 px-4 py-2 rounded-lg text-sm z-50 transition-opacity';
       notification.textContent = `Pasted from ${randomClipboard.source}`;
       document.body.appendChild(notification);
       
@@ -2658,12 +2658,12 @@ export default function Home() {
                           
                           {/* Database-driven Key Takeaways */}
                           {(lesson as LessonWithKeyTakeaways).keyTakeaways && Array.isArray((lesson as LessonWithKeyTakeaways).keyTakeaways) && (lesson as LessonWithKeyTakeaways).keyTakeaways.length > 0 && (
-                            <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-6 my-6">
-                              <h5 className="text-blue-400 font-medium mb-4 text-base">Key Points:</h5>
+                            <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-6 my-6">
+                              <h5 className="text-orange-400 font-medium mb-4 text-base">Key Points:</h5>
                               <ul className="space-y-3">
                                 {(lesson as LessonWithKeyTakeaways).keyTakeaways.map((point, pointIdx) => (
                                   <li key={pointIdx} className="flex items-start gap-3 text-zinc-300 leading-[1.7]">
-                                    <span className="text-blue-400 mt-1 text-lg">•</span>
+                                    <span className="text-orange-400 mt-1 text-lg">•</span>
                                     <span className="text-base">{cleanText(point)}</span>
                                   </li>
                                 ))}
@@ -2836,15 +2836,15 @@ export default function Home() {
                   </div>
                   
                   <div className="grid gap-4 md:grid-cols-3 mt-8">
-                    <div className="p-4 bg-green-950/50 rounded-xl border border-green-800/50">
-                      <div className="text-green-300 font-bold text-xl">21 Million</div>
-                      <div className="text-green-400/80 text-sm">Bitcoin's Maximum Supply</div>
+                    <div className="p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50">
+                      <div className="text-orange-300 font-bold text-xl">21 Million</div>
+                      <div className="text-zinc-300 text-sm">Bitcoin's Maximum Supply</div>
                       <div className="text-zinc-400 text-xs mt-1">No central bank can print more</div>
                     </div>
                     
-                    <div className="p-4 bg-blue-950/50 rounded-xl border border-blue-800/50">
-                      <div className="text-blue-300 font-bold text-xl">0%</div>
-                      <div className="text-blue-400/80 text-sm">Bitcoin Inflation Rate</div>
+                    <div className="p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50">
+                      <div className="text-orange-300 font-bold text-xl">0%</div>
+                      <div className="text-zinc-300 text-sm">Bitcoin Inflation Rate</div>
                       <div className="text-zinc-400 text-xs mt-1">After all 21M are mined</div>
                     </div>
                     
@@ -2872,7 +2872,7 @@ export default function Home() {
             <Card className="bg-zinc-900 border-zinc-800">
               <CardHeader className="pb-4">
                 <CardTitle className="text-white flex items-center gap-3 text-xl">
-                  <TrendingDown className="w-5 h-5 text-red-400" />
+                  <TrendingDown className="w-5 h-5 text-orange-400" />
                   Watch Your Money Lose Value in Real Time
                 </CardTitle>
                 <p className="text-zinc-400 text-sm">Interactive timeline showing how money printing destroys purchasing power since 1971</p>
@@ -2986,7 +2986,7 @@ export default function Home() {
                             }).join(' ');
                           })()}
                           fill="none"
-                          stroke="#ef4444"
+                          stroke="#f97316"
                           strokeWidth="3"
                         />
                         
@@ -3011,15 +3011,15 @@ export default function Home() {
                             
                             return `${pathData} L 370,180 L 50,180 Z`;
                           })()}
-                          fill="url(#redGradient)"
+                          fill="url(#orangeGradient)"
                           opacity="0.3"
                         />
                         
                         {/* Gradient definition */}
                         <defs>
-                          <linearGradient id="redGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stopColor="#ef4444" stopOpacity="0.6"/>
-                            <stop offset="100%" stopColor="#ef4444" stopOpacity="0.1"/>
+                          <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="#f97316" stopOpacity="0.6"/>
+                            <stop offset="100%" stopColor="#f97316" stopOpacity="0.1"/>
                           </linearGradient>
                         </defs>
                         
@@ -3035,7 +3035,7 @@ export default function Home() {
                                   y1="20" 
                                   x2={nixonX} 
                                   y2="175" 
-                                  stroke="#fbbf24" 
+                                  stroke="#f97316" 
                                   strokeWidth="2" 
                                   strokeDasharray="5,5"
                                   opacity="0.6"
@@ -3043,7 +3043,7 @@ export default function Home() {
                                 <text 
                                   x={nixonX - 35} 
                                   y="15" 
-                                  fill="#fbbf24" 
+                                  fill="#f97316" 
                                   fontSize="8" 
                                   fontWeight="bold"
                                 >
