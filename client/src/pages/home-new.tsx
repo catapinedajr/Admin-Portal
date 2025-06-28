@@ -6229,8 +6229,8 @@ export default function Home() {
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="w-8 h-8 bg-zinc-700 rounded-lg flex items-center justify-center">
-                        <Clock className="w-4 h-4 text-zinc-300" />
+                      <div className="w-8 h-8 bg-orange-600/20 rounded-lg flex items-center justify-center">
+                        <Clock className="w-4 h-4 text-orange-400" />
                       </div>
                       <h3 className="text-xl font-bold text-white">Why HODLing Beats Market Timing</h3>
                     </div>
@@ -6238,7 +6238,7 @@ export default function Home() {
                     <div className="prose prose-invert max-w-none">
                       <p className="text-zinc-300 mb-4">
                         Bitcoin's price can swing wildly day-to-day, making it tempting to try "buying low and selling high." 
-                        However, research consistently shows that <strong className="text-white">time in the market beats timing the market</strong>.
+                        However, research consistently shows that <strong className="text-orange-400">time in the market beats timing the market</strong>.
                       </p>
                       
                       <div className="grid md:grid-cols-2 gap-6 mb-4">
@@ -6265,7 +6265,7 @@ export default function Home() {
                         </div>
                       </div>
                       
-                      <p className="text-zinc-300 font-medium text-center">
+                      <p className="text-orange-300 font-medium text-center">
                         <strong>Key Insight:</strong> Even if you bought Bitcoin at its previous all-time high in 2017, 
                         holding until today would have resulted in massive gains. Patience pays off.
                       </p>
