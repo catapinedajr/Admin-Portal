@@ -1,0 +1,37 @@
+Generating 180-Day Bitcoin Education Curriculum...
+
+Generating Days 1-30 (9th grade)...
+Day 1: What is Bitcoin? An Introduction  
+Day 2: The History of Money: From Barter to Bitcoin  
+Day 3: Understanding Currency: Fiat vs. Digital  
+Day 4: Why Bitcoin Matters: A New Kind of Money  
+Day 5: The Basics of Blockchain Technology  
+Day 6: How Bitcoin Transactions Work  
+Day 7: The Concept of Decentralization  
+Day 8: Bitcoin Mining: Digital Gold Rush  
+Day 9: Supply and Demand: Bitcoin's Fixed Supply  
+Day 10: The Importance of Security in Bitcoin  
+Day 11: Wallets and Keys: Storing Your Bitcoin  
+Day 12: The Role of Nodes in Bitcoin's Network  
+Day 13: Why Bitcoin is Called "Digital Gold"  
+Day 14: Inflation: The Hidden Tax on Savings  
+Day 15: Bitcoin vs. Traditional Banking Systems  
+Day 16: The Problem of Double Spending  
+Day 17: Bitcoin's Pseudonymity: Privacy and Transparency  
+Day 18: How Bitcoin Maintains Trust Without Banks  
+Day 19: The Energy Debate: Bitcoin's Environmental Impact  
+Day 20: Bitcoin's Volatility: Risk and Reward  
+Day 21: The Lightning Network: Bitcoin's Scalability Solution  
+Day 22: Bitcoin's Role in Financial Inclusion  
+Day 23: The Concept of Hard Money vs. Soft Money  
+Day 24: Bitcoin's Impact on Global Remittances  
+Day 25: The Threat of Hyperinflation and Bitcoin's Solution  
+Day 26: Bitcoin as a Hedge Against Economic Uncertainty  
+Day 27: Understanding Bitcoin Forks and Upgrades  
+Day 28: The Role of Consensus in Bitcoin's Network  
+Day 29: Bitcoin's Legal and Regulatory Landscape  
+Day 30: Common Bitcoin Myths and Misconceptions
+
+================================================================================
+
+Generating Days 31-60 (10th grade)...
