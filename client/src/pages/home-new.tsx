@@ -5216,243 +5216,213 @@ export default function Home() {
               </div>
             )}
 
-            {/* Interactive Inflation Simulator */}
+            {/* Interactive Inflation Simulator - Redesigned */}
             {simulationsSubTab === "inflation" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
-                  <h3 className="text-xl font-bold text-white">Interactive Inflation Timeline</h3>
-                  <p className="text-zinc-400">Watch your money's purchasing power disappear over time</p>
+                  <h3 className="text-xl font-bold text-white">💸 Interactive Inflation Destroyer</h3>
+                  <p className="text-zinc-400">Watch your money vanish in real-time as you move through the years</p>
                 </div>
 
-                {/* Enhanced Interactive Inflation Visualization */}
+                {/* Streamlined Control Center */}
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
-                    <div className="space-y-6">
-                      {/* Input Controls Row */}
-                      <div className="grid gap-4 md:grid-cols-3">
-                        <div>
-                          <label className="block text-white font-medium mb-2">Starting Amount</label>
-                          <div className="relative">
-                            <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-400" />
-                            <input
-                              type="number"
-                              value={inflationAmount}
-                              onChange={(e) => setInflationAmount(e.target.value)}
-                              className="w-full pl-10 pr-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white"
-                              placeholder="10000"
-                              min="1000"
-                              step="1000"
-                            />
+                    <div className="space-y-8">
+                      {/* All Controls in One Row */}
+                      <div className="grid gap-6 md:grid-cols-2">
+                        {/* Money Amount Slider */}
+                        <div className="space-y-3">
+                          <label className="block text-white font-bold text-center">
+                            Your Money: ${parseFloat(inflationAmount).toLocaleString() || '10,000'}
+                          </label>
+                          <input
+                            type="range"
+                            min="1000"
+                            max="100000"
+                            step="1000"
+                            value={inflationAmount}
+                            onChange={(e) => setInflationAmount(e.target.value)}
+                            className="w-full h-4 bg-zinc-700 rounded-lg appearance-none cursor-pointer"
+                            style={{
+                              background: `linear-gradient(to right, #22c55e 0%, #f97316 50%, #ef4444 100%)`
+                            }}
+                          />
+                          <div className="flex justify-between text-xs text-zinc-400">
+                            <span>$1K</span>
+                            <span>$50K</span>
+                            <span>$100K</span>
                           </div>
                         </div>
 
-                        <div>
-                          <label className="block text-white font-medium mb-2">Inflation Rate</label>
-                          <select
+                        {/* Inflation Rate Slider */}
+                        <div className="space-y-3">
+                          <label className="block text-white font-bold text-center">
+                            Annual Inflation: {inflationRate}%
+                          </label>
+                          <input
+                            type="range"
+                            min="1"
+                            max="20"
+                            step="0.5"
                             value={inflationRate}
                             onChange={(e) => setInflationRate(parseFloat(e.target.value))}
-                            className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white"
-                          >
-                            <option value={2.0}>2% (Fed Target)</option>
-                            <option value={3.0}>3% (Historical)</option>
-                            <option value={4.0}>4% (Recent Average)</option>
-                            <option value={6.0}>6% (1970s-80s)</option>
-                            <option value={8.0}>8% (Current Crisis)</option>
-                            <option value={12.0}>12% (Hyperinflation)</option>
-                          </select>
-                        </div>
-
-                        <div>
-                          <label className="block text-white font-medium mb-2">Time Period</label>
-                          <select
-                            value={inflationYears}
-                            onChange={(e) => setInflationYears(parseInt(e.target.value))}
-                            className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white"
-                          >
-                            <option value={10}>10 years</option>
-                            <option value={20}>20 years</option>
-                            <option value={30}>30 years</option>
-                          </select>
+                            className="w-full h-4 bg-zinc-700 rounded-lg appearance-none cursor-pointer"
+                            style={{
+                              background: `linear-gradient(to right, #22c55e 0%, #f97316 ${(inflationRate / 20) * 100}%, #ef4444 100%)`
+                            }}
+                          />
+                          <div className="flex justify-between text-xs text-zinc-400">
+                            <span>1% Low</span>
+                            <span>10% High</span>
+                            <span>20% Crisis</span>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Time Slider Visualization */}
+                      {/* Time Travel Slider - Main Interactive Element */}
                       <div className="space-y-4">
-                        <div className="flex justify-between items-center">
-                          <h4 className="text-white font-semibold">Time Travel: Watch Your Money Disappear</h4>
-                          <div className="text-orange-400 font-bold">
-                            Year {inflationSliderYear}
-                          </div>
+                        <div className="text-center space-y-2">
+                          <h4 className="text-xl font-bold text-white">
+                            ⏰ Time Travel: Year {inflationSliderYear}
+                            {inflationSliderYear === 0 ? " (Today)" : ` (${inflationSliderYear} years from now)`}
+                          </h4>
+                          <p className="text-zinc-400 text-sm">
+                            Drag the slider to watch inflation destroy your purchasing power
+                          </p>
                         </div>
                         
-                        {/* Enhanced Time Slider */}
                         <div className="space-y-3">
                           <input
                             type="range"
                             min="0"
-                            max={inflationYears}
+                            max="30"
+                            step="1"
                             value={inflationSliderYear}
                             onChange={(e) => setInflationSliderYear(parseInt(e.target.value))}
-                            className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer slider"
+                            className="w-full h-6 bg-zinc-700 rounded-lg appearance-none cursor-pointer"
                             style={{
-                              background: `linear-gradient(to right, #22c55e 0%, #f97316 ${(inflationSliderYear / inflationYears) * 100}%, #374151 ${(inflationSliderYear / inflationYears) * 100}%, #374151 100%)`
+                              background: `linear-gradient(to right, 
+                                #22c55e 0%, 
+                                #f97316 ${(inflationSliderYear / 30) * 50}%, 
+                                #ef4444 ${(inflationSliderYear / 30) * 100}%, 
+                                #374151 ${(inflationSliderYear / 30) * 100}%, 
+                                #374151 100%)`
                             }}
                           />
                           <div className="flex justify-between text-xs text-zinc-400">
-                            <span>Today</span>
-                            <span>{Math.floor(inflationYears/3)} years</span>
-                            <span>{Math.floor(inflationYears*2/3)} years</span>
-                            <span>{inflationYears} years</span>
+                            <span>🟢 Today</span>
+                            <span>🟠 15 Years</span>
+                            <span>🔴 30 Years</span>
                           </div>
                         </div>
                       </div>
 
-                      {/* Visual Dollar Representation */}
-                      <div className="grid gap-6 md:grid-cols-2">
-                        <div className="space-y-4">
-                          <h5 className="text-white font-medium">Your Money's Value</h5>
-                          
-                          {/* Enhanced Dollar Visualization */}
-                          <div className="bg-gradient-to-r from-green-900/30 to-red-900/30 rounded-lg p-6 border border-zinc-700">
-                            <div className="flex items-center gap-6">
-                              {/* Fading Dollar */}
-                              <div className="flex-shrink-0">
-                                {(() => {
-                                  const currentAmount = parseFloat(inflationAmount) || 10000;
-                                  const futureValue = currentAmount / Math.pow(1 + inflationRate / 100, inflationSliderYear);
-                                  const remainingPercentage = (futureValue / currentAmount) * 100;
-                                  
-                                  return (
-                                    <svg 
-                                      width="100" 
-                                      height="42" 
-                                      viewBox="0 0 250 105" 
-                                      className="mx-auto"
-                                      style={{ 
-                                        opacity: remainingPercentage / 100,
-                                        filter: `saturate(${remainingPercentage / 100}) contrast(${0.8 + remainingPercentage / 500})`
-                                      }}
-                                    >
-                                      {/* Dollar bill design */}
-                                      <rect x="5" y="5" width="240" height="95" rx="8" ry="8" 
-                                            fill="#2d5a27" stroke="#1a3d1a" strokeWidth="2"/>
-                                      
-                                      {/* Intricate border pattern */}
-                                      <rect x="15" y="15" width="220" height="75" rx="4" ry="4" 
-                                            fill="none" stroke="#4ade80" strokeWidth="1" 
-                                            strokeDasharray="3,2" opacity="0.8"/>
-                                      
-                                      {/* Central $1 */}
-                                      <text x="125" y="60" textAnchor="middle" 
-                                            fill="#4ade80" fontSize="28" fontWeight="bold" 
-                                            fontFamily="serif">$1</text>
-                                      
-                                      {/* Corner decorations */}
-                                      <circle cx="40" cy="30" r="8" fill="none" stroke="#4ade80" strokeWidth="1"/>
-                                      <circle cx="210" cy="30" r="8" fill="none" stroke="#4ade80" strokeWidth="1"/>
-                                      <circle cx="40" cy="75" r="8" fill="none" stroke="#4ade80" strokeWidth="1"/>
-                                      <circle cx="210" cy="75" r="8" fill="none" stroke="#4ade80" strokeWidth="1"/>
-                                      
-                                      {/* Serial number style text */}
-                                      <text x="125" y="25" textAnchor="middle" 
-                                            fill="#4ade80" fontSize="8" opacity="0.7">
-                                        FEDERAL RESERVE NOTE
-                                      </text>
-                                      <text x="125" y="85" textAnchor="middle" 
-                                            fill="#4ade80" fontSize="8" opacity="0.7">
-                                        THE UNITED STATES OF AMERICA
-                                      </text>
+                      {/* Dynamic Visual Impact Display */}
+                      <div className="bg-zinc-800/50 rounded-lg p-6">
+                        <div className="grid gap-6 md:grid-cols-2">
+                          {/* Animated Money Visualization */}
+                          <div className="text-center space-y-4">
+                            {(() => {
+                              const currentAmount = parseFloat(inflationAmount) || 10000;
+                              const futureValue = currentAmount / Math.pow(1 + inflationRate / 100, inflationSliderYear);
+                              const fadeOpacity = Math.max(0.1, futureValue / currentAmount);
+                              const remainingPercentage = (futureValue / currentAmount) * 100;
+                              
+                              return (
+                                <>
+                                  {/* Dollar Bill with Fade and Scale Effect */}
+                                  <div 
+                                    className="inline-block transition-all duration-700 ease-out transform"
+                                    style={{ 
+                                      opacity: fadeOpacity,
+                                      transform: `scale(${0.5 + fadeOpacity * 0.5}) rotate(${(1 - fadeOpacity) * 15}deg)`
+                                    }}
+                                  >
+                                    <svg width="200" height="80" className="drop-shadow-lg">
+                                      <rect x="5" y="5" width="190" height="70" 
+                                            fill="#1f2937" stroke="#22c55e" strokeWidth="2" rx="6"/>
+                                      <text x="100" y="50" textAnchor="middle" 
+                                            fill="#22c55e" fontSize="28" fontWeight="bold">$</text>
+                                      <text x="100" y="20" textAnchor="middle" 
+                                            fill="#22c55e" fontSize="6">FEDERAL RESERVE</text>
+                                      <text x="100" y="70" textAnchor="middle" 
+                                            fill="#22c55e" fontSize="6">UNITED STATES</text>
                                     </svg>
-                                  );
-                                })()}
-                              </div>
-
-                              {/* Current Value Display */}
-                              <div className="flex-1">
-                                {(() => {
-                                  const currentAmount = parseFloat(inflationAmount) || 10000;
-                                  const futureValue = currentAmount / Math.pow(1 + inflationRate / 100, inflationSliderYear);
-                                  const remainingPercentage = (futureValue / currentAmount) * 100;
+                                  </div>
                                   
-                                  return (
-                                    <div>
-                                      <div className="text-2xl font-bold mb-2">
-                                        <span className="text-orange-400">
-                                          ${futureValue.toLocaleString('en-US', {maximumFractionDigits: 0})}
-                                        </span>
-                                      </div>
-                                      <div className="text-sm text-zinc-300 mb-2">
-                                        {remainingPercentage.toFixed(1)}% purchasing power left
-                                      </div>
-                                      <div className="text-xs text-zinc-500">
-                                        {inflationSliderYear === 0 ? "Full purchasing power" : 
-                                         remainingPercentage > 80 ? "Still strong value" :
-                                         remainingPercentage > 60 ? "Noticeable decline" :
-                                         remainingPercentage > 40 ? "Significant loss" :
-                                         remainingPercentage > 20 ? "Major devaluation" :
-                                         "Severely weakened"}
-                                      </div>
+                                  {/* Purchasing Power Display */}
+                                  <div className="space-y-2">
+                                    <div className="text-3xl font-bold">
+                                      <span className={remainingPercentage > 50 ? "text-green-400" : 
+                                                     remainingPercentage > 25 ? "text-orange-400" : "text-red-400"}>
+                                        ${futureValue.toLocaleString('en-US', {maximumFractionDigits: 0})}
+                                      </span>
                                     </div>
-                                  );
-                                })()}
-                              </div>
-                            </div>
+                                    <div className="text-sm text-zinc-300">
+                                      {remainingPercentage.toFixed(1)}% purchasing power remaining
+                                    </div>
+                                    <div className="text-xs font-semibold">
+                                      <span className={remainingPercentage > 80 ? "text-green-400" : 
+                                                     remainingPercentage > 60 ? "text-yellow-400" :
+                                                     remainingPercentage > 40 ? "text-orange-400" :
+                                                     remainingPercentage > 20 ? "text-red-400" : "text-red-500"}>
+                                        {inflationSliderYear === 0 ? "💪 Full Strength" : 
+                                         remainingPercentage > 80 ? "💚 Still Strong" :
+                                         remainingPercentage > 60 ? "⚠️ Weakening" :
+                                         remainingPercentage > 40 ? "📉 Major Loss" :
+                                         remainingPercentage > 20 ? "💸 Severely Damaged" :
+                                         "💀 Nearly Worthless"}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </>
+                              );
+                            })()}
                           </div>
-                        </div>
 
-                        {/* Real-World Impact */}
-                        <div className="space-y-4">
-                          <h5 className="text-white font-medium">What This Buys You</h5>
-                          
+                          {/* Real-World Price Impact */}
                           <div className="space-y-3">
+                            <h5 className="text-white font-bold text-center mb-4">
+                              What You Can Actually Buy
+                            </h5>
                             {(() => {
                               const currentAmount = parseFloat(inflationAmount) || 10000;
                               const futureValue = currentAmount / Math.pow(1 + inflationRate / 100, inflationSliderYear);
                               
                               const examples = [
-                                {
-                                  icon: "🏠",
-                                  item: "Rent payments",
-                                  basePrice: 2000,
-                                  current: Math.floor(currentAmount / 2000),
-                                  future: Math.floor(futureValue / 2000)
-                                },
-                                {
-                                  icon: "🥛",
-                                  item: "Milk gallons",
-                                  basePrice: 4.50,
-                                  current: Math.floor(currentAmount / 4.50),
-                                  future: Math.floor(futureValue / 4.50)
-                                },
-                                {
-                                  icon: "⛽",
-                                  item: "Gas gallons",
-                                  basePrice: 3.50,
-                                  current: Math.floor(currentAmount / 3.50),
-                                  future: Math.floor(futureValue / 3.50)
-                                }
+                                { icon: "🏠", item: "Rent", price: 2000, unit: "/mo" },
+                                { icon: "🥛", item: "Milk", price: 4.50, unit: "/gal" },
+                                { icon: "🥚", item: "Eggs", price: 3.50, unit: "/doz" },
+                                { icon: "⛽", item: "Gas", price: 3.50, unit: "/gal" }
                               ];
                               
-                              return examples.map((example, i) => (
-                                <div key={i} className="flex items-center justify-between p-3 bg-zinc-800 rounded-lg">
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-lg">{example.icon}</span>
-                                    <span className="text-zinc-300 text-sm">{example.item}</span>
-                                  </div>
-                                  <div className="text-right">
-                                    <div className="text-sm">
-                                      <span className={inflationSliderYear === 0 ? "text-green-400" : "text-orange-400"}>
-                                        {inflationSliderYear === 0 ? example.current.toLocaleString() : example.future.toLocaleString()}
-                                      </span>
+                              return examples.map((example, i) => {
+                                const todayQuantity = Math.floor(currentAmount / example.price);
+                                const futureQuantity = Math.floor(futureValue / example.price);
+                                const lost = todayQuantity - futureQuantity;
+                                
+                                return (
+                                  <div key={i} className="flex items-center justify-between p-3 bg-zinc-800 rounded-lg transition-all duration-500">
+                                    <div className="flex items-center gap-3">
+                                      <span className="text-xl">{example.icon}</span>
+                                      <span className="text-zinc-300 text-sm font-medium">{example.item}</span>
                                     </div>
-                                    {inflationSliderYear > 0 && (
-                                      <div className="text-xs text-red-400">
-                                        -{(example.current - example.future).toLocaleString()} fewer
+                                    <div className="text-right space-y-1">
+                                      <div className="text-sm font-bold">
+                                        <span className={inflationSliderYear === 0 ? "text-green-400" : "text-orange-400"}>
+                                          {(inflationSliderYear === 0 ? todayQuantity : futureQuantity).toLocaleString()}
+                                        </span>
+                                        <span className="text-zinc-500 text-xs ml-1">{example.unit}</span>
                                       </div>
-                                    )}
+                                      {inflationSliderYear > 0 && lost > 0 && (
+                                        <div className="text-xs text-red-400 font-medium">
+                                          -{lost.toLocaleString()} lost
+                                        </div>
+                                      )}
+                                    </div>
                                   </div>
-                                </div>
-                              ));
+                                );
+                              });
                             })()}
                           </div>
                         </div>
@@ -5461,412 +5431,85 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                {/* Historical Inflation Timeline Chart */}
+                {/* Simplified Historical Context Chart */}
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
-                    <h4 className="text-lg font-bold text-white mb-4">Historical Inflation Impact: $10,000 Over Time</h4>
+                    <h4 className="text-lg font-bold text-white mb-4 text-center">
+                      Real History: How $10,000 Lost 87% of Its Power (1970-2024)
+                    </h4>
                     
                     <div className="bg-zinc-800/50 rounded-lg p-4">
-                      <div className="relative h-64 w-full">
-                        <svg viewBox="0 0 400 200" className="w-full h-full">
-                          {/* Grid Lines */}
+                      <div className="relative h-48 w-full">
+                        <svg viewBox="0 0 400 160" className="w-full h-full">
+                          {/* Simple Grid */}
                           <defs>
-                            <pattern id="inflationGrid" width="40" height="20" patternUnits="userSpaceOnUse">
-                              <path d="M 40 0 L 0 0 0 20" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.3"/>
+                            <pattern id="simpleGrid" width="50" height="20" patternUnits="userSpaceOnUse">
+                              <path d="M 50 0 L 0 0 0 20" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.3"/>
                             </pattern>
                           </defs>
-                          <rect width="400" height="200" fill="url(#inflationGrid)" />
+                          <rect width="400" height="160" fill="url(#simpleGrid)" />
                           
-                          {/* Y-axis labels */}
-                          <text x="10" y="15" fill="#9ca3af" fontSize="10">$10,000</text>
-                          <text x="10" y="55" fill="#9ca3af" fontSize="10">$7,500</text>
-                          <text x="10" y="95" fill="#9ca3af" fontSize="10">$5,000</text>
-                          <text x="10" y="135" fill="#9ca3af" fontSize="10">$2,500</text>
-                          <text x="10" y="175" fill="#9ca3af" fontSize="10">$0</text>
+                          {/* Y-axis */}
+                          <text x="15" y="15" fill="#9ca3af" fontSize="9">$10K</text>
+                          <text x="15" y="85" fill="#9ca3af" fontSize="9">$5K</text>
+                          <text x="15" y="155" fill="#9ca3af" fontSize="9">$0</text>
                           
-                          {/* X-axis labels */}
-                          <text x="50" y="195" fill="#9ca3af" fontSize="10">1970</text>
-                          <text x="150" y="195" fill="#9ca3af" fontSize="10">1990</text>
-                          <text x="250" y="195" fill="#9ca3af" fontSize="10">2010</text>
-                          <text x="350" y="195" fill="#9ca3af" fontSize="10">2024</text>
+                          {/* X-axis */}
+                          <text x="60" y="155" fill="#9ca3af" fontSize="9">1970</text>
+                          <text x="170" y="155" fill="#9ca3af" fontSize="9">1990</text>
+                          <text x="280" y="155" fill="#9ca3af" fontSize="9">2010</text>
+                          <text x="360" y="155" fill="#9ca3af" fontSize="9">2024</text>
                           
-                          {/* Purchasing Power Decline Line */}
+                          {/* Simplified Decline Line */}
                           <path
-                            d={(() => {
-                              // Accurate historical data showing purchasing power decline of $10,000
-                              const dataPoints = [
-                                { year: 1970, value: 10000 },  // Baseline: $10,000 purchasing power
-                                { year: 1975, value: 7200 },   // Post-Nixon shock inflation
-                                { year: 1980, value: 4800 },   // Peak inflation crisis (14.8% in March 1980)
-                                { year: 1985, value: 4200 },   // Post-Volcker recovery
-                                { year: 1995, value: 3200 },   // Steady 3% inflation period
-                                { year: 2005, value: 2600 },   // Pre-crisis period
-                                { year: 2010, value: 2200 },   // Post-QE1 money creation
-                                { year: 2015, value: 2000 },   // QE2/QE3 effects
-                                { year: 2020, value: 1800 },   // Pre-COVID
-                                { year: 2024, value: 1300 }    // Post-COVID money printing
-                              ];
-                              
-                              return dataPoints.map((point, i) => {
-                                const x = 50 + ((point.year - 1970) / 54) * 300; // Scale to chart width
-                                const y = 175 - ((point.value / 10000) * 155); // Scale to chart height
-                                return `${i === 0 ? 'M' : 'L'} ${x},${y}`;
-                              }).join(' ');
-                            })()}
+                            d="M 60,20 L 120,35 L 170,70 L 220,85 L 280,105 L 340,125 L 380,140"
                             stroke="#ef4444"
-                            strokeWidth="3"
+                            strokeWidth="4"
                             fill="none"
                             className="drop-shadow-sm"
                           />
                           
-                          {/* Key Historical Events */}
-                          <g>
-                            {/* 1971 Nixon Shock - August 15, 1971 */}
-                            <circle cx={50 + ((1971 - 1970) / 54) * 300} cy="170" r="3" fill="#f97316" />
-                            <text x={53 + ((1971 - 1970) / 54) * 300} y="165" fill="#f97316" fontSize="8">Aug 71</text>
-                            <text x={53 + ((1971 - 1970) / 54) * 300} y="175" fill="#f97316" fontSize="8">Nixon</text>
-                            
-                            {/* 1980 Inflation Peak - March 1980 (14.8%) */}
-                            <circle cx={50 + ((1980 - 1970) / 54) * 300} cy="130" r="3" fill="#ef4444" />
-                            <text x={53 + ((1980 - 1970) / 54) * 300} y="125" fill="#ef4444" fontSize="8">Mar 80</text>
-                            <text x={53 + ((1980 - 1970) / 54) * 300} y="135" fill="#ef4444" fontSize="8">14.8%</text>
-                            
-                            {/* 2008 QE1 Launch - November 25, 2008 */}
-                            <circle cx={50 + ((2008 - 1970) / 54) * 300} cy="100" r="3" fill="#dc2626" />
-                            <text x={53 + ((2008 - 1970) / 54) * 300} y="95" fill="#dc2626" fontSize="8">Nov 08</text>
-                            <text x={53 + ((2008 - 1970) / 54) * 300} y="105" fill="#dc2626" fontSize="8">QE1</text>
-                            
-                            {/* 2020 COVID QE4 - March 15, 2020 */}
-                            <circle cx={50 + ((2020 - 1970) / 54) * 300} cy="60" r="3" fill="#991b1b" />
-                            <text x={53 + ((2020 - 1970) / 54) * 300} y="55" fill="#991b1b" fontSize="8">Mar 20</text>
-                            <text x={53 + ((2020 - 1970) / 54) * 300} y="65" fill="#991b1b" fontSize="8">QE4</text>
-                          </g>
+                          {/* Key Events - Simplified with animations */}
+                          <circle cx="65" cy="25" r="4" fill="#f97316" className="animate-pulse"/>
+                          <text x="70" y="15" fill="#f97316" fontSize="8" fontWeight="bold">Nixon</text>
                           
-                          {/* Current Position Marker */}
-                          <circle 
-                            cx={50 + ((2024 - 1970) / 54) * 300} 
-                            cy={175 - ((1200 / 10000) * 155)} 
-                            r="5" 
-                            fill="#f97316" 
-                            stroke="#ffffff" 
-                            strokeWidth="2"
-                          />
+                          <circle cx="175" cy="70" r="4" fill="#ef4444" className="animate-pulse"/>
+                          <text x="180" y="60" fill="#ef4444" fontSize="8" fontWeight="bold">80s Crisis</text>
+                          
+                          <circle cx="285" cy="105" r="4" fill="#dc2626" className="animate-pulse"/>
+                          <text x="290" y="95" fill="#dc2626" fontSize="8" fontWeight="bold">2008 QE</text>
+                          
+                          <circle cx="375" cy="135" r="4" fill="#991b1b" className="animate-pulse"/>
+                          <text x="320" y="125" fill="#991b1b" fontSize="8" fontWeight="bold">COVID Print</text>
                         </svg>
                       </div>
                       
-                      <div className="mt-4 flex justify-between text-xs text-zinc-400">
-                        <span>🟠 Your $10,000 purchasing power over 54 years (1970-2024)</span>
-                        <span>📉 87% value lost to inflation</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Real-World Impact Examples - Connected to Time Slider */}
-                <Card className="bg-zinc-900 border-zinc-800">
-                  <CardContent className="p-6">
-                    <h4 className="text-lg font-bold text-white mb-4">
-                      What Your Money Can Buy {inflationSliderYear === 0 ? "Today" : `After ${inflationSliderYear} Years`}
-                    </h4>
-                    <p className="text-zinc-400 text-sm mb-4">
-                      {inflationSliderYear === 0 
-                        ? "Move the time slider above to see how inflation affects real prices"
-                        : `With ${inflationRate}% annual inflation, here's how much more things cost:`
-                      }
-                    </p>
-                    
-                    <div className="grid gap-4 md:grid-cols-4">
-                      {(() => {
-                        const currentAmount = parseFloat(inflationAmount) || 10000;
-                        const currentValue = currentAmount / Math.pow(1 + inflationRate / 100, inflationSliderYear);
-                        
-                        const examples = [
-                          {
-                            icon: "🏠",
-                            title: "Rent",
-                            basePrice: 2000,
-                            unit: "/month"
-                          },
-                          {
-                            icon: "🥛",
-                            title: "Milk", 
-                            basePrice: 4.50,
-                            unit: "/gallon"
-                          },
-                          {
-                            icon: "🥚",
-                            title: "Eggs",
-                            basePrice: 3.50,
-                            unit: "/dozen"
-                          },
-                          {
-                            icon: "⛽",
-                            title: "Gas",
-                            basePrice: 3.50,
-                            unit: "/gallon"
-                          }
-                        ];
-                        
-                        return examples.map((example, i) => {
-                          const inflatedPrice = example.basePrice * Math.pow(1 + inflationRate / 100, inflationSliderYear);
-                          const priceIncrease = inflatedPrice - example.basePrice;
-                          const percentIncrease = ((inflatedPrice / example.basePrice - 1) * 100);
-                          
-                          return (
-                            <div key={i} className="p-4 bg-zinc-800 rounded-lg">
-                              <div className="text-center space-y-2">
-                                <div className="text-2xl">{example.icon}</div>
-                                <h5 className="font-semibold text-white text-sm">{example.title}</h5>
-                                <div className="text-sm space-y-1">
-                                  <p className="text-green-400">
-                                    Today: ${example.basePrice.toFixed(2)}{example.unit}
-                                  </p>
-                                  {inflationSliderYear > 0 && (
-                                    <>
-                                      <p className="text-red-400">
-                                        Year {inflationSliderYear}: ${inflatedPrice.toFixed(2)}{example.unit}
-                                      </p>
-                                      <p className="text-orange-400 text-xs">
-                                        +${priceIncrease.toFixed(2)} ({percentIncrease.toFixed(0)}%)
-                                      </p>
-                                    </>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        });
-                      })()}
-                    </div>
-                    
-                    {inflationSliderYear > 0 && (
-                      <div className="mt-4 p-3 bg-orange-900/20 border border-orange-600/30 rounded-lg">
-                        <p className="text-orange-200 text-sm text-center">
-                          <strong>Your purchasing power:</strong> Your ${parseFloat(inflationAmount) || 10000} from today 
-                          buys what ${(parseFloat(inflationAmount) || 10000) / Math.pow(1 + inflationRate / 100, inflationSliderYear)} 
-                          bought {inflationSliderYear} years ago
+                      <div className="mt-4 text-center">
+                        <p className="text-zinc-400 text-sm">
+                          <span className="text-orange-400 font-bold">87% purchasing power lost</span> through monetary debasement
                         </p>
                       </div>
-                    )}
-                  </CardContent>
-                </Card>
-
-                {/* Bitcoin Protection */}
-                <Card className="bg-gradient-to-r from-orange-900/20 to-orange-800/20 border-orange-700">
-                  <CardContent className="p-6">
-                    <div className="text-center space-y-4">
-                      <h4 className="text-xl font-bold text-orange-300">🛡️ Bitcoin: Your Inflation Shield</h4>
-                      
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div className="space-y-3">
-                          <h5 className="font-semibold text-orange-200">The Problem with Dollars</h5>
-                          <ul className="text-left space-y-2 text-orange-100 text-sm">
-                            <li>• Government prints money whenever they want</li>
-                            <li>• Your savings lose value every year</li>
-                            <li>• No limit on how many dollars exist</li>
-                            <li>• Banks profit while your money shrinks</li>
-                          </ul>
-                        </div>
-                        
-                        <div className="space-y-3">
-                          <h5 className="font-semibold text-orange-200">The Bitcoin Solution</h5>
-                          <ul className="text-left space-y-2 text-orange-100 text-sm">
-                            <li>• Only 21 million Bitcoin will ever exist</li>
-                            <li>• No government can print more</li>
-                            <li>• You control your own money</li>
-                            <li>• Value increases as demand grows</li>
-                          </ul>
-                        </div>
-                      </div>
-                      
-                      <div className="p-4 bg-orange-800/30 rounded-lg">
-                        <p className="text-orange-200 text-sm">
-                          <strong>Historical Fact:</strong> Since 2009, Bitcoin has gained over 160,000,000% while the dollar 
-                          has lost 30% of its purchasing power. Which would you rather hold for the next {inflationYears} years?
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Educational Insights */}
-                <Card className="bg-blue-900/20 border-blue-800">
-                  <CardContent className="p-6">
-                    <h4 className="text-lg font-bold text-blue-300 mb-4">📚 Understanding Inflation</h4>
-                    
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div>
-                        <h5 className="font-medium text-blue-200 mb-2">What Causes Inflation</h5>
-                        <ul className="space-y-1 text-zinc-300 text-sm">
-                          <li>• <strong>Money printing:</strong> More dollars chasing same goods</li>
-                          <li>• <strong>Government spending:</strong> Deficit spending creates new money</li>
-                          <li>• <strong>Low interest rates:</strong> Cheap money encourages borrowing</li>
-                          <li>• <strong>Supply shortages:</strong> Less goods, same money supply</li>
-                        </ul>
-                      </div>
-                      
-                      <div>
-                        <h5 className="font-medium text-blue-200 mb-2">Who Gets Hurt Most</h5>
-                        <ul className="space-y-1 text-zinc-300 text-sm">
-                          <li>• Savers and retirees on fixed income</li>
-                          <li>• Workers whose wages don't keep up</li>
-                          <li>• People holding cash for emergencies</li>
-                          <li>• Anyone without inflation-resistant assets</li>
-                        </ul>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-4 p-3 bg-blue-800/30 rounded-lg">
-                      <p className="text-blue-200 text-sm">
-                        <GraduationCap className="w-4 h-4 inline mr-1" />
-                        <strong>Key Insight:</strong> Inflation is a hidden tax on your savings. Every year you hold dollars, 
-                        you're guaranteed to lose purchasing power. Bitcoin offers an alternative.
-                      </p>
                     </div>
                   </CardContent>
                 </Card>
               </div>
             )}
-          </div>
-        )}
 
-        {/* More Section - Store Only */}
-        {activeSection === "more" && (
-          <div className="space-y-6">
-            <div className="text-center space-y-2">
-              <h2 className="text-2xl font-bold text-white">Bitcoin Store</h2>
-              <p className="text-zinc-400">Essential hardware, books, and gear for your Bitcoin journey</p>
-            </div>
-                
-            {/* Store Categories */}
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              
-              {/* Hardware Wallets */}
-              <Card className="bg-zinc-900 border-zinc-800">
-                <CardContent className="p-6">
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-orange-600/20 rounded-lg">
-                        <Shield className="w-6 h-6 text-orange-400" />
-                      </div>
-                      <h3 className="text-lg font-bold text-white">Hardware Wallets</h3>
-                    </div>
-                    
-                    <div className="space-y-4">
-                      <div className="border border-zinc-700 rounded-lg p-4">
-                        <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-semibold text-white">Ledger Nano X</h4>
-                          <span className="text-orange-400 font-bold">$149</span>
-                        </div>
-                        <p className="text-zinc-400 text-sm mb-3">Bluetooth-enabled hardware wallet with mobile app support.</p>
-                        <Button 
-                          size="sm" 
-                          className="w-full bg-orange-600 hover:bg-orange-700"
-                          onClick={() => window.open('https://shop.ledger.com/?r=btc-journey', '_blank')}
-                        >
-                          <ExternalLink className="w-3 h-3 mr-2" />
-                          Buy Now
-                        </Button>
-                      </div>
-                      
-                      <div className="border border-zinc-700 rounded-lg p-4">
-                        <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-semibold text-white">Trezor Model T</h4>
-                          <span className="text-orange-400 font-bold">$219</span>
-                        </div>
-                        <p className="text-zinc-400 text-sm mb-3">Premium hardware wallet with touchscreen interface.</p>
-                        <Button 
-                          size="sm" 
-                          className="w-full bg-orange-600 hover:bg-orange-700"
-                          onClick={() => window.open('https://trezor.io/?offer=btc-journey', '_blank')}
-                        >
-                          <ExternalLink className="w-3 h-3 mr-2" />
-                          Buy Now
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
 
-              {/* Essential Books */}
-              <Card className="bg-zinc-900 border-zinc-800">
-                <CardContent className="p-6">
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-blue-600/20 rounded-lg">
-                        <BookOpen className="w-6 h-6 text-blue-400" />
-                      </div>
-                      <h3 className="text-lg font-bold text-white">Essential Books</h3>
-                    </div>
-                    
-                    <div className="space-y-4">
-                      <div className="border border-zinc-700 rounded-lg p-4">
-                        <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-semibold text-white">Broken Money</h4>
-                          <span className="text-orange-400 font-bold">$18</span>
-                        </div>
-                        <p className="text-zinc-400 text-sm mb-1">by Lyn Alden</p>
-                        <p className="text-zinc-400 text-sm mb-3">Deep dive into monetary history and Bitcoin's role.</p>
-                        <Button 
-                          size="sm" 
-                          className="w-full bg-orange-600 hover:bg-orange-700"
-                          onClick={() => window.open('https://amzn.to/3broken-money-lyn-alden', '_blank')}
-                        >
-                          <ExternalLink className="w-3 h-3 mr-2" />
-                          Buy Now
-                        </Button>
-                      </div>
-                      
-                      <div className="border border-zinc-700 rounded-lg p-4">
-                        <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-semibold text-white">The Bitcoin Standard</h4>
-                          <span className="text-orange-400 font-bold">$16</span>
-                        </div>
-                        <p className="text-zinc-400 text-sm mb-1">by Saifedean Ammous</p>
-                        <p className="text-zinc-400 text-sm mb-3">The definitive guide to understanding Bitcoin.</p>
-                        <Button 
-                          size="sm" 
-                          className="w-full bg-orange-600 hover:bg-orange-700"
-                          onClick={() => window.open('https://amzn.to/bitcoin-standard-ammous', '_blank')}
-                        >
-                          <ExternalLink className="w-3 h-3 mr-2" />
-                          Buy Now
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+            {/* Transaction Builder */}
+            {simulationsSubTab === "transaction" && (
+              <TransactionBuilder />
+            )}
 
-              {/* Affiliate Disclosure */}
-              <Card className="bg-zinc-900 border-zinc-800">
-                <CardContent className="p-6">
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-green-600/20 rounded-lg">
-                        <AlertTriangle className="w-6 h-6 text-green-400" />
-                      </div>
-                      <h3 className="text-lg font-bold text-white">Affiliate Disclosure</h3>
-                    </div>
-                    
-                    <div className="space-y-3 text-sm text-zinc-400">
-                      <p>
-                        BTC Journey may receive commissions when you purchase products through our affiliate links. 
-                        This helps support our educational mission.
-                      </p>
-                      <p>
-                        We only recommend products we genuinely believe in and that align with Bitcoin's principles 
-                        of self-sovereignty and security.
-                      </p>
-                      <p className="text-green-400 font-medium">
-                        Your purchase price remains the same, and you help support Bitcoin education.
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            {/* Wallet Safety */}
+            {simulationsSubTab === "safety" && (
+              <WalletSafety />
+            )}
+
+            {/* HODLing Strategy */}
+            {simulationsSubTab === "hodl" && (
+              <HODLingSimulator />
+            )}
           </div>
         )}
       </main>
