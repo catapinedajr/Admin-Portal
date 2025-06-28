@@ -2257,6 +2257,11 @@ export default function Home() {
                       <div className="space-y-4">
                         {(dailyFacts as DailyFact[]).map((fact: DailyFact) => {
                           const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Coins;
+                          // Debug: Check if API diveDeeper data exists
+                          console.log(`Day ${currentDay} - Fact "${fact.title}":`, {
+                            hasApiDiveDeeper: !!fact.diveDeeper,
+                            diveDeeper: fact.diveDeeper
+                          });
                           const deepDive = fact.diveDeeper || getFactDeepDive(fact.title);
                           const isExpanded = expandedFacts.has(fact.id);
                           
