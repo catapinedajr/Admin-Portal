@@ -3229,7 +3229,7 @@ export default function Home() {
                 {!speedRaceActive && (
                   <div className="text-center space-y-4">
                     <div className="p-6 bg-zinc-800 rounded-lg border border-zinc-700">
-                      <h3 className="text-lg font-medium text-white mb-3">Settlement Scenario</h3>
+                      <h3 className="text-lg font-medium text-white mb-3">Transfer Scenario</h3>
                       <p className="text-zinc-300 mb-4">
                         Your business needs to send <span className="text-orange-400 font-bold">$50,000</span> from 
                         Chase Bank (New York) to Wells Fargo (London) for an urgent deal.
@@ -3242,7 +3242,7 @@ export default function Home() {
                       onClick={startSettlementAnimation}
                       className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg font-medium"
                     >
-                      Start Live Settlement Race (30s)
+                      Start Live Transfer Race (30s)
                     </Button>
                   </div>
                 )}
