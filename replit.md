@@ -203,6 +203,7 @@ Comprehensive component library built on Radix UI primitives:
 - June 28, 2025. Implemented minimal habit-focused progress display on Learn > Today page: replaced complex progress bars with simple day counter ("Day X of learning Bitcoin"), added contextual motivational messaging based on streak length, emphasized daily consistency over advancement pressure, included subtle animated orange dot and gentle background styling, aligned with HODLearn philosophy of patience and steady progress over rushing toward arbitrary goals, fixed day counter to show correct curriculum day (1-30) rather than streak count
 - June 28, 2025. Cleaned up DCA simulator interface: removed redundant large colored result boxes that duplicated information shown in the summary section, creating cleaner user experience with single presentation of investment data in organized strategy comparison format
 - June 28, 2025. Removed unnecessary calculate button from DCA simulator: interface now updates automatically when inputs change, providing instant feedback without manual button clicks for better user experience
+- June 28, 2025. Normalized text size in HODL simulator investment amount field: removed oversized text styling to match consistent input field appearance across all simulators
 
 ## User Preferences
 
