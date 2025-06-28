@@ -4615,26 +4615,7 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                <div className="text-center space-y-4">
-                  <h4 className="text-lg font-semibold text-white">Ready to test your knowledge?</h4>
-                  <Button
-                    onClick={() => {
-                      // Scroll to safety test section
-                      const testSection = document.getElementById('safety-skills-test');
-                      if (testSection) {
-                        testSection.scrollIntoView({ behavior: 'smooth' });
-                      }
-                    }}
-                    className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 text-sm font-medium"
-                  >
-                    <Shield className="w-4 h-4 mr-2" />
-                    Test Your Security Skills
-                  </Button>
-                  
-                  <div className="text-sm text-zinc-500">
-                    Complete all training modules, then test your knowledge with real-world scenarios
-                  </div>
-                </div>
+
 
 
 
