@@ -2391,7 +2391,7 @@ export default function Home() {
                           <div className="bg-zinc-800/50 rounded-lg p-6 border border-zinc-700 mt-8">
                             <h4 className="text-white font-semibold mb-6 text-lg">Why This Matters</h4>
                             <div className="text-zinc-300 text-base leading-[1.7]">
-                              {cleanText((lesson as Lesson).whyItMatters)}
+                              {cleanText((lesson as Lesson).whyItMatters || "")}
                             </div>
                           </div>
                         )}

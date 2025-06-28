@@ -936,7 +936,8 @@ Bitcoin also lets anyone with internet use it. You don't need a bank account or 
 This changes everything about money. For the first time ever, people can save and send money without trusting banks or governments. You're in complete control of your own money.`,
         summary: "Bitcoin is digital cash that works without banks. Thousands of computers keep it secure, and only 21 million will ever exist.",
         estimatedReadTime: 3,
-        dayIndex: 0
+        dayIndex: 0,
+        whyItMatters: "Learning about Bitcoin helps you understand the future of money. Regular money loses value over time. Your savings get smaller every year because of inflation. Bitcoin works differently. It can't be printed like regular money. Understanding Bitcoin now helps you make smart money choices later. This knowledge protects your financial future."
       },
 
       {
@@ -960,7 +961,8 @@ The really smart thing about this system is that cheating is almost impossible. 
 So the blockchain keeps Bitcoin safe without needing any banks or governments to watch over it.`,
         summary: "The blockchain is like a shared notebook that thousands of computers keep together. New pages are added every 10 minutes after solving math puzzles.",
         estimatedReadTime: 3,
-        dayIndex: 1
+        dayIndex: 1,
+        whyItMatters: "Understanding how Bitcoin keeps records helps you trust the system. Regular banks can change their records or lie about what happened. The blockchain makes lying impossible because thousands of computers check everything. This means your Bitcoin is safer than money in banks. You can verify everything yourself instead of trusting others."
       },
 
       {
@@ -982,7 +984,8 @@ Bitcoin solves all these problems. Since there will only ever be 21 million Bitc
 Bitcoin gives you back control of your own money. It protects you from governments printing money and banks controlling your life. For the first time, regular people have money that belongs completely to them.`,
         summary: "Regular money loses value from printing, gives banks control over you, and locks out billions of people. Bitcoin fixes all these problems.",
         estimatedReadTime: 3,
-        dayIndex: 2
+        dayIndex: 2,
+        whyItMatters: "Understanding why regular money fails helps you see why Bitcoin matters. Every year, your savings become worth less because of inflation. Banks can control your money and lock you out. Learning this protects you from these problems. Bitcoin gives you a way to escape a broken money system."
       },
 
       {
@@ -1002,7 +1005,8 @@ The most important thing is backing up your seed phrase. This is usually 12 word
 When you use Bitcoin, you become your own bank. This gives you amazing freedom, but it also means you're responsible for keeping your money safe. Start with small amounts while you learn, then you can store more as you get comfortable.`,
         summary: "Bitcoin wallets hold your secret keys, not your Bitcoin. 'Not your keys, not your coins' means you must control your keys to own your Bitcoin.",
         estimatedReadTime: 3,
-        dayIndex: 3
+        dayIndex: 3,
+        whyItMatters: "Learning about Bitcoin wallets protects your money from being stolen or lost. Many people lose their Bitcoin because they don't understand how wallets work. If you keep Bitcoin on an exchange, they control your money. Understanding wallets means you control your own money instead of trusting others."
       },
 
       {
@@ -1022,7 +1026,8 @@ This shrinking reward makes Bitcoin more valuable over time. It's like if there 
 Mining isn't wasteful energy use. It's like Bitcoin's security system that keeps everyone's money safe. The more energy miners use, the safer Bitcoin becomes for everyone.`,
         summary: "Bitcoin mining uses computer puzzles to secure the network and create new Bitcoin. Rewards get cut in half every four years, making Bitcoin increasingly rare.",
         estimatedReadTime: 3,
-        dayIndex: 4
+        dayIndex: 4,
+        whyItMatters: "Understanding Bitcoin mining helps you see why Bitcoin is secure and valuable. Mining makes it almost impossible for anyone to cheat or steal. The halving events make Bitcoin scarcer over time, which helps protect your savings from inflation. This knowledge helps you understand why Bitcoin gets more valuable as time goes on."
       },
 
       {
@@ -1042,7 +1047,8 @@ As more people learn about these advantages, more people want Bitcoin. But since
 Bitcoin is like gold's smarter, faster, stronger digital cousin. It keeps all the good parts of gold but fixes all the problems.`,
         summary: "Bitcoin is called digital gold because it has all of gold's good features but works better. It's scarce, durable, portable, divisible, and verifiable.",
         estimatedReadTime: 3,
-        dayIndex: 5
+        dayIndex: 5,
+        whyItMatters: "Understanding why Bitcoin is like digital gold helps you see why it's valuable for saving money. Gold has been trusted for thousands of years, but it's hard to use in the modern world. Bitcoin has all the good parts of gold but works better with today's technology. This knowledge helps you understand why Bitcoin protects your wealth."
       },
 
       {
@@ -1062,7 +1068,8 @@ People are already using Lightning for lots of cool stuff. Artists get tips onli
 This two-layer system is brilliant. The main Bitcoin network stays super secure for big, important transactions. Lightning handles all the small, everyday payments instantly. Together, they make Bitcoin work for everything from saving money to buying coffee.`,
         summary: "Lightning Network is Bitcoin's fast payment layer. It enables instant, cheap transactions while keeping the main Bitcoin network secure for big payments.",
         estimatedReadTime: 3,
-        dayIndex: 6
+        dayIndex: 6,
+        whyItMatters: "Understanding Lightning Network shows you how Bitcoin can be used for everyday spending. Regular Bitcoin transactions can be slow and expensive for small purchases. Lightning makes Bitcoin work like instant digital cash. This knowledge helps you see how Bitcoin can replace regular money for all your daily needs, not just big savings."
       },
 
       // Days 7-29: Complete the 30-day curriculum
@@ -1083,7 +1090,8 @@ Bitcoin fixes all these problems with its design. Since only 21 million Bitcoin 
 Bitcoin isn't just better technology - it's money that belongs to the people instead of banks and governments.`,
         summary: "Banks cause inflation, exclude people, control your money, and charge high fees. Bitcoin fixes these problems with fixed supply, open access, and no central control.",
         estimatedReadTime: 3,
-        dayIndex: 7
+        dayIndex: 7,
+        whyItMatters: "Understanding bank problems shows you why Bitcoin matters for your life. Banks hurt your money through inflation and control what you can do with it. This affects your family's future and freedom. Learning this helps you make better money choices. Bitcoin gives you a way to avoid these problems and protect your family's wealth."
       },
 
       {
@@ -1105,7 +1113,8 @@ Once your payment gets included in a block, it becomes part of the permanent rec
 This creates something amazing: you can send money to anyone in the world without trusting any bank or government, and it's all secured by math instead of institutions.`,
         summary: "Bitcoin payments create proof messages instead of moving money between accounts. Thousands of computers verify each payment to prevent cheating.",
         estimatedReadTime: 3,
-        dayIndex: 8
+        dayIndex: 8,
+        whyItMatters: "Understanding how Bitcoin payments work shows you why they're safer than bank payments. Banks can reverse payments even after you thought they were done. Bitcoin payments are final and can't be taken back by banks or governments. This knowledge helps you trust Bitcoin for important transactions and understand why it's better money."
       },
 
       {
@@ -1127,7 +1136,8 @@ Over the years, Bitcoin hit many big milestones. The first exchange opened in 20
 Today, Bitcoin runs on over 15,000 computers worldwide and processes millions of payments every month. It has never been hacked or shut down. What started as an experiment by a mystery person has become a new type of money that works everywhere in the world.`,
         summary: "Bitcoin was created by the mysterious Satoshi Nakamoto in 2009. It went from computer experiment to global money that works without banks or governments.",
         estimatedReadTime: 3,
-        dayIndex: 9
+        dayIndex: 9,
+        whyItMatters: "Learning Bitcoin's history helps you understand why it's trustworthy. Bitcoin has worked perfectly for over 15 years without any breaks or hacks. The creator disappeared but Bitcoin kept working, proving no single person controls it. This history shows Bitcoin is reliable technology that protects your money better than banks."
       },
 
       {
@@ -1151,7 +1161,8 @@ This way, Bitcoin can be both a safe place to store lots of money and a fast way
 Bitcoin's approach means it can grow to serve the whole world while staying secure and belonging to everyone, not just big companies.`,
         summary: "Bitcoin is intentionally slow to stay secure and decentralized. Fast layers like Lightning Network are built on top for everyday payments.",
         estimatedReadTime: 3,
-        dayIndex: 10
+        dayIndex: 10,
+        whyItMatters: "Understanding why Bitcoin is slow helps you see why it's trustworthy. Fast payment systems can be hacked or controlled by companies. Bitcoin's slowness makes it impossible to hack or control. Lightning Network gives you speed when you need it while keeping the main system super secure for your savings."
       },
 
       {
@@ -1173,7 +1184,8 @@ The real question isn't whether Bitcoin uses energy, but whether it's worth it. 
 Compare this to banking systems that use energy just to maintain buildings and servers, even when nobody is making transactions. Bitcoin's energy creates a money system that works for everyone, everywhere, all the time.`,
         summary: "Bitcoin uses energy for security and mostly runs on clean power. It uses less energy than traditional banking and drives renewable energy innovation.",
         estimatedReadTime: 3,
-        dayIndex: 11
+        dayIndex: 11,
+        whyItMatters: "Understanding Bitcoin's energy use helps you answer critics and feel confident about using Bitcoin. Many people worry Bitcoin hurts the environment, but it actually uses clean energy and helps build renewable power systems. This knowledge helps you explain to others why Bitcoin is good for the future and the planet."
       },
 
       {
@@ -1197,7 +1209,8 @@ This is completely different from everything else we consider valuable. There's 
 Bitcoin rewards people who save and think long-term instead of spending everything right away. This encourages building wealth instead of consuming everything immediately.`,
         summary: "Bitcoin's halvings reduce new supply every four years until only 21 million will ever exist. This guaranteed scarcity makes Bitcoin more valuable over time.",
         estimatedReadTime: 3,
-        dayIndex: 12
+        dayIndex: 12,
+        whyItMatters: "Understanding halving events helps you time your Bitcoin purchases and see why Bitcoin gets more valuable. Every four years, new Bitcoin becomes scarcer, which usually pushes prices higher. This knowledge helps you plan your savings strategy and understand why Bitcoin protects your wealth better than regular money that gets printed endlessly."
       },
 
       // Days 13-29: Continue with essential Bitcoin topics
@@ -1222,7 +1235,8 @@ Different amounts of Bitcoin need different levels of security. Money you spend 
 Taking control of your own Bitcoin is the whole point of Bitcoin. Instead of trusting banks and companies, you become your own bank. This gives you true financial freedom that didn't exist before Bitcoin.`,
         summary: "Really owning Bitcoin means controlling your own private keys instead of trusting companies. This gives you complete control over your money.",
         estimatedReadTime: 3,
-        dayIndex: 13
+        dayIndex: 13,
+        whyItMatters: "Learning to really own your Bitcoin protects you from losing your money when companies fail. Many people have lost Bitcoin by trusting exchanges that got hacked or went out of business. Controlling your own keys means no company can freeze your money or steal it. This knowledge gives you true financial independence."
       },
 
       {
@@ -1250,7 +1264,8 @@ Future improvements will make Bitcoin even more private. New technologies make c
 Bitcoin gives you more privacy than banks (which see everything) but requires you to understand how it works. The public ledger means you need to take active steps to protect your privacy.`,
         summary: "Bitcoin transactions are public but addresses are anonymous. This gives you privacy if you use it correctly while keeping the system transparent for everyone.",
         estimatedReadTime: 3,
-        dayIndex: 14
+        dayIndex: 14,
+        whyItMatters: "Understanding Bitcoin's privacy helps you use it safely without revealing personal information. You get better privacy than banks while still proving transactions work correctly. This knowledge helps you protect your financial information while enjoying Bitcoin's transparency benefits for checking the system is fair."
       },
 
       {
@@ -1280,7 +1295,8 @@ Unlike traditional money that's limited to one country, Bitcoin is global from d
 The more people learn about Bitcoin's real benefits (not just its price), the more stable its growth becomes. Bitcoin is still early in this adoption process, so each new user continues to make it more valuable for everyone.`,
         summary: "Bitcoin gets more valuable as more people use it. This network effect creates a snowball that makes Bitcoin grow faster over time.",
         estimatedReadTime: 3,
-        dayIndex: 15
+        dayIndex: 15,
+        whyItMatters: "Understanding network effects helps you see why Bitcoin will keep growing in value. As more people use Bitcoin, it becomes more useful for you too. Early users benefit the most from this growth. This knowledge helps you understand why getting Bitcoin now could be much better than waiting until everyone already has it."
       },
 
       {
@@ -1308,7 +1324,8 @@ Future improvements will make Bitcoin even better while keeping what makes it sp
 Bitcoin's approach to innovation shows that breakthrough technology often comes from combining existing pieces in smart new ways, not necessarily inventing everything from scratch.`,
         summary: "Bitcoin carefully combines existing technologies and keeps improving through slow, careful upgrades that maintain security while adding new features.",
         estimatedReadTime: 3,
-        dayIndex: 16
+        dayIndex: 16,
+        whyItMatters: "Understanding Bitcoin's technology helps you trust it more and see why it keeps getting better. Bitcoin improves slowly to stay secure, unlike other cryptocurrencies that break from rushed changes. This knowledge helps you see why Bitcoin is the safest long-term choice and why future improvements will make it even more useful."
       }
     ];
 
@@ -1331,7 +1348,8 @@ Bitcoin is also more private than gold. When you buy gold, dealers often require
 The biggest advantage is that Bitcoin can't be confiscated as easily as gold. Throughout history, governments have seized gold from citizens. In 1933, the US government made owning gold illegal and forced people to sell it. With Bitcoin, if you control your own keys, no one can take your Bitcoin without your permission.
 
 Bitcoin is like gold but better: perfectly scarce, instantly transportable, easily divisible, and resistant to confiscation. This is why many people call Bitcoin "digital gold."`,
-        summary: "Bitcoin improves on gold's properties while solving its problems: easy transport, divisibility, and resistance to confiscation."
+        summary: "Bitcoin improves on gold's properties while solving its problems: easy transport, divisibility, and resistance to confiscation.",
+        whyItMatters: "Comparing Bitcoin to gold helps you understand why Bitcoin is better money. Gold has been valuable for thousands of years, but Bitcoin solves all of gold's problems while keeping the good parts. This knowledge helps you see why Bitcoin is the next step in money's evolution and why digital money beats physical money."
       },
       {
         title: "Why Bitcoin Is Different from Stocks",
@@ -1352,7 +1370,8 @@ Bitcoin doesn't depend on any single country's economy or government. Stocks are
 Most importantly, Bitcoin gives you direct ownership. When you own Bitcoin with your own keys, you truly own it. When you own stocks, they're usually held by a broker who could potentially restrict your access.
 
 Bitcoin isn't competing with stocks - it's competing with money itself. It's trying to become a better form of money for the digital age.`,
-        summary: "Bitcoin is money, not a stock. It has fixed supply, works globally 24/7, and gives you direct ownership unlike traditional investments."
+        summary: "Bitcoin is money, not a stock. It has fixed supply, works globally 24/7, and gives you direct ownership unlike traditional investments.",
+        whyItMatters: "Understanding that Bitcoin is money, not an investment, changes how you think about it. Stocks go up and down based on company performance, but Bitcoin's value comes from being better money. This knowledge helps you see Bitcoin as a long-term wealth protection tool rather than a risky gamble like stocks."
       },
       {
         title: "How Bitcoin Helps During Economic Crisis",
@@ -1371,7 +1390,8 @@ During the 2008 financial crisis, many banks failed and required government bail
 Capital controls happen when governments restrict how much money you can send out of the country. Bitcoin can bypass these restrictions because it operates on a global network that governments can't fully control.
 
 Bitcoin isn't a magic solution to all economic problems, but it gives individuals a way to protect their wealth when traditional financial systems fail. It's like having a lifeboat when the ship starts sinking.`,
-        summary: "Bitcoin helps during economic crisis by protecting against inflation, banking failures, and capital controls with its global, unchangeable properties."
+        summary: "Bitcoin helps during economic crisis by protecting against inflation, banking failures, and capital controls with its global, unchangeable properties.",
+        whyItMatters: "Learning how Bitcoin protects you during economic crisis helps you prepare for uncertain times. Many people lose their savings when economies collapse, but Bitcoin users can protect their wealth. This knowledge helps you see Bitcoin as financial insurance that works when traditional systems fail."
       },
       {
         title: "Bitcoin and Your Financial Freedom",
@@ -1392,7 +1412,8 @@ The sixth freedom is financial inclusion. Billions of people worldwide don't hav
 These freedoms come with responsibility. You must learn to securely manage your own keys, understand how Bitcoin works, and take responsibility for your own financial security.
 
 Bitcoin returns financial power to individuals instead of concentrating it in institutions. This shift toward individual sovereignty is one of Bitcoin's most important innovations.`,
-        summary: "Bitcoin provides six key freedoms: self-custody, privacy, global access, seizure resistance, inflation protection, and financial inclusion."
+        summary: "Bitcoin provides six key freedoms: self-custody, privacy, global access, seizure resistance, inflation protection, and financial inclusion.",
+        whyItMatters: "Understanding Bitcoin's freedoms helps you see why it's revolutionary beyond just price gains. These six freedoms give you power over your money that no one in history has ever had before. This knowledge helps you appreciate why Bitcoin matters for human liberty and why it's worth learning about."
       }
     ];
 
@@ -1420,7 +1441,8 @@ The most important thing to remember is that Bitcoin gives you options. You can 
 Bitcoin isn't just new technology - it's a new way of thinking about money, ownership, and economic freedom. This new way of thinking is spreading around the world as more people discover Bitcoin's benefits.`,
         summary: day <= 20 ? topic.summary : "Bitcoin fundamentals exploring how this technology changes the relationship between individuals and money systems.",
         estimatedReadTime: 3,
-        dayIndex: day
+        dayIndex: day,
+        whyItMatters: day <= 20 ? (topic as any).whyItMatters : "Understanding Bitcoin fundamentals helps you see why this technology matters for your financial future. Each concept builds on previous lessons to give you complete knowledge about how Bitcoin works and why it's important. This knowledge helps you make informed decisions about using Bitcoin as better money for the digital age."
       });
     }
 
@@ -1437,7 +1459,7 @@ Bitcoin isn't just new technology - it's a new way of thinking about money, owne
         dayIndex: lessonData.dayIndex,
         imageUrl: null,
         keyPoints: null,
-        whyItMatters: null
+        whyItMatters: (lessonData as any).whyItMatters || null
       };
       this.lessons.set(lesson.id, lesson);
     });
@@ -4202,7 +4224,9 @@ Bitcoin isn't just new technology - it's a new way of thinking about money, owne
       summary: insertLesson.summary,
       estimatedReadTime: insertLesson.estimatedReadTime,
       dayIndex: insertLesson.dayIndex,
-      imageUrl: insertLesson.imageUrl || null
+      imageUrl: insertLesson.imageUrl || null,
+      keyPoints: insertLesson.keyPoints || null,
+      whyItMatters: insertLesson.whyItMatters || null
     };
     this.lessons.set(lesson.id, lesson);
     return lesson;
