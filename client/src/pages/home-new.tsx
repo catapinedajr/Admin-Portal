@@ -5562,51 +5562,92 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                {/* Real-World Impact Examples */}
+                {/* Real-World Impact Examples - Connected to Time Slider */}
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
-                    <h4 className="text-lg font-bold text-white mb-4">What Your Money Can't Buy Anymore</h4>
+                    <h4 className="text-lg font-bold text-white mb-4">
+                      What Your Money Can Buy {inflationSliderYear === 0 ? "Today" : `After ${inflationSliderYear} Years`}
+                    </h4>
+                    <p className="text-zinc-400 text-sm mb-4">
+                      {inflationSliderYear === 0 
+                        ? "Move the time slider above to see how inflation affects real prices"
+                        : `With ${inflationRate}% annual inflation, here's how much more things cost:`
+                      }
+                    </p>
                     
-                    <div className="grid gap-4 md:grid-cols-3">
+                    <div className="grid gap-4 md:grid-cols-4">
                       {(() => {
                         const currentAmount = parseFloat(inflationAmount) || 10000;
-                        const futureValue = currentAmount / Math.pow(1 + inflationRate / 100, inflationYears);
+                        const currentValue = currentAmount / Math.pow(1 + inflationRate / 100, inflationSliderYear);
                         
                         const examples = [
                           {
                             icon: "🏠",
-                            title: "Housing",
-                            current: "Rent: $2,000/month",
-                            future: `Future: $${Math.round(2000 * Math.pow(1 + inflationRate / 100, inflationYears)).toLocaleString()}/month`
+                            title: "Rent",
+                            basePrice: 2000,
+                            unit: "/month"
                           },
                           {
                             icon: "🥛",
-                            title: "Groceries", 
-                            current: "Milk: $4.50/gallon",
-                            future: `Future: $${(4.50 * Math.pow(1 + inflationRate / 100, inflationYears)).toFixed(2)}/gallon`
+                            title: "Milk", 
+                            basePrice: 4.50,
+                            unit: "/gallon"
+                          },
+                          {
+                            icon: "🥚",
+                            title: "Eggs",
+                            basePrice: 3.50,
+                            unit: "/dozen"
                           },
                           {
                             icon: "⛽",
-                            title: "Energy",
-                            current: "Gas: $3.50/gallon", 
-                            future: `Future: $${(3.50 * Math.pow(1 + inflationRate / 100, inflationYears)).toFixed(2)}/gallon`
+                            title: "Gas",
+                            basePrice: 3.50,
+                            unit: "/gallon"
                           }
                         ];
                         
-                        return examples.map((example, i) => (
-                          <div key={i} className="p-4 bg-zinc-800 rounded-lg">
-                            <div className="text-center space-y-2">
-                              <div className="text-2xl">{example.icon}</div>
-                              <h5 className="font-semibold text-white">{example.title}</h5>
-                              <div className="text-sm space-y-1">
-                                <p className="text-green-400">{example.current}</p>
-                                <p className="text-red-400">{example.future}</p>
+                        return examples.map((example, i) => {
+                          const inflatedPrice = example.basePrice * Math.pow(1 + inflationRate / 100, inflationSliderYear);
+                          const priceIncrease = inflatedPrice - example.basePrice;
+                          const percentIncrease = ((inflatedPrice / example.basePrice - 1) * 100);
+                          
+                          return (
+                            <div key={i} className="p-4 bg-zinc-800 rounded-lg">
+                              <div className="text-center space-y-2">
+                                <div className="text-2xl">{example.icon}</div>
+                                <h5 className="font-semibold text-white text-sm">{example.title}</h5>
+                                <div className="text-sm space-y-1">
+                                  <p className="text-green-400">
+                                    Today: ${example.basePrice.toFixed(2)}{example.unit}
+                                  </p>
+                                  {inflationSliderYear > 0 && (
+                                    <>
+                                      <p className="text-red-400">
+                                        Year {inflationSliderYear}: ${inflatedPrice.toFixed(2)}{example.unit}
+                                      </p>
+                                      <p className="text-orange-400 text-xs">
+                                        +${priceIncrease.toFixed(2)} ({percentIncrease.toFixed(0)}%)
+                                      </p>
+                                    </>
+                                  )}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ));
+                          );
+                        });
                       })()}
                     </div>
+                    
+                    {inflationSliderYear > 0 && (
+                      <div className="mt-4 p-3 bg-orange-900/20 border border-orange-600/30 rounded-lg">
+                        <p className="text-orange-200 text-sm text-center">
+                          <strong>Your purchasing power:</strong> Your ${parseFloat(inflationAmount) || 10000} from today 
+                          buys what ${(parseFloat(inflationAmount) || 10000) / Math.pow(1 + inflationRate / 100, inflationSliderYear)} 
+                          bought {inflationSliderYear} years ago
+                        </p>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
 
