@@ -21,7 +21,7 @@ export default function LockedContent({
   type, 
   featureName,
   blurContent = true,
-  showPreview = false 
+  showPreview = true 
 }: LockedContentProps) {
   const { isPremiumTier } = useSubscription();
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
@@ -43,7 +43,7 @@ export default function LockedContent({
       case 'simulator':
         return {
           title: `${featureName || 'Simulator'} - Premium Only`,
-          description: "This advanced simulator is available to premium users.",
+          description: "Unlock this advanced simulator with premium access.",
           icon: <Crown className="w-6 h-6" />,
           buttonText: "Unlock Simulator"
         };
@@ -69,53 +69,44 @@ export default function LockedContent({
   return (
     <>
       <div className="relative">
-        {/* Show blurred/preview content if requested */}
+        {/* Show preview content grayed out to tease users */}
         {showPreview && (
-          <div className={`${blurContent ? 'blur-sm pointer-events-none' : ''}`}>
+          <div className="opacity-30 pointer-events-none grayscale">
             {children}
           </div>
         )}
         
-        {/* Overlay */}
-        <Card className="bg-zinc-900/95 border-zinc-800 backdrop-blur-sm">
-          <CardContent className="p-8 text-center">
-            <div className="flex flex-col items-center space-y-4">
-              {/* Premium Badge */}
-              <Badge className="bg-orange-500 text-white px-3 py-1">
-                <Crown className="w-4 h-4 mr-1" />
+        {/* Compact overlay that doesn't completely hide content */}
+        <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="text-center space-y-3 p-6 bg-zinc-900/95 rounded-lg border border-orange-500/30 max-w-sm">
+            <div className="flex items-center justify-center space-x-2">
+              <Crown className="w-5 h-5 text-orange-400" />
+              <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30">
                 Premium
               </Badge>
-
-              {/* Icon */}
-              <div className="w-16 h-16 bg-zinc-800 rounded-full flex items-center justify-center text-zinc-400">
-                {lockedInfo.icon}
-              </div>
-
-              {/* Content */}
-              <div className="space-y-2">
-                <h3 className="text-lg font-semibold text-white">
-                  {lockedInfo.title}
-                </h3>
-                <p className="text-zinc-400 text-sm max-w-sm">
-                  {lockedInfo.description}
-                </p>
-              </div>
-
-              {/* Upgrade Button */}
-              <Button 
-                onClick={() => setShowUpgradeModal(true)}
-                className="bg-orange-500 hover:bg-orange-600 text-white px-6"
-              >
-                {lockedInfo.buttonText}
-              </Button>
-
-              {/* Pricing hint */}
-              <p className="text-xs text-zinc-500">
-                Starting at $9.99/month • Cancel anytime
+            </div>
+            
+            <div className="space-y-1">
+              <h3 className="text-lg font-semibold text-white">
+                {lockedInfo.title}
+              </h3>
+              <p className="text-sm text-zinc-300">
+                {lockedInfo.description}
               </p>
             </div>
-          </CardContent>
-        </Card>
+
+            <Button 
+              onClick={() => setShowUpgradeModal(true)}
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium"
+            >
+              {lockedInfo.buttonText}
+            </Button>
+            
+            <p className="text-xs text-zinc-500">
+              Starting at $9.99/month
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Upgrade Modal */}
