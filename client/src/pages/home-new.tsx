@@ -982,42 +982,42 @@ export default function Home() {
   const getLessonTakeaways = (lessonTitle: string): string[] => {
     const takeaways: Record<string, string[]> = {
       "Bitcoin vs Traditional Money: Why It Matters": [
-        "**Fiat currencies** are backed only by government promises and consistently lose purchasing power through inflation by design",
-        "**Central authorities** can freeze accounts, reverse transactions, and exclude people from the financial system at will", 
-        "**Bitcoin's fixed supply** of 21 million coins protects against monetary debasement and provides predictable scarcity",
-        "**Permissionless access** means anyone with internet can participate in Bitcoin without needing approval from banks or governments",
-        "**Financial sovereignty** returns control of money to individuals, protecting against institutional failure and political interference"
+        "**Regular money** is backed only by government promises and loses buying power over time through money printing",
+        "**Banks and governments** can freeze accounts, reverse payments, and cut people off from money systems anytime", 
+        "**Bitcoin's fixed supply** of 21 million coins protects against money printing and keeps it rare",
+        "**Open access** means anyone with internet can use Bitcoin without asking banks or governments for permission",
+        "**Control over your money** returns power to individuals, protecting against bank failures and political control"
       ],
       "Understanding Bitcoin: Digital Money": [
-        "Bitcoin is the first successful peer-to-peer digital cash system that works without banks or central authorities",
-        "Cryptographic signatures ensure only you can spend your Bitcoin, providing security without revealing private keys",
-        "Bitcoin operates 24/7 globally, making it accessible to anyone with internet access regardless of location or banking status",
-        "The decentralized network means no single entity can control, freeze, or reverse your transactions"
+        "Bitcoin is the first successful person-to-person digital cash system that works without banks or middlemen",
+        "Secret codes ensure only you can spend your Bitcoin, providing security without revealing your private information",
+        "Bitcoin operates 24/7 worldwide, making it accessible to anyone with internet regardless of location or bank account",
+        "The spread-out network means no single company or government can control, freeze, or reverse your payments"
       ],
       "Bitcoin Mining: Securing the Network": [
-        "Mining is a competitive process where computers solve puzzles to add new blocks and earn Bitcoin rewards",
-        "Energy consumption directly correlates with network security - more energy makes Bitcoin harder to attack",
-        "Difficulty adjustment every 2016 blocks ensures consistent 10-minute block times regardless of mining participation",
-        "The economic incentives align miners' interests with network security, creating a robust and self-sustaining system"
+        "Mining is a race where computers solve puzzles to add new blocks and earn Bitcoin rewards",
+        "Energy use directly connects to network security - more energy makes Bitcoin harder to attack",
+        "Difficulty changes every 2016 blocks to keep consistent 10-minute block times no matter how many miners join",
+        "The reward system encourages miners to protect the network, creating a strong and self-running system"
       ],
       "Digital Scarcity: Fixed Supply": [
-        "Bitcoin's 21 million coin limit is hardcoded and cannot be changed, creating true digital scarcity",
-        "Halving events every 4 years reduce new Bitcoin creation, increasing scarcity over time",
-        "Unlike fiat currencies, Bitcoin cannot be inflated away by central banks or governments",
-        "Digital scarcity combined with increasing demand creates long-term value preservation potential"
+        "Bitcoin's 21 million coin limit is built-in and cannot be changed, creating true digital rarity",
+        "Halving events every 4 years reduce new Bitcoin creation, making it more rare over time",
+        "Unlike regular money, Bitcoin cannot be printed away by banks or governments",
+        "Digital rarity combined with growing demand creates long-term value protection potential"
       ],
       "Decentralized Network: No Central Control": [
-        "Thousands of independent nodes worldwide maintain identical copies of Bitcoin's transaction history",
-        "No single entity can shut down or control the Bitcoin network due to its distributed nature",
-        "Consensus rules are enforced by mathematics and network agreement, not human authority",
-        "Decentralization provides censorship resistance and financial sovereignty to users globally"
+        "Thousands of independent computers worldwide keep identical copies of Bitcoin's payment history",
+        "No single company can shut down or control the Bitcoin network because it's spread out everywhere",
+        "Network rules are enforced by math and computer agreement, not human authority",
+        "Spreading out control provides protection from censorship and gives users control over their money globally"
       ]
     };
     return takeaways[lessonTitle] || [
-      "This topic introduces fundamental concepts essential for understanding Bitcoin",
-      "Real-world applications demonstrate practical value and utility",
-      "Understanding this concept helps build comprehensive Bitcoin knowledge",
-      "These principles contribute to Bitcoin's unique properties and advantages"
+      "This topic introduces basic ideas you need to understand Bitcoin",
+      "Real-world examples show practical value and how people actually use it",
+      "Understanding this concept helps build complete Bitcoin knowledge",
+      "These ideas contribute to Bitcoin's special features and advantages"
     ];
   };
 
