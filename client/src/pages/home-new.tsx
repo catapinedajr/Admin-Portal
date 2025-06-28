@@ -4333,6 +4333,12 @@ export default function Home() {
                     </div>
                     
                     <div className="space-y-4">
+                      <div className="p-4 bg-zinc-800/50 rounded-lg border border-zinc-700">
+                        <p className="text-zinc-300 text-sm leading-relaxed">
+                          <span className="font-semibold text-white">Social engineering</span> is the practice of manipulating people into revealing confidential information or performing actions that compromise security. Instead of breaking through technical defenses, attackers exploit human psychology—using trust, fear, urgency, or authority to trick victims into giving away their Bitcoin or private keys.
+                        </p>
+                      </div>
+
                       <div className="p-4 bg-red-900/20 border border-red-700/50 rounded-lg">
                         <h5 className="font-semibold text-red-300 mb-2">2025 Threat Statistics</h5>
                         <div className="grid grid-cols-2 gap-4 text-sm">
