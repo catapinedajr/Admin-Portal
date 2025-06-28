@@ -4695,7 +4695,7 @@ export default function Home() {
                             {safetyStage === 1 && (
                               <div className="space-y-3">
                                 <div className="p-3 sm:p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
-                                  <div className="text-xs sm:text-sm text-zinc-300 mb-3">
+                                  <div className="text-sm sm:text-base text-zinc-300 mb-3">
                                     You just received your 12-word seed phrase. Where should you store it?
                                   </div>
                                   <div className="p-2 sm:p-3 bg-zinc-800 rounded border border-dashed border-zinc-500 mb-3">
@@ -4733,7 +4733,7 @@ export default function Home() {
                                 <div className="p-3 sm:p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
                                   <div className="space-y-3">
                                     <div>
-                                      <div className="text-xs sm:text-sm text-zinc-300 mb-2">
+                                      <div className="text-sm sm:text-base text-zinc-300 mb-2">
                                         Address you copied from your friend:
                                       </div>
                                       <div className="text-green-300 font-mono text-xs break-all bg-zinc-800 p-2 rounded border border-green-700/50">
@@ -4742,7 +4742,7 @@ export default function Home() {
                                     </div>
                                     
                                     <div>
-                                      <div className="text-xs sm:text-sm text-zinc-300 mb-2">
+                                      <div className="text-sm sm:text-base text-zinc-300 mb-2">
                                         Address your wallet is showing:
                                       </div>
                                       <div className="text-red-300 font-mono text-xs break-all bg-zinc-800 p-2 rounded border border-red-700/50">
@@ -4775,7 +4775,7 @@ export default function Home() {
                             {safetyStage === 3 && (
                               <div className="space-y-3">
                                 <div className="p-3 sm:p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
-                                  <div className="text-xs sm:text-sm text-zinc-300 mb-3">
+                                  <div className="text-sm sm:text-base text-zinc-300 mb-3">
                                     Which message is legitimate and safe? Click on the safe message (avoid the two scams):
                                   </div>
                                   <div className="space-y-2">
@@ -4804,42 +4804,42 @@ export default function Home() {
                               <div className="space-y-3">
                                 <div className="p-3 sm:p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
                                   {safetyStage === 4 && (
-                                    <div className="text-xs sm:text-sm text-zinc-300 mb-3">
+                                    <div className="text-sm sm:text-base text-zinc-300 mb-3">
                                       You want to buy Bitcoin for the first time. Choose the safest approach:
                                     </div>
                                   )}
                                   {safetyStage === 5 && (
-                                    <div className="text-xs sm:text-sm text-zinc-300 mb-3">
+                                    <div className="text-sm sm:text-base text-zinc-300 mb-3">
                                       You're at a coffee shop and want to check your Bitcoin wallet:
                                     </div>
                                   )}
                                   {safetyStage === 6 && (
-                                    <div className="text-xs sm:text-sm text-zinc-300 mb-3">
+                                    <div className="text-sm sm:text-base text-zinc-300 mb-3">
                                       You need to download a Bitcoin wallet. Where do you get it?
                                     </div>
                                   )}
                                   {safetyStage === 7 && (
-                                    <div className="text-xs sm:text-sm text-zinc-300 mb-3">
+                                    <div className="text-sm sm:text-base text-zinc-300 mb-3">
                                       Someone calls claiming to be from your exchange, asking for your 2FA code:
                                     </div>
                                   )}
                                   {safetyStage === 8 && (
-                                    <div className="text-xs sm:text-sm text-zinc-300 mb-3">
+                                    <div className="text-sm sm:text-base text-zinc-300 mb-3">
                                       You wrote down your seed phrase. How should you verify it's correct?
                                     </div>
                                   )}
                                   {safetyStage === 9 && (
-                                    <div className="text-xs sm:text-sm text-zinc-300 mb-3">
+                                    <div className="text-sm sm:text-base text-zinc-300 mb-3">
                                       You're sending $50 worth of Bitcoin. Your wallet suggests a $200 fee, but you checked other sources and normal fees are $2. What should you do?
                                     </div>
                                   )}
                                   {safetyStage === 10 && (
-                                    <div className="text-xs sm:text-sm text-zinc-300 mb-3">
+                                    <div className="text-sm sm:text-base text-zinc-300 mb-3">
                                       Your wallet suggests a $200 fee for a $50 Bitcoin transaction. What should you do?
                                     </div>
                                   )}
                                   {safetyStage === 11 && (
-                                    <div className="text-xs sm:text-sm text-zinc-300 mb-3">
+                                    <div className="text-sm sm:text-base text-zinc-300 mb-3">
                                       You lost access to your wallet. Someone offers to recover it for 50% of the funds:
                                     </div>
                                   )}
