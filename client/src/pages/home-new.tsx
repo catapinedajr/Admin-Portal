@@ -3129,53 +3129,27 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Crushing Dollar Visualization */}
+                {/* Realistic Fading Dollar Visualization */}
                 <div className="space-y-2">
                   <h4 className="text-white font-semibold flex items-center gap-2 text-sm">
                     <DollarSign className="w-4 h-4 text-orange-400" />
-                    Watch Government Crush Your Dollar: {moneySupplyYear}
+                    Watch Your Dollar Disappear: {moneySupplyYear}
                   </h4>
                   
                   <div className="bg-gradient-to-r from-red-950/30 to-orange-950/30 rounded-lg p-4 border border-red-800/30">
                     <div className="flex items-center gap-6">
-                      {/* Crushing Dollar Bill */}
-                      <div className="flex-shrink-0 relative">
-                        {/* Mechanical Vise/Crusher */}
-                        <div className="relative">
-                          {/* Top Crusher Plate */}
-                          <div className="absolute -top-2 left-0 right-0 h-1 bg-gradient-to-r from-zinc-600 to-zinc-500 rounded-sm shadow-lg z-10"></div>
-                          
-                          {/* Bottom Crusher Plate */}
-                          <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-zinc-600 to-zinc-500 rounded-sm shadow-lg z-10"></div>
-                          
-                          {/* Pressure Lines */}
-                          <div className="absolute inset-0 pointer-events-none z-20">
-                            {Array.from({length: 3}).map((_, i) => (
-                              <div
-                                key={i}
-                                className="absolute bg-red-500/40 h-px"
-                                style={{
-                                  top: `${20 + i * 20}%`,
-                                  left: '10%',
-                                  right: '10%',
-                                  opacity: (100 - getPurchasingPowerPercentage(moneySupplyYear)) / 100
-                                }}
-                              />
-                            ))}
-                          </div>
-                          
-                          <svg 
-                            width="120" 
-                            height="50" 
-                            viewBox="0 0 300 125" 
-                            className="mx-auto"
-                            style={{ 
-                              transform: `scaleX(${Math.max(0.2, getPurchasingPowerPercentage(moneySupplyYear) / 100)})`,
-                              opacity: Math.max(0.3, getPurchasingPowerPercentage(moneySupplyYear) / 100),
-                              filter: `saturate(${getPurchasingPowerPercentage(moneySupplyYear) / 100})`,
-                              transition: 'all 0.5s ease-out'
-                            }}
-                          >
+                      {/* Realistic Dollar Bill */}
+                      <div className="flex-shrink-0">
+                        <svg 
+                          width="120" 
+                          height="50" 
+                          viewBox="0 0 300 125" 
+                          className="mx-auto"
+                          style={{ 
+                            opacity: getPurchasingPowerPercentage(moneySupplyYear) / 100,
+                            filter: `saturate(${getPurchasingPowerPercentage(moneySupplyYear) / 100})`
+                          }}
+                        >
                           {/* Base Paper with Subtle Texture */}
                           <defs>
                             <pattern id="paperTexture" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
@@ -3273,9 +3247,7 @@ export default function Home() {
                           </g>
                         </svg>
                         <div className="mt-1 text-zinc-300 text-xs text-center">Your 1920 Dollar</div>
-                        </div>
                       </div>
-                    </div>
 
                       {/* Current Value Data */}
                       <div className="flex-1">
@@ -3294,10 +3266,9 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-              </CardContent>
-            </Card>
+                </div>
 
-            {/* Bitcoin Contrast */}
+                {/* Bitcoin Contrast */}
                 <div className="bg-gradient-to-r from-orange-950/30 to-yellow-950/30 rounded-xl p-6 border border-orange-800/30">
                   <div className="text-center space-y-4">
                     <div className="flex items-center justify-center gap-3">
