@@ -2082,6 +2082,42 @@ The future of Bitcoin depends on continued adoption, technological development, 
         category: "Decentralization",
         difficulty: "advanced"
       },
+      {
+        dayIndex: 10,
+        question: "According to today's lesson about scalability, how many transactions per second can Bitcoin's base layer process?",
+        optionA: "About 7 transactions per second",
+        optionB: "About 100 transactions per second",
+        optionC: "About 1,000 transactions per second",
+        optionD: "Unlimited transactions",
+        correctAnswer: "A",
+        explanation: "Today's lesson explains that Bitcoin's base layer can process approximately 7 transactions per second due to block size and time constraints.",
+        category: "Scalability",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 10,
+        question: "Based on today's content about scaling solutions, what advantage do second layer solutions provide?",
+        optionA: "They replace Bitcoin entirely",
+        optionB: "They increase capacity while maintaining base layer security",
+        optionC: "They centralize Bitcoin",
+        optionD: "They eliminate mining",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that second layer solutions increase transaction capacity while maintaining the security of Bitcoin's base layer.",
+        category: "Scaling",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 10,
+        question: "According to today's lesson, why is Bitcoin's conservative approach to base layer changes important?",
+        optionA: "It keeps fees high",
+        optionB: "It preserves decentralization and security",
+        optionC: "It prevents innovation",
+        optionD: "It makes Bitcoin slower",
+        correctAnswer: "B",
+        explanation: "Today's content explains that Bitcoin's conservative approach to base layer changes preserves its core properties of decentralization and security.",
+        category: "Philosophy",
+        difficulty: "intermediate"
+      },
 
       // Day 11: Bitcoin Energy & Environment
       {
@@ -2118,6 +2154,42 @@ The future of Bitcoin depends on continued adoption, technological development, 
         correctAnswer: "B",
         explanation: "Miners are incentivized to find the cheapest energy sources, which are increasingly renewable.",
         category: "Economics",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 11,
+        question: "According to today's lesson about Bitcoin energy, what makes energy consumption a security feature?",
+        optionA: "It wastes electricity",
+        optionB: "It makes attacking the network extremely expensive",
+        optionC: "It powers computers",
+        optionD: "It generates heat",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin's energy consumption is a security feature because it makes attacking the network extremely expensive and financially prohibitive.",
+        category: "Security",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 11,
+        question: "Based on today's content, why do miners seek out renewable energy sources?",
+        optionA: "Government mandates require it",
+        optionB: "To help the environment primarily",
+        optionC: "Renewable energy is often the cheapest available",
+        optionD: "Bitcoin protocol requires renewable energy",
+        correctAnswer: "C",
+        explanation: "Today's lesson explains that miners seek the cheapest energy sources to maximize profits, which increasingly means renewable energy as it becomes more cost-effective.",
+        category: "Economics",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 11,
+        question: "According to today's lesson, how does Bitcoin mining compare to other industries' energy use?",
+        optionA: "Bitcoin uses more energy than all other industries combined",
+        optionB: "Bitcoin uses less energy than traditional banking and gold mining",
+        optionC: "Bitcoin uses exactly the same amount as banks",
+        optionD: "Energy comparison is impossible",
+        correctAnswer: "B",
+        explanation: "Today's content explains that Bitcoin mining uses significantly less energy than traditional banking systems and gold mining when accounting for their full infrastructure.",
+        category: "Comparison",
         difficulty: "intermediate"
       },
 
@@ -2157,6 +2229,265 @@ The future of Bitcoin depends on continued adoption, technological development, 
         explanation: "When all Bitcoin are mined (around 2140), miners will be compensated only through transaction fees.",
         category: "Future",
         difficulty: "advanced"
+      },
+      {
+        dayIndex: 12,
+        question: "According to today's lesson about monetary policy, how often do Bitcoin halvings occur?",
+        optionA: "Every 2 years",
+        optionB: "Every 4 years (210,000 blocks)",
+        optionC: "Every 6 years",
+        optionD: "Randomly",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin halvings occur every 4 years (precisely every 210,000 blocks), automatically cutting the mining reward in half.",
+        category: "Monetary Policy",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 12,
+        question: "Based on today's content, what makes Bitcoin's monetary policy predictable?",
+        optionA: "Government decisions",
+        optionB: "Bank committee votes",
+        optionC: "Predetermined algorithmic rules",
+        optionD: "Market demand",
+        correctAnswer: "C",
+        explanation: "Today's lesson explains that Bitcoin's monetary policy is predictable because it follows predetermined algorithmic rules that cannot be changed arbitrarily.",
+        category: "Monetary Policy",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 12,
+        question: "According to today's lesson, what percentage of all Bitcoin will ever be mined by 2025?",
+        optionA: "About 75%",
+        optionB: "About 95%",
+        optionC: "About 99%",
+        optionD: "100%",
+        correctAnswer: "C",
+        explanation: "Today's content explains that by 2025, approximately 99% of all Bitcoin will have been mined, with the remaining 1% taking over 100 years to complete.",
+        category: "Supply",
+        difficulty: "intermediate"
+      },
+
+      // Days 13-29: Adding all remaining questions efficiently
+      // Day 13: Bitcoin Innovation & Development
+      {
+        dayIndex: 13,
+        question: "What is a Bitcoin Improvement Proposal (BIP)?",
+        optionA: "A way to change Bitcoin's price",
+        optionB: "A formal proposal for changes to Bitcoin protocol",
+        optionC: "A new cryptocurrency",
+        optionD: "A trading strategy",
+        correctAnswer: "B",
+        explanation: "A BIP is a formal proposal that describes potential changes to the Bitcoin protocol and how they should be implemented.",
+        category: "Development",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 13,
+        question: "According to today's lesson, what is SegWit?",
+        optionA: "A new cryptocurrency",
+        optionB: "A protocol upgrade that fixes transaction malleability",
+        optionC: "A mining algorithm",
+        optionD: "A wallet type",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that SegWit (Segregated Witness) is a protocol upgrade that fixes transaction malleability and enables additional scaling solutions.",
+        category: "Technology",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 13,
+        question: "Based on today's content, what enables Taproot's privacy improvements?",
+        optionA: "Hiding all transaction amounts",
+        optionB: "Making complex transactions look like simple ones",
+        optionC: "Encrypting all data",
+        optionD: "Using anonymous addresses",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Taproot makes complex multi-signature and smart contract transactions indistinguishable from simple transactions, improving privacy.",
+        category: "Privacy",
+        difficulty: "advanced"
+      },
+      {
+        dayIndex: 13,
+        question: "According to today's lesson, how does Bitcoin development maintain decentralization?",
+        optionA: "One company controls all changes",
+        optionB: "Government oversight required",
+        optionC: "Open-source development with consensus requirement",
+        optionD: "Miners decide everything",
+        correctAnswer: "C",
+        explanation: "Today's content explains that Bitcoin development remains decentralized through open-source development where changes require broad consensus from the community.",
+        category: "Governance",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 13,
+        question: "Based on today's content, what does 'backwards compatibility' mean in Bitcoin?",
+        optionA: "Old versions can still work with new upgrades",
+        optionB: "Bitcoin works with other cryptocurrencies",
+        optionC: "You can reverse transactions",
+        optionD: "Mining equipment never becomes obsolete",
+        correctAnswer: "A",
+        explanation: "Today's lesson explains that backwards compatibility means older Bitcoin software versions can still function when protocol upgrades are implemented.",
+        category: "Technology",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 13,
+        question: "According to today's lesson, what role do developers play in Bitcoin's future?",
+        optionA: "They control Bitcoin's price",
+        optionB: "They propose improvements but cannot force adoption",
+        optionC: "They can change Bitcoin unilaterally",
+        optionD: "They decide mining rewards",
+        correctAnswer: "B",
+        explanation: "Today's content explains that developers can propose improvements through BIPs, but the community must achieve consensus before any changes are adopted.",
+        category: "Governance",
+        difficulty: "intermediate"
+      },
+
+      // Day 14: Bitcoin Economics & Market Dynamics
+      {
+        dayIndex: 14,
+        question: "What creates Bitcoin's stock-to-flow ratio?",
+        optionA: "Government regulation",
+        optionB: "The relationship between existing supply and new production",
+        optionC: "Market trading volume",
+        optionD: "Mining difficulty",
+        correctAnswer: "B",
+        explanation: "Stock-to-flow ratio measures how many years of current production would be needed to double the existing supply.",
+        category: "Economics",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 14,
+        question: "According to today's lesson, what drives Bitcoin adoption cycles?",
+        optionA: "Government announcements only",
+        optionB: "Technology improvements, institutional adoption, and market cycles",
+        optionC: "Mining difficulty changes",
+        optionD: "Social media trends",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin adoption cycles are driven by technological improvements, institutional adoption, and broader market dynamics.",
+        category: "Market Dynamics",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 14,
+        question: "Based on today's content, how does Bitcoin's fixed supply affect its economics?",
+        optionA: "It makes Bitcoin worthless",
+        optionB: "It creates deflationary pressure as demand increases",
+        optionC: "It prevents price changes",
+        optionD: "It makes inflation possible",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin's fixed 21 million supply creates deflationary pressure when demand increases, unlike inflationary fiat currencies.",
+        category: "Monetary Theory",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 14,
+        question: "According to today's lesson, what is 'number go up' technology?",
+        optionA: "A trading strategy",
+        optionB: "How Bitcoin's deflationary nature incentivizes holding and adoption",
+        optionC: "A price prediction model",
+        optionD: "A mining algorithm",
+        correctAnswer: "B",
+        explanation: "Today's content explains that 'number go up' technology refers to how Bitcoin's deflationary properties create incentives for holding and broader adoption.",
+        category: "Economics",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 14,
+        question: "Based on today's content, why might institutions adopt Bitcoin?",
+        optionA: "Government requirements",
+        optionB: "Portfolio diversification and inflation hedge",
+        optionC: "It's easier than traditional assets",
+        optionD: "To avoid all taxes",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that institutions adopt Bitcoin for portfolio diversification and as a hedge against currency debasement and inflation.",
+        category: "Institutional Adoption",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 14,
+        question: "According to today's lesson, what role do halvings play in Bitcoin economics?",
+        optionA: "They increase inflation",
+        optionB: "They reduce new supply issuance, affecting supply-demand dynamics",
+        optionC: "They change mining algorithms",
+        optionD: "They reset Bitcoin's price",
+        correctAnswer: "B",
+        explanation: "Today's content explains that halvings reduce the rate of new Bitcoin issuance, creating supply scarcity that affects market dynamics over time.",
+        category: "Monetary Policy",
+        difficulty: "intermediate"
+      },
+
+      // Day 15: Bitcoin Privacy & Fungibility
+      {
+        dayIndex: 15,
+        question: "What does fungibility mean for money?",
+        optionA: "It can be exchanged for other currencies",
+        optionB: "Each unit is interchangeable with any other unit",
+        optionC: "It can be stored digitally",
+        optionD: "It appreciates in value",
+        correctAnswer: "B",
+        explanation: "Fungibility means that each unit of money is interchangeable with any other unit of the same value.",
+        category: "Monetary Properties",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 15,
+        question: "According to today's lesson, how does Bitcoin's transparency affect privacy?",
+        optionA: "All transactions are completely anonymous",
+        optionB: "All transactions are public but addresses aren't directly linked to identities",
+        optionC: "Only miners can see transactions",
+        optionD: "Privacy is impossible with Bitcoin",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin transactions are transparent on the blockchain, but addresses aren't automatically linked to real-world identities.",
+        category: "Privacy",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 15,
+        question: "Based on today's content, what is a CoinJoin transaction?",
+        optionA: "A way to create new bitcoins",
+        optionB: "A privacy technique that mixes multiple transactions together",
+        optionC: "A type of smart contract",
+        optionD: "A mining pool operation",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that CoinJoin is a privacy technique where multiple users combine their transactions to obscure the links between inputs and outputs.",
+        category: "Privacy",
+        difficulty: "advanced"
+      },
+      {
+        dayIndex: 15,
+        question: "According to today's lesson, why might Bitcoin privacy matter?",
+        optionA: "To hide illegal activities only",
+        optionB: "For financial privacy, security, and protection from surveillance",
+        optionC: "To avoid all taxes",
+        optionD: "Privacy doesn't matter for Bitcoin",
+        correctAnswer: "B",
+        explanation: "Today's content explains that Bitcoin privacy matters for legitimate reasons like financial privacy, personal security, and protection from unwanted surveillance.",
+        category: "Privacy",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 15,
+        question: "Based on today's content, what are some best practices for Bitcoin privacy?",
+        optionA: "Always use the same address",
+        optionB: "Use new addresses for each transaction and avoid address reuse",
+        optionC: "Share your private keys",
+        optionD: "Only use exchange wallets",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that using new addresses for each transaction and avoiding address reuse are important privacy best practices.",
+        category: "Privacy",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 15,
+        question: "According to today's lesson, how does Bitcoin compare to cash for privacy?",
+        optionA: "Bitcoin is completely anonymous like cash",
+        optionB: "Bitcoin is less private than cash but more private than digital payments",
+        optionC: "Bitcoin has no privacy features",
+        optionD: "Cash and Bitcoin are identical in privacy",
+        correctAnswer: "B",
+        explanation: "Today's content explains that Bitcoin offers more privacy than traditional digital payments but less than physical cash due to its transparent ledger.",
+        category: "Privacy",
+        difficulty: "intermediate"
       }
     ];
 
@@ -2203,8 +2534,544 @@ The future of Bitcoin depends on continued adoption, technological development, 
       );
     }
 
+    // Add additional day-specific questions for Days 16-29 to reach 6 questions each
+    const daySpecificAdditional = [
+      // Day 16: Bitcoin Global Adoption
+      {
+        dayIndex: 16,
+        question: "According to today's lesson about global adoption, which country was first to make Bitcoin legal tender?",
+        optionA: "United States",
+        optionB: "El Salvador",
+        optionC: "Germany",
+        optionD: "Japan",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that El Salvador became the first country to adopt Bitcoin as legal tender in September 2021.",
+        category: "Global Adoption",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 16,
+        question: "Based on today's content, what drives Bitcoin adoption in developing countries?",
+        optionA: "Government promotion only",
+        optionB: "Financial inclusion and protection from currency debasement",
+        optionC: "Faster internet speeds",
+        optionD: "Lower taxes",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin adoption in developing countries is driven by need for financial inclusion and protection from local currency instability.",
+        category: "Financial Inclusion",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 16,
+        question: "According to today's lesson, how does Bitcoin help the unbanked population?",
+        optionA: "It provides access to financial services with just a smartphone",
+        optionB: "It requires traditional bank accounts",
+        optionC: "It only works with credit cards",
+        optionD: "It needs government approval",
+        correctAnswer: "A",
+        explanation: "Today's content explains that Bitcoin provides access to financial services for the unbanked through smartphone-based wallets, bypassing traditional banking infrastructure.",
+        category: "Financial Inclusion",
+        difficulty: "intermediate"
+      },
+
+      // Day 17: Bitcoin Store of Value
+      {
+        dayIndex: 17,
+        question: "According to today's lesson, what makes Bitcoin superior to gold as a store of value?",
+        optionA: "It's physical and tangible",
+        optionB: "It's portable, divisible, and verifiable",
+        optionC: "It's controlled by governments",
+        optionD: "It's unlimited in supply",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin improves on gold by being easily portable, highly divisible, and mathematically verifiable while maintaining scarcity.",
+        category: "Store of Value",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 17,
+        question: "Based on today's content, how does Bitcoin protect against inflation?",
+        optionA: "Government price controls",
+        optionB: "Fixed supply cap prevents currency debasement",
+        optionC: "Bank interest rates",
+        optionD: "Stock market correlation",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin's fixed 21 million supply cap protects against inflation by preventing the currency debasement that drives rising prices.",
+        category: "Inflation Hedge",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 17,
+        question: "According to today's lesson, why do institutions view Bitcoin as 'digital gold'?",
+        optionA: "It's yellow in color",
+        optionB: "It shares gold's scarcity and store of value properties but with digital advantages",
+        optionC: "It's mined from the ground",
+        optionD: "It's used in jewelry",
+        correctAnswer: "B",
+        explanation: "Today's content explains that institutions call Bitcoin 'digital gold' because it maintains gold's scarcity and store of value properties while adding digital advantages like portability and divisibility.",
+        category: "Digital Gold",
+        difficulty: "intermediate"
+      },
+
+      // Day 18: Bitcoin and Traditional Assets
+      {
+        dayIndex: 18,
+        question: "According to today's lesson, how does Bitcoin correlation with stocks affect portfolio diversification?",
+        optionA: "Bitcoin always moves with stocks",
+        optionB: "Bitcoin provides diversification benefits with low long-term correlation",
+        optionC: "Bitcoin replaces all other investments",
+        optionD: "Correlation doesn't matter",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin provides portfolio diversification benefits due to its low long-term correlation with traditional assets like stocks and bonds.",
+        category: "Portfolio Theory",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 18,
+        question: "Based on today's content, what is Bitcoin's role in a balanced portfolio?",
+        optionA: "It should be 100% of holdings",
+        optionB: "A small allocation (1-5%) for diversification and asymmetric upside",
+        optionC: "It should never be included",
+        optionD: "Only during market crashes",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that financial advisors often recommend a small Bitcoin allocation (1-5%) for portfolio diversification and potential asymmetric returns.",
+        category: "Asset Allocation",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 18,
+        question: "According to today's lesson, how does Bitcoin perform during currency crises?",
+        optionA: "It always crashes too",
+        optionB: "It often serves as a safe haven when local currencies fail",
+        optionC: "It's unaffected by any events",
+        optionD: "It only works in stable countries",
+        correctAnswer: "B",
+        explanation: "Today's content explains that Bitcoin often serves as a safe haven asset during currency crises, as people seek alternatives to failing local currencies.",
+        category: "Safe Haven",
+        difficulty: "intermediate"
+      },
+
+      // Day 19: Bitcoin Governance and Consensus
+      {
+        dayIndex: 19,
+        question: "According to today's lesson, who controls Bitcoin's development?",
+        optionA: "A single company or government",
+        optionB: "A decentralized community through consensus",
+        optionC: "Only miners",
+        optionD: "Exchange operators",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin is controlled by a decentralized community of users, developers, and miners who must reach consensus for any changes.",
+        category: "Governance",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 19,
+        question: "Based on today's content, what is required for Bitcoin protocol changes?",
+        optionA: "Simple majority vote",
+        optionB: "Broad community consensus and overwhelming support",
+        optionC: "Government approval",
+        optionD: "Corporate board decision",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin protocol changes require broad consensus from the community, making changes deliberate and conservative.",
+        category: "Consensus",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 19,
+        question: "According to today's lesson, how does Bitcoin prevent centralized control?",
+        optionA: "Government oversight",
+        optionB: "Open-source code and decentralized network of independent nodes",
+        optionC: "Corporate management",
+        optionD: "Bank supervision",
+        correctAnswer: "B",
+        explanation: "Today's content explains that Bitcoin prevents centralized control through open-source code and a decentralized network of thousands of independent nodes worldwide.",
+        category: "Decentralization",
+        difficulty: "intermediate"
+      },
+
+      // Day 20: Bitcoin Security and Cryptography
+      {
+        dayIndex: 20,
+        question: "According to today's lesson, what makes Bitcoin addresses secure?",
+        optionA: "Password protection",
+        optionB: "Cryptographic key pairs with public and private keys",
+        optionC: "Bank verification",
+        optionD: "Government encryption",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin security is based on cryptographic key pairs where public keys create addresses and private keys control the funds.",
+        category: "Cryptography",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 20,
+        question: "Based on today's content, what is a Bitcoin private key?",
+        optionA: "A username for your account",
+        optionB: "A secret number that controls your Bitcoin",
+        optionC: "A password for exchanges",
+        optionD: "A public identifier",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that a private key is a secret number that gives you mathematical control over your Bitcoin - whoever has the private key controls the Bitcoin.",
+        category: "Private Keys",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 20,
+        question: "According to today's lesson, how strong is Bitcoin's cryptography?",
+        optionA: "Easily breakable",
+        optionB: "Protected by the same cryptography that secures online banking and military systems",
+        optionC: "Moderately secure",
+        optionD: "Only secure for small amounts",
+        correctAnswer: "B",
+        explanation: "Today's content explains that Bitcoin uses military-grade cryptography (SHA-256 and ECDSA) that would take longer than the age of the universe to break with current technology.",
+        category: "Security",
+        difficulty: "intermediate"
+      },
+
+      // Days 21-29: Complete remaining questions
+      // Day 21: Bitcoin Future and Innovation
+      {
+        dayIndex: 21,
+        question: "According to today's lesson, what is the Lightning Network's primary purpose?",
+        optionA: "To replace Bitcoin",
+        optionB: "To enable instant, low-cost Bitcoin payments",
+        optionC: "To mine Bitcoin faster",
+        optionD: "To store Bitcoin safely",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that the Lightning Network is a second-layer solution that enables instant, low-cost Bitcoin payments for everyday transactions.",
+        category: "Layer 2",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 21,
+        question: "Based on today's content, how might Bitcoin evolve in the next decade?",
+        optionA: "It will be replaced by newer cryptocurrencies",
+        optionB: "Enhanced privacy features, better scaling, and broader institutional adoption",
+        optionC: "Government control will increase",
+        optionD: "It will become completely centralized",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin's evolution likely includes enhanced privacy features, better scaling solutions, and continued institutional adoption.",
+        category: "Future",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 21,
+        question: "According to today's lesson, what role might Bitcoin play in the future of money?",
+        optionA: "A niche digital collectible",
+        optionB: "The foundation of a new global monetary system",
+        optionC: "Only for criminals",
+        optionD: "Government-controlled currency",
+        correctAnswer: "B",
+        explanation: "Today's content explains that Bitcoin could serve as the foundation of a new global monetary system based on mathematical scarcity rather than political decisions.",
+        category: "Monetary System",
+        difficulty: "intermediate"
+      },
+
+      // Day 22: Bitcoin and Financial Freedom
+      {
+        dayIndex: 22,
+        question: "According to today's lesson, how does Bitcoin provide financial sovereignty?",
+        optionA: "Through government backing",
+        optionB: "By allowing individuals to control their own money without intermediaries",
+        optionC: "Through bank partnerships",
+        optionD: "By preventing all transactions",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin provides financial sovereignty by allowing individuals to control their own money without requiring permission from banks or governments.",
+        category: "Financial Freedom",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 22,
+        question: "Based on today's content, what does 'be your own bank' mean?",
+        optionA: "Start a banking business",
+        optionB: "Take full custody and control of your own money",
+        optionC: "Work at a bank",
+        optionD: "Avoid all financial services",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that 'be your own bank' means taking full custody and control of your own money, eliminating dependence on traditional financial institutions.",
+        category: "Self-Custody",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 22,
+        question: "According to today's lesson, how does Bitcoin help people in authoritarian regimes?",
+        optionA: "It makes them completely anonymous",
+        optionB: "It provides a way to preserve wealth outside government control",
+        optionC: "It guarantees safety from prosecution",
+        optionD: "It prevents all government monitoring",
+        correctAnswer: "B",
+        explanation: "Today's content explains that Bitcoin helps people in authoritarian regimes by providing a way to preserve wealth outside direct government control and censorship.",
+        category: "Human Rights",
+        difficulty: "intermediate"
+      },
+
+      // Day 23: Bitcoin Environmental Impact
+      {
+        dayIndex: 23,
+        question: "According to today's lesson, how does Bitcoin mining affect renewable energy development?",
+        optionA: "It prevents renewable energy growth",
+        optionB: "It incentivizes renewable energy development by providing a profitable use for excess capacity",
+        optionC: "It has no effect on renewable energy",
+        optionD: "It only uses fossil fuels",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin mining incentivizes renewable energy development by providing a profitable use for excess renewable capacity that would otherwise be wasted.",
+        category: "Environmental Impact",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 23,
+        question: "Based on today's content, why do Bitcoin miners seek stranded energy sources?",
+        optionA: "To hide their operations",
+        optionB: "Stranded energy is often the cheapest available",
+        optionC: "It's required by law",
+        optionD: "To avoid competition",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin miners seek stranded energy sources because they're often the cheapest available, making mining more profitable while utilizing otherwise wasted energy.",
+        category: "Energy Economics",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 23,
+        question: "According to today's lesson, how does Bitcoin's energy use compare to traditional banking?",
+        optionA: "Bitcoin uses more than all banking combined",
+        optionB: "Bitcoin uses significantly less than the traditional banking system",
+        optionC: "They use exactly the same amount",
+        optionD: "Energy comparison is impossible",
+        correctAnswer: "B",
+        explanation: "Today's content explains that Bitcoin uses significantly less energy than the traditional banking system when including all infrastructure like branches, ATMs, data centers, and employee transportation.",
+        category: "Energy Comparison",
+        difficulty: "intermediate"
+      },
+
+      // Day 24: Bitcoin Network Effects
+      {
+        dayIndex: 24,
+        question: "According to today's lesson, what creates Bitcoin's network effect?",
+        optionA: "Government mandates",
+        optionB: "The value increases as more people use and secure the network",
+        optionC: "Marketing campaigns",
+        optionD: "Celebrity endorsements",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin's network effect occurs because the network becomes more valuable and secure as more people use it, miners secure it, and developers improve it.",
+        category: "Network Effects",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 24,
+        question: "Based on today's content, how does Bitcoin's first-mover advantage help it?",
+        optionA: "It was marketed first",
+        optionB: "It has the largest network, most security, and strongest brand recognition",
+        optionC: "It has the lowest fees",
+        optionD: "It's the fastest cryptocurrency",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin's first-mover advantage gives it the largest network, highest security, strongest brand recognition, and deepest liquidity.",
+        category: "First Mover",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 24,
+        question: "According to today's lesson, why is Bitcoin's security increasing over time?",
+        optionA: "Better passwords are used",
+        optionB: "More hash power is securing the network as it grows",
+        optionC: "Government protection increases",
+        optionD: "Banks are securing it",
+        correctAnswer: "B",
+        explanation: "Today's content explains that Bitcoin's security increases over time as more miners join the network, adding hash power that makes attacks exponentially more expensive.",
+        category: "Security Growth",
+        difficulty: "intermediate"
+      },
+
+      // Day 25: Bitcoin Market Cycles
+      {
+        dayIndex: 25,
+        question: "According to today's lesson, what typically drives Bitcoin market cycles?",
+        optionA: "Random events only",
+        optionB: "Halvings, adoption waves, and macroeconomic factors",
+        optionC: "Government decisions only",
+        optionD: "Social media trends",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin market cycles are typically driven by halvings that reduce supply, adoption waves, and broader macroeconomic factors.",
+        category: "Market Cycles",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 25,
+        question: "Based on today's content, how do Bitcoin halvings affect market cycles?",
+        optionA: "They have no effect",
+        optionB: "They reduce new supply, often leading to price appreciation over time",
+        optionC: "They crash the price immediately",
+        optionD: "They double the supply",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that halvings reduce the flow of new Bitcoin into the market, often contributing to price appreciation over longer time horizons.",
+        category: "Halving Effects",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 25,
+        question: "According to today's lesson, what should long-term Bitcoin holders focus on?",
+        optionA: "Daily price movements",
+        optionB: "Long-term adoption trends and technological development",
+        optionC: "Social media sentiment",
+        optionD: "Trading signals",
+        correctAnswer: "B",
+        explanation: "Today's content explains that long-term Bitcoin holders should focus on adoption trends, technological development, and the long-term transition to sound money rather than short-term price volatility.",
+        category: "Long-term Investing",
+        difficulty: "intermediate"
+      },
+
+      // Day 26: Bitcoin Regulation and Policy
+      {
+        dayIndex: 26,
+        question: "According to today's lesson, how do different countries approach Bitcoin regulation?",
+        optionA: "All countries have identical laws",
+        optionB: "Approaches vary widely from bans to legal tender to regulatory clarity",
+        optionC: "No country has any Bitcoin laws",
+        optionD: "Only one country regulates Bitcoin",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin regulation varies widely by country, from complete bans to legal tender status to efforts to provide regulatory clarity for businesses.",
+        category: "Global Regulation",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 26,
+        question: "Based on today's content, why might governments want to regulate Bitcoin?",
+        optionA: "To destroy it completely",
+        optionB: "For consumer protection, tax compliance, and financial stability",
+        optionC: "To make it completely centralized",
+        optionD: "To prevent all innovation",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that governments often seek to regulate Bitcoin for legitimate reasons like consumer protection, ensuring tax compliance, and maintaining financial stability.",
+        category: "Regulatory Rationale",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 26,
+        question: "According to today's lesson, how does Bitcoin's decentralized nature affect regulation?",
+        optionA: "It makes Bitcoin completely unregulatable",
+        optionB: "Governments can regulate businesses and exchanges but not the protocol itself",
+        optionC: "It makes regulation unnecessary",
+        optionD: "It gives governments complete control",
+        correctAnswer: "B",
+        explanation: "Today's content explains that while governments can regulate Bitcoin businesses and exchanges, the decentralized protocol itself remains largely outside direct government control.",
+        category: "Decentralized Regulation",
+        difficulty: "advanced"
+      },
+
+      // Day 27: Bitcoin Education and Adoption
+      {
+        dayIndex: 27,
+        question: "According to today's lesson, what is the biggest barrier to Bitcoin adoption?",
+        optionA: "Technical complexity",
+        optionB: "Education and understanding of Bitcoin's benefits",
+        optionC: "Government bans",
+        optionD: "High transaction fees",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that the biggest barrier to Bitcoin adoption is education - helping people understand Bitcoin's benefits and how it solves real monetary problems.",
+        category: "Adoption Barriers",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 27,
+        question: "Based on today's content, how can Bitcoin education be most effective?",
+        optionA: "Technical explanations only",
+        optionB: "Focusing on real-world problems Bitcoin solves and simple explanations",
+        optionC: "Price predictions only",
+        optionD: "Complex mathematical proofs",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that effective Bitcoin education focuses on real-world problems Bitcoin solves, using simple explanations that connect to people's daily experiences.",
+        category: "Education Strategy",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 27,
+        question: "According to today's lesson, why is gradual Bitcoin adoption important?",
+        optionA: "It prevents all change",
+        optionB: "It allows people to learn and build confidence while infrastructure develops",
+        optionC: "It keeps prices low",
+        optionD: "It maintains government control",
+        correctAnswer: "B",
+        explanation: "Today's content explains that gradual adoption allows people to learn about Bitcoin, build confidence in using it, and gives time for supporting infrastructure to develop.",
+        category: "Gradual Adoption",
+        difficulty: "intermediate"
+      },
+
+      // Day 28: Bitcoin Community and Culture
+      {
+        dayIndex: 28,
+        question: "According to today's lesson, what characterizes the Bitcoin community?",
+        optionA: "Centralized leadership",
+        optionB: "Decentralized, open-source collaboration focused on monetary freedom",
+        optionC: "Corporate control",
+        optionD: "Government oversight",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that the Bitcoin community is characterized by decentralized, open-source collaboration with a shared focus on monetary freedom and sound money principles.",
+        category: "Community",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 28,
+        question: "Based on today's content, what does 'HODL' represent in Bitcoin culture?",
+        optionA: "A trading strategy",
+        optionB: "Long-term belief in Bitcoin's potential to become sound money",
+        optionC: "A type of wallet",
+        optionD: "A mining technique",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that 'HODL' represents the culture of long-term belief in Bitcoin's potential to become sound money, emphasizing time-in-market over market timing.",
+        category: "Bitcoin Culture",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 28,
+        question: "According to today's lesson, how does the Bitcoin community approach development?",
+        optionA: "Through corporate hierarchies",
+        optionB: "Open-source collaboration with rigorous peer review",
+        optionC: "Government committees",
+        optionD: "Closed-door meetings",
+        correctAnswer: "B",
+        explanation: "Today's content explains that Bitcoin development happens through open-source collaboration with rigorous peer review, ensuring transparency and community involvement.",
+        category: "Development Culture",
+        difficulty: "intermediate"
+      },
+
+      // Day 29: Bitcoin and Personal Finance
+      {
+        dayIndex: 29,
+        question: "According to today's lesson, how should Bitcoin fit into personal finance planning?",
+        optionA: "It should be 100% of someone's wealth",
+        optionB: "As part of a diversified strategy based on individual risk tolerance",
+        optionC: "Only for the wealthy",
+        optionD: "Only for trading",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin should be part of a diversified financial strategy, with allocation based on individual risk tolerance, goals, and financial situation.",
+        category: "Personal Finance",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 29,
+        question: "Based on today's content, what is dollar-cost averaging into Bitcoin?",
+        optionA: "Buying all at once",
+        optionB: "Regularly purchasing small amounts over time to reduce volatility impact",
+        optionC: "Only buying during crashes",
+        optionD: "Trading frequently",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that dollar-cost averaging involves regularly purchasing small amounts of Bitcoin over time, which helps reduce the impact of short-term price volatility.",
+        category: "Investment Strategy",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 29,
+        question: "According to today's lesson, what is the most important Bitcoin safety rule?",
+        optionA: "Share private keys with family",
+        optionB: "Never share your private keys and always verify receive addresses",
+        optionC: "Keep all Bitcoin on exchanges",
+        optionD: "Write down passwords publicly",
+        correctAnswer: "B",
+        explanation: "Today's content emphasizes that the most important safety rule is never sharing your private keys and always verifying receive addresses before sending transactions.",
+        category: "Security Best Practices",
+        difficulty: "beginner"
+      }
+    ];
+
     // Combine all questions
-    const allDayQuestions = [...daySpecificQuestions, ...additionalDays];
+    const allDayQuestions = [...daySpecificQuestions, ...additionalDays, ...daySpecificAdditional];
     
     // Add all day-specific questions
     allDayQuestions.forEach(question => {
