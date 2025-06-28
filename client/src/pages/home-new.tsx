@@ -1822,7 +1822,7 @@ export default function Home() {
   const safetySimulations = [
     {
       stage: "Phishing Detection",
-      title: "🎣 Spot the Phishing Email",
+      title: "Spot the Phishing Email",
       description: "Can you identify the dangerous email that's trying to steal your Bitcoin?",
       emails: [
         {
@@ -1850,7 +1850,7 @@ export default function Home() {
     },
     {
       stage: "Seed Phrase Security",
-      title: "🔐 Protect Your Seed Phrase",
+      title: "Protect Your Seed Phrase",
       description: "You just generated a new Bitcoin wallet. Where should you store your 12-word recovery phrase?",
       scenario: "apple bacon chair dog eagle five grape happy ice jelly king lemon",
       options: [
@@ -4296,7 +4296,7 @@ export default function Home() {
             {isPremiumTier && simulationsSubTab === "safety" && (
               <div className="space-y-6">
                 <div className="text-center space-y-4">
-                  <h3 className="text-xl font-bold text-white">🛡️ Bitcoin Security Training Center</h3>
+                  <h3 className="text-xl font-bold text-white">Bitcoin Security Training Center</h3>
                   <p className="text-zinc-400">Master essential security skills to protect your Bitcoin from real-world threats</p>
                   
                   {/* Prominent Safety Test Navigation */}
@@ -4309,9 +4309,9 @@ export default function Home() {
                           testSection.scrollIntoView({ behavior: 'smooth' });
                         }
                       }}
-                      className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-6 py-3 text-lg font-semibold"
+                      className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 text-lg font-semibold"
                     >
-                      🎯 Test Your Security Skills
+                      Test Your Security Skills
                     </Button>
                   </div>
                   
@@ -4591,7 +4591,7 @@ export default function Home() {
                       <div className="p-2 bg-orange-600/20 rounded-lg">
                         <Shield className="w-6 h-6 text-orange-400" />
                       </div>
-                      <h4 className="text-xl font-bold text-white">🎯 Security Skills Test</h4>
+                      <h4 className="text-xl font-bold text-white">Security Skills Test</h4>
                     </div>
                     <p className="text-zinc-400 mb-6">Apply what you've learned! Test your ability to identify real-world Bitcoin security threats.</p>
                     {/* Phishing Email Simulator */}
@@ -5014,43 +5014,37 @@ export default function Home() {
                     ) : (
                       /* Final Results */
                       <div className="text-center space-y-3">
-                        <div className={`p-4 sm:p-6 rounded-lg border ${
-                          safetyScore >= safetySimulations.length * 0.8 
-                            ? 'bg-green-900/20 border-green-700' 
-                            : safetyScore >= safetySimulations.length * 0.6
-                            ? 'bg-orange-900/20 border-orange-700'
-                            : 'bg-red-900/20 border-red-700'
-                        }`}>
+                        <div className="p-4 sm:p-6 rounded-lg border bg-zinc-800/50 border-zinc-700">
                           {safetyScore >= safetySimulations.length * 0.8 ? (
                             <div>
-                              <CheckCircle className="w-8 h-8 sm:w-12 sm:h-12 text-green-400 mx-auto mb-2 sm:mb-3" />
-                              <h5 className="text-lg sm:text-xl font-bold text-green-300 mb-2">Security Expert! 🛡️</h5>
-                              <p className="text-green-100 mb-3 text-sm sm:text-base">
+                              <CheckCircle className="w-8 h-8 sm:w-12 sm:h-12 text-zinc-400 mx-auto mb-2 sm:mb-3" />
+                              <h5 className="text-lg sm:text-xl font-bold text-white mb-2">Security Expert</h5>
+                              <p className="text-zinc-300 mb-3 text-sm sm:text-base">
                                 Score: {safetyScore}/{safetySimulations.length} ({Math.round((safetyScore/safetySimulations.length)*100)}%) - Your Bitcoin will be safe!
                               </p>
-                              <p className="text-green-100 text-xs sm:text-sm leading-relaxed">
+                              <p className="text-zinc-300 text-xs sm:text-sm leading-relaxed">
                                 You've mastered Bitcoin security fundamentals. You can confidently protect your assets from the most common threats.
                               </p>
                             </div>
                           ) : safetyScore >= safetySimulations.length * 0.6 ? (
                             <div>
-                              <AlertTriangle className="w-8 h-8 sm:w-12 sm:h-12 text-orange-400 mx-auto mb-2 sm:mb-3" />
-                              <h5 className="text-lg sm:text-xl font-bold text-orange-300 mb-2">Good Start! ⚠️</h5>
-                              <p className="text-orange-100 mb-3 text-sm sm:text-base">
+                              <AlertTriangle className="w-8 h-8 sm:w-12 sm:h-12 text-zinc-400 mx-auto mb-2 sm:mb-3" />
+                              <h5 className="text-lg sm:text-xl font-bold text-white mb-2">Good Start</h5>
+                              <p className="text-zinc-300 mb-3 text-sm sm:text-base">
                                 Score: {safetyScore}/{safetySimulations.length} ({Math.round((safetyScore/safetySimulations.length)*100)}%) - Review the training materials above.
                               </p>
-                              <p className="text-orange-100 text-xs sm:text-sm leading-relaxed">
+                              <p className="text-zinc-300 text-xs sm:text-sm leading-relaxed">
                                 You understand some security basics, but there's room for improvement to keep your Bitcoin truly safe.
                               </p>
                             </div>
                           ) : (
                             <div>
-                              <AlertTriangle className="w-8 h-8 sm:w-12 sm:h-12 text-red-400 mx-auto mb-2 sm:mb-3" />
-                              <h5 className="text-lg sm:text-xl font-bold text-red-300 mb-2">Practice More! 🚨</h5>
-                              <p className="text-red-100 mb-3 text-sm sm:text-base">
+                              <AlertTriangle className="w-8 h-8 sm:w-12 sm:h-12 text-zinc-400 mx-auto mb-2 sm:mb-3" />
+                              <h5 className="text-lg sm:text-xl font-bold text-white mb-2">Practice More</h5>
+                              <p className="text-zinc-300 mb-3 text-sm sm:text-base">
                                 Score: {safetyScore}/{safetySimulations.length} ({Math.round((safetyScore/safetySimulations.length)*100)}%) - Your Bitcoin could be at risk!
                               </p>
-                              <p className="text-red-100 text-xs sm:text-sm leading-relaxed">
+                              <p className="text-zinc-300 text-xs sm:text-sm leading-relaxed">
                                 Review the security fundamentals before handling real Bitcoin. Practice makes perfect.
                               </p>
                             </div>
