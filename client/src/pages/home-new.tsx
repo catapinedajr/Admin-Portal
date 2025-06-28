@@ -2024,7 +2024,7 @@ export default function Home() {
     queryFn: () => fetch(`/api/lesson/${currentDayIndex}`).then(res => res.json()),
   });
 
-  const { data: user } = useQuery({
+  const { data: user } = useQuery<User>({
     queryKey: ['/api/user'],
   });
 
@@ -2174,6 +2174,26 @@ export default function Home() {
 
               </div>
             </div>
+
+            {/* Minimal Progress Display - Today Section Only */}
+            {learnSubTab === "today" && (
+              <div className="text-center py-4">
+                <div className="inline-flex items-center gap-2 bg-zinc-800/50 rounded-lg px-4 py-2 border border-zinc-700/50">
+                  <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
+                  <span className="text-zinc-300 text-sm">
+                    Day {(user?.currentStreak || 0) + 1} of learning Bitcoin
+                  </span>
+                </div>
+                {user?.currentStreak && user.currentStreak > 0 && (
+                  <p className="text-zinc-500 text-xs mt-2">
+                    {user.currentStreak === 1 ? "Building knowledge, one day at a time" : 
+                     user.currentStreak < 7 ? "Consistency builds understanding" :
+                     user.currentStreak < 30 ? "Small daily steps, big Bitcoin insights" :
+                     "The journey matters more than the destination"}
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Day Access Control Navigation */}
             {learnSubTab === "today" && (
