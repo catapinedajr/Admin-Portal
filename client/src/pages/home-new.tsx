@@ -58,7 +58,18 @@ import {
   Star,
   Brain
 } from "lucide-react";
-import type { User, DailyFact, Lesson, UserProgress, ConvictionContent } from "@shared/schema";
+import type { User, UserProgress, ConvictionContent } from "@shared/schema";
+
+// Temporary interface for database-driven lesson content
+interface LessonWithKeyTakeaways {
+  id: number;
+  dayId: number;
+  title: string;
+  content: string;
+  keyTakeaways: string[];
+  estimatedReadTime: number;
+  createdAt: string;
+}
 import DailyQuiz from "@/components/DailyQuiz";
 import { BitcoinTerm, AutoGlossary } from "@/components/BitcoinGlossary";
 import { useToast } from "@/hooks/use-toast";
@@ -2608,62 +2619,40 @@ export default function Home() {
                       <div className="space-y-6">
                         {/* Lesson Header */}
                         <div className="flex items-center justify-between">
-                          <h3 className="text-xl font-bold text-white">{(lesson as Lesson).title}</h3>
+                          <h3 className="text-xl font-bold text-white">{(lesson as LessonWithKeyTakeaways).title}</h3>
                           <Badge variant="outline" className="border-zinc-700 text-zinc-400">
                             <Clock className="w-3 h-3 mr-1" />
-                            {(lesson as Lesson).estimatedReadTime || '8'} min read
+                            {(lesson as LessonWithKeyTakeaways).estimatedReadTime || 3} min read
                           </Badge>
                         </div>
                         
-                        {/* Expanded Lesson Content */}
-                        <div className="prose prose-invert max-w-none space-y-10">
-                          {getExpandedLessonContent((lesson as Lesson).title, (lesson as Lesson).content).map((section, idx) => (
-                            <div key={idx} className="space-y-6">
-                              <h4 className="text-xl font-semibold text-white border-l-4 border-orange-500 pl-4 mb-6">
-                                {section.title}
-                              </h4>
-                              
-                              <div className="space-y-6 text-zinc-300 leading-relaxed text-base">
-                                {section.paragraphs.map((paragraph, pIdx) => (
-                                  <p key={pIdx} className="text-zinc-300 leading-[1.8] text-base mb-4">
-                                    {cleanText(paragraph)}
-                                  </p>
+                        {/* Database-driven Lesson Content */}
+                        <div className="prose prose-invert max-w-none space-y-6">
+                          <div className="text-zinc-300 leading-relaxed space-y-4">
+                            <p className="text-base leading-[1.8]">
+                              <AutoGlossary>
+                                {cleanText((lesson as LessonWithKeyTakeaways).content)}
+                              </AutoGlossary>
+                            </p>
+                          </div>
+                          
+                          {/* Database-driven Key Takeaways */}
+                          {(lesson as LessonWithKeyTakeaways).keyTakeaways && Array.isArray((lesson as LessonWithKeyTakeaways).keyTakeaways) && (lesson as LessonWithKeyTakeaways).keyTakeaways.length > 0 && (
+                            <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-6 my-6">
+                              <h5 className="text-blue-400 font-medium mb-4 text-base">Key Points:</h5>
+                              <ul className="space-y-3">
+                                {(lesson as LessonWithKeyTakeaways).keyTakeaways.map((point, pointIdx) => (
+                                  <li key={pointIdx} className="flex items-start gap-3 text-zinc-300 leading-[1.7]">
+                                    <span className="text-blue-400 mt-1 text-lg">•</span>
+                                    <span className="text-base">{cleanText(point)}</span>
+                                  </li>
                                 ))}
-                              </div>
-                              
-                              {section.keyPoints && (
-                                <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-6 my-6">
-                                  <h5 className="text-blue-400 font-medium mb-4 text-base">Key Points:</h5>
-                                  <ul className="space-y-3">
-                                    {section.keyPoints.map((point, pointIdx) => (
-                                      <li key={pointIdx} className="flex items-start gap-3 text-zinc-300 leading-[1.7]">
-                                        <span className="text-blue-400 mt-1 text-lg">•</span>
-                                        <span className="text-base">{cleanText(point)}</span>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              )}
-                              
-                              {section.realWorldExample && (
-                                <div className="bg-green-600/10 border border-green-600/20 rounded-lg p-6 my-6">
-                                  <h5 className="text-green-400 font-medium mb-3 text-base">Real-World Application:</h5>
-                                  <p className="text-zinc-300 text-base leading-[1.7]">{cleanText(section.realWorldExample)}</p>
-                                </div>
-                              )}
+                              </ul>
                             </div>
-                          ))}
+                          )}
                         </div>
 
-                        {/* Why This Matters */}
-                        {(lesson as Lesson).whyItMatters && (
-                          <div className="bg-zinc-800/50 rounded-lg p-6 border border-zinc-700 mt-8">
-                            <h4 className="text-white font-semibold mb-6 text-lg">Why This Matters</h4>
-                            <div className="text-zinc-300 text-base leading-[1.7]">
-                              {cleanText((lesson as Lesson).whyItMatters || "")}
-                            </div>
-                          </div>
-                        )}
+
                       </div>
                     </CardContent>
                   </Card>
