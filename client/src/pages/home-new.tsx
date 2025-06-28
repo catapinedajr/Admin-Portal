@@ -2886,24 +2886,24 @@ export default function Home() {
                   </div>
                   
                   {/* Clean milestone buttons */}
-                  <div className="grid grid-cols-5 gap-2">
+                  <div className="grid grid-cols-5 gap-1.5">
                     {[
-                      { year: 1920, label: "1920", desc: "Gold Standard" },
-                      { year: 1971, label: "1971", desc: "Nixon Shock" },
-                      { year: 2000, label: "2000", desc: "Dot-com Era" },
-                      { year: 2008, label: "2008", desc: "Financial Crisis" },
-                      { year: 2024, label: "2024", desc: "Today" }
+                      { year: 1920, label: "'20", desc: "Gold Era" },
+                      { year: 1971, label: "'71", desc: "Nixon" },
+                      { year: 2000, label: "'00", desc: "Dot-com" },
+                      { year: 2008, label: "'08", desc: "Crisis" },
+                      { year: 2024, label: "'24", desc: "Today" }
                     ].map((milestone) => (
                       <button
                         key={milestone.year}
                         onClick={() => setMoneySupplyYear(milestone.year)}
-                        className={`p-3 rounded-lg border transition-all duration-200 ${
+                        className={`p-2 rounded-md border transition-all duration-200 ${
                           moneySupplyYear === milestone.year
                             ? 'bg-orange-600/20 border-orange-500 text-orange-300'
                             : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-300'
                         }`}
                       >
-                        <div className="font-medium">{milestone.label}</div>
+                        <div className="font-semibold text-sm">{milestone.label}</div>
                         <div className="text-xs opacity-75">{milestone.desc}</div>
                       </button>
                     ))}
