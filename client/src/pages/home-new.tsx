@@ -1905,14 +1905,27 @@ export default function Home() {
     
     // Calculate score based on stage
     let correct = false;
-    if (safetyStage === 0) { // Phishing
-      correct = currentSimulation.emails[optionIndex].isPhishing;
-    } else if (safetyStage === 1) { // Seed phrase  
-      correct = currentSimulation.options[optionIndex].safe;
-    } else if (safetyStage === 2) { // Address verification
-      correct = currentSimulation.options[optionIndex].correct;
-    } else if (safetyStage === 3) { // Scam recognition
-      correct = currentSimulation.scenarios[optionIndex].isScam;
+    const simulation = safetySimulations[safetyStage];
+    
+    try {
+      if (safetyStage === 0 && simulation.emails && simulation.emails[optionIndex]) {
+        // Phishing detection - select the phishing email
+        correct = simulation.emails[optionIndex].isPhishing === true;
+      } else if (safetyStage === 1 && simulation.options && simulation.options[optionIndex]) {
+        // Seed phrase storage - select the safe option  
+        const option = simulation.options[optionIndex] as any;
+        correct = option.safe === true;
+      } else if (safetyStage === 2 && simulation.options && simulation.options[optionIndex]) {
+        // Address verification - select the correct verification choice
+        const option = simulation.options[optionIndex] as any;
+        correct = option.correct === true;
+      } else if (safetyStage === 3 && simulation.scenarios && simulation.scenarios[optionIndex]) {
+        // Scam recognition - select the scam message
+        correct = simulation.scenarios[optionIndex].isScam === true;
+      }
+    } catch (error) {
+      console.log('Safety simulation error:', error);
+      correct = false;
     }
     
     if (correct) setSafetyScore(prev => prev + 1);
@@ -4429,8 +4442,12 @@ export default function Home() {
                                             : 'border-zinc-600 hover:border-zinc-500'
                                         }`}
                                       >
-                                        <div className="text-white text-sm font-medium mb-1">{option.method}</div>
-                                        <div className="text-zinc-400 text-xs">{option.security}</div>
+                                        <div className="text-white text-sm font-medium mb-1">
+                                          {'method' in option ? option.method : 'Option'}
+                                        </div>
+                                        <div className="text-zinc-400 text-xs">
+                                          {'security' in option ? option.security : 'Security level'}
+                                        </div>
                                       </button>
                                     ))}
                                   </div>
@@ -4457,7 +4474,9 @@ export default function Home() {
                                             : 'border-zinc-600 hover:border-zinc-500'
                                         }`}
                                       >
-                                        <div className="text-orange-300 text-sm font-mono mb-1">{option.text}</div>
+                                        <div className="text-orange-300 text-sm font-mono mb-1">
+                                          {'text' in option ? option.text : 'Option'}
+                                        </div>
                                         <div className="text-zinc-400 text-xs">Click to verify this address</div>
                                       </button>
                                     ))}
@@ -4494,7 +4513,7 @@ export default function Home() {
                                             : 'border-zinc-600 hover:border-zinc-500'
                                         }`}
                                       >
-                                        <div className="text-white text-sm">{scenario.action}</div>
+                                        <div className="text-white text-sm">{scenario.message}</div>
                                       </button>
                                     ))}
                                   </div>
@@ -4507,8 +4526,7 @@ export default function Home() {
                               <Button
                                 onClick={() => {
                                   if (selectedOption !== null) {
-                                    checkSafetyAnswer(selectedOption);
-                                    setShowResult(true);
+                                    handleSafetyAnswer(selectedOption);
                                   }
                                 }}
                                 disabled={selectedOption === null || showResult}
