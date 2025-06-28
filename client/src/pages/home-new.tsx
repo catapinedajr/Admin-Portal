@@ -6288,8 +6288,8 @@ export default function Home() {
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-zinc-700/50 rounded-lg">
-                        <BarChart3 className="w-6 h-6 text-zinc-300" />
+                      <div className="p-2 bg-purple-600/20 rounded-lg">
+                        <BarChart3 className="w-6 h-6 text-purple-400" />
                       </div>
                       <h4 className="text-xl font-bold text-white">Remove Emotion and Timing Risk from Investing</h4>
                     </div>
@@ -6313,21 +6313,21 @@ export default function Home() {
                         <h5 className="font-semibold text-white">Test Real Historical Scenarios:</h5>
                         <div className="grid gap-3 sm:grid-cols-2">
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <Calculator className="w-5 h-5 text-blue-400" />
+                            <Calculator className="w-5 h-5 text-purple-400" />
                             <div>
                               <p className="font-medium text-white text-sm">Investment Amounts</p>
                               <p className="text-zinc-400 text-xs">$25 to $10,000 per period</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <Clock className="w-5 h-5 text-green-400" />
+                            <Clock className="w-5 h-5 text-purple-400" />
                             <div>
                               <p className="font-medium text-white text-sm">Frequencies</p>
                               <p className="text-zinc-400 text-xs">Daily, weekly, monthly, quarterly</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <Calendar className="w-5 h-5 text-orange-400" />
+                            <Calendar className="w-5 h-5 text-purple-400" />
                             <div>
                               <p className="font-medium text-white text-sm">Time Periods</p>
                               <p className="text-zinc-400 text-xs">3 months to 10 years</p>
