@@ -2878,67 +2878,66 @@ export default function Home() {
                 <p className="text-zinc-400 text-sm">See how the government has created more and more dollars since 1920, making each dollar worth less</p>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Year Slider Control */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-zinc-300 font-medium">Select Year:</span>
-                    <span className="text-orange-400 font-bold text-lg">{moneySupplyYear}</span>
+                {/* Year Selection Buttons */}
+                <div className="space-y-4">
+                  <div className="text-center">
+                    <span className="text-orange-400 font-bold text-2xl">{moneySupplyYear}</span>
+                    <p className="text-zinc-400 text-sm mt-1">Select a year to explore</p>
                   </div>
-                  <div className="space-y-2">
-                    <input
-                      type="range"
-                      min="1920"
-                      max="2025"
-                      value={moneySupplyYear}
-                      onChange={(e) => setMoneySupplyYear(parseInt(e.target.value))}
-                      className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer slider"
-                      style={{
-                        background: `linear-gradient(to right, #f97316 0%, #f97316 ${((moneySupplyYear - 1920) / (2025 - 1920)) * 100}%, #374151 ${((moneySupplyYear - 1920) / (2025 - 1920)) * 100}%, #374151 100%)`
-                      }}
-                    />
-                    <div className="flex justify-between text-xs text-zinc-500">
-                      <span>1920 (Gold Standard)</span>
-                      <span>2025 (Today)</span>
-                    </div>
+                  
+                  {/* Clean milestone buttons */}
+                  <div className="grid grid-cols-5 gap-2">
+                    {[
+                      { year: 1920, label: "1920", desc: "Gold Standard" },
+                      { year: 1971, label: "1971", desc: "Nixon Shock" },
+                      { year: 2000, label: "2000", desc: "Dot-com Era" },
+                      { year: 2008, label: "2008", desc: "Financial Crisis" },
+                      { year: 2024, label: "2024", desc: "Today" }
+                    ].map((milestone) => (
+                      <button
+                        key={milestone.year}
+                        onClick={() => setMoneySupplyYear(milestone.year)}
+                        className={`p-3 rounded-lg border transition-all duration-200 ${
+                          moneySupplyYear === milestone.year
+                            ? 'bg-orange-600/20 border-orange-500 text-orange-300'
+                            : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-300'
+                        }`}
+                      >
+                        <div className="font-medium">{milestone.label}</div>
+                        <div className="text-xs opacity-75">{milestone.desc}</div>
+                      </button>
+                    ))}
                   </div>
 
-                  {/* Purchasing Power Display - Moved Here */}
-                  <div className="bg-zinc-800/50 rounded-lg p-3 mt-3">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-zinc-300 text-sm">$1 from 1920 = </span>
-                      <span className="text-red-400 font-bold">
-                        ${(1 / getPurchasingPowerRaw(moneySupplyYear)).toFixed(2)} today
-                      </span>
+                  {/* Key Statistics Display */}
+                  <div className="grid grid-cols-2 gap-4 mt-4">
+                    <div className="bg-zinc-800/50 rounded-lg p-4 text-center">
+                      <div className="text-2xl font-bold text-orange-400 transition-all duration-700">
+                        ${getMoneySupplyRaw(moneySupplyYear)}T
+                      </div>
+                      <div className="text-zinc-400 text-sm mt-1">Total Dollars in Circulation</div>
                     </div>
-                    <div className="w-full bg-zinc-700 rounded-full h-2">
-                      <div 
-                        className="bg-gradient-to-r from-red-400 to-red-600 h-2 rounded-full transition-all duration-500"
-                        style={{ width: `${Math.round((1 - getPurchasingPowerRaw(moneySupplyYear)) * 100)}%` }}
-                      ></div>
-                    </div>
-                    <div className="text-xs text-zinc-400 mt-1">
-                      {Math.round((1 - getPurchasingPowerRaw(moneySupplyYear)) * 100)}% of purchasing power lost since 1920
+                    <div className="bg-zinc-800/50 rounded-lg p-4 text-center">
+                      <div className="text-2xl font-bold text-orange-400 transition-all duration-700">
+                        {Math.round(getMoneySupplyRaw(moneySupplyYear) / getMoneySupplyRaw(1920))}x
+                      </div>
+                      <div className="text-zinc-400 text-sm mt-1">More Money Since 1920</div>
                     </div>
                   </div>
                 </div>
 
-                {/* Money Supply Growth Chart */}
+                {/* Simplified Chart */}
                 <div className="space-y-4">
                   <h4 className="text-white font-semibold flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4 text-red-400" />
-                    M2 Money Supply: 105 Years of Monetary History (1920-2025)
+                    <TrendingUp className="w-4 h-4 text-orange-400" />
+                    Money Printing Growth Over Time
                   </h4>
-                  <div className="bg-zinc-800/50 rounded-lg p-4">
-                    <div className="relative h-64 w-full">
-                      {/* SVG Chart */}
-                      <svg viewBox="0 0 400 200" className="w-full h-full">
-                        {/* Grid Lines */}
-                        <defs>
-                          <pattern id="grid" width="40" height="20" patternUnits="userSpaceOnUse">
-                            <path d="M 40 0 L 0 0 0 20" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.3"/>
-                          </pattern>
-                        </defs>
-                        <rect width="400" height="200" fill="url(#grid)" />
+                  <div className="bg-zinc-800/50 rounded-lg p-6">
+                    <div className="relative h-48 w-full">
+                      {/* Clean SVG Chart */}
+                      <svg viewBox="0 0 400 160" className="w-full h-full">
+                        {/* Simple background */}
+                        <rect width="400" height="160" fill="transparent" />
                         
                         {/* Y-axis labels */}
                         <text x="10" y="15" fill="#9ca3af" fontSize="10">$21.2T</text>
@@ -3054,73 +3053,41 @@ export default function Home() {
                           })()}
                         </g>
 
-                        {/* Historical Event Markers */}
+                        {/* Key Event Markers - Clean and Simple */}
                         <g>
                           {(() => {
                             const events = [
-                              { year: 1945, m2: 0.107, label: "WWII", sublabel: "Post-War", labelX: 80, labelY: 130 },
-                              { year: 2008, m2: 7.500, label: "Financial Crisis", sublabel: "2008", labelX: 240, labelY: 90 },
-                              { year: 2020, m2: 15.400, label: "COVID", sublabel: "Money Printing", labelX: 260, labelY: 30 }
+                              { year: 2008, m2: 7.500, label: "2008 Crisis" },
+                              { year: 2020, m2: 15.400, label: "COVID Printing" }
                             ];
                             
                             return events.map((event, index) => {
-                              // Linear time positioning: 3.077px per year (320px / 104 years)
-                              const chartX = 50 + ((event.year - 1920) / 104) * 320;
-                              
-                              // Calculate Y position: chart height=155, spanning 0.023-21.0 trillions
-                              const chartY = 175 - ((event.m2 - 0.023) / (21.0 - 0.023)) * 155;
+                              const chartX = 50 + ((event.year - 1920) / 105) * 320;
+                              const chartY = 175 - ((event.m2 - 0.023) / (21.2 - 0.023)) * 155;
                               
                               return (
                                 <g key={index}>
-                                  {/* Connection line from chart point to label */}
-                                  <line 
-                                    x1={chartX} 
-                                    y1={chartY} 
-                                    x2={event.labelX + 40} 
-                                    y2={event.labelY + 12} 
-                                    stroke="#64748b" 
-                                    strokeWidth="1" 
-                                    strokeDasharray="3,2"
-                                    opacity="0.5"
+                                  {/* Simple marker circle */}
+                                  <circle 
+                                    cx={chartX} 
+                                    cy={chartY} 
+                                    r="4" 
+                                    fill="#f97316" 
+                                    stroke="#ffffff" 
+                                    strokeWidth="2"
+                                    className="transition-all duration-300 hover:r-6"
                                   />
                                   
-                                  {/* Chart point marker */}
-                                  <circle cx={chartX} cy={chartY} r="3" fill="#dc2626" stroke="#ffffff" strokeWidth="1"/>
-                                  
-                                  {/* Compact label background */}
-                                  <rect 
-                                    x={event.labelX} 
-                                    y={event.labelY} 
-                                    width="80" 
-                                    height="24" 
-                                    fill="rgba(0,0,0,0.85)" 
-                                    stroke="#64748b"
-                                    strokeWidth="1"
-                                    rx="3"
-                                  />
-                                  
-                                  {/* Event title */}
+                                  {/* Clean label */}
                                   <text 
-                                    x={event.labelX + 40} 
-                                    y={event.labelY + 10} 
-                                    fill="#ffffff" 
+                                    x={chartX} 
+                                    y={chartY - 12} 
+                                    fill="#f97316" 
                                     fontSize="9" 
-                                    fontWeight="600"
+                                    fontWeight="bold"
                                     textAnchor="middle"
                                   >
                                     {event.label}
-                                  </text>
-                                  
-                                  {/* Subtitle */}
-                                  <text 
-                                    x={event.labelX + 40} 
-                                    y={event.labelY + 20} 
-                                    fill="#94a3b8" 
-                                    fontSize="7" 
-                                    fontWeight="normal"
-                                    textAnchor="middle"
-                                  >
-                                    {event.sublabel}
                                   </text>
                                 </g>
                               );
