@@ -4754,35 +4754,32 @@ export default function Home() {
                               </div>
                             )}
 
-                            {/* Social Engineering Simulation */}
+                            {/* Scam Recognition Simulation */}
                             {safetyStage === 3 && (
                               <div className="space-y-4">
                                 <div className="p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
-                                  <div className="text-sm text-zinc-300 mb-3">
-                                    You receive this message on Telegram. What should you do?
+                                  <div className="text-sm text-zinc-300 mb-4">
+                                    Which of these messages is definitely a Bitcoin scam? Click on the scam message:
                                   </div>
-                                  <div className="p-3 bg-blue-900/20 border border-blue-700/50 rounded-lg mb-4">
-                                    <div className="flex items-center gap-2 mb-2">
-                                      <div className="w-6 h-6 bg-blue-500 rounded-full"></div>
-                                      <span className="text-blue-300 text-sm">@crypto_support_official</span>
-                                      <span className="text-green-400 text-xs">✓</span>
-                                    </div>
-                                    <div className="text-white text-sm">
-                                      "Hi! We detected unusual activity on your Coinbase account. Please click this link to verify your identity within 24 hours or your account will be permanently suspended: [link]"
-                                    </div>
-                                  </div>
-                                  <div className="space-y-2">
+                                  <div className="space-y-3">
                                     {safetySimulations[3]?.scenarios?.map((scenario, index) => (
                                       <button
                                         key={index}
                                         onClick={() => setSelectedOption(index)}
-                                        className={`w-full p-3 border rounded-lg text-left transition-colors ${
+                                        className={`w-full p-4 border rounded-lg text-left transition-colors ${
                                           selectedOption === index 
                                             ? 'border-orange-500 bg-orange-500/10' 
                                             : 'border-zinc-600 hover:border-zinc-500'
                                         }`}
                                       >
-                                        <div className="text-white text-sm">{scenario.message}</div>
+                                        <div className="text-white text-sm leading-relaxed">
+                                          "{scenario.message}"
+                                        </div>
+                                        {scenario.isScam && (
+                                          <div className="text-red-400 text-xs mt-2 opacity-70">
+                                            {scenario.tactics?.join(" • ")}
+                                          </div>
+                                        )}
                                       </button>
                                     ))}
                                   </div>
