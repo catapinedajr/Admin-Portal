@@ -4453,6 +4453,68 @@ export default function Home() {
                   <p className="text-zinc-400">Master essential security skills to protect your Bitcoin from real-world threats</p>
                 </div>
 
+                {/* Why Safety Matters Introduction */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-red-600/20 rounded-lg">
+                        <AlertTriangle className="w-6 h-6 text-red-400" />
+                      </div>
+                      <h4 className="text-xl font-bold text-white">Why Bitcoin Security Matters</h4>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <p className="text-zinc-300 leading-relaxed">
+                        Bitcoin puts you in complete control of your money, but with great power comes great responsibility. 
+                        Unlike traditional banking where you can call customer service to recover lost funds, Bitcoin transactions 
+                        are irreversible and there's no central authority to help if you make a mistake.
+                      </p>
+                      
+                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-orange-500">
+                        <p className="text-zinc-300 text-sm">
+                          <span className="font-semibold text-orange-300">Critical Fact:</span> Over $2.1 billion in cryptocurrency 
+                          was lost to scams and hacks in 2024. The good news? Nearly all of these losses were preventable with proper security knowledge.
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <h5 className="font-semibold text-white">What You'll Find Below:</h5>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <Shield className="w-5 h-5 text-blue-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Security Essentials</p>
+                              <p className="text-zinc-400 text-xs">Complete guide covering all security fundamentals</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <Target className="w-5 h-5 text-green-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Security Simulator</p>
+                              <p className="text-zinc-400 text-xs">Test your skills with 12 real-world scenarios</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-center pt-2">
+                        <Button
+                          onClick={() => {
+                            const simulator = document.getElementById('safety-skills-test');
+                            if (simulator) {
+                              simulator.scrollIntoView({ behavior: 'smooth' });
+                            }
+                          }}
+                          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
+                        >
+                          <ArrowDown className="w-4 h-4 mr-2" />
+                          Skip to Security Simulator
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
                 {/* Essential Bitcoin Security Guidelines */}
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
