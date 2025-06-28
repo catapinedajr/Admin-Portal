@@ -5255,8 +5255,85 @@ export default function Home() {
                   <p className="text-zinc-400">Build and customize a Bitcoin transaction step-by-step</p>
                 </div>
 
-                {/* Interactive Transaction Builder */}
+                {/* Why Transaction Understanding Matters */}
                 <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-green-600/20 rounded-lg">
+                        <CreditCard className="w-6 h-6 text-green-400" />
+                      </div>
+                      <h4 className="text-xl font-bold text-white">Master Bitcoin Transactions Without Risk</h4>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <p className="text-zinc-300 leading-relaxed">
+                        Bitcoin transactions are permanent and irreversible - there's no "undo" button or customer service to call. 
+                        Understanding how transactions work before sending real Bitcoin is crucial for avoiding costly mistakes 
+                        that could result in lost funds forever.
+                      </p>
+                      
+                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-green-500">
+                        <p className="text-zinc-300 text-sm">
+                          <span className="font-semibold text-green-300">Safe Learning:</span> This simulator uses fake addresses 
+                          and amounts so you can practice building transactions safely. Learn the entire process from address 
+                          generation to confirmation tracking without any financial risk.
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <h5 className="font-semibold text-white">Transaction Journey You'll Experience:</h5>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">1</div>
+                            <div>
+                              <p className="font-medium text-white text-sm">Build Transaction</p>
+                              <p className="text-zinc-400 text-xs">Set recipient address and amount</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">2</div>
+                            <div>
+                              <p className="font-medium text-white text-sm">Choose Fees</p>
+                              <p className="text-zinc-400 text-xs">Select transaction speed priority</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <div className="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-white text-xs font-bold">3</div>
+                            <div>
+                              <p className="font-medium text-white text-sm">Sign & Broadcast</p>
+                              <p className="text-zinc-400 text-xs">Authorize and send to network</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">4</div>
+                            <div>
+                              <p className="font-medium text-white text-sm">Track Confirmations</p>
+                              <p className="text-zinc-400 text-xs">Watch transaction get confirmed</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-center pt-2">
+                        <Button
+                          onClick={() => {
+                            const builder = document.querySelector('[data-transaction-builder]');
+                            if (builder) {
+                              builder.scrollIntoView({ behavior: 'smooth' });
+                            }
+                          }}
+                          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
+                        >
+                          <ChevronDown className="w-4 h-4 mr-2" />
+                          Start Building Transaction
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Interactive Transaction Builder */}
+                <Card className="bg-zinc-900 border-zinc-800" data-transaction-builder>
                   <CardContent className="p-6">
                     <h4 className="text-lg font-bold text-white mb-4">Build Your Transaction</h4>
                     <div className="space-y-6">
@@ -5699,8 +5776,78 @@ export default function Home() {
             {/* Compact HODL Challenge Simulator */}
             {isPremiumTier && simulationsSubTab === "hodl" && (
               <div className="space-y-6">
-                {/* HODL Calculator Section */}
+                {/* Why HODL Strategy Matters */}
                 <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-orange-600/20 rounded-lg">
+                        <TrendingUp className="w-6 h-6 text-orange-400" />
+                      </div>
+                      <h4 className="text-xl font-bold text-white">The Power of Time in Market vs Timing the Market</h4>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <p className="text-zinc-300 leading-relaxed">
+                        Bitcoin's price swings can be extreme - dropping 80% in bear markets and rising 2000% in bull markets. 
+                        Most people try to time these movements perfectly, but history shows that simply holding through all 
+                        volatility (HODLing) often produces superior results with less stress and risk.
+                      </p>
+                      
+                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-orange-500">
+                        <p className="text-zinc-300 text-sm">
+                          <span className="font-semibold text-orange-300">Historical Truth:</span> Even if you bought Bitcoin 
+                          at the absolute peak of 2017 ($19,783), you would still be profitable today. Meanwhile, traders 
+                          trying to time the market often buy high, sell low, and miss the biggest gains.
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <h5 className="font-semibold text-white">Real Historical Scenarios You'll Test:</h5>
+                        <div className="grid gap-3 sm:grid-cols-3">
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <Calendar className="w-5 h-5 text-red-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">COVID Crash</p>
+                              <p className="text-zinc-400 text-xs">March 2020 panic buying opportunity</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <TrendingDown className="w-5 h-5 text-yellow-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Bear Market</p>
+                              <p className="text-zinc-400 text-xs">2018-2021 patience test period</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <Crown className="w-5 h-5 text-purple-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Early Adopter</p>
+                              <p className="text-zinc-400 text-xs">2017-2025 ultimate diamond hands</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-center pt-2">
+                        <Button
+                          onClick={() => {
+                            const calculator = document.querySelector('[data-hodl-calculator]');
+                            if (calculator) {
+                              calculator.scrollIntoView({ behavior: 'smooth' });
+                            }
+                          }}
+                          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
+                        >
+                          <ChevronDown className="w-4 h-4 mr-2" />
+                          Test HODL Scenarios
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* HODL Calculator Section */}
+                <Card className="bg-zinc-900 border-zinc-800" data-hodl-calculator>
                   <CardContent className="p-6">
                     <div className="text-center mb-6">
                       <h3 className="text-xl font-bold text-white mb-2">HODL Calculator</h3>
