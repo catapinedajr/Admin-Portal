@@ -5037,18 +5037,11 @@ export default function Home() {
                       </div>
                     </div>
 
-                    <div className="mt-3 flex items-center justify-between">
+                    <div className="mt-3">
                       <p className="text-zinc-400 text-xs flex items-center">
                         <Info className="w-3 h-3 mr-1" />
                         Continuous DCA to January 2025
                       </p>
-                      <Button 
-                        onClick={calculateDcaStrategy}
-                        className="bg-orange-600 hover:bg-orange-700 text-sm px-4 py-2"
-                      >
-                        <Calculator className="w-3 h-3 mr-1" />
-                        Calculate
-                      </Button>
                     </div>
                   </CardContent>
                 </Card>
