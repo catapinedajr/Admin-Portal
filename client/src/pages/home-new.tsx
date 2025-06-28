@@ -3242,7 +3242,7 @@ export default function Home() {
                       onClick={startSettlementAnimation}
                       className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg font-medium"
                     >
-                      Start Live Transfer Race (30s)
+                      Start Live Transfer Race
                     </Button>
                   </div>
                 )}
