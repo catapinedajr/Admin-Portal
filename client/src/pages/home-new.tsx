@@ -4834,9 +4834,33 @@ export default function Home() {
                                       <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" />
                                       <span className="text-green-300 font-medium text-sm">Correct!</span>
                                     </div>
-                                    <p className="text-green-100 text-xs sm:text-sm leading-relaxed">
+                                    <p className="text-green-100 text-xs sm:text-sm leading-relaxed mb-3">
                                       {safetySimulations[safetyStage]?.explanation || 'Good job identifying the security threat!'}
                                     </p>
+                                    
+                                    {/* Address Verification Highlight */}
+                                    {safetyStage === 2 && (
+                                      <div className="space-y-2">
+                                        <div className="text-green-200 text-xs font-medium">The difference was subtle but critical:</div>
+                                        <div className="space-y-1">
+                                          <div className="text-xs">
+                                            <span className="text-zinc-400">Copied: </span>
+                                            <span className="font-mono text-green-300">
+                                              bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w<span className="bg-green-500 text-black px-1 rounded">l</span>h
+                                            </span>
+                                          </div>
+                                          <div className="text-xs">
+                                            <span className="text-zinc-400">Wallet: </span>
+                                            <span className="font-mono text-red-300">
+                                              bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w<span className="bg-red-500 text-white px-1 rounded">1</span>h
+                                            </span>
+                                          </div>
+                                        </div>
+                                        <div className="text-green-200 text-xs">
+                                          The "l" (lowercase L) was changed to "1" (number one) - a classic attack!
+                                        </div>
+                                      </div>
+                                    )}
                                   </div>
                                 ) : (
                                   <div>
@@ -4844,9 +4868,33 @@ export default function Home() {
                                       <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-red-400" />
                                       <span className="text-red-300 font-medium text-sm">Be Careful!</span>
                                     </div>
-                                    <p className="text-red-100 text-xs sm:text-sm leading-relaxed">
+                                    <p className="text-red-100 text-xs sm:text-sm leading-relaxed mb-3">
                                       {safetySimulations[safetyStage]?.explanation || 'This could have put your Bitcoin at risk. Review the training materials above.'}
                                     </p>
+                                    
+                                    {/* Address Verification Highlight for wrong answers */}
+                                    {safetyStage === 2 && (
+                                      <div className="space-y-2">
+                                        <div className="text-red-200 text-xs font-medium">Here's what you missed:</div>
+                                        <div className="space-y-1">
+                                          <div className="text-xs">
+                                            <span className="text-zinc-400">Copied: </span>
+                                            <span className="font-mono text-green-300">
+                                              bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w<span className="bg-yellow-500 text-black px-1 rounded">l</span>h
+                                            </span>
+                                          </div>
+                                          <div className="text-xs">
+                                            <span className="text-zinc-400">Wallet: </span>
+                                            <span className="font-mono text-red-300">
+                                              bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w<span className="bg-yellow-500 text-black px-1 rounded">1</span>h
+                                            </span>
+                                          </div>
+                                        </div>
+                                        <div className="text-red-200 text-xs">
+                                          Malware changed "l" to "1" - your Bitcoin would have been stolen! Always check character by character.
+                                        </div>
+                                      </div>
+                                    )}
                                   </div>
                                 )}
                               </div>
