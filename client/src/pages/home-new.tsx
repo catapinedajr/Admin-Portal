@@ -6219,8 +6219,85 @@ export default function Home() {
                   <p className="text-zinc-400 text-sm">Configure your strategy and see real Bitcoin performance</p>
                 </div>
 
-                {/* Compact Input Controls */}
+                {/* Why DCA Strategy Matters */}
                 <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-purple-600/20 rounded-lg">
+                        <BarChart3 className="w-6 h-6 text-purple-400" />
+                      </div>
+                      <h4 className="text-xl font-bold text-white">Remove Emotion and Timing Risk from Investing</h4>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <p className="text-zinc-300 leading-relaxed">
+                        Dollar-Cost Averaging (DCA) is the simplest investment strategy that removes the impossible task of timing markets. 
+                        By investing the same amount regularly regardless of price, you automatically buy more Bitcoin when it's cheap 
+                        and less when it's expensive, smoothing out volatility over time.
+                      </p>
+                      
+                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-purple-500">
+                        <p className="text-zinc-300 text-sm">
+                          <span className="font-semibold text-purple-300">Historical Advantage:</span> DCA strategies have consistently 
+                          outperformed lump-sum investing for Bitcoin because they reduce the risk of buying at peak prices. 
+                          Even during volatile periods, consistent buying builds wealth systematically.
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <h5 className="font-semibold text-white">Test Real Historical Scenarios:</h5>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <Calculator className="w-5 h-5 text-blue-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Investment Amounts</p>
+                              <p className="text-zinc-400 text-xs">$25 to $10,000 per period</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <Clock className="w-5 h-5 text-green-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Frequencies</p>
+                              <p className="text-zinc-400 text-xs">Daily, weekly, monthly, quarterly</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <Calendar className="w-5 h-5 text-orange-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Time Periods</p>
+                              <p className="text-zinc-400 text-xs">3 months to 10 years</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <TrendingUp className="w-5 h-5 text-purple-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Real Data</p>
+                              <p className="text-zinc-400 text-xs">Authentic Bitcoin price history</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-center pt-2">
+                        <Button
+                          onClick={() => {
+                            const calculator = document.querySelector('[data-dca-calculator]');
+                            if (calculator) {
+                              calculator.scrollIntoView({ behavior: 'smooth' });
+                            }
+                          }}
+                          className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2"
+                        >
+                          <ChevronDown className="w-4 h-4 mr-2" />
+                          Start DCA Analysis
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Compact Input Controls */}
+                <Card className="bg-zinc-900 border-zinc-800" data-dca-calculator>
                   <CardContent className="p-4">
                     <div className="grid gap-3 grid-cols-3">
                       {/* Investment Amount */}
