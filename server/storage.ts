@@ -2978,6 +2978,236 @@ export class MemStorage implements IStorage {
         };
       }
 
+      // Add missing fact titles for days 12, 14, 15, 16, 17
+
+      if (fact.title === "Clean Energy Mining") {
+        diveDeeper = {
+          explanation: "Most Bitcoin mining uses clean energy because miners want the cheapest electricity, which is often renewable. Solar and wind power is getting cheaper, so miners naturally move toward green energy to save money.",
+          examples: [
+            "Traditional factories: Use whatever energy is cheapest nearby",
+            "Bitcoin miners: Travel the world seeking cheapest, often green energy",
+            "Regular industry: Stuck with local power grid options",
+            "Bitcoin mining: Can move anywhere with cheap renewable energy"
+          ],
+          visualDescription: "Bitcoin mining is like a nomadic energy hunter that follows the cheapest power around the world, and the cheapest power is increasingly solar and wind energy.",
+          keyTakeaways: [
+            "Over 50% of mining uses renewable energy",
+            "Miners seek lowest cost electricity",
+            "Renewable energy is becoming cheapest option",
+            "Mining can help fund green energy projects"
+          ]
+        };
+      }
+
+      if (fact.title === "Helping the Grid") {
+        diveDeeper = {
+          explanation: "Bitcoin miners help electricity grids by using excess power when there's too much and shutting down when there's not enough. They act like a flexible industrial customer that can turn on and off instantly to help balance supply and demand.",
+          examples: [
+            "Wind farm: Sometimes produces too much electricity with nowhere to send it",
+            "Bitcoin miner: Can use that excess energy instead of wasting it",
+            "Power shortage: Regular factories can't shut down quickly",
+            "Bitcoin mining: Can stop instantly to free up electricity"
+          ],
+          visualDescription: "Bitcoin miners are like giant electricity sponges that can soak up extra power when there's too much, or quickly squeeze themselves dry when power is needed elsewhere.",
+          keyTakeaways: [
+            "Miners provide grid flexibility and stability",
+            "Use excess energy that would otherwise be wasted",
+            "Can shut down instantly during power shortages",
+            "Help make renewable energy projects profitable"
+          ]
+        };
+      }
+
+      if (fact.title === "Cutting Rewards in Half") {
+        diveDeeper = {
+          explanation: "Every four years, Bitcoin automatically cuts the reward for mining new blocks in half. This reduces the supply of new Bitcoin entering the market, making existing Bitcoin more scarce and typically more valuable.",
+          examples: [
+            "Gold mining: Finding gold becomes naturally harder over time",
+            "Bitcoin: Code automatically makes new Bitcoin production slower",
+            "Regular money: Governments can print as much as they want",
+            "Bitcoin: Fixed schedule reduces new supply every four years"
+          ],
+          visualDescription: "The halving is like a gold mine that automatically gets twice as hard to dig every four years, ensuring that gold becomes more and more rare over time.",
+          keyTakeaways: [
+            "Happens every 210,000 blocks (about 4 years)",
+            "Reduces new Bitcoin supply by 50%",
+            "Historically followed by price increases",
+            "Creates predictable scarcity schedule"
+          ]
+        };
+      }
+
+      if (fact.title === "Rules That Can't Change") {
+        diveDeeper = {
+          explanation: "Bitcoin's core rules like the 21 million limit are extremely difficult to change because thousands of people would have to agree. This protects Bitcoin from being manipulated by governments, companies, or individuals.",
+          examples: [
+            "Government money: Rules change when politicians decide",
+            "Bitcoin: Rules only change if thousands of people agree",
+            "Company money: CEO can change policies anytime",
+            "Bitcoin: No CEO or central authority to change rules"
+          ],
+          visualDescription: "Changing Bitcoin's rules is like trying to get everyone in a large city to agree on what color to paint all the buildings - almost impossible to coordinate.",
+          keyTakeaways: [
+            "Core rules protected by global consensus",
+            "No single authority can change Bitcoin",
+            "21 million limit is practically unchangeable",
+            "Stability through distributed agreement"
+          ]
+        };
+      }
+
+      if (fact.title === "Hardware Wallets") {
+        diveDeeper = {
+          explanation: "Hardware wallets are special devices that keep your Bitcoin private keys completely offline and secure. They're like tiny computers designed specifically to protect your Bitcoin from hackers and malware.",
+          examples: [
+            "Software wallet: Connected to internet, vulnerable to hackers",
+            "Hardware wallet: Never connects to internet, much safer",
+            "Writing down keys: Can be lost, stolen, or damaged",
+            "Hardware device: Protected by PIN codes and secure chips"
+          ],
+          visualDescription: "A hardware wallet is like a tiny underground vault for your Bitcoin keys - even if your computer gets hacked, the vault stays completely separate and safe.",
+          keyTakeaways: [
+            "Keeps private keys completely offline",
+            "Protected by secure hardware chips",
+            "Best security for large Bitcoin amounts",
+            "Requires physical access to steal funds"
+          ]
+        };
+      }
+
+      if (fact.title === "Seed Phrase Backup") {
+        diveDeeper = {
+          explanation: "Your seed phrase is a list of 12 or 24 words that can recreate your entire Bitcoin wallet. If you lose your device, these words can get all your Bitcoin back. Keep them safer than gold.",
+          examples: [
+            "Lost phone: All your apps and photos might be gone forever",
+            "Lost Bitcoin device with seed phrase: You can get all Bitcoin back",
+            "Forgot bank password: Bank can reset it for you",
+            "Lost seed phrase: Your Bitcoin is gone forever with no recovery"
+          ],
+          visualDescription: "Your seed phrase is like a magic spell that can recreate your entire Bitcoin treasure chest - but if you forget the spell, the treasure disappears forever.",
+          keyTakeaways: [
+            "Can restore your entire wallet from any device",
+            "Must be stored securely in multiple locations",
+            "Never share with anyone or store digitally",
+            "No recovery possible if permanently lost"
+          ]
+        };
+      }
+
+      if (fact.title === "Public Blockchain") {
+        diveDeeper = {
+          explanation: "Every Bitcoin transaction is recorded on a public ledger that anyone can view. This creates unprecedented transparency where you can trace every Bitcoin from its creation to current ownership.",
+          examples: [
+            "Bank records: Only you and the bank can see your transactions",
+            "Bitcoin blockchain: Anyone can see every transaction ever",
+            "Government spending: Often hidden or hard to track",
+            "Bitcoin transactions: Completely transparent and traceable"
+          ],
+          visualDescription: "The Bitcoin blockchain is like a giant transparent safe where everyone can see every coin and how it moves, but you need the secret combination to actually touch anything.",
+          keyTakeaways: [
+            "All transactions are publicly visible",
+            "Enables unprecedented financial transparency",
+            "Anyone can verify the entire history",
+            "Creates accountability through openness"
+          ]
+        };
+      }
+
+      if (fact.title === "Privacy Techniques") {
+        diveDeeper = {
+          explanation: "While Bitcoin transactions are public, you can maintain privacy by using new addresses for each transaction and avoiding patterns that link your addresses together.",
+          examples: [
+            "Using same address repeatedly: Like using same P.O. box for everything",
+            "Using new address each time: Like getting a new P.O. box for each delivery",
+            "Reusing addresses: Makes it easy to track all your transactions",
+            "Fresh addresses: Keeps your transactions separate and private"
+          ],
+          visualDescription: "Bitcoin privacy is like wearing a different mask for each public appearance - people can see what each mask does, but they can't easily tell it's the same person.",
+          keyTakeaways: [
+            "Use a new address for every transaction",
+            "Avoid linking addresses through patterns",
+            "Consider privacy-focused wallet software",
+            "Balance transparency needs with privacy goals"
+          ]
+        };
+      }
+
+      if (fact.title === "Global Adoption") {
+        diveDeeper = {
+          explanation: "Every new person who starts using Bitcoin makes it more valuable and useful for everyone else. More users mean more merchants accept it, more developers improve it, and more infrastructure gets built.",
+          examples: [
+            "Telephone network: One phone was useless, millions created value",
+            "Bitcoin network: Each new user adds value for everyone",
+            "Social media: Platform becomes better with more users",
+            "Bitcoin: More adoption creates more utility and acceptance"
+          ],
+          visualDescription: "Bitcoin adoption is like a city that gets better as more people move there - more residents means more shops, services, and opportunities for everyone.",
+          keyTakeaways: [
+            "Each new user increases network value",
+            "More adoption drives merchant acceptance",
+            "Growing user base attracts more development",
+            "Network effects create self-reinforcing growth"
+          ]
+        };
+      }
+
+      if (fact.title === "Critical Mass") {
+        diveDeeper = {
+          explanation: "Bitcoin reaches critical mass when the cost of not having it becomes higher than the effort of learning and using it. This creates a tipping point where adoption accelerates rapidly.",
+          examples: [
+            "Email in 1990s: Initially complicated, but became necessary",
+            "Bitcoin today: Still complex but increasingly necessary",
+            "Internet adoption: Reached critical mass in mid-1990s",
+            "Bitcoin adoption: Approaching critical mass for institutions"
+          ],
+          visualDescription: "Critical mass is like a snowball rolling down a hill - at first it rolls slowly, but once it gets big enough, it starts rolling faster and faster on its own.",
+          keyTakeaways: [
+            "Tipping point where adoption accelerates",
+            "Cost of exclusion exceeds cost of adoption",
+            "Creates self-reinforcing adoption cycles",
+            "Institutional adoption signals approaching critical mass"
+          ]
+        };
+      }
+
+      if (fact.title === "Open Source Development") {
+        diveDeeper = {
+          explanation: "Bitcoin's code is completely open for anyone to read, review, and improve. Thousands of developers around the world can examine every line of code, making it one of the most reviewed software projects in history.",
+          examples: [
+            "Bank software: Secret code that only bank employees see",
+            "Bitcoin code: Anyone in the world can read and check it",
+            "Company app: Hidden algorithms and potential backdoors",
+            "Bitcoin: Every algorithm is transparent and verifiable"
+          ],
+          visualDescription: "Bitcoin's open source nature is like having a recipe that anyone can read, test, and improve, versus a secret formula locked in a corporate vault.",
+          keyTakeaways: [
+            "Anyone can review the code for problems",
+            "Global collaboration improves security",
+            "No hidden features or backdoors possible",
+            "Transparency builds trust through verification"
+          ]
+        };
+      }
+
+      if (fact.title === "Protocol Upgrades") {
+        diveDeeper = {
+          explanation: "Bitcoin improves through careful, consensus-driven upgrades that add new features while maintaining security. Major upgrades like SegWit and Taproot took years of testing and discussion before activation.",
+          examples: [
+            "Software apps: Company pushes updates whenever they want",
+            "Bitcoin: Updates only happen with broad community agreement",
+            "Operating system: Automatic updates can break things",
+            "Bitcoin: Upgrades tested extensively before deployment"
+          ],
+          visualDescription: "Bitcoin upgrades are like renovating a historical building - you improve it carefully while preserving the essential structure that makes it valuable.",
+          keyTakeaways: [
+            "Upgrades require broad community consensus",
+            "New features maintain backward compatibility",
+            "Extensive testing prevents breaking changes",
+            "Conservative approach prioritizes security"
+          ]
+        };
+      }
+
       const newFact: DailyFact = { 
         ...fact, 
         id: this.currentFactId++,
