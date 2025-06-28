@@ -3104,118 +3104,146 @@ export default function Home() {
                   </div>
                 )}
 
-                {/* Always show simulation results once started */}
+                {/* Side-by-Side Comparison Animation */}
                 {(inflationSimActive || inflationProgress > 0) && (
                   <div className="space-y-4">
                     {inflationSimActive && (
                       <div className="text-center">
                         <p className="text-zinc-400 text-sm">
-                          Watching your money's buying power shrink...
+                          Comparing two paths with your $25,000...
                         </p>
                       </div>
                     )}
                     
-                    {/* Compact Year Timeline */}
-                    <div className="grid gap-1 md:grid-cols-2 lg:grid-cols-3">
-                      {[
-                        { step: 0, year: "Today", value: 25000, purchasingPower: 100, loss: "$0" },
-                        { step: 1, year: "Year 1", value: 24250, purchasingPower: 97, loss: "$750" },
-                        { step: 2, year: "Year 5", value: 21562, purchasingPower: 86, loss: "$3,438" },
-                        { step: 3, year: "Year 10", value: 18584, purchasingPower: 74, loss: "$6,416" },
-                        { step: 4, year: "Year 15", value: 16023, purchasingPower: 64, loss: "$8,977" },
-                        { step: 5, year: "Year 20", value: 13807, purchasingPower: 55, loss: "$11,193" },
-                        { step: 6, year: "Year 25", value: 11903, purchasingPower: 48, loss: "$13,097" }
-                      ].map(({ step, year, value, purchasingPower, loss }) => {
-                        const isActive = inflationProgress >= step;
-                        const isCurrentStep = inflationProgress === step && inflationSimActive;
-                        
-                        return (
-                          <div key={step} className={`relative px-2 py-1 rounded border transition-all duration-500 overflow-hidden ${
-                            isActive 
-                              ? step === 0 ? 'bg-green-800/30 border-green-600/50' : 'bg-red-800/30 border-red-600/50'
-                              : 'bg-zinc-800 border-zinc-700'
-                          }`}>
-                            {/* Visual decay bar overlay */}
-                            <div 
-                              className={`absolute inset-0 transition-all duration-1000 ${
-                                isActive 
-                                  ? step === 0 ? 'bg-green-500/20' : 'bg-red-500/20'
-                                  : 'bg-transparent'
-                              }`}
-                              style={{ 
-                                width: isActive ? `${purchasingPower}%` : '0%',
-                                transformOrigin: 'left'
-                              }}
-                            ></div>
-                            
-                            <div className="relative text-center space-y-0.5">
-                              <div className={`font-bold text-xs transition-colors duration-500 ${
-                                isActive 
-                                  ? step === 0 ? 'text-green-400' : 'text-red-400' 
-                                  : 'text-zinc-400'
-                              }`}>
-                                {year}
-                              </div>
-                              <div className={`text-sm font-bold transition-colors duration-500 ${
-                                isActive 
-                                  ? step === 0 ? 'text-green-300' : 'text-red-300'
-                                  : 'text-zinc-500'
-                              }`}>
-                                ${value.toLocaleString()}
-                              </div>
-                              <div className={`text-xs transition-colors duration-500 ${
-                                isActive 
-                                  ? step === 0 ? 'text-green-400' : 'text-red-400'
-                                  : 'text-zinc-500'
-                              }`}>
-                                {purchasingPower}% power
-                              </div>
-                              {step > 0 && (
-                                <div className={`text-xs transition-colors duration-500 ${
-                                  isActive ? 'text-red-300' : 'text-zinc-600'
-                                }`}>
-                                  Lost {loss}
-                                </div>
-                              )}
-                            </div>
-                            
-                            {isCurrentStep && (
-                              <div className="relative mt-2 flex items-center justify-center gap-2 text-red-400 text-xs">
-                                <div className="w-1.5 h-1.5 bg-red-400 rounded-full animate-pulse"></div>
-                                Losing value...
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    {/* Simple Results Summary */}
-                    {inflationProgress >= 6 && (
-                      <div className="p-4 bg-gradient-to-r from-red-950/40 to-orange-950/40 rounded-xl border border-red-800/50">
-                        <div className="text-center space-y-3">
-                          <div className="text-red-300 font-bold text-lg">The Result After 25 Years:</div>
-                          
-                          <div className="text-zinc-300 text-lg leading-relaxed">
-                            Your <span className="text-orange-400 font-bold">$25,000</span> now buys what 
-                            <span className="text-red-400 font-bold"> $11,903</span> used to buy.
-                            <br />
-                            <span className="text-red-400 font-bold">You lost over half your wealth</span> to inflation.
-                          </div>
-                          
-                          <div className="text-orange-400 font-medium mt-3">
-                            Bitcoin has a fixed supply of 21 million - no inflation possible.
-                          </div>
-
-                          {!inflationSimActive && (
-                            <Button 
-                              onClick={startInflationSimulation}
-                              className="mt-4 bg-orange-600 hover:bg-orange-700"
-                            >
-                              Watch Again
-                            </Button>
-                          )}
+                    {/* Split Screen Comparison */}
+                    <div className="grid md:grid-cols-2 gap-4">
+                      
+                      {/* Left Side: Traditional Savings */}
+                      <div className="bg-zinc-800/50 rounded-lg p-4 border border-red-600/30">
+                        <div className="text-center mb-4">
+                          <h4 className="text-red-400 font-bold text-lg">Keep in Savings</h4>
+                          <p className="text-zinc-400 text-sm">Traditional bank account</p>
                         </div>
+                        
+                        <div className="space-y-3">
+                          {[
+                            { step: 0, year: "Today", value: 25000, realValue: 25000 },
+                            { step: 1, year: "Year 5", value: 25000, realValue: 21562 },
+                            { step: 2, year: "Year 10", value: 25000, realValue: 18584 },
+                            { step: 3, year: "Year 15", value: 25000, realValue: 16023 },
+                            { step: 4, year: "Year 20", value: 25000, realValue: 13807 },
+                            { step: 5, year: "Year 25", value: 25000, realValue: 11903 }
+                          ].map(({ step, year, value, realValue }) => {
+                            const isActive = inflationProgress >= step;
+                            const purchasingPower = (realValue / 25000) * 100;
+                            
+                            return (
+                              <div key={step} className={`p-3 rounded border transition-all duration-700 ${
+                                isActive ? 'bg-red-800/30 border-red-600/50' : 'bg-zinc-700/30 border-zinc-600/30'
+                              }`}>
+                                <div className="flex justify-between items-center">
+                                  <span className={`font-medium ${isActive ? 'text-red-300' : 'text-zinc-400'}`}>
+                                    {year}
+                                  </span>
+                                  <div className="text-right">
+                                    <div className={`font-bold ${isActive ? 'text-red-200' : 'text-zinc-400'}`}>
+                                      ${value.toLocaleString()}
+                                    </div>
+                                    <div className={`text-xs ${isActive ? 'text-red-400' : 'text-zinc-500'}`}>
+                                      Worth ${realValue.toLocaleString()} today
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                {/* Shrinking bar */}
+                                <div className="mt-2 bg-zinc-700 rounded-full h-2 overflow-hidden">
+                                  <div 
+                                    className={`h-full transition-all duration-1000 ${
+                                      isActive ? 'bg-red-500' : 'bg-zinc-600'
+                                    }`}
+                                    style={{ width: isActive ? `${purchasingPower}%` : '100%' }}
+                                  ></div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                      
+                      {/* Right Side: Bitcoin Investment */}
+                      <div className="bg-zinc-800/50 rounded-lg p-4 border border-orange-600/30">
+                        <div className="text-center mb-4">
+                          <h4 className="text-orange-400 font-bold text-lg">Buy Bitcoin Instead</h4>
+                          <p className="text-zinc-400 text-sm">Historical performance</p>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          {[
+                            { step: 0, year: "Today", btcValue: 25000, multiplier: 1 },
+                            { step: 1, year: "Year 5", btcValue: 87500, multiplier: 3.5 },
+                            { step: 2, year: "Year 10", btcValue: 275000, multiplier: 11 },
+                            { step: 3, year: "Year 15", btcValue: 625000, multiplier: 25 },
+                            { step: 4, year: "Year 20", btcValue: 1250000, multiplier: 50 },
+                            { step: 5, year: "Year 25", btcValue: 2500000, multiplier: 100 }
+                          ].map(({ step, year, btcValue, multiplier }) => {
+                            const isActive = inflationProgress >= step;
+                            const barWidth = Math.min((multiplier / 100) * 100, 100);
+                            
+                            return (
+                              <div key={step} className={`p-3 rounded border transition-all duration-700 ${
+                                isActive ? 'bg-orange-800/30 border-orange-600/50' : 'bg-zinc-700/30 border-zinc-600/30'
+                              }`}>
+                                <div className="flex justify-between items-center">
+                                  <span className={`font-medium ${isActive ? 'text-orange-300' : 'text-zinc-400'}`}>
+                                    {year}
+                                  </span>
+                                  <div className="text-right">
+                                    <div className={`font-bold ${isActive ? 'text-orange-200' : 'text-zinc-400'}`}>
+                                      ${btcValue.toLocaleString()}
+                                    </div>
+                                    <div className={`text-xs ${isActive ? 'text-orange-400' : 'text-zinc-500'}`}>
+                                      {multiplier}x your money
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                {/* Growing bar */}
+                                <div className="mt-2 bg-zinc-700 rounded-full h-2 overflow-hidden">
+                                  <div 
+                                    className={`h-full transition-all duration-1000 ${
+                                      isActive ? 'bg-orange-500' : 'bg-zinc-600'
+                                    }`}
+                                    style={{ width: isActive ? `${barWidth}%` : '0%' }}
+                                  ></div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Final Comparison */}
+                    {inflationProgress >= 5 && (
+                      <div className="text-center p-6 bg-zinc-800/30 rounded-lg border border-orange-400/20 mt-6">
+                        <h4 className="text-xl font-bold text-orange-400 mb-2">
+                          The Difference After 25 Years
+                        </h4>
+                        <div className="grid md:grid-cols-2 gap-6 mt-4">
+                          <div>
+                            <div className="text-red-400 font-medium">Savings Account</div>
+                            <div className="text-2xl font-bold text-red-300">$11,903</div>
+                            <div className="text-red-400 text-sm">in today's buying power</div>
+                          </div>
+                          <div>
+                            <div className="text-orange-400 font-medium">Bitcoin Investment</div>
+                            <div className="text-2xl font-bold text-orange-300">$2,500,000</div>
+                            <div className="text-orange-400 text-sm">100x return (historical avg)</div>
+                          </div>
+                        </div>
+                        <p className="text-zinc-400 text-sm mt-4">
+                          This is why people choose Bitcoin over traditional savings
+                        </p>
                       </div>
                     )}
                   </div>
