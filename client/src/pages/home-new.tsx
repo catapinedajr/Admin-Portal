@@ -4825,12 +4825,12 @@ export default function Home() {
                                   )}
                                   {safetyStage === 8 && (
                                     <div className="text-xs sm:text-sm text-zinc-300 mb-3">
-                                      You want to buy a hardware wallet for storing Bitcoin. What's the best approach?
+                                      You wrote down your seed phrase. How should you verify it's correct?
                                     </div>
                                   )}
                                   {safetyStage === 9 && (
                                     <div className="text-xs sm:text-sm text-zinc-300 mb-3">
-                                      You wrote down your seed phrase. How do you verify it's correct?
+                                      You're sending $50 worth of Bitcoin. Your wallet suggests a $200 fee, but you checked other sources and normal fees are $2. What should you do?
                                     </div>
                                   )}
                                   {safetyStage === 10 && (
