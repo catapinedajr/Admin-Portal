@@ -6288,8 +6288,8 @@ export default function Home() {
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-purple-600/20 rounded-lg">
-                        <BarChart3 className="w-6 h-6 text-purple-400" />
+                      <div className="p-2 bg-zinc-700/50 rounded-lg">
+                        <BarChart3 className="w-6 h-6 text-zinc-300" />
                       </div>
                       <h4 className="text-xl font-bold text-white">Remove Emotion and Timing Risk from Investing</h4>
                     </div>
