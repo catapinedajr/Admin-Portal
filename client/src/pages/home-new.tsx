@@ -318,10 +318,12 @@ export default function Home() {
     queryFn: () => fetch(`/api/day-completed/1/${currentDayIndex}`).then(res => res.json())
   });
   
-  const { data: nextAvailableDay = 0 } = useQuery({
+  const { data: nextAvailableDayResponse } = useQuery({
     queryKey: ['/api/next-available-day', 1],
     queryFn: () => fetch('/api/next-available-day/1').then(res => res.json())
   });
+  
+  const nextAvailableDay = nextAvailableDayResponse?.dayIndex ?? 0;
 
   // Mark day as completed mutation
   const markDayCompletedMutation = useMutation({
@@ -977,7 +979,7 @@ export default function Home() {
         ];
       default:
         // Split content by double line breaks to preserve formatting
-        const paragraphs = content.split('\n\n').filter(p => p.trim().length > 0);
+        const paragraphs = (content || '').split('\n\n').filter(p => p.trim().length > 0);
         return [
           {
             title: "Core Concepts",
