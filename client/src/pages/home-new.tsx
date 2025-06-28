@@ -2563,15 +2563,13 @@ export default function Home() {
                                   
                                   {deepDive && (
                                     <div className="flex justify-end">
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
+                                      <button
                                         onClick={() => toggleFactExpansion(fact.id)}
-                                        className="text-orange-400 hover:text-orange-300 px-3 py-1 bg-orange-500/10 border border-orange-500/30 text-xs"
+                                        className="text-orange-400 hover:text-orange-300 text-xs flex items-center gap-1 transition-colors"
                                       >
-                                        {isExpanded ? <ChevronUp className="w-3 h-3 mr-1" /> : <ChevronDown className="w-3 h-3 mr-1" />}
-                                        Dive Deeper
-                                      </Button>
+                                        <span>Dive Deeper</span>
+                                        {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                                      </button>
                                     </div>
                                   )}
                                 </div>
