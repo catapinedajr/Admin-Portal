@@ -5258,22 +5258,46 @@ export default function Home() {
                         <div className="space-y-3">
                           <label className="block text-white font-bold text-center">
                             Annual Inflation: {inflationRate}%
+                            {inflationRate >= 8 && inflationRate <= 9 && (
+                              <span className="text-red-400 text-sm ml-2">← 2022-2024</span>
+                            )}
+                            {inflationRate >= 2 && inflationRate <= 3 && (
+                              <span className="text-blue-400 text-sm ml-2">← Fed Target</span>
+                            )}
                           </label>
-                          <input
-                            type="range"
-                            min="1"
-                            max="20"
-                            step="0.5"
-                            value={inflationRate}
-                            onChange={(e) => setInflationRate(parseFloat(e.target.value))}
-                            className="w-full h-4 bg-zinc-700 rounded-lg appearance-none cursor-pointer"
-                            style={{
-                              background: `linear-gradient(to right, #22c55e 0%, #f97316 ${(inflationRate / 20) * 100}%, #ef4444 100%)`
-                            }}
-                          />
+                          <div className="relative">
+                            <input
+                              type="range"
+                              min="1"
+                              max="20"
+                              step="0.5"
+                              value={inflationRate}
+                              onChange={(e) => setInflationRate(parseFloat(e.target.value))}
+                              className="w-full h-4 bg-zinc-700 rounded-lg appearance-none cursor-pointer"
+                              style={{
+                                background: `linear-gradient(to right, #22c55e 0%, #f97316 ${(inflationRate / 20) * 100}%, #ef4444 100%)`
+                              }}
+                            />
+                            {/* Recent inflation markers */}
+                            <div className="absolute top-0 w-full h-4 pointer-events-none">
+                              {/* 2% Fed Target */}
+                              <div 
+                                className="absolute w-1 h-6 bg-blue-400 opacity-60"
+                                style={{ left: `${(2 / 20) * 100}%`, top: '-1px' }}
+                                title="2% Fed Target"
+                              />
+                              {/* 8.5% Recent Peak (2022) */}
+                              <div 
+                                className="absolute w-1 h-6 bg-red-400 opacity-60"
+                                style={{ left: `${(8.5 / 20) * 100}%`, top: '-1px' }}
+                                title="8.5% Recent Peak (2022)"
+                              />
+                            </div>
+                          </div>
                           <div className="flex justify-between text-xs text-zinc-400">
                             <span>1% Low</span>
-                            <span>10% High</span>
+                            <span className="text-blue-400">2% Fed</span>
+                            <span className="text-red-400">8.5% Recent</span>
                             <span>20% Crisis</span>
                           </div>
                         </div>
