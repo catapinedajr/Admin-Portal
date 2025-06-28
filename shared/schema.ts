@@ -271,3 +271,16 @@ export type ContentQuiz = typeof contentQuizzes.$inferSelect;
 export type InsertContentQuiz = z.infer<typeof insertContentQuizSchema>;
 export type ContentMetadata = typeof contentMetadata.$inferSelect;
 export type InsertContentMetadata = z.infer<typeof insertContentMetadataSchema>;
+
+// Enhanced content types for API responses
+export type DailyContentFact = ContentFact & {
+  diveDeeper?: ContentDiveDeeper | null;
+};
+
+export type DailyContentComplete = {
+  day: ContentDay;
+  facts: DailyContentFact[];
+  lesson: ContentLesson | null;
+  quizzes: ContentQuiz[];
+  metadata: ContentMetadata | null;
+};

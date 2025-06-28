@@ -16,6 +16,20 @@ import {
   type InsertUser, 
   type UserProgress,
   type InsertUserProgress,
+  type ContentDay,
+  type InsertContentDay,
+  type ContentFact,
+  type InsertContentFact,
+  type ContentDiveDeeper,
+  type InsertContentDiveDeeper,
+  type ContentLesson,
+  type InsertContentLesson,
+  type ContentQuiz,
+  type InsertContentQuiz,
+  type ContentMetadata,
+  type InsertContentMetadata,
+  type DailyContentFact,
+  type DailyContentComplete,
   type KnowledgeArea,
   type InsertKnowledgeArea,
   type ConvictionContent,
@@ -37,6 +51,9 @@ import {
   type UserWeeklyProgress,
   type InsertUserWeeklyProgress
 } from "@shared/schema";
+
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -7276,45 +7293,72 @@ Bitcoin isn't just new technology - it's a new way of thinking about money, owne
     }
   }
 
-  async getDailyFacts(dayIndex: number): Promise<DailyFact[]> {
-    return Array.from(this.dailyFacts.values()).filter(fact => fact.dayIndex === dayIndex);
+  // New database-driven content methods
+  async getContentDay(dayIndex: number): Promise<ContentDay | undefined> {
+    const [day] = await db.select().from(contentDays).where(eq(contentDays.dayIndex, dayIndex));
+    return day;
   }
 
-  async getAllDailyFacts(): Promise<DailyFact[]> {
-    return Array.from(this.dailyFacts.values());
+  async getDailyContentFacts(dayIndex: number): Promise<DailyContentFact[]> {
+    const day = await this.getContentDay(dayIndex);
+    if (!day) return [];
+
+    const facts = await db.select().from(contentFacts)
+      .where(eq(contentFacts.dayId, day.id))
+      .orderBy(contentFacts.orderIndex);
+
+    // Get dive deeper content for each fact
+    const factsWithDiveDeeper: DailyContentFact[] = [];
+    for (const fact of facts) {
+      const [diveDeeper] = await db.select().from(contentDiveDeeper)
+        .where(eq(contentDiveDeeper.factId, fact.id));
+      
+      factsWithDiveDeeper.push({
+        ...fact,
+        diveDeeper: diveDeeper || null
+      });
+    }
+
+    return factsWithDiveDeeper;
   }
 
-  async createDailyFact(insertFact: InsertDailyFact): Promise<DailyFact> {
-    const fact: DailyFact = {
-      ...insertFact,
-      id: this.currentFactId++
-    };
-    this.dailyFacts.set(fact.id, fact);
-    return fact;
-  }
+  async getContentLesson(dayIndex: number): Promise<ContentLesson | undefined> {
+    const day = await this.getContentDay(dayIndex);
+    if (!day) return undefined;
 
-  async getLesson(dayIndex: number): Promise<Lesson | undefined> {
-    return Array.from(this.lessons.values()).find(lesson => lesson.dayIndex === dayIndex);
-  }
-
-  async getAllLessons(): Promise<Lesson[]> {
-    return Array.from(this.lessons.values());
-  }
-
-  async createLesson(insertLesson: InsertLesson): Promise<Lesson> {
-    const lesson: Lesson = {
-      id: this.currentLessonId++,
-      title: insertLesson.title,
-      content: insertLesson.content,
-      summary: insertLesson.summary,
-      estimatedReadTime: insertLesson.estimatedReadTime,
-      dayIndex: insertLesson.dayIndex,
-      imageUrl: insertLesson.imageUrl || null,
-      keyPoints: insertLesson.keyPoints || null,
-      whyItMatters: insertLesson.whyItMatters || null
-    };
-    this.lessons.set(lesson.id, lesson);
+    const [lesson] = await db.select().from(contentLessons)
+      .where(eq(contentLessons.dayId, day.id));
     return lesson;
+  }
+
+  async getContentQuizzes(dayIndex: number): Promise<ContentQuiz[]> {
+    const day = await this.getContentDay(dayIndex);
+    if (!day) return [];
+
+    const quizzes = await db.select().from(contentQuizzes)
+      .where(eq(contentQuizzes.dayId, day.id))
+      .orderBy(contentQuizzes.orderIndex);
+    return quizzes;
+  }
+
+  async getDailyContentComplete(dayIndex: number): Promise<DailyContentComplete | null> {
+    const day = await this.getContentDay(dayIndex);
+    if (!day) return null;
+
+    const [facts, lesson, quizzes, metadata] = await Promise.all([
+      this.getDailyContentFacts(dayIndex),
+      this.getContentLesson(dayIndex),
+      this.getContentQuizzes(dayIndex),
+      db.select().from(contentMetadata).where(eq(contentMetadata.dayId, day.id)).then(rows => rows[0] || null)
+    ]);
+
+    return {
+      day,
+      facts,
+      lesson: lesson || null,
+      quizzes,
+      metadata
+    };
   }
 
   async getUserProgress(userId: number, date: string): Promise<UserProgress | undefined> {

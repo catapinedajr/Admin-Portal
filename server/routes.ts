@@ -1,9 +1,68 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { db } from "./db";
+import { contentDays, contentFacts, contentDiveDeeper, contentLessons, contentQuizzes } from "@shared/schema";
 
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Test endpoint to create sample content
+  app.post("/api/admin/create-sample", async (req, res) => {
+    try {
+      // Create sample day 0
+      const [day] = await db.insert(contentDays).values({
+        dayIndex: 0,
+        title: "What is Bitcoin?",
+        readingLevel: "9th grade",
+        culturalStage: "Normie → Pre-coiner",
+        theme: "Bitcoin Basics"
+      }).returning();
+
+      // Create sample fact
+      const [fact] = await db.insert(contentFacts).values({
+        dayId: day.id,
+        title: "Digital Money Revolution",
+        content: "Bitcoin is the first digital money that works without banks or governments controlling it.",
+        category: "basics",
+        icon: "🪙",
+        orderIndex: 0
+      }).returning();
+
+      // Create dive deeper
+      await db.insert(contentDiveDeeper).values({
+        factId: fact.id,
+        explanation: "Bitcoin represents a completely new way to think about money.",
+        examples: ["No bank can freeze your Bitcoin", "Works 24/7 worldwide"],
+        visualDescription: "Imagine a digital ledger that everyone can see",
+        keyTakeaways: ["Decentralized", "Digital", "Borderless", "Fixed supply"]
+      });
+
+      // Create lesson
+      await db.insert(contentLessons).values({
+        dayId: day.id,
+        title: "Understanding Bitcoin Basics",
+        content: "Bitcoin is like digital gold that you can send anywhere in the world instantly.",
+        keyTakeaways: ["Bitcoin is digital money", "No banks needed", "Works globally"],
+        estimatedReadTime: 3
+      });
+
+      // Create quiz
+      await db.insert(contentQuizzes).values({
+        dayId: day.id,
+        question: "What makes Bitcoin different from regular money?",
+        options: ["It's controlled by banks", "It's controlled by math and code", "It's only for businesses", "It requires government permission"],
+        correctAnswer: 1,
+        explanation: "Bitcoin is controlled by mathematical rules and computer code.",
+        orderIndex: 0
+      });
+
+      res.json({ message: "Sample content created for day 0", dayId: day.id });
+    } catch (error) {
+      console.error("Error creating sample:", error);
+      res.status(500).json({ message: "Failed to create sample content" });
+    }
+  });
+
   // Get current user (default user for simplicity)
   app.get("/api/user", async (req, res) => {
     try {
@@ -27,7 +86,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const today = new Date();
         dayIndex = Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 365;
       }
-      const facts = await storage.getDailyFacts(dayIndex);
+      const facts = await storage.getDailyContentFacts(dayIndex);
       res.json(facts);
     } catch (error) {
       res.status(500).json({ message: "Failed to get daily facts" });
@@ -44,7 +103,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const today = new Date();
         dayIndex = Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 10;
       }
-      const lesson = await storage.getLesson(dayIndex);
+      const lesson = await storage.getContentLesson(dayIndex);
       if (!lesson) {
         return res.status(404).json({ message: "No lesson found for this day" });
       }
