@@ -4583,7 +4583,7 @@ export default function Home() {
                               className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 text-sm"
                             >
                               <Wallet className="w-4 h-4 mr-2" />
-                              Explore Wallet Types
+                              Wallet Simulator
                             </Button>
                           </div>
                         </div>
@@ -4628,7 +4628,7 @@ export default function Home() {
                       <div className="p-2 bg-orange-600/20 rounded-lg">
                         <Shield className="w-6 h-6 text-orange-400" />
                       </div>
-                      <h4 className="text-xl font-bold text-white">Security Skills Test</h4>
+                      <h4 className="text-xl font-bold text-white">Security Skill Simulator</h4>
                     </div>
                     <p className="text-zinc-400 mb-6">Apply what you've learned! Test your ability to identify real-world Bitcoin security threats.</p>
                     {/* Phishing Email Simulator */}
