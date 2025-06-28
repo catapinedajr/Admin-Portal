@@ -3079,7 +3079,7 @@ export default function Home() {
               <CardHeader className="pb-4">
                 <CardTitle className="text-white flex items-center gap-3 text-xl">
                   <TrendingDown className="w-5 h-5 text-orange-400" />
-                  Your Money Is Disappearing
+                  Let's See What This Is Doing to Your Money
                 </CardTitle>
                 <p className="text-zinc-400 text-sm">See how $25,000 loses buying power over time</p>
               </CardHeader>
