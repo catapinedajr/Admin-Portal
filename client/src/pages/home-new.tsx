@@ -301,7 +301,7 @@ const bitcoinTerms = [
 
 type MainSection = "learn" | "finance" | "simulations" | "more";
 type LearnSubTab = "today" | "reference";
-type SimulationsSubTab = "safety" | "transactions" | "hodl" | "dca" | "inflation" | "settlement";
+type SimulationsSubTab = "wallet" | "safety" | "transactions" | "hodl" | "dca" | "inflation" | "settlement";
 type MoreSubTab = "store";
 
 export default function Home() {
@@ -4244,6 +4244,15 @@ export default function Home() {
                   Safety
                 </Button>
                 <Button
+                  variant={simulationsSubTab === "wallet" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("wallet")}
+                  className="text-xs px-3 py-1"
+                >
+                  <Wallet className="w-3 h-3 mr-1" />
+                  Wallet
+                </Button>
+                <Button
                   variant={simulationsSubTab === "transactions" ? "secondary" : "ghost"}
                   size="sm"
                   onClick={() => setSimulationsSubTab("transactions")}
@@ -4290,6 +4299,150 @@ export default function Home() {
                 </Button>
               </div>
             </div>
+            )}
+
+            {/* Wallet Explorer - Only show for premium users */}
+            {isPremiumTier && simulationsSubTab === "wallet" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-4">
+                  <h3 className="text-xl font-bold text-white">Interactive Wallet Explorer</h3>
+                  <p className="text-zinc-400">Understand Bitcoin wallets and choose the right storage solution for your needs</p>
+                </div>
+
+                {/* Wallet Definition */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="p-4 bg-zinc-800/50 rounded-lg border border-zinc-700 mb-6">
+                      <p className="text-zinc-300 text-sm leading-relaxed mb-3">
+                        <span className="font-semibold text-white">Bitcoin wallets</span> are software or hardware tools that store your private keys—the secret codes that prove you own your Bitcoin. Unlike a physical wallet that holds cash, Bitcoin wallets don't actually store Bitcoin itself. Instead, they manage the cryptographic keys that give you access to your Bitcoin on the blockchain.
+                      </p>
+                      <p className="text-zinc-300 text-sm leading-relaxed mb-4">
+                        <span className="font-semibold text-orange-300">Why this matters:</span> Your choice of wallet directly impacts your security, convenience, and true ownership of Bitcoin. Different wallet types offer different trade-offs between security and ease of use, making it crucial to understand your options before storing any Bitcoin.
+                      </p>
+                      <div className="flex justify-center">
+                        <Button
+                          onClick={() => setActiveSection('more')}
+                          className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 text-sm"
+                        >
+                          <Shield className="w-4 h-4 mr-2" />
+                          Shop Recommended Hardware Wallets
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <p className="text-zinc-400 text-sm mb-6">Click on any wallet type below to learn detailed information</p>
+                    
+                    <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4 mb-6">
+                      {walletTypes.map((wallet, index) => (
+                        <Button
+                          key={index}
+                          variant={selectedWalletType === wallet.name ? "default" : "outline"}
+                          className={`p-4 h-auto flex-col items-start ${
+                            selectedWalletType === wallet.name 
+                              ? "bg-orange-600 border-orange-500 text-white" 
+                              : "border-zinc-700 text-zinc-300 hover:border-orange-500"
+                          }`}
+                          onClick={() => setSelectedWalletType(wallet.name)}
+                        >
+                          <div className="w-full text-left">
+                            <h5 className="font-medium mb-1">{wallet.name}</h5>
+                            <p className="text-xs opacity-80">Security: {wallet.security}</p>
+                            <p className="text-xs opacity-80">Cost: {wallet.cost}</p>
+                          </div>
+                        </Button>
+                      ))}
+                    </div>
+
+                    {/* Detailed Wallet Information */}
+                    {selectedWalletType && (
+                      <div className="space-y-4 border-t border-zinc-700 pt-4">
+                        {(() => {
+                          const selectedWallet = walletTypes.find(w => w.name === selectedWalletType)!;
+                          return (
+                            <div className="space-y-4">
+                              <div className="bg-zinc-800/50 rounded-lg p-4">
+                                <h5 className="font-medium text-white mb-2">{selectedWallet.name} Overview</h5>
+                                <p className="text-zinc-300 text-sm mb-3">{selectedWallet.description}</p>
+                                
+                                <div className="grid gap-3 md:grid-cols-3 mb-4">
+                                  <div className="text-center">
+                                    <p className="text-zinc-400 text-xs">Security Level</p>
+                                    <p className={`font-medium ${
+                                      selectedWallet.security === "Highest" ? "text-green-400" :
+                                      selectedWallet.security === "Medium-High" ? "text-blue-400" :
+                                      selectedWallet.security === "Medium" ? "text-yellow-400" : "text-red-400"
+                                    }`}>{selectedWallet.security}</p>
+                                  </div>
+                                  <div className="text-center">
+                                    <p className="text-zinc-400 text-xs">Convenience</p>
+                                    <p className={`font-medium ${
+                                      selectedWallet.convenience === "Highest" ? "text-green-400" :
+                                      selectedWallet.convenience === "High" ? "text-blue-400" :
+                                      selectedWallet.convenience === "Medium" ? "text-yellow-400" : "text-red-400"
+                                    }`}>{selectedWallet.convenience}</p>
+                                  </div>
+                                  <div className="text-center">
+                                    <p className="text-zinc-400 text-xs">Typical Cost</p>
+                                    <p className="text-white font-medium">{selectedWallet.cost}</p>
+                                  </div>
+                                </div>
+                                
+                                <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-3 mb-3">
+                                  <p className="text-orange-300 text-sm font-medium">Best For: {selectedWallet.bestFor}</p>
+                                </div>
+                              </div>
+
+                              <div className="grid gap-4 md:grid-cols-2">
+                                <div className="space-y-2">
+                                  <h6 className="font-medium text-green-300">Advantages</h6>
+                                  <ul className="space-y-1">
+                                    {selectedWallet.pros.map((pro, idx) => (
+                                      <li key={idx} className="text-zinc-300 text-sm flex items-start gap-2">
+                                        <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                                        <span>{pro}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <h6 className="font-medium text-red-300">Considerations</h6>
+                                  <ul className="space-y-1">
+                                    {selectedWallet.cons.map((con, idx) => (
+                                      <li key={idx} className="text-zinc-300 text-sm flex items-start gap-2">
+                                        <AlertTriangle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
+                                        <span>{con}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </div>
+
+                              <div className="space-y-2">
+                                <h6 className="font-medium text-blue-300">Popular Examples</h6>
+                                <div className="flex flex-wrap gap-2">
+                                  {selectedWallet.examples.map((example, idx) => (
+                                    <span key={idx} className="px-3 py-1 bg-blue-600/20 border border-blue-600/30 rounded-full text-blue-200 text-sm">
+                                      {example}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    )}
+                    
+                    {!selectedWalletType && (
+                      <div className="text-center p-8 border border-zinc-700 rounded-lg border-dashed">
+                        <Wallet className="w-12 h-12 text-zinc-600 mx-auto mb-3" />
+                        <p className="text-zinc-400">Select a wallet type above to see detailed information</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
             )}
 
             {/* Safety Training - Only show for premium users */}
