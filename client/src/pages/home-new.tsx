@@ -6657,12 +6657,89 @@ export default function Home() {
             {isPremiumTier && simulationsSubTab === "inflation" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
-                  <h3 className="text-xl font-bold text-white">💸 Interactive Inflation Destroyer</h3>
+                  <h3 className="text-xl font-bold text-white">Interactive Inflation Destroyer</h3>
                   <p className="text-zinc-400">Watch your money vanish in real-time as you move through the years</p>
                 </div>
 
-                {/* Streamlined Control Center */}
+                {/* Why Understanding Inflation Matters */}
                 <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-red-600/20 rounded-lg">
+                        <TrendingDown className="w-6 h-6 text-red-400" />
+                      </div>
+                      <h4 className="text-xl font-bold text-white">The Silent Wealth Destroyer Working Against You</h4>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <p className="text-zinc-300 leading-relaxed">
+                        Inflation is the hidden tax that quietly steals your purchasing power every single day. While you sleep, 
+                        your savings lose value as governments print more money, diluting what you've worked hard to earn. 
+                        Most people don't realize how devastating this compound erosion becomes over time.
+                      </p>
+                      
+                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-red-500">
+                        <p className="text-zinc-300 text-sm">
+                          <span className="font-semibold text-red-300">Shocking Reality:</span> Since 1970, the US dollar has lost 
+                          87% of its purchasing power. What cost $100 in 1970 now costs $770. Your grandfather's dollar had 8 times 
+                          more buying power than yours today.
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <h5 className="font-semibold text-white">Interactive Features You'll Experience:</h5>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <DollarSign className="w-5 h-5 text-green-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Real-Time Erosion</p>
+                              <p className="text-zinc-400 text-xs">Watch money disappear as years pass</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <BarChart3 className="w-5 h-5 text-yellow-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Historical Chart</p>
+                              <p className="text-zinc-400 text-xs">50+ years of authentic data</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <Calendar className="w-5 h-5 text-blue-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Key Events</p>
+                              <p className="text-zinc-400 text-xs">Nixon Shock, financial crises</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <Target className="w-5 h-5 text-orange-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Fed Target</p>
+                              <p className="text-zinc-400 text-xs">2% annual theft by design</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-center pt-2">
+                        <Button
+                          onClick={() => {
+                            const simulator = document.querySelector('[data-inflation-simulator]');
+                            if (simulator) {
+                              simulator.scrollIntoView({ behavior: 'smooth' });
+                            }
+                          }}
+                          className="bg-red-600 hover:bg-red-700 text-white px-6 py-2"
+                        >
+                          <ChevronDown className="w-4 h-4 mr-2" />
+                          See Inflation's Damage
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Streamlined Control Center */}
+                <Card className="bg-zinc-900 border-zinc-800" data-inflation-simulator>
                   <CardContent className="p-6">
                     <div className="space-y-8">
                       {/* All Controls in One Row */}
