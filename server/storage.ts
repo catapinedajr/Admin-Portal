@@ -60,8 +60,16 @@ export interface IStorage {
 
   // User progress methods
   getUserProgress(userId: number, date: string): Promise<UserProgress | undefined>;
+  getUserProgressByDay(userId: number, dayIndex: number): Promise<UserProgress | undefined>;
   getUserProgressForWeek(userId: number, startDate: string): Promise<UserProgress[]>;
   createOrUpdateUserProgress(progress: InsertUserProgress): Promise<UserProgress>;
+  
+  // Day completion and access control methods
+  isDayCompleted(userId: number, dayIndex: number): Promise<boolean>;
+  markDayCompleted(userId: number, dayIndex: number): Promise<void>;
+  getNextAvailableDay(userId: number): Promise<number>;
+  canAccessDay(userId: number, dayIndex: number): Promise<boolean>;
+  getCompletedDays(userId: number): Promise<number[]>;
 
   // Knowledge areas methods
   getKnowledgeAreas(): Promise<KnowledgeArea[]>;
@@ -3843,8 +3851,12 @@ The future of Bitcoin depends on continued adoption, technological development, 
         id: existing.id,
         userId: insertProgress.userId,
         date: insertProgress.date,
+        dayIndex: insertProgress.dayIndex !== undefined ? insertProgress.dayIndex : existing.dayIndex,
         factsViewed: insertProgress.factsViewed !== undefined ? insertProgress.factsViewed : existing.factsViewed,
         lessonCompleted: insertProgress.lessonCompleted !== undefined ? insertProgress.lessonCompleted : existing.lessonCompleted,
+        quizCompleted: insertProgress.quizCompleted !== undefined ? insertProgress.quizCompleted : existing.quizCompleted,
+        dayCompleted: insertProgress.dayCompleted !== undefined ? insertProgress.dayCompleted : existing.dayCompleted,
+        completedAt: insertProgress.completedAt !== undefined ? insertProgress.completedAt : existing.completedAt,
         progressPercentage: insertProgress.progressPercentage || existing.progressPercentage
       };
       this.userProgress.set(key, updated);
@@ -3854,13 +3866,92 @@ The future of Bitcoin depends on continued adoption, technological development, 
         id: this.currentProgressId++,
         userId: insertProgress.userId,
         date: insertProgress.date,
+        dayIndex: insertProgress.dayIndex || 0,
         factsViewed: insertProgress.factsViewed || 0,
         lessonCompleted: insertProgress.lessonCompleted || false,
+        quizCompleted: insertProgress.quizCompleted || false,
+        dayCompleted: insertProgress.dayCompleted || false,
+        completedAt: insertProgress.completedAt || null,
         progressPercentage: insertProgress.progressPercentage || 0
       };
       this.userProgress.set(key, progress);
       return progress;
     }
+  }
+
+  async getUserProgressByDay(userId: number, dayIndex: number): Promise<UserProgress | undefined> {
+    for (const progress of this.userProgress.values()) {
+      if (progress.userId === userId && progress.dayIndex === dayIndex) {
+        return progress;
+      }
+    }
+    return undefined;
+  }
+
+  async isDayCompleted(userId: number, dayIndex: number): Promise<boolean> {
+    const progress = await this.getUserProgressByDay(userId, dayIndex);
+    return progress?.dayCompleted || false;
+  }
+
+  async markDayCompleted(userId: number, dayIndex: number): Promise<void> {
+    const today = new Date().toISOString().split('T')[0];
+    await this.createOrUpdateUserProgress({
+      userId,
+      date: today,
+      dayIndex,
+      dayCompleted: true,
+      completedAt: new Date()
+    });
+  }
+
+  async getNextAvailableDay(userId: number): Promise<number> {
+    const completedDays = await this.getCompletedDays(userId);
+    
+    // Find the first incomplete day starting from 0
+    for (let day = 0; day < 30; day++) {
+      if (!completedDays.includes(day)) {
+        return day;
+      }
+    }
+    
+    // If all days 0-29 are complete, return current calendar day but cap at 29
+    const today = new Date();
+    const startDate = new Date('2025-01-01'); // App start date
+    const daysSinceStart = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    return Math.min(daysSinceStart, 29);
+  }
+
+  async canAccessDay(userId: number, dayIndex: number): Promise<boolean> {
+    // Can't access future content beyond current calendar day
+    const today = new Date();
+    const startDate = new Date('2025-01-01'); // App start date  
+    const daysSinceStart = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (dayIndex > daysSinceStart) {
+      return false; // Future content not available yet
+    }
+    
+    // Must complete all previous days before accessing this day
+    for (let prevDay = 0; prevDay < dayIndex; prevDay++) {
+      const isCompleted = await this.isDayCompleted(userId, prevDay);
+      if (!isCompleted) {
+        return false; // Previous day not completed
+      }
+    }
+    
+    return true;
+  }
+
+  async getCompletedDays(userId: number): Promise<number[]> {
+    const completedDays: number[] = [];
+    
+    for (const progress of this.userProgress.values()) {
+      if (progress.userId === userId && progress.dayCompleted) {
+        completedDays.push(progress.dayIndex);
+      }
+    }
+    
+    return completedDays.sort((a, b) => a - b);
   }
 
   async getKnowledgeAreas(): Promise<KnowledgeArea[]> {

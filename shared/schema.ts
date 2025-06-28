@@ -43,8 +43,12 @@ export const userProgress = pgTable("user_progress", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
   date: text("date").notNull(), // YYYY-MM-DD format
+  dayIndex: integer("day_index").notNull(), // which day of curriculum this represents
   factsViewed: integer("facts_viewed").notNull().default(0),
   lessonCompleted: boolean("lesson_completed").notNull().default(false),
+  quizCompleted: boolean("quiz_completed").notNull().default(false),
+  dayCompleted: boolean("day_completed").notNull().default(false), // all activities finished
+  completedAt: timestamp("completed_at"), // when day was fully completed
   progressPercentage: integer("progress_percentage").notNull().default(0),
 });
 

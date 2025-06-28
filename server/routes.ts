@@ -127,6 +127,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Day completion and access control routes
+  app.get("/api/next-available-day/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const nextDay = await storage.getNextAvailableDay(userId);
+      res.json({ dayIndex: nextDay });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get next available day" });
+    }
+  });
+
+  app.get("/api/can-access-day/:userId/:dayIndex", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const dayIndex = parseInt(req.params.dayIndex);
+      const canAccess = await storage.canAccessDay(userId, dayIndex);
+      res.json({ canAccess });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to check day access" });
+    }
+  });
+
+  app.post("/api/complete-day", async (req, res) => {
+    try {
+      const { userId, dayIndex } = req.body;
+      await storage.markDayCompleted(userId, dayIndex);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to mark day completed" });
+    }
+  });
+
+  app.get("/api/completed-days/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const completedDays = await storage.getCompletedDays(userId);
+      res.json({ completedDays });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get completed days" });
+    }
+  });
+
   // Get knowledge areas
   app.get("/api/knowledge-areas", async (req, res) => {
     try {

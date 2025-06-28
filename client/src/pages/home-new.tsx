@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -287,6 +287,7 @@ type MoreSubTab = "store";
 
 export default function Home() {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [activeSection, setActiveSection] = useState<MainSection>("learn");
   const [learnSubTab, setLearnSubTab] = useState<LearnSubTab>("today");
   const [simulationsSubTab, setSimulationsSubTab] = useState<SimulationsSubTab>("safety");
@@ -296,6 +297,42 @@ export default function Home() {
   const [testDayOverride, setTestDayOverride] = useState<number | null>(0);
   const naturalDayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24)) % 30; // Range 0-29 (0-based)
   const currentDayIndex = testDayOverride !== null ? testDayOverride : naturalDayIndex;
+  
+  // Day access control queries
+  const { data: dayAccessible = false } = useQuery({
+    queryKey: ['/api/day-access', 1, currentDayIndex], // userId=1 (default user)
+    queryFn: () => fetch(`/api/day-access/1/${currentDayIndex}`).then(res => res.json())
+  });
+  
+  const { data: dayCompleted = false } = useQuery({
+    queryKey: ['/api/day-completed', 1, currentDayIndex],
+    queryFn: () => fetch(`/api/day-completed/1/${currentDayIndex}`).then(res => res.json())
+  });
+  
+  const { data: nextAvailableDay = 0 } = useQuery({
+    queryKey: ['/api/next-available-day', 1],
+    queryFn: () => fetch('/api/next-available-day/1').then(res => res.json())
+  });
+
+  // Mark day as completed mutation
+  const markDayCompletedMutation = useMutation({
+    mutationFn: (dayIndex: number) => 
+      fetch('/api/mark-day-completed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: 1, dayIndex })
+      }),
+    onSuccess: () => {
+      // Invalidate relevant queries to refresh access data
+      queryClient.invalidateQueries({ queryKey: ['/api/day-access'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/day-completed'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/next-available-day'] });
+      toast({
+        title: "Day Complete!",
+        description: "Great progress! Come back tomorrow for the next lesson.",
+      });
+    }
+  });
 
   const [convictionSubTab, setConvictionSubTab] = useState<"whitepaper" | "books" | "videos">("whitepaper");
   const [showSplash, setShowSplash] = useState(true);
@@ -2120,44 +2157,87 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Day Navigation Controls for Testing Generated Content */}
+            {/* Day Access Control Navigation */}
             {learnSubTab === "today" && (
               <div className="flex justify-center">
                 <div className="flex items-center gap-3 bg-zinc-800/30 rounded-lg p-3 border border-zinc-700">
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setTestDayOverride(prev => Math.max(1, (prev || currentDayIndex) - 1))}
-                    className="text-xs px-2 py-1"
+                    onClick={() => setTestDayOverride(prev => Math.max(0, (prev || currentDayIndex) - 1))}
+                    disabled={currentDayIndex <= 0}
+                    className="text-xs px-2 py-1 disabled:opacity-50"
                   >
                     <ArrowLeft className="w-3 h-3" />
                     Prev Day
                   </Button>
                   
                   <div className="text-center">
-                    <div className="text-xs text-zinc-400">Testing Day</div>
-                    <div className="text-sm font-medium text-white">{currentDayIndex}</div>
+                    <div className="text-xs text-zinc-400">Day {currentDayIndex + 1}</div>
+                    <div className="text-sm font-medium text-white">
+                      {dayCompleted ? (
+                        <span className="flex items-center gap-1 text-green-400">
+                          <CheckCircle className="w-3 h-3" />
+                          Complete
+                        </span>
+                      ) : dayAccessible ? (
+                        <span className="text-orange-400">Available</span>
+                      ) : (
+                        <span className="flex items-center gap-1 text-zinc-500">
+                          <Lock className="w-3 h-3" />
+                          Locked
+                        </span>
+                      )}
+                    </div>
                   </div>
                   
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setTestDayOverride(prev => Math.min(30, (prev || currentDayIndex) + 1))}
-                    className="text-xs px-2 py-1"
+                    onClick={() => {
+                      const nextDay = Math.min(29, currentDayIndex + 1);
+                      setTestDayOverride(nextDay);
+                    }}
+                    disabled={currentDayIndex >= nextAvailableDay}
+                    className="text-xs px-2 py-1 disabled:opacity-50"
+                    title={currentDayIndex >= nextAvailableDay ? "Complete today's lesson first" : "Next day"}
                   >
                     Next Day
                     <ArrowRight className="w-3 h-3" />
                   </Button>
                   
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setTestDayOverride(naturalDayIndex)}
-                    className="text-xs px-2 py-1 text-orange-400 hover:text-orange-300"
-                  >
-                    Reset to Today
-                  </Button>
+                  {dayCompleted && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setTestDayOverride(nextAvailableDay)}
+                      className="text-xs px-2 py-1 text-orange-400 hover:text-orange-300"
+                    >
+                      Go to Current
+                    </Button>
+                  )}
                 </div>
+              </div>
+            )}
+
+            {/* Access Control Message */}
+            {learnSubTab === "today" && !dayAccessible && (
+              <div className="flex justify-center">
+                <Card className="bg-zinc-900 border-zinc-700 max-w-md">
+                  <CardContent className="p-4 text-center">
+                    <Lock className="w-8 h-8 text-zinc-500 mx-auto mb-2" />
+                    <h3 className="text-lg font-semibold text-white mb-2">Day {currentDayIndex + 1} Locked</h3>
+                    <p className="text-zinc-400 text-sm mb-3">
+                      Complete previous days to unlock this lesson. One day per calendar day keeps you engaged and builds lasting habits.
+                    </p>
+                    <Button
+                      onClick={() => setTestDayOverride(nextAvailableDay)}
+                      className="bg-orange-600 hover:bg-orange-700"
+                    >
+                      Go to Day {nextAvailableDay + 1}
+                    </Button>
+                  </CardContent>
+                </Card>
               </div>
             )}
 
@@ -2325,7 +2405,10 @@ export default function Home() {
 
                 {/* Daily Quiz */}
                 <div data-testid="daily-quiz">
-                  <DailyQuiz dayIndex={currentDayIndex} />
+                  <DailyQuiz 
+                    dayIndex={currentDayIndex} 
+                    onCompletion={() => markDayCompletedMutation.mutate(currentDayIndex)}
+                  />
                 </div>
               </div>
             )}

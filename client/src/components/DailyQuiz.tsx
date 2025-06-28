@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,9 +39,10 @@ interface QuizScore {
 
 interface DailyQuizProps {
   dayIndex: number;
+  onCompletion?: () => void; // Callback when quiz is completed successfully
 }
 
-export default function DailyQuiz({ dayIndex }: DailyQuizProps) {
+export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const [submittedAnswers, setSubmittedAnswers] = useState<Record<number, QuizAnswer>>({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -126,6 +127,11 @@ export default function DailyQuiz({ dayIndex }: DailyQuizProps) {
   const nextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else {
+      // Quiz is complete - check if all questions answered and trigger completion if needed
+      if (userAnswers.length === questions.length && onCompletion) {
+        onCompletion();
+      }
     }
   };
 
@@ -134,6 +140,14 @@ export default function DailyQuiz({ dayIndex }: DailyQuizProps) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
     }
   };
+
+  // Check for quiz completion when all questions are answered
+  useEffect(() => {
+    if (questions.length > 0 && userAnswers.length === questions.length && onCompletion) {
+      // All questions answered, trigger completion callback
+      onCompletion();
+    }
+  }, [questions.length, userAnswers.length, onCompletion]);
 
   if (loadingQuestions) {
     return (
