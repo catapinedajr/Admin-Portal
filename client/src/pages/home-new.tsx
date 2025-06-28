@@ -2900,14 +2900,14 @@ export default function Home() {
                 <div className="space-y-4">
                   <h4 className="text-white font-semibold flex items-center gap-2">
                     <TrendingUp className="w-4 h-4 text-orange-400" />
-                    Money Printing Growth Over Time
+                    Total Supply of Dollars
                   </h4>
                   <div className="bg-zinc-800/50 rounded-lg p-6">
-                    <div className="relative h-48 w-full">
+                    <div className="relative h-56 w-full">
                       {/* Clean SVG Chart */}
-                      <svg viewBox="0 0 400 160" className="w-full h-full">
+                      <svg viewBox="0 0 400 220" className="w-full h-full">
                         {/* Simple background */}
-                        <rect width="400" height="160" fill="transparent" />
+                        <rect width="400" height="220" fill="transparent" />
                         
                         {/* Y-axis labels */}
                         <text x="10" y="15" fill="#9ca3af" fontSize="10">$21.2T</text>
@@ -2917,10 +2917,11 @@ export default function Home() {
                         <text x="10" y="175" fill="#9ca3af" fontSize="10">$0</text>
                         
                         {/* X-axis labels - Evenly spaced per year for dramatic accuracy */}
-                        <text x="50" y="195" fill="#9ca3af" fontSize="10">1920</text>
-                        <text x="173" y="195" fill="#9ca3af" fontSize="10">1960</text>
-                        <text x="295" y="195" fill="#9ca3af" fontSize="10">2000</text>
-                        <text x="370" y="195" fill="#9ca3af" fontSize="10">2025</text>
+                        <text x="50" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">1920</text>
+                        <text x="140" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">1960</text>
+                        <text x="230" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">1990</text>
+                        <text x="320" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">2010</text>
+                        <text x="370" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">2025</text>
                         
                         {/* Money Supply Growth Line - Using Real Federal Reserve Data */}
                         <path
