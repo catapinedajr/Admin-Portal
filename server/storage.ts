@@ -1388,6 +1388,42 @@ The future of Bitcoin depends on continued adoption, technological development, 
         category: "Purpose",
         difficulty: "beginner"
       },
+      {
+        dayIndex: 0,
+        question: "Based on today's lesson, what makes Bitcoin different from traditional digital payments?",
+        optionA: "It uses the internet",
+        optionB: "It doesn't require banks or middlemen",
+        optionC: "It's faster than cash",
+        optionD: "It's accepted everywhere",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin is revolutionary because it allows direct person-to-person transactions without requiring banks or other middlemen.",
+        category: "Technology",
+        difficulty: "beginner"
+      },
+      {
+        dayIndex: 0,
+        question: "According to today's content, what inspired Bitcoin's creation?",
+        optionA: "Making payments faster",
+        optionB: "The 2008 financial crisis and need for trustless money",
+        optionC: "Competing with credit cards",
+        optionD: "Creating a new investment asset",
+        correctAnswer: "B",
+        explanation: "Today's lesson explains that Bitcoin was created in response to the 2008 financial crisis, designed as trustless digital money that doesn't rely on failing financial institutions.",
+        category: "History",
+        difficulty: "intermediate"
+      },
+      {
+        dayIndex: 0,
+        question: "Based on today's lesson, what does 'digital scarcity' mean for Bitcoin?",
+        optionA: "Bitcoin is hard to find online",
+        optionB: "Only tech experts can use it",
+        optionC: "Each Bitcoin is unique and cannot be copied or counterfeited",
+        optionD: "Bitcoin websites are rare",
+        correctAnswer: "C",
+        explanation: "Today's content explains that digital scarcity means each Bitcoin is mathematically unique and cannot be copied, counterfeited, or double-spent, solving a major problem with digital money.",
+        category: "Technology",
+        difficulty: "intermediate"
+      },
 
       // Day 1: How Bitcoin Works (Based on "The Blockchain" content)
       {
