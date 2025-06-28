@@ -3172,7 +3172,7 @@ export default function Home() {
                                   className={`h-full transition-all duration-1000 ${
                                     isActive ? 'bg-orange-500' : 'bg-zinc-600'
                                   }`}
-                                  style={{ width: isActive ? `${Math.min((btc/25000)*2, 100)}%` : '0%' }}
+                                  style={{ width: isActive ? `${Math.min((btc/2750000)*100, 100)}%` : '0%' }}
                                 ></div>
                               </div>
                             </div>
