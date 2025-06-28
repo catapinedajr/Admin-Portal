@@ -75,7 +75,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Content generation route (for testing)
+  // Claude content generation route (for testing)
+  app.post("/api/generate-claude-content/:dayIndex", async (req, res) => {
+    try {
+      const dayIndex = parseInt(req.params.dayIndex);
+      if (isNaN(dayIndex) || dayIndex < 1 || dayIndex > 180) {
+        return res.status(400).json({ message: "Invalid day index. Must be 1-180." });
+      }
+
+      console.log(`🧠 Starting Claude content generation for Day ${dayIndex}...`);
+      
+      const { generateDay1Content, saveDayContentToDatabase } = await import("./claude-content-generator");
+      console.log(`✓ Claude content generator imported successfully`);
+      
+      // Generate content using Claude's curated approach
+      const content = generateDay1Content();
+      console.log(`✓ Content generated:`, { 
+        facts: content.dailyFacts.length, 
+        lesson: content.lesson.title,
+        quizzes: content.quizQuestions.length 
+      });
+      
+      // Save to database
+      await saveDayContentToDatabase(dayIndex, content);
+      console.log(`✓ Content saved to database`);
+      
+      res.json({ 
+        message: `Claude content generated successfully for Day ${dayIndex}`,
+        content: content
+      });
+    } catch (error) {
+      console.error('Claude content generation error:', error);
+      res.status(500).json({ 
+        message: "Failed to generate Claude content", 
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // OpenAI content generation route (for comparison)
   app.post("/api/generate-content/:dayIndex", async (req, res) => {
     try {
       const dayIndex = parseInt(req.params.dayIndex);
@@ -83,11 +121,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid day index. Must be 1-180." });
       }
 
-      console.log(`🤖 Starting content generation for Day ${dayIndex}...`);
+      console.log(`🤖 Starting OpenAI content generation for Day ${dayIndex}...`);
       
-      // Test the import first
       const { generateDayContent, saveDayContentToDatabase } = await import("./content-generator");
-      console.log(`✓ Content generator imported successfully`);
+      console.log(`✓ OpenAI content generator imported successfully`);
       
       // Generate content using OpenAI
       const content = await generateDayContent(dayIndex);
@@ -98,13 +135,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log(`✓ Content saved to database`);
       
       res.json({ 
-        message: `Content generated successfully for Day ${dayIndex}`,
+        message: `OpenAI content generated successfully for Day ${dayIndex}`,
         content: content
       });
     } catch (error) {
-      console.error('Content generation error:', error);
+      console.error('OpenAI content generation error:', error);
       res.status(500).json({ 
-        message: "Failed to generate content", 
+        message: "Failed to generate OpenAI content", 
         error: error instanceof Error ? error.message : "Unknown error"
       });
     }
