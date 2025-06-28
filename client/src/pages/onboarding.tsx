@@ -67,6 +67,19 @@ const onboardingSteps = [
               steady learners gain deep understanding.
             </p>
           </div>
+          
+          <div className="space-y-4 mt-6">
+            <p className="text-zinc-300 font-medium">Here's how you'll learn with us each day:</p>
+            <div className="space-y-2 text-zinc-400 text-left max-w-sm mx-auto">
+              <p>• Discover three simple facts that make Bitcoin less mysterious</p>
+              <p>• Read a short lesson that explains why it matters to you</p>
+              <p>• Take a quick quiz to reinforce what you just learned</p>
+              <p>• When ready, practice with safe simulators (no real money)</p>
+            </div>
+            <p className="text-zinc-500 text-sm">
+              Everything builds on what you learned before. No pressure, no deadlines—just gentle daily progress toward real understanding.
+            </p>
+          </div>
         </div>
       </div>
     )
