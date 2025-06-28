@@ -1365,6 +1365,63 @@ export class MemStorage implements IStorage {
         };
       }
 
+      if (fact.title === "Only 21 Million Ever") {
+        diveDeeper = {
+          explanation: "Bitcoin has a strict limit of exactly 21 million coins built into its computer code. This number can never be changed without everyone agreeing, which will never happen. Regular money has no limit - governments can print as much as they want, making your money worth less.",
+          examples: [
+            "US Dollar: No limit - $20 trillion printed since 2008",
+            "Bitcoin: Hard limit of 21 million coins forever",
+            "Venezuelan Bolívar: Printed so much it became worthless",
+            "Bitcoin: Cannot be inflated or devalued by printing"
+          ],
+          visualDescription: "Imagine if there were only 21 million rare diamonds in the entire world, and everyone knew for certain that no more could ever be created. That scarcity makes each diamond incredibly valuable.",
+          keyTakeaways: [
+            "Exactly 21 million Bitcoin will ever exist",
+            "Computer code makes this limit unchangeable",
+            "No government can print more Bitcoin",
+            "Scarcity protects your money's value over time"
+          ]
+        };
+      }
+
+      if (fact.title === "Cutting Rewards in Half") {
+        diveDeeper = {
+          explanation: "Every four years, Bitcoin automatically cuts the mining reward in half. This happens like clockwork and is written into the code. It makes new Bitcoin increasingly rare over time, like turning down the water faucet that creates new coins.",
+          examples: [
+            "2009-2012: Miners got 50 Bitcoin every 10 minutes",
+            "2012-2016: Reward cut to 25 Bitcoin every 10 minutes",
+            "2016-2020: Reward cut to 12.5 Bitcoin every 10 minutes",
+            "2020-2024: Current reward is 6.25 Bitcoin every 10 minutes"
+          ],
+          visualDescription: "Picture a magic money tree that drops fewer and fewer coins every four years. Eventually, the tree stops dropping coins completely, making all existing coins more valuable.",
+          keyTakeaways: [
+            "Mining rewards get cut in half every four years",
+            "This makes new Bitcoin increasingly scarce",
+            "The halving is automatic and unstoppable",
+            "Less new supply often makes Bitcoin more valuable"
+          ]
+        };
+      }
+
+      if (fact.title === "Rules That Can't Change") {
+        diveDeeper = {
+          explanation: "Bitcoin's most important rules are protected by mathematics and thousands of computers worldwide. The 21 million limit, 10-minute blocks, and halving schedule cannot be changed unless almost everyone agrees - which is nearly impossible for fundamental rules.",
+          examples: [
+            "US Dollar rules: Changed by small group of Federal Reserve officials",
+            "Bitcoin rules: Require agreement from thousands of participants worldwide",
+            "Bank policies: Can change overnight without asking customers",
+            "Bitcoin: Major changes need overwhelming global consensus"
+          ],
+          visualDescription: "Think of Bitcoin like a constitution protected by thousands of guardians. To change the basic rules, you'd need to convince almost all the guardians at once - nearly impossible.",
+          keyTakeaways: [
+            "Core rules are protected by mathematics and consensus",
+            "No single person or group can change Bitcoin's basic rules",
+            "21 million limit is practically unchangeable",
+            "This protection makes Bitcoin trustworthy money"
+          ]
+        };
+      }
+
       const newFact: DailyFact = { 
         ...fact, 
         id: this.currentFactId++,
