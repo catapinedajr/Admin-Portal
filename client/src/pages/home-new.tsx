@@ -4416,7 +4416,17 @@ export default function Home() {
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
                     <h4 className="text-lg font-bold text-white mb-4">Interactive Wallet Explorer</h4>
-                    <p className="text-zinc-400 text-sm mb-6">Click on any wallet type to learn detailed information</p>
+                    
+                    <div className="p-4 bg-zinc-800/50 rounded-lg border border-zinc-700 mb-6">
+                      <p className="text-zinc-300 text-sm leading-relaxed mb-3">
+                        <span className="font-semibold text-white">Bitcoin wallets</span> are software or hardware tools that store your private keys—the secret codes that prove you own your Bitcoin. Unlike a physical wallet that holds cash, Bitcoin wallets don't actually store Bitcoin itself. Instead, they manage the cryptographic keys that give you access to your Bitcoin on the blockchain.
+                      </p>
+                      <p className="text-zinc-300 text-sm leading-relaxed">
+                        <span className="font-semibold text-orange-300">Why this matters:</span> Your choice of wallet directly impacts your security, convenience, and true ownership of Bitcoin. Different wallet types offer different trade-offs between security and ease of use, making it crucial to understand your options before storing any Bitcoin.
+                      </p>
+                    </div>
+                    
+                    <p className="text-zinc-400 text-sm mb-6">Click on any wallet type below to learn detailed information</p>
                     
                     <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4 mb-6">
                       {walletTypes.map((wallet, index) => (
