@@ -4589,32 +4589,35 @@ export default function Home() {
 
                         {/* Current Simulation */}
                         <Card className="bg-zinc-800 border-zinc-700">
-                          <CardContent className="p-6">
-                            <h6 className="font-semibold text-white mb-3">{safetySimulations[safetyStage]?.title}</h6>
-                            <p className="text-zinc-400 text-sm mb-4">{safetySimulations[safetyStage]?.description}</p>
+                          <CardContent className="p-4 sm:p-6">
+                            <div className="flex justify-between items-center mb-3">
+                              <h6 className="font-semibold text-white text-sm sm:text-base">{safetySimulations[safetyStage]?.title}</h6>
+                              <span className="text-xs text-zinc-500">{safetyStage + 1}/12</span>
+                            </div>
+                            <p className="text-zinc-400 text-xs sm:text-sm mb-4 leading-relaxed">{safetySimulations[safetyStage]?.description}</p>
 
                             {/* Phishing Email Simulation */}
                             {safetyStage === 0 && (
-                              <div className="space-y-4">
-                                <div className="p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
-                                  <div className="text-xs text-zinc-500 mb-2">Email Inbox - Which email is dangerous?</div>
+                              <div className="space-y-3">
+                                <div className="p-3 sm:p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
+                                  <div className="text-xs text-zinc-500 mb-3">Email Inbox - Which email is dangerous?</div>
                                   <div className="space-y-2">
                                     {safetySimulations[0]?.emails?.map((email, index) => (
                                       <button
                                         key={index}
                                         onClick={() => setSelectedOption(index)}
-                                        className={`w-full p-3 border rounded-lg text-left transition-colors ${
+                                        className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
                                           selectedOption === index 
                                             ? 'border-orange-500 bg-orange-500/10' 
                                             : 'border-zinc-600 hover:border-zinc-500'
                                         }`}
                                       >
                                         <div className="flex justify-between items-start mb-1">
-                                          <span className="text-white text-sm font-medium">{email.from}</span>
-                                          <span className="text-zinc-500 text-xs">Today, 2:30 PM</span>
+                                          <span className="text-white text-xs sm:text-sm font-medium truncate mr-2">{email.from}</span>
+                                          <span className="text-zinc-500 text-xs shrink-0">Today</span>
                                         </div>
-                                        <div className="text-white text-sm mb-1">{email.subject}</div>
-                                        <div className="text-zinc-400 text-xs">{email.preview}</div>
+                                        <div className="text-white text-xs sm:text-sm mb-1 line-clamp-1">{email.subject}</div>
+                                        <div className="text-zinc-400 text-xs line-clamp-2 leading-relaxed">{email.preview}</div>
                                       </button>
                                     ))}
                                   </div>
@@ -4624,14 +4627,14 @@ export default function Home() {
 
                             {/* Seed Phrase Storage Simulation */}
                             {safetyStage === 1 && (
-                              <div className="space-y-4">
-                                <div className="p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
-                                  <div className="text-sm text-zinc-300 mb-3">
+                              <div className="space-y-3">
+                                <div className="p-3 sm:p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
+                                  <div className="text-xs sm:text-sm text-zinc-300 mb-3">
                                     You just received your 12-word seed phrase. Where should you store it?
                                   </div>
-                                  <div className="p-3 bg-zinc-800 rounded border border-dashed border-zinc-500 mb-4">
+                                  <div className="p-2 sm:p-3 bg-zinc-800 rounded border border-dashed border-zinc-500 mb-3">
                                     <div className="text-xs text-zinc-500 mb-2">Your Seed Phrase:</div>
-                                    <div className="grid grid-cols-4 gap-2 text-xs text-orange-300 font-mono">
+                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 sm:gap-2 text-xs text-orange-300 font-mono">
                                       <span>1. abandon</span><span>2. ability</span><span>3. able</span><span>4. about</span>
                                       <span>5. above</span><span>6. absent</span><span>7. absorb</span><span>8. abstract</span>
                                       <span>9. absurd</span><span>10. abuse</span><span>11. access</span><span>12. accident</span>
@@ -4642,7 +4645,7 @@ export default function Home() {
                                       <button
                                         key={index}
                                         onClick={() => setSelectedOption(index)}
-                                        className={`w-full p-3 border rounded-lg text-left transition-colors ${
+                                        className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
                                           selectedOption === index 
                                             ? 'border-orange-500 bg-orange-500/10' 
                                             : 'border-zinc-600 hover:border-zinc-500'
@@ -4663,11 +4666,11 @@ export default function Home() {
 
                             {/* Address Verification Simulation */}
                             {safetyStage === 2 && (
-                              <div className="space-y-4">
-                                <div className="p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
-                                  <div className="space-y-4">
+                              <div className="space-y-3">
+                                <div className="p-3 sm:p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
+                                  <div className="space-y-3">
                                     <div>
-                                      <div className="text-sm text-zinc-300 mb-2">
+                                      <div className="text-xs sm:text-sm text-zinc-300 mb-2">
                                         Address you copied from your friend:
                                       </div>
                                       <div className="text-green-300 font-mono text-xs break-all bg-zinc-800 p-2 rounded border border-green-700/50">
@@ -4676,28 +4679,26 @@ export default function Home() {
                                     </div>
                                     
                                     <div>
-                                      <div className="text-sm text-zinc-300 mb-2">
+                                      <div className="text-xs sm:text-sm text-zinc-300 mb-2">
                                         Address your wallet is showing:
                                       </div>
                                       <div className="text-red-300 font-mono text-xs break-all bg-zinc-800 p-2 rounded border border-red-700/50">
                                         {safetySimulations[2]?.displayed}
                                       </div>
                                     </div>
-                                    
-
                                   </div>
-                                  <div className="space-y-2">
+                                  <div className="space-y-2 mt-3">
                                     {safetySimulations[2]?.options?.map((option, index) => (
                                       <button
                                         key={index}
                                         onClick={() => setSelectedOption(index)}
-                                        className={`w-full p-3 border rounded-lg text-left transition-colors ${
+                                        className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
                                           selectedOption === index 
                                             ? 'border-orange-500 bg-orange-500/10' 
                                             : 'border-zinc-600 hover:border-zinc-500'
                                         }`}
                                       >
-                                        <div className="text-orange-300 text-sm font-mono">
+                                        <div className="text-orange-300 text-xs sm:text-sm">
                                           {'text' in option ? option.text : 'Option'}
                                         </div>
                                       </button>
@@ -4709,23 +4710,23 @@ export default function Home() {
 
                             {/* Scam Recognition Simulation */}
                             {safetyStage === 3 && (
-                              <div className="space-y-4">
-                                <div className="p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
-                                  <div className="text-sm text-zinc-300 mb-4">
+                              <div className="space-y-3">
+                                <div className="p-3 sm:p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
+                                  <div className="text-xs sm:text-sm text-zinc-300 mb-3">
                                     Which message is legitimate and safe? Click on the safe message (avoid the two scams):
                                   </div>
-                                  <div className="space-y-3">
+                                  <div className="space-y-2">
                                     {safetySimulations[3]?.scenarios?.map((scenario, index) => (
                                       <button
                                         key={index}
                                         onClick={() => setSelectedOption(index)}
-                                        className={`w-full p-4 border rounded-lg text-left transition-colors ${
+                                        className={`w-full p-3 border rounded-lg text-left transition-colors ${
                                           selectedOption === index 
                                             ? 'border-orange-500 bg-orange-500/10' 
                                             : 'border-zinc-600 hover:border-zinc-500'
                                         }`}
                                       >
-                                        <div className="text-white text-sm leading-relaxed">
+                                        <div className="text-white text-xs sm:text-sm leading-relaxed">
                                           "{scenario.message}"
                                         </div>
                                       </button>
@@ -4737,45 +4738,45 @@ export default function Home() {
 
                             {/* Generic Options-based Simulations (stages 4-11) */}
                             {safetyStage >= 4 && safetyStage <= 11 && (
-                              <div className="space-y-4">
-                                <div className="p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
+                              <div className="space-y-3">
+                                <div className="p-3 sm:p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
                                   {safetyStage === 4 && (
-                                    <div className="text-sm text-zinc-300 mb-3">
+                                    <div className="text-xs sm:text-sm text-zinc-300 mb-3">
                                       You want to buy Bitcoin for the first time. Choose the safest approach:
                                     </div>
                                   )}
                                   {safetyStage === 5 && (
-                                    <div className="text-sm text-zinc-300 mb-3">
+                                    <div className="text-xs sm:text-sm text-zinc-300 mb-3">
                                       You're at a coffee shop and want to check your Bitcoin wallet:
                                     </div>
                                   )}
                                   {safetyStage === 6 && (
-                                    <div className="text-sm text-zinc-300 mb-3">
+                                    <div className="text-xs sm:text-sm text-zinc-300 mb-3">
                                       You need to download a Bitcoin wallet. Where do you get it?
                                     </div>
                                   )}
                                   {safetyStage === 7 && (
-                                    <div className="text-sm text-zinc-300 mb-3">
+                                    <div className="text-xs sm:text-sm text-zinc-300 mb-3">
                                       Someone calls claiming to be from your exchange, asking for your 2FA code:
                                     </div>
                                   )}
                                   {safetyStage === 8 && (
-                                    <div className="text-sm text-zinc-300 mb-3">
-                                      You bought a hardware wallet on eBay. What should you do before using it?
+                                    <div className="text-xs sm:text-sm text-zinc-300 mb-3">
+                                      You want to buy a hardware wallet for storing Bitcoin. What's the best approach?
                                     </div>
                                   )}
                                   {safetyStage === 9 && (
-                                    <div className="text-sm text-zinc-300 mb-3">
+                                    <div className="text-xs sm:text-sm text-zinc-300 mb-3">
                                       You wrote down your seed phrase. How do you verify it's correct?
                                     </div>
                                   )}
                                   {safetyStage === 10 && (
-                                    <div className="text-sm text-zinc-300 mb-3">
-                                      Your wallet suggests a $200 fee for a $50 Bitcoin transaction. What's happening?
+                                    <div className="text-xs sm:text-sm text-zinc-300 mb-3">
+                                      Your wallet suggests a $200 fee for a $50 Bitcoin transaction. What should you do?
                                     </div>
                                   )}
                                   {safetyStage === 11 && (
-                                    <div className="text-sm text-zinc-300 mb-3">
+                                    <div className="text-xs sm:text-sm text-zinc-300 mb-3">
                                       You lost access to your wallet. Someone offers to recover it for 50% of the funds:
                                     </div>
                                   )}
@@ -4784,13 +4785,13 @@ export default function Home() {
                                       <button
                                         key={index}
                                         onClick={() => setSelectedOption(index)}
-                                        className={`w-full p-3 border rounded-lg text-left transition-colors ${
+                                        className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
                                           selectedOption === index 
                                             ? 'border-orange-500 bg-orange-500/10' 
                                             : 'border-zinc-600 hover:border-zinc-500'
                                         }`}
                                       >
-                                        <div className="text-white text-sm font-medium">
+                                        <div className="text-white text-xs sm:text-sm font-medium leading-relaxed">
                                           {'method' in option ? option.method : 'Option'}
                                         </div>
                                       </button>
@@ -4801,7 +4802,7 @@ export default function Home() {
                             )}
 
                             {/* Action Buttons */}
-                            <div className="flex gap-3 pt-4">
+                            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-3">
                               <Button
                                 onClick={() => {
                                   if (selectedOption !== null) {
@@ -4809,7 +4810,7 @@ export default function Home() {
                                   }
                                 }}
                                 disabled={selectedOption === null || showResult}
-                                className="bg-orange-600 hover:bg-orange-700"
+                                className="bg-orange-600 hover:bg-orange-700 text-sm py-2 px-4"
                               >
                                 Submit Answer
                               </Button>
@@ -4818,7 +4819,7 @@ export default function Home() {
                                 <Button
                                   onClick={nextSafetyStage}
                                   variant="outline"
-                                  className="border-zinc-600"
+                                  className="border-zinc-600 text-sm py-2 px-4"
                                 >
                                   {safetyStage < safetySimulations.length - 1 ? 'Next Scenario' : 'Finish Test'}
                                 </Button>
@@ -4827,26 +4828,26 @@ export default function Home() {
 
                             {/* Result Feedback */}
                             {showResult && (
-                              <div className={`mt-4 p-4 rounded-lg border ${
+                              <div className={`mt-3 p-3 sm:p-4 rounded-lg border ${
                                 safetyScore > safetyStage ? 'bg-green-900/20 border-green-700' : 'bg-red-900/20 border-red-700'
                               }`}>
                                 {safetyScore > safetyStage ? (
                                   <div>
                                     <div className="flex items-center gap-2 mb-2">
-                                      <CheckCircle className="w-5 h-5 text-green-400" />
-                                      <span className="text-green-300 font-medium">Correct!</span>
+                                      <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" />
+                                      <span className="text-green-300 font-medium text-sm">Correct!</span>
                                     </div>
-                                    <p className="text-green-100 text-sm">
+                                    <p className="text-green-100 text-xs sm:text-sm leading-relaxed">
                                       {safetySimulations[safetyStage]?.explanation || 'Good job identifying the security threat!'}
                                     </p>
                                   </div>
                                 ) : (
                                   <div>
                                     <div className="flex items-center gap-2 mb-2">
-                                      <AlertTriangle className="w-5 h-5 text-red-400" />
-                                      <span className="text-red-300 font-medium">Be Careful!</span>
+                                      <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-red-400" />
+                                      <span className="text-red-300 font-medium text-sm">Be Careful!</span>
                                     </div>
-                                    <p className="text-red-100 text-sm">
+                                    <p className="text-red-100 text-xs sm:text-sm leading-relaxed">
                                       {safetySimulations[safetyStage]?.explanation || 'This could have put your Bitcoin at risk. Review the training materials above.'}
                                     </p>
                                   </div>
@@ -4858,8 +4859,8 @@ export default function Home() {
                       </div>
                     ) : (
                       /* Final Results */
-                      <div className="text-center space-y-4">
-                        <div className={`p-6 rounded-lg border ${
+                      <div className="text-center space-y-3">
+                        <div className={`p-4 sm:p-6 rounded-lg border ${
                           safetyScore >= safetySimulations.length * 0.8 
                             ? 'bg-green-900/20 border-green-700' 
                             : safetyScore >= safetySimulations.length * 0.6
@@ -4868,29 +4869,35 @@ export default function Home() {
                         }`}>
                           {safetyScore >= safetySimulations.length * 0.8 ? (
                             <div>
-                              <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-3" />
-                              <h5 className="text-xl font-bold text-green-300 mb-2">Security Expert! 🛡️</h5>
-                              <p className="text-green-100 mb-4">
+                              <CheckCircle className="w-8 h-8 sm:w-12 sm:h-12 text-green-400 mx-auto mb-2 sm:mb-3" />
+                              <h5 className="text-lg sm:text-xl font-bold text-green-300 mb-2">Security Expert! 🛡️</h5>
+                              <p className="text-green-100 mb-3 text-sm sm:text-base">
                                 Score: {safetyScore}/{safetySimulations.length} ({Math.round((safetyScore/safetySimulations.length)*100)}%) - Your Bitcoin will be safe!
                               </p>
-                              <p className="text-green-100 text-sm">
+                              <p className="text-green-100 text-xs sm:text-sm leading-relaxed">
                                 You've mastered Bitcoin security fundamentals. You can confidently protect your assets from the most common threats.
                               </p>
                             </div>
                           ) : safetyScore >= safetySimulations.length * 0.6 ? (
                             <div>
-                              <AlertTriangle className="w-12 h-12 text-orange-400 mx-auto mb-3" />
-                              <h5 className="text-xl font-bold text-orange-300 mb-2">Good Start! ⚠️</h5>
-                              <p className="text-orange-100 mb-4">
-                                Score: {safetyScore}/{safetySimulations.length} - Review the training materials above.
+                              <AlertTriangle className="w-8 h-8 sm:w-12 sm:h-12 text-orange-400 mx-auto mb-2 sm:mb-3" />
+                              <h5 className="text-lg sm:text-xl font-bold text-orange-300 mb-2">Good Start! ⚠️</h5>
+                              <p className="text-orange-100 mb-3 text-sm sm:text-base">
+                                Score: {safetyScore}/{safetySimulations.length} ({Math.round((safetyScore/safetySimulations.length)*100)}%) - Review the training materials above.
+                              </p>
+                              <p className="text-orange-100 text-xs sm:text-sm leading-relaxed">
+                                You understand some security basics, but there's room for improvement to keep your Bitcoin truly safe.
                               </p>
                             </div>
                           ) : (
                             <div>
-                              <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-3" />
-                              <h5 className="text-xl font-bold text-red-300 mb-2">Practice More! 🚨</h5>
-                              <p className="text-red-100 mb-4">
-                                Score: {safetyScore}/{safetySimulations.length} - Your Bitcoin could be at risk!
+                              <AlertTriangle className="w-8 h-8 sm:w-12 sm:h-12 text-red-400 mx-auto mb-2 sm:mb-3" />
+                              <h5 className="text-lg sm:text-xl font-bold text-red-300 mb-2">Practice More! 🚨</h5>
+                              <p className="text-red-100 mb-3 text-sm sm:text-base">
+                                Score: {safetyScore}/{safetySimulations.length} ({Math.round((safetyScore/safetySimulations.length)*100)}%) - Your Bitcoin could be at risk!
+                              </p>
+                              <p className="text-red-100 text-xs sm:text-sm leading-relaxed">
+                                Review the security fundamentals before handling real Bitcoin. Practice makes perfect.
                               </p>
                             </div>
                           )}
@@ -4904,7 +4911,7 @@ export default function Home() {
                               setSafetyCompleted(false);
                             }}
                             variant="outline"
-                            className="border-zinc-600"
+                            className="border-zinc-600 text-sm py-2 px-4 mt-3"
                           >
                             Retake Test
                           </Button>
