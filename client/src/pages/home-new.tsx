@@ -4329,12 +4329,12 @@ export default function Home() {
                       <div className="p-2 bg-red-600/20 rounded-lg">
                         <AlertTriangle className="w-6 h-6 text-red-400" />
                       </div>
-                      <h4 className="text-lg font-bold text-white">🧠 Social Engineering: The #1 Bitcoin Threat</h4>
+                      <h4 className="text-lg font-bold text-white">Social Engineering: The #1 Bitcoin Threat</h4>
                     </div>
                     
                     <div className="space-y-4">
                       <div className="p-4 bg-red-900/20 border border-red-700/50 rounded-lg">
-                        <h5 className="font-semibold text-red-300 mb-2">📊 2025 Threat Statistics</h5>
+                        <h5 className="font-semibold text-red-300 mb-2">2025 Threat Statistics</h5>
                         <div className="grid grid-cols-2 gap-4 text-sm">
                           <div>
                             <p className="text-white font-medium">$2.1 Billion Stolen</p>
