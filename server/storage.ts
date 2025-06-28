@@ -1428,18 +1428,7 @@ The future of Bitcoin depends on continued adoption, technological development, 
       },
 
       // Day 3: Bitcoin Mining & Security
-      {
-        dayIndex: 3,
-        question: "What is Bitcoin mining?",
-        optionA: "Digging for Bitcoin underground",
-        optionB: "Creating new Bitcoin out of thin air",
-        optionC: "Solving mathematical puzzles to secure the network",
-        optionD: "Trading Bitcoin for profit",
-        correctAnswer: "C",
-        explanation: "Bitcoin mining involves using computational power to solve mathematical puzzles, securing the network and earning Bitcoin rewards.",
-        category: "Mining",
-        difficulty: "beginner"
-      },
+
       {
         dayIndex: 3,
         question: "What is proof of work?",
@@ -1691,20 +1680,6 @@ The future of Bitcoin depends on continued adoption, technological development, 
         correctAnswer: "B",
         explanation: "On May 22, 2010, Laszlo Hanyecz bought two pizzas for 10,000 Bitcoin, now celebrated as Bitcoin Pizza Day.",
         category: "History",
-        difficulty: "intermediate"
-      },
-
-      // Day 10: Bitcoin Scalability
-      {
-        dayIndex: 10,
-        question: "How many transactions can Bitcoin's base layer process per second?",
-        optionA: "About 7 transactions",
-        optionB: "About 100 transactions",
-        optionC: "About 1,000 transactions",
-        optionD: "Unlimited transactions",
-        correctAnswer: "A",
-        explanation: "Bitcoin's base layer can process approximately 7 transactions per second due to block size and time constraints.",
-        category: "Scalability",
         difficulty: "intermediate"
       },
       {
