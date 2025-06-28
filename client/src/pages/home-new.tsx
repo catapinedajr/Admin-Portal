@@ -1835,26 +1835,18 @@ export default function Home() {
       options: [
         {
           method: "Screenshot on phone",
-          security: "Very Dangerous",
-          explanation: "Photos can be backed up to cloud, hacked, or seen by others. Never store seed phrases digitally.",
           safe: false
         },
         {
           method: "Write on paper, store in safe",
-          security: "Very Safe", 
-          explanation: "Physical storage offline is the gold standard. Keep multiple copies in secure locations.",
           safe: true
         },
         {
           method: "Save in password manager",
-          security: "Risky",
-          explanation: "Digital storage creates attack vectors. Password managers can be breached or corrupted.",
           safe: false
         },
         {
           method: "Memorize only",
-          security: "Dangerous",
-          explanation: "Memory fails. You could forget it or be unable to access it if something happens to you.",
           safe: false
         }
       ]
@@ -1866,12 +1858,11 @@ export default function Home() {
       copied: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
       displayed: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w1h",
       options: [
-        { text: "Addresses match exactly - Safe to send", correct: false },
-        { text: "Addresses are different - STOP! Potential malware attack", correct: true },
-        { text: "Close enough - Send anyway", correct: false },
-        { text: "First 10 characters match - Good enough", correct: false }
-      ],
-      explanation: "Look at the end: Original has 'wlh' but your wallet shows 'w1h'. The 'l' changed to '1' - this is malware changing addresses! Always check every character."
+        { text: "Addresses match exactly", correct: false },
+        { text: "Addresses are different", correct: true },
+        { text: "Close enough", correct: false },
+        { text: "First 10 characters match", correct: false }
+      ]
     },
     {
       stage: "Scam Recognition",
@@ -1899,30 +1890,22 @@ export default function Home() {
     {
       stage: "Exchange Security",
       title: "🏪 Exchange Safety Check",
-      description: "You want to buy Bitcoin. Which exchange option is safest?",
+      description: "You want to buy Bitcoin. Which exchange should you choose?",
       options: [
         {
           method: "Brand new exchange offering 50% signup bonus",
-          security: "Very Dangerous",
-          explanation: "New, unproven exchanges with unrealistic bonuses are often scams. Stick to established, regulated exchanges.",
           safe: false
         },
         {
           method: "Well-known exchange like Coinbase or Kraken",
-          security: "Much Safer",
-          explanation: "Established exchanges have track records, insurance, and regulatory compliance. Still withdraw to your own wallet.",
           safe: true
         },
         {
           method: "Random exchange found through Google ads",
-          security: "Very Dangerous", 
-          explanation: "Scammers buy Google ads to promote fake exchanges. Never trust ads for financial services.",
           safe: false
         },
         {
           method: "Exchange recommended in a Telegram group",
-          security: "Dangerous",
-          explanation: "Telegram recommendations are often paid promotions or scams. Do your own research on exchanges.",
           safe: false
         }
       ]
@@ -1930,30 +1913,22 @@ export default function Home() {
     {
       stage: "WiFi Security",
       title: "📶 Public WiFi Warning",
-      description: "You're at a coffee shop and want to check your Bitcoin wallet. What's the safest approach?",
+      description: "You're at a coffee shop and want to check your Bitcoin wallet. What should you do?",
       options: [
         {
           method: "Connect to free public WiFi and log in normally",
-          security: "Very Dangerous",
-          explanation: "Public WiFi can be monitored. Your login details and private keys could be intercepted by attackers.",
           safe: false
         },
         {
           method: "Use your phone's mobile data instead",
-          security: "Much Safer",
-          explanation: "Mobile data is encrypted and much harder to intercept than public WiFi networks.",
           safe: true
         },
         {
           method: "Use public WiFi but only check prices, not access wallet",
-          security: "Safer",
-          explanation: "Checking prices is lower risk, but still avoid logging into any Bitcoin-related accounts on public WiFi.",
           safe: false
         },
         {
           method: "Connect through a VPN on public WiFi",
-          security: "Better",
-          explanation: "VPNs help, but mobile data is still safer. If you must use WiFi, a VPN is essential.",
           safe: false
         }
       ]
@@ -1961,30 +1936,22 @@ export default function Home() {
     {
       stage: "Software Downloads",
       title: "💾 Safe Wallet Downloads",
-      description: "You need to download a Bitcoin wallet. Where do you get it?",
+      description: "You need to download a Bitcoin wallet. Where should you get it?",
       options: [
         {
           method: "Google search and click the first result",
-          security: "Dangerous",
-          explanation: "Search results can contain malicious fake wallets. Scammers pay for top ad placement.",
           safe: false
         },
         {
           method: "Official website directly (electrum.org, bitcoin.org)",
-          security: "Very Safe",
-          explanation: "Always go directly to official websites. Bookmark them for future use to avoid typos.",
           safe: true
         },
         {
           method: "Download from a Bitcoin forum recommendation",
-          security: "Risky",
-          explanation: "Forum posts can be fake recommendations. Always verify through official channels.",
           safe: false
         },
         {
           method: "App store or Google Play",
-          security: "Safer",
-          explanation: "App stores screen for malware, but fake apps still exist. Verify the developer and reviews carefully.",
           safe: false
         }
       ]
@@ -1996,26 +1963,18 @@ export default function Home() {
       options: [
         {
           method: "Give them the code since they knew my email",
-          security: "Very Dangerous",
-          explanation: "Legitimate exchanges never ask for 2FA codes. This is a classic social engineering attack.",
           safe: false
         },
         {
           method: "Hang up and call the exchange directly",
-          security: "Very Safe",
-          explanation: "Always hang up and call the official number. Scammers can spoof caller ID and know your email.",
           safe: true
         },
         {
           method: "Ask them to verify my account details first",
-          security: "Dangerous",
-          explanation: "Don't engage with potential scammers. They may have some of your information already.",
           safe: false
         },
         {
           method: "Tell them to email me instead",
-          security: "Risky",
-          explanation: "This continues the interaction. Best to end the call immediately and verify independently.",
           safe: false
         }
       ]
@@ -2023,30 +1982,22 @@ export default function Home() {
     {
       stage: "Hardware Wallet",
       title: "🔧 Hardware Wallet Safety",
-      description: "You bought a hardware wallet on eBay. What should you do before using it?",
+      description: "You want to buy a hardware wallet for storing Bitcoin. What's the best approach?",
       options: [
         {
-          method: "Use it immediately since it's sealed",
-          security: "Very Dangerous",
-          explanation: "Used hardware wallets can be compromised. Sealed packaging can be faked.",
+          method: "Buy used on eBay to save money",
           safe: false
         },
         {
-          method: "Buy a new one from the official manufacturer",
-          security: "Very Safe",
-          explanation: "Hardware wallets should only be bought new from official sources, never secondhand.",
+          method: "Buy new from the official manufacturer",
           safe: true
         },
         {
-          method: "Reset it and generate new seed phrase",
-          security: "Still Dangerous",
-          explanation: "The device firmware could be modified. Hardware compromise can survive factory resets.",
+          method: "Buy from Amazon third-party seller",
           safe: false
         },
         {
-          method: "Test it with small amounts first",
-          security: "Dangerous",
-          explanation: "Any amount sent to a compromised device is at risk. Don't trust secondhand hardware wallets.",
+          method: "Buy from local computer store",
           safe: false
         }
       ]
@@ -2054,30 +2005,22 @@ export default function Home() {
     {
       stage: "Backup Testing",
       title: "💾 Backup Verification",
-      description: "You wrote down your seed phrase. How do you verify it's correct?",
+      description: "You wrote down your seed phrase. How should you verify it's correct?",
       options: [
         {
           method: "Wait until you need to restore the wallet",
-          security: "Very Dangerous",
-          explanation: "By then it's too late if there's an error. You could lose all your Bitcoin permanently.",
           safe: false
         },
         {
           method: "Test restore on the same device immediately",
-          security: "Much Safer",
-          explanation: "Always test your backup works before sending Bitcoin to the wallet. This catches writing errors.",
           safe: true
         },
         {
           method: "Take a photo of the seed phrase as backup",
-          security: "Very Dangerous",
-          explanation: "Never digitally store seed phrases. Photos can be backed up to cloud or stolen.",
           safe: false
         },
         {
           method: "Share with trusted family member to verify",
-          security: "Dangerous",
-          explanation: "Seed phrases should never be shared. Anyone with access can steal your Bitcoin.",
           safe: false
         }
       ]
@@ -2085,61 +2028,45 @@ export default function Home() {
     {
       stage: "Transaction Fees",
       title: "💰 Fee Manipulation",
-      description: "You're sending Bitcoin and the wallet suggests a $200 fee for a $50 transaction. What's happening?",
+      description: "You're sending $50 worth of Bitcoin and the wallet suggests a $200 fee. What should you do?",
       options: [
         {
           method: "Pay the fee since it's what the wallet recommends",
-          security: "Dangerous",
-          explanation: "This could be malware manipulating fees to drain your wallet. Always verify fees manually.",
           safe: false
         },
         {
           method: "Check multiple fee estimators and compare",
-          security: "Much Safer",
-          explanation: "Cross-reference fees with mempool.space or other tools. $200 for $50 transaction is extremely suspicious.",
           safe: true
         },
         {
           method: "Wait for fees to go down",
-          security: "Better",
-          explanation: "Fees do fluctuate, but $200 for $50 suggests something is wrong. Investigate before waiting.",
           safe: false
         },
         {
           method: "Use a different wallet",
-          security: "Good thinking",
-          explanation: "If one wallet shows suspicious fees, trying another can help identify if it's malware or network congestion.",
           safe: false
         }
       ]
     },
     {
       stage: "Recovery Scams", 
-      title: "🔍 Recovery Service Red Flags",
-      description: "You lost access to your wallet. Someone offers to recover it for 50% of the funds. Red flag?",
+      title: "🔍 Recovery Service Warning",
+      description: "You lost access to your wallet. Someone offers to recover it for 50% of the funds. What should you do?",
       options: [
         {
           method: "Agree since 50% is better than 0%",
-          security: "Very Dangerous",
-          explanation: "Recovery scams are common. Legitimate services don't ask for percentages upfront.",
           safe: false
         },
         {
           method: "Ask for references and research the company",
-          security: "Safer approach",
-          explanation: "If you must use recovery services, thoroughly research them. Most 'recovery' offers are scams.",
           safe: false
         },
         {
           method: "Decline and try to recover yourself",
-          security: "Much Safer",
-          explanation: "Most recovery offers are scams. If you have your seed phrase, you can recover yourself.",
           safe: true
         },
         {
           method: "Negotiate for a lower percentage",
-          security: "Still Dangerous",
-          explanation: "Don't engage with potential scammers. This validates your desperation and makes you a bigger target.",
           safe: false
         }
       ]
@@ -2202,7 +2129,6 @@ export default function Home() {
           break;
       }
       
-      console.log(`Stage ${safetyStage} (${simulation.stage}): Option ${optionIndex} = ${correct ? 'CORRECT' : 'WRONG'}`);
     } catch (error) {
       console.error('Safety simulation validation error:', error, simulation);
       correct = false;
