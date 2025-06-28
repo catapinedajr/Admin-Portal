@@ -3131,7 +3131,7 @@ export default function Home() {
                         const isActive = inflationProgress >= step;
                         
                         return (
-                          <div key={step} className={`grid grid-cols-4 gap-2 p-2 rounded transition-all duration-700 ${
+                          <div key={step} className={`grid grid-cols-3 gap-2 p-2 rounded transition-all duration-700 ${
                             isActive ? 'bg-zinc-800/50' : 'bg-zinc-900/30'
                           }`}>
                             {/* Year Label */}
@@ -3175,13 +3175,6 @@ export default function Home() {
                                   style={{ width: isActive ? `${Math.min((btc/25000)*2, 100)}%` : '0%' }}
                                 ></div>
                               </div>
-                            </div>
-                            
-                            {/* Narrative Text */}
-                            <div className={`text-xs italic flex items-center ${
-                              isActive ? 'text-zinc-300' : 'text-zinc-600'
-                            }`}>
-                              {isActive && narrative}
                             </div>
                           </div>
                         );
