@@ -1370,83 +1370,24 @@ The future of Bitcoin depends on continued adoption, technological development, 
       }
     ];
 
-    // Create day-specific quiz questions for first 30 days
+    // Create day-specific quiz questions starting from day 10 (days 0-29 use AI-generated content)
     const daySpecificQuestions = [
-      // Day 0: Bitcoin Basics
+      // Day 10: Bitcoin Scalability
       {
-        dayIndex: 0,
-        question: "What is the maximum supply of Bitcoin that will ever exist?",
-        optionA: "21 million",
-        optionB: "100 million", 
-        optionC: "50 million",
-        optionD: "Unlimited",
+        dayIndex: 10,
+        question: "How many transactions can Bitcoin's base layer process per second?",
+        optionA: "About 7 transactions",
+        optionB: "About 100 transactions",
+        optionC: "About 1,000 transactions",
+        optionD: "Unlimited transactions",
         correctAnswer: "A",
-        explanation: "Bitcoin has a hard cap of 21 million coins, making it scarce by design.",
-        category: "Bitcoin Basics",
-        difficulty: "beginner"
-      },
-      {
-        dayIndex: 0,
-        question: "What makes Bitcoin different from traditional currencies?",
-        optionA: "It's controlled by banks",
-        optionB: "It's backed by gold", 
-        optionC: "It's decentralized with no central authority",
-        optionD: "It can be printed unlimited amounts",
-        correctAnswer: "C",
-        explanation: "Bitcoin operates on a decentralized network with no central authority.",
-        category: "Bitcoin Basics",
-        difficulty: "beginner"
-      },
-      {
-        dayIndex: 0,
-        question: "Who is the creator of Bitcoin?",
-        optionA: "Elon Musk",
-        optionB: "Satoshi Nakamoto",
-        optionC: "Vitalik Buterin", 
-        optionD: "Mark Zuckerberg",
-        correctAnswer: "B",
-        explanation: "Satoshi Nakamoto is the pseudonymous creator of Bitcoin.",
-        category: "Bitcoin History",
-        difficulty: "beginner"
+        explanation: "Bitcoin's base layer can process approximately 7 transactions per second due to block size and time constraints.",
+        category: "Scalability",
+        difficulty: "intermediate"
       },
 
-      // Day 1: How Bitcoin Works
-      {
-        dayIndex: 1,
-        question: "What is the blockchain?",
-        optionA: "A type of cryptocurrency",
-        optionB: "A digital ledger of all Bitcoin transactions",
-        optionC: "A mining device",
-        optionD: "A Bitcoin wallet",
-        correctAnswer: "B",
-        explanation: "The blockchain is a distributed digital ledger that records all Bitcoin transactions.",
-        category: "Technology",
-        difficulty: "beginner"
-      },
-      {
-        dayIndex: 1,
-        question: "How are Bitcoin transactions verified?",
-        optionA: "By banks",
-        optionB: "By the government",
-        optionC: "By a network of computers (nodes)",
-        optionD: "By Satoshi Nakamoto",
-        correctAnswer: "C",
-        explanation: "Bitcoin transactions are verified by a decentralized network of computers called nodes.",
-        category: "Technology", 
-        difficulty: "beginner"
-      },
-      {
-        dayIndex: 1,
-        question: "What does 'peer-to-peer' mean in Bitcoin?",
-        optionA: "Transactions go directly between users",
-        optionB: "Transactions require bank approval",
-        optionC: "Only friends can send Bitcoin",
-        optionD: "Transactions are anonymous",
-        correctAnswer: "A",
-        explanation: "Peer-to-peer means Bitcoin transactions happen directly between users without intermediaries.",
-        category: "Technology",
-        difficulty: "beginner"
-      },
+
+
 
       // Day 2: Bitcoin vs Traditional Money
       {
@@ -1920,11 +1861,7 @@ The future of Bitcoin depends on continued adoption, technological development, 
       this.quizQuestions.set(newQuestion.id, newQuestion);
     });
 
-    // Add the day-specific questions for days 0-2
-    daySpecificQuestions.forEach(question => {
-      const newQuestion: QuizQuestion = { ...question, id: this.currentQuizQuestionId++ };
-      this.quizQuestions.set(newQuestion.id, newQuestion);
-    });
+    // Day-specific questions are already added above in allDayQuestions
 
     // For days 30-400, use the base questions (keeping original functionality)
     const quizQuestions = [];
