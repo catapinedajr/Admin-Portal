@@ -4651,11 +4651,8 @@ export default function Home() {
                                             : 'border-zinc-600 hover:border-zinc-500'
                                         }`}
                                       >
-                                        <div className="text-white text-sm font-medium mb-1">
+                                        <div className="text-white text-xs sm:text-sm font-medium">
                                           {'method' in option ? option.method : 'Option'}
-                                        </div>
-                                        <div className="text-zinc-400 text-xs">
-                                          {'security' in option ? option.security : 'Security level'}
                                         </div>
                                       </button>
                                     ))}
