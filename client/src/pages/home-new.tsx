@@ -6704,9 +6704,9 @@ export default function Home() {
                           </div>
                         </div>
                         
-                        <div className="mt-4 p-3 bg-blue-800/30 rounded-lg">
-                          <p className="text-blue-200 text-sm">
-                            <GraduationCap className="w-4 h-4 inline mr-1" />
+                        <div className="mt-4 p-3 bg-purple-600/20 rounded-lg border border-purple-500/30">
+                          <p className="text-purple-200 text-sm">
+                            <GraduationCap className="w-4 h-4 inline mr-1 text-purple-300" />
                             <strong>Pro Tip:</strong> The best DCA strategy is one you can stick to consistently. 
                             Start with an amount that won't strain your budget and increase it as your income grows.
                           </p>
