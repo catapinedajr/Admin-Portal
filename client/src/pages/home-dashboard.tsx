@@ -127,13 +127,13 @@ export default function HomeDashboard() {
           </p>
         </div>
 
-        {/* Journey Progress Overview */}
+        {/* Knowledge Accumulation Tracker */}
         <Card className="bg-zinc-900 border-zinc-800">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-6">
               <div>
-                <h3 className="text-lg font-semibold text-white">Your Bitcoin Journey</h3>
-                <p className="text-sm text-zinc-400">30-day curriculum progress</p>
+                <h3 className="text-lg font-semibold text-white">Knowledge Accumulation</h3>
+                <p className="text-sm text-zinc-400">Small daily gains compound into mastery</p>
               </div>
               <div className="text-right">
                 <div className="text-2xl font-bold text-orange-400">{completedDays}/30</div>
@@ -141,12 +141,54 @@ export default function HomeDashboard() {
               </div>
             </div>
             
+            {/* Cumulative Learning Stats */}
+            <div className="grid grid-cols-3 gap-4 mb-4">
+              <div className="text-center p-3 bg-blue-600/10 rounded-lg border border-blue-600/20">
+                <div className="text-2xl font-bold text-blue-400">{completedDays * 1}</div>
+                <div className="text-xs text-zinc-400 mt-1">Facts Learned</div>
+                <div className="text-xs text-blue-300 mt-1">+1 daily</div>
+              </div>
+              <div className="text-center p-3 bg-green-600/10 rounded-lg border border-green-600/20">
+                <div className="text-2xl font-bold text-green-400">{completedDays * 1}</div>
+                <div className="text-xs text-zinc-400 mt-1">Lessons Completed</div>
+                <div className="text-xs text-green-300 mt-1">+1 daily</div>
+              </div>
+              <div className="text-center p-3 bg-purple-600/10 rounded-lg border border-purple-600/20">
+                <div className="text-2xl font-bold text-purple-400">{completedDays * 6}</div>
+                <div className="text-xs text-zinc-400 mt-1">Questions Answered</div>
+                <div className="text-xs text-purple-300 mt-1">+6 daily</div>
+              </div>
+            </div>
+
+            {/* Progress visualization */}
             <div className="space-y-3">
               <Progress value={progressPercentage} className="h-2" />
               <div className="flex justify-between text-sm">
-                <span className="text-zinc-400">Started your journey</span>
-                <span className="text-orange-400 font-medium">{Math.round(progressPercentage)}% complete</span>
-                <span className="text-zinc-400">Bitcoin mastery</span>
+                <span className="text-zinc-400">Started learning</span>
+                <span className="text-orange-400 font-medium">{Math.round(progressPercentage)}% to mastery</span>
+                <span className="text-zinc-400">Bitcoin expert</span>
+              </div>
+            </div>
+
+            {/* Shavings Philosophy */}
+            <div className="mt-4 pt-4 border-t border-zinc-800">
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-orange-600/20 rounded-lg">
+                  <TrendingUp className="w-4 h-4 text-orange-400" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm font-medium text-white mb-1">
+                    {completedDays === 0 ? "Every expert was once a beginner" :
+                     completedDays < 7 ? "Small steps, big progress ahead" :
+                     completedDays < 14 ? "Momentum building, knowledge growing" :
+                     completedDays < 21 ? "Habits forming, understanding deepening" :
+                     completedDays < 30 ? "Almost there - expertise within reach" :
+                     "Bitcoin mastery achieved through consistency"}
+                  </div>
+                  <div className="text-xs text-zinc-400">
+                    Each day's learning builds on the last - {30 - completedDays} more days to complete mastery
+                  </div>
+                </div>
               </div>
             </div>
 
