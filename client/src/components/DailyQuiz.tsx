@@ -286,7 +286,7 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
                     const isSelected = selectedAnswers[currentQuestion.id] === option;
                     const isCorrect = userAnswer?.isCorrect && userAnswer.selectedAnswer === option;
                     const isIncorrect = userAnswer && !userAnswer.isCorrect && userAnswer.selectedAnswer === option;
-                    const isCorrectAnswer = isAnswered && currentQuestion.correctAnswer === option;
+                    const isUserSelectedAnswer = userAnswer && userAnswer.selectedAnswer === option;
                     
                     return (
                       <button
@@ -296,7 +296,7 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
                         className={`
                           w-full p-4 text-left rounded-lg border transition-all
                           ${isAnswered 
-                            ? isCorrectAnswer 
+                            ? isCorrect 
                               ? 'bg-green-900/30 border-green-700 text-green-100'
                               : isIncorrect
                                 ? 'bg-red-900/30 border-red-700 text-red-100'
@@ -312,9 +312,9 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
                             {option}
                           </span>
                           <span className="flex-1">{optionText}</span>
-                          {isAnswered && (
+                          {isAnswered && isUserSelectedAnswer && (
                             <div className="flex-shrink-0">
-                              {isCorrectAnswer && <CheckCircle className="w-5 h-5 text-green-500" />}
+                              {isCorrect && <CheckCircle className="w-5 h-5 text-green-500" />}
                               {isIncorrect && <XCircle className="w-5 h-5 text-red-500" />}
                             </div>
                           )}
