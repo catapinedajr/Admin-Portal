@@ -399,6 +399,7 @@ export default function Home() {
   const [animationActive, setAnimationActive] = useState(false);
   const [inflationSimActive, setInflationSimActive] = useState(false);
   const [inflationProgress, setInflationProgress] = useState(0); // 0-6 representing years 0,1,5,10,15,20,25
+  const [settlementProgress, setSettlementProgress] = useState<{traditional: number; bitcoin: number}>({ traditional: 0, bitcoin: 0 });
   
   // Money Supply Visualization State
   const [moneySupplyYear, setMoneySupplyYear] = useState(2025);
