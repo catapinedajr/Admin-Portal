@@ -7148,51 +7148,68 @@ export default function Home() {
                           </div>
                         </div>
 
-                        {/* Inflation Rate Slider */}
+                        {/* Inflation Rate Selector Cards */}
                         <div className="space-y-3">
                           <label className="block text-white font-bold text-center">
-                            Annual Inflation: {inflationRate}%
-                            {inflationRate >= 8 && inflationRate <= 9 && (
-                              <span className="text-red-400 text-sm ml-2">← 2022-2024</span>
-                            )}
-                            {inflationRate >= 2 && inflationRate <= 3 && (
-                              <span className="text-blue-400 text-sm ml-2">← Fed Target</span>
-                            )}
+                            Annual Inflation Rate: {inflationRate}%
                           </label>
-                          <div className="relative">
-                            <input
-                              type="range"
-                              min="1"
-                              max="20"
-                              step="0.5"
-                              value={inflationRate}
-                              onChange={(e) => setInflationRate(parseFloat(e.target.value))}
-                              className="w-full h-4 bg-zinc-700 rounded-lg appearance-none cursor-pointer"
-                              style={{
-                                background: `linear-gradient(to right, #22c55e 0%, #f97316 ${(inflationRate / 20) * 100}%, #ef4444 100%)`
-                              }}
-                            />
-                            {/* Recent inflation markers */}
-                            <div className="absolute top-0 w-full h-4 pointer-events-none">
-                              {/* 2% Fed Target */}
-                              <div 
-                                className="absolute w-1 h-6 bg-blue-400 opacity-60"
-                                style={{ left: `${(2 / 20) * 100}%`, top: '-1px' }}
-                                title="2% Fed Target"
-                              />
-                              {/* 8.5% Recent Peak (2022) */}
-                              <div 
-                                className="absolute w-1 h-6 bg-red-400 opacity-60"
-                                style={{ left: `${(8.5 / 20) * 100}%`, top: '-1px' }}
-                                title="8.5% Recent Peak (2022)"
-                              />
-                            </div>
-                          </div>
-                          <div className="flex justify-between text-xs text-zinc-400">
-                            <span>1% Low</span>
-                            <span className="text-blue-400">2% Fed</span>
-                            <span className="text-red-400">8.5% Recent</span>
-                            <span>20% Crisis</span>
+                          <div className="grid grid-cols-2 gap-3">
+                            {[
+                              {
+                                rate: 2,
+                                title: "Fed Target",
+                                description: "Government's 'ideal' inflation rate",
+                                color: "blue",
+                                period: "Policy Goal"
+                              },
+                              {
+                                rate: 4,
+                                title: "Moderate Rise",
+                                description: "Economic heating up phase",
+                                color: "yellow",
+                                period: "Growth Period"
+                              },
+                              {
+                                rate: 8.5,
+                                title: "Recent Peak",
+                                description: "COVID money printing aftermath",
+                                color: "orange",
+                                period: "2022-2024"
+                              },
+                              {
+                                rate: 15,
+                                title: "Crisis Level",
+                                description: "Economic emergency territory",
+                                color: "red",
+                                period: "1970s-1980s"
+                              }
+                            ].map((scenario) => (
+                              <div
+                                key={scenario.rate}
+                                onClick={() => setInflationRate(scenario.rate)}
+                                className={`p-3 rounded-lg border-2 cursor-pointer transition-all duration-200 ${
+                                  inflationRate === scenario.rate
+                                    ? `border-orange-500 bg-orange-600/20 shadow-lg shadow-orange-500/20`
+                                    : `border-zinc-700 bg-zinc-800/50 hover:border-orange-400 hover:bg-orange-600/10`
+                                }`}
+                              >
+                                <div className="flex items-center justify-between mb-1">
+                                  <span className={`font-bold text-lg ${
+                                    scenario.color === 'blue' ? 'text-blue-400' :
+                                    scenario.color === 'yellow' ? 'text-yellow-400' :
+                                    scenario.color === 'orange' ? 'text-orange-400' :
+                                    'text-red-400'
+                                  }`}>
+                                    {scenario.rate}%
+                                  </span>
+                                  <span className="text-xs text-zinc-400">{scenario.period}</span>
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-white text-sm font-medium">{scenario.title}</p>
+                                  <p className="text-zinc-400 text-xs leading-tight">{scenario.description}</p>
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       </div>
