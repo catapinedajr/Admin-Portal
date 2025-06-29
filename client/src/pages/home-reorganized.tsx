@@ -1039,7 +1039,7 @@ export default function Home() {
                           <span className="text-white font-bold text-sm">1</span>
                         </div>
                         <div>
-                          <h3 className="text-xl font-bold text-white">Today's Bitcoin Facts</h3>
+                          <h3 className="text-xl font-bold text-white">Today's Learning Preview</h3>
                           <p className="text-zinc-400 text-sm">Build your foundation with core concepts</p>
                         </div>
                       </div>

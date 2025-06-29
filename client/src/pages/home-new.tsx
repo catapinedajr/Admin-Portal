@@ -2661,7 +2661,7 @@ export default function Home() {
                 {!isDayLockedBySubscription && dailyFacts && Array.isArray(dailyFacts) && dailyFacts.length > 0 && (
                   <Card className="bg-zinc-900 border-zinc-800">
                     <CardContent className="p-6">
-                      <h3 className="text-lg font-bold text-white border-b border-zinc-700 pb-3 mb-6">Today's Bitcoin Insights</h3>
+                      <h3 className="text-lg font-bold text-white border-b border-zinc-700 pb-3 mb-6">Today's Learning Preview</h3>
                       <div className="space-y-4">
                         {(dailyFacts as DailyFact[]).map((fact: DailyFact) => {
                           const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Coins;

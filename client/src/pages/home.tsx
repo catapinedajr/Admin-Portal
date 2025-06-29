@@ -892,7 +892,7 @@ export default function Home() {
             {learningSubTab === "basics" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
-                  <h2 className="text-2xl font-bold text-white">Daily Bitcoin Facts</h2>
+                  <h2 className="text-2xl font-bold text-white">Today's Learning Preview</h2>
                   <p className="text-zinc-400">Learn something new about Bitcoin every day</p>
                 </div>
                 
