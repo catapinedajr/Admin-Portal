@@ -533,12 +533,12 @@ export default function Home() {
     setAnimationActive(true);
     setSettlementProgress({ traditional: 0, bitcoin: 0 });
 
-    // Bitcoin animation: completes all 4 steps in 15 seconds (out of 45)
+    // Bitcoin animation: completes all 4 steps in 18 seconds (20% slower for better visibility)
     const bitcoinSteps = [
-      { step: 1, delay: 2000 },   // Step 1 at 2 seconds (transaction creation)
-      { step: 2, delay: 5000 },   // Step 2 at 5 seconds (network broadcast)
-      { step: 3, delay: 12000 },  // Step 3 at 12 seconds (mining consensus)
-      { step: 4, delay: 15000 }   // Step 4 at 15 seconds (final settlement)
+      { step: 1, delay: 2400 },   // Step 1 at 2.4 seconds (transaction creation)
+      { step: 2, delay: 6000 },   // Step 2 at 6 seconds (network broadcast)
+      { step: 3, delay: 14400 },  // Step 3 at 14.4 seconds (mining consensus)
+      { step: 4, delay: 18000 }   // Step 4 at 18 seconds (final settlement)
     ];
 
     // Traditional banking: takes much longer with realistic banking delays
