@@ -306,13 +306,13 @@ const seedPhraseScenarios = [
     title: "Phone Replacement Emergency",
     description: "Your phone broke and you need to restore your mobile wallet on a new device.",
     difficulty: "Beginner",
-    seedPhrase: ["abandon", "ability", "able", "about", "above", "absent", "absorb", "abstract", "absurd", "abuse", "access", "accident"],
+    seedPhrase: Array(12).fill("hodlearn"),
     context: "You had $200 worth of Bitcoin in your mobile wallet for daily spending. Your phone screen cracked completely and won't turn on.",
     timeLimit: 300, // 5 minutes
     hints: [
+      "This is a practice simulation - type 'hodlearn' for each word",
       "Seed phrases must be entered in exact order",
-      "Each word is from the BIP39 wordlist",
-      "Double-check spelling before confirming"
+      "In real life, each word would be different and from the BIP39 wordlist"
     ]
   },
   {
@@ -320,13 +320,13 @@ const seedPhraseScenarios = [
     title: "Computer Crash Recovery",
     description: "Your laptop died and you need to recover your desktop wallet to access your Bitcoin.",
     difficulty: "Intermediate",
-    seedPhrase: ["witch", "collapse", "practice", "feed", "shame", "open", "despair", "creek", "road", "again", "ice", "least", "captain", "economy", "unlock", "nature"],
+    seedPhrase: Array(16).fill("hodlearn"),
     context: "Your desktop wallet held your main Bitcoin savings ($5,000). The hard drive failed completely but you have your seed phrase backup.",
     timeLimit: 420, // 7 minutes
     hints: [
+      "This is a practice simulation - type 'hodlearn' for each word",
       "This is a 16-word seed phrase",
-      "Order matters - one wrong position fails recovery",
-      "Some wallets use different derivation paths"
+      "Order matters - one wrong position fails recovery in real scenarios"
     ]
   },
   {
@@ -334,13 +334,13 @@ const seedPhraseScenarios = [
     title: "Hardware Wallet Reset",
     description: "Your hardware wallet was reset after too many wrong PIN attempts. Recover using seed phrase.",
     difficulty: "Advanced",
-    seedPhrase: ["abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "art"],
+    seedPhrase: Array(24).fill("hodlearn"),
     context: "Your hardware wallet contains your long-term Bitcoin holdings ($25,000). Someone tried to access it and triggered the reset.",
     timeLimit: 600, // 10 minutes
     hints: [
+      "This is a practice simulation - type 'hodlearn' for each word",
       "This is a 24-word seed phrase",
-      "The last word is a checksum",
-      "Hardware wallets may require PIN setup after recovery"
+      "In real wallets, the last word contains a checksum for validation"
     ]
   }
 ];
@@ -4276,16 +4276,16 @@ export default function Home() {
                     </div>
                     
                     <p className="text-zinc-400 mb-4">
-                      Practice recovering wallets in emergency scenarios. Master seed phrase recovery before you need it in real life.
+                      Practice recovering wallets in emergency scenarios using the safe practice word "hodlearn" for every position. Experience the recovery process without any security risk.
                     </p>
 
                     <div className="bg-orange-950/40 rounded-lg p-4 border border-orange-800/50 mb-6">
                       <div className="flex items-start gap-3">
                         <Shield className="w-5 h-5 text-orange-400 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="text-orange-300 font-medium text-sm mb-2">⚠️ EDUCATIONAL SIMULATION ONLY</p>
+                          <p className="text-orange-300 font-medium text-sm mb-2">⚠️ SAFE PRACTICE SIMULATION</p>
                           <div className="text-zinc-300 text-sm space-y-1">
-                            <p>• These are FAKE seed phrases for practice only</p>
+                            <p>• Type "hodlearn" for every word position - completely safe practice word</p>
                             <p>• No real wallet data is collected or stored</p>
                             <p>• NEVER enter your real seed phrase anywhere online</p>
                             <p>• Real recovery should only be done in secure, offline environments</p>
