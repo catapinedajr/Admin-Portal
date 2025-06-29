@@ -2349,6 +2349,11 @@ export default function Home() {
   ];
 
   // API Queries - using currentDayIndex for testing
+  const { data: dayMetadata } = useQuery({
+    queryKey: ['/api/day-metadata', currentDayIndex],
+    queryFn: () => fetch(`/api/day-metadata/${currentDayIndex}`).then(res => res.json()),
+  });
+
   const { data: dailyFacts } = useQuery({
     queryKey: ['/api/daily-facts', currentDayIndex],
     queryFn: () => fetch(`/api/daily-facts/${currentDayIndex}`).then(res => res.json()),
@@ -2538,6 +2543,18 @@ export default function Home() {
             {learnSubTab === "today" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
+                  {/* Monthly Theme & Daily Topic */}
+                  {dayMetadata && (
+                    <div className="mb-4 space-y-1">
+                      <div className="text-orange-400 text-sm font-medium uppercase tracking-wide">
+                        {dayMetadata.theme}
+                      </div>
+                      <div className="text-zinc-300 text-xs">
+                        {dayMetadata.title}
+                      </div>
+                    </div>
+                  )}
+                  
                   <h3 className="text-xl font-bold text-white">Today's Bitcoin Learning</h3>
                   <p className="text-zinc-400">Daily facts, lessons, and knowledge tests</p>
                 </div>

@@ -382,6 +382,31 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
+  // Get day metadata (theme, title, etc.)
+  app.get("/api/day-metadata/:dayIndex", async (req, res) => {
+    try {
+      const dayIndex = parseInt(req.params.dayIndex);
+      if (dayIndex <= 0) {
+        return res.status(400).json({ message: "Invalid day index" });
+      }
+      
+      const dayMetadata = await storage.getContentDay(dayIndex);
+      if (!dayMetadata) {
+        return res.status(404).json({ message: "No day metadata found" });
+      }
+      
+      res.json({
+        dayIndex: dayMetadata.dayIndex,
+        title: dayMetadata.title,
+        theme: dayMetadata.theme,
+        readingLevel: dayMetadata.readingLevel,
+        culturalStage: dayMetadata.culturalStage
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get day metadata" });
+    }
+  });
+
   // Get today's lesson or specific day
   app.get("/api/lesson/:dayIndex?", async (req, res) => {
     try {
