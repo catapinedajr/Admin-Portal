@@ -1212,13 +1212,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
 
       const isCorrect = selectedAnswer === question.correctAnswer;
       
-      const answer = await storage.submitQuizAnswer({
-        userId,
-        questionId,
-        selectedAnswer,
-        isCorrect,
-        date
-      });
+      const answer = await storage.submitQuizAnswer(userId, questionId, selectedAnswer, isCorrect);
 
       res.json({
         ...answer,

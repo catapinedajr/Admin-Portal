@@ -46,7 +46,7 @@ import {
 } from "@shared/schema";
 
 import { db } from "./db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -351,6 +351,45 @@ export class DatabaseStorage implements IStorage {
   async saveQuizAnswer(answer: InsertUserQuizAnswer): Promise<UserQuizAnswer> {
     const [result] = await db.insert(userQuizAnswers).values(answer).returning();
     return result;
+  }
+
+  async getAllQuizQuestions(): Promise<ContentQuiz[]> {
+    return await db.select().from(contentQuizzes);
+  }
+
+  async submitQuizAnswer(userId: number, questionId: number, selectedAnswer: string, isCorrect: boolean): Promise<UserQuizAnswer> {
+    // Use the pool directly to bypass Drizzle ORM parameter issues
+    const date = new Date().toISOString().split('T')[0];
+    
+    const query = `
+      INSERT INTO user_quiz_answers (user_id, question_id, selected_answer, is_correct, date)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING id, user_id as "userId", question_id as "questionId", selected_answer as "selectedAnswer", 
+                is_correct as "isCorrect", answered_at as "answeredAt", date
+    `;
+    
+    const { pool } = await import("./db");
+    const result = await pool.query(query, [userId, questionId, selectedAnswer, isCorrect, date]);
+    return result.rows[0] as UserQuizAnswer;
+  }
+
+  async getUserQuizScore(userId: number, dayIndex: number): Promise<{ correct: number; total: number }> {
+    // Get all questions for the day
+    const questions = await db.select()
+      .from(contentQuizzes)
+      .where(eq(contentQuizzes.dayId, dayIndex));
+    
+    // Get user answers for today
+    const today = new Date().toISOString().split('T')[0];
+    const answers = await db.select()
+      .from(userQuizAnswers)
+      .where(and(
+        eq(userQuizAnswers.userId, userId),
+        eq(userQuizAnswers.date, today)
+      ));
+    
+    const correct = answers.filter(a => a.isCorrect).length;
+    return { correct, total: questions.length };
   }
 }
 
