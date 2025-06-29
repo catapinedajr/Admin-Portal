@@ -541,13 +541,13 @@ export default function Home() {
       { step: 4, delay: 15000 }   // Step 4 at 15 seconds (final settlement)
     ];
 
-    // Traditional banking: takes the full 45 seconds with realistic delays
+    // Traditional banking: takes much longer with realistic banking delays
     const traditionalSteps = [
-      { step: 1, delay: 4000 },   // Step 1 at 4 seconds (bank visit takes longer)
-      { step: 2, delay: 10000 },  // Step 2 at 10 seconds (compliance review)
-      { step: 3, delay: 22000 },  // Step 3 at 22 seconds (SWIFT processing)
-      { step: 4, delay: 35000 },  // Step 4 at 35 seconds (intermediary banks)
-      { step: 5, delay: 43000 }   // Step 5 at 43 seconds (final settlement)
+      { step: 1, delay: 8000 },   // Step 1 at 8 seconds (bank visit takes longer)
+      { step: 2, delay: 20000 },  // Step 2 at 20 seconds (compliance review)
+      { step: 3, delay: 44000 },  // Step 3 at 44 seconds (SWIFT processing)
+      { step: 4, delay: 70000 },  // Step 4 at 70 seconds (intermediary banks)
+      { step: 5, delay: 86000 }   // Step 5 at 86 seconds (final settlement)
     ];
 
     // Animate Bitcoin steps
@@ -564,10 +564,10 @@ export default function Home() {
       }, delay);
     });
 
-    // End animation after 45 seconds
+    // End animation after 90 seconds
     setTimeout(() => {
       setAnimationActive(false);
-    }, 45000);
+    }, 90000);
   };
 
   const resetSettlementAnimation = () => {
