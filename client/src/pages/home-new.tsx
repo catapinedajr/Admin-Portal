@@ -2542,21 +2542,28 @@ export default function Home() {
             {/* Today's Learning */}
             {learnSubTab === "today" && (
               <div className="space-y-6">
-                <div className="text-center space-y-2">
-                  {/* Monthly Theme & Daily Topic */}
+                <div className="text-center space-y-3">
+                  {/* Streamlined Header with Better Hierarchy */}
                   {dayMetadata && (
-                    <div className="mb-4 space-y-2">
-                      <div className="text-orange-400 text-lg font-semibold uppercase tracking-wide">
-                        {dayMetadata.theme}
+                    <div className="space-y-3">
+                      {/* Monthly Theme - Subtle Badge */}
+                      <div className="inline-flex items-center px-3 py-1 bg-orange-500/10 border border-orange-500/20 rounded-full">
+                        <span className="text-orange-400 text-sm font-medium uppercase tracking-wide">
+                          {dayMetadata.theme}
+                        </span>
                       </div>
-                      <div className="text-zinc-300 text-base font-medium">
+                      
+                      {/* Daily Topic - Main Title */}
+                      <h2 className="text-2xl font-bold text-white leading-tight">
                         {dayMetadata.title}
-                      </div>
+                      </h2>
+                      
+                      {/* Subtitle - Simple and Clean */}
+                      <p className="text-zinc-400 text-sm">
+                        Learn through facts, lessons, and practice
+                      </p>
                     </div>
                   )}
-                  
-                  <h3 className="text-xl font-bold text-white">Today's Bitcoin Learning</h3>
-                  <p className="text-zinc-400">Daily facts, lessons, and knowledge tests</p>
                 </div>
 
                 {/* Paywall Check */}
