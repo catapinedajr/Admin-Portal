@@ -4275,9 +4275,24 @@ export default function Home() {
                       <h4 className="text-xl font-bold text-white">Seed Phrase Recovery Simulator</h4>
                     </div>
                     
-                    <p className="text-zinc-400 mb-6">
+                    <p className="text-zinc-400 mb-4">
                       Practice recovering wallets in emergency scenarios. Master seed phrase recovery before you need it in real life.
                     </p>
+
+                    <div className="bg-orange-950/40 rounded-lg p-4 border border-orange-800/50 mb-6">
+                      <div className="flex items-start gap-3">
+                        <Shield className="w-5 h-5 text-orange-400 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-orange-300 font-medium text-sm mb-2">⚠️ EDUCATIONAL SIMULATION ONLY</p>
+                          <div className="text-zinc-300 text-sm space-y-1">
+                            <p>• These are FAKE seed phrases for practice only</p>
+                            <p>• No real wallet data is collected or stored</p>
+                            <p>• NEVER enter your real seed phrase anywhere online</p>
+                            <p>• Real recovery should only be done in secure, offline environments</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
                     {!seedPhraseActive ? (
                       <div className="space-y-6">
