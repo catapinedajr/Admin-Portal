@@ -7409,32 +7409,32 @@ export default function Home() {
             {isPremiumTier && simulationsSubTab === "settlement" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
-                  <h3 className="text-xl font-bold text-white">Payment Settlement Simulator</h3>
-                  <p className="text-zinc-400">Compare traditional banking vs Bitcoin settlement times and costs</p>
+                  <h3 className="text-xl font-bold text-white">Banking Fees vs Bitcoin Fees</h3>
+                  <p className="text-zinc-400">Discover how much traditional banking really costs compared to Bitcoin</p>
                 </div>
 
-                {/* Why Settlement Speed Matters */}
+                {/* Why Banking Fees Matter */}
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-4">
                       <div className="p-2 bg-orange-600/20 rounded-lg">
-                        <Clock className="w-6 h-6 text-orange-400" />
+                        <FileText className="w-6 h-6 text-orange-400" />
                       </div>
-                      <h4 className="text-xl font-bold text-white">Break Free from Banking's Weekend Prison</h4>
+                      <h4 className="text-xl font-bold text-white">The Hidden Cost of Banking</h4>
                     </div>
                     
                     <div className="space-y-4">
                       <p className="text-zinc-300 leading-relaxed">
-                        Traditional banking operates like it's still 1950 - closing at 5pm, taking weekends off, and holding your money 
-                        hostage for days while they profit from the float. Bitcoin never sleeps, never takes holidays, and settles 
-                        payments 24/7/365 without asking permission from intermediaries.
+                        Banks charge you for everything - monthly maintenance, overdrafts, wire transfers, ATM usage, and even checking your balance. 
+                        These "small" fees add up to hundreds or thousands per year. Bitcoin eliminates most banking fees entirely, 
+                        giving you direct control over your money without the middleman markup.
                       </p>
                       
                       <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-orange-500">
                         <p className="text-zinc-300 text-sm">
-                          <span className="font-semibold text-orange-300">The Time Tax:</span> International wire transfers can take 3-5 business days 
-                          and cost $15-50 per transaction. Bitcoin settles globally in 10 minutes for under $5, regardless of amount or destination. 
-                          The old system profits from delays - Bitcoin profits from speed.
+                          <span className="font-semibold text-orange-300">The Fee Trap:</span> Average Americans pay $329/year in banking fees. 
+                          International transfers cost $15-50 each. Bitcoin transactions cost $1-5 regardless of amount or destination. 
+                          The math is simple: Bitcoin saves you money on every transaction.
                         </p>
                       </div>
                       
