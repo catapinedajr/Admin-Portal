@@ -5656,6 +5656,32 @@ export default function Home() {
                                   Bank reviews for anti-money laundering, checks sanctions lists, 
                                   verifies business purpose, contacts correspondent banks. 
                                   Can take hours to days depending on amount and destination.
+                                  
+                                  {settlementProgress.traditional >= 2 && (
+                                    <div className="mt-3 space-y-2">
+                                      <div className="text-red-300 text-xs font-medium">Compliance Checkpoints:</div>
+                                      <div className="grid grid-cols-2 gap-1">
+                                        {['AML Check', 'KYC Review', 'Sanctions List', 'Purpose Verify', 'Amount Review', 'Risk Score'].map((check, i) => (
+                                          <div 
+                                            key={check}
+                                            className={`text-center p-1 rounded text-xs transition-all duration-500 ${
+                                              settlementProgress.traditional >= 3 && i < 4
+                                                ? 'bg-red-600/50 text-red-200' 
+                                                : 'bg-zinc-700/50 text-zinc-400'
+                                            }`}
+                                          >
+                                            {check}
+                                            <div className="text-xs">
+                                              {settlementProgress.traditional >= 3 && i < 4 ? '✓' : '⏳'}
+                                            </div>
+                                          </div>
+                                        ))}
+                                      </div>
+                                      <div className="text-red-400 text-xs mt-2">
+                                        Fee accumulating: ${(25 + (settlementProgress.traditional - 1) * 8).toFixed(0)}
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                               
@@ -5719,6 +5745,29 @@ export default function Home() {
                                 <div className="text-zinc-400 text-xs leading-relaxed min-h-[40px]">
                                   Message routed through multiple correspondent banks, 
                                   each adding delays and fees
+                                  
+                                  {settlementProgress.traditional >= 3 && (
+                                    <div className="mt-3 space-y-2">
+                                      <div className="text-red-300 text-xs font-medium">SWIFT Network Route:</div>
+                                      <div className="flex items-center justify-between text-xs">
+                                        {['Chase', 'JPM London', 'Barclays', 'Wells Fargo'].map((bank, i) => (
+                                          <div key={bank} className="flex items-center">
+                                            <div className={`px-2 py-1 rounded text-xs transition-all duration-700 ${
+                                              settlementProgress.traditional >= 4 && i < 3
+                                                ? 'bg-red-600/30 text-red-200 border border-red-600/50' 
+                                                : 'bg-zinc-700/30 text-zinc-400 border border-zinc-600/30'
+                                            }`}>
+                                              {bank}
+                                            </div>
+                                            {i < 3 && <div className="mx-1 text-zinc-500">→</div>}
+                                          </div>
+                                        ))}
+                                      </div>
+                                      <div className="text-red-400 text-xs">
+                                        Total fees: ${(45 + (settlementProgress.traditional - 2) * 12).toFixed(0)}
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                               
@@ -5810,44 +5859,84 @@ export default function Home() {
                             </div>
                           </div>
 
-                          {/* Status Summary */}
+                          {/* Enhanced Status Summary */}
                           <div className="grid grid-cols-2 gap-4 mt-6">
                             <div className="p-4 bg-red-950/40 rounded-lg border border-red-800/50">
-                              <div className="text-center">
+                              <div className="text-center space-y-2">
                                 <div className="text-red-400 font-bold text-lg">
                                   {settlementProgress.traditional === 0 && "Waiting..."}
                                   {settlementProgress.traditional === 1 && "At Bank Branch"}
                                   {settlementProgress.traditional === 2 && "Stuck in Compliance"}
-                                  {settlementProgress.traditional >= 3 && settlementProgress.traditional < 5 && "Still Processing..."}
+                                  {settlementProgress.traditional === 3 && "SWIFT Routing"}
+                                  {settlementProgress.traditional === 4 && "Intermediary Processing"}
                                   {settlementProgress.traditional === 5 && "Finally Complete"}
                                 </div>
-                                <div className="text-zinc-400 text-xs mt-1">
+                                <div className="text-zinc-400 text-xs">
                                   Step {settlementProgress.traditional}/5 • Traditional Banking
                                 </div>
-                                <div className="text-red-300 text-xs mt-2 font-medium">
-                                  {settlementProgress.traditional === 2 && "Estimated: 3-5 business days"}
-                                  {settlementProgress.traditional === 5 && "Total time: 3-5 business days"}
-                                  {settlementProgress.traditional > 0 && settlementProgress.traditional < 2 && "Estimated: 3-5 business days"}
-                                  {settlementProgress.traditional > 2 && settlementProgress.traditional < 5 && "Estimated: 3-5 business days"}
+                                
+                                {/* Progress Bar */}
+                                <div className="w-full bg-zinc-700 rounded-full h-2 mt-2">
+                                  <div 
+                                    className="bg-red-500 h-2 rounded-full transition-all duration-500"
+                                    style={{ width: `${(settlementProgress.traditional / 5) * 100}%` }}
+                                  ></div>
+                                </div>
+                                
+                                {/* Dynamic Timing and Costs */}
+                                <div className="space-y-1 text-xs">
+                                  <div className="text-red-300 font-medium">
+                                    {settlementProgress.traditional <= 2 && "Estimated: 3-5 business days"}
+                                    {settlementProgress.traditional === 3 && "Processing through 4 banks..."}
+                                    {settlementProgress.traditional === 4 && "Final bank coordination..."}
+                                    {settlementProgress.traditional === 5 && "Total time: 3-5 business days"}
+                                  </div>
+                                  <div className="text-red-400">
+                                    Current fees: ${(25 + Math.max(0, settlementProgress.traditional - 1) * 10).toFixed(0)}
+                                  </div>
+                                  <div className="text-zinc-500">
+                                    Banks involved: {Math.min(settlementProgress.traditional + 1, 4)}/4
+                                  </div>
                                 </div>
                               </div>
                             </div>
                             
                             <div className="p-4 bg-green-950/40 rounded-lg border border-green-800/50">
-                              <div className="text-center">
+                              <div className="text-center space-y-2">
                                 <div className="text-green-400 font-bold text-lg">
                                   {settlementProgress.bitcoin === 0 && "Ready"}
-                                  {settlementProgress.bitcoin === 1 && "Creating..."}
-                                  {settlementProgress.bitcoin === 2 && "Broadcasting..."}
-                                  {settlementProgress.bitcoin === 3 && "Mining..."}
-                                  {settlementProgress.bitcoin === 4 && "✅ COMPLETE!"}
+                                  {settlementProgress.bitcoin === 1 && "Creating Transaction"}
+                                  {settlementProgress.bitcoin === 2 && "Broadcasting Globally"}
+                                  {settlementProgress.bitcoin === 3 && "Network Consensus"}
+                                  {settlementProgress.bitcoin === 4 && "✅ SETTLED!"}
                                 </div>
-                                <div className="text-zinc-400 text-xs mt-1">
+                                <div className="text-zinc-400 text-xs">
                                   Step {settlementProgress.bitcoin}/4 • Bitcoin Network
                                 </div>
-                                <div className="text-green-300 text-xs mt-2 font-medium">
-                                  {settlementProgress.bitcoin === 4 && "Total time: ~10 minutes"}
-                                  {settlementProgress.bitcoin > 0 && settlementProgress.bitcoin < 4 && "Estimated: ~10 minutes"}
+                                
+                                {/* Progress Bar */}
+                                <div className="w-full bg-zinc-700 rounded-full h-2 mt-2">
+                                  <div 
+                                    className="bg-green-500 h-2 rounded-full transition-all duration-500"
+                                    style={{ width: `${(settlementProgress.bitcoin / 4) * 100}%` }}
+                                  ></div>
+                                </div>
+                                
+                                {/* Dynamic Information */}
+                                <div className="space-y-1 text-xs">
+                                  <div className="text-green-300 font-medium">
+                                    {settlementProgress.bitcoin === 0 && "Ready to start"}
+                                    {settlementProgress.bitcoin === 1 && "Signing with private key..."}
+                                    {settlementProgress.bitcoin === 2 && "Reaching 10,000+ nodes..."}
+                                    {settlementProgress.bitcoin === 3 && "6 confirmations incoming..."}
+                                    {settlementProgress.bitcoin === 4 && "Total time: ~10 minutes"}
+                                  </div>
+                                  <div className="text-green-400">
+                                    Fixed fee: $3.50
+                                  </div>
+                                  <div className="text-zinc-500">
+                                    Intermediaries: 0 (Direct)
+                                  </div>
                                 </div>
                               </div>
                             </div>
