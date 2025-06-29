@@ -3969,7 +3969,7 @@ export default function Home() {
                   className="text-xs px-3 py-1"
                 >
                   <Clock className="w-3 h-3 mr-1" />
-                  Settlement
+                  Fees
                 </Button>
               </div>
             </div>
