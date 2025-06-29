@@ -5540,7 +5540,8 @@ export default function Home() {
                     <p className="text-zinc-400 text-sm">Watch $50,000 travel from New York to London - see the complexity difference</p>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    {!speedRaceActive && (
+                    <div className="space-y-6">
+                      {/* Always visible intro section */}
                       <div className="text-center space-y-4">
                         <div className="p-6 bg-zinc-800 rounded-lg border border-zinc-700">
                           <h3 className="text-lg font-medium text-white mb-3">Transfer Scenario</h3>
@@ -5552,31 +5553,31 @@ export default function Home() {
                             Compare how traditional banking vs Bitcoin handles this international transfer.
                           </p>
                         </div>
-                        <Button 
-                          onClick={startSettlementAnimation}
-                          className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg font-medium"
-                        >
-                          Initiate Transfer Race
-                        </Button>
-                      </div>
-                    )}
-
-                    {speedRaceActive && (
-                      <div className="space-y-6">
-                        <div className="text-center">
+                        
+                        {/* Always visible controls */}
+                        <div className="flex gap-3">
+                          <Button 
+                            onClick={startSettlementAnimation}
+                            disabled={animationActive}
+                            className="flex-1 bg-orange-600 hover:bg-orange-700 h-12 text-lg font-medium disabled:opacity-50"
+                          >
+                            {animationActive ? "Animation Running..." : "Start Transfer Race"}
+                          </Button>
                           <Button 
                             onClick={resetSettlementAnimation}
-                            className="bg-orange-600 hover:bg-orange-700"
-                            disabled={animationActive}
+                            variant="outline"
+                            className="px-6 h-12 border-zinc-600 text-zinc-300 hover:bg-zinc-800"
                           >
-                            {animationActive ? "Animation Running..." : "Reset Journey"}
+                            Reset
                           </Button>
-                          {animationActive && (
-                            <p className="text-zinc-400 text-sm mt-2">
-                              Watch Bitcoin complete while traditional banking gets stuck...
-                            </p>
-                          )}
                         </div>
+                        
+                        {animationActive && (
+                          <p className="text-zinc-400 text-sm">
+                            Watch Bitcoin complete while traditional banking gets stuck...
+                          </p>
+                        )}
+                      </div>
                         
                         {/* Compact Side-by-Side Settlement Race */}
                         <div className="space-y-4">
@@ -6013,10 +6014,11 @@ export default function Home() {
                           </div>
                         </div>
                       </div>
-                    )}
+                    </div>
                   </CardContent>
                 </Card>
               </div>
+
             )}
 
             {/* Compact HODL Challenge Simulator */}
