@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { useEffect } from "react";
+import HomeDashboard from "@/pages/home-dashboard";
 import Home from "@/pages/home-new";
 import Onboarding from "@/pages/onboarding";
 import NotFound from "@/pages/not-found";
@@ -20,13 +21,17 @@ function OnboardingRedirect() {
     }
   }, [setLocation]);
 
-  return <Home />;
+  return <HomeDashboard />;
 }
 
 function Router() {
   return (
     <Switch>
       <Route path="/onboarding" component={Onboarding} />
+      <Route path="/learn" component={Home} />
+      <Route path="/finance" component={Home} />
+      <Route path="/simulators" component={Home} />
+      <Route path="/more" component={Home} />
       <Route path="/" component={OnboardingRedirect} />
       <Route component={NotFound} />
     </Switch>

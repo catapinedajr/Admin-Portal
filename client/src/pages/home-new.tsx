@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -356,11 +357,27 @@ export default function Home() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { isPremiumTier } = useSubscription();
-  const [activeSection, setActiveSection] = useState<MainSection>("learn");
+  const [location, setLocation] = useLocation();
+  
+  // Determine active section from URL
+  const getActiveSectionFromPath = (path: string): MainSection => {
+    if (path.includes('/learn')) return 'learn';
+    if (path.includes('/finance')) return 'finance';
+    if (path.includes('/simulators')) return 'simulations';
+    if (path.includes('/more')) return 'more';
+    return 'learn'; // default
+  };
+  
+  const [activeSection, setActiveSection] = useState<MainSection>(getActiveSectionFromPath(location));
   const [learnSubTab, setLearnSubTab] = useState<LearnSubTab>("today");
   const [simulationsSubTab, setSimulationsSubTab] = useState<SimulationsSubTab>("safety");
   const [moreSubTab, setMoreSubTab] = useState<MoreSubTab>("store");
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  
+  // Update active section when URL changes
+  useEffect(() => {
+    setActiveSection(getActiveSectionFromPath(location));
+  }, [location]);
   
   // Day navigation for development testing
   const [testDayOverride, setTestDayOverride] = useState<number | null>(null);
@@ -2363,7 +2380,10 @@ export default function Home() {
       <header className="border-b border-zinc-800 bg-black/50 backdrop-blur-lg sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div 
+              className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => setLocation('/')}
+            >
               <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-orange-600 rounded-lg flex items-center justify-center transform rotate-2">
                 <div className="flex items-center gap-0.5 text-white text-xs font-bold">
                   <span>BTC</span>
@@ -2383,7 +2403,7 @@ export default function Home() {
               <Button
                 variant={activeSection === "learn" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setActiveSection("learn")}
+                onClick={() => setLocation('/learn')}
                 className="text-sm px-4 py-2"
               >
                 Learn
@@ -2392,7 +2412,7 @@ export default function Home() {
               <Button
                 variant={activeSection === "finance" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setActiveSection("finance")}
+                onClick={() => setLocation('/finance')}
                 className="text-sm px-4 py-2"
               >
                 Why BTC
@@ -2401,7 +2421,7 @@ export default function Home() {
               <Button
                 variant={activeSection === "simulations" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setActiveSection("simulations")}
+                onClick={() => setLocation('/simulators')}
                 className="text-sm px-4 py-2"
               >
                 Simulators
@@ -2409,7 +2429,7 @@ export default function Home() {
               <Button
                 variant={activeSection === "more" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setActiveSection("more")}
+                onClick={() => setLocation('/more')}
                 className="text-sm px-4 py-2"
               >
                 More
