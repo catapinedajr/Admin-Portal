@@ -1202,8 +1202,8 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     try {
       const { userId, questionId, selectedAnswer, date } = req.body;
       
-      // Get the question to check correct answer
-      const allQuestions = await storage.getAllQuizQuestions();
+      // Get the question from database directly - this returns the raw database format
+      const allQuestions = await storage.getAllContentQuizzes();
       const question = allQuestions.find(q => q.id === questionId);
       
       if (!question) {
@@ -1211,6 +1211,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
       }
 
       // Convert numeric correct answer to letter format (0->A, 1->B, 2->C, 3->D)
+      // The database stores correctAnswer as numbers (0,1,2,3), frontend sends letters (A,B,C,D)
       const correctAnswerLetter = ['A', 'B', 'C', 'D'][question.correctAnswer];
       const isCorrect = selectedAnswer === correctAnswerLetter;
       
