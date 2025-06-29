@@ -4935,8 +4935,8 @@ export default function Home() {
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-green-600/20 rounded-lg">
-                        <CreditCard className="w-6 h-6 text-green-400" />
+                      <div className="p-2 bg-orange-600/20 rounded-lg">
+                        <CreditCard className="w-6 h-6 text-orange-400" />
                       </div>
                       <h4 className="text-xl font-bold text-white">Master Bitcoin Transactions Without Risk</h4>
                     </div>
