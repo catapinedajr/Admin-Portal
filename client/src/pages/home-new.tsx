@@ -4265,194 +4265,325 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                {/* Wallet Recovery Education */}
+                {/* Seed Phrase Recovery Simulator */}
                 <Card className="bg-zinc-900 border-zinc-800" data-seed-phrase-simulator>
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-4">
                       <div className="p-2 bg-orange-600/20 rounded-lg">
-                        <Shield className="w-6 h-6 text-orange-400" />
+                        <KeyRound className="w-6 h-6 text-orange-400" />
                       </div>
-                      <h4 className="text-xl font-bold text-white">Wallet Recovery Education Center</h4>
+                      <h4 className="text-xl font-bold text-white">Seed Phrase Recovery Simulator</h4>
                     </div>
                     
-                    <p className="text-zinc-400 mb-6">
-                      Learn the critical process of wallet recovery without compromising your security. Master recovery concepts and best practices.
+                    <p className="text-zinc-400 mb-4">
+                      Practice recovering wallets in emergency scenarios. Master seed phrase recovery before you need it in real life.
                     </p>
 
-                    <div className="space-y-6">
-                      {/* Critical Security Warning */}
-                      <div className="bg-red-950/40 rounded-lg p-4 border border-red-800/50">
-                        <div className="flex items-start gap-3">
-                          <AlertTriangle className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" />
-                          <div>
-                            <p className="text-red-300 font-medium text-sm mb-2">🚨 NEVER Enter Real Seed Phrases Online</p>
-                            <p className="text-zinc-300 text-sm leading-relaxed">
-                              Legitimate wallet recovery only happens offline, on secure devices. Any website asking for your seed phrase is a scam attempting to steal your Bitcoin.
-                            </p>
+                    <div className="bg-orange-950/40 rounded-lg p-4 border border-orange-800/50 mb-6">
+                      <div className="flex items-start gap-3">
+                        <Shield className="w-5 h-5 text-orange-400 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-orange-300 font-medium text-sm mb-2">⚠️ EDUCATIONAL SIMULATION ONLY</p>
+                          <div className="text-zinc-300 text-sm space-y-1">
+                            <p>• These are FAKE seed phrases for practice only</p>
+                            <p>• No real wallet data is collected or stored</p>
+                            <p>• NEVER enter your real seed phrase anywhere online</p>
+                            <p>• Real recovery should only be done in secure, offline environments</p>
                           </div>
                         </div>
                       </div>
-
-                      {/* Recovery Process Education */}
-                      <div className="grid gap-6 md:grid-cols-2">
-                        <Card className="bg-zinc-800/50 border-zinc-700">
-                          <CardContent className="p-4">
-                            <div className="flex items-center gap-2 mb-3">
-                              <div className="w-8 h-8 bg-green-600/20 rounded-lg flex items-center justify-center">
-                                <CheckCircle className="w-4 h-4 text-green-400" />
-                              </div>
-                              <h5 className="font-semibold text-white text-sm">Safe Recovery Process</h5>
-                            </div>
-                            <div className="space-y-3 text-sm">
-                              <div className="flex items-start gap-2">
-                                <span className="text-orange-400 font-bold">1.</span>
-                                <p className="text-zinc-300">Use only official wallet software downloaded from verified sources</p>
-                              </div>
-                              <div className="flex items-start gap-2">
-                                <span className="text-orange-400 font-bold">2.</span>
-                                <p className="text-zinc-300">Disconnect from internet during recovery process</p>
-                              </div>
-                              <div className="flex items-start gap-2">
-                                <span className="text-orange-400 font-bold">3.</span>
-                                <p className="text-zinc-300">Enter seed phrase only into official wallet app</p>
-                              </div>
-                              <div className="flex items-start gap-2">
-                                <span className="text-orange-400 font-bold">4.</span>
-                                <p className="text-zinc-300">Generate new seed phrase and transfer funds immediately</p>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-
-                        <Card className="bg-zinc-800/50 border-zinc-700">
-                          <CardContent className="p-4">
-                            <div className="flex items-center gap-2 mb-3">
-                              <div className="w-8 h-8 bg-red-600/20 rounded-lg flex items-center justify-center">
-                                <X className="w-4 h-4 text-red-400" />
-                              </div>
-                              <h5 className="font-semibold text-white text-sm">Recovery Scams to Avoid</h5>
-                            </div>
-                            <div className="space-y-3 text-sm">
-                              <div className="flex items-start gap-2">
-                                <span className="text-red-400 font-bold">✕</span>
-                                <p className="text-zinc-300">Websites claiming to "validate" your seed phrase</p>
-                              </div>
-                              <div className="flex items-start gap-2">
-                                <span className="text-red-400 font-bold">✕</span>
-                                <p className="text-zinc-300">Customer support asking for your backup words</p>
-                              </div>
-                              <div className="flex items-start gap-2">
-                                <span className="text-red-400 font-bold">✕</span>
-                                <p className="text-zinc-300">Apps that require seed phrase entry for "verification"</p>
-                              </div>
-                              <div className="flex items-start gap-2">
-                                <span className="text-red-400 font-bold">✕</span>
-                                <p className="text-zinc-300">Any online form requesting your backup words</p>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </div>
-
-                      {/* Emergency Scenarios Education */}
-                      <Card className="bg-zinc-800/50 border-zinc-700">
-                        <CardContent className="p-4">
-                          <h5 className="font-semibold text-white mb-4">Common Recovery Scenarios</h5>
-                          <div className="grid gap-4 md:grid-cols-3">
-                            <div className="space-y-2">
-                              <div className="flex items-center gap-2">
-                                <Smartphone className="w-4 h-4 text-orange-400" />
-                                <span className="font-medium text-white text-sm">Phone Replacement</span>
-                              </div>
-                              <p className="text-zinc-400 text-xs">New phone, reinstall wallet app, recover using seed phrase offline</p>
-                            </div>
-                            <div className="space-y-2">
-                              <div className="flex items-center gap-2">
-                                <Monitor className="w-4 h-4 text-orange-400" />
-                                <span className="font-medium text-white text-sm">Computer Crash</span>
-                              </div>
-                              <p className="text-zinc-400 text-xs">Hard drive failure, reinstall on new computer, air-gapped recovery</p>
-                            </div>
-                            <div className="space-y-2">
-                              <div className="flex items-center gap-2">
-                                <HardDrive className="w-4 h-4 text-orange-400" />
-                                <span className="font-medium text-white text-sm">Hardware Reset</span>
-                              </div>
-                              <p className="text-zinc-400 text-xs">Hardware wallet replacement, factory reset, secure restoration</p>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      {/* Backup Verification Guide */}
-                      <Card className="bg-zinc-800/50 border-zinc-700">
-                        <CardContent className="p-4">
-                          <h5 className="font-semibold text-white mb-4">Verify Your Backup is Complete</h5>
-                          <div className="space-y-3">
-                            <div className="flex items-start gap-3">
-                              <div className="w-6 h-6 bg-orange-600/20 rounded flex items-center justify-center mt-0.5">
-                                <span className="text-orange-400 text-xs font-bold">1</span>
-                              </div>
-                              <div>
-                                <p className="text-white font-medium text-sm">Check Word Count</p>
-                                <p className="text-zinc-400 text-xs">Ensure you have exactly 12, 18, or 24 words written down</p>
-                              </div>
-                            </div>
-                            <div className="flex items-start gap-3">
-                              <div className="w-6 h-6 bg-orange-600/20 rounded flex items-center justify-center mt-0.5">
-                                <span className="text-orange-400 text-xs font-bold">2</span>
-                              </div>
-                              <div>
-                                <p className="text-white font-medium text-sm">Verify Word Order</p>
-                                <p className="text-zinc-400 text-xs">Words must be in exact order - number them 1, 2, 3...</p>
-                              </div>
-                            </div>
-                            <div className="flex items-start gap-3">
-                              <div className="w-6 h-6 bg-orange-600/20 rounded flex items-center justify-center mt-0.5">
-                                <span className="text-orange-400 text-xs font-bold">3</span>
-                              </div>
-                              <div>
-                                <p className="text-white font-medium text-sm">Test Small Amount First</p>
-                                <p className="text-zinc-400 text-xs">Send small test transaction to verify wallet works correctly</p>
-                              </div>
-                            </div>
-                            <div className="flex items-start gap-3">
-                              <div className="w-6 h-6 bg-orange-600/20 rounded flex items-center justify-center mt-0.5">
-                                <span className="text-orange-400 text-xs font-bold">4</span>
-                              </div>
-                              <div>
-                                <p className="text-white font-medium text-sm">Store Securely</p>
-                                <p className="text-zinc-400 text-xs">Keep physical copies in fireproof safe, safety deposit box</p>
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      {/* Action Buttons */}
-                      <div className="flex flex-col sm:flex-row gap-3">
-                        <Button
-                          onClick={() => setSimulationsSubTab("safety")}
-                          className="bg-orange-600 hover:bg-orange-700 text-white flex-1"
-                        >
-                          <Shield className="w-4 h-4 mr-2" />
-                          Practice Security Skills
-                        </Button>
-                        <Button
-                          onClick={() => {
-                            const walletTypes = document.querySelector('[data-wallet-explorer]');
-                            if (walletTypes) {
-                              walletTypes.scrollIntoView({ behavior: 'smooth' });
-                            }
-                          }}
-                          variant="outline"
-                          className="border-orange-600 text-orange-300 hover:bg-orange-600/10 flex-1"
-                        >
-                          <Wallet className="w-4 h-4 mr-2" />
-                          Compare Wallet Types
-                        </Button>
-                      </div>
                     </div>
+
+                    {!seedPhraseActive ? (
+                      <div className="space-y-6">
+                        <div className="bg-red-950/40 rounded-lg p-4 border border-red-800/50">
+                          <div className="flex items-start gap-3">
+                            <AlertTriangle className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" />
+                            <div>
+                              <p className="text-red-300 font-medium text-sm mb-2">Critical Skill</p>
+                              <p className="text-zinc-300 text-sm leading-relaxed">
+                                Wallet recovery is the most important Bitcoin skill. If you lose access to your wallet and don't know how to recover it using your seed phrase, your Bitcoin could be lost forever.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="grid gap-4 md:grid-cols-3">
+                          {seedPhraseScenarios.map((scenario, index) => (
+                            <div 
+                              key={scenario.id}
+                              className="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700 hover:border-orange-500/50 transition-colors"
+                            >
+                              <div className="flex items-center gap-2 mb-3">
+                                <div className={`px-2 py-1 rounded text-xs font-medium ${
+                                  scenario.difficulty === 'Beginner' ? 'bg-green-800/30 text-green-300' :
+                                  scenario.difficulty === 'Intermediate' ? 'bg-yellow-800/30 text-yellow-300' :
+                                  'bg-red-800/30 text-red-300'
+                                }`}>
+                                  {scenario.difficulty}
+                                </div>
+                                <div className="text-zinc-400 text-xs">
+                                  {scenario.seedPhrase.length} words
+                                </div>
+                              </div>
+                              
+                              <h5 className="font-semibold text-white text-sm mb-2">{scenario.title}</h5>
+                              <p className="text-zinc-400 text-xs mb-3 leading-relaxed">{scenario.description}</p>
+                              
+                              <div className="bg-zinc-900/50 rounded p-3 mb-3">
+                                <p className="text-zinc-300 text-xs leading-relaxed">{scenario.context}</p>
+                              </div>
+                              
+                              <div className="flex items-center justify-between">
+                                <div className="text-zinc-400 text-xs">
+                                  ⏱️ {Math.floor(scenario.timeLimit / 60)}:{(scenario.timeLimit % 60).toString().padStart(2, '0')} limit
+                                </div>
+                                <Button
+                                  onClick={() => {
+                                    setSeedPhraseScenario(index);
+                                    setSeedPhraseActive(true);
+                                    setSeedPhraseProgress(0);
+                                    setEnteredWords([]);
+                                    setCurrentWordIndex(0);
+                                    setRecoveryComplete(false);
+                                    setShowSeedHints(false);
+                                  }}
+                                  className="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1 text-xs"
+                                >
+                                  Start Recovery
+                                </Button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="bg-zinc-800/50 rounded-lg p-4">
+                          <h5 className="font-semibold text-white text-sm mb-3">What You'll Learn</h5>
+                          <div className="grid gap-2 sm:grid-cols-2">
+                            <div className="flex items-center gap-2">
+                              <CheckCircle className="w-4 h-4 text-orange-400 flex-shrink-0" />
+                              <span className="text-zinc-300 text-sm">Seed phrase entry under pressure</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <CheckCircle className="w-4 h-4 text-orange-400 flex-shrink-0" />
+                              <span className="text-zinc-300 text-sm">Word order importance</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <CheckCircle className="w-4 h-4 text-orange-400 flex-shrink-0" />
+                              <span className="text-zinc-300 text-sm">Time management during recovery</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <CheckCircle className="w-4 h-4 text-orange-400 flex-shrink-0" />
+                              <span className="text-zinc-300 text-sm">Different seed phrase lengths</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-6">
+                        {/* Recovery Progress Header */}
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <h5 className="font-semibold text-white">
+                              {seedPhraseScenarios[seedPhraseScenario].title}
+                            </h5>
+                            <Button
+                              onClick={() => {
+                                setSeedPhraseActive(false);
+                                setSeedPhraseProgress(0);
+                                setEnteredWords([]);
+                                setCurrentWordIndex(0);
+                                setRecoveryComplete(false);
+                              }}
+                              variant="ghost"
+                              size="sm"
+                              className="text-zinc-400 hover:text-white"
+                            >
+                              ✕ Exit
+                            </Button>
+                          </div>
+                          
+                          <div className="bg-zinc-800/50 rounded-lg p-3">
+                            <p className="text-zinc-300 text-sm leading-relaxed">
+                              {seedPhraseScenarios[seedPhraseScenario].context}
+                            </p>
+                          </div>
+
+                          {/* Progress Indicator */}
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-zinc-400 text-sm">Recovery Progress</span>
+                              <span className="text-zinc-400 text-sm">
+                                {enteredWords.length}/{seedPhraseScenarios[seedPhraseScenario].seedPhrase.length} words
+                              </span>
+                            </div>
+                            <div className="w-full bg-zinc-700 rounded-full h-2">
+                              <div 
+                                className="bg-orange-500 h-2 rounded-full transition-all duration-300"
+                                style={{ 
+                                  width: `${(enteredWords.length / seedPhraseScenarios[seedPhraseScenario].seedPhrase.length) * 100}%` 
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        {!recoveryComplete ? (
+                          <div className="space-y-6">
+                            {/* Current Word Input */}
+                            <div className="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
+                              <div className="mb-3">
+                                <label className="text-white font-medium text-sm mb-2 block">
+                                  Enter word #{currentWordIndex + 1}
+                                </label>
+                                <input
+                                  type="text"
+                                  placeholder="Type the next word from your seed phrase..."
+                                  className="w-full bg-zinc-900 border border-zinc-600 rounded-lg px-3 py-2 text-white placeholder-zinc-400 focus:border-orange-500 focus:outline-none"
+                                  value={enteredWords[currentWordIndex] || ''}
+                                  onChange={(e) => {
+                                    const newWords = [...enteredWords];
+                                    newWords[currentWordIndex] = e.target.value.toLowerCase().trim();
+                                    setEnteredWords(newWords);
+                                  }}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                      const currentWord = enteredWords[currentWordIndex]?.toLowerCase().trim();
+                                      const correctWord = seedPhraseScenarios[seedPhraseScenario].seedPhrase[currentWordIndex];
+                                      
+                                      if (currentWord === correctWord) {
+                                        if (currentWordIndex === seedPhraseScenarios[seedPhraseScenario].seedPhrase.length - 1) {
+                                          setRecoveryComplete(true);
+                                        } else {
+                                          setCurrentWordIndex(currentWordIndex + 1);
+                                        }
+                                      }
+                                    }
+                                  }}
+                                />
+                              </div>
+                              
+                              <div className="flex items-center gap-3">
+                                <Button
+                                  onClick={() => {
+                                    const currentWord = enteredWords[currentWordIndex]?.toLowerCase().trim();
+                                    const correctWord = seedPhraseScenarios[seedPhraseScenario].seedPhrase[currentWordIndex];
+                                    
+                                    if (currentWord === correctWord) {
+                                      if (currentWordIndex === seedPhraseScenarios[seedPhraseScenario].seedPhrase.length - 1) {
+                                        setRecoveryComplete(true);
+                                      } else {
+                                        setCurrentWordIndex(currentWordIndex + 1);
+                                      }
+                                    }
+                                  }}
+                                  className="bg-orange-600 hover:bg-orange-700 text-white"
+                                  disabled={!enteredWords[currentWordIndex]?.trim()}
+                                >
+                                  {currentWordIndex === seedPhraseScenarios[seedPhraseScenario].seedPhrase.length - 1 ? 'Complete Recovery' : 'Next Word'}
+                                </Button>
+                                
+                                <Button
+                                  onClick={() => setShowSeedHints(!showSeedHints)}
+                                  variant="outline"
+                                  className="border-zinc-600 text-zinc-300 hover:border-orange-500"
+                                >
+                                  {showSeedHints ? 'Hide' : 'Show'} Hints
+                                </Button>
+                              </div>
+                            </div>
+
+                            {/* Hints Panel */}
+                            {showSeedHints && (
+                              <div className="bg-blue-950/40 rounded-lg p-4 border border-blue-800/50">
+                                <h6 className="font-medium text-blue-300 mb-3">Recovery Hints</h6>
+                                <div className="space-y-2">
+                                  {seedPhraseScenarios[seedPhraseScenario].hints.map((hint, index) => (
+                                    <div key={index} className="flex items-start gap-2">
+                                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
+                                      <p className="text-blue-200 text-sm">{hint}</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Progress Display */}
+                            <div className="grid grid-cols-6 md:grid-cols-8 lg:grid-cols-12 gap-2">
+                              {seedPhraseScenarios[seedPhraseScenario].seedPhrase.map((word, index) => (
+                                <div
+                                  key={index}
+                                  className={`p-2 rounded border text-center ${
+                                    index < enteredWords.length && enteredWords[index] === word
+                                      ? 'bg-green-800/30 border-green-600/50 text-green-300'
+                                      : index === currentWordIndex
+                                      ? 'bg-orange-800/30 border-orange-600/50 text-orange-300'
+                                      : 'bg-zinc-800 border-zinc-700 text-zinc-500'
+                                  }`}
+                                >
+                                  <div className="text-xs font-medium">
+                                    {index < enteredWords.length && enteredWords[index] === word
+                                      ? word
+                                      : index === currentWordIndex
+                                      ? '?'
+                                      : `#${index + 1}`
+                                    }
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ) : (
+                          /* Recovery Complete */
+                          <div className="space-y-6">
+                            <div className="text-center space-y-4">
+                              <div className="w-16 h-16 bg-green-600/20 rounded-full flex items-center justify-center mx-auto">
+                                <CheckCircle className="w-8 h-8 text-green-400" />
+                              </div>
+                              <h5 className="font-bold text-green-400 text-lg">Wallet Recovery Successful! 🎉</h5>
+                              <p className="text-zinc-300">
+                                You've successfully recovered your wallet and regained access to your Bitcoin.
+                              </p>
+                            </div>
+
+                            <div className="bg-green-950/40 rounded-lg p-4 border border-green-800/50">
+                              <h6 className="font-medium text-green-300 mb-3">What Happened</h6>
+                              <div className="space-y-2 text-green-200 text-sm">
+                                <p>✅ Seed phrase entered correctly in proper order</p>
+                                <p>✅ Wallet restored with full transaction history</p>
+                                <p>✅ Bitcoin balance and addresses recovered</p>
+                                <p>✅ You maintained control of your funds through the emergency</p>
+                              </div>
+                            </div>
+
+                            <div className="flex justify-center gap-3">
+                              <Button
+                                onClick={() => {
+                                  setSeedPhraseActive(false);
+                                  setSeedPhraseProgress(0);
+                                  setEnteredWords([]);
+                                  setCurrentWordIndex(0);
+                                  setRecoveryComplete(false);
+                                }}
+                                className="bg-orange-600 hover:bg-orange-700 text-white"
+                              >
+                                Try Another Scenario
+                              </Button>
+                              <Button
+                                onClick={() => {
+                                  // Navigate to safety section for more security training
+                                  setSimulationsSubTab("safety");
+                                }}
+                                variant="outline"
+                                className="border-zinc-600 text-zinc-300 hover:border-orange-500"
+                              >
+                                Security Training
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </div>
