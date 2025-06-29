@@ -29,7 +29,7 @@ function Router() {
     <Switch>
       <Route path="/onboarding" component={Onboarding} />
       <Route path="/learn" component={Home} />
-      <Route path="/finance" component={Home} />
+      <Route path="/money" component={Home} />
       <Route path="/simulators" component={Home} />
       <Route path="/more" component={Home} />
       <Route path="/" component={OnboardingRedirect} />

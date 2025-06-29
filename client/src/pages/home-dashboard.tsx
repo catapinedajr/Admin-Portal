@@ -192,20 +192,60 @@ export default function HomeDashboard() {
               </div>
             </div>
 
-            {/* Achievement badges */}
-            {user?.currentStreak && (
-              <div className="flex items-center gap-2 mt-4 pt-4 border-t border-zinc-800">
+            {/* Achievement System */}
+            <div className="mt-4 pt-4 border-t border-zinc-800">
+              <div className="flex items-center gap-2 mb-3">
                 <Award className="w-4 h-4 text-yellow-400" />
-                <span className="text-sm text-zinc-300">
-                  {user.currentStreak >= 7 ? "Week Warrior" : 
-                   user.currentStreak >= 3 ? "Momentum Builder" : 
-                   "Journey Starter"}
-                </span>
-                <Badge variant="outline" className="border-yellow-600 text-yellow-400">
-                  {user.currentStreak} day streak
-                </Badge>
+                <span className="text-sm font-medium text-white">Achievements Unlocked</span>
               </div>
-            )}
+              
+              <div className="grid grid-cols-2 gap-2">
+                {/* Streak Achievements */}
+                <div className={`text-center p-2 rounded-lg border ${
+                  user?.currentStreak >= 7 
+                    ? 'bg-yellow-600/20 border-yellow-600/50 text-yellow-300' 
+                    : 'bg-zinc-800/50 border-zinc-700 text-zinc-500'
+                }`}>
+                  <div className="text-xs font-bold">WEEK WARRIOR</div>
+                  <div className="text-xs">7-day streak</div>
+                </div>
+                
+                <div className={`text-center p-2 rounded-lg border ${
+                  completedDays >= 10 
+                    ? 'bg-blue-600/20 border-blue-600/50 text-blue-300' 
+                    : 'bg-zinc-800/50 border-zinc-700 text-zinc-500'
+                }`}>
+                  <div className="text-xs font-bold">FACT COLLECTOR</div>
+                  <div className="text-xs">30+ facts learned</div>
+                </div>
+                
+                <div className={`text-center p-2 rounded-lg border ${
+                  completedDays >= 15 
+                    ? 'bg-green-600/20 border-green-600/50 text-green-300' 
+                    : 'bg-zinc-800/50 border-zinc-700 text-zinc-500'
+                }`}>
+                  <div className="text-xs font-bold">BITCOIN SCHOLAR</div>
+                  <div className="text-xs">15 lessons completed</div>
+                </div>
+                
+                <div className={`text-center p-2 rounded-lg border ${
+                  completedDays >= 30 
+                    ? 'bg-purple-600/20 border-purple-600/50 text-purple-300' 
+                    : 'bg-zinc-800/50 border-zinc-700 text-zinc-500'
+                }`}>
+                  <div className="text-xs font-bold">HODL MASTER</div>
+                  <div className="text-xs">Course completed</div>
+                </div>
+              </div>
+              
+              {user?.currentStreak && (
+                <div className="flex items-center justify-center gap-2 mt-3">
+                  <Badge variant="outline" className="border-orange-600 text-orange-400">
+                    {user.currentStreak} day streak
+                  </Badge>
+                </div>
+              )}
+            </div>
           </CardContent>
         </Card>
 
@@ -276,9 +316,12 @@ export default function HomeDashboard() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {/* Learn Section */}
           <Card 
-            className="bg-zinc-900 border-zinc-800 cursor-pointer hover:border-orange-600/50 transition-colors"
+            className="bg-zinc-900 border-zinc-800 cursor-pointer hover:border-orange-600/50 transition-colors relative"
             onClick={() => setLocation('/learn')}
           >
+            <div className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-yellow-500 text-black text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+              PREMIUM
+            </div>
             <CardContent className="p-4 text-center">
               <BookOpen className="w-8 h-8 text-orange-400 mx-auto mb-2" />
               <h3 className="font-semibold text-white mb-1">Learn</h3>
@@ -286,23 +329,26 @@ export default function HomeDashboard() {
             </CardContent>
           </Card>
 
-          {/* Finance Section */}
+          {/* Money Section */}
           <Card 
             className="bg-zinc-900 border-zinc-800 cursor-pointer hover:border-blue-600/50 transition-colors"
-            onClick={() => setLocation('/finance')}
+            onClick={() => setLocation('/money')}
           >
             <CardContent className="p-4 text-center">
-              <TrendingUp className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-              <h3 className="font-semibold text-white mb-1">Finance</h3>
+              <Coins className="w-8 h-8 text-blue-400 mx-auto mb-2" />
+              <h3 className="font-semibold text-white mb-1">Money</h3>
               <p className="text-xs text-zinc-400">Why Bitcoin matters</p>
             </CardContent>
           </Card>
 
           {/* Simulators Section */}
           <Card 
-            className="bg-zinc-900 border-zinc-800 cursor-pointer hover:border-green-600/50 transition-colors"
+            className="bg-zinc-900 border-zinc-800 cursor-pointer hover:border-green-600/50 transition-colors relative"
             onClick={() => setLocation('/simulators')}
           >
+            <div className="absolute -top-2 -right-2 bg-gradient-to-r from-green-500 to-emerald-500 text-black text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+              PREMIUM
+            </div>
             <CardContent className="p-4 text-center">
               <Gamepad2 className="w-8 h-8 text-green-400 mx-auto mb-2" />
               <h3 className="font-semibold text-white mb-1">Simulators</h3>
@@ -375,6 +421,51 @@ export default function HomeDashboard() {
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-zinc-400" />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Success Stories */}
+        <Card className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 border-blue-700/30">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-white text-lg flex items-center gap-2">
+              <Award className="w-5 h-5 text-blue-400" />
+              Success Stories
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-3">
+              <div className="bg-zinc-800/50 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-blue-600/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-blue-400 font-bold text-sm">M</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-zinc-300 text-sm mb-2">
+                      "HODLearn's simulators helped me understand DCA strategy before investing my first $1,000. Now I'm confident in my Bitcoin journey."
+                    </p>
+                    <div className="text-xs text-zinc-400">
+                      <span className="font-medium text-blue-300">Michael K.</span> • Software Engineer
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-zinc-800/50 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-green-600/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-green-400 font-bold text-sm">S</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-zinc-300 text-sm mb-2">
+                      "The security training section saved me from a phishing scam. Worth every penny of the subscription."
+                    </p>
+                    <div className="text-xs text-zinc-400">
+                      <span className="font-medium text-green-300">Sarah L.</span> • Marketing Manager
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>

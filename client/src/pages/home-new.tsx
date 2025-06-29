@@ -348,7 +348,7 @@ const seedPhraseScenarios = [
 
 
 
-type MainSection = "learn" | "finance" | "simulations" | "more";
+type MainSection = "learn" | "money" | "simulations" | "more";
 type LearnSubTab = "today" | "reference";
 type SimulationsSubTab = "wallet" | "safety" | "transactions" | "transfer" | "hodl" | "dca" | "inflation" | "fees";
 type MoreSubTab = "store";
@@ -362,7 +362,7 @@ export default function Home() {
   // Determine active section from URL
   const getActiveSectionFromPath = (path: string): MainSection => {
     if (path.includes('/learn')) return 'learn';
-    if (path.includes('/finance')) return 'finance';
+    if (path.includes('/money')) return 'money';
     if (path.includes('/simulators')) return 'simulations';
     if (path.includes('/more')) return 'more';
     return 'learn'; // default
@@ -2423,27 +2423,33 @@ export default function Home() {
                 variant={activeSection === "learn" ? "secondary" : "ghost"}
                 size="sm"
                 onClick={() => setLocation('/learn')}
-                className="text-sm px-4 py-2"
+                className="text-sm px-4 py-2 relative"
               >
                 Learn
+                <div className="absolute -top-1 -right-1 bg-gradient-to-r from-orange-500 to-yellow-500 text-black text-xs font-bold px-1 py-0.5 rounded-full shadow-sm">
+                  PRO
+                </div>
               </Button>
 
               <Button
-                variant={activeSection === "finance" ? "secondary" : "ghost"}
+                variant={activeSection === "money" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setLocation('/finance')}
+                onClick={() => setLocation('/money')}
                 className="text-sm px-4 py-2"
               >
-                Why BTC
+                Money
               </Button>
 
               <Button
                 variant={activeSection === "simulations" ? "secondary" : "ghost"}
                 size="sm"
                 onClick={() => setLocation('/simulators')}
-                className="text-sm px-4 py-2"
+                className="text-sm px-4 py-2 relative"
               >
                 Simulators
+                <div className="absolute -top-1 -right-1 bg-gradient-to-r from-green-500 to-emerald-500 text-black text-xs font-bold px-1 py-0.5 rounded-full shadow-sm">
+                  PRO
+                </div>
               </Button>
               <Button
                 variant={activeSection === "more" ? "secondary" : "ghost"}
@@ -2463,13 +2469,13 @@ export default function Home() {
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-white mb-2">
             {activeSection === "learn" && "Build Your Bitcoin Foundation"}
-            {activeSection === "finance" && "Why Bitcoin Matters"}
+            {activeSection === "money" && "Why Bitcoin Matters"}
             {activeSection === "simulations" && "Practice Bitcoin Concepts"}
             {activeSection === "more" && "Discover More About Bitcoin"}
           </h2>
           <p className="text-zinc-400">
             {activeSection === "learn" && "Learn the fundamentals and understand why Bitcoin matters"}
-            {activeSection === "finance" && "Discover why Bitcoin is the future of money and finance"}
+            {activeSection === "money" && "Discover why Bitcoin is the future of money and finance"}
             {activeSection === "simulations" && "Interactive simulations to deepen your understanding"}
             {activeSection === "more" && "Resources and tools to support your Bitcoin journey"}
           </p>
@@ -2873,7 +2879,7 @@ export default function Home() {
         )}
 
         {/* Finance Section */}
-        {activeSection === "finance" && (
+        {activeSection === "money" && (
           <div className="space-y-8">
             {/* Hero Narrative */}
             <Card className="bg-gradient-to-br from-orange-950/30 via-zinc-900 to-red-950/30 border-orange-800/50">
