@@ -7861,4 +7861,352 @@ Bitcoin isn't just new technology - it's a new way of thinking about money, owne
   }
 }
 
-export const storage = new MemStorage();
+// Simple database storage implementation for essential methods
+export class DatabaseStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db.insert(users).values(insertUser).returning();
+    return user;
+  }
+
+  async updateUserStreak(userId: number, currentStreak: number, longestStreak: number): Promise<void> {
+    await db.update(users)
+      .set({ currentStreak, longestStreak })
+      .where(eq(users.id, userId));
+  }
+
+  async updateUserProgress(userId: number, completedLessons: number, lastActivityDate: string): Promise<void> {
+    await db.update(users)
+      .set({ completedLessons, lastActivityDate })
+      .where(eq(users.id, userId));
+  }
+
+  // Content methods using new database structure
+  async getContentDay(dayIndex: number): Promise<ContentDay | undefined> {
+    if (dayIndex <= 0) return undefined;
+    const [day] = await db.select().from(contentDays).where(eq(contentDays.dayIndex, dayIndex));
+    return day;
+  }
+
+  async getDailyContentFacts(dayIndex: number): Promise<DailyContentFact[]> {
+    const day = await this.getContentDay(dayIndex);
+    if (!day) return [];
+
+    const facts = await db.select().from(contentFacts)
+      .where(eq(contentFacts.dayId, day.id))
+      .orderBy(contentFacts.orderIndex);
+
+    const factsWithDiveDeeper: DailyContentFact[] = [];
+    for (const fact of facts) {
+      const [diveDeeper] = await db.select().from(contentDiveDeeper)
+        .where(eq(contentDiveDeeper.factId, fact.id));
+      
+      factsWithDiveDeeper.push({
+        ...fact,
+        diveDeeper: diveDeeper || null
+      });
+    }
+
+    return factsWithDiveDeeper;
+  }
+
+  async getContentLesson(dayIndex: number): Promise<ContentLesson | undefined> {
+    const day = await this.getContentDay(dayIndex);
+    if (!day) return undefined;
+
+    const [lesson] = await db.select().from(contentLessons)
+      .where(eq(contentLessons.dayId, day.id));
+    return lesson;
+  }
+
+  async getContentQuizzes(dayIndex: number): Promise<ContentQuiz[]> {
+    const day = await this.getContentDay(dayIndex);
+    if (!day) return [];
+
+    const quizzes = await db.select().from(contentQuizzes)
+      .where(eq(contentQuizzes.dayId, day.id))
+      .orderBy(contentQuizzes.orderIndex);
+    return quizzes;
+  }
+
+  // Implement remaining required interface methods with database operations
+  async getDailyFacts(dayIndex: number): Promise<DailyFact[]> {
+    // Map to old interface for compatibility
+    const facts = await this.getDailyContentFacts(dayIndex);
+    return facts.map(f => ({ id: f.id, dayIndex: f.dayId, title: f.title, content: f.content, category: f.category, icon: f.icon }));
+  }
+
+  async getAllDailyFacts(): Promise<DailyFact[]> {
+    const facts = await db.select().from(contentFacts);
+    return facts.map(f => ({ id: f.id, dayIndex: f.dayId, title: f.title, content: f.content, category: f.category, icon: f.icon }));
+  }
+
+  async createDailyFact(fact: InsertDailyFact): Promise<DailyFact> {
+    const [created] = await db.insert(contentFacts).values({
+      dayId: fact.dayIndex,
+      title: fact.title,
+      content: fact.content,
+      category: fact.category,
+      icon: fact.icon || '💡',
+      orderIndex: 0,
+      createdAt: new Date()
+    }).returning();
+    return { id: created.id, dayIndex: created.dayId, title: created.title, content: created.content, category: created.category, icon: created.icon };
+  }
+
+  async getLesson(dayIndex: number): Promise<Lesson | undefined> {
+    const lesson = await this.getContentLesson(dayIndex);
+    if (!lesson) return undefined;
+    return {
+      id: lesson.id,
+      dayIndex: lesson.dayId,
+      title: lesson.title,
+      content: lesson.content,
+      keyTakeaways: lesson.keyTakeaways,
+      whyItMatters: lesson.whyItMatters || '',
+      estimatedReadTime: lesson.estimatedReadTime
+    };
+  }
+
+  async getAllLessons(): Promise<Lesson[]> {
+    const lessons = await db.select().from(contentLessons);
+    return lessons.map(l => ({
+      id: l.id,
+      dayIndex: l.dayId,
+      title: l.title,
+      content: l.content,
+      keyTakeaways: l.keyTakeaways,
+      whyItMatters: l.whyItMatters || '',
+      estimatedReadTime: l.estimatedReadTime
+    }));
+  }
+
+  async createLesson(lesson: InsertLesson): Promise<Lesson> {
+    const [created] = await db.insert(contentLessons).values({
+      dayId: lesson.dayIndex,
+      title: lesson.title,
+      content: lesson.content,
+      keyTakeaways: lesson.keyTakeaways,
+      whyItMatters: lesson.whyItMatters,
+      estimatedReadTime: lesson.estimatedReadTime,
+      createdAt: new Date()
+    }).returning();
+    return {
+      id: created.id,
+      dayIndex: created.dayId,
+      title: created.title,
+      content: created.content,
+      keyTakeaways: created.keyTakeaways,
+      whyItMatters: created.whyItMatters || '',
+      estimatedReadTime: created.estimatedReadTime
+    };
+  }
+
+  // User progress methods (simplified implementations)
+  async getUserProgress(userId: number, date: string): Promise<UserProgress | undefined> {
+    // Simplified implementation - would need userProgress table
+    return undefined;
+  }
+
+  async getUserProgressByDay(userId: number, dayIndex: number): Promise<UserProgress | undefined> {
+    return undefined;
+  }
+
+  async getUserProgressForWeek(userId: number, startDate: string): Promise<UserProgress[]> {
+    return [];
+  }
+
+  async createOrUpdateUserProgress(progress: InsertUserProgress): Promise<UserProgress> {
+    // Mock implementation
+    return {
+      id: 1,
+      userId: progress.userId,
+      date: progress.date,
+      dayIndex: progress.dayIndex,
+      factsViewed: progress.factsViewed,
+      lessonCompleted: progress.lessonCompleted,
+      progressPercentage: progress.progressPercentage
+    };
+  }
+
+  async isDayCompleted(userId: number, dayIndex: number): Promise<boolean> {
+    return false;
+  }
+
+  async markDayCompleted(userId: number, dayIndex: number): Promise<void> {
+    // Mock implementation
+  }
+
+  async getNextAvailableDay(userId: number): Promise<number> {
+    return 1;
+  }
+
+  async canAccessDay(userId: number, dayIndex: number): Promise<boolean> {
+    return true;
+  }
+
+  async getCompletedDays(userId: number): Promise<number[]> {
+    return [];
+  }
+
+  // Quiz methods using new database structure
+  async getDailyQuizQuestions(dayIndex: number): Promise<QuizQuestion[]> {
+    const quizzes = await this.getContentQuizzes(dayIndex);
+    return quizzes.map(q => ({
+      id: q.id,
+      dayIndex: q.dayId,
+      question: q.question,
+      options: q.options,
+      correctAnswer: q.correctAnswer,
+      explanation: q.explanation
+    }));
+  }
+
+  async getAllQuizQuestions(): Promise<QuizQuestion[]> {
+    const quizzes = await db.select().from(contentQuizzes);
+    return quizzes.map(q => ({
+      id: q.id,
+      dayIndex: q.dayId,
+      question: q.question,
+      options: q.options,
+      correctAnswer: q.correctAnswer,
+      explanation: q.explanation
+    }));
+  }
+
+  async createQuizQuestion(question: InsertQuizQuestion): Promise<QuizQuestion> {
+    const [created] = await db.insert(contentQuizzes).values({
+      dayId: question.dayIndex,
+      question: question.question,
+      options: question.options,
+      correctAnswer: question.correctAnswer,
+      explanation: question.explanation,
+      orderIndex: 0,
+      createdAt: new Date()
+    }).returning();
+    return {
+      id: created.id,
+      dayIndex: created.dayId,
+      question: created.question,
+      options: created.options,
+      correctAnswer: created.correctAnswer,
+      explanation: created.explanation
+    };
+  }
+
+  // Mock implementations for other required methods
+  async getUserQuizAnswers(userId: number, date: string): Promise<UserQuizAnswer[]> { return []; }
+  async submitQuizAnswer(answer: InsertUserQuizAnswer): Promise<UserQuizAnswer> { 
+    return { id: 1, userId: answer.userId, questionId: answer.questionId, selectedAnswer: answer.selectedAnswer, isCorrect: answer.isCorrect, date: answer.date };
+  }
+  async getUserQuizScore(userId: number, date: string): Promise<{ correct: number; total: number; percentage: number }> {
+    return { correct: 0, total: 0, percentage: 0 };
+  }
+
+  // Mock implementations for remaining interface methods  
+  async getKnowledgeAreas(): Promise<KnowledgeArea[]> { return []; }
+  async updateKnowledgeAreaProgress(areaId: number, completedLessons: number): Promise<void> {}
+  async getConvictionContent(dayIndex: number): Promise<ConvictionContent[]> { return []; }
+  async getAllConvictionContent(): Promise<ConvictionContent[]> { return []; }
+  async createConvictionContent(content: InsertConvictionContent): Promise<ConvictionContent> { 
+    return { id: 1, dayIndex: content.dayIndex, title: content.title, content: content.content, category: content.category };
+  }
+  async getTreasuryCompanies(): Promise<TreasuryCompany[]> { return []; }
+  async getTreasuryCompanyById(id: number): Promise<TreasuryCompany | undefined> { return undefined; }
+  async createTreasuryCompany(company: InsertTreasuryCompany): Promise<TreasuryCompany> {
+    return { id: 1, name: company.name, bitcoinHeld: company.bitcoinHeld, lastUpdated: company.lastUpdated };
+  }
+  async updateTreasuryCompany(id: number, updates: Partial<InsertTreasuryCompany>): Promise<TreasuryCompany | undefined> { return undefined; }
+  async getSovereignAdoptions(): Promise<SovereignAdoption[]> { return []; }
+  async getSovereignAdoptionById(id: number): Promise<SovereignAdoption | undefined> { return undefined; }
+  async getSovereignAdoptionsByType(adoptionType: string): Promise<SovereignAdoption[]> { return []; }
+  async createSovereignAdoption(adoption: InsertSovereignAdoption): Promise<SovereignAdoption> {
+    return { id: 1, country: adoption.country, adoptionType: adoption.adoptionType, description: adoption.description, dateAdopted: adoption.dateAdopted };
+  }
+  async updateSovereignAdoption(id: number, updates: Partial<InsertSovereignAdoption>): Promise<SovereignAdoption | undefined> { return undefined; }
+  async getCurrentBitcoinPrice(): Promise<BitcoinPrice | undefined> { return undefined; }
+  async getBitcoinPriceHistory(hours: number): Promise<BitcoinPrice[]> { return []; }
+  async createBitcoinPrice(price: InsertBitcoinPrice): Promise<BitcoinPrice> {
+    return { id: 1, price: price.price, timestamp: price.timestamp };
+  }
+  async getDailyDeepDive(dayIndex: number): Promise<DeepDiveTopic | undefined> { return undefined; }
+  async getAllDeepDiveTopics(): Promise<DeepDiveTopic[]> { return []; }
+  async createDeepDiveTopic(topic: InsertDeepDiveTopic): Promise<DeepDiveTopic> {
+    return { id: 1, dayIndex: topic.dayIndex, title: topic.title, content: topic.content };
+  }
+  async getCurrentWeeklyTopic(): Promise<WeeklyTopic | undefined> { return undefined; }
+  async getWeeklyTopic(weekNumber: number): Promise<WeeklyTopic | undefined> { return undefined; }
+  async getAllWeeklyTopics(): Promise<WeeklyTopic[]> { return []; }
+  async createWeeklyTopic(topic: InsertWeeklyTopic): Promise<WeeklyTopic> {
+    return { id: 1, weekNumber: topic.weekNumber, title: topic.title, content: topic.content };
+  }
+  async getUserWeeklyProgress(userId: number, weekNumber: number): Promise<UserWeeklyProgress | undefined> { return undefined; }
+  async createOrUpdateWeeklyProgress(progress: InsertUserWeeklyProgress): Promise<UserWeeklyProgress> {
+    return { id: 1, userId: progress.userId, weekNumber: progress.weekNumber, currentSection: progress.currentSection, progressPercentage: progress.progressPercentage, completed: progress.completed };
+  }
+  async updateWeeklyProgress(userId: number, weekNumber: number, currentSection: number, progressPercentage: number): Promise<void> {}
+  async completeWeeklyTopic(userId: number, weekNumber: number): Promise<void> {}
+  async getDailyContentComplete(dayIndex: number): Promise<DailyContentComplete | null> { return null; }
+}
+
+// Create a hybrid storage that uses database for content, memory for other features
+class HybridStorage extends MemStorage {
+  // Override content methods to use database
+  async getContentDay(dayIndex: number) {
+    if (dayIndex <= 0) return undefined;
+    const [day] = await db.select().from(contentDays).where(eq(contentDays.dayIndex, dayIndex));
+    return day;
+  }
+
+  async getDailyContentFacts(dayIndex: number) {
+    const day = await this.getContentDay(dayIndex);
+    if (!day) return [];
+
+    const facts = await db.select().from(contentFacts)
+      .where(eq(contentFacts.dayId, day.id))
+      .orderBy(contentFacts.orderIndex);
+
+    const factsWithDiveDeeper = [];
+    for (const fact of facts) {
+      const [diveDeeper] = await db.select().from(contentDiveDeeper)
+        .where(eq(contentDiveDeeper.factId, fact.id));
+      
+      factsWithDiveDeeper.push({
+        ...fact,
+        diveDeeper: diveDeeper || null
+      });
+    }
+
+    return factsWithDiveDeeper;
+  }
+
+  async getContentLesson(dayIndex: number) {
+    const day = await this.getContentDay(dayIndex);
+    if (!day) return undefined;
+
+    const [lesson] = await db.select().from(contentLessons)
+      .where(eq(contentLessons.dayId, day.id));
+    return lesson;
+  }
+
+  async getContentQuizzes(dayIndex: number) {
+    const day = await this.getContentDay(dayIndex);
+    if (!day) return [];
+
+    const quizzes = await db.select().from(contentQuizzes)
+      .where(eq(contentQuizzes.dayId, day.id))
+      .orderBy(contentQuizzes.orderIndex);
+    return quizzes;
+  }
+}
+
+export const storage = new HybridStorage();
