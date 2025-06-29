@@ -231,6 +231,98 @@ Comprehensive component library built on Radix UI primitives:
 
 Preferred communication style: Simple, everyday language.
 
+## Daily Content Build Strategy
+
+### Pre-Generation Metadata Analysis
+
+**Step 1: Extract Day Metadata**
+- Day Index: [Current day number] (Database ID from content_days table)
+- Theme: [Monthly focus area]
+- Title: [Specific learning objective]
+- Reading Level: [8th_grade → 11th_grade progression]
+- Cultural Stage: [complete_beginner → advanced]
+- Previous Knowledge: [What concepts from prior days to reference]
+
+### Content Generation Sequence
+
+**Step 2: Generate Complete Lesson First**
+- Title: Expands on day's theme with engaging headline
+- Content: 5-paragraph narrative story format (~400 words, 3-minute read)
+- Paragraph structure: Hook → Familiar comparison → Real problems → Core benefit → Future implications
+- Key Takeaways: 4 main learning points (JSON array)
+- Why It Matters: Explains broader significance and relevance
+- Estimated Read Time: 3 minutes
+
+**Step 3: Generate 3 Supporting Facts**
+- Extract 3 key concepts from lesson that need emphasis
+- Create facts that serve as "preview" or "building blocks" for lesson understanding
+- Written at target reading level with familiar analogies
+- Categories: Technology, Economics, Security (varied for engagement)
+- Icons: Simple emoji representations
+- Order: Most fundamental → supporting concepts → broader implications
+
+**Step 4: Generate 3 Dive Deeper Sections**
+- Each linked to corresponding fact by fact_id
+- Structure: Explanation + Examples (JSON array) + Visual Description + Key Takeaways (JSON array)
+- Language: Match day's reading level with familiar analogies
+- Examples: 4 real-world scenarios users can relate to
+- Visual descriptions: Help users mentally picture abstract concepts
+- Key takeaways: 4 bullet points summarizing main insights
+
+**Step 5: Generate 5 Quiz Questions**
+- Question 1: Tests first daily fact understanding
+- Question 2: Tests second daily fact concept
+- Question 3: Tests third daily fact application
+- Question 4: Tests lesson synthesis/connection
+- Question 5: Tests practical application or forward-looking concept
+- All options plausible, explanations reinforce learning
+
+### Technical Implementation Details
+
+**Content Formatting Requirements:**
+- Lesson content: Double line breaks between paragraphs for proper rendering
+- JSON fields: Proper array formatting for examples and key_takeaways
+- Reading level: Sentences under 15 words, familiar vocabulary
+- Cultural alignment: Language appropriate for user's stage
+
+**Database Integration:**
+- Remove existing test data before inserting real content
+- Use correct day_id from content_days table
+- Link dive deeper content to fact_id correctly
+- Maintain order_index for facts and quiz questions
+
+### Step 6: Final Holistic Review and Optimization
+
+**Content Accuracy Verification:**
+- Verify all Bitcoin facts are technically accurate and current
+- Ensure examples reflect real-world usage and current market conditions
+- Cross-check that all content aligns with established Bitcoin principles
+- Validate that quiz answers are definitively correct with proper explanations
+
+**Learning Flow Assessment:**
+- Test that facts create curiosity that lesson satisfies
+- Verify lesson content flows logically from simple to complex concepts
+- Ensure dive deeper sections truly expand understanding without overwhelming
+- Check that quiz questions test comprehension, not memorization
+
+**Educational Value Optimization:**
+- Assess if content matches the day's stated learning objective
+- Verify reading level consistency across all components
+- Ensure cultural stage language is appropriate for target user sophistication
+- Confirm content builds naturally on previous days' knowledge
+
+**User Experience Refinement:**
+- Review lesson paragraph formatting for optimal readability
+- Check that fact titles are engaging and not intimidating
+- Verify quiz questions have clear, unambiguous correct answers
+- Ensure examples are relatable to target demographic
+
+**Final Adjustments:**
+- Simplify any overly complex sentences or concepts
+- Add familiar analogies where abstract concepts need clarification
+- Strengthen connections between facts, lesson, and quiz content
+- Polish language to be encouraging rather than overwhelming
+
 Educational Content Enhancement Preferences:
 - **Expandable Facts**: Each daily fact should always have expandable "Learn More" content with deeper explanations, examples, and takeaways
 - **Daily Deep Dive**: The Deep Dive section should rotate daily with substantial long-form topics rather than static content, providing comprehensive exploration of advanced Bitcoin concepts
