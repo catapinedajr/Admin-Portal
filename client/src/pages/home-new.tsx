@@ -7415,6 +7415,31 @@ export default function Home() {
                   <p className="text-zinc-400">See how much traditional banking really costs vs Bitcoin</p>
                 </div>
 
+                {/* Introduction Card */}
+                <Card className="bg-gradient-to-r from-zinc-900 to-zinc-800 border-zinc-700">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0">
+                        <FileText className="w-8 h-8 text-orange-400 mt-1" />
+                      </div>
+                      <div className="space-y-3">
+                        <h4 className="text-lg font-bold text-white">The Hidden Cost of Traditional Banking</h4>
+                        <p className="text-zinc-300 leading-relaxed">
+                          Most people don't realize how much they pay in banking fees each year. The average American spends <span className="text-orange-400 font-semibold">$329 annually</span> on various banking fees, but heavy users of premium services can pay thousands more.
+                        </p>
+                        <p className="text-zinc-300 leading-relaxed">
+                          This calculator helps you discover your real banking costs across all fee categories: account maintenance, wire transfers, ATM penalties, overdraft charges, international fees, paper statements, and credit card annual fees.
+                        </p>
+                        <div className="bg-zinc-800 rounded-lg p-4 border-l-4 border-orange-400">
+                          <p className="text-zinc-200 text-sm font-medium">
+                            💡 <span className="text-orange-400">Pro Tip:</span> Bitcoin eliminates most of these fees entirely. Compare your current banking costs to see potential annual savings with Bitcoin's transparent, low-cost network.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
                 {/* Interactive Fee Calculator */}
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
