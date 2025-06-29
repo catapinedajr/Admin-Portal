@@ -2698,11 +2698,11 @@ export default function Home() {
                     <CardContent className="p-6">
                       <div className="space-y-6">
                         {/* Lesson Header */}
-                        <div className="space-y-3">
-                          <h3 className="text-lg font-bold text-white">Today's Lesson</h3>
-                          <div className="flex items-center justify-between">
-                            <h4 className="text-xl font-bold text-white">{(lesson as LessonWithKeyTakeaways).title}</h4>
-                            <Badge variant="outline" className="border-zinc-700 text-zinc-400">
+                        <div className="space-y-4">
+                          <h3 className="text-lg font-bold text-white border-b border-zinc-700 pb-3">Today's Lesson</h3>
+                          <div className="flex items-start justify-between gap-4">
+                            <h4 className="text-xl font-bold text-white leading-tight flex-1">{(lesson as LessonWithKeyTakeaways).title}</h4>
+                            <Badge variant="outline" className="border-zinc-700 text-zinc-400 flex-shrink-0">
                               <Clock className="w-3 h-3 mr-1" />
                               {(lesson as LessonWithKeyTakeaways).estimatedReadTime || 3} min read
                             </Badge>
