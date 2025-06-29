@@ -5459,21 +5459,21 @@ export default function Home() {
                       <div className="p-2 bg-orange-600/20 rounded-lg">
                         <Clock className="w-6 h-6 text-orange-400" />
                       </div>
-                      <h4 className="text-xl font-bold text-white">Break Free from Banking's Weekend Prison</h4>
+                      <h4 className="text-xl font-bold text-white">Why Traditional Banking Settlement Is Broken</h4>
                     </div>
                     
                     <div className="space-y-4">
                       <p className="text-zinc-300 leading-relaxed">
-                        Traditional banking operates like it's still 1950 - closing at 5pm, taking weekends off, and holding your money 
-                        hostage for days while they profit from the float. Bitcoin never sleeps, never takes holidays, and settles 
-                        payments 24/7/365 without asking permission from intermediaries.
+                        Traditional banking transforms a simple transfer into a complex multi-institution relay race that takes days to complete. 
+                        Your money passes through correspondent banks, clearing houses, and SWIFT networks - each adding delays, fees, and points of failure. 
+                        Bitcoin eliminates all intermediaries with direct, cryptographic settlement that works the same way globally.
                       </p>
                       
                       <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-orange-500">
                         <p className="text-zinc-300 text-sm">
-                          <span className="font-semibold text-orange-300">The Time Tax:</span> International wire transfers can take 3-5 business days 
-                          and cost $15-50 per transaction. Bitcoin settles globally in 10 minutes for under $5, regardless of amount or destination. 
-                          The old system profits from delays - Bitcoin profits from speed.
+                          <span className="font-semibold text-orange-300">The Settlement Reality:</span> International transfers require 5-7 banks to coordinate, 
+                          each charging fees and adding delays. Bitcoin settles peer-to-peer in 10 minutes with mathematical certainty, 
+                          regardless of amount, distance, or time zone. No banks, no intermediaries, no delays.
                         </p>
                       </div>
                       
