@@ -383,7 +383,11 @@ export default function Home() {
   const [inflationYears, setInflationYears] = useState<number>(10);
   const [inflationRate, setInflationRate] = useState<number>(3.0);
   
-  // Removed settlement simulator state (no longer needed)
+  // Banking Fees Calculator State
+  const [monthlyFee, setMonthlyFee] = useState<string>("12");
+  const [wireTransfers, setWireTransfers] = useState<string>("1");
+  const [atmWithdrawals, setAtmWithdrawals] = useState<string>("4");
+  const [overdraftFees, setOverdraftFees] = useState<string>("0");
   const [inflationSliderYear, setInflationSliderYear] = useState<number>(0);
   const [transferCount, setTransferCount] = useState<string>("2");
   const [transferAmount, setTransferAmount] = useState<string>("1000");
@@ -7399,90 +7403,197 @@ export default function Home() {
               </div>
             )}
 
-            {/* Settlement Speed Simulator */}
+            {/* Banking Fees vs Bitcoin Fees Simulator */}
             {isPremiumTier && simulationsSubTab === "fees" && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
-                  <h3 className="text-xl font-bold text-white">Banking Fees vs Bitcoin Fees</h3>
-                  <p className="text-zinc-400">Discover how much traditional banking really costs compared to Bitcoin</p>
+                  <h3 className="text-xl font-bold text-white">Banking Fees Calculator</h3>
+                  <p className="text-zinc-400">See how much traditional banking really costs vs Bitcoin</p>
                 </div>
 
-                {/* Why Banking Fees Matter */}
+                {/* Interactive Fee Calculator */}
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-orange-600/20 rounded-lg">
-                        <FileText className="w-6 h-6 text-orange-400" />
+                    <div className="space-y-6">
+                      {/* User Input Controls */}
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-white">Monthly Account Fees</label>
+                          <Select value={monthlyFee} onValueChange={setMonthlyFee}>
+                            <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="bg-zinc-800 border-zinc-700">
+                              <SelectItem value="0">$0 (Online/Credit Union)</SelectItem>
+                              <SelectItem value="12">$12 (Basic Checking)</SelectItem>
+                              <SelectItem value="25">$25 (Premium Account)</SelectItem>
+                              <SelectItem value="35">$35 (Premium Plus)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-white">Wire Transfers per Month</label>
+                          <Select value={wireTransfers} onValueChange={setWireTransfers}>
+                            <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="bg-zinc-800 border-zinc-700">
+                              <SelectItem value="0">0 transfers</SelectItem>
+                              <SelectItem value="1">1 transfer</SelectItem>
+                              <SelectItem value="2">2 transfers</SelectItem>
+                              <SelectItem value="4">4 transfers</SelectItem>
+                              <SelectItem value="8">8 transfers</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-white">ATM Withdrawals per Month</label>
+                          <Select value={atmWithdrawals} onValueChange={setAtmWithdrawals}>
+                            <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="bg-zinc-800 border-zinc-700">
+                              <SelectItem value="0">0 withdrawals</SelectItem>
+                              <SelectItem value="4">4 withdrawals</SelectItem>
+                              <SelectItem value="8">8 withdrawals</SelectItem>
+                              <SelectItem value="12">12 withdrawals</SelectItem>
+                              <SelectItem value="20">20+ withdrawals</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-white">Overdraft Fees per Month</label>
+                          <Select value={overdraftFees} onValueChange={setOverdraftFees}>
+                            <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="bg-zinc-800 border-zinc-700">
+                              <SelectItem value="0">0 overdrafts</SelectItem>
+                              <SelectItem value="1">1 overdraft</SelectItem>
+                              <SelectItem value="2">2 overdrafts</SelectItem>
+                              <SelectItem value="3">3+ overdrafts</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
-                      <h4 className="text-xl font-bold text-white">The Hidden Cost of Banking</h4>
-                    </div>
-                    
-                    <div className="space-y-4">
-                      <p className="text-zinc-300 leading-relaxed">
-                        Banks charge you for everything - monthly maintenance, overdrafts, wire transfers, ATM usage, and even checking your balance. 
-                        These "small" fees add up to hundreds or thousands per year. Bitcoin eliminates most banking fees entirely, 
-                        giving you direct control over your money without the middleman markup.
-                      </p>
-                      
-                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-orange-500">
-                        <p className="text-zinc-300 text-sm">
-                          <span className="font-semibold text-orange-300">The Fee Trap:</span> Average Americans pay $329/year in banking fees. 
-                          International transfers cost $15-50 each. Bitcoin transactions cost $1-5 regardless of amount or destination. 
-                          The math is simple: Bitcoin saves you money on every transaction.
-                        </p>
-                      </div>
-                      
-                      <div className="space-y-3">
-                        <h5 className="font-semibold text-white">Settlement Comparison You'll Experience:</h5>
-                        <div className="grid gap-3 sm:grid-cols-2">
-                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+
+                      {/* Results Comparison */}
+                      <div className="grid gap-4 md:grid-cols-2">
+                        {/* Traditional Banking Costs */}
+                        <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+                          <div className="flex items-center gap-3 mb-3">
                             <Building2 className="w-5 h-5 text-red-400" />
-                            <div>
-                              <p className="font-medium text-white text-sm">Traditional Banking</p>
-                              <p className="text-zinc-400 text-xs">3-5 days, $15-50 fees, business hours only</p>
+                            <h4 className="font-semibold text-white">Traditional Banking</h4>
+                          </div>
+                          
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400">Monthly Account:</span>
+                              <span className="text-white">${monthlyFee}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400">Wire Transfers:</span>
+                              <span className="text-white">${parseInt(wireTransfers) * 25}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400">ATM Fees:</span>
+                              <span className="text-white">${parseInt(atmWithdrawals) * 3}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400">Overdraft Fees:</span>
+                              <span className="text-white">${parseInt(overdraftFees) * 35}</span>
+                            </div>
+                            <hr className="border-red-500/30" />
+                            <div className="flex justify-between font-semibold">
+                              <span className="text-white">Monthly Total:</span>
+                              <span className="text-red-400">${
+                                parseInt(monthlyFee) + 
+                                parseInt(wireTransfers) * 25 + 
+                                parseInt(atmWithdrawals) * 3 + 
+                                parseInt(overdraftFees) * 35
+                              }</span>
+                            </div>
+                            <div className="flex justify-between font-bold text-lg">
+                              <span className="text-white">Annual Cost:</span>
+                              <span className="text-red-400">${
+                                (parseInt(monthlyFee) + 
+                                parseInt(wireTransfers) * 25 + 
+                                parseInt(atmWithdrawals) * 3 + 
+                                parseInt(overdraftFees) * 35) * 12
+                              }</span>
                             </div>
                           </div>
-                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                        </div>
+
+                        {/* Bitcoin Costs */}
+                        <div className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-4">
+                          <div className="flex items-center gap-3 mb-3">
                             <Bitcoin className="w-5 h-5 text-orange-400" />
-                            <div>
-                              <p className="font-medium text-white text-sm">Bitcoin Network</p>
-                              <p className="text-zinc-400 text-xs">10 minutes, $1-5 fees, 24/7/365</p>
-                            </div>
+                            <h4 className="font-semibold text-white">Bitcoin Network</h4>
                           </div>
-                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <Globe className="w-5 h-5 text-orange-400" />
-                            <div>
-                              <p className="font-medium text-white text-sm">International Transfers</p>
-                              <p className="text-zinc-400 text-xs">Same speed globally with Bitcoin</p>
+                          
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400">Account Fees:</span>
+                              <span className="text-white">$0</span>
                             </div>
-                          </div>
-                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <Calendar className="w-5 h-5 text-orange-400" />
-                            <div>
-                              <p className="font-medium text-white text-sm">Weekend Testing</p>
-                              <p className="text-zinc-400 text-xs">See banking's weekend blackout</p>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400">Network Transfers:</span>
+                              <span className="text-white">${parseInt(wireTransfers) * 3}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400">Lightning Payments:</span>
+                              <span className="text-white">$0.01</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-400">Overdraft Impossible:</span>
+                              <span className="text-white">$0</span>
+                            </div>
+                            <hr className="border-orange-500/30" />
+                            <div className="flex justify-between font-semibold">
+                              <span className="text-white">Monthly Total:</span>
+                              <span className="text-orange-400">${parseInt(wireTransfers) * 3}</span>
+                            </div>
+                            <div className="flex justify-between font-bold text-lg">
+                              <span className="text-white">Annual Cost:</span>
+                              <span className="text-orange-400">${parseInt(wireTransfers) * 3 * 12}</span>
                             </div>
                           </div>
                         </div>
                       </div>
-                      
-                      <div className="flex justify-center pt-2">
-                        <Button
-                          onClick={() => {
-                            const simulator = document.querySelector('[data-settlement-simulator]');
-                            if (simulator) {
-                              simulator.scrollIntoView({ behavior: 'smooth' });
-                            }
-                          }}
-                          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
-                        >
-                          <ChevronDown className="w-4 h-4 mr-2" />
-                          Compare Settlement Speeds
-                        </Button>
+
+                      {/* Savings Summary */}
+                      <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 text-center">
+                        <h4 className="font-bold text-white mb-2">Your Annual Savings with Bitcoin</h4>
+                        <div className="text-3xl font-bold text-green-400">
+                          ${
+                            ((parseInt(monthlyFee) + 
+                            parseInt(wireTransfers) * 25 + 
+                            parseInt(atmWithdrawals) * 3 + 
+                            parseInt(overdraftFees) * 35) * 12) - 
+                            (parseInt(wireTransfers) * 3 * 12)
+                          }
+                        </div>
+                        <p className="text-zinc-400 text-sm mt-2">
+                          That's {Math.round((((parseInt(monthlyFee) + parseInt(wireTransfers) * 25 + parseInt(atmWithdrawals) * 3 + parseInt(overdraftFees) * 35) * 12) - (parseInt(wireTransfers) * 3 * 12)) / ((parseInt(monthlyFee) + parseInt(wireTransfers) * 25 + parseInt(atmWithdrawals) * 3 + parseInt(overdraftFees) * 35) * 12) * 100)}% savings per year
+                        </p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
+              </div>
+            )}
+
+            {/* More section */}
+            {activeSection === "more" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">More Tools & Resources</h3>
+                  <p className="text-zinc-400">Additional Bitcoin tools and resources</p>
+                </div>
 
                 {/* Banking Fees Calculator Section */}
                 <Card className="bg-zinc-900 border-zinc-800">
