@@ -7039,8 +7039,8 @@ export default function Home() {
                 <Card className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-red-600/20 rounded-lg">
-                        <TrendingDown className="w-6 h-6 text-red-400" />
+                      <div className="p-2 bg-orange-600/20 rounded-lg">
+                        <TrendingDown className="w-6 h-6 text-orange-400" />
                       </div>
                       <h4 className="text-xl font-bold text-white">The Silent Wealth Destroyer Working Against You</h4>
                     </div>
@@ -7052,9 +7052,9 @@ export default function Home() {
                         Most people don't realize how devastating this compound erosion becomes over time.
                       </p>
                       
-                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-red-500">
+                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-orange-500">
                         <p className="text-zinc-300 text-sm">
-                          <span className="font-semibold text-red-300">Shocking Reality:</span> Since 1970, the US dollar has lost 
+                          <span className="font-semibold text-orange-300">Shocking Reality:</span> Since 1970, the US dollar has lost 
                           87% of its purchasing power. What cost $100 in 1970 now costs $770. Your grandfather's dollar had 8 times 
                           more buying power than yours today.
                         </p>
@@ -7102,7 +7102,7 @@ export default function Home() {
                               simulator.scrollIntoView({ behavior: 'smooth' });
                             }
                           }}
-                          className="bg-red-600 hover:bg-red-700 text-white px-6 py-2"
+                          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
                         >
                           <ChevronDown className="w-4 h-4 mr-2" />
                           See Inflation's Damage
