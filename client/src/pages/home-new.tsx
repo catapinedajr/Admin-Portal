@@ -2545,11 +2545,11 @@ export default function Home() {
                 <div className="text-center space-y-2">
                   {/* Monthly Theme & Daily Topic */}
                   {dayMetadata && (
-                    <div className="mb-4 space-y-1">
-                      <div className="text-orange-400 text-sm font-medium uppercase tracking-wide">
+                    <div className="mb-4 space-y-2">
+                      <div className="text-orange-400 text-lg font-semibold uppercase tracking-wide">
                         {dayMetadata.theme}
                       </div>
-                      <div className="text-zinc-300 text-xs">
+                      <div className="text-zinc-300 text-base font-medium">
                         {dayMetadata.title}
                       </div>
                     </div>
