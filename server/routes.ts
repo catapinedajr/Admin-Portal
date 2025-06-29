@@ -1210,7 +1210,9 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
         return res.status(404).json({ message: "Question not found" });
       }
 
-      const isCorrect = selectedAnswer === question.correctAnswer;
+      // Convert numeric correct answer to letter format (0->A, 1->B, 2->C, 3->D)
+      const correctAnswerLetter = ['A', 'B', 'C', 'D'][question.correctAnswer];
+      const isCorrect = selectedAnswer === correctAnswerLetter;
       
       const answer = await storage.submitQuizAnswer(userId, questionId, selectedAnswer, isCorrect);
 
