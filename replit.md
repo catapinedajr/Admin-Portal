@@ -256,11 +256,17 @@ For all days after Day 1, perform prior knowledge assessment:
 - Reference prior analogies and examples when building new concepts
 - Create natural learning progression without jarring transitions
 
+**Soft Reference Guidelines:**
+- Use "you may remember" instead of "as we learned yesterday"
+- Allow content to stand alone even if prior days are skipped
+- Create gentle connections rather than hard dependencies
+- Design fallback explanations for key concepts
+
 **Example Implementation (Day 4 building on Days 1-3):**
 - Day 1: "What is Bitcoin?" (introduced digital money concept)
 - Day 2: "How Bitcoin Works" (introduced blockchain ledger)
 - Day 3: "Bitcoin vs Banks" (contrasted traditional vs digital)
-- Day 4: "Bitcoin Ownership" → Opens with: "Now that you understand Bitcoin as digital money recorded on a shared ledger that works differently than banks, let's explore what it means to truly own Bitcoin..."
+- Day 4: "Bitcoin Ownership" → Opens with: "Digital money like Bitcoin brings up an important question: what does it mean to truly own something you can't physically touch? If you've been following along, you may recall how Bitcoin works differently than traditional banks..."
 
 **Step 3: Generate Complete Lesson First**
 - Title: Expands on day's theme with engaging headline, building on prior knowledge
@@ -310,12 +316,20 @@ For all days after Day 1, perform prior knowledge assessment:
 - Cultural alignment: Language appropriate for user's stage
 
 **Database Integration:**
-- Query previous 3 days' content before generation for contextual awareness
+- **Batch Processing**: Generate content in weekly blocks (7 days) to optimize database queries
+- **Efficient Queries**: Query previous 3 days' key_takeaways and titles only (not full content)
+- **Fallback Mechanisms**: Design content to work even if prior days are missing
+- **Performance Monitoring**: Track query times and optimize database structure
 - Remove existing test data before inserting real content
 - Use correct day_id from content_days table
 - Link dive deeper content to fact_id correctly
 - Maintain order_index for facts and quiz questions
 - Store lesson content with double line breaks for proper paragraph rendering
+
+**Content Versioning Strategy:**
+- **Minor Updates**: Fix typos/errors without regenerating subsequent days
+- **Major Updates**: Only regenerate dependent days if core concepts change
+- **Terminology Updates**: Allow evolution of analogies after Week 4 boundaries
 
 ### Step 7: Final Holistic Review and Optimization
 
