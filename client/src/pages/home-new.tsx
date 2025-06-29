@@ -533,18 +533,21 @@ export default function Home() {
     setAnimationActive(true);
     setSettlementProgress({ traditional: 0, bitcoin: 0 });
 
-    // Bitcoin animation: completes all 4 steps in 10 seconds (out of 30)
+    // Bitcoin animation: completes all 4 steps in 15 seconds (out of 45)
     const bitcoinSteps = [
-      { step: 1, delay: 1000 },   // Step 1 at 1 second
-      { step: 2, delay: 2000 },   // Step 2 at 2 seconds  
-      { step: 3, delay: 8000 },   // Step 3 at 8 seconds (mining)
-      { step: 4, delay: 10000 }   // Step 4 at 10 seconds (complete)
+      { step: 1, delay: 2000 },   // Step 1 at 2 seconds (transaction creation)
+      { step: 2, delay: 5000 },   // Step 2 at 5 seconds (network broadcast)
+      { step: 3, delay: 12000 },  // Step 3 at 12 seconds (mining consensus)
+      { step: 4, delay: 15000 }   // Step 4 at 15 seconds (final settlement)
     ];
 
-    // Traditional banking: only gets to step 2 in 30 seconds (stuck in compliance)
+    // Traditional banking: takes the full 45 seconds with realistic delays
     const traditionalSteps = [
-      { step: 1, delay: 5000 },   // Step 1 at 5 seconds (branch visit)
-      { step: 2, delay: 15000 }   // Step 2 at 15 seconds (still in compliance)
+      { step: 1, delay: 4000 },   // Step 1 at 4 seconds (bank visit takes longer)
+      { step: 2, delay: 10000 },  // Step 2 at 10 seconds (compliance review)
+      { step: 3, delay: 22000 },  // Step 3 at 22 seconds (SWIFT processing)
+      { step: 4, delay: 35000 },  // Step 4 at 35 seconds (intermediary banks)
+      { step: 5, delay: 43000 }   // Step 5 at 43 seconds (final settlement)
     ];
 
     // Animate Bitcoin steps
@@ -561,10 +564,10 @@ export default function Home() {
       }, delay);
     });
 
-    // End animation after 30 seconds
+    // End animation after 45 seconds
     setTimeout(() => {
       setAnimationActive(false);
-    }, 30000);
+    }, 45000);
   };
 
   const resetSettlementAnimation = () => {
@@ -5600,9 +5603,9 @@ export default function Home() {
                           <div className="space-y-3">
                             
                             {/* Step 1 Comparison */}
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-4 relative">
                               {/* Traditional Step 1 */}
-                              <div className={`p-3 rounded-lg border transition-all duration-500 ${
+                              <div className={`p-3 rounded-lg border transition-all duration-500 relative ${
                                 settlementProgress.traditional >= 1 
                                   ? 'bg-red-800/30 border-red-600/50' 
                                   : 'bg-zinc-800 border-zinc-700'
@@ -5617,10 +5620,20 @@ export default function Home() {
                                   Fill out international wire forms, provide recipient details, wait in line, 
                                   pay upfront fees, get tracking number
                                 </div>
+                                
+                                {/* Vertical Flow Arrow */}
+                                <div className={`absolute -bottom-4 left-1/2 transform -translate-x-1/2 transition-all duration-500 ${
+                                  settlementProgress.traditional >= 1 ? 'opacity-100' : 'opacity-30'
+                                }`}>
+                                  <div className={`w-0.5 h-4 ${settlementProgress.traditional >= 1 ? 'bg-red-400' : 'bg-zinc-600'}`}></div>
+                                  <div className={`w-0 h-0 border-l-2 border-r-2 border-t-4 border-transparent ${
+                                    settlementProgress.traditional >= 1 ? 'border-t-red-400' : 'border-t-zinc-600'
+                                  }`}></div>
+                                </div>
                               </div>
                               
                               {/* Bitcoin Step 1 */}
-                              <div className={`p-3 rounded-lg border transition-all duration-500 ${
+                              <div className={`p-3 rounded-lg border transition-all duration-500 relative ${
                                 settlementProgress.bitcoin >= 1 
                                   ? 'bg-green-800/30 border-green-600/50' 
                                   : 'bg-zinc-800 border-zinc-700'
@@ -5635,13 +5648,23 @@ export default function Home() {
                                   Open wallet app, enter recipient address, specify amount, 
                                   sign with private key - takes 30 seconds
                                 </div>
+                                
+                                {/* Vertical Flow Arrow */}
+                                <div className={`absolute -bottom-4 left-1/2 transform -translate-x-1/2 transition-all duration-500 ${
+                                  settlementProgress.bitcoin >= 1 ? 'opacity-100' : 'opacity-30'
+                                }`}>
+                                  <div className={`w-0.5 h-4 ${settlementProgress.bitcoin >= 1 ? 'bg-green-400' : 'bg-zinc-600'}`}></div>
+                                  <div className={`w-0 h-0 border-l-2 border-r-2 border-t-4 border-transparent ${
+                                    settlementProgress.bitcoin >= 1 ? 'border-t-green-400' : 'border-t-zinc-600'
+                                  }`}></div>
+                                </div>
                               </div>
                             </div>
 
                             {/* Step 2 Comparison */}
                             <div className="grid grid-cols-2 gap-4">
                               {/* Traditional Step 2 */}
-                              <div className={`p-3 rounded-lg border transition-all duration-500 ${
+                              <div className={`p-3 rounded-lg border transition-all duration-500 relative ${
                                 settlementProgress.traditional >= 2 
                                   ? 'bg-red-800/30 border-red-600/50' 
                                   : 'bg-zinc-800 border-zinc-700'
@@ -5706,21 +5729,37 @@ export default function Home() {
                                     <div className="mt-3 space-y-2">
                                       <div className="text-green-300 text-xs font-medium">Live Network Consensus:</div>
                                       <div className="grid grid-cols-3 gap-1">
-                                        {[1,2,3,4,5,6].map((miner) => (
-                                          <div 
-                                            key={miner}
-                                            className={`text-center p-1 rounded text-xs transition-all duration-300 ${
-                                              settlementProgress.bitcoin >= 3 
-                                                ? 'bg-green-600/50 text-green-200' 
-                                                : 'bg-orange-600/50 text-orange-200'
-                                            }`}
-                                          >
-                                            M{miner}
-                                            <div className="text-xs">
-                                              {settlementProgress.bitcoin >= 3 ? '✓' : '⚡'}
+                                        {[1,2,3,4,5,6].map((miner, index) => {
+                                          // Calculate if this miner should be active based on animation timing
+                                          const isActive = settlementProgress.bitcoin >= 3;
+                                          const shouldAnimate = settlementProgress.bitcoin === 2 || settlementProgress.bitcoin === 3;
+                                          
+                                          return (
+                                            <div 
+                                              key={miner}
+                                              className={`text-center p-1 rounded text-xs transition-all duration-500 ${
+                                                isActive
+                                                  ? 'bg-green-600/50 text-green-200 border border-green-400/30' 
+                                                  : 'bg-orange-600/50 text-orange-200'
+                                              }`}
+                                              style={{ 
+                                                transitionDelay: shouldAnimate ? `${index * 200}ms` : '0ms',
+                                                animation: isActive ? `pulse 2s infinite ${index * 0.3}s` : 'none'
+                                              }}
+                                            >
+                                              M{miner}
+                                              <div className="text-xs">
+                                                {isActive ? '✓' : '⚡'}
+                                              </div>
                                             </div>
-                                          </div>
-                                        ))}
+                                          );
+                                        })}
+                                      </div>
+                                      <div className="text-green-400 text-xs mt-2">
+                                        {settlementProgress.bitcoin >= 3 
+                                          ? "6/6 miners confirmed - Transaction validated!" 
+                                          : "Waiting for network consensus..."
+                                        }
                                       </div>
                                     </div>
                                   )}
