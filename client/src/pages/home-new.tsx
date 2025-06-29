@@ -2651,7 +2651,7 @@ export default function Home() {
                                       <ul className="space-y-1">
                                         {deepDive.examples.map((example, idx) => (
                                           <li key={idx} className="text-zinc-300 text-sm flex items-start gap-2">
-                                            <span className="text-orange-400 mt-1">•</span>
+                                            <span className="text-orange-400">•</span>
                                             <span>{example}</span>
                                           </li>
                                         ))}
@@ -2721,7 +2721,7 @@ export default function Home() {
                               <ul className="space-y-3">
                                 {(lesson as LessonWithKeyTakeaways).keyTakeaways.map((point, pointIdx) => (
                                   <li key={pointIdx} className="flex items-start gap-3 text-zinc-300 leading-[1.7]">
-                                    <span className="text-orange-400 mt-1 text-lg">•</span>
+                                    <span className="text-orange-400 text-lg">•</span>
                                     <span className="text-base">{cleanText(point)}</span>
                                   </li>
                                 ))}
