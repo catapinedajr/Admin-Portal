@@ -909,15 +909,28 @@ export default function Home() {
 
   // Helper function to clean markdown formatting
   function cleanText(text: string): React.ReactNode {
-    // Split by **bold** markers and render appropriately
-    const parts = text.split(/\*\*(.*?)\*\*/g);
-    return parts.map((part, index) => {
-      // Even indices are regular text, odd indices are bold text
-      if (index % 2 === 0) {
-        return part;
-      } else {
-        return <strong key={index} className="font-semibold text-white">{part}</strong>;
-      }
+    // First split by paragraphs (double line breaks), then handle bold formatting within each paragraph
+    const paragraphs = text.split(/\n\s*\n/);
+    
+    return paragraphs.map((paragraph, paragraphIndex) => {
+      if (!paragraph.trim()) return null;
+      
+      // Split by **bold** markers and render appropriately
+      const parts = paragraph.split(/\*\*(.*?)\*\*/g);
+      const formattedContent = parts.map((part, index) => {
+        // Even indices are regular text, odd indices are bold text
+        if (index % 2 === 0) {
+          return part;
+        } else {
+          return <strong key={index} className="font-semibold text-white">{part}</strong>;
+        }
+      });
+      
+      return (
+        <p key={paragraphIndex} className="mb-4 last:mb-0">
+          {formattedContent}
+        </p>
+      );
     });
   }
 
