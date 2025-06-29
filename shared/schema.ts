@@ -131,6 +131,7 @@ export const contentFacts = pgTable("content_facts", {
 export const contentDiveDeeper = pgTable("content_dive_deeper", {
   id: serial("id").primaryKey(),
   factId: integer("fact_id").notNull().references(() => contentFacts.id, { onDelete: "cascade" }),
+  dayId: integer("day_id").notNull().references(() => contentDays.id),
   explanation: text("explanation").notNull(),
   examples: json("examples").$type<string[]>().notNull(),
   visualDescription: text("visual_description").notNull(),
