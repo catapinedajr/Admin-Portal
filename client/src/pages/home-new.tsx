@@ -7425,7 +7425,7 @@ export default function Home() {
                       <div className="space-y-3">
                         <h4 className="text-lg font-bold text-white">The Hidden Cost of Traditional Banking</h4>
                         <p className="text-zinc-300 leading-relaxed">
-                          Most people don't realize how much they pay in banking fees each year. The average American spends <span className="text-orange-400 font-semibold">$329 annually</span> on various banking fees, but heavy users of premium services can pay thousands more.
+                          Most people don't realize how much they pay in banking fees each year. The average American spends <span className="text-orange-400 font-semibold">$329 annually</span> on various banking fees, but heavy users of premium services can pay <span className="text-orange-400 font-semibold">thousands more</span>.
                         </p>
                         <p className="text-zinc-300 leading-relaxed">
                           This calculator helps you discover your real banking costs across all fee categories: account maintenance, wire transfers, ATM penalties, overdraft charges, international fees, paper statements, and credit card annual fees.
