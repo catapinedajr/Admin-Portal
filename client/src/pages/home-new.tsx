@@ -454,7 +454,7 @@ export default function Home() {
   }, [markDayCompletedMutation, currentDayIndex]);
 
   const [convictionSubTab, setConvictionSubTab] = useState<"whitepaper" | "books" | "videos">("whitepaper");
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(false);
   const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
   const [expandedTopics, setExpandedTopics] = useState<Set<string>>(new Set());
   const [safetyQuizScore, setSafetyQuizScore] = useState<number>(0);
@@ -2356,13 +2356,7 @@ export default function Home() {
     queryKey: ['/api/user'],
   });
 
-  // Hide splash screen after delay
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSplash(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
+
 
   // Splash Screen
   if (showSplash) {
