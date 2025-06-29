@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import HomeDashboard from "@/pages/home-dashboard";
 import Home from "@/pages/home-new";
 import Onboarding from "@/pages/onboarding";
+import About from "@/pages/about";
 import NotFound from "@/pages/not-found";
 
 function OnboardingRedirect() {
@@ -32,6 +33,7 @@ function Router() {
       <Route path="/money" component={Home} />
       <Route path="/simulators" component={Home} />
       <Route path="/more" component={Home} />
+      <Route path="/about" component={About} />
       <Route path="/" component={OnboardingRedirect} />
       <Route component={NotFound} />
     </Switch>
