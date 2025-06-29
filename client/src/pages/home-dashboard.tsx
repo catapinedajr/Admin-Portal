@@ -146,20 +146,20 @@ export default function HomeDashboard() {
             
             {/* Cumulative Learning Stats */}
             <div className="grid grid-cols-3 gap-4 mb-4">
-              <div className="text-center p-3 bg-blue-600/10 rounded-lg border border-blue-600/20">
-                <div className="text-2xl font-bold text-blue-400">{completedDays * 3}</div>
+              <div className="text-center p-3 bg-orange-600/10 rounded-lg border border-orange-600/20">
+                <div className="text-2xl font-bold text-orange-400">{completedDays * 3}</div>
                 <div className="text-xs text-zinc-400 mt-1">Facts Learned</div>
-                <div className="text-xs text-blue-300 mt-1">+3 daily</div>
+                <div className="text-xs text-orange-300 mt-1">+3 daily</div>
               </div>
-              <div className="text-center p-3 bg-green-600/10 rounded-lg border border-green-600/20">
-                <div className="text-2xl font-bold text-green-400">{completedDays * 1}</div>
+              <div className="text-center p-3 bg-zinc-800/50 rounded-lg border border-zinc-700">
+                <div className="text-2xl font-bold text-white">{completedDays * 1}</div>
                 <div className="text-xs text-zinc-400 mt-1">Lessons Completed</div>
-                <div className="text-xs text-green-300 mt-1">+1 daily</div>
+                <div className="text-xs text-zinc-300 mt-1">+1 daily</div>
               </div>
-              <div className="text-center p-3 bg-purple-600/10 rounded-lg border border-purple-600/20">
-                <div className="text-2xl font-bold text-purple-400">{completedDays * 6}</div>
+              <div className="text-center p-3 bg-orange-600/5 rounded-lg border border-orange-600/10">
+                <div className="text-2xl font-bold text-orange-300">{completedDays * 6}</div>
                 <div className="text-xs text-zinc-400 mt-1">Questions Answered</div>
-                <div className="text-xs text-purple-300 mt-1">+6 daily</div>
+                <div className="text-xs text-orange-200 mt-1">+6 daily</div>
               </div>
             </div>
 
@@ -198,7 +198,7 @@ export default function HomeDashboard() {
             {/* Achievement System */}
             <div className="mt-4 pt-4 border-t border-zinc-800">
               <div className="flex items-center gap-2 mb-3">
-                <Award className="w-4 h-4 text-yellow-400" />
+                <Award className="w-4 h-4 text-orange-400" />
                 <span className="text-sm font-medium text-white">Achievements Unlocked</span>
               </div>
               
@@ -206,7 +206,7 @@ export default function HomeDashboard() {
                 {/* Streak Achievements */}
                 <div className={`text-center p-2 rounded-lg border ${
                   user?.currentStreak >= 7 
-                    ? 'bg-yellow-600/20 border-yellow-600/50 text-yellow-300' 
+                    ? 'bg-orange-600/20 border-orange-600/50 text-orange-300' 
                     : 'bg-zinc-800/50 border-zinc-700 text-zinc-500'
                 }`}>
                   <div className="text-xs font-bold">WEEK WARRIOR</div>
@@ -215,7 +215,7 @@ export default function HomeDashboard() {
                 
                 <div className={`text-center p-2 rounded-lg border ${
                   completedDays >= 10 
-                    ? 'bg-blue-600/20 border-blue-600/50 text-blue-300' 
+                    ? 'bg-orange-600/15 border-orange-600/40 text-orange-200' 
                     : 'bg-zinc-800/50 border-zinc-700 text-zinc-500'
                 }`}>
                   <div className="text-xs font-bold">FACT COLLECTOR</div>
@@ -224,7 +224,7 @@ export default function HomeDashboard() {
                 
                 <div className={`text-center p-2 rounded-lg border ${
                   completedDays >= 15 
-                    ? 'bg-green-600/20 border-green-600/50 text-green-300' 
+                    ? 'bg-orange-600/10 border-orange-600/30 text-orange-300' 
                     : 'bg-zinc-800/50 border-zinc-700 text-zinc-500'
                 }`}>
                   <div className="text-xs font-bold">BITCOIN SCHOLAR</div>
@@ -233,7 +233,7 @@ export default function HomeDashboard() {
                 
                 <div className={`text-center p-2 rounded-lg border ${
                   completedDays >= 30 
-                    ? 'bg-purple-600/20 border-purple-600/50 text-purple-300' 
+                    ? 'bg-orange-600/25 border-orange-600/60 text-orange-400' 
                     : 'bg-zinc-800/50 border-zinc-700 text-zinc-500'
                 }`}>
                   <div className="text-xs font-bold">HODL MASTER</div>
@@ -299,16 +299,16 @@ export default function HomeDashboard() {
 
             {/* Learning path preview */}
             <div className="grid grid-cols-3 gap-2 text-xs">
-              <div className="text-center p-2 bg-orange-600/10 rounded border border-orange-600/20">
+              <div className="text-center p-2 bg-orange-600/15 rounded border border-orange-600/25">
                 <div className="font-medium text-orange-300">1. Facts</div>
                 <div className="text-zinc-400">Essential knowledge</div>
               </div>
-              <div className="text-center p-2 bg-blue-600/10 rounded border border-blue-600/20">
-                <div className="font-medium text-blue-300">2. Lesson</div>
+              <div className="text-center p-2 bg-orange-600/8 rounded border border-orange-600/15">
+                <div className="font-medium text-orange-200">2. Lesson</div>
                 <div className="text-zinc-400">Deep understanding</div>
               </div>
-              <div className="text-center p-2 bg-green-600/10 rounded border border-green-600/20">
-                <div className="font-medium text-green-300">3. Quiz</div>
+              <div className="text-center p-2 bg-zinc-800/50 rounded border border-zinc-700">
+                <div className="font-medium text-zinc-300">3. Quiz</div>
                 <div className="text-zinc-400">Test knowledge</div>
               </div>
             </div>
@@ -322,7 +322,7 @@ export default function HomeDashboard() {
             className="bg-zinc-900 border-zinc-800 cursor-pointer hover:border-orange-600/50 transition-colors relative"
             onClick={() => setLocation('/learn')}
           >
-            <div className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-yellow-500 text-black text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+            <div className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
               PREMIUM
             </div>
             <CardContent className="p-4 text-center">
@@ -334,11 +334,11 @@ export default function HomeDashboard() {
 
           {/* Money Section */}
           <Card 
-            className="bg-zinc-900 border-zinc-800 cursor-pointer hover:border-blue-600/50 transition-colors"
+            className="bg-zinc-900 border-zinc-800 cursor-pointer hover:border-orange-600/50 transition-colors"
             onClick={() => setLocation('/money')}
           >
             <CardContent className="p-4 text-center">
-              <Coins className="w-8 h-8 text-blue-400 mx-auto mb-2" />
+              <Coins className="w-8 h-8 text-orange-300 mx-auto mb-2" />
               <h3 className="font-semibold text-white mb-1">Money</h3>
               <p className="text-xs text-zinc-400">Why Bitcoin matters</p>
             </CardContent>
@@ -346,14 +346,14 @@ export default function HomeDashboard() {
 
           {/* Simulators Section */}
           <Card 
-            className="bg-zinc-900 border-zinc-800 cursor-pointer hover:border-green-600/50 transition-colors relative"
+            className="bg-zinc-900 border-zinc-800 cursor-pointer hover:border-orange-600/50 transition-colors relative"
             onClick={() => setLocation('/simulators')}
           >
-            <div className="absolute -top-2 -right-2 bg-gradient-to-r from-green-500 to-emerald-500 text-black text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+            <div className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-600 to-orange-700 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
               PREMIUM
             </div>
             <CardContent className="p-4 text-center">
-              <Gamepad2 className="w-8 h-8 text-green-400 mx-auto mb-2" />
+              <Gamepad2 className="w-8 h-8 text-orange-400 mx-auto mb-2" />
               <h3 className="font-semibold text-white mb-1">Simulators</h3>
               <p className="text-xs text-zinc-400">Practice safely</p>
             </CardContent>
@@ -361,11 +361,11 @@ export default function HomeDashboard() {
 
           {/* More Section */}
           <Card 
-            className="bg-zinc-900 border-zinc-800 cursor-pointer hover:border-purple-600/50 transition-colors"
+            className="bg-zinc-900 border-zinc-800 cursor-pointer hover:border-orange-600/50 transition-colors"
             onClick={() => setLocation('/more')}
           >
             <CardContent className="p-4 text-center">
-              <MoreHorizontal className="w-8 h-8 text-purple-400 mx-auto mb-2" />
+              <MoreHorizontal className="w-8 h-8 text-zinc-300 mx-auto mb-2" />
               <h3 className="font-semibold text-white mb-1">More</h3>
               <p className="text-xs text-zinc-400">Tools & resources</p>
             </CardContent>
@@ -376,7 +376,7 @@ export default function HomeDashboard() {
         <Card className="bg-zinc-900 border-zinc-800">
           <CardHeader className="pb-4">
             <CardTitle className="text-white flex items-center gap-2">
-              <Zap className="w-5 h-5 text-green-400" />
+              <Zap className="w-5 h-5 text-orange-400" />
               Practice Your Knowledge
             </CardTitle>
           </CardHeader>
@@ -387,7 +387,7 @@ export default function HomeDashboard() {
               onClick={() => setLocation('/simulators/dca')}
             >
               <div className="flex items-center gap-3">
-                <Calculator className="w-5 h-5 text-green-400" />
+                <Calculator className="w-5 h-5 text-orange-400" />
                 <div>
                   <div className="font-medium text-white">DCA Calculator</div>
                   <div className="text-xs text-zinc-400">See dollar-cost averaging results</div>
@@ -417,7 +417,7 @@ export default function HomeDashboard() {
               onClick={() => setLocation('/simulators/safety')}
             >
               <div className="flex items-center gap-3">
-                <Shield className="w-5 h-5 text-blue-400" />
+                <Shield className="w-5 h-5 text-zinc-300" />
                 <div>
                   <div className="font-medium text-white">Security Training</div>
                   <div className="text-xs text-zinc-400">Learn to stay safe</div>
@@ -429,10 +429,10 @@ export default function HomeDashboard() {
         </Card>
 
         {/* Success Stories */}
-        <Card className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 border-blue-700/30">
+        <Card className="bg-gradient-to-r from-orange-900/20 to-orange-800/20 border-orange-700/30">
           <CardHeader className="pb-3">
             <CardTitle className="text-white text-lg flex items-center gap-2">
-              <Award className="w-5 h-5 text-blue-400" />
+              <Award className="w-5 h-5 text-orange-400" />
               Success Stories
             </CardTitle>
           </CardHeader>
@@ -440,15 +440,15 @@ export default function HomeDashboard() {
             <div className="space-y-3">
               <div className="bg-zinc-800/50 rounded-lg p-4">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-blue-600/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-blue-400 font-bold text-sm">M</span>
+                  <div className="w-8 h-8 bg-orange-600/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-orange-400 font-bold text-sm">M</span>
                   </div>
                   <div className="flex-1">
                     <p className="text-zinc-300 text-sm mb-2">
                       "HODLearn's simulators helped me understand DCA strategy before investing my first $1,000. Now I'm confident in my Bitcoin journey."
                     </p>
                     <div className="text-xs text-zinc-400">
-                      <span className="font-medium text-blue-300">Michael K.</span> • Software Engineer
+                      <span className="font-medium text-orange-300">Michael K.</span> • Software Engineer
                     </div>
                   </div>
                 </div>
@@ -456,15 +456,15 @@ export default function HomeDashboard() {
               
               <div className="bg-zinc-800/50 rounded-lg p-4">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-green-600/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-green-400 font-bold text-sm">S</span>
+                  <div className="w-8 h-8 bg-orange-600/15 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-orange-300 font-bold text-sm">S</span>
                   </div>
                   <div className="flex-1">
                     <p className="text-zinc-300 text-sm mb-2">
                       "The security training section saved me from a phishing scam. Worth every penny of the subscription."
                     </p>
                     <div className="text-xs text-zinc-400">
-                      <span className="font-medium text-green-300">Sarah L.</span> • Marketing Manager
+                      <span className="font-medium text-orange-200">Sarah L.</span> • Marketing Manager
                     </div>
                   </div>
                 </div>
@@ -474,7 +474,7 @@ export default function HomeDashboard() {
         </Card>
 
         {/* Daily Bitcoin Insight */}
-        <Card className="bg-gradient-to-r from-orange-900/20 to-yellow-900/20 border-orange-700/30">
+        <Card className="bg-gradient-to-r from-orange-900/20 to-orange-800/10 border-orange-700/30">
           <CardContent className="p-4">
             <div className="flex items-start gap-3">
               <div className="p-2 bg-orange-600/20 rounded-lg">
