@@ -97,11 +97,11 @@ export default function HomeDashboard() {
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-sm">
-                  BTC
+                  H₿
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold">Journey</h1>
-                  <p className="text-xs text-zinc-400">Learn • Grow • Succeed</p>
+                  <h1 className="text-xl font-bold">HODLearn</h1>
+                  <p className="text-xs text-zinc-400">How to learn Bitcoin</p>
                 </div>
               </div>
             </div>
