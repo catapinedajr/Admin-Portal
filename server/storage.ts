@@ -358,18 +358,35 @@ export class DatabaseStorage implements IStorage {
   }
 
   async submitQuizAnswer(userId: number, questionId: number, selectedAnswer: string, isCorrect: boolean): Promise<UserQuizAnswer> {
-    // Use the pool directly to bypass Drizzle ORM parameter issues
+    // Use PostgreSQL UPSERT to prevent duplicates
     const date = new Date().toISOString().split('T')[0];
+    const { pool } = await import("./db");
     
-    const query = `
+    // First, create unique constraint if it doesn't exist
+    try {
+      await pool.query(`
+        ALTER TABLE user_quiz_answers 
+        ADD CONSTRAINT unique_user_question_date 
+        UNIQUE (user_id, question_id, date)
+      `);
+    } catch (e) {
+      // Constraint already exists, ignore error
+    }
+    
+    // Use UPSERT to either insert new or update existing
+    const upsertQuery = `
       INSERT INTO user_quiz_answers (user_id, question_id, selected_answer, is_correct, date)
       VALUES ($1, $2, $3, $4, $5)
+      ON CONFLICT (user_id, question_id, date)
+      DO UPDATE SET 
+        selected_answer = EXCLUDED.selected_answer,
+        is_correct = EXCLUDED.is_correct,
+        answered_at = NOW()
       RETURNING id, user_id as "userId", question_id as "questionId", selected_answer as "selectedAnswer", 
                 is_correct as "isCorrect", answered_at as "answeredAt", date
     `;
     
-    const { pool } = await import("./db");
-    const result = await pool.query(query, [userId, questionId, selectedAnswer, isCorrect, date]);
+    const result = await pool.query(upsertQuery, [userId, questionId, selectedAnswer, isCorrect, date]);
     return result.rows[0] as UserQuizAnswer;
   }
 
