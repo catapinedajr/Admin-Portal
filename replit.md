@@ -226,6 +226,7 @@ Comprehensive component library built on Radix UI primitives:
 - June 29, 2025. **COMPLETE 180-DAY CURRICULUM ARCHITECTURE**: Built comprehensive 6-month Bitcoin education curriculum with progressive difficulty scaling: Month 1 (Days 1-30) Bitcoin Fundamentals at 8th grade/complete beginner, Month 2 (Days 31-60) Economics & Money at 9th grade/progressing, Month 3 (Days 61-90) Security & Privacy at 9th-10th grade/intermediate, Month 4 (Days 91-120) Real-World Usage at 10th grade/intermediate, Month 5 (Days 121-150) Technology Deep Dive at 10th-11th grade/advanced, Month 6 (Days 151-180) Advanced Concepts at 11th grade/expert level, providing natural learning progression from beginner to Bitcoin expert
 - June 29, 2025. **DATABASE RESTRUCTURING WITH PROPER ID ALIGNMENT**: Successfully resolved ID misalignment issues by completely purging and recreating content database structure with perfect alignment where Day N has ID = N (Day 1 = ID 1, Day 2 = ID 2, etc.), eliminated confusion between day_index and content_day_id, reset all sequences for clean architecture, switched from memory storage to database-driven content system using HybridStorage class, established clean foundation ready for comprehensive content generation across 180-day curriculum
 - June 29, 2025. **COMPLETE DATABASE ID STANDARDIZATION**: Systematically aligned all content table IDs to start from 1 for Day 1: fixed quiz questions (15-20 → 1-6), facts (10-12 → 1-3), dive deeper (7-9 → 1-3), lessons (5 → 1), and user quiz answers (3-9 → 1-6), maintaining all user progress data while establishing clean sequential ID patterns for 180-day curriculum expansion, added day_id column to content_dive_deeper positioned as second column for direct day queries without joins
+- June 29, 2025. **UPDATED DAILY CONTENT BUILD STRATEGY TO DATABASE-DRIVEN APPROACH**: Completely revised content generation strategy to start with database query to content_days table extracting title, reading_level, theme, and cultural_stage, implemented proper foreign key relationships and error handling, added database accuracy verification steps, enhanced technical implementation with rollback procedures and sequence management, established comprehensive database integration replacing static placeholder approach for 180-day curriculum generation
 - June 29, 2025. Enhanced learn screen monthly theme and daily topic visibility: increased monthly theme from text-sm to text-lg with font-semibold weight, upgraded daily topic from text-xs to text-base with font-medium weight, improved spacing for better visual hierarchy and readability
 - June 29, 2025. **ENHANCED DAILY CONTENT BUILD STRATEGY WITH CONTEXTUAL LEARNING CONTINUITY**: Updated comprehensive content generation process to include contextual awareness for Days 2+ ensuring consistent learning journey: added Step 2 "Contextual Learning Continuity Analysis" requiring review of previous 3 days' concepts, terminology consistency checks, smooth conceptual bridges from known to unknown, natural learning progression without jarring transitions, plus integrated continuity checks throughout all generation steps (lesson openings, facts, dive deeper sections, quiz questions) with database integration requiring query of prior content for contextual awareness, creating cohesive 180-day educational experience where each day naturally builds on established foundation
 - June 29, 2025. **HOME DASHBOARD PROFESSIONAL REDESIGN**: Completely transformed home dashboard from cluttered multi-colored fitness-style interface to sophisticated professional design: unified all colors to consistent zinc/orange theme (removing blue/green/purple/yellow elements), simplified complex progress section to single elegant circular progress indicator with clean typography, streamlined navigation from 4-card grid to focused 2-card exploration section, removed cluttered achievement badges and success stories for minimal approach, enhanced spacing and typography hierarchy with 3xl headers and proper visual breathing room, eliminated visual noise while maintaining all essential functionality for premium educational platform experience
@@ -240,15 +241,27 @@ Preferred communication style: Simple, everyday language.
 
 ## Daily Content Build Strategy
 
-### Pre-Generation Metadata Analysis
+### Database-Driven Content Generation
 
-**Step 1: Extract Day Metadata**
-- Day Index: [Current day number] (Database ID from content_days table)
-- Theme: [Monthly focus area]
-- Title: [Specific learning objective]
-- Reading Level: [8th_grade → 11th_grade progression]
-- Cultural Stage: [complete_beginner → advanced]
-- Previous Knowledge: [What concepts from prior days to reference]
+**Step 1: Extract Day Metadata from Database**
+Query the `content_days` table to extract all day parameters:
+```sql
+SELECT id, day_index, title, reading_level, theme, cultural_stage 
+FROM content_days WHERE day_index = [current_day]
+```
+
+**Database Fields Usage:**
+- `id` → Use as day_id foreign key for all content tables
+- `title` → Daily topic/learning objective (foundation for all content)
+- `reading_level` → Specific complexity level (8th_grade, 9th_grade, 10th_grade, 11th_grade)
+- `theme` → Monthly focus area for thematic consistency
+- `cultural_stage` → User sophistication level (complete_beginner → advanced)
+- `day_index` → Sequential day number for curriculum progression
+
+**Error Handling:**
+- If day metadata missing, halt generation and log error
+- Validate all required fields are populated before proceeding
+- Ensure reading_level and cultural_stage are valid enum values
 
 ### Content Generation Sequence
 
@@ -269,13 +282,15 @@ For all days after Day 1, perform prior knowledge assessment:
 - Day 4: "Bitcoin Ownership" → Opens with: "Now that you understand Bitcoin as digital money recorded on a shared ledger that works differently than banks, let's explore what it means to truly own Bitcoin..."
 
 **Step 3: Generate Complete Lesson First**
-- Title: Expands on day's theme with engaging headline, building on prior knowledge
+- Title: Use extracted daily `title` from content_days as foundation, expanding with engaging narrative
 - Content: 5-paragraph narrative story format (~400 words, 3-minute read)
+- Reading Level: Apply specific `reading_level` from database (not generic standard)
 - Paragraph structure: Bridge from prior day → Familiar comparison → Real problems → Core benefit → Future implications
 - Opening: Reference relevant concept from previous day(s) to create continuity
 - Key Takeaways: 4 main learning points (JSON array) that build on established foundation
-- Why It Matters: Explains broader significance within the growing knowledge framework
+- Why It Matters: Explains broader significance within the growing knowledge framework and monthly `theme`
 - Estimated Read Time: 3 minutes
+- Cultural Alignment: Match language sophistication to `cultural_stage` from database
 
 **Step 4: Generate 3 Supporting Facts**
 - Extract 3 key concepts from lesson that need emphasis
@@ -309,19 +324,25 @@ For all days after Day 1, perform prior knowledge assessment:
 
 ### Technical Implementation Details
 
-**Content Formatting Requirements:**
-- Lesson content: Double line breaks between paragraphs for proper rendering
-- JSON fields: Proper array formatting for examples and key_takeaways
-- Reading level: Sentences under 15 words, familiar vocabulary
-- Cultural alignment: Language appropriate for user's stage
-
 **Database Integration:**
 - Query previous 3 days' content before generation for contextual awareness
 - Remove existing test data before inserting real content
-- Use correct day_id from content_days table
-- Link dive deeper content to fact_id correctly
-- Maintain order_index for facts and quiz questions
+- Use correct day_id from content_days table as foreign key for all content tables
+- Link dive deeper content using both day_id and fact_id correctly
+- Maintain order_index for facts and quiz questions (0, 1, 2 for facts; 0-4 for quizzes)
 - Store lesson content with double line breaks for proper paragraph rendering
+
+**Content Formatting Requirements:**
+- Lesson content: Double line breaks between paragraphs for proper rendering
+- JSON fields: Proper array formatting for examples and key_takeaways
+- Reading level: Apply specific reading_level from database (not generic 9th grade)
+- Cultural alignment: Language appropriate for cultural_stage from database
+
+**Error Handling:**
+- Halt generation if day metadata query fails
+- Validate all database fields are populated before proceeding
+- Add rollback procedures if content insertion fails
+- Log errors for missing foreign key relationships
 
 ### Step 7: Final Holistic Review and Optimization
 
@@ -332,6 +353,13 @@ For all days after Day 1, perform prior knowledge assessment:
 - Check that lesson opening properly bridges from prior knowledge
 - Validate quiz questions incorporate appropriate cross-day connections
 - Confirm no jarring conceptual jumps or unexplained new terminology
+
+**Database Accuracy Verification:**
+- Verify all content uses correct day_id from content_days table
+- Ensure proper foreign key relationships are maintained
+- Check that order_index values are sequential (0, 1, 2 for facts; 0-4 for quizzes)
+- Validate dive deeper content links to correct fact_id and day_id
+- Confirm reading_level and cultural_stage match database specifications
 
 **Content Accuracy Verification:**
 - Verify all Bitcoin facts are technically accurate and current
