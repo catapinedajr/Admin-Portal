@@ -4061,47 +4061,46 @@ export default function Home() {
                       
                       <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-orange-500">
                         <p className="text-zinc-300 text-sm">
-                          <span className="font-semibold text-orange-300">Key Insight:</span> Different wallet types offer different trade-offs 
-                          between security, convenience, and cost. Your choice depends on how much Bitcoin you hold, how often you use it, 
-                          and your technical comfort level.
+                          <span className="font-semibold text-orange-300">Complete Learning Path:</span> This page covers everything you need to master Bitcoin wallets - 
+                          from choosing the right type for your needs to practicing emergency recovery scenarios that could save your Bitcoin.
                         </p>
                       </div>
                       
                       <div className="space-y-3">
-                        <h5 className="font-semibold text-white">What You'll Discover:</h5>
+                        <h5 className="font-semibold text-white">What You'll Master Here:</h5>
                         <div className="grid gap-3 sm:grid-cols-2">
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
                             <Smartphone className="w-5 h-5 text-orange-400" />
                             <div>
-                              <p className="font-medium text-white text-sm">Mobile Wallets</p>
-                              <p className="text-zinc-400 text-xs">Perfect for daily spending and convenience</p>
+                              <p className="font-medium text-white text-sm">Wallet Type Comparison</p>
+                              <p className="text-zinc-400 text-xs">Mobile, desktop, hardware, and exchange wallets</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <Monitor className="w-5 h-5 text-orange-400" />
+                            <Shield className="w-5 h-5 text-orange-400" />
                             <div>
-                              <p className="font-medium text-white text-sm">Desktop Wallets</p>
-                              <p className="text-zinc-400 text-xs">Balance of security and functionality</p>
+                              <p className="font-medium text-white text-sm">Security Best Practices</p>
+                              <p className="text-zinc-400 text-xs">Protect your Bitcoin from common threats</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <HardDrive className="w-5 h-5 text-orange-400" />
+                            <KeyRound className="w-5 h-5 text-orange-400" />
                             <div>
-                              <p className="font-medium text-white text-sm">Hardware Wallets</p>
-                              <p className="text-zinc-400 text-xs">Maximum security for long-term storage</p>
+                              <p className="font-medium text-white text-sm">Recovery Simulation</p>
+                              <p className="text-zinc-400 text-xs">Practice wallet recovery in emergency scenarios</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
-                            <Building2 className="w-5 h-5 text-red-400" />
+                            <Target className="w-5 h-5 text-orange-400" />
                             <div>
-                              <p className="font-medium text-white text-sm">Exchange Wallets</p>
-                              <p className="text-zinc-400 text-xs">Convenient but with custody trade-offs</p>
+                              <p className="font-medium text-white text-sm">Use Case Guidance</p>
+                              <p className="text-zinc-400 text-xs">Find the perfect wallet for your Bitcoin amount</p>
                             </div>
                           </div>
                         </div>
                       </div>
                       
-                      <div className="flex justify-center pt-2">
+                      <div className="flex flex-col sm:flex-row gap-3 pt-2">
                         <Button
                           onClick={() => {
                             const explorer = document.querySelector('[data-wallet-explorer]');
@@ -4109,10 +4108,23 @@ export default function Home() {
                               explorer.scrollIntoView({ behavior: 'smooth' });
                             }
                           }}
-                          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
+                          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 flex-1"
                         >
                           <ChevronDown className="w-4 h-4 mr-2" />
                           Explore Wallet Types
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            const simulator = document.querySelector('[data-seed-phrase-simulator]');
+                            if (simulator) {
+                              simulator.scrollIntoView({ behavior: 'smooth' });
+                            }
+                          }}
+                          variant="outline"
+                          className="border-orange-600 text-orange-300 hover:bg-orange-600/10 px-6 py-2 flex-1"
+                        >
+                          <KeyRound className="w-4 h-4 mr-2" />
+                          Practice Recovery
                         </Button>
                       </div>
                     </div>
@@ -4254,7 +4266,7 @@ export default function Home() {
                 </Card>
 
                 {/* Seed Phrase Recovery Simulator */}
-                <Card className="bg-zinc-900 border-zinc-800">
+                <Card className="bg-zinc-900 border-zinc-800" data-seed-phrase-simulator>
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-4">
                       <div className="p-2 bg-orange-600/20 rounded-lg">
