@@ -272,8 +272,16 @@ export class DatabaseStorage implements IStorage {
   }
 
   async canAccessDay(userId: number, dayIndex: number): Promise<boolean> {
-    // For now, allow access to first 30 days
-    return dayIndex >= 1 && dayIndex <= 30;
+    // Must be positive day index
+    if (dayIndex < 1) return false;
+    
+    // Check if content exists for this day by checking content_days table
+    const hasContent = await db.select({ id: contentDays.id })
+      .from(contentDays)
+      .where(eq(contentDays.dayIndex, dayIndex))
+      .limit(1);
+    
+    return hasContent.length > 0;
   }
 
   async getCompletedDays(userId: number): Promise<number[]> {
