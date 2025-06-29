@@ -5982,11 +5982,15 @@ export default function Home() {
                           </div>
                         </div>
                         
-                        {/* Final Comparison */}
-                        <div className="p-6 bg-gradient-to-r from-green-950/30 to-orange-950/30 rounded-xl border border-green-800/30">
-                          <div className="text-center space-y-4">
-                            <div className="text-orange-300 font-bold text-xl">The Difference is Clear</div>
+                        {/* Educational Summary Card */}
+                        <div className="p-6 bg-gradient-to-r from-blue-950/30 to-orange-950/30 rounded-xl border border-orange-800/30">
+                          <div className="space-y-6">
+                            <div className="text-center">
+                              <div className="text-orange-300 font-bold text-xl mb-2">Key Learning Points</div>
+                              <div className="text-zinc-400 text-sm">Understanding Settlement Systems</div>
+                            </div>
                             
+                            {/* Comparison Stats */}
                             <div className="grid gap-4 md:grid-cols-3 text-center">
                               <div className="p-4 bg-zinc-800 rounded-lg">
                                 <div className="text-green-400 font-bold text-2xl">432x</div>
@@ -5996,19 +6000,71 @@ export default function Home() {
                               <div className="p-4 bg-zinc-800 rounded-lg">
                                 <div className="text-green-400 font-bold text-2xl">93%</div>
                                 <div className="text-zinc-300 text-sm">Lower Fees</div>
-                                <div className="text-zinc-500 text-xs">$2-5 vs $45-75</div>
+                                <div className="text-zinc-500 text-xs">$3.50 vs $65+</div>
                               </div>
                               <div className="p-4 bg-zinc-800 rounded-lg">
                                 <div className="text-green-400 font-bold text-2xl">0</div>
                                 <div className="text-zinc-300 text-sm">Intermediaries</div>
-                                <div className="text-zinc-500 text-xs">Direct vs 5+ Banks</div>
+                                <div className="text-zinc-500 text-xs">Direct vs 4+ Banks</div>
                               </div>
                             </div>
                             
-                            <div className="text-zinc-300 leading-relaxed max-w-2xl mx-auto">
-                              Traditional banking turns a simple transfer into a 5-institution relay race spanning days. 
-                              Bitcoin eliminates all intermediaries with direct, cryptographic settlement in minutes. 
-                              <span className="text-orange-400 font-medium">This is another reason why Bitcoin is the future of money.</span>
+                            {/* Educational Points */}
+                            <div className="grid md:grid-cols-2 gap-6">
+                              <div className="space-y-3">
+                                <h4 className="text-orange-300 font-semibold text-sm">Traditional Banking Problems:</h4>
+                                <ul className="space-y-2 text-zinc-300 text-sm">
+                                  <li className="flex items-start gap-2">
+                                    <div className="w-1.5 h-1.5 bg-red-400 rounded-full mt-2 flex-shrink-0"></div>
+                                    <span>Multiple compliance checkpoints create delays</span>
+                                  </li>
+                                  <li className="flex items-start gap-2">
+                                    <div className="w-1.5 h-1.5 bg-red-400 rounded-full mt-2 flex-shrink-0"></div>
+                                    <span>SWIFT network requires 4+ bank intermediaries</span>
+                                  </li>
+                                  <li className="flex items-start gap-2">
+                                    <div className="w-1.5 h-1.5 bg-red-400 rounded-full mt-2 flex-shrink-0"></div>
+                                    <span>Each bank adds fees and processing time</span>
+                                  </li>
+                                  <li className="flex items-start gap-2">
+                                    <div className="w-1.5 h-1.5 bg-red-400 rounded-full mt-2 flex-shrink-0"></div>
+                                    <span>Human approval needed at every step</span>
+                                  </li>
+                                </ul>
+                              </div>
+                              
+                              <div className="space-y-3">
+                                <h4 className="text-green-300 font-semibold text-sm">Bitcoin's Advantages:</h4>
+                                <ul className="space-y-2 text-zinc-300 text-sm">
+                                  <li className="flex items-start gap-2">
+                                    <div className="w-1.5 h-1.5 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                                    <span>Direct peer-to-peer transfer (no middlemen)</span>
+                                  </li>
+                                  <li className="flex items-start gap-2">
+                                    <div className="w-1.5 h-1.5 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                                    <span>Global network validates automatically</span>
+                                  </li>
+                                  <li className="flex items-start gap-2">
+                                    <div className="w-1.5 h-1.5 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                                    <span>Fixed, transparent fees ($3-5 typical)</span>
+                                  </li>
+                                  <li className="flex items-start gap-2">
+                                    <div className="w-1.5 h-1.5 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                                    <span>Works 24/7/365 without bank hours</span>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                            
+                            {/* Bottom Line */}
+                            <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-orange-500">
+                              <div className="text-zinc-300 leading-relaxed text-center">
+                                <span className="font-semibold text-orange-300">Bottom Line:</span> Traditional banking transforms 
+                                a simple transfer into a complex relay race involving multiple institutions, compliance checks, and 
+                                days of delays. Bitcoin eliminates this entirely with direct, cryptographic settlement that works 
+                                instantly across any distance. <span className="text-orange-400 font-medium">This is why Bitcoin 
+                                represents the future of global money movement.</span>
+                              </div>
                             </div>
                           </div>
                         </div>
