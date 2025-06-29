@@ -375,7 +375,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
         const today = new Date();
         dayIndex = Math.max(1, Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 365);
       }
-      const facts = await storage.getDailyContentFacts(dayIndex);
+      const facts = await storage.getContentFacts(dayIndex);
       res.json(facts);
     } catch (error) {
       res.status(500).json({ message: "Failed to get daily facts" });
