@@ -368,15 +368,31 @@ export default function Home() {
     return 'learn'; // default
   };
   
+  // Determine simulator sub-tab from URL
+  const getSimulatorSubTabFromPath = (path: string): SimulationsSubTab => {
+    if (path.includes('/simulators/dca')) return 'dca';
+    if (path.includes('/simulators/hodl')) return 'hodl';
+    if (path.includes('/simulators/safety')) return 'safety';
+    if (path.includes('/simulators/wallet')) return 'wallet';
+    if (path.includes('/simulators/transactions')) return 'transactions';
+    if (path.includes('/simulators/transfer')) return 'transfer';
+    if (path.includes('/simulators/inflation')) return 'inflation';
+    if (path.includes('/simulators/fees')) return 'fees';
+    return 'safety'; // default
+  };
+  
   const [activeSection, setActiveSection] = useState<MainSection>(getActiveSectionFromPath(location));
   const [learnSubTab, setLearnSubTab] = useState<LearnSubTab>("today");
-  const [simulationsSubTab, setSimulationsSubTab] = useState<SimulationsSubTab>("safety");
+  const [simulationsSubTab, setSimulationsSubTab] = useState<SimulationsSubTab>(getSimulatorSubTabFromPath(location));
   const [moreSubTab, setMoreSubTab] = useState<MoreSubTab>("store");
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   
-  // Update active section when URL changes
+  // Update active section and sub-tabs when URL changes
   useEffect(() => {
     setActiveSection(getActiveSectionFromPath(location));
+    if (location.includes('/simulators')) {
+      setSimulationsSubTab(getSimulatorSubTabFromPath(location));
+    }
   }, [location]);
   
   // Day navigation for development testing
@@ -2384,12 +2400,15 @@ export default function Home() {
               className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => setLocation('/')}
             >
-              <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-orange-600 rounded-lg flex items-center justify-center transform rotate-2">
-                <div className="flex items-center gap-0.5 text-white text-xs font-bold">
-                  <span>BTC</span>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-sm">
+                  BTC
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold">Journey</h1>
+                  <p className="text-xs text-zinc-400">Learn • Grow • Succeed</p>
                 </div>
               </div>
-              <h1 className="text-xl font-bold text-white">BTC Journey</h1>
             </div>
           </div>
         </div>
