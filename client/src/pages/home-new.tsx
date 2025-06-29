@@ -2566,6 +2566,71 @@ export default function Home() {
                   )}
                 </div>
 
+                {/* Day Navigation Controls - Development Tool */}
+                <Card className="bg-zinc-900/50 border-zinc-700 mb-4">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-sm font-medium text-zinc-300">Development Day Navigator</h4>
+                      <Badge variant="outline" className="text-xs">
+                        Current: Day {currentDayIndex}
+                      </Badge>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <Button
+                        onClick={() => setTestDayOverride(Math.max(1, currentDayIndex - 1))}
+                        disabled={currentDayIndex <= 1}
+                        variant="outline"
+                        size="sm"
+                        className="text-xs"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                        Previous
+                      </Button>
+                      
+                      <Select 
+                        value={currentDayIndex.toString()} 
+                        onValueChange={(value) => setTestDayOverride(parseInt(value))}
+                      >
+                        <SelectTrigger className="w-32 text-xs">
+                          <SelectValue placeholder="Select Day" />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-48">
+                          {Array.from({ length: 180 }, (_, i) => i + 1).map((day) => (
+                            <SelectItem key={day} value={day.toString()}>
+                              Day {day}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      
+                      <Button
+                        onClick={() => setTestDayOverride(Math.min(180, currentDayIndex + 1))}
+                        disabled={currentDayIndex >= 180}
+                        variant="outline"
+                        size="sm"
+                        className="text-xs"
+                      >
+                        Next
+                        <ChevronRight className="w-4 h-4" />
+                      </Button>
+                      
+                      <Button
+                        onClick={() => setTestDayOverride(null)}
+                        variant="outline"
+                        size="sm"
+                        className="text-xs ml-2"
+                      >
+                        Reset to Natural
+                      </Button>
+                    </div>
+                    
+                    <p className="text-xs text-zinc-500 mt-2">
+                      Navigate to any day 1-180 for content review and data verification
+                    </p>
+                  </CardContent>
+                </Card>
+
                 {/* Paywall Check */}
                 {isDayLockedBySubscription && (
                   <Card className="bg-zinc-900/95 border-orange-500/20">
