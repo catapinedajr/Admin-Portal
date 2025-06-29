@@ -359,6 +359,13 @@ For all days after Day 1, perform prior knowledge assessment:
 - Validate quiz questions incorporate appropriate cross-day connections
 - Confirm no jarring conceptual jumps or unexplained new terminology
 
+**AVOID REPETITIVE LESSON OPENERS:**
+- Never use "You've learned..." at the beginning of lessons
+- Avoid "Today we explore..." openings
+- Don't start with "Building on our understanding..."
+- Eliminate "Now that you understand..." formulations
+- Create unique, engaging openings using varied approaches: mystery hooks, curiosity statements, analogies, contrasts, historical context, or personal impact scenarios
+
 **Database Accuracy Verification:**
 - Verify all content uses correct day_id from content_days table
 - Ensure proper foreign key relationships are maintained
