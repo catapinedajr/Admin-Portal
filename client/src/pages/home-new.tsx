@@ -2650,8 +2650,8 @@ export default function Home() {
                                       <h5 className="font-medium text-orange-300 mb-2">Real Examples</h5>
                                       <ul className="space-y-1">
                                         {deepDive.examples.map((example, idx) => (
-                                          <li key={idx} className="text-zinc-300 text-sm flex items-start gap-2">
-                                            <span className="text-orange-400">•</span>
+                                          <li key={idx} className="text-zinc-300 text-sm flex items-baseline gap-2">
+                                            <span className="text-orange-400 text-sm">•</span>
                                             <span>{example}</span>
                                           </li>
                                         ))}
@@ -2720,8 +2720,8 @@ export default function Home() {
                               <h5 className="text-orange-400 font-medium mb-4 text-base">Key Points:</h5>
                               <ul className="space-y-3">
                                 {(lesson as LessonWithKeyTakeaways).keyTakeaways.map((point, pointIdx) => (
-                                  <li key={pointIdx} className="flex items-start gap-3 text-zinc-300 leading-[1.7]">
-                                    <span className="text-orange-400 text-lg">•</span>
+                                  <li key={pointIdx} className="flex items-baseline gap-3 text-zinc-300 leading-[1.7]">
+                                    <span className="text-orange-400 text-base">•</span>
                                     <span className="text-base">{cleanText(point)}</span>
                                   </li>
                                 ))}
