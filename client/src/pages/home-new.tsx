@@ -37,6 +37,7 @@ import {
   Flag,
   Network,
   ArrowRight,
+  ArrowLeftRight,
   ChevronDown,
   ChevronUp,
   ChevronLeft,
@@ -301,7 +302,7 @@ const bitcoinTerms = [
 
 type MainSection = "learn" | "finance" | "simulations" | "more";
 type LearnSubTab = "today" | "reference";
-type SimulationsSubTab = "wallet" | "safety" | "transactions" | "hodl" | "dca" | "inflation" | "settlement";
+type SimulationsSubTab = "wallet" | "safety" | "transactions" | "transfer" | "hodl" | "dca" | "inflation" | "settlement";
 type MoreSubTab = "store";
 
 export default function Home() {
@@ -3923,6 +3924,15 @@ export default function Home() {
                   Transactions
                 </Button>
                 <Button
+                  variant={simulationsSubTab === "transfer" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("transfer")}
+                  className="text-xs px-3 py-1"
+                >
+                  <ArrowRight className="w-3 h-3 mr-1" />
+                  Transfer
+                </Button>
+                <Button
                   variant={simulationsSubTab === "hodl" ? "secondary" : "ghost"}
                   size="sm"
                   onClick={() => setSimulationsSubTab("hodl")}
@@ -5429,6 +5439,378 @@ export default function Home() {
                         </div>
                       )}
                     </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {/* Transfer Speed Simulator */}
+            {isPremiumTier && simulationsSubTab === "transfer" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">Transfer Settlement Simulator</h3>
+                  <p className="text-zinc-400">Experience the dramatic difference between traditional banking and Bitcoin transfers</p>
+                </div>
+
+                {/* Settlement Workflow Visualization */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-white flex items-center gap-3 text-xl">
+                      <Clock className="w-5 h-5 text-orange-400" />
+                      Interactive Transfer Race
+                    </CardTitle>
+                    <p className="text-zinc-400 text-sm">Watch $50,000 travel from New York to London - see the complexity difference</p>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {!speedRaceActive && (
+                      <div className="text-center space-y-4">
+                        <div className="p-6 bg-zinc-800 rounded-lg border border-zinc-700">
+                          <h3 className="text-lg font-medium text-white mb-3">Transfer Scenario</h3>
+                          <p className="text-zinc-300 mb-4">
+                            Your business needs to send <span className="text-orange-400 font-bold">$50,000</span> from 
+                            Chase Bank (New York) to Wells Fargo (London) for an urgent deal.
+                          </p>
+                          <p className="text-zinc-400 text-sm">
+                            Compare how traditional banking vs Bitcoin handles this international transfer.
+                          </p>
+                        </div>
+                        <Button 
+                          onClick={startSettlementAnimation}
+                          className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg font-medium"
+                        >
+                          Initiate Transfer Race
+                        </Button>
+                      </div>
+                    )}
+
+                    {speedRaceActive && (
+                      <div className="space-y-6">
+                        <div className="text-center">
+                          <Button 
+                            onClick={resetSettlementAnimation}
+                            className="bg-orange-600 hover:bg-orange-700"
+                            disabled={animationActive}
+                          >
+                            {animationActive ? "Animation Running..." : "Reset Journey"}
+                          </Button>
+                          {animationActive && (
+                            <p className="text-zinc-400 text-sm mt-2">
+                              Watch Bitcoin complete while traditional banking gets stuck...
+                            </p>
+                          )}
+                        </div>
+                        
+                        {/* Compact Side-by-Side Settlement Race */}
+                        <div className="space-y-4">
+                          
+                          {/* Headers */}
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="flex items-center gap-3 p-3 bg-red-950/30 rounded-lg border border-red-800/30">
+                              <Building2 className="w-5 h-5 text-red-400" />
+                              <div>
+                                <div className="text-red-300 font-bold text-sm">Traditional Banking</div>
+                                <div className="text-zinc-400 text-xs">Complex, slow, expensive</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3 p-3 bg-green-950/30 rounded-lg border border-green-800/30">
+                              <Zap className="w-5 h-5 text-green-400" />
+                              <div>
+                                <div className="text-green-300 font-bold text-sm">Bitcoin Network</div>
+                                <div className="text-zinc-400 text-xs">Simple, fast, global</div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Processing Steps - Side by Side */}
+                          <div className="space-y-3">
+                            
+                            {/* Step 1 Comparison */}
+                            <div className="grid grid-cols-2 gap-4">
+                              {/* Traditional Step 1 */}
+                              <div className={`p-3 rounded-lg border transition-all duration-500 ${
+                                settlementProgress.traditional >= 1 
+                                  ? 'bg-red-800/30 border-red-600/50' 
+                                  : 'bg-zinc-800 border-zinc-700'
+                              }`}>
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                                    settlementProgress.traditional >= 1 ? 'bg-red-600 text-white' : 'bg-zinc-600 text-zinc-400'
+                                  }`}>1</div>
+                                  <div className="text-white font-medium text-sm">Visit Bank Branch</div>
+                                </div>
+                                <div className="text-zinc-400 text-xs leading-relaxed min-h-[40px]">
+                                  Fill out international wire forms, provide recipient details, wait in line, 
+                                  pay upfront fees, get tracking number
+                                </div>
+                              </div>
+                              
+                              {/* Bitcoin Step 1 */}
+                              <div className={`p-3 rounded-lg border transition-all duration-500 ${
+                                settlementProgress.bitcoin >= 1 
+                                  ? 'bg-green-800/30 border-green-600/50' 
+                                  : 'bg-zinc-800 border-zinc-700'
+                              }`}>
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                                    settlementProgress.bitcoin >= 1 ? 'bg-green-600 text-white' : 'bg-zinc-600 text-zinc-400'
+                                  }`}>1</div>
+                                  <div className="text-white font-medium text-sm">Create Transaction</div>
+                                </div>
+                                <div className="text-zinc-400 text-xs leading-relaxed min-h-[40px]">
+                                  Open wallet app, enter recipient address, specify amount, 
+                                  sign with private key - takes 30 seconds
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Step 2 Comparison */}
+                            <div className="grid grid-cols-2 gap-4">
+                              {/* Traditional Step 2 */}
+                              <div className={`p-3 rounded-lg border transition-all duration-500 ${
+                                settlementProgress.traditional >= 2 
+                                  ? 'bg-red-800/30 border-red-600/50' 
+                                  : 'bg-zinc-800 border-zinc-700'
+                              }`}>
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                                    settlementProgress.traditional >= 2 ? 'bg-red-600 text-white' : 'bg-zinc-600 text-zinc-400'
+                                  }`}>2</div>
+                                  <div className="text-white font-medium text-sm">Compliance Review</div>
+                                </div>
+                                <div className="text-zinc-400 text-xs leading-relaxed min-h-[120px]">
+                                  Bank reviews for anti-money laundering, checks sanctions lists, 
+                                  verifies business purpose, contacts correspondent banks. 
+                                  Can take hours to days depending on amount and destination.
+                                </div>
+                              </div>
+                              
+                              {/* Bitcoin Step 2 */}
+                              <div className={`p-3 rounded-lg border transition-all duration-500 ${
+                                settlementProgress.bitcoin >= 2 
+                                  ? 'bg-green-800/30 border-green-600/50' 
+                                  : 'bg-zinc-800 border-zinc-700'
+                              }`}>
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                                    settlementProgress.bitcoin >= 2 ? 'bg-green-600 text-white' : 'bg-zinc-600 text-zinc-400'
+                                  }`}>2</div>
+                                  <div className="text-white font-medium text-sm">Network Broadcast</div>
+                                </div>
+                                <div className="text-zinc-400 text-xs leading-relaxed min-h-[120px]">
+                                  Transaction instantly broadcasts to thousands of nodes worldwide. 
+                                  Network validates signatures and balances in seconds. 
+                                  No human approval needed.
+                                  
+                                  {settlementProgress.bitcoin >= 2 && (
+                                    <div className="mt-3 space-y-2">
+                                      <div className="text-green-300 text-xs font-medium">Live Network Consensus:</div>
+                                      <div className="grid grid-cols-3 gap-1">
+                                        {[1,2,3,4,5,6].map((miner) => (
+                                          <div 
+                                            key={miner}
+                                            className={`text-center p-1 rounded text-xs transition-all duration-300 ${
+                                              settlementProgress.bitcoin >= 3 
+                                                ? 'bg-green-600/50 text-green-200' 
+                                                : 'bg-orange-600/50 text-orange-200'
+                                            }`}
+                                          >
+                                            M{miner}
+                                            <div className="text-xs">
+                                              {settlementProgress.bitcoin >= 3 ? '✓' : '⚡'}
+                                            </div>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Step 3 Comparison */}
+                            <div className="grid grid-cols-2 gap-4">
+                              {/* Traditional Step 3 */}
+                              <div className={`p-3 rounded-lg border transition-all duration-500 ${
+                                settlementProgress.traditional >= 3 
+                                  ? 'bg-red-800/30 border-red-600/50' 
+                                  : 'bg-zinc-800 border-zinc-700'
+                              }`}>
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                                    settlementProgress.traditional >= 3 ? 'bg-red-600 text-white' : 'bg-zinc-600 text-zinc-400'
+                                  }`}>3</div>
+                                  <div className="text-white font-medium text-sm">SWIFT Processing</div>
+                                </div>
+                                <div className="text-zinc-400 text-xs leading-relaxed min-h-[40px]">
+                                  Message routed through multiple correspondent banks, 
+                                  each adding delays and fees
+                                </div>
+                              </div>
+                              
+                              {/* Bitcoin Step 3 */}
+                              <div className={`p-3 rounded-lg border transition-all duration-500 ${
+                                settlementProgress.bitcoin >= 3 
+                                  ? 'bg-green-800/30 border-green-600/50' 
+                                  : 'bg-zinc-800 border-zinc-700'
+                              }`}>
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                                    settlementProgress.bitcoin >= 3 ? 'bg-green-600 text-white' : 'bg-zinc-600 text-zinc-400'
+                                  }`}>3</div>
+                                  <div className="text-white font-medium text-sm">Mining & Confirmation</div>
+                                </div>
+                                <div className="text-zinc-400 text-xs leading-relaxed min-h-[40px]">
+                                  Miners compete to include transaction in next block, 
+                                  proof-of-work secures the network
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Step 4 Comparison */}
+                            <div className="grid grid-cols-2 gap-4">
+                              {/* Traditional Step 4 */}
+                              <div className={`p-3 rounded-lg border transition-all duration-500 ${
+                                settlementProgress.traditional >= 4 
+                                  ? 'bg-red-800/30 border-red-600/50' 
+                                  : 'bg-zinc-800 border-zinc-700'
+                              }`}>
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                                    settlementProgress.traditional >= 4 ? 'bg-red-600 text-white' : 'bg-zinc-600 text-zinc-400'
+                                  }`}>4</div>
+                                  <div className="text-white font-medium text-sm">Intermediary Routing</div>
+                                </div>
+                                <div className="text-zinc-400 text-xs leading-relaxed min-h-[40px]">
+                                  Funds move through intermediary banks, 
+                                  each verifying and processing
+                                </div>
+                              </div>
+                              
+                              {/* Bitcoin Step 4 */}
+                              <div className={`p-3 rounded-lg border transition-all duration-500 ${
+                                settlementProgress.bitcoin >= 4 
+                                  ? 'bg-green-800/30 border-green-600/50' 
+                                  : 'bg-zinc-800 border-zinc-700'
+                              }`}>
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                                    settlementProgress.bitcoin >= 4 ? 'bg-green-600 text-white' : 'bg-zinc-600 text-zinc-400'
+                                  }`}>4</div>
+                                  <div className="text-white font-medium text-sm">Final Settlement</div>
+                                </div>
+                                <div className="text-zinc-400 text-xs leading-relaxed min-h-[40px]">
+                                  Transaction permanently recorded on blockchain, 
+                                  funds immediately available to recipient
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Step 5 - Only Traditional */}
+                            <div className="grid grid-cols-2 gap-4">
+                              {/* Traditional Step 5 */}
+                              <div className={`p-3 rounded-lg border transition-all duration-500 ${
+                                settlementProgress.traditional >= 5 
+                                  ? 'bg-red-800/30 border-red-600/50' 
+                                  : 'bg-zinc-800 border-zinc-700'
+                              }`}>
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                                    settlementProgress.traditional >= 5 ? 'bg-red-600 text-white' : 'bg-zinc-600 text-zinc-400'
+                                  }`}>5</div>
+                                  <div className="text-white font-medium text-sm">Final Settlement</div>
+                                </div>
+                                <div className="text-zinc-400 text-xs leading-relaxed min-h-[40px]">
+                                  Recipient bank finally credits account, 
+                                  funds become available
+                                </div>
+                              </div>
+                              
+                              {/* Bitcoin - Empty Step 5 */}
+                              <div className="p-3 rounded-lg border bg-zinc-800 border-zinc-700 opacity-30">
+                                <div className="text-center py-4">
+                                  <div className="text-zinc-500 text-sm">No Step 5 Needed</div>
+                                  <div className="text-zinc-600 text-xs mt-1">Bitcoin settled in 4 steps</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Status Summary */}
+                          <div className="grid grid-cols-2 gap-4 mt-6">
+                            <div className="p-4 bg-red-950/40 rounded-lg border border-red-800/50">
+                              <div className="text-center">
+                                <div className="text-red-400 font-bold text-lg">
+                                  {settlementProgress.traditional === 0 && "Waiting..."}
+                                  {settlementProgress.traditional === 1 && "At Bank Branch"}
+                                  {settlementProgress.traditional === 2 && "Stuck in Compliance"}
+                                  {settlementProgress.traditional >= 3 && settlementProgress.traditional < 5 && "Still Processing..."}
+                                  {settlementProgress.traditional === 5 && "Finally Complete"}
+                                </div>
+                                <div className="text-zinc-400 text-xs mt-1">
+                                  Step {settlementProgress.traditional}/5 • Traditional Banking
+                                </div>
+                                <div className="text-red-300 text-xs mt-2 font-medium">
+                                  {settlementProgress.traditional === 2 && "Estimated: 3-5 business days"}
+                                  {settlementProgress.traditional === 5 && "Total time: 3-5 business days"}
+                                  {settlementProgress.traditional > 0 && settlementProgress.traditional < 2 && "Estimated: 3-5 business days"}
+                                  {settlementProgress.traditional > 2 && settlementProgress.traditional < 5 && "Estimated: 3-5 business days"}
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="p-4 bg-green-950/40 rounded-lg border border-green-800/50">
+                              <div className="text-center">
+                                <div className="text-green-400 font-bold text-lg">
+                                  {settlementProgress.bitcoin === 0 && "Ready"}
+                                  {settlementProgress.bitcoin === 1 && "Creating..."}
+                                  {settlementProgress.bitcoin === 2 && "Broadcasting..."}
+                                  {settlementProgress.bitcoin === 3 && "Mining..."}
+                                  {settlementProgress.bitcoin === 4 && "✅ COMPLETE!"}
+                                </div>
+                                <div className="text-zinc-400 text-xs mt-1">
+                                  Step {settlementProgress.bitcoin}/4 • Bitcoin Network
+                                </div>
+                                <div className="text-green-300 text-xs mt-2 font-medium">
+                                  {settlementProgress.bitcoin === 4 && "Total time: ~10 minutes"}
+                                  {settlementProgress.bitcoin > 0 && settlementProgress.bitcoin < 4 && "Estimated: ~10 minutes"}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Final Comparison */}
+                        <div className="p-6 bg-gradient-to-r from-green-950/30 to-orange-950/30 rounded-xl border border-green-800/30">
+                          <div className="text-center space-y-4">
+                            <div className="text-orange-300 font-bold text-xl">The Difference is Clear</div>
+                            
+                            <div className="grid gap-4 md:grid-cols-3 text-center">
+                              <div className="p-4 bg-zinc-800 rounded-lg">
+                                <div className="text-green-400 font-bold text-2xl">432x</div>
+                                <div className="text-zinc-300 text-sm">Faster Settlement</div>
+                                <div className="text-zinc-500 text-xs">Days vs Minutes</div>
+                              </div>
+                              <div className="p-4 bg-zinc-800 rounded-lg">
+                                <div className="text-green-400 font-bold text-2xl">93%</div>
+                                <div className="text-zinc-300 text-sm">Lower Fees</div>
+                                <div className="text-zinc-500 text-xs">$2-5 vs $45-75</div>
+                              </div>
+                              <div className="p-4 bg-zinc-800 rounded-lg">
+                                <div className="text-green-400 font-bold text-2xl">0</div>
+                                <div className="text-zinc-300 text-sm">Intermediaries</div>
+                                <div className="text-zinc-500 text-xs">Direct vs 5+ Banks</div>
+                              </div>
+                            </div>
+                            
+                            <div className="text-zinc-300 leading-relaxed max-w-2xl mx-auto">
+                              Traditional banking turns a simple transfer into a 5-institution relay race spanning days. 
+                              Bitcoin eliminates all intermediaries with direct, cryptographic settlement in minutes. 
+                              <span className="text-orange-400 font-medium">This is another reason why Bitcoin is the future of money.</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </div>
