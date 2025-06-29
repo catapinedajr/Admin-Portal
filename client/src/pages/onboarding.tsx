@@ -101,7 +101,7 @@ export default function Onboarding() {
       setCurrentStep(currentStep + 1);
     } else {
       // Mark onboarding as completed and redirect to main app
-      localStorage.setItem('hodlearn-onboarding-completed', 'true');
+      localStorage.setItem('btcjourney-onboarding-completed', 'true');
       setLocation('/');
     }
   };
@@ -113,7 +113,7 @@ export default function Onboarding() {
   };
 
   const handleSkip = () => {
-    localStorage.setItem('hodlearn-onboarding-completed', 'true');
+    localStorage.setItem('btcjourney-onboarding-completed', 'true');
     setLocation('/');
   };
 
