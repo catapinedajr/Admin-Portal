@@ -117,7 +117,7 @@ export default function HomeDashboard() {
         {/* Welcome Section */}
         <div className="space-y-2">
           <h2 className="text-2xl font-bold text-white">
-            {getGreeting()}! Ready to continue your Bitcoin journey?
+            {getGreeting()}{user?.username && user.username !== 'default_user' ? `, ${user.username}` : ''}! Ready to continue your Bitcoin journey?
           </h2>
           <p className="text-zinc-400">
             {user?.currentStreak ? 
@@ -132,7 +132,9 @@ export default function HomeDashboard() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h3 className="text-lg font-semibold text-white">Knowledge Accumulation</h3>
+                <h3 className="text-lg font-semibold text-white">
+                  {user?.username && user.username !== 'default_user' ? `${user.username}'s Progress` : 'Your Progress'}
+                </h3>
                 <p className="text-sm text-zinc-400">Small daily gains compound into mastery</p>
               </div>
               <div className="text-right">
@@ -178,15 +180,15 @@ export default function HomeDashboard() {
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-medium text-white mb-1">
-                    {completedDays === 0 ? "Every expert was once a beginner" :
-                     completedDays < 7 ? "Small steps, big progress ahead" :
-                     completedDays < 14 ? "Momentum building, knowledge growing" :
-                     completedDays < 21 ? "Habits forming, understanding deepening" :
-                     completedDays < 30 ? "Almost there - expertise within reach" :
-                     "Bitcoin mastery achieved through consistency"}
+                    {completedDays === 0 ? "You're starting your Bitcoin education journey" :
+                     completedDays < 7 ? "You're building momentum with small daily steps" :
+                     completedDays < 14 ? "You're developing consistent learning habits" :
+                     completedDays < 21 ? "You're deepening your Bitcoin understanding" :
+                     completedDays < 30 ? "You're almost there - expertise within reach" :
+                     "You've achieved Bitcoin mastery through consistency"}
                   </div>
                   <div className="text-xs text-zinc-400">
-                    Each day's learning builds on the last - {30 - completedDays} more days to complete mastery
+                    Your learning compounds daily - {completedDays >= 30 ? 'Course completed!' : `${30 - completedDays} more days to complete mastery`}
                   </div>
                 </div>
               </div>
