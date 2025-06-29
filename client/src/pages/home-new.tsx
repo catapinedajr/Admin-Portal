@@ -3968,7 +3968,7 @@ export default function Home() {
                   onClick={() => setSimulationsSubTab("settlement")}
                   className="text-xs px-3 py-1"
                 >
-                  <Clock className="w-3 h-3 mr-1" />
+                  <DollarSign className="w-3 h-3 mr-1" />
                   Fees
                 </Button>
               </div>
