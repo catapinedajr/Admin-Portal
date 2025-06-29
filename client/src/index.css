@@ -156,6 +156,11 @@
     border: 1px solid hsla(var(--warning), 0.2);
     border-radius: 0.375rem;
   }
+  
+  /* Safe area support for mobile devices */
+  .safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }
 
 @layer utilities {

@@ -20,6 +20,7 @@ import {
   Clock
 } from "lucide-react";
 import { useLocation } from "wouter";
+import BottomNavigation from "@/components/BottomNavigation";
 
 interface User {
   id: number;
@@ -489,6 +490,12 @@ export default function HomeDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Bottom Navigation */}
+      <BottomNavigation activeSection="home" />
+      
+      {/* Bottom padding to accommodate navigation */}
+      <div className="h-20"></div>
     </div>
   );
 }

@@ -83,6 +83,7 @@ import { useSubscription } from "@/contexts/SubscriptionContext";
 import LockedContent from "@/components/LockedContent";
 import UpgradeModal from "@/components/UpgradeModal";
 import DevSubscriptionToggle from "@/components/DevSubscriptionToggle";
+import BottomNavigation from "@/components/BottomNavigation";
 
 // Weekly Quiz Component
 interface WeeklyQuizProps {
@@ -2414,55 +2415,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Navigation */}
-      <nav className="border-b border-zinc-800 bg-zinc-900/50">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex justify-center py-4">
-            <div className="flex space-x-1 bg-zinc-800/50 rounded-lg p-1">
-              <Button
-                variant={activeSection === "learn" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setLocation('/learn')}
-                className="text-sm px-4 py-2 relative"
-              >
-                Learn
-                <div className="absolute -top-1 -right-1 bg-gradient-to-r from-orange-500 to-yellow-500 text-black text-xs font-bold px-1 py-0.5 rounded-full shadow-sm">
-                  PRO
-                </div>
-              </Button>
 
-              <Button
-                variant={activeSection === "money" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setLocation('/money')}
-                className="text-sm px-4 py-2"
-              >
-                Money
-              </Button>
-
-              <Button
-                variant={activeSection === "simulations" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setLocation('/simulators')}
-                className="text-sm px-4 py-2 relative"
-              >
-                Simulators
-                <div className="absolute -top-1 -right-1 bg-gradient-to-r from-green-500 to-emerald-500 text-black text-xs font-bold px-1 py-0.5 rounded-full shadow-sm">
-                  PRO
-                </div>
-              </Button>
-              <Button
-                variant={activeSection === "more" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setLocation('/more')}
-                className="text-sm px-4 py-2"
-              >
-                More
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-6">
@@ -8467,6 +8420,22 @@ export default function Home() {
         trigger="day-limit"
         lockedFeature={`Day ${currentDayIndex + 1}`}
       />
+
+      {/* Bottom Navigation */}
+      <BottomNavigation 
+        activeSection={activeSection}
+        onSectionChange={(section) => {
+          setActiveSection(section as MainSection);
+          if (section === 'learn') setLocation('/learn');
+          else if (section === 'money') setLocation('/money');
+          else if (section === 'simulators') setLocation('/simulators');
+          else if (section === 'more') setLocation('/more');
+          else if (section === 'home') setLocation('/');
+        }}
+      />
+      
+      {/* Bottom padding to accommodate navigation */}
+      <div className="h-20"></div>
     </div>
   );
 }

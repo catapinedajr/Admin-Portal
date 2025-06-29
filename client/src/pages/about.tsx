@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import { ArrowRight, Clock, Users, Target, Heart } from "lucide-react";
+import BottomNavigation from "@/components/BottomNavigation";
 
 export default function About() {
   const [, setLocation] = useLocation();
@@ -196,6 +197,12 @@ export default function About() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Bottom Navigation */}
+      <BottomNavigation />
+      
+      {/* Bottom padding to accommodate navigation */}
+      <div className="h-20"></div>
     </div>
   );
 }
