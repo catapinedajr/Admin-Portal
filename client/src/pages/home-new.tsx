@@ -5788,19 +5788,24 @@ export default function Home() {
                                   {settlementProgress.traditional >= 3 && (
                                     <div className="mt-3 space-y-2">
                                       <div className="text-red-300 text-xs font-medium">SWIFT Network Route:</div>
-                                      <div className="flex items-center justify-between text-xs">
-                                        {['Chase', 'JPM London', 'Barclays', 'Wells Fargo'].map((bank, i) => (
-                                          <div key={bank} className="flex items-center">
-                                            <div className={`px-2 py-1 rounded text-xs transition-all duration-700 ${
-                                              settlementProgress.traditional >= 4 && i < 3
-                                                ? 'bg-red-600/30 text-red-200 border border-red-600/50' 
-                                                : 'bg-zinc-700/30 text-zinc-400 border border-zinc-600/30'
-                                            }`}>
+                                      <div className="space-y-1">
+                                        <div className="grid grid-cols-2 gap-1 text-xs">
+                                          {['Chase', 'JPM London', 'Barclays', 'Wells Fargo'].map((bank, i) => (
+                                            <div 
+                                              key={bank}
+                                              className={`px-1.5 py-1 rounded text-center text-xs transition-all duration-700 ${
+                                                settlementProgress.traditional >= 4 && i < 3
+                                                  ? 'bg-red-600/30 text-red-200 border border-red-600/50' 
+                                                  : 'bg-zinc-700/30 text-zinc-400 border border-zinc-600/30'
+                                              }`}
+                                            >
                                               {bank}
                                             </div>
-                                            {i < 3 && <div className="mx-1 text-zinc-500">→</div>}
-                                          </div>
-                                        ))}
+                                          ))}
+                                        </div>
+                                        <div className="text-center text-zinc-500 text-xs">
+                                          {settlementProgress.traditional >= 4 ? "↓ Routing through network ↓" : "→ → →"}
+                                        </div>
                                       </div>
                                       <div className="text-red-400 text-xs">
                                         Total fees: ${(45 + (settlementProgress.traditional - 2) * 12).toFixed(0)}
