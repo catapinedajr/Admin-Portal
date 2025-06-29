@@ -5804,7 +5804,7 @@ export default function Home() {
                                           ))}
                                         </div>
                                         <div className="text-center text-zinc-500 text-xs">
-                                          {settlementProgress.traditional >= 4 ? "↓ Routing through network ↓" : "→ → →"}
+                                          {settlementProgress.traditional >= 4 ? "Routing through network" : "Banks preparing routing"}
                                         </div>
                                       </div>
                                       <div className="text-red-400 text-xs">
