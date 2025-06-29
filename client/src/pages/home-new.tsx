@@ -4948,9 +4948,9 @@ export default function Home() {
                         that could result in lost funds forever.
                       </p>
                       
-                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-green-500">
+                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-orange-500">
                         <p className="text-zinc-300 text-sm">
-                          <span className="font-semibold text-green-300">Safe Learning:</span> This simulator uses fake addresses 
+                          <span className="font-semibold text-orange-300">Safe Learning:</span> This simulator uses fake addresses 
                           and amounts so you can practice building transactions safely. Learn the entire process from address 
                           generation to confirmation tracking without any financial risk.
                         </p>
@@ -4998,7 +4998,7 @@ export default function Home() {
                               builder.scrollIntoView({ behavior: 'smooth' });
                             }
                           }}
-                          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
+                          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
                         >
                           <ChevronDown className="w-4 h-4 mr-2" />
                           Start Building Transaction
