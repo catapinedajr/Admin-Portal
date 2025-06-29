@@ -14,7 +14,7 @@ function OnboardingRedirect() {
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    const hasCompletedOnboarding = localStorage.getItem('btcjourney-onboarding-completed');
+    const hasCompletedOnboarding = localStorage.getItem('hodlearn-onboarding-completed');
     
     if (!hasCompletedOnboarding) {
       setLocation('/onboarding');

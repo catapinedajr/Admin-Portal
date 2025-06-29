@@ -7,7 +7,7 @@ import { useLocation } from "wouter";
 const onboardingSteps = [
   {
     id: 1,
-    title: "Ready to Start Your Bitcoin Journey?",
+    title: "Ready to HODLearn Bitcoin?",
     subtitle: "Every expert was once a beginner",
     content: (
       <div className="space-y-4 text-center">
@@ -16,14 +16,14 @@ const onboardingSteps = [
         </div>
         <div className="space-y-4">
           <p className="text-zinc-200 text-lg font-medium">
-            Bitcoin seems complicated, but every journey starts with a single step.
+            Bitcoin seems complicated, but every expert started with the basics.
           </p>
           <p className="text-zinc-300">
-            Major companies, countries, and millions of people have embarked on their Bitcoin journey. Now it's your turn to discover what Bitcoin is really about.
+            Major companies, countries, and millions of people have started learning Bitcoin. HODLearn will guide you through understanding what Bitcoin is really about.
           </p>
           <div className="bg-orange-900/20 rounded-lg p-4 border border-orange-700/30">
             <p className="text-orange-200 font-medium">
-              🚀 Your journey starts here
+              📚 Your learning starts here
             </p>
             <p className="text-orange-300 text-sm mt-1">
               Take the first step toward understanding the future of money
@@ -44,7 +44,7 @@ const onboardingSteps = [
         </div>
         <div className="space-y-4">
           <p className="text-zinc-200 text-lg font-medium">
-            We'll guide you through your Bitcoin journey, one day at a time
+            HODLearn guides you through Bitcoin education, one day at a time
           </p>
           <p className="text-zinc-300">
             Each day brings new insights: daily facts, deep-dive lessons, and practice simulations that build your Bitcoin knowledge naturally.
@@ -55,7 +55,7 @@ const onboardingSteps = [
             <p className="text-green-200 font-medium">✓ Safe practice environments</p>
           </div>
           <p className="text-orange-200 text-sm font-medium">
-            Join your Bitcoin journey with BTC Journey
+            Start learning Bitcoin with HODLearn
           </p>
         </div>
       </div>
@@ -63,7 +63,7 @@ const onboardingSteps = [
   },
   {
     id: 3,
-    title: "Begin Your Journey Today",
+    title: "Begin Learning Today",
     subtitle: "Every step forward is progress",
     content: (
       <div className="space-y-4 text-center">
@@ -104,7 +104,7 @@ export default function Onboarding() {
       setCurrentStep(currentStep + 1);
     } else {
       // Mark onboarding as completed and redirect to main app
-      localStorage.setItem('btcjourney-onboarding-completed', 'true');
+      localStorage.setItem('hodlearn-onboarding-completed', 'true');
       setLocation('/');
     }
   };
@@ -116,7 +116,7 @@ export default function Onboarding() {
   };
 
   const handleSkip = () => {
-    localStorage.setItem('btcjourney-onboarding-completed', 'true');
+    localStorage.setItem('hodlearn-onboarding-completed', 'true');
     setLocation('/');
   };
 
