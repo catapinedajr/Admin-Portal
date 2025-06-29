@@ -144,9 +144,9 @@ export default function HomeDashboard() {
             {/* Cumulative Learning Stats */}
             <div className="grid grid-cols-3 gap-4 mb-4">
               <div className="text-center p-3 bg-blue-600/10 rounded-lg border border-blue-600/20">
-                <div className="text-2xl font-bold text-blue-400">{completedDays * 1}</div>
+                <div className="text-2xl font-bold text-blue-400">{completedDays * 3}</div>
                 <div className="text-xs text-zinc-400 mt-1">Facts Learned</div>
-                <div className="text-xs text-blue-300 mt-1">+1 daily</div>
+                <div className="text-xs text-blue-300 mt-1">+3 daily</div>
               </div>
               <div className="text-center p-3 bg-green-600/10 rounded-lg border border-green-600/20">
                 <div className="text-2xl font-bold text-green-400">{completedDays * 1}</div>
