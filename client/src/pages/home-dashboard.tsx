@@ -114,381 +114,132 @@ export default function HomeDashboard() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+      <div className="max-w-4xl mx-auto px-6 py-8 space-y-8">
         {/* Welcome Section */}
-        <div className="space-y-2">
-          <h2 className="text-2xl font-bold text-white">
-            {getGreeting()}{user?.username && user.username !== 'default_user' ? `, ${user.username}` : ''}! Ready to continue your Bitcoin journey?
+        <div className="text-center space-y-3">
+          <h2 className="text-3xl font-bold text-white tracking-tight">
+            {getGreeting()}{user?.username && user.username !== 'default_user' ? `, ${user.username}` : ''}
           </h2>
-          <p className="text-zinc-400">
+          <p className="text-xl text-zinc-300 font-medium">
             {user?.currentStreak ? 
-              `You're on a ${user.currentStreak}-day streak. Keep building momentum!` :
-              "Take the next step in understanding Bitcoin."
+              `${user.currentStreak}-day streak active. Keep building momentum!` :
+              "Ready to continue your Bitcoin journey?"
             }
           </p>
         </div>
 
-        {/* Knowledge Accumulation Tracker */}
-        <Card className="bg-zinc-900 border-zinc-800">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-6">
+        {/* Today's Focus */}
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardContent className="p-8">
+            <div className="text-center space-y-8">
               <div>
-                <h3 className="text-lg font-semibold text-white">
-                  {user?.username && user.username !== 'default_user' ? `${user.username}'s Progress` : 'Your Progress'}
-                </h3>
-                <p className="text-sm text-zinc-400">Small daily gains compound into mastery</p>
+                <h3 className="text-3xl font-bold text-white mb-3">Day {completedDays + 1} of 30</h3>
+                <p className="text-lg text-zinc-300">Continue building your Bitcoin knowledge</p>
               </div>
-              <div className="text-right">
-                <div className="text-2xl font-bold text-orange-400">{completedDays}/30</div>
-                <div className="text-xs text-zinc-400">days completed</div>
-              </div>
-            </div>
-            
-            {/* Cumulative Learning Stats */}
-            <div className="grid grid-cols-3 gap-4 mb-4">
-              <div className="text-center p-3 bg-orange-600/10 rounded-lg border border-orange-600/20">
-                <div className="text-2xl font-bold text-orange-400">{completedDays * 3}</div>
-                <div className="text-xs text-zinc-400 mt-1">Facts Learned</div>
-                <div className="text-xs text-orange-300 mt-1">+3 daily</div>
-              </div>
-              <div className="text-center p-3 bg-zinc-800/50 rounded-lg border border-zinc-700">
-                <div className="text-2xl font-bold text-white">{completedDays * 1}</div>
-                <div className="text-xs text-zinc-400 mt-1">Lessons Completed</div>
-                <div className="text-xs text-zinc-300 mt-1">+1 daily</div>
-              </div>
-              <div className="text-center p-3 bg-orange-600/5 rounded-lg border border-orange-600/10">
-                <div className="text-2xl font-bold text-orange-300">{completedDays * 6}</div>
-                <div className="text-xs text-zinc-400 mt-1">Questions Answered</div>
-                <div className="text-xs text-orange-200 mt-1">+6 daily</div>
-              </div>
-            </div>
-
-            {/* Progress visualization */}
-            <div className="space-y-3">
-              <Progress value={progressPercentage} className="h-2" />
-              <div className="flex justify-between text-sm">
-                <span className="text-zinc-400">Started learning</span>
-                <span className="text-orange-400 font-medium">{Math.round(progressPercentage)}% to mastery</span>
-                <span className="text-zinc-400">Bitcoin expert</span>
-              </div>
-            </div>
-
-            {/* Shavings Philosophy */}
-            <div className="mt-4 pt-4 border-t border-zinc-800">
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-orange-600/20 rounded-lg">
-                  <TrendingUp className="w-4 h-4 text-orange-400" />
-                </div>
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-white mb-1">
-                    {completedDays === 0 ? "You're starting your Bitcoin education journey" :
-                     completedDays < 7 ? "You're building momentum with small daily steps" :
-                     completedDays < 14 ? "You're developing consistent learning habits" :
-                     completedDays < 21 ? "You're deepening your Bitcoin understanding" :
-                     completedDays < 30 ? "You're almost there - expertise within reach" :
-                     "You've achieved Bitcoin mastery through consistency"}
-                  </div>
-                  <div className="text-xs text-zinc-400">
-                    Your learning compounds daily - {completedDays >= 30 ? 'Course completed!' : `${30 - completedDays} more days to complete mastery`}
+              
+              {/* Clean progress circle */}
+              <div className="flex justify-center">
+                <div className="w-40 h-40 relative">
+                  <svg className="w-40 h-40 transform -rotate-90" viewBox="0 0 160 160">
+                    <circle
+                      cx="80"
+                      cy="80"
+                      r="70"
+                      stroke="rgb(39 39 42)"
+                      strokeWidth="12"
+                      fill="none"
+                    />
+                    <circle
+                      cx="80"
+                      cy="80"
+                      r="70"
+                      stroke="rgb(249 115 22)"
+                      strokeWidth="12"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeDasharray={`${2 * Math.PI * 70}`}
+                      strokeDashoffset={`${2 * Math.PI * 70 * (1 - progressPercentage / 100)}`}
+                      className="transition-all duration-1000"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-orange-400">{Math.round(progressPercentage)}%</div>
+                      <div className="text-sm text-zinc-400">Complete</div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-
-            {/* Achievement System */}
-            <div className="mt-4 pt-4 border-t border-zinc-800">
-              <div className="flex items-center gap-2 mb-3">
-                <Award className="w-4 h-4 text-orange-400" />
-                <span className="text-sm font-medium text-white">Achievements Unlocked</span>
-              </div>
               
-              <div className="grid grid-cols-2 gap-2">
-                {/* Streak Achievements */}
-                <div className={`text-center p-2 rounded-lg border ${
-                  user?.currentStreak >= 7 
-                    ? 'bg-orange-600/20 border-orange-600/50 text-orange-300' 
-                    : 'bg-zinc-800/50 border-zinc-700 text-zinc-500'
-                }`}>
-                  <div className="text-xs font-bold">WEEK WARRIOR</div>
-                  <div className="text-xs">7-day streak</div>
+              {/* Simple stats */}
+              <div className="flex justify-center gap-12">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-orange-400">{completedDays * 3}</div>
+                  <div className="text-zinc-400">Facts</div>
                 </div>
-                
-                <div className={`text-center p-2 rounded-lg border ${
-                  completedDays >= 10 
-                    ? 'bg-orange-600/15 border-orange-600/40 text-orange-200' 
-                    : 'bg-zinc-800/50 border-zinc-700 text-zinc-500'
-                }`}>
-                  <div className="text-xs font-bold">FACT COLLECTOR</div>
-                  <div className="text-xs">30+ facts learned</div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-orange-400">{completedDays}</div>
+                  <div className="text-zinc-400">Lessons</div>
                 </div>
-                
-                <div className={`text-center p-2 rounded-lg border ${
-                  completedDays >= 15 
-                    ? 'bg-orange-600/10 border-orange-600/30 text-orange-300' 
-                    : 'bg-zinc-800/50 border-zinc-700 text-zinc-500'
-                }`}>
-                  <div className="text-xs font-bold">BITCOIN SCHOLAR</div>
-                  <div className="text-xs">15 lessons completed</div>
-                </div>
-                
-                <div className={`text-center p-2 rounded-lg border ${
-                  completedDays >= 30 
-                    ? 'bg-orange-600/25 border-orange-600/60 text-orange-400' 
-                    : 'bg-zinc-800/50 border-zinc-700 text-zinc-500'
-                }`}>
-                  <div className="text-xs font-bold">HODL MASTER</div>
-                  <div className="text-xs">Course completed</div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-orange-400">{completedDays * 6}</div>
+                  <div className="text-zinc-400">Quizzes</div>
                 </div>
               </div>
-              
-              {user?.currentStreak && (
-                <div className="flex items-center justify-center gap-2 mt-3">
-                  <Badge variant="outline" className="border-orange-600 text-orange-400">
-                    {user.currentStreak} day streak
-                  </Badge>
-                </div>
-              )}
             </div>
           </CardContent>
         </Card>
 
-        {/* Continue Learning Section */}
-        <Card className="bg-zinc-900 border-zinc-800">
-          <CardHeader className="pb-4">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-white flex items-center gap-2">
-                <Target className="w-5 h-5 text-orange-400" />
-                Continue Your Journey
-              </CardTitle>
+        {/* Start Today's Learning */}
+        <Card className="bg-zinc-900 border-zinc-800 shadow-lg">
+          <CardContent className="p-6">
+            <div className="text-center space-y-6">
+              <div>
+                <h3 className="text-xl font-bold text-white mb-2">Ready for Day {currentDayIndex}?</h3>
+                <p className="text-zinc-400">3 facts • 1 lesson • 6 quiz questions</p>
+              </div>
+              
               <Button 
                 onClick={() => setLocation('/learn')}
-                size="sm"
-                className="bg-orange-500 hover:bg-orange-600"
+                size="lg"
+                className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3"
               >
-                Start Day {currentDayIndex}
+                Start Learning
               </Button>
             </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Today's Preview */}
-            <div className="bg-zinc-800/50 rounded-lg p-4">
-              <div className="flex items-start gap-4">
-                <div className="p-2 bg-orange-600/20 rounded-lg">
-                  <Coins className="w-5 h-5 text-orange-400" />
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-white mb-1">
-                    {todaysFact?.title || "Today's Bitcoin Learning"}
-                  </h4>
-                  <p className="text-zinc-300 text-sm mb-2">
-                    {todaysFact?.content?.substring(0, 120)}...
-                  </p>
-                  <div className="flex items-center gap-4 text-xs text-zinc-400">
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      <span>{lesson?.estimatedReadTime || 3} min read</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <BookOpen className="w-3 h-3" />
-                      <span>Interactive lesson</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Learning path preview */}
-            <div className="grid grid-cols-3 gap-2 text-xs">
-              <div className="text-center p-2 bg-orange-600/15 rounded border border-orange-600/25">
-                <div className="font-medium text-orange-300">1. Facts</div>
-                <div className="text-zinc-400">Essential knowledge</div>
-              </div>
-              <div className="text-center p-2 bg-orange-600/8 rounded border border-orange-600/15">
-                <div className="font-medium text-orange-200">2. Lesson</div>
-                <div className="text-zinc-400">Deep understanding</div>
-              </div>
-              <div className="text-center p-2 bg-zinc-800/50 rounded border border-zinc-700">
-                <div className="font-medium text-zinc-300">3. Quiz</div>
-                <div className="text-zinc-400">Test knowledge</div>
-              </div>
-            </div>
           </CardContent>
         </Card>
 
-        {/* Quick Access Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {/* Learn Section */}
-          <Card 
-            className="bg-zinc-900 border-zinc-800 cursor-pointer hover:border-orange-600/50 transition-colors relative"
-            onClick={() => setLocation('/learn')}
-          >
-            <div className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-              PREMIUM
-            </div>
-            <CardContent className="p-4 text-center">
-              <BookOpen className="w-8 h-8 text-orange-400 mx-auto mb-2" />
-              <h3 className="font-semibold text-white mb-1">Learn</h3>
-              <p className="text-xs text-zinc-400">Daily lessons & reference</p>
-            </CardContent>
-          </Card>
+        {/* Explore Sections */}
+        <div className="space-y-4">
+          <h3 className="text-xl font-bold text-white">Explore HODLearn</h3>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <Card 
+              className="bg-zinc-900 border-zinc-800 cursor-pointer hover:border-orange-600/30 transition-all hover:shadow-lg"
+              onClick={() => setLocation('/money')}
+            >
+              <CardContent className="p-6 text-center">
+                <Coins className="w-10 h-10 text-orange-400 mx-auto mb-3" />
+                <h4 className="font-semibold text-white mb-1">Why Bitcoin</h4>
+                <p className="text-sm text-zinc-400">Understand the problem Bitcoin solves</p>
+              </CardContent>
+            </Card>
 
-          {/* Money Section */}
-          <Card 
-            className="bg-zinc-900 border-zinc-800 cursor-pointer hover:border-orange-600/50 transition-colors"
-            onClick={() => setLocation('/money')}
-          >
-            <CardContent className="p-4 text-center">
-              <Coins className="w-8 h-8 text-orange-300 mx-auto mb-2" />
-              <h3 className="font-semibold text-white mb-1">Money</h3>
-              <p className="text-xs text-zinc-400">Why Bitcoin matters</p>
-            </CardContent>
-          </Card>
-
-          {/* Simulators Section */}
-          <Card 
-            className="bg-zinc-900 border-zinc-800 cursor-pointer hover:border-orange-600/50 transition-colors relative"
-            onClick={() => setLocation('/simulators')}
-          >
-            <div className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-600 to-orange-700 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-              PREMIUM
-            </div>
-            <CardContent className="p-4 text-center">
-              <Gamepad2 className="w-8 h-8 text-orange-400 mx-auto mb-2" />
-              <h3 className="font-semibold text-white mb-1">Simulators</h3>
-              <p className="text-xs text-zinc-400">Practice safely</p>
-            </CardContent>
-          </Card>
-
-          {/* More Section */}
-          <Card 
-            className="bg-zinc-900 border-zinc-800 cursor-pointer hover:border-orange-600/50 transition-colors"
-            onClick={() => setLocation('/more')}
-          >
-            <CardContent className="p-4 text-center">
-              <MoreHorizontal className="w-8 h-8 text-zinc-300 mx-auto mb-2" />
-              <h3 className="font-semibold text-white mb-1">More</h3>
-              <p className="text-xs text-zinc-400">Tools & resources</p>
-            </CardContent>
-          </Card>
+            <Card 
+              className="bg-zinc-900 border-zinc-800 cursor-pointer hover:border-orange-600/30 transition-all hover:shadow-lg"
+              onClick={() => setLocation('/simulators')}
+            >
+              <CardContent className="p-6 text-center">
+                <Gamepad2 className="w-10 h-10 text-orange-400 mx-auto mb-3" />
+                <h4 className="font-semibold text-white mb-1">Simulators</h4>
+                <p className="text-sm text-zinc-400">Practice in a safe environment</p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
-        {/* Featured Simulators */}
-        <Card className="bg-zinc-900 border-zinc-800">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-white flex items-center gap-2">
-              <Zap className="w-5 h-5 text-orange-400" />
-              Practice Your Knowledge
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {/* DCA Simulator */}
-            <div 
-              className="flex items-center justify-between p-3 bg-zinc-800/50 rounded-lg cursor-pointer hover:bg-zinc-800 transition-colors"
-              onClick={() => setLocation('/simulators/dca')}
-            >
-              <div className="flex items-center gap-3">
-                <Calculator className="w-5 h-5 text-orange-400" />
-                <div>
-                  <div className="font-medium text-white">DCA Calculator</div>
-                  <div className="text-xs text-zinc-400">See dollar-cost averaging results</div>
-                </div>
-              </div>
-              <ChevronRight className="w-4 h-4 text-zinc-400" />
-            </div>
 
-            {/* HODL Simulator */}
-            <div 
-              className="flex items-center justify-between p-3 bg-zinc-800/50 rounded-lg cursor-pointer hover:bg-zinc-800 transition-colors"
-              onClick={() => setLocation('/simulators/hodl')}
-            >
-              <div className="flex items-center gap-3">
-                <TrendingUp className="w-5 h-5 text-orange-400" />
-                <div>
-                  <div className="font-medium text-white">HODL Challenge</div>
-                  <div className="text-xs text-zinc-400">Test long-term strategies</div>
-                </div>
-              </div>
-              <ChevronRight className="w-4 h-4 text-zinc-400" />
-            </div>
-
-            {/* Security Training */}
-            <div 
-              className="flex items-center justify-between p-3 bg-zinc-800/50 rounded-lg cursor-pointer hover:bg-zinc-800 transition-colors"
-              onClick={() => setLocation('/simulators/safety')}
-            >
-              <div className="flex items-center gap-3">
-                <Shield className="w-5 h-5 text-zinc-300" />
-                <div>
-                  <div className="font-medium text-white">Security Training</div>
-                  <div className="text-xs text-zinc-400">Learn to stay safe</div>
-                </div>
-              </div>
-              <ChevronRight className="w-4 h-4 text-zinc-400" />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Success Stories */}
-        <Card className="bg-gradient-to-r from-orange-900/20 to-orange-800/20 border-orange-700/30">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-white text-lg flex items-center gap-2">
-              <Award className="w-5 h-5 text-orange-400" />
-              Success Stories
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-3">
-              <div className="bg-zinc-800/50 rounded-lg p-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-orange-600/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-orange-400 font-bold text-sm">M</span>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-zinc-300 text-sm mb-2">
-                      "HODLearn's simulators helped me understand DCA strategy before investing my first $1,000. Now I'm confident in my Bitcoin journey."
-                    </p>
-                    <div className="text-xs text-zinc-400">
-                      <span className="font-medium text-orange-300">Michael K.</span> • Software Engineer
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-zinc-800/50 rounded-lg p-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-orange-600/15 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-orange-300 font-bold text-sm">S</span>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-zinc-300 text-sm mb-2">
-                      "The security training section saved me from a phishing scam. Worth every penny of the subscription."
-                    </p>
-                    <div className="text-xs text-zinc-400">
-                      <span className="font-medium text-orange-200">Sarah L.</span> • Marketing Manager
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Daily Bitcoin Insight */}
-        <Card className="bg-gradient-to-r from-orange-900/20 to-orange-800/10 border-orange-700/30">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <div className="p-2 bg-orange-600/20 rounded-lg">
-                <Coins className="w-5 h-5 text-orange-400" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-white mb-1">Did you know?</h3>
-                <p className="text-zinc-300 text-sm">
-                  Bitcoin has a fixed supply of 21 million coins, making it the first truly scarce digital asset in human history.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Bottom Navigation */}
