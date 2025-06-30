@@ -467,6 +467,61 @@ For all days after Day 1, perform prior knowledge assessment:
 - Strengthen connections between leading questions, lesson answers, and quiz content
 - Polish language to be encouraging rather than overwhelming
 
+## Weekly Content Review Framework
+
+**Complete 6-Phase Quality Assurance Process for Week-by-Week Content:**
+
+**Phase 1: Title Engagement Review**
+- Assess all 7 daily titles for curiosity and engagement potential
+- Apply title improvement principles:
+  - Use personal stakes ("Your money vs Bitcoin")
+  - Create urgency ("Before it's too late")
+  - Imply secrets/insider knowledge ("What banks don't want you to know")
+  - Use emotional triggers ("Shocking," "Hidden," "Everyone's missing this")
+  - Make it conversational ("Wait, what?" "Seriously?" "No way!")
+- Target: All titles should create immediate curiosity without being clickbait
+- Quality Gate: Each title must score 4+ on engagement scale (1-5)
+
+**Phase 2: Structural Consistency Review**
+- Verify all 7 days have complete content sets (3 facts, 1 lesson, 6 quiz questions)
+- Check dive deeper functionality for all facts
+- Ensure proper database relationships and foreign keys
+- Validate content rendering with proper formatting
+- Quality Gate: 100% structural completeness
+
+**Phase 3: Educational Accuracy Review** 
+- Fact-check all Bitcoin technical information
+- Verify quiz answers are definitively correct
+- Check that examples reflect current market conditions
+- Ensure content aligns with established Bitcoin principles
+- Quality Gate: Zero technical inaccuracies
+
+**Phase 4: Reading Level Consistency Review**
+- Confirm all content matches specified reading level (8th grade for Week 1)
+- Check sentence length (max 15 words for 8th grade)
+- Verify familiar analogies and everyday language usage
+- Ensure technical terms are properly explained
+- Quality Gate: 100% reading level compliance
+
+**Phase 5: Learning Flow Assessment**
+- Test that leading questions create curiosity the lesson satisfies
+- Verify lesson content directly answers posed questions
+- Check smooth progression from questions → lesson → takeaways → quiz
+- Ensure quiz tests comprehension, not memorization
+- Quality Gate: Seamless educational flow
+
+**Phase 6: User Experience Testing**
+- Navigate through complete week as end user
+- Test all interactive elements (expandable content, quiz functionality)
+- Verify mobile responsiveness and readability
+- Check loading times and error handling
+- Quality Gate: Smooth, engaging user experience
+
+**Week Approval Protocol:**
+- All phases must score 4.5+ on quality scale before week approval
+- Document improvement areas and track resolution
+- Final sign-off required before moving to next week generation
+
 ## Week 1-2 Content Generation Implementation (Days 3-14)
 
 **Systematic Database-Driven Process Used:**
@@ -611,6 +666,7 @@ Educational Content Enhancement Preferences:
 - June 30, 2025. **FIXED QUIZ SCORING SYSTEM**: Resolved critical bug where quiz scores accumulated across all days instead of showing day-specific results, updated frontend DailyQuiz component to pass dayIndex as query parameter to backend API, improved getUserQuizScore method to filter answers by specific day's questions, ensuring accurate per-day quiz progress tracking
 - June 30, 2025. **ENHANCED APPROVAL WORKFLOW WITH PENDING BUTTON**: Added missing "Pending" button to content approval navigation interface alongside existing "Needs Fix" and "Approve" buttons, updated backend API to handle null values for pending status (true=approved, false=needs fixing, null=pending), corrected content creation process to always start with pending status (is_approved=false) for proper review workflow, ensuring all new content requires explicit approval through navigation interface rather than automatic approval during generation
 - June 30, 2025. **CORRECTED CONTENT APPROVAL PROCESS**: Fixed Days 2-4 approval status from approved to pending as per content development workflow - all new content must start in pending status for proper review process, maintaining integrity of one-day-at-a-time content development strategy
+- June 30, 2025. **ENHANCED WEEK 1 TITLE ENGAGEMENT**: Updated all Week 1 titles to be significantly more catchy and curiosity-driven following title improvement principles: "Welcome to your Bitcoin Journey" → "Why Everyone's Talking About Bitcoin", "Why does money even exist?" → "What if Money Didn't Exist?", "What makes good money good?" → "The Secret Rules of Money", "Is there a perfect form of money?" → "The Holy Grail of Money", "How Bitcoin Checks All the Boxes" → "Bitcoin's Perfect Storm", maintaining strong titles for Days 2 ("Eggs are how much!?") and 7 ("Why the US Dollar is Breaking Down"), added comprehensive Phase 1: Title Engagement Review to Weekly Content Review Framework with 5 key improvement principles (personal stakes, urgency, insider knowledge, emotional triggers, conversational tone) ensuring all future content maintains high engagement standards
 - June 30, 2025. **CREATED DAY 7 WEEK 1 FINALE**: Built comprehensive "Why the US Dollar is Breaking Down" lesson implementing strategic shift to highlight dollar's failures before appreciating Bitcoin's value: created compelling 5-paragraph narrative about 1971 gold standard removal, unlimited money printing, inflation consequences, and failed scarcity test at 8th grade reading level, generated 3 curiosity-building leading questions about gold standard history, rising prices, and unlimited dollar supply, developed 6 contextual quiz questions testing understanding of Nixon shock, scarcity failure, inflation mechanics, and global dollar decline, stored all content in pending approval status with proper foreign key relationships, successfully completing Week 1 foundation that transitions from "what makes good money" to "why current money fails" setting up perfect contrast for Bitcoin's solutions
 - June 30, 2025. **ENHANCED QUIZ FEEDBACK SYSTEM**: Improved quiz experience to clearly show correct answers when users answer incorrectly: added visual highlighting of correct answer options with green background and "Correct" labels, enhanced wrong answer feedback with red/green summary showing both user's selection and the right answer with full option text, added congratulatory message for correct answers, maintained clear explanation section for all answers, ensuring students learn from mistakes and understand why specific answers are correct for better educational value
 
