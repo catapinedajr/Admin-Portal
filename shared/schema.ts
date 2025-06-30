@@ -113,7 +113,7 @@ export const contentDays = pgTable("content_days", {
   culturalStage: text("cultural_stage").notNull(), // "Normie → Pre-coiner", etc.
   theme: text("theme").notNull(), // "Bitcoin basics", "Austrian economics", etc.
   isActive: boolean("is_active").notNull().default(true),
-  approvalStatus: text("approval_status").notNull().default("pending"), // "pending", "needs-fixing", "approved"
+  isApproved: boolean("is_approved").notNull().default(false), // for content approval tracking
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

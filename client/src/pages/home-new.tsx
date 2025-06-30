@@ -2516,20 +2516,30 @@ export default function Home() {
                   {/* Approval Status Dropdown */}
                   <div className="flex items-center gap-2 border-l border-zinc-600 pl-3">
                     <select
-                      value={dayMetadata?.approvalStatus || 'pending'}
+                      value={dayMetadata?.isApproved === true ? 'approved' : dayMetadata?.isApproved === false ? 'needs-fixing' : 'pending'}
                       onChange={async (e) => {
                         try {
-                          const approvalStatus = e.target.value;
+                          const value = e.target.value;
+                          let isApproved: boolean | null = null;
                           
-                          const response = await fetch(`/api/content-day/${currentDayIndex}/approval`, {
-                            method: 'PATCH',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ approvalStatus })
-                          });
+                          if (value === 'approved') {
+                            isApproved = true;
+                          } else if (value === 'needs-fixing') {
+                            isApproved = false;
+                          }
+                          // For 'pending', don't update the database
                           
-                          if (response.ok) {
-                            // Invalidate query to refetch without page reload
-                            queryClient.invalidateQueries({ queryKey: ['/api/day-metadata', currentDayIndex] });
+                          if (isApproved !== null) {
+                            const response = await fetch(`/api/content-day/${currentDayIndex}/approval`, {
+                              method: 'PATCH',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ isApproved })
+                            });
+                            
+                            if (response.ok) {
+                              // Invalidate query to refetch without page reload
+                              queryClient.invalidateQueries({ queryKey: ['/api/day-metadata', currentDayIndex] });
+                            }
                           }
                         } catch (error) {
                           console.error('Error updating approval:', error);
