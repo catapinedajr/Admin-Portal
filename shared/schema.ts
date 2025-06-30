@@ -135,7 +135,6 @@ export const contentDiveDeeper = pgTable("content_dive_deeper", {
   explanation: text("explanation").notNull(),
   examples: json("examples").$type<string[]>().notNull(),
   visualDescription: text("visual_description").notNull(),
-  keyTakeaways: json("key_takeaways").$type<string[]>().notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

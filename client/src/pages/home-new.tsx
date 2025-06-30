@@ -2642,17 +2642,7 @@ export default function Home() {
                                       </ul>
                                     </div>
                                     
-                                    <div>
-                                      <h5 className="font-medium text-orange-300 mb-2">Key Takeaways</h5>
-                                      <div className="grid gap-2">
-                                        {deepDive.keyTakeaways.map((takeaway, idx) => (
-                                          <div key={idx} className="flex items-start gap-2 p-2 bg-orange-600/10 rounded-lg border border-orange-600/20">
-                                            <CheckCircle className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
-                                            <span className="text-orange-100 text-sm">{takeaway}</span>
-                                          </div>
-                                        ))}
-                                      </div>
-                                    </div>
+
                                   </div>
                                 </div>
                               )}
