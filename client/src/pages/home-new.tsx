@@ -2601,7 +2601,6 @@ export default function Home() {
                                 </div>
                                 <div className="flex-1">
                                   <h4 className="font-semibold text-white mb-2">{fact.title}</h4>
-                                  <p className="text-zinc-300 text-sm mb-3">{fact.content}</p>
                                   
                                   {deepDive && (
                                     <div className="flex justify-end">
