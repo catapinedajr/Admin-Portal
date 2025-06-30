@@ -172,6 +172,19 @@ export const contentMetadata = pgTable("content_metadata", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+export const contentGenerationSteps = pgTable("content_generation_steps", {
+  id: serial("id").primaryKey(),
+  stepNumber: varchar("step_number", { length: 10 }).notNull(),
+  stepName: varchar("step_name", { length: 100 }).notNull(),
+  description: text("description").notNull(),
+  requirements: text("requirements").array(),
+  qualityGates: text("quality_gates").array(),
+  outputs: text("outputs").array(),
+  estimatedTimeMinutes: integer("estimated_time_minutes"),
+  dependencies: varchar("dependencies", { length: 50 }).array(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -243,6 +256,11 @@ export const insertContentMetadataSchema = createInsertSchema(contentMetadata).o
   createdAt: true,
 });
 
+export const insertContentGenerationStepsSchema = createInsertSchema(contentGenerationSteps).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type UserProgress = typeof userProgress.$inferSelect;
@@ -273,6 +291,8 @@ export type ContentQuiz = typeof contentQuizzes.$inferSelect;
 export type InsertContentQuiz = z.infer<typeof insertContentQuizSchema>;
 export type ContentMetadata = typeof contentMetadata.$inferSelect;
 export type InsertContentMetadata = z.infer<typeof insertContentMetadataSchema>;
+export type ContentGenerationSteps = typeof contentGenerationSteps.$inferSelect;
+export type InsertContentGenerationSteps = z.infer<typeof insertContentGenerationStepsSchema>;
 
 // Enhanced content types for API responses
 export type DailyContentFact = ContentFact & {

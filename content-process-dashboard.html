@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Generation Process Dashboard</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #f97316;
+            text-align: center;
+            border-bottom: 3px solid #f97316;
+            padding-bottom: 10px;
+        }
+        .step {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #fafafa;
+        }
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .step-number {
+            background: #f97316;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        .step-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #1f2937;
+        }
+        .step-time {
+            margin-left: auto;
+            background: #e5e7eb;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            color: #6b7280;
+        }
+        .section {
+            margin-bottom: 15px;
+        }
+        .section-title {
+            font-weight: bold;
+            color: #374151;
+            margin-bottom: 5px;
+        }
+        .section ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .section li {
+            margin-bottom: 5px;
+            color: #6b7280;
+        }
+        .dependencies {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        .total-time {
+            background: #f97316;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .process-summary {
+            background: #ecfdf5;
+            border: 1px solid #10b981;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Daily Content Build Strategy</h1>
+        
+        <div class="total-time">
+            Total Estimated Time: 125 minutes (≈ 2 hours)
+        </div>
+
+        <div class="process-summary">
+            <h3 style="margin-top: 0; color: #059669;">Process Overview</h3>
+            <p>This systematic approach ensures consistent, high-quality educational content that builds vocabulary progressively and maintains optimal cognitive load for learners. Each step includes specific quality gates and deliverables.</p>
+        </div>
+
+        <div id="steps-container">
+            <!-- Steps will be loaded here -->
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: #f3f4f6; border-radius: 8px; text-align: center;">
+            <p><strong>Note:</strong> This process is database-driven and can be updated systematically. Each step builds on previous outputs to ensure comprehensive, cohesive educational content.</p>
+        </div>
+    </div>
+
+    <script>
+        // Load process steps from database
+        fetch('/api/content-generation-process')
+            .then(response => response.json())
+            .then(steps => {
+                const container = document.getElementById('steps-container');
+                
+                steps.forEach(step => {
+                    const stepDiv = document.createElement('div');
+                    stepDiv.className = 'step';
+                    
+                    stepDiv.innerHTML = `
+                        <div class="step-header">
+                            <div class="step-number">${step.stepNumber}</div>
+                            <div class="step-title">${step.stepName}</div>
+                            <div class="step-time">${step.estimatedTimeMinutes || 'TBD'} min</div>
+                        </div>
+                        
+                        <p style="color: #4b5563; margin-bottom: 20px;">${step.description}</p>
+                        
+                        ${step.requirements && step.requirements.length > 0 ? `
+                        <div class="section">
+                            <div class="section-title">Requirements:</div>
+                            <ul>
+                                ${step.requirements.map(req => `<li>${req}</li>`).join('')}
+                            </ul>
+                        </div>
+                        ` : ''}
+                        
+                        ${step.qualityGates && step.qualityGates.length > 0 ? `
+                        <div class="section">
+                            <div class="section-title">Quality Gates:</div>
+                            <ul>
+                                ${step.qualityGates.map(gate => `<li>${gate}</li>`).join('')}
+                            </ul>
+                        </div>
+                        ` : ''}
+                        
+                        ${step.outputs && step.outputs.length > 0 ? `
+                        <div class="section">
+                            <div class="section-title">Outputs:</div>
+                            <ul>
+                                ${step.outputs.map(output => `<li>${output}</li>`).join('')}
+                            </ul>
+                        </div>
+                        ` : ''}
+                        
+                        ${step.dependencies && step.dependencies.length > 0 ? `
+                        <div class="dependencies">
+                            <strong>Dependencies:</strong> Requires completion of steps ${step.dependencies.join(', ')}
+                        </div>
+                        ` : ''}
+                    `;
+                    
+                    container.appendChild(stepDiv);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading process steps:', error);
+                document.getElementById('steps-container').innerHTML = '<p style="color: red; text-align: center;">Error loading process steps. Please check the database connection.</p>';
+            });
+    </script>
+</body>
+</html>

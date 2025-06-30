@@ -1,8 +1,9 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import path from "path";
 import { storage } from "./storage";
 import { db } from "./db";
-import { contentDays, contentFacts, contentDiveDeeper, contentLessons, contentQuizzes } from "@shared/schema";
+import { contentDays, contentFacts, contentDiveDeeper, contentLessons, contentQuizzes, contentGenerationSteps } from "@shared/schema";
 import { eq } from "drizzle-orm";
 
 
@@ -1362,7 +1363,39 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
+  // Serve the content process dashboard
+  app.get("/content-process-dashboard", (req, res) => {
+    res.sendFile(path.join(process.cwd(), "content-process-dashboard.html"));
+  });
 
+  // Content Generation Process Routes
+  app.get("/api/content-generation-process", async (req, res) => {
+    try {
+      const steps = await db.select().from(contentGenerationSteps).orderBy(contentGenerationSteps.stepNumber);
+      res.json(steps);
+    } catch (error) {
+      console.error("Error fetching content generation process:", error);
+      res.status(500).json({ error: "Failed to fetch process steps" });
+    }
+  });
+
+  app.get("/api/content-generation-process/:stepNumber", async (req, res) => {
+    try {
+      const { stepNumber } = req.params;
+      const [step] = await db.select()
+        .from(contentGenerationSteps)
+        .where(eq(contentGenerationSteps.stepNumber, stepNumber));
+      
+      if (!step) {
+        return res.status(404).json({ error: "Step not found" });
+      }
+      
+      res.json(step);
+    } catch (error) {
+      console.error("Error fetching process step:", error);
+      res.status(500).json({ error: "Failed to fetch process step" });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;
