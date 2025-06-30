@@ -2515,13 +2515,13 @@ export default function Home() {
 
                   {/* Approval Status Display */}
                   <div className="flex items-center gap-2 border-l border-zinc-600 pl-3">
-                    <span className="text-xs text-zinc-400">Status:</span>
-                    <span className={`text-xs font-medium px-2 py-1 rounded ${
+                    <span className="text-sm text-zinc-300 font-medium">Status:</span>
+                    <span className={`text-sm font-bold px-3 py-1 rounded-md border ${
                       dayMetadata?.isApproved === true 
-                        ? 'bg-green-900/30 text-green-400' 
+                        ? 'bg-green-900/50 text-green-300 border-green-600' 
                         : dayMetadata?.isApproved === false 
-                          ? 'bg-red-900/30 text-red-400' 
-                          : 'bg-yellow-900/30 text-yellow-400'
+                          ? 'bg-red-900/50 text-red-300 border-red-600' 
+                          : 'bg-yellow-900/50 text-yellow-300 border-yellow-600'
                     }`}>
                       {dayMetadata?.isApproved === true ? 'APPROVED' : dayMetadata?.isApproved === false ? 'NEEDS FIXING' : 'PENDING'}
                     </span>
