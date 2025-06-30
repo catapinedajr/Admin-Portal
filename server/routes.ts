@@ -386,7 +386,8 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
         title: dayMetadata.title,
         theme: dayMetadata.theme,
         readingLevel: dayMetadata.readingLevel,
-        culturalStage: dayMetadata.culturalStage
+        culturalStage: dayMetadata.culturalStage,
+        isApproved: dayMetadata.isApproved
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to get day metadata" });
