@@ -2708,12 +2708,6 @@ export default function Home() {
                                     <span className="font-medium">MicroStrategy:</span> Corporate treasury strategy where the company holds over 190,000 Bitcoin worth billions as their primary reserve asset.
                                   </p>
                                 </div>
-                                <div className="flex items-baseline gap-2">
-                                  <span className="text-orange-400 text-sm">•</span>
-                                  <p className="text-zinc-300 text-sm">
-                                    <span className="font-medium">Lightning Network:</span> Used by millions for instant, low-cost payments - like buying coffee in cafes across Latin America for just pennies in fees.
-                                  </p>
-                                </div>
                               </div>
                             </div>
                           </div>
