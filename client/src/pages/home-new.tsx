@@ -2435,7 +2435,7 @@ export default function Home() {
         {activeSection === "learn" && (
           <div className="text-center mb-6">
             <p className="text-zinc-400 text-lg">
-              Learn BTC at your pace, consistently — This is HODLearn
+              Learning Bitcoin takes time, Learning conviction takes persistency, This, is HODLearn
             </p>
           </div>
         )}
