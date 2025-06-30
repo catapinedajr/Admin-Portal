@@ -2542,7 +2542,7 @@ export default function Home() {
                       
                       {/* Subtitle - Simple and Clean */}
                       <p className="text-zinc-400 text-sm">
-                        Learning at your pace, learning consistently — This is HODLearn
+                        Learning BTC at your pace, learning consistently — This is HODLearn
                       </p>
                     </div>
                   )}
