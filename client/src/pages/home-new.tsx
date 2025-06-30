@@ -2693,8 +2693,8 @@ export default function Home() {
                           
                           {/* Real World Examples Section */}
                           <div className="my-6">
-                            <h5 className="font-medium text-zinc-300 mb-3">Real World Examples</h5>
                             <div className="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
+                              <h5 className="font-medium text-zinc-300 mb-3">Real World Examples</h5>
                               <div className="space-y-1">
                                 <div className="flex items-baseline gap-2">
                                   <span className="text-orange-400 text-sm">•</span>
