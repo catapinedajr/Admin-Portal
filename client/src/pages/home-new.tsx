@@ -2703,16 +2703,16 @@ export default function Home() {
                           
                           {/* Database-driven Key Takeaways */}
                           {(lesson as LessonWithKeyTakeaways).keyTakeaways && Array.isArray((lesson as LessonWithKeyTakeaways).keyTakeaways) && (lesson as LessonWithKeyTakeaways).keyTakeaways.length > 0 && (
-                            <div className="bg-orange-600/10 border border-orange-600/20 rounded-lg p-6 my-6">
-                              <h5 className="text-orange-400 font-medium mb-4 text-base">Key Points:</h5>
-                              <ul className="space-y-3">
+                            <div className="my-6">
+                              <h5 className="font-medium text-orange-300 mb-3">Key Points</h5>
+                              <div className="grid gap-2">
                                 {(lesson as LessonWithKeyTakeaways).keyTakeaways.map((point, pointIdx) => (
-                                  <li key={pointIdx} className="flex items-baseline gap-3 text-zinc-300 leading-[1.7]">
-                                    <span className="text-orange-400 text-base">•</span>
-                                    <span className="text-base">{cleanText(point)}</span>
-                                  </li>
+                                  <div key={pointIdx} className="flex items-start gap-2 p-2 bg-orange-600/10 rounded-lg border border-orange-600/20">
+                                    <CheckCircle className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
+                                    <span className="text-orange-100 text-sm">{cleanText(point)}</span>
+                                  </div>
                                 ))}
-                              </ul>
+                              </div>
                             </div>
                           )}
                         </div>
