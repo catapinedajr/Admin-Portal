@@ -284,9 +284,10 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
                   {['A', 'B', 'C', 'D'].map((option) => {
                     const optionText = currentQuestion[`option${option}` as keyof QuizQuestion] as string;
                     const isSelected = selectedAnswers[currentQuestion.id] === option;
-                    const isCorrect = userAnswer?.isCorrect && userAnswer.selectedAnswer === option;
-                    const isIncorrect = userAnswer && !userAnswer.isCorrect && userAnswer.selectedAnswer === option;
+                    const isCorrectAnswer = currentQuestion.correctAnswer === option;
                     const isUserSelectedAnswer = userAnswer && userAnswer.selectedAnswer === option;
+                    const wasAnsweredCorrectly = userAnswer?.isCorrect && isUserSelectedAnswer;
+                    const wasAnsweredIncorrectly = userAnswer && !userAnswer.isCorrect && isUserSelectedAnswer;
                     
                     return (
                       <button
@@ -296,9 +297,9 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
                         className={`
                           w-full p-4 text-left rounded-lg border transition-all
                           ${isAnswered 
-                            ? isCorrect 
+                            ? isCorrectAnswer 
                               ? 'bg-green-900/30 border-green-700 text-green-100'
-                              : isIncorrect
+                              : wasAnsweredIncorrectly
                                 ? 'bg-red-900/30 border-red-700 text-red-100'
                                 : 'bg-zinc-800/50 border-zinc-700 text-zinc-400'
                             : isSelected
@@ -308,16 +309,27 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
                         `}
                       >
                         <div className="flex items-center gap-3">
-                          <span className="flex-shrink-0 w-6 h-6 rounded-full bg-zinc-700 text-zinc-300 text-sm flex items-center justify-center font-medium">
+                          <span className={`flex-shrink-0 w-6 h-6 rounded-full text-sm flex items-center justify-center font-medium ${
+                            isAnswered && isCorrectAnswer 
+                              ? 'bg-green-600 text-white' 
+                              : isAnswered && wasAnsweredIncorrectly
+                                ? 'bg-red-600 text-white'
+                                : 'bg-zinc-700 text-zinc-300'
+                          }`}>
                             {option}
                           </span>
                           <span className="flex-1">{optionText}</span>
-                          {isAnswered && isUserSelectedAnswer && (
-                            <div className="flex-shrink-0">
-                              {isCorrect && <CheckCircle className="w-5 h-5 text-green-500" />}
-                              {isIncorrect && <XCircle className="w-5 h-5 text-red-500" />}
-                            </div>
-                          )}
+                          <div className="flex items-center gap-2">
+                            {isAnswered && isCorrectAnswer && (
+                              <div className="flex items-center gap-1">
+                                <CheckCircle className="w-4 h-4 text-green-400" />
+                                <span className="text-xs text-green-400 font-medium">Correct</span>
+                              </div>
+                            )}
+                            {isAnswered && wasAnsweredIncorrectly && (
+                              <XCircle className="w-5 h-5 text-red-500" />
+                            )}
+                          </div>
                         </div>
                       </button>
                     );
@@ -325,12 +337,44 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
                 </div>
               </div>
 
-              {/* Explanation (shown after answering) */}
+              {/* Answer Result Summary */}
               {userAnswer && (
-                <div className="p-4 rounded-lg bg-blue-900/20 border border-blue-800/50">
-                  <h4 className="font-medium text-blue-100 mb-2">Explanation</h4>
-                  <p className="text-blue-200 text-sm">{currentQuestion.explanation}</p>
-                </div>
+                <>
+                  {/* Show correct answer when user got it wrong */}
+                  {!userAnswer.isCorrect && (
+                    <div className="p-4 rounded-lg bg-red-900/20 border border-red-800/50">
+                      <div className="flex items-center gap-2 mb-2">
+                        <XCircle className="w-4 h-4 text-red-400" />
+                        <h4 className="font-medium text-red-100">Incorrect Answer</h4>
+                      </div>
+                      <p className="text-red-200 text-sm mb-2">
+                        You selected: <span className="font-medium">{userAnswer.selectedAnswer}. {currentQuestion[`option${userAnswer.selectedAnswer}` as keyof QuizQuestion]}</span>
+                      </p>
+                      <p className="text-green-200 text-sm">
+                        Correct answer: <span className="font-medium">{currentQuestion.correctAnswer}. {currentQuestion[`option${currentQuestion.correctAnswer}` as keyof QuizQuestion]}</span>
+                      </p>
+                    </div>
+                  )}
+                  
+                  {/* Show success message when correct */}
+                  {userAnswer.isCorrect && (
+                    <div className="p-4 rounded-lg bg-green-900/20 border border-green-800/50">
+                      <div className="flex items-center gap-2 mb-2">
+                        <CheckCircle className="w-4 h-4 text-green-400" />
+                        <h4 className="font-medium text-green-100">Correct!</h4>
+                      </div>
+                      <p className="text-green-200 text-sm">
+                        Well done! You selected the right answer.
+                      </p>
+                    </div>
+                  )}
+                  
+                  {/* Explanation */}
+                  <div className="p-4 rounded-lg bg-blue-900/20 border border-blue-800/50">
+                    <h4 className="font-medium text-blue-100 mb-2">Explanation</h4>
+                    <p className="text-blue-200 text-sm">{currentQuestion.explanation}</p>
+                  </div>
+                </>
               )}
 
               {/* Action buttons */}
