@@ -2513,44 +2513,62 @@ export default function Home() {
                     </Button>
                   </div>
 
-                  {/* Approval Status Dropdown */}
+                  {/* Approval Status Display */}
                   <div className="flex items-center gap-2 border-l border-zinc-600 pl-3">
-                    <select
-                      value={dayMetadata?.isApproved === true ? 'approved' : dayMetadata?.isApproved === false ? 'needs-fixing' : 'pending'}
-                      onChange={async (e) => {
-                        try {
-                          const value = e.target.value;
-                          let isApproved: boolean | null = null;
-                          
-                          if (value === 'approved') {
-                            isApproved = true;
-                          } else if (value === 'needs-fixing') {
-                            isApproved = false;
-                          }
-                          // For 'pending', don't update the database
-                          
-                          if (isApproved !== null) {
+                    <span className="text-xs text-zinc-400">Status:</span>
+                    <span className={`text-xs font-medium px-2 py-1 rounded ${
+                      dayMetadata?.isApproved === true 
+                        ? 'bg-green-900/30 text-green-400' 
+                        : dayMetadata?.isApproved === false 
+                          ? 'bg-red-900/30 text-red-400' 
+                          : 'bg-yellow-900/30 text-yellow-400'
+                    }`}>
+                      {dayMetadata?.isApproved === true ? 'APPROVED' : dayMetadata?.isApproved === false ? 'NEEDS FIXING' : 'PENDING'}
+                    </span>
+                    
+                    {/* Quick Action Buttons */}
+                    <div className="flex gap-1">
+                      <button
+                        onClick={async () => {
+                          try {
                             const response = await fetch(`/api/content-day/${currentDayIndex}/approval`, {
                               method: 'PATCH',
                               headers: { 'Content-Type': 'application/json' },
-                              body: JSON.stringify({ isApproved })
+                              body: JSON.stringify({ isApproved: false })
                             });
-                            
                             if (response.ok) {
-                              // Invalidate query to refetch without page reload
                               queryClient.invalidateQueries({ queryKey: ['/api/day-metadata', currentDayIndex] });
                             }
+                          } catch (error) {
+                            console.error('Error updating approval:', error);
                           }
-                        } catch (error) {
-                          console.error('Error updating approval:', error);
-                        }
-                      }}
-                      className="text-xs font-medium bg-zinc-700 border border-zinc-600 rounded px-2 py-1 text-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                    >
-                      <option value="pending" className="text-yellow-400">PENDING</option>
-                      <option value="needs-fixing" className="text-red-400">NEEDS FIXING</option>
-                      <option value="approved" className="text-green-400">APPROVED</option>
-                    </select>
+                        }}
+                        className="text-xs px-2 py-1 bg-red-600/20 text-red-400 rounded hover:bg-red-600/30 transition-colors"
+                        title="Mark as needs fixing"
+                      >
+                        Fix
+                      </button>
+                      <button
+                        onClick={async () => {
+                          try {
+                            const response = await fetch(`/api/content-day/${currentDayIndex}/approval`, {
+                              method: 'PATCH',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ isApproved: true })
+                            });
+                            if (response.ok) {
+                              queryClient.invalidateQueries({ queryKey: ['/api/day-metadata', currentDayIndex] });
+                            }
+                          } catch (error) {
+                            console.error('Error updating approval:', error);
+                          }
+                        }}
+                        className="text-xs px-2 py-1 bg-green-600/20 text-green-400 rounded hover:bg-green-600/30 transition-colors"
+                        title="Mark as approved"
+                      >
+                        Approve
+                      </button>
+                    </div>
                   </div>
 
                   {/* Reset Button */}
