@@ -2480,40 +2480,75 @@ export default function Home() {
 
 
 
-            {/* Development Day Navigation */}
+            {/* Development Content Management Navigation */}
             {learnSubTab === "today" && (
               <div className="flex justify-center">
-                <div className="flex items-center gap-2 bg-zinc-800/50 rounded-lg p-2 border border-zinc-600">
-                  <span className="text-xs text-zinc-400">DEV:</span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setTestDayOverride(Math.max(1, currentDayIndex - 1))}
-                    disabled={currentDayIndex <= 1}
-                    className="text-xs px-2 py-1"
-                  >
-                    ←
-                  </Button>
+                <div className="flex items-center gap-3 bg-zinc-800/50 rounded-lg p-3 border border-zinc-600">
+                  <span className="text-xs text-zinc-400 font-medium">DEV CONTROL:</span>
                   
-                  <span className="text-xs text-white px-2">
-                    Day {currentDayIndex}
-                  </span>
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setTestDayOverride(Math.min(29, currentDayIndex + 1))}
-                    disabled={currentDayIndex >= 29}
-                    className="text-xs px-2 py-1"
-                  >
-                    →
-                  </Button>
-                  
+                  {/* Day Navigation */}
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setTestDayOverride(Math.max(1, currentDayIndex - 1))}
+                      disabled={currentDayIndex <= 1}
+                      className="text-xs px-2 py-1"
+                    >
+                      ←
+                    </Button>
+                    
+                    <span className="text-xs text-white px-2 font-medium">
+                      Day {currentDayIndex}
+                    </span>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setTestDayOverride(Math.min(90, currentDayIndex + 1))}
+                      disabled={currentDayIndex >= 90}
+                      className="text-xs px-2 py-1"
+                    >
+                      →
+                    </Button>
+                  </div>
+
+                  {/* Approval Status and Toggle */}
+                  <div className="flex items-center gap-2 border-l border-zinc-600 pl-3">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={dayMetadata?.isApproved || false}
+                        onChange={async (e) => {
+                          try {
+                            const response = await fetch(`/api/content-day/${currentDayIndex}/approval`, {
+                              method: 'PATCH',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ isApproved: e.target.checked })
+                            });
+                            
+                            if (response.ok) {
+                              // Refresh day metadata to show updated approval status
+                              window.location.reload();
+                            }
+                          } catch (error) {
+                            console.error('Error updating approval:', error);
+                          }
+                        }}
+                        className="w-4 h-4 text-green-500 bg-zinc-700 border-zinc-600 rounded focus:ring-green-500 focus:ring-2"
+                      />
+                      <span className={`text-xs font-medium ${dayMetadata?.isApproved ? 'text-green-400' : 'text-yellow-400'}`}>
+                        {dayMetadata?.isApproved ? 'APPROVED' : 'PENDING'}
+                      </span>
+                    </label>
+                  </div>
+
+                  {/* Reset Button */}
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setTestDayOverride(null)}
-                    className="text-xs px-2 py-1 text-orange-400 hover:text-orange-300"
+                    className="text-xs px-2 py-1 text-orange-400 hover:text-orange-300 border-l border-zinc-600 pl-3"
                   >
                     Today
                   </Button>
