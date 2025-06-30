@@ -57,7 +57,7 @@ export interface IStorage {
   getContentDay(dayIndex: number): Promise<ContentDay | undefined>;
   getAllContentDays(): Promise<ContentDay[]>;
   createContentDay(day: InsertContentDay): Promise<ContentDay>;
-  updateContentDayApproval(dayIndex: number, isApproved: boolean): Promise<ContentDay | undefined>;
+  updateContentDayApproval(dayIndex: number, isApproved: boolean | null): Promise<ContentDay | undefined>;
 
   // Content Set Up Questions methods
   getContentSetUpQuestions(dayIndex: number): Promise<DailyContentSetUpQuestion[]>;
@@ -147,7 +147,7 @@ export class DatabaseStorage implements IStorage {
     return result;
   }
 
-  async updateContentDayApproval(dayIndex: number, isApproved: boolean): Promise<ContentDay | undefined> {
+  async updateContentDayApproval(dayIndex: number, isApproved: boolean | null): Promise<ContentDay | undefined> {
     const [result] = await db.update(contentDays)
       .set({ isApproved, updatedAt: new Date() })
       .where(eq(contentDays.dayIndex, dayIndex))

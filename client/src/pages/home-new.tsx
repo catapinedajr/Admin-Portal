@@ -2558,6 +2558,31 @@ export default function Home() {
                             const response = await fetch(`/api/content-day/${currentDayIndex}/approval`, {
                               method: 'PATCH',
                               headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ isApproved: null })
+                            });
+                            if (response.ok) {
+                              await queryClient.invalidateQueries({ queryKey: ['/api/day-metadata', currentDayIndex] });
+                            }
+                          } catch (error) {
+                            console.error('Error updating approval:', error);
+                          } finally {
+                            button.disabled = false;
+                          }
+                        }}
+                        className="text-xs px-2 py-1 bg-yellow-600/20 text-yellow-400 rounded hover:bg-yellow-600/30 transition-colors disabled:opacity-50"
+                        title="Mark as pending"
+                      >
+                        Pending
+                      </button>
+                      <button
+                        onClick={async (e) => {
+                          e.preventDefault();
+                          const button = e.currentTarget;
+                          button.disabled = true;
+                          try {
+                            const response = await fetch(`/api/content-day/${currentDayIndex}/approval`, {
+                              method: 'PATCH',
+                              headers: { 'Content-Type': 'application/json' },
                               body: JSON.stringify({ isApproved: true })
                             });
                             if (response.ok) {

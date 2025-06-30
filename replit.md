@@ -300,6 +300,12 @@ FROM content_days WHERE day_index = [current_day]
 - `cultural_stage` → User sophistication level (complete_beginner → advanced)
 - `day_index` → Sequential day number for curriculum progression
 
+**CRITICAL: Approval Status Protocol:**
+- All new content must be created with `is_approved = false` (PENDING status)
+- Content starts in PENDING for proper review workflow
+- Never automatically approve content during generation
+- Approval happens separately through navigation interface
+
 **Error Handling:**
 - If day metadata missing, halt generation and log error
 - Validate all required fields are populated before proceeding
@@ -603,6 +609,7 @@ Educational Content Enhancement Preferences:
 - **Text Formatting**: Emphasize clean line breaks, bullet points for lists, and proper spacing between paragraphs for optimal readability
 
 - June 30, 2025. **FIXED QUIZ SCORING SYSTEM**: Resolved critical bug where quiz scores accumulated across all days instead of showing day-specific results, updated frontend DailyQuiz component to pass dayIndex as query parameter to backend API, improved getUserQuizScore method to filter answers by specific day's questions, ensuring accurate per-day quiz progress tracking
+- June 30, 2025. **ENHANCED APPROVAL WORKFLOW WITH PENDING BUTTON**: Added missing "Pending" button to content approval navigation interface alongside existing "Needs Fix" and "Approve" buttons, updated backend API to handle null values for pending status (true=approved, false=needs fixing, null=pending), corrected content creation process to always start with pending status (is_approved=false) for proper review workflow, ensuring all new content requires explicit approval through navigation interface rather than automatic approval during generation
 - June 30, 2025. **CORRECTED CONTENT APPROVAL PROCESS**: Fixed Days 2-4 approval status from approved to pending as per content development workflow - all new content must start in pending status for proper review process, maintaining integrity of one-day-at-a-time content development strategy
 
 ## STRATEGIC CONTENT RESTRUCTURING DECISION

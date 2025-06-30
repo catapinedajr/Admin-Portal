@@ -1355,7 +1355,8 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
       const dayIndex = parseInt(req.params.dayIndex);
       const { isApproved } = req.body;
       
-      if (isNaN(dayIndex) || typeof isApproved !== 'boolean') {
+      // Allow boolean values or null for pending status
+      if (isNaN(dayIndex) || (isApproved !== true && isApproved !== false && isApproved !== null)) {
         return res.status(400).json({ message: "Invalid parameters" });
       }
 
