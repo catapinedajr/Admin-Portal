@@ -117,14 +117,14 @@ export const contentDays = pgTable("content_days", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-export const contentFacts = pgTable("content_facts", {
+export const contentSetUpQuestions = pgTable("content_set_up_questions", {
   id: serial("id").primaryKey(),
   dayId: integer("day_id").notNull().references(() => contentDays.id),
   title: text("title").notNull(),
   content: text("content").notNull(),
   category: text("category").notNull(),
   icon: text("icon").notNull(),
-  orderIndex: integer("order_index").notNull().default(0), // for multiple facts per day
+  orderIndex: integer("order_index").notNull().default(0), // for multiple questions per day
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -222,7 +222,7 @@ export const insertContentDaySchema = createInsertSchema(contentDays).omit({
   updatedAt: true,
 });
 
-export const insertContentFactSchema = createInsertSchema(contentFacts).omit({
+export const insertContentSetUpQuestionSchema = createInsertSchema(contentSetUpQuestions).omit({
   id: true,
   createdAt: true,
 });
@@ -269,8 +269,8 @@ export type InsertUserQuizAnswer = z.infer<typeof insertUserQuizAnswerSchema>;
 // Types for new content tables
 export type ContentDay = typeof contentDays.$inferSelect;
 export type InsertContentDay = z.infer<typeof insertContentDaySchema>;
-export type ContentFact = typeof contentFacts.$inferSelect;
-export type InsertContentFact = z.infer<typeof insertContentFactSchema>;
+export type ContentSetUpQuestion = typeof contentSetUpQuestions.$inferSelect;
+export type InsertContentSetUpQuestion = z.infer<typeof insertContentSetUpQuestionSchema>;
 
 export type ContentLesson = typeof contentLessons.$inferSelect;
 export type InsertContentLesson = z.infer<typeof insertContentLessonSchema>;
@@ -282,11 +282,11 @@ export type ContentGenerationSteps = typeof contentGenerationSteps.$inferSelect;
 export type InsertContentGenerationSteps = z.infer<typeof insertContentGenerationStepsSchema>;
 
 // Enhanced content types for API responses
-export type DailyContentFact = ContentFact;
+export type DailyContentSetUpQuestion = ContentSetUpQuestion;
 
 export type DailyContentComplete = {
   day: ContentDay;
-  facts: DailyContentFact[];
+  setUpQuestions: DailyContentSetUpQuestion[];
   lesson: ContentLesson | null;
   quizzes: ContentQuiz[];
   metadata: ContentMetadata | null;

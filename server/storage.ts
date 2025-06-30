@@ -8,7 +8,7 @@ import {
   bitcoinPrice,
   userQuizAnswers,
   contentDays,
-  contentFacts,
+  contentSetUpQuestions,
 
   contentLessons,
   contentQuizzes,
@@ -19,8 +19,8 @@ import {
   type InsertUserProgress,
   type ContentDay,
   type InsertContentDay,
-  type ContentFact,
-  type InsertContentFact,
+  type ContentSetUpQuestion,
+  type InsertContentSetUpQuestion,
 
   type ContentLesson,
   type InsertContentLesson,
@@ -28,7 +28,7 @@ import {
   type InsertContentQuiz,
   type ContentMetadata,
   type InsertContentMetadata,
-  type DailyContentFact,
+  type DailyContentSetUpQuestion,
   type DailyContentComplete,
   type KnowledgeArea,
   type InsertKnowledgeArea,
@@ -58,10 +58,10 @@ export interface IStorage {
   getAllContentDays(): Promise<ContentDay[]>;
   createContentDay(day: InsertContentDay): Promise<ContentDay>;
 
-  // Content Facts methods
-  getContentFacts(dayIndex: number): Promise<DailyContentFact[]>;
-  getAllContentFacts(): Promise<ContentFact[]>;
-  createContentFact(fact: InsertContentFact): Promise<ContentFact>;
+  // Content Set Up Questions methods
+  getContentSetUpQuestions(dayIndex: number): Promise<DailyContentSetUpQuestion[]>;
+  getAllContentSetUpQuestions(): Promise<ContentSetUpQuestion[]>;
+  createContentSetUpQuestion(question: InsertContentSetUpQuestion): Promise<ContentSetUpQuestion>;
 
   // Content Lessons methods
   getContentLesson(dayIndex: number): Promise<ContentLesson | undefined>;
@@ -146,20 +146,20 @@ export class DatabaseStorage implements IStorage {
     return result;
   }
 
-  // Content Facts methods
-  async getContentFacts(dayIndex: number): Promise<DailyContentFact[]> {
+  // Content Set Up Questions methods
+  async getContentSetUpQuestions(dayIndex: number): Promise<DailyContentSetUpQuestion[]> {
     const day = await this.getContentDay(dayIndex);
     if (!day) return [];
 
-    return await db.select().from(contentFacts).where(eq(contentFacts.dayId, day.id)).orderBy(contentFacts.orderIndex);
+    return await db.select().from(contentSetUpQuestions).where(eq(contentSetUpQuestions.dayId, day.id)).orderBy(contentSetUpQuestions.orderIndex);
   }
 
-  async getAllContentFacts(): Promise<ContentFact[]> {
-    return await db.select().from(contentFacts).orderBy(contentFacts.dayId, contentFacts.orderIndex);
+  async getAllContentSetUpQuestions(): Promise<ContentSetUpQuestion[]> {
+    return await db.select().from(contentSetUpQuestions).orderBy(contentSetUpQuestions.dayId, contentSetUpQuestions.orderIndex);
   }
 
-  async createContentFact(fact: InsertContentFact): Promise<ContentFact> {
-    const [result] = await db.insert(contentFacts).values(fact).returning();
+  async createContentSetUpQuestion(question: InsertContentSetUpQuestion): Promise<ContentSetUpQuestion> {
+    const [result] = await db.insert(contentSetUpQuestions).values(question).returning();
     return result;
   }
 

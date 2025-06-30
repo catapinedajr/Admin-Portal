@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import path from "path";
 import { storage } from "./storage";
 import { db } from "./db";
-import { contentDays, contentFacts, contentLessons, contentQuizzes, contentGenerationSteps } from "@shared/schema";
+import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentGenerationSteps } from "@shared/schema";
 import { eq } from "drizzle-orm";
 
 
@@ -20,8 +20,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         theme: "Bitcoin Basics"
       }).returning();
 
-      // Create sample fact
-      const [fact] = await db.insert(contentFacts).values({
+      // Create sample set up question
+      const [question] = await db.insert(contentSetUpQuestions).values({
         dayId: day.id,
         title: "Digital Money Revolution",
         content: "Bitcoin is the first digital money that works without banks or governments controlling it.",
