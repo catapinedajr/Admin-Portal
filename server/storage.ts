@@ -177,7 +177,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createContentLesson(lesson: InsertContentLesson): Promise<ContentLesson> {
-    const [result] = await db.insert(contentLessons).values(lesson).returning();
+    const [result] = await db.insert(contentLessons).values([lesson]).returning();
     return result;
   }
 
@@ -194,7 +194,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createContentQuiz(quiz: InsertContentQuiz): Promise<ContentQuiz> {
-    const [result] = await db.insert(contentQuizzes).values(quiz).returning();
+    const [result] = await db.insert(contentQuizzes).values([quiz]).returning();
     return result;
   }
 

@@ -72,14 +72,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const [existingDay] = await db.select().from(contentDays).where(eq(contentDays.dayIndex, 1));
         
         if (existingDay) {
-          const existingFacts = await db.select().from(contentFacts).where(eq(contentFacts.dayId, existingDay.id));
+          const existingQuestions = await db.select().from(contentSetUpQuestions).where(eq(contentSetUpQuestions.dayId, existingDay.id));
           
           await db.delete(contentQuizzes).where(eq(contentQuizzes.dayId, existingDay.id));
           
           // Remove existing facts (dive deeper table already dropped)
           
           await db.delete(contentLessons).where(eq(contentLessons.dayId, existingDay.id));
-          await db.delete(contentFacts).where(eq(contentFacts.dayId, existingDay.id));
+          await db.delete(contentSetUpQuestions).where(eq(contentSetUpQuestions.dayId, existingDay.id));
           await db.delete(contentDays).where(eq(contentDays.id, existingDay.id));
           console.log('✓ Removed existing Day 1 data');
         }
@@ -136,7 +136,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         for (let i = 0; i < facts.length; i++) {
           const fact = facts[i];
           
-          const [savedFact] = await db.insert(contentFacts).values({
+          const [savedQuestion] = await db.insert(contentSetUpQuestions).values({
             dayId: contentDay.id,
             title: fact.title,
             content: fact.content,
@@ -359,7 +359,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
         dayIndex = 1;
       }
       console.log(`[DEBUG] Getting facts for day ${dayIndex}`);
-      const facts = await storage.getContentFacts(dayIndex);
+      const facts = await storage.getContentSetUpQuestions(dayIndex);
       console.log(`[DEBUG] Found ${facts.length} facts for day ${dayIndex}`);
       res.json(facts);
     } catch (error) {

@@ -2582,7 +2582,7 @@ export default function Home() {
                     <CardContent className="p-6">
                       <h3 className="text-lg font-bold text-white border-b border-zinc-700 pb-3 mb-6">Today's Learning Preview</h3>
                       <div className="space-y-4">
-                        {(dailyFacts as DailyFact[]).map((fact: DailyFact) => {
+                        {(dailyFacts as any[]).map((fact: any) => {
                           const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Coins;
                           const deepDive = fact.diveDeeper; // Only use storage data - no frontend fallback
                           const isExpanded = expandedFacts.has(fact.id);
