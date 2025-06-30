@@ -2431,6 +2431,14 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-6">
+        {/* Learn Section Header */}
+        {activeSection === "learn" && (
+          <div className="text-center mb-6">
+            <p className="text-zinc-400 text-lg">
+              Learn BTC at your pace, consistently — This is HODLearn
+            </p>
+          </div>
+        )}
 
         {/* Learn Section */}
         {activeSection === "learn" && (
@@ -2598,11 +2606,6 @@ export default function Home() {
                       <h2 className="text-2xl font-bold text-white leading-tight">
                         {dayMetadata.title}
                       </h2>
-                      
-                      {/* Subtitle - Simple and Clean */}
-                      <p className="text-zinc-400 text-sm">
-                        Learn BTC at your pace, consistently — This is HODLearn
-                      </p>
                     </div>
                   )}
                 </div>
