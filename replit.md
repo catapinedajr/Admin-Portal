@@ -252,16 +252,17 @@ Preferred communication style: Simple, everyday language.
 ### New Streamlined Content Creation Process
 
 **Step 1: Write the Lesson First**
-Start with the daily title (from content_days table) ensuring it relates to the weekly theme:
+Start with the daily title (from content_days table):
 - Create comprehensive 5-paragraph lesson content (~400 words, 3-minute read)
 - Use storytelling format with familiar analogies
 - Apply appropriate reading level (8th grade for Week 1)
 - Focus on making content digestible and building confidence
 - Emphasize personal journey and pace-based learning
+- Include educational disclaimer: Content is for educational and entertainment purposes only, not financial advice
 
 **Step 2: Generate Key Points and Why It Matters**
 After lesson is complete:
-- Extract 4 key takeaways from the lesson content
+- Extract 3 key takeaways from the lesson content
 - Write "Why It Matters" section explaining broader significance
 - Ensure both align perfectly with lesson content
 
