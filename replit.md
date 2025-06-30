@@ -602,6 +602,9 @@ Educational Content Enhancement Preferences:
 - **Content Quality Focus**: Prioritize substantial, well-formatted educational content with proper spacing and clear text presentation over complex visual widgets
 - **Text Formatting**: Emphasize clean line breaks, bullet points for lists, and proper spacing between paragraphs for optimal readability
 
+- June 30, 2025. **FIXED QUIZ SCORING SYSTEM**: Resolved critical bug where quiz scores accumulated across all days instead of showing day-specific results, updated frontend DailyQuiz component to pass dayIndex as query parameter to backend API, improved getUserQuizScore method to filter answers by specific day's questions, ensuring accurate per-day quiz progress tracking
+- June 30, 2025. **CORRECTED CONTENT APPROVAL PROCESS**: Fixed Days 2-4 approval status from approved to pending as per content development workflow - all new content must start in pending status for proper review process, maintaining integrity of one-day-at-a-time content development strategy
+
 ## STRATEGIC CONTENT RESTRUCTURING DECISION
 - **June 30, 2025**: Identified critical content efficiency issue - current 3 daily facts per lesson create redundancy and waste valuable educational content
 - **Extension Potential**: 90 facts (Month 1) = 20,000+ characters that could extend 30-day foundation to 60-90 days with bite-sized daily learning
