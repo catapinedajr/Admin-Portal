@@ -2595,7 +2595,7 @@ export default function Home() {
                           
                           return (
                             <div key={fact.id} className="bg-zinc-800/50 rounded-lg overflow-hidden">
-                              <div className="flex items-start gap-4 p-4">
+                              <div className="flex items-center gap-4 p-4">
                                 <div className="p-2 bg-orange-600/20 rounded-lg">
                                   <IconComponent className="w-5 h-5 text-orange-400" />
                                 </div>
