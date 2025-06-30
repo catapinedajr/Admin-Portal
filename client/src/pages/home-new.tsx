@@ -2707,8 +2707,8 @@ export default function Home() {
                               <h5 className="font-medium text-orange-300 mb-3">Key Points</h5>
                               <div className="grid gap-2">
                                 {(lesson as LessonWithKeyTakeaways).keyTakeaways.map((point, pointIdx) => (
-                                  <div key={pointIdx} className="flex items-start gap-2 p-2 bg-orange-600/10 rounded-lg border border-orange-600/20">
-                                    <CheckCircle className="w-4 h-4 text-orange-400 mt-1 flex-shrink-0" />
+                                  <div key={pointIdx} className="flex items-baseline gap-2 p-2 bg-orange-600/10 rounded-lg border border-orange-600/20">
+                                    <CheckCircle className="w-4 h-4 text-orange-400 flex-shrink-0" />
                                     <span className="text-orange-100 text-sm">{cleanText(point)}</span>
                                   </div>
                                 ))}
