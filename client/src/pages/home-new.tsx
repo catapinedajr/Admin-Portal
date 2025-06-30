@@ -2694,20 +2694,12 @@ export default function Home() {
                           {/* Real World Examples Section */}
                           <div className="my-6">
                             <div className="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
-                              <h5 className="font-medium text-zinc-300 mb-3">Real World Examples</h5>
-                              <div className="space-y-1">
-                                <div className="flex items-baseline gap-2">
-                                  <span className="text-orange-400 text-sm">•</span>
-                                  <p className="text-zinc-300 text-sm">
-                                    <span className="font-medium">El Salvador:</span> In 2021, became the first country to adopt Bitcoin as legal tender, allowing citizens to pay taxes and receive wages in Bitcoin.
-                                  </p>
-                                </div>
-                                <div className="flex items-baseline gap-2">
-                                  <span className="text-orange-400 text-sm">•</span>
-                                  <p className="text-zinc-300 text-sm">
-                                    <span className="font-medium">MicroStrategy:</span> Corporate treasury strategy where the company holds over 190,000 Bitcoin worth billions as their primary reserve asset.
-                                  </p>
-                                </div>
+                              <h5 className="font-medium text-zinc-300 mb-3">Real World Example</h5>
+                              <div className="flex items-baseline gap-2">
+                                <span className="text-orange-400 text-sm">•</span>
+                                <p className="text-zinc-300 text-sm">
+                                  <span className="font-medium">El Salvador:</span> In 2021, became the first country to adopt Bitcoin as legal tender, allowing citizens to pay taxes and receive wages in Bitcoin.
+                                </p>
                               </div>
                             </div>
                           </div>
