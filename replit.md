@@ -583,3 +583,9 @@ Educational Content Enhancement Preferences:
 - **Daily Deep Dive**: The Deep Dive section should rotate daily with substantial long-form topics rather than static content, providing comprehensive exploration of advanced Bitcoin concepts
 - **Content Quality Focus**: Prioritize substantial, well-formatted educational content with proper spacing and clear text presentation over complex visual widgets
 - **Text Formatting**: Emphasize clean line breaks, bullet points for lists, and proper spacing between paragraphs for optimal readability
+
+## STRATEGIC CONTENT RESTRUCTURING DECISION
+- **June 30, 2025**: Identified critical content efficiency issue - current 3 daily facts per lesson create redundancy and waste valuable educational content
+- **Extension Potential**: 90 facts (Month 1) = 20,000+ characters that could extend 30-day foundation to 60-90 days with bite-sized daily learning
+- **New Approach**: Transform facts into standalone micro-lessons with progressive concept building rather than lesson previews
+- **Benefits**: Better retention, habit formation, reduced cognitive load, extended course value from 180 to 300+ days
