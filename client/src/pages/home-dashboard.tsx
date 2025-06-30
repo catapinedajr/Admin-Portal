@@ -132,8 +132,8 @@ export default function HomeDashboard() {
           </h2>
           <p className="text-xl text-zinc-300 font-medium">
             {user?.currentStreak ? 
-              `${user.currentStreak}-day streak active. Keep building momentum!` :
-              "Ready to continue your Bitcoin journey?"
+              `${user.currentStreak}-day learning streak. Keep the habit strong!` :
+              "Ready to start building your learning habit?"
             }
           </p>
         </div>
@@ -146,8 +146,8 @@ export default function HomeDashboard() {
                 <h3 className="text-3xl font-bold text-white mb-3">Day {currentDayIndex}</h3>
                 <p className="text-lg text-zinc-300">
                   {completedDays === 0 
-                    ? "Begin your Bitcoin learning journey"
-                    : `${completedDays} day${completedDays === 1 ? '' : 's'} of learning completed`
+                    ? "Start building your daily learning habit"
+                    : `${completedDays} consecutive day${completedDays === 1 ? '' : 's'} of learning`
                   }
                 </p>
               </div>
@@ -186,19 +186,19 @@ export default function HomeDashboard() {
                 </div>
               </div>
               
-              {/* Professional learning metrics */}
+              {/* Journey consistency metrics */}
               <div className="flex justify-center gap-16">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-orange-400">{completedDays}</div>
-                  <div className="text-zinc-400">Days Completed</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-orange-400">{Math.round(userQuizData?.averageScore || 0)}%</div>
-                  <div className="text-zinc-400">Quiz Average</div>
+                  <div className="text-zinc-400">Days Learning</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-orange-400">{user?.currentStreak || 0}</div>
-                  <div className="text-zinc-400">Current Streak</div>
+                  <div className="text-zinc-400">Day Streak</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-orange-400">{user?.longestStreak || 0}</div>
+                  <div className="text-zinc-400">Best Streak</div>
                 </div>
               </div>
             </div>
@@ -210,8 +210,8 @@ export default function HomeDashboard() {
           <CardContent className="p-6">
             <div className="text-center space-y-6">
               <div>
-                <h3 className="text-xl font-bold text-white mb-2">Ready for Day {currentDayIndex}?</h3>
-                <p className="text-zinc-400">Learn • Practice • Test your knowledge</p>
+                <h3 className="text-xl font-bold text-white mb-2">Continue Your Learning Habit</h3>
+                <p className="text-zinc-400">Consistency builds conviction • Day {currentDayIndex} awaits</p>
               </div>
               
               <Button 
@@ -219,11 +219,25 @@ export default function HomeDashboard() {
                 size="lg"
                 className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3"
               >
-                Start Learning
+                Keep Going
               </Button>
             </div>
           </CardContent>
         </Card>
+
+        {/* Habit Building Quote */}
+        {user?.currentStreak && user.currentStreak > 0 && (
+          <Card className="bg-orange-500/10 border-orange-500/20 shadow-lg">
+            <CardContent className="p-6 text-center">
+              <p className="text-orange-200 italic mb-2">
+                "Small daily improvements over time lead to stunning results."
+              </p>
+              <p className="text-orange-300 text-sm">
+                {user.currentStreak} day{user.currentStreak === 1 ? '' : 's'} of consistent learning 🔥
+              </p>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Explore Sections */}
         <div className="space-y-4">
