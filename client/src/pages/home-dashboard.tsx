@@ -75,8 +75,6 @@ export default function HomeDashboard() {
     queryKey: ["/api/lesson", currentDayIndex],
   });
 
-  // Calculate progress percentage (out of 30 days)
-  const progressPercentage = Math.min(((currentDayIndex - 1) / 30) * 100, 100);
   const completedDays = currentDayIndex - 1;
 
   // Fetch quiz completion data for more accurate tracking
@@ -152,39 +150,7 @@ export default function HomeDashboard() {
                 </p>
               </div>
               
-              {/* Clean progress circle */}
-              <div className="flex justify-center">
-                <div className="w-40 h-40 relative">
-                  <svg className="w-40 h-40 transform -rotate-90" viewBox="0 0 160 160">
-                    <circle
-                      cx="80"
-                      cy="80"
-                      r="70"
-                      stroke="rgb(39 39 42)"
-                      strokeWidth="12"
-                      fill="none"
-                    />
-                    <circle
-                      cx="80"
-                      cy="80"
-                      r="70"
-                      stroke="rgb(249 115 22)"
-                      strokeWidth="12"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeDasharray={`${2 * Math.PI * 70}`}
-                      strokeDashoffset={`${2 * Math.PI * 70 * (1 - progressPercentage / 100)}`}
-                      className="transition-all duration-1000"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-3xl font-bold text-orange-400">{Math.round(progressPercentage)}%</div>
-                      <div className="text-sm text-zinc-400">Complete</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
               
               {/* Journey consistency metrics */}
               <div className="flex justify-center gap-16">
