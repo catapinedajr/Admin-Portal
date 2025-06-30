@@ -1352,13 +1352,13 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   app.patch("/api/content-day/:dayIndex/approval", async (req, res) => {
     try {
       const dayIndex = parseInt(req.params.dayIndex);
-      const { isApproved } = req.body;
+      const { approvalStatus } = req.body;
       
-      if (isNaN(dayIndex) || typeof isApproved !== 'boolean') {
-        return res.status(400).json({ message: "Invalid parameters" });
+      if (isNaN(dayIndex) || typeof approvalStatus !== 'string' || !['pending', 'needs-fixing', 'approved'].includes(approvalStatus)) {
+        return res.status(400).json({ message: "Invalid parameters. approvalStatus must be pending, needs-fixing, or approved" });
       }
 
-      const updatedDay = await storage.updateContentDayApproval(dayIndex, isApproved);
+      const updatedDay = await storage.updateContentDayApproval(dayIndex, approvalStatus);
       
       if (!updatedDay) {
         return res.status(404).json({ message: "Day not found" });
