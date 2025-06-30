@@ -2709,7 +2709,7 @@ export default function Home() {
                                 {(lesson as LessonWithKeyTakeaways).keyTakeaways.map((point, pointIdx) => (
                                   <div key={pointIdx} className="flex items-baseline gap-2 p-2 bg-orange-600/10 rounded-lg border border-orange-600/20">
                                     <CheckCircle className="w-4 h-4 text-orange-400 flex-shrink-0" />
-                                    <span className="text-orange-100 text-sm">{cleanText(point)}</span>
+                                    <span className="text-orange-100 text-sm">{point}</span>
                                   </div>
                                 ))}
                               </div>
