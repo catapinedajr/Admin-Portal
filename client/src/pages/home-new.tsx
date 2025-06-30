@@ -2434,9 +2434,11 @@ export default function Home() {
         {/* Learn Section Header */}
         {activeSection === "learn" && (
           <div className="text-center mb-6">
-            <p className="text-zinc-400 text-lg">
-              Learning Bitcoin takes time, Learning conviction takes persistency, This, is HODLearn
-            </p>
+            <div className="text-zinc-400 text-lg space-y-1">
+              <div>Learning Bitcoin takes time</div>
+              <div>Learning conviction takes persistence</div>
+              <div>This is HODLearn</div>
+            </div>
           </div>
         )}
 
