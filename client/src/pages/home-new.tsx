@@ -2691,6 +2691,39 @@ export default function Home() {
                             </div>
                           </div>
                           
+                          {/* Real World Examples Section */}
+                          <div className="my-6">
+                            <h5 className="font-medium text-blue-300 mb-3">Real World Examples</h5>
+                            <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4">
+                              <div className="space-y-3">
+                                <div className="flex items-start gap-3">
+                                  <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                                  <div>
+                                    <p className="text-blue-100 text-sm">
+                                      <span className="font-medium">El Salvador:</span> In 2021, became the first country to adopt Bitcoin as legal tender, allowing citizens to pay taxes and receive wages in Bitcoin.
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-start gap-3">
+                                  <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                                  <div>
+                                    <p className="text-blue-100 text-sm">
+                                      <span className="font-medium">MicroStrategy:</span> Corporate treasury strategy where the company holds over 190,000 Bitcoin worth billions as their primary reserve asset.
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-start gap-3">
+                                  <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                                  <div>
+                                    <p className="text-blue-100 text-sm">
+                                      <span className="font-medium">Lightning Network:</span> Used by millions for instant, low-cost payments - like buying coffee in cafes across Latin America for just pennies in fees.
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
                           {/* Database-driven Key Takeaways */}
                           {(lesson as LessonWithKeyTakeaways).keyTakeaways && Array.isArray((lesson as LessonWithKeyTakeaways).keyTakeaways) && (lesson as LessonWithKeyTakeaways).keyTakeaways.length > 0 && (
                             <div className="my-6">
