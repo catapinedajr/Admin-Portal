@@ -2435,8 +2435,8 @@ export default function Home() {
         {activeSection === "learn" && (
           <div className="text-center mb-6">
             <div className="text-lg space-y-2">
-              <div className="text-zinc-400">Learning Bitcoin takes time</div>
-              <div className="text-zinc-400">Learning conviction takes persistence</div>
+              <div className="text-zinc-400">Understanding Bitcoin takes time</div>
+              <div className="text-zinc-400">Building conviction takes consistency</div>
               <div className="text-orange-400 font-semibold">This is HODLearn</div>
             </div>
           </div>
