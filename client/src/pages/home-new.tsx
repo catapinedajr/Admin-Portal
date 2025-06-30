@@ -2513,34 +2513,33 @@ export default function Home() {
                     </Button>
                   </div>
 
-                  {/* Approval Status and Toggle */}
+                  {/* Approval Status Dropdown */}
                   <div className="flex items-center gap-2 border-l border-zinc-600 pl-3">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={dayMetadata?.isApproved || false}
-                        onChange={async (e) => {
-                          try {
-                            const response = await fetch(`/api/content-day/${currentDayIndex}/approval`, {
-                              method: 'PATCH',
-                              headers: { 'Content-Type': 'application/json' },
-                              body: JSON.stringify({ isApproved: e.target.checked })
-                            });
-                            
-                            if (response.ok) {
-                              // Refresh day metadata to show updated approval status
-                              window.location.reload();
-                            }
-                          } catch (error) {
-                            console.error('Error updating approval:', error);
+                    <select
+                      value={dayMetadata?.isApproved ? 'approved' : 'pending'}
+                      onChange={async (e) => {
+                        try {
+                          const isApproved = e.target.value === 'approved';
+                          const response = await fetch(`/api/content-day/${currentDayIndex}/approval`, {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ isApproved })
+                          });
+                          
+                          if (response.ok) {
+                            // Refetch data without full page reload
+                            window.location.reload();
                           }
-                        }}
-                        className="w-4 h-4 text-green-500 bg-zinc-700 border-zinc-600 rounded focus:ring-green-500 focus:ring-2"
-                      />
-                      <span className={`text-xs font-medium ${dayMetadata?.isApproved ? 'text-green-400' : 'text-yellow-400'}`}>
-                        {dayMetadata?.isApproved ? 'APPROVED' : 'PENDING'}
-                      </span>
-                    </label>
+                        } catch (error) {
+                          console.error('Error updating approval:', error);
+                        }
+                      }}
+                      className="text-xs font-medium bg-zinc-700 border border-zinc-600 rounded px-2 py-1 text-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    >
+                      <option value="pending" className="text-yellow-400">PENDING</option>
+                      <option value="needs-fixing" className="text-red-400">NEEDS FIXING</option>
+                      <option value="approved" className="text-green-400">APPROVED</option>
+                    </select>
                   </div>
 
                   {/* Reset Button */}
