@@ -247,7 +247,36 @@ Comprehensive component library built on Radix UI primitives:
 
 Preferred communication style: Simple, everyday language.
 
-## Daily Content Build Strategy
+## Daily Content Build Strategy - REVISED PROCESS
+
+### New Streamlined Content Creation Process
+
+**Step 1: Write the Lesson First**
+Start with the daily title (from content_days table) ensuring it relates to the weekly theme:
+- Create comprehensive 5-paragraph lesson content (~400 words, 3-minute read)
+- Use storytelling format with familiar analogies
+- Apply appropriate reading level (8th grade for Week 1)
+- Focus on making content digestible and building confidence
+- Emphasize personal journey and pace-based learning
+
+**Step 2: Generate Key Points and Why It Matters**
+After lesson is complete:
+- Extract 4 key takeaways from the lesson content
+- Write "Why It Matters" section explaining broader significance
+- Ensure both align perfectly with lesson content
+
+**Step 3: Develop Today's Learning Preview Questions**
+Create 3 curiosity-driving questions that:
+- Set readers up to be curious about the lesson content
+- Preview key concepts without giving away answers
+- Create anticipation for continuing with the session
+- Use question format that builds intrigue
+
+**Step 4: Create Quiz Questions**
+Finally, develop 6 quiz questions that:
+- Test comprehension of the actual lesson content
+- Ensure questions directly relate to what was taught
+- Provide clear explanations that reinforce learning
 
 ### Database-Driven Content Generation
 
@@ -284,9 +313,9 @@ For all days after Day 1, perform prior knowledge assessment:
 - Create natural learning progression without jarring transitions
 
 **Example Implementation (Day 4 building on Days 1-3):**
-- Day 1: "What is Bitcoin?" (introduced digital money concept)
-- Day 2: "How Bitcoin Works" (introduced blockchain ledger)
-- Day 3: "Bitcoin vs Banks" (contrasted traditional vs digital)
+- Day 1: "Welcome to your Bitcoin Journey" (introduced personal learning journey)
+- Day 2: "What is Bitcoin?" (introduced digital money concept)
+- Day 3: "How Bitcoin Works" (introduced blockchain ledger)
 - Day 4: "Bitcoin Ownership" → Opens with: "Now that you understand Bitcoin as digital money recorded on a shared ledger that works differently than banks, let's explore what it means to truly own Bitcoin..."
 
 **Step 3: Generate Complete Lesson First - Captivating Storytelling**
