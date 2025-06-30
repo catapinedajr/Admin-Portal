@@ -211,7 +211,7 @@ export default function HomeDashboard() {
             <div className="text-center space-y-6">
               <div>
                 <h3 className="text-xl font-bold text-white mb-2">Continue Your Learning Habit</h3>
-                <p className="text-zinc-400">Consistency builds conviction • Day {currentDayIndex} awaits</p>
+                <p className="text-zinc-400">Discipline builds conviction • Day {currentDayIndex} awaits</p>
               </div>
               
               <Button 
