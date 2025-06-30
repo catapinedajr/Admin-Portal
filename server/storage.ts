@@ -395,21 +395,25 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserQuizScore(userId: number, dayIndex: number): Promise<{ correct: number; total: number }> {
-    // Get all questions for the day
-    const questions = await db.select()
-      .from(contentQuizzes)
-      .where(eq(contentQuizzes.dayId, dayIndex));
+    // Get all questions for the specific day
+    const questions = await this.getContentQuizzes(dayIndex);
     
-    // Get user answers for today
+    // Get user answers for today and filter to this day's questions only
     const today = new Date().toISOString().split('T')[0];
-    const answers = await db.select()
+    
+    // Filter answers to only those for this day's questions
+    const allAnswers = await db.select()
       .from(userQuizAnswers)
       .where(and(
         eq(userQuizAnswers.userId, userId),
         eq(userQuizAnswers.date, today)
       ));
     
-    const correct = answers.filter(a => a.isCorrect).length;
+    // Filter to only answers for this day's questions
+    const questionIds = questions.map(q => q.id);
+    const dayAnswers = allAnswers.filter(a => questionIds.includes(a.questionId));
+    
+    const correct = dayAnswers.filter(a => a.isCorrect).length;
     return { correct, total: questions.length };
   }
 }

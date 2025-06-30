@@ -74,8 +74,8 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
 
   // Fetch quiz score for today
   const { data: score } = useQuery({
-    queryKey: ['/api/quiz/score', userId, today],
-    queryFn: () => fetch(`/api/quiz/score/${userId}/${today}`).then(res => res.json()) as Promise<QuizScore>,
+    queryKey: ['/api/quiz/score', userId, today, dayIndex],
+    queryFn: () => fetch(`/api/quiz/score/${userId}/${today}?dayIndex=${dayIndex}`).then(res => res.json()) as Promise<QuizScore>,
     enabled: userAnswers.length > 0
   });
 

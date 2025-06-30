@@ -1220,8 +1220,8 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
       const userId = parseInt(req.params.userId);
       const date = req.params.date;
       
-      // Get the current day index (assuming Day 1 for now, but this should be dynamic)
-      const dayIndex = 1; // TODO: This should be derived from current user progress or date
+      // Get the current day index from query parameter or default to 1
+      const dayIndex = parseInt(req.query.dayIndex as string) || 1;
       
       const score = await storage.getUserQuizScore(userId, dayIndex);
       res.json(score);
