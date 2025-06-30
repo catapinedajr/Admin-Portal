@@ -2694,12 +2694,14 @@ export default function Home() {
                           {/* Real World Examples Section */}
                           <div className="my-6">
                             <div className="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
-                              <h5 className="font-medium text-zinc-300 mb-3">Real World Example</h5>
-                              <div className="flex items-baseline gap-2">
-                                <span className="text-orange-400 text-sm">•</span>
-                                <p className="text-zinc-300 text-sm">
-                                  <span className="font-medium">El Salvador:</span> In 2021, became the first country to adopt Bitcoin as legal tender, allowing citizens to pay taxes and receive wages in Bitcoin.
-                                </p>
+                              <h4 className="text-white font-semibold mb-6 text-lg">Real World Example</h4>
+                              <div className="text-zinc-300 text-base leading-[1.7]">
+                                <div className="flex items-baseline gap-2">
+                                  <span className="text-orange-400">•</span>
+                                  <p>
+                                    <span className="font-medium">El Salvador:</span> In 2021, became the first country to adopt Bitcoin as legal tender, allowing citizens to pay taxes and receive wages in Bitcoin.
+                                  </p>
+                                </div>
                               </div>
                             </div>
                           </div>
