@@ -321,33 +321,28 @@ For all days after Day 1, perform prior knowledge assessment:
 - Estimated Read Time: 3 minutes
 - Cultural Alignment: Match language sophistication to `cultural_stage` from database
 
-**Step 4: Generate 3 Supporting Facts**
-- Extract 3 key concepts from lesson that need emphasis
-- Create facts that serve as "preview" or "building blocks" for lesson understanding
-- **Continuity Check**: Ensure facts don't repeat concepts from previous days unless intentionally reinforcing
-- Use vocabulary and analogies established in prior days where appropriate
-- Reference previous examples when introducing related concepts
-- Written at target reading level with familiar analogies (consistent with established terminology)
-- Categories: Technology, Economics, Security (varied for engagement)
-- Icons: Simple emoji representations
-- Order: Most fundamental → supporting concepts → broader implications
+**Step 4: Generate 3 Leading Questions**
+- Transform facts into compelling questions that create curiosity about the lesson content
+- Questions should be thought-provoking and connect to reader's existing knowledge or concerns
+- Each question sets up a key concept that will be answered in the lesson below
+- **Continuity Check**: Build on vocabulary and concepts from previous days in question phrasing
+- Use familiar analogies and references established in prior days
+- Written at target reading level with accessible language
+- Categories: Technology, Economics, Security (varied for engagement) 
+- Icons: Simple emoji representations matching question themes
+- Order: Most fundamental question → supporting concepts → broader implications
 
-**Step 5: Generate 3 Dive Deeper Sections**
-- Each linked to corresponding fact by fact_id
-- Structure: Explanation + Examples (JSON array) + Visual Description + Key Takeaways (JSON array)
-- **Learning Continuity**: Build explanations that reference relevant concepts from previous days
-- Language: Match day's reading level with familiar analogies (maintain terminology consistency)
-- **Focused Insights**: Maximum 60-80 words for explanation - single clear insight rather than comprehensive coverage
-- **Vocabulary Control**: Use ONLY vocabulary established in previous days plus everyday language - no unexplained jargon
-- **Memorable Analogies**: One powerful analogy per section using familiar concepts (magic safe, shared notebook, robot accountants)
-- Examples: 4 real-world scenarios users can relate to, connecting to prior examples when relevant
-- Visual descriptions: Help users mentally picture abstract concepts using established mental models  
-- Key takeaways: 4 bullet points that reinforce the growing knowledge foundation
+**Question Formats:**
+- **Problem-focused**: "Why do banks take 3-5 days to move your money?"
+- **Curiosity-driven**: "What if money couldn't be printed by governments?"
+- **Personal relevance**: "How can you truly own digital money?"
+- **Comparison-based**: "What makes Bitcoin different from regular money?"
+- **Future-oriented**: "Could Bitcoin replace traditional banking?"
 
-**Step 6: Generate 6 Quiz Questions**
-- Question 1: Tests first daily fact understanding
-- Question 2: Tests second daily fact concept  
-- Question 3: Tests third daily fact application
+**Step 5: Generate 6 Quiz Questions**
+- Question 1: Tests understanding of first leading question and its lesson answer
+- Question 2: Tests comprehension of second leading question and concept resolution  
+- Question 3: Tests application of third leading question's lesson insights
 - Question 4: Tests lesson synthesis/connection to broader Bitcoin knowledge
 - Question 5: Tests practical application or connects current day concepts to previous learning
 - Question 6: Tests deeper comprehension or real-world application of the day's concepts
@@ -361,8 +356,7 @@ For all days after Day 1, perform prior knowledge assessment:
 - Query previous 3 days' content before generation for contextual awareness
 - Remove existing test data before inserting real content
 - Use correct day_id from content_days table as foreign key for all content tables
-- Link dive deeper content using both day_id and fact_id correctly
-- Maintain order_index for facts and quiz questions (0, 1, 2 for facts; 0-4 for quizzes)
+- Maintain order_index for leading questions and quiz questions (0, 1, 2 for questions; 0-5 for quizzes)
 - Store lesson content with double line breaks for proper paragraph rendering
 
 **Content Formatting Requirements:**
@@ -377,20 +371,9 @@ For all days after Day 1, perform prior knowledge assessment:
 - Add rollback procedures if content insertion fails
 - Log errors for missing foreign key relationships
 
-**Step 6.5: Dive Deeper Quality Gates**
-**Focused Insight Validation:**
-- Confirm each explanation delivers ONE clear insight in 60-80 words maximum
-- Verify vocabulary uses ONLY terms established in previous days plus everyday language
-- Ensure analogies connect to familiar concepts readers already understand
-- Check that explanations answer "why this matters" rather than repeating basic facts
 
-**Cognitive Load Assessment:**
-- Test that readers get genuine "aha moments" rather than information overload
-- Validate that each section builds confidence rather than creating confusion
-- Confirm examples clarify rather than complicate the core insight
-- Ensure key takeaways reinforce understanding without overwhelming detail
 
-### Step 7: Final Holistic Review and Optimization
+### Step 6: Final Holistic Review and Optimization
 
 **Learning Continuity Assessment (Days 2+):**
 - Review how current day connects to previous 3 days' concepts
@@ -421,9 +404,9 @@ For all days after Day 1, perform prior knowledge assessment:
 - Validate that quiz answers are definitively correct with proper explanations
 
 **Learning Flow Assessment:**
-- Test that facts create curiosity that lesson satisfies
-- Verify lesson content flows logically from simple to complex concepts
-- Ensure dive deeper sections truly expand understanding without overwhelming
+- Test that leading questions create curiosity that the lesson satisfies
+- Verify lesson content directly answers the leading questions posed
+- Ensure smooth flow from questions → lesson content → key takeaways
 - Check that quiz questions test comprehension, not memorization
 
 **Educational Value Optimization:**
@@ -434,14 +417,14 @@ For all days after Day 1, perform prior knowledge assessment:
 
 **User Experience Refinement:**
 - Review lesson paragraph formatting for optimal readability
-- Check that fact titles are engaging and not intimidating
+- Check that leading questions are engaging and thought-provoking
 - Verify quiz questions have clear, unambiguous correct answers
 - Ensure examples are relatable to target demographic
 
 **Final Adjustments:**
 - Simplify any overly complex sentences or concepts
 - Add familiar analogies where abstract concepts need clarification
-- Strengthen connections between facts, lesson, and quiz content
+- Strengthen connections between leading questions, lesson answers, and quiz content
 - Polish language to be encouraging rather than overwhelming
 
 ## Week 1-2 Content Generation Implementation (Days 3-14)
