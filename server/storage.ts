@@ -111,6 +111,7 @@ export interface IStorage {
   // Quiz answers methods
   getUserQuizAnswers(userId: number, date: string): Promise<UserQuizAnswer[]>;
   saveQuizAnswer(answer: InsertUserQuizAnswer): Promise<UserQuizAnswer>;
+  getUserQuizStatistics(userId: number): Promise<{ totalQuizzesTaken: number; totalCorrectAnswers: number; averageScore: number }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -415,6 +416,31 @@ export class DatabaseStorage implements IStorage {
     
     const correct = dayAnswers.filter(a => a.isCorrect).length;
     return { correct, total: questions.length };
+  }
+
+  async getUserQuizStatistics(userId: number): Promise<{ totalQuizzesTaken: number; totalCorrectAnswers: number; averageScore: number }> {
+    // Get all quiz answers for the user
+    const allAnswers = await db.select()
+      .from(userQuizAnswers)
+      .where(eq(userQuizAnswers.userId, userId));
+    
+    if (allAnswers.length === 0) {
+      return {
+        totalQuizzesTaken: 0,
+        totalCorrectAnswers: 0,
+        averageScore: 0
+      };
+    }
+    
+    const totalQuizzesTaken = allAnswers.length;
+    const totalCorrectAnswers = allAnswers.filter(a => a.isCorrect).length;
+    const averageScore = (totalCorrectAnswers / totalQuizzesTaken) * 100;
+    
+    return {
+      totalQuizzesTaken,
+      totalCorrectAnswers,
+      averageScore: Math.round(averageScore)
+    };
   }
 }
 

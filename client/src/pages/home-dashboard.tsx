@@ -79,6 +79,16 @@ export default function HomeDashboard() {
   const progressPercentage = Math.min(((currentDayIndex - 1) / 30) * 100, 100);
   const completedDays = currentDayIndex - 1;
 
+  // Fetch quiz completion data for more accurate tracking
+  const { data: userQuizData } = useQuery<{
+    totalQuizzesTaken: number;
+    totalCorrectAnswers: number;
+    averageScore: number;
+  }>({
+    queryKey: ["/api/user-quiz-stats", user?.id || 1],
+    enabled: !!user,
+  });
+
   // Get time of day for greeting
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -133,8 +143,13 @@ export default function HomeDashboard() {
           <CardContent className="p-8">
             <div className="text-center space-y-8">
               <div>
-                <h3 className="text-3xl font-bold text-white mb-3">Day {completedDays + 1} of 30</h3>
-                <p className="text-lg text-zinc-300">Continue building your Bitcoin knowledge</p>
+                <h3 className="text-3xl font-bold text-white mb-3">Day {currentDayIndex}</h3>
+                <p className="text-lg text-zinc-300">
+                  {completedDays === 0 
+                    ? "Begin your Bitcoin learning journey"
+                    : `${completedDays} day${completedDays === 1 ? '' : 's'} of learning completed`
+                  }
+                </p>
               </div>
               
               {/* Clean progress circle */}
@@ -171,19 +186,19 @@ export default function HomeDashboard() {
                 </div>
               </div>
               
-              {/* Simple stats */}
-              <div className="flex justify-center gap-12">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-orange-400">{completedDays * 3}</div>
-                  <div className="text-zinc-400">Facts</div>
-                </div>
+              {/* Professional learning metrics */}
+              <div className="flex justify-center gap-16">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-orange-400">{completedDays}</div>
-                  <div className="text-zinc-400">Lessons</div>
+                  <div className="text-zinc-400">Days Completed</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-orange-400">{completedDays * 6}</div>
-                  <div className="text-zinc-400">Quizzes</div>
+                  <div className="text-2xl font-bold text-orange-400">{Math.round(userQuizData?.averageScore || 0)}%</div>
+                  <div className="text-zinc-400">Quiz Average</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-orange-400">{user?.currentStreak || 0}</div>
+                  <div className="text-zinc-400">Current Streak</div>
                 </div>
               </div>
             </div>
@@ -196,7 +211,7 @@ export default function HomeDashboard() {
             <div className="text-center space-y-6">
               <div>
                 <h3 className="text-xl font-bold text-white mb-2">Ready for Day {currentDayIndex}?</h3>
-                <p className="text-zinc-400">3 facts • 1 lesson • 6 quiz questions</p>
+                <p className="text-zinc-400">Learn • Practice • Test your knowledge</p>
               </div>
               
               <Button 
