@@ -228,6 +228,7 @@ Comprehensive component library built on Radix UI primitives:
 - June 29, 2025. **COMPLETE 180-DAY CURRICULUM ARCHITECTURE**: Built comprehensive 6-month Bitcoin education curriculum with progressive difficulty scaling: Month 1 (Days 1-30) Bitcoin Fundamentals at 8th grade/complete beginner, Month 2 (Days 31-60) Economics & Money at 9th grade/progressing, Month 3 (Days 61-90) Security & Privacy at 9th-10th grade/intermediate, Month 4 (Days 91-120) Real-World Usage at 10th grade/intermediate, Month 5 (Days 121-150) Technology Deep Dive at 10th-11th grade/advanced, Month 6 (Days 151-180) Advanced Concepts at 11th grade/expert level, providing natural learning progression from beginner to Bitcoin expert
 - June 29, 2025. **DATABASE RESTRUCTURING WITH PROPER ID ALIGNMENT**: Successfully resolved ID misalignment issues by completely purging and recreating content database structure with perfect alignment where Day N has ID = N (Day 1 = ID 1, Day 2 = ID 2, etc.), eliminated confusion between day_index and content_day_id, reset all sequences for clean architecture, switched from memory storage to database-driven content system using HybridStorage class, established clean foundation ready for comprehensive content generation across 180-day curriculum
 - June 29, 2025. **COMPLETE DATABASE ID STANDARDIZATION**: Systematically aligned all content table IDs to start from 1 for Day 1: fixed quiz questions (15-20 → 1-6), facts (10-12 → 1-3), dive deeper (7-9 → 1-3), lessons (5 → 1), and user quiz answers (3-9 → 1-6), maintaining all user progress data while establishing clean sequential ID patterns for 180-day curriculum expansion, added day_id column to content_dive_deeper positioned as second column for direct day queries without joins
+- June 30, 2025. **DIVE DEEPER CONTENT OPTIMIZATION**: Applied tighter, more focused approach to all expandable "Dive Deeper" sections across Days 1-7: reduced explanations from 120+ words to 60-80 words maximum, eliminated unexplained jargon in favor of vocabulary established in previous days plus everyday language, focused each section on single clear insight rather than comprehensive coverage, enhanced memorable analogies (magic safe, shared notebook, robot accountants), implemented quality gates ensuring genuine "aha moments" without cognitive overload, updated Daily Content Build Strategy documentation to include focused insight validation and cognitive load assessment protocols
 - June 29, 2025. **ELIMINATED REPETITIVE LESSON OPENINGS**: Fixed formulaic repetition across curriculum by replacing repetitive openers: removed four consecutive "You've learned..." openings (Days 3-6), eliminated "Today we explore..." repetition (Days 23-24), and fixed "Building on our understanding..." repetition (Days 32-33), creating unique engaging openings for each lesson while maintaining educational flow and professional variety throughout 180-day curriculum
 - June 29, 2025. **UPDATED DAILY CONTENT BUILD STRATEGY TO DATABASE-DRIVEN APPROACH**: Completely revised content generation strategy to start with database query to content_days table extracting title, reading_level, theme, and cultural_stage, implemented proper foreign key relationships and error handling, added database accuracy verification steps, enhanced technical implementation with rollback procedures and sequence management, established comprehensive database integration replacing static placeholder approach for 180-day curriculum generation
 - June 29, 2025. **FIXED QUIZ QUESTION COUNT STANDARDIZATION**: Corrected Daily Content Build Strategy Step 6 from 5 to 6 quiz questions per day, added missing 6th question to Day 2 content ensuring consistent 6-question quizzes across all curriculum days, updated strategy documentation to specify proper quiz question structure (facts → lesson synthesis → practical application → deeper comprehension)
@@ -335,8 +336,11 @@ For all days after Day 1, perform prior knowledge assessment:
 - Structure: Explanation + Examples (JSON array) + Visual Description + Key Takeaways (JSON array)
 - **Learning Continuity**: Build explanations that reference relevant concepts from previous days
 - Language: Match day's reading level with familiar analogies (maintain terminology consistency)
+- **Focused Insights**: Maximum 60-80 words for explanation - single clear insight rather than comprehensive coverage
+- **Vocabulary Control**: Use ONLY vocabulary established in previous days plus everyday language - no unexplained jargon
+- **Memorable Analogies**: One powerful analogy per section using familiar concepts (magic safe, shared notebook, robot accountants)
 - Examples: 4 real-world scenarios users can relate to, connecting to prior examples when relevant
-- Visual descriptions: Help users mentally picture abstract concepts using established mental models
+- Visual descriptions: Help users mentally picture abstract concepts using established mental models  
 - Key takeaways: 4 bullet points that reinforce the growing knowledge foundation
 
 **Step 6: Generate 6 Quiz Questions**
@@ -371,6 +375,19 @@ For all days after Day 1, perform prior knowledge assessment:
 - Validate all database fields are populated before proceeding
 - Add rollback procedures if content insertion fails
 - Log errors for missing foreign key relationships
+
+**Step 6.5: Dive Deeper Quality Gates**
+**Focused Insight Validation:**
+- Confirm each explanation delivers ONE clear insight in 60-80 words maximum
+- Verify vocabulary uses ONLY terms established in previous days plus everyday language
+- Ensure analogies connect to familiar concepts readers already understand
+- Check that explanations answer "why this matters" rather than repeating basic facts
+
+**Cognitive Load Assessment:**
+- Test that readers get genuine "aha moments" rather than information overload
+- Validate that each section builds confidence rather than creating confusion
+- Confirm examples clarify rather than complicate the core insight
+- Ensure key takeaways reinforce understanding without overwhelming detail
 
 ### Step 7: Final Holistic Review and Optimization
 
