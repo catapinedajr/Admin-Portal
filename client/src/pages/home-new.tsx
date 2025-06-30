@@ -2431,20 +2431,6 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-6">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-white mb-2">
-            {activeSection === "learn" && "Build Your Bitcoin Foundation"}
-            {activeSection === "money" && "Why Bitcoin Matters"}
-            {activeSection === "simulations" && "Practice Bitcoin Concepts"}
-            {activeSection === "more" && "Discover More About Bitcoin"}
-          </h2>
-          <p className="text-zinc-400">
-            {activeSection === "learn" && "Learn the fundamentals and understand why Bitcoin matters"}
-            {activeSection === "money" && "Discover why Bitcoin is the future of money and finance"}
-            {activeSection === "simulations" && "Interactive simulations to deepen your understanding"}
-            {activeSection === "more" && "Resources and tools to support your Bitcoin journey"}
-          </p>
-        </div>
 
         {/* Learn Section */}
         {activeSection === "learn" && (
