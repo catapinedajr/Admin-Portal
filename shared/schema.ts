@@ -128,15 +128,7 @@ export const contentFacts = pgTable("content_facts", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const contentDiveDeeper = pgTable("content_dive_deeper", {
-  id: serial("id").primaryKey(),
-  factId: integer("fact_id").notNull().references(() => contentFacts.id, { onDelete: "cascade" }),
-  dayId: integer("day_id").notNull().references(() => contentDays.id),
-  explanation: text("explanation").notNull(),
-  examples: json("examples").$type<string[]>().notNull(),
-  visualDescription: text("visual_description").notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+
 
 export const contentLessons = pgTable("content_lessons", {
   id: serial("id").primaryKey(),
@@ -235,10 +227,7 @@ export const insertContentFactSchema = createInsertSchema(contentFacts).omit({
   createdAt: true,
 });
 
-export const insertContentDiveDeeperSchema = createInsertSchema(contentDiveDeeper).omit({
-  id: true,
-  createdAt: true,
-});
+
 
 export const insertContentLessonSchema = createInsertSchema(contentLessons).omit({
   id: true,
@@ -282,8 +271,7 @@ export type ContentDay = typeof contentDays.$inferSelect;
 export type InsertContentDay = z.infer<typeof insertContentDaySchema>;
 export type ContentFact = typeof contentFacts.$inferSelect;
 export type InsertContentFact = z.infer<typeof insertContentFactSchema>;
-export type ContentDiveDeeper = typeof contentDiveDeeper.$inferSelect;
-export type InsertContentDiveDeeper = z.infer<typeof insertContentDiveDeeperSchema>;
+
 export type ContentLesson = typeof contentLessons.$inferSelect;
 export type InsertContentLesson = z.infer<typeof insertContentLessonSchema>;
 export type ContentQuiz = typeof contentQuizzes.$inferSelect;
@@ -294,9 +282,7 @@ export type ContentGenerationSteps = typeof contentGenerationSteps.$inferSelect;
 export type InsertContentGenerationSteps = z.infer<typeof insertContentGenerationStepsSchema>;
 
 // Enhanced content types for API responses
-export type DailyContentFact = ContentFact & {
-  diveDeeper?: ContentDiveDeeper | null;
-};
+export type DailyContentFact = ContentFact;
 
 export type DailyContentComplete = {
   day: ContentDay;

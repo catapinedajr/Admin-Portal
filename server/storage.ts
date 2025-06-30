@@ -9,7 +9,7 @@ import {
   userQuizAnswers,
   contentDays,
   contentFacts,
-  contentDiveDeeper,
+
   contentLessons,
   contentQuizzes,
   contentMetadata,
@@ -21,8 +21,7 @@ import {
   type InsertContentDay,
   type ContentFact,
   type InsertContentFact,
-  type ContentDiveDeeper,
-  type InsertContentDiveDeeper,
+
   type ContentLesson,
   type InsertContentLesson,
   type ContentQuiz,
@@ -152,19 +151,7 @@ export class DatabaseStorage implements IStorage {
     const day = await this.getContentDay(dayIndex);
     if (!day) return [];
 
-    const facts = await db.select().from(contentFacts).where(eq(contentFacts.dayId, day.id)).orderBy(contentFacts.orderIndex);
-    
-    // Get dive deeper content for each fact
-    const factsWithDiveDeeper: DailyContentFact[] = [];
-    for (const fact of facts) {
-      const [diveDeeper] = await db.select().from(contentDiveDeeper).where(eq(contentDiveDeeper.factId, fact.id));
-      factsWithDiveDeeper.push({
-        ...fact,
-        diveDeeper: diveDeeper || null
-      });
-    }
-    
-    return factsWithDiveDeeper;
+    return await db.select().from(contentFacts).where(eq(contentFacts.dayId, day.id)).orderBy(contentFacts.orderIndex);
   }
 
   async getAllContentFacts(): Promise<ContentFact[]> {

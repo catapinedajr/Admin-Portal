@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import path from "path";
 import { storage } from "./storage";
 import { db } from "./db";
-import { contentDays, contentFacts, contentDiveDeeper, contentLessons, contentQuizzes, contentGenerationSteps } from "@shared/schema";
+import { contentDays, contentFacts, contentLessons, contentQuizzes, contentGenerationSteps } from "@shared/schema";
 import { eq } from "drizzle-orm";
 
 
@@ -30,14 +30,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         orderIndex: 0
       }).returning();
 
-      // Create dive deeper
-      await db.insert(contentDiveDeeper).values({
-        factId: fact.id,
-        explanation: "Bitcoin represents a completely new way to think about money.",
-        examples: ["No bank can freeze your Bitcoin", "Works 24/7 worldwide"],
-        visualDescription: "Imagine a digital ledger that everyone can see",
-        keyTakeaways: ["Decentralized", "Digital", "Borderless", "Fixed supply"]
-      });
+
 
       // Create lesson
       await db.insert(contentLessons).values({
@@ -83,9 +76,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           await db.delete(contentQuizzes).where(eq(contentQuizzes.dayId, existingDay.id));
           
-          for (const fact of existingFacts) {
-            await db.delete(contentDiveDeeper).where(eq(contentDiveDeeper.factId, fact.id));
-          }
+          // Remove existing facts (dive deeper table already dropped)
           
           await db.delete(contentLessons).where(eq(contentLessons.dayId, existingDay.id));
           await db.delete(contentFacts).where(eq(contentFacts.dayId, existingDay.id));
@@ -155,16 +146,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             createdAt: new Date()
           }).returning();
           
-          await db.insert(contentDiveDeeper).values({
-            factId: savedFact.id,
-            explanation: fact.diveDeeper.explanation,
-            examples: fact.diveDeeper.examples,
-            visualDescription: fact.diveDeeper.visualDescription,
-            keyTakeaways: fact.diveDeeper.keyTakeaways,
-            createdAt: new Date()
-          });
-          
-          console.log(`✓ Saved fact ${i + 1}: "${fact.title}" with dive deeper`);
+          console.log(`✓ Saved fact ${i + 1}: "${fact.title}"`);
         }
         
         // Insert comprehensive lesson
@@ -376,9 +358,12 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
         // Default to Day 1 when no day specified (for current user's progress)
         dayIndex = 1;
       }
+      console.log(`[DEBUG] Getting facts for day ${dayIndex}`);
       const facts = await storage.getContentFacts(dayIndex);
+      console.log(`[DEBUG] Found ${facts.length} facts for day ${dayIndex}`);
       res.json(facts);
     } catch (error) {
+      console.error(`[ERROR] Failed to get daily facts for day ${dayIndex}:`, error);
       res.status(500).json({ message: "Failed to get daily facts" });
     }
   });
