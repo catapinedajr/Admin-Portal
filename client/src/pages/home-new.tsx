@@ -2529,7 +2529,10 @@ export default function Home() {
                     {/* Quick Action Buttons */}
                     <div className="flex gap-1">
                       <button
-                        onClick={async () => {
+                        onClick={async (e) => {
+                          e.preventDefault();
+                          const button = e.currentTarget;
+                          button.disabled = true;
                           try {
                             const response = await fetch(`/api/content-day/${currentDayIndex}/approval`, {
                               method: 'PATCH',
@@ -2537,19 +2540,24 @@ export default function Home() {
                               body: JSON.stringify({ isApproved: false })
                             });
                             if (response.ok) {
-                              queryClient.invalidateQueries({ queryKey: ['/api/day-metadata', currentDayIndex] });
+                              await queryClient.invalidateQueries({ queryKey: ['/api/day-metadata', currentDayIndex] });
                             }
                           } catch (error) {
                             console.error('Error updating approval:', error);
+                          } finally {
+                            button.disabled = false;
                           }
                         }}
-                        className="text-xs px-2 py-1 bg-red-600/20 text-red-400 rounded hover:bg-red-600/30 transition-colors"
+                        className="text-xs px-2 py-1 bg-red-600/20 text-red-400 rounded hover:bg-red-600/30 transition-colors disabled:opacity-50"
                         title="Mark as needs fixing"
                       >
-                        Fix
+                        Needs Fix
                       </button>
                       <button
-                        onClick={async () => {
+                        onClick={async (e) => {
+                          e.preventDefault();
+                          const button = e.currentTarget;
+                          button.disabled = true;
                           try {
                             const response = await fetch(`/api/content-day/${currentDayIndex}/approval`, {
                               method: 'PATCH',
@@ -2557,13 +2565,15 @@ export default function Home() {
                               body: JSON.stringify({ isApproved: true })
                             });
                             if (response.ok) {
-                              queryClient.invalidateQueries({ queryKey: ['/api/day-metadata', currentDayIndex] });
+                              await queryClient.invalidateQueries({ queryKey: ['/api/day-metadata', currentDayIndex] });
                             }
                           } catch (error) {
                             console.error('Error updating approval:', error);
+                          } finally {
+                            button.disabled = false;
                           }
                         }}
-                        className="text-xs px-2 py-1 bg-green-600/20 text-green-400 rounded hover:bg-green-600/30 transition-colors"
+                        className="text-xs px-2 py-1 bg-green-600/20 text-green-400 rounded hover:bg-green-600/30 transition-colors disabled:opacity-50"
                         title="Mark as approved"
                       >
                         Approve
