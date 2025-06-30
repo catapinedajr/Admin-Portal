@@ -2475,25 +2475,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Minimal Progress Display - Today Section Only */}
-            {learnSubTab === "today" && (
-              <div className="text-center py-4">
-                <div className="inline-flex items-center gap-2 bg-zinc-800/50 rounded-lg px-4 py-2 border border-zinc-700/50">
-                  <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
-                  <span className="text-zinc-300 text-sm">
-                    Day {currentDayIndex} of your Bitcoin journey
-                  </span>
-                </div>
-                {user?.currentStreak && user.currentStreak > 0 && (
-                  <p className="text-zinc-500 text-xs mt-2">
-                    {user.currentStreak === 1 ? "Every Bitcoin journey begins with a single step" : 
-                     user.currentStreak < 7 ? "Building momentum on your journey" :
-                     user.currentStreak < 30 ? "Steady progress along your Bitcoin path" :
-                     "A remarkable journey of Bitcoin discovery"}
-                  </p>
-                )}
-              </div>
-            )}
+
 
 
 
