@@ -2470,13 +2470,14 @@ export default function Home() {
                       stroke="#f97316"
                       strokeWidth="8"
                       strokeLinecap="round"
-                      strokeDasharray={`${((user?.currentStreak || 0) / 180) * 283} 283`}
+                      strokeDasharray={`${((((user?.currentStreak || 1) - 1) % 7) + 1) / 7 * 283} 283`}
                       className="transition-all duration-700 ease-out"
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <div className="text-3xl font-bold text-orange-400">{user?.currentStreak || 0}</div>
-                    <div className="text-sm text-zinc-400">Day Streak</div>
+                    <div className="text-3xl font-bold text-orange-400">{(((user?.currentStreak || 1) - 1) % 7) + 1}</div>
+                    <div className="text-sm text-zinc-400">Day {(((user?.currentStreak || 1) - 1) % 7) + 1}</div>
+                    <div className="text-xs text-zinc-500 mt-1">Week {Math.ceil((user?.currentStreak || 1) / 7)}</div>
                   </div>
                 </div>
               </div>
@@ -2485,16 +2486,16 @@ export default function Home() {
               <div className="bg-zinc-900/50 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-white mb-4 text-center">Bitcoin Journey Progress</h3>
                 <div className="space-y-4">
-                  {/* Week Progress Bar */}
+                  {/* 180-Day Journey Progress Bar */}
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="text-zinc-400">Week {Math.ceil((user?.currentStreak || 1) / 7)}</span>
-                      <span className="text-zinc-400">{(((user?.currentStreak || 1) - 1) % 7) + 1}/7 days</span>
+                      <span className="text-zinc-400">Day {user?.currentStreak || 0} of 180</span>
+                      <span className="text-zinc-400">{Math.round(((user?.currentStreak || 0) / 180) * 100)}% Complete</span>
                     </div>
                     <div className="w-full bg-zinc-800 rounded-full h-3">
                       <div 
                         className="bg-gradient-to-r from-orange-500 to-orange-400 h-3 rounded-full transition-all duration-500"
-                        style={{ width: `${((((user?.currentStreak || 1) - 1) % 7) + 1) / 7 * 100}%` }}
+                        style={{ width: `${((user?.currentStreak || 0) / 180) * 100}%` }}
                       />
                     </div>
                   </div>
