@@ -210,11 +210,9 @@ export function AuthPage() {
                         <FormLabel>Username</FormLabel>
                         <FormControl>
                           <Input 
+                            type="text"
                             placeholder="Choose a username" 
-                            value={field.value}
-                            onChange={field.onChange}
-                            onBlur={field.onBlur}
-                            name={field.name}
+                            {...field}
                             autoComplete="username"
                           />
                         </FormControl>
@@ -233,10 +231,7 @@ export function AuthPage() {
                           <Input 
                             type="password" 
                             placeholder="Create a password" 
-                            value={field.value}
-                            onChange={field.onChange}
-                            onBlur={field.onBlur}
-                            name={field.name}
+                            {...field}
                             autoComplete="new-password"
                           />
                         </FormControl>
