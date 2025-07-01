@@ -1622,6 +1622,46 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
+  // Simulator completion routes
+  app.get("/api/simulator-completions/:userId/monthly", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM format
+      
+      const completions = await storage.getUserSimulatorCompletions(userId, currentMonth);
+      
+      // Transform to simple completion map
+      const completionMap = completions.map(completion => ({
+        simulatorType: completion.simulatorType,
+        completed: true,
+        completedAt: completion.createdAt
+      }));
+      
+      res.json(completionMap);
+    } catch (error) {
+      console.error('Error fetching simulator completions:', error);
+      res.status(500).json({ message: "Failed to fetch simulator completions" });
+    }
+  });
+
+  app.post("/api/simulator-completions/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const { simulatorType } = req.body;
+      const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM format
+      
+      if (!simulatorType) {
+        return res.status(400).json({ message: "simulatorType is required" });
+      }
+      
+      const completion = await storage.markSimulatorCompleted(userId, simulatorType, currentMonth);
+      res.json(completion);
+    } catch (error) {
+      console.error('Error marking simulator completed:', error);
+      res.status(500).json({ message: "Failed to mark simulator completed" });
+    }
+  });
+
   // Content Day Approval Routes
   app.patch("/api/content-day/:dayIndex/approval", async (req, res) => {
     try {

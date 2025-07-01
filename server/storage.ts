@@ -2,6 +2,7 @@ import {
   users, 
   userProgress, 
   dailyActivities,
+  simulatorCompletions,
   knowledgeAreas,
   convictionContent,
   treasuryCompanies,
@@ -22,6 +23,8 @@ import {
   type InsertUserProgress,
   type DailyActivity,
   type InsertDailyActivity,
+  type SimulatorCompletion,
+  type InsertSimulatorCompletion,
   type ContentDay,
   type InsertContentDay,
   type ContentSetUpQuestion,
@@ -148,6 +151,10 @@ export interface IStorage {
   getUserQuizAnswers(userId: number, date: string): Promise<UserQuizAnswer[]>;
   saveQuizAnswer(answer: InsertUserQuizAnswer): Promise<UserQuizAnswer>;
   getUserQuizStatistics(userId: number): Promise<{ totalQuizzesTaken: number; totalCorrectAnswers: number; averageScore: number }>;
+
+  // Simulator completion methods
+  getUserSimulatorCompletions(userId: number, month: string): Promise<SimulatorCompletion[]>;
+  markSimulatorCompleted(userId: number, simulatorType: string, month: string): Promise<SimulatorCompletion>;
 
   // Email collection methods
   saveEmailCollection(emailData: InsertEmailCollection): Promise<EmailCollection>;
@@ -662,6 +669,48 @@ export class DatabaseStorage implements IStorage {
       quizCompleted: existing?.quizCompleted || false,
       practiceCompleted: true
     });
+  }
+
+  // Simulator completion methods
+  async getUserSimulatorCompletions(userId: number, month: string): Promise<SimulatorCompletion[]> {
+    return await db
+      .select()
+      .from(simulatorCompletions)
+      .where(
+        and(
+          eq(simulatorCompletions.userId, userId),
+          eq(simulatorCompletions.completedMonth, month)
+        )
+      );
+  }
+
+  async markSimulatorCompleted(userId: number, simulatorType: string, month: string): Promise<SimulatorCompletion> {
+    const [completion] = await db
+      .insert(simulatorCompletions)
+      .values({
+        userId,
+        simulatorType,
+        completedMonth: month,
+      })
+      .onConflictDoNothing()
+      .returning();
+    
+    if (!completion) {
+      // Return existing completion if conflict occurred
+      const [existing] = await db
+        .select()
+        .from(simulatorCompletions)
+        .where(
+          and(
+            eq(simulatorCompletions.userId, userId),
+            eq(simulatorCompletions.simulatorType, simulatorType),
+            eq(simulatorCompletions.completedMonth, month)
+          )
+        );
+      return existing;
+    }
+    
+    return completion;
   }
 }
 

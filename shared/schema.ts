@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, json, decimal, date, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, json, decimal, date, varchar, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -60,6 +60,17 @@ export const dailyActivities = pgTable("daily_activities", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export const simulatorCompletions = pgTable("simulator_completions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  simulatorType: text("simulator_type").notNull(), // 'dca', 'hodl', 'inflation', 'settlement', 'security'
+  completedMonth: text("completed_month").notNull(), // YYYY-MM format
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  // Unique constraint: one completion per user per simulator per month
+  index("unique_user_simulator_month").on(table.userId, table.simulatorType, table.completedMonth),
+]);
 
 export const knowledgeAreas = pgTable("knowledge_areas", {
   id: serial("id").primaryKey(),
@@ -398,3 +409,12 @@ export const insertDailyActivitySchema = createInsertSchema(dailyActivities).omi
 
 export type DailyActivity = typeof dailyActivities.$inferSelect;
 export type InsertDailyActivity = z.infer<typeof insertDailyActivitySchema>;
+
+// Simulator Completions schema and types
+export const insertSimulatorCompletionSchema = createInsertSchema(simulatorCompletions).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type SimulatorCompletion = typeof simulatorCompletions.$inferSelect;
+export type InsertSimulatorCompletion = z.infer<typeof insertSimulatorCompletionSchema>;
