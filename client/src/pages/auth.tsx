@@ -19,6 +19,8 @@ const registerSchema = z.object({
   username: z.string().min(3, 'Username must be at least 3 characters').max(20),
   password: z.string().min(6, 'Password must be at least 6 characters').max(100),
   email: z.string().email('Valid email is required for account recovery'),
+  firstName: z.string().min(1, 'First name is required').max(50),
+  lastName: z.string().min(1, 'Last name is required').max(50),
 });
 
 const forgotPasswordSchema = z.object({
@@ -78,6 +80,8 @@ export function AuthPage() {
       username: '',
       password: '',
       email: '',
+      firstName: '',
+      lastName: '',
     },
     mode: 'onChange',
   });
@@ -321,6 +325,47 @@ export function AuthPage() {
               <Form {...registerForm}>
                 <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
                   <div className="space-y-4">
+                    {/* First and Last Name */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-sm font-medium text-zinc-300 mb-1">
+                          First Name
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="John"
+                          value={registerForm.watch('firstName')}
+                          onChange={(e) => registerForm.setValue('firstName', e.target.value)}
+                          className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-zinc-200 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                          autoComplete="given-name"
+                        />
+                        {registerForm.formState.errors.firstName && (
+                          <p className="mt-1 text-sm text-red-400">
+                            {registerForm.formState.errors.firstName.message}
+                          </p>
+                        )}
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-zinc-300 mb-1">
+                          Last Name
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Doe"
+                          value={registerForm.watch('lastName')}
+                          onChange={(e) => registerForm.setValue('lastName', e.target.value)}
+                          className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-zinc-200 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                          autoComplete="family-name"
+                        />
+                        {registerForm.formState.errors.lastName && (
+                          <p className="mt-1 text-sm text-red-400">
+                            {registerForm.formState.errors.lastName.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
                     <div>
                       <label className="block text-sm font-medium text-zinc-300 mb-1">
                         Username

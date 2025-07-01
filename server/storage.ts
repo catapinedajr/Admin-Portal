@@ -172,6 +172,8 @@ export class DatabaseStorage implements IStorage {
         username: userData.username,
         passwordHash: hashedPassword,
         email: userData.email,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
         currentStreak: 0,
         longestStreak: 0,
         completedLessons: 0,

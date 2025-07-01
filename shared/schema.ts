@@ -7,6 +7,8 @@ export const users = pgTable("users", {
   username: text("username").notNull().unique(),
   passwordHash: text("password_hash").notNull(),
   email: text("email").notNull().unique(), // Required for account recovery
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
   currentStreak: integer("current_streak").notNull().default(0),
   longestStreak: integer("longest_streak").notNull().default(0),
   completedLessons: integer("completed_lessons").notNull().default(0),
@@ -216,6 +218,8 @@ export const registerSchema = z.object({
   username: z.string().min(3).max(20),
   password: z.string().min(6).max(100),
   email: z.string().email(),
+  firstName: z.string().min(1).max(50),
+  lastName: z.string().min(1).max(50),
 });
 
 export const forgotPasswordSchema = z.object({
