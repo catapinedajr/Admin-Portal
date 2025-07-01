@@ -4063,7 +4063,7 @@ export default function Home() {
                       Unlock All Simulators - FREE
                     </Button>
                     <p className="text-xs text-zinc-500 mt-3">
-                      Cancel anytime • Access all interactive tools
+                      Free for a limited time
                     </p>
                   </CardContent>
                 </Card>
