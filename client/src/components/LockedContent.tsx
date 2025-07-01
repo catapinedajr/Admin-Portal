@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Lock, Crown } from 'lucide-react';
-import { useSubscription } from '@/contexts/SubscriptionContext';
+// import { useSubscription } from '@/contexts/SubscriptionContext';
 import EmailCollectionModal from './EmailCollectionModal';
 
 interface LockedContentProps {
@@ -23,7 +23,9 @@ export default function LockedContent({
   blurContent = true,
   showPreview = true 
 }: LockedContentProps) {
-  const { isPremiumTier } = useSubscription();
+  // Temporarily disabled during notification system debugging
+  // const { isPremiumTier } = useSubscription();
+  const isPremiumTier = false;
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   // If user has premium access, show content normally

@@ -1,10 +1,14 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Crown, User } from 'lucide-react';
-import { useSubscription } from '@/contexts/SubscriptionContext';
+// import { useSubscription } from '@/contexts/SubscriptionContext';
 
 export default function DevSubscriptionToggle() {
-  const { subscriptionTier, toggleSubscription, isPremiumTier } = useSubscription();
+  // Temporarily disabled during notification system debugging
+  // const { subscriptionTier, toggleSubscription, isPremiumTier } = useSubscription();
+  const subscriptionTier = 'free';
+  const toggleSubscription = () => {};
+  const isPremiumTier = false;
 
   // Only show in development
   if (process.env.NODE_ENV === 'production') {

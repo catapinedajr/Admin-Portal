@@ -11,7 +11,7 @@ interface NotificationPermissionProps {
 }
 
 export default function NotificationPermission({ userId }: NotificationPermissionProps) {
-  const [permission, setPermission] = useState<NotificationPermission>('default');
+  const [permissionStatus, setPermissionStatus] = useState<NotificationPermission>('default');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -19,7 +19,7 @@ export default function NotificationPermission({ userId }: NotificationPermissio
 
   useEffect(() => {
     if ('Notification' in window) {
-      setPermission(Notification.permission);
+      setPermissionStatus(Notification.permission);
       checkSubscriptionStatus();
     }
   }, []);
@@ -46,7 +46,7 @@ export default function NotificationPermission({ userId }: NotificationPermissio
       return;
     }
 
-    if (permission === 'denied') {
+    if (permissionStatus === 'denied') {
       setShowModal(true);
       return;
     }
@@ -55,7 +55,7 @@ export default function NotificationPermission({ userId }: NotificationPermissio
 
     try {
       const newPermission = await Notification.requestPermission();
-      setPermission(newPermission);
+      setPermissionStatus(newPermission);
 
       if (newPermission === 'granted') {
         await subscribeUser();
@@ -165,14 +165,14 @@ export default function NotificationPermission({ userId }: NotificationPermissio
   };
 
   const getButtonContent = () => {
-    if (permission === 'granted' && isSubscribed) {
+    if (permissionStatus === 'granted' && isSubscribed) {
       return {
         icon: <Bell className="w-4 h-4" />,
         text: "Notifications On",
         variant: "default" as const,
         onClick: unsubscribeUser,
       };
-    } else if (permission === 'granted' && !isSubscribed) {
+    } else if (permissionStatus === 'granted' && !isSubscribed) {
       return {
         icon: <BellOff className="w-4 h-4" />,
         text: "Enable Notifications",
