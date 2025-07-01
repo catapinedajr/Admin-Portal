@@ -55,12 +55,38 @@ export default function PWAInstallButton() {
     console.log('HODLearn: User Agent:', navigator.userAgent);
 
     if (!deferredPrompt) {
-      console.log('HODLearn: No install prompt available - trying manual instruction');
+      console.log('HODLearn: No install prompt available - checking browser install options');
       
       // Reset click state after showing alert
       setTimeout(() => setIsClicked(false), 100);
       
-      alert('To install HODLearn:\n\n1. Click the menu (⋮) in your browser\n2. Look for "Install HODLearn" or "Add to Home Screen"\n3. Click it to install the app\n\nOr try opening in Chrome/Edge on desktop for best results.');
+      // Check if we're on mobile or desktop and provide appropriate instructions
+      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const isChrome = /Chrome/i.test(navigator.userAgent);
+      const isFirefox = /Firefox/i.test(navigator.userAgent);
+      const isSafari = /Safari/i.test(navigator.userAgent) && !/Chrome/i.test(navigator.userAgent);
+      
+      let instructions = 'To install HODLearn:\n\n';
+      
+      if (isMobile) {
+        if (isChrome) {
+          instructions += '1. Tap the menu (⋮) → "Add to Home Screen"\n2. Tap "Install" or "Add"';
+        } else if (isSafari) {
+          instructions += '1. Tap the Share button (□↗)\n2. Scroll down → "Add to Home Screen"\n3. Tap "Add"';
+        } else {
+          instructions += '1. Look for "Add to Home Screen" in your browser menu\n2. Tap to install';
+        }
+      } else {
+        if (isChrome) {
+          instructions += '1. Click the menu (⋮) → "Install HODLearn"\n2. Or look for the install icon in the address bar';
+        } else if (isFirefox) {
+          instructions += '1. Visit us a few more times and Firefox will offer installation\n2. Or bookmark us for easy access';
+        } else {
+          instructions += '1. Try opening in Chrome or Edge for best install experience\n2. Look for "Install app" in the browser menu';
+        }
+      }
+      
+      alert(instructions);
       return;
     }
 
