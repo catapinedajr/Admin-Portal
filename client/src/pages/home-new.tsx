@@ -6664,22 +6664,22 @@ export default function Home() {
                               <rect width="100%" height="100%" fill="url(#grid-hodl-chart)" />
                               
                               {/* 5x Market Line */}
-                              <line x1="3" y1="64.3" x2="97" y2="64.3" stroke="#fbbf24" strokeWidth="0.3" opacity="0.6" strokeDasharray="1,1"/>
-                              <text x="98" y="65.5" fill="#fbbf24" fontSize="3" opacity="0.8">5x</text>
+                              <line x1="3" y1="64.3" x2="88" y2="64.3" stroke="#fbbf24" strokeWidth="0.5" opacity="0.6" strokeDasharray="2,2"/>
+                              <text x="90" y="66" fill="#fbbf24" fontSize="4" opacity="0.8">5x</text>
                               
                               {/* 10x Market Line */}
-                              <line x1="3" y1="42.9" x2="97" y2="42.9" stroke="#f97316" strokeWidth="0.3" opacity="0.6" strokeDasharray="1,1"/>
-                              <text x="98" y="44.1" fill="#f97316" fontSize="3" opacity="0.8">10x</text>
+                              <line x1="3" y1="42.9" x2="88" y2="42.9" stroke="#f97316" strokeWidth="0.5" opacity="0.6" strokeDasharray="2,2"/>
+                              <text x="90" y="44.5" fill="#f97316" fontSize="4" opacity="0.8">10x</text>
                               
                               {/* 100x Market Line */}
-                              <line x1="3" y1="14.3" x2="97" y2="14.3" stroke="#dc2626" strokeWidth="0.3" opacity="0.6" strokeDasharray="1,1"/>
-                              <text x="98" y="15.5" fill="#dc2626" fontSize="3" opacity="0.8">100x</text>
+                              <line x1="3" y1="14.3" x2="88" y2="14.3" stroke="#dc2626" strokeWidth="0.5" opacity="0.6" strokeDasharray="2,2"/>
+                              <text x="90" y="16" fill="#dc2626" fontSize="4" opacity="0.8">100x</text>
                               
                               {/* Bitcoin Price Line (realistic exponential growth) */}
                               <path 
                                 d="M 3 85.7 Q 15.6 82.1 25 78.6 Q 37.5 75 50 67.9 Q 62.5 57.1 75 42.9 Q 87.5 25 97 17.9" 
                                 stroke="#f97316" 
-                                strokeWidth="1" 
+                                strokeWidth="1.5" 
                                 fill="none"
                                 className="drop-shadow-lg"
                               />
@@ -6703,9 +6703,9 @@ export default function Home() {
                               <circle cx="97" cy="17.9" r="1.5" fill="#f97316" stroke="#ffffff" strokeWidth="0.5" className="animate-pulse"/>
                               
                               {/* Time labels */}
-                              <text x="3" y="96.4" fill="#9ca3af" fontSize="2.5" textAnchor="start">2017</text>
-                              <text x="50" y="96.4" fill="#9ca3af" fontSize="2.5" textAnchor="middle">2021</text>
-                              <text x="97" y="96.4" fill="#9ca3af" fontSize="2.5" textAnchor="end">2025</text>
+                              <text x="3" y="95" fill="#9ca3af" fontSize="4" textAnchor="start">2017</text>
+                              <text x="50" y="95" fill="#9ca3af" fontSize="4" textAnchor="middle">2021</text>
+                              <text x="97" y="95" fill="#9ca3af" fontSize="4" textAnchor="end">2025</text>
                             </svg>
                           </div>
                         </div>
