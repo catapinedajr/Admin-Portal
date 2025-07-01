@@ -85,6 +85,7 @@ import LockedContent from "@/components/LockedContent";
 // Removed UpgradeModal import - now using inline upgrade cards
 import DevSubscriptionToggle from "@/components/DevSubscriptionToggle";
 import BottomNavigation from "@/components/BottomNavigation";
+import EmailCollectionModal from "@/components/EmailCollectionModal";
 
 // Weekly Quiz Component
 interface WeeklyQuizProps {
@@ -386,6 +387,7 @@ export default function Home() {
   
   const [activeSection, setActiveSection] = useState<MainSection>(getActiveSectionFromPath(location));
   const [learnSubTab, setLearnSubTab] = useState<LearnSubTab>("today");
+  const [showEmailModal, setShowEmailModal] = useState(false);
   const [simulationsSubTab, setSimulationsSubTab] = useState<SimulationsSubTab>(getSimulatorSubTabFromPath(location));
   const [moreSubTab, setMoreSubTab] = useState<MoreSubTab>("about");
   // Removed floating modal state - now using inline upgrade cards
@@ -4052,12 +4054,7 @@ export default function Home() {
                       Interactive Bitcoin simulations available to premium users. See what you're missing below!
                     </p>
                     <Button 
-                      onClick={() => {
-                        // Direct upgrade action instead of modal
-                        setTimeout(() => {
-                          setSubscriptionTier('premium');
-                        }, 1000);
-                      }}
+                      onClick={() => setShowEmailModal(true)}
                       className="bg-orange-500 hover:bg-orange-600 text-white px-8"
                     >
                       Unlock All Simulators - FREE
@@ -4199,12 +4196,7 @@ export default function Home() {
 
                 <div className="text-center">
                   <Button 
-                    onClick={() => {
-                      // Direct upgrade action instead of modal
-                      setTimeout(() => {
-                        setSubscriptionTier('premium');
-                      }, 1000);
-                    }}
+                    onClick={() => setShowEmailModal(true)}
                     className="bg-orange-500 hover:bg-orange-600 text-white px-8"
                   >
                     Unlock All 6 Simulators - FREE
@@ -8702,6 +8694,14 @@ export default function Home() {
           else if (section === 'simulators') setLocation('/simulators');
           else if (section === 'more') setLocation('/more');
         }}
+      />
+
+      {/* Email Collection Modal */}
+      <EmailCollectionModal
+        isOpen={showEmailModal}
+        onClose={() => setShowEmailModal(false)}
+        trigger="simulator"
+        lockedFeature="Premium Simulators"
       />
       
       {/* Bottom padding to accommodate navigation */}
