@@ -1907,12 +1907,12 @@ export default function Home() {
   const [showResult, setShowResult] = useState(false);
   const [safetyCompleted, setSafetyCompleted] = useState(false);
 
-  // REBUILT SAFETY QUIZ - Simple Multiple Choice Questions
-  const safetyQuestions = [
+  // Comprehensive 12-Stage Safety Simulation Data
+  const safetySimulations = [
     {
       stage: "Phishing Detection",
       title: "Spot the Phishing Email",
-      description: "Which email is SAFE to open? Click the legitimate email and avoid the phishing attempts.",
+      description: "Can you identify the dangerous email that's trying to steal your Bitcoin?",
       emails: [
         {
           from: "security@binance.com",
@@ -1953,7 +1953,7 @@ export default function Home() {
         },
         {
           method: "Save in password manager",
-          safe: false
+          safe: true
         },
         {
           method: "Memorize only",
@@ -2003,20 +2003,20 @@ export default function Home() {
       description: "You want to buy Bitcoin. Which exchange should you choose?",
       options: [
         {
-          method: "Random exchange found through Google ads",
-          safe: false
-        },
-        {
           method: "Brand new exchange offering 50% signup bonus",
-          safe: false
-        },
-        {
-          method: "Exchange recommended in a Telegram group",
           safe: false
         },
         {
           method: "Well-known exchange like Coinbase or Kraken",
           safe: true
+        },
+        {
+          method: "Random exchange found through Google ads",
+          safe: false
+        },
+        {
+          method: "Exchange recommended in a Telegram group",
+          safe: false
         }
       ]
     },
@@ -2035,11 +2035,11 @@ export default function Home() {
         },
         {
           method: "Use public WiFi but only check prices, not access wallet",
-          safe: false
+          safe: true
         },
         {
           method: "Connect through a VPN on public WiFi",
-          safe: false
+          safe: true
         }
       ]
     },
@@ -2062,7 +2062,7 @@ export default function Home() {
         },
         {
           method: "Official app store or Google Play Store",
-          safe: false
+          safe: true
         }
       ]
     },
@@ -2072,20 +2072,20 @@ export default function Home() {
       description: "Someone calls claiming to be from your exchange, asking for your 2FA code. What do you do?",
       options: [
         {
-          method: "Ask them to verify my account details first",
-          safe: false
-        },
-        {
           method: "Give them the code since they knew my email",
-          safe: false
-        },
-        {
-          method: "Tell them to email me instead",
           safe: false
         },
         {
           method: "Hang up and call the exchange directly",
           safe: true
+        },
+        {
+          method: "Ask them to verify my account details first",
+          safe: false
+        },
+        {
+          method: "Tell them to email me instead",
+          safe: false
         }
       ]
     },
@@ -2189,29 +2189,62 @@ export default function Home() {
     setSelectedOption(optionIndex);
     setShowResult(true);
     
-    // BULLETPROOF VALIDATION SYSTEM - Direct correct answer mapping
-    const correctAnswers = {
-      0: 1, // Phishing Detection: Coinbase email (index 1)
-      1: 1, // Seed Phrase: Write it down (index 1) 
-      2: 1, // Address Verification: Valid bitcoin address (index 1)
-      3: 2, // Scam Recognition: Legitimate exchange (index 2)
-      4: 3, // Exchange Security: Well-known exchange (index 3)
-      5: 1, // WiFi Security: Mobile data (index 1)
-      6: 1, // Software Downloads: Official website (index 1)
-      7: 3, // Social Engineering: Hang up and call direct (index 3)
-      8: 1, // Hardware Wallet: Official manufacturer (index 1)
-      9: 1, // Backup Testing: Test restore separately (index 1)
-      10: 1, // Transaction Fees: Never use wallet again (index 1)
-      11: 2  // Recovery Scams: Decline and self-recover (index 2)
-    };
+    // Calculate score based on stage with comprehensive validation
+    let correct = false;
+    const simulation = safetySimulations[safetyStage];
     
-    const correct = correctAnswers[safetyStage] === optionIndex;
-    
-    console.log(`✅ SIMPLE VALIDATION - Stage ${safetyStage}: Selected ${optionIndex}, Correct ${correctAnswers[safetyStage]} = ${correct ? 'CORRECT ✓' : 'INCORRECT ✗'}`);
-    
-    if (correct) {
-      setSafetyScore(prev => prev + 1);
+    if (!simulation) {
+      console.error(`Invalid stage: ${safetyStage}`);
+      return;
     }
+    
+    try {
+      switch (safetyStage) {
+        case 0: // Phishing Detection
+          if (simulation.emails && simulation.emails[optionIndex]) {
+            correct = simulation.emails[optionIndex].isPhishing === true;
+          }
+          break;
+          
+        case 2: // Address Verification
+          if (simulation.options && simulation.options[optionIndex]) {
+            const option = simulation.options[optionIndex];
+            correct = 'correct' in option ? option.correct === true : false;
+          }
+          break;
+          
+        case 3: // Scam Recognition
+          if (simulation.scenarios && simulation.scenarios[optionIndex]) {
+            correct = simulation.scenarios[optionIndex].isScam === false;
+          }
+          break;
+          
+        case 1:  // Seed Phrase Security
+        case 4:  // Exchange Security  
+        case 5:  // WiFi Security
+        case 6:  // Software Downloads
+        case 7:  // Social Engineering
+        case 8:  // Hardware Wallet
+        case 9:  // Backup Testing
+        case 10: // Transaction Fees
+        case 11: // Recovery Scams
+          if (simulation.options && simulation.options[optionIndex]) {
+            const option = simulation.options[optionIndex];
+            correct = 'safe' in option ? option.safe === true : false;
+          }
+          break;
+          
+        default:
+          console.error(`Unhandled stage: ${safetyStage}`);
+          break;
+      }
+      
+    } catch (error) {
+      console.error('Safety simulation validation error:', error, simulation);
+      correct = false;
+    }
+    
+    if (correct) setSafetyScore(prev => prev + 1);
   };
 
   const nextSafetyStage = () => {
