@@ -1515,6 +1515,17 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
         return res.status(404).json({ message: "Question not found" });
       }
 
+      console.log('DEBUG Quiz Submission:', {
+        questionId,
+        selectedAnswer,
+        questionOptions: question.options.map(opt => ({
+          id: opt.id,
+          text: opt.optionText?.substring(0, 30) + '...',
+          orderIndex: opt.orderIndex,
+          isCorrect: opt.isCorrect
+        }))
+      });
+
       // Convert selected answer letter (A,B,C,D) to option index (0,1,2,3)
       const optionIndex = ['A', 'B', 'C', 'D'].indexOf(selectedAnswer);
       if (optionIndex === -1) {
@@ -1524,8 +1535,15 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
       // Get the selected option from the new database structure
       const selectedOption = question.options.find(opt => opt.orderIndex === optionIndex);
       if (!selectedOption) {
+        console.log('ERROR: Could not find option with orderIndex:', optionIndex);
         return res.status(400).json({ message: "Invalid option selected" });
       }
+      
+      console.log('DEBUG Selected Option:', {
+        optionIndex,
+        selectedText: selectedOption.optionText?.substring(0, 30) + '...',
+        isCorrect: selectedOption.isCorrect
+      });
       
       // Use the clear boolean isCorrect value - no conversion needed
       const isCorrect = selectedOption.isCorrect;
