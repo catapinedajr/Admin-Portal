@@ -8552,7 +8552,23 @@ export default function Home() {
 
             {/* Store Section */}
             {moreSubTab === "store" && (
-              <div className="space-y-6">
+              <div className="relative space-y-6">
+                {/* Coming Soon Watermark Overlay */}
+                <div className="absolute inset-0 bg-black/50 backdrop-blur-sm z-10 flex items-center justify-center rounded-lg">
+                  <div className="text-center space-y-4">
+                    <div className="text-6xl font-bold text-orange-500/20 transform -rotate-12 select-none">
+                      COMING SOON
+                    </div>
+                    <div className="bg-zinc-900/90 rounded-lg p-6 border border-orange-500/30">
+                      <h4 className="text-2xl font-bold text-orange-400 mb-2">Store Opening Soon</h4>
+                      <p className="text-zinc-300 max-w-md">
+                        We're curating the best Bitcoin hardware, books, and learning resources for you. 
+                        Check back soon for exclusive deals!
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="text-center space-y-2">
                   <h3 className="text-xl font-bold text-white">Bitcoin Learning Store</h3>
                   <p className="text-zinc-400">Essential tools and resources for your Bitcoin journey</p>
