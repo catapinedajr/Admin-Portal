@@ -2089,14 +2089,14 @@ export default function Home() {
     {
       stage: "Hardware Wallet",
       title: "🔧 Hardware Wallet Safety",
-      description: "You want to buy a hardware wallet for storing Bitcoin. What's the best approach?",
+      description: "You want to buy a hardware wallet for storing Bitcoin. What's the SAFEST approach?",
       options: [
         {
           method: "Buy used on eBay to save money",
           safe: false
         },
         {
-          method: "Buy new from the official manufacturer",
+          method: "Buy new directly from the official manufacturer website",
           safe: true
         },
         {
@@ -2104,8 +2104,8 @@ export default function Home() {
           safe: false
         },
         {
-          method: "Buy from local authorized reseller",
-          safe: true
+          method: "Buy from local computer store",
+          safe: false
         }
       ]
     },
