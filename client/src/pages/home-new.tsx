@@ -1948,7 +1948,7 @@ export default function Home() {
         },
         {
           method: "Save in password manager",
-          safe: false
+          safe: true
         },
         {
           method: "Memorize only",
@@ -2102,8 +2102,8 @@ export default function Home() {
           safe: false
         },
         {
-          method: "Buy from local computer store",
-          safe: false
+          method: "Buy from local authorized reseller",
+          safe: true
         }
       ]
     },
