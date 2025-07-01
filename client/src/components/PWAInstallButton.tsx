@@ -46,7 +46,16 @@ export default function PWAInstallButton() {
   }, []);
 
   const handleInstall = async () => {
-    if (!deferredPrompt) return;
+    console.log('HODLearn: Install button clicked');
+    console.log('HODLearn: deferredPrompt available:', !!deferredPrompt);
+    console.log('HODLearn: isInstallable:', isInstallable);
+    console.log('HODLearn: isInstalled:', isInstalled);
+
+    if (!deferredPrompt) {
+      console.log('HODLearn: No install prompt available - trying manual instruction');
+      alert('To install HODLearn:\n\n1. Click the menu (⋮) in your browser\n2. Look for "Install HODLearn" or "Add to Home Screen"\n3. Click it to install the app\n\nOr try opening in Chrome/Edge on desktop for best results.');
+      return;
+    }
 
     try {
       await deferredPrompt.prompt();
@@ -62,6 +71,7 @@ export default function PWAInstallButton() {
       setIsInstallable(false);
     } catch (error) {
       console.error('HODLearn: PWA installation error:', error);
+      alert('Installation not available in this browser. Try Chrome or Edge on desktop.');
     }
   };
 
