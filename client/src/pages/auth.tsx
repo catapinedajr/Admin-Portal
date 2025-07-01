@@ -207,13 +207,22 @@ export function AuthPage() {
                     name="username"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Username</FormLabel>
+                        <FormLabel>Username (Debug: {field.value || 'empty'})</FormLabel>
                         <FormControl>
                           <Input 
                             type="text"
                             placeholder="Choose a username" 
-                            {...field}
-                            autoComplete="username"
+                            value={field.value}
+                            onChange={(e) => {
+                              console.log('Username onChange:', e.target.value);
+                              field.onChange(e);
+                            }}
+                            onBlur={field.onBlur}
+                            name={field.name}
+                            autoComplete="off"
+                            spellCheck={false}
+                            onClick={() => console.log('Username clicked')}
+                            onFocus={() => console.log('Username focused')}
                           />
                         </FormControl>
                         <FormMessage />
@@ -232,7 +241,8 @@ export function AuthPage() {
                             type="password" 
                             placeholder="Create a password" 
                             {...field}
-                            autoComplete="new-password"
+                            autoComplete="off"
+                            spellCheck={false}
                           />
                         </FormControl>
                         <FormMessage />
