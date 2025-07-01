@@ -280,54 +280,77 @@ button, a, .cyber-card, .cyber-button {
   transition: all 0.2s ease-in-out;
 }
 
-/* Auth page animations */
+/* Elegant auth page animations */
 .animate-fade-in {
-  animation: fadeInAuth 1s ease-out;
+  animation: elegantFadeIn 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .animate-fade-in-delayed {
-  animation: fadeInAuth 1.2s ease-out;
-  animation-delay: 0.3s;
+  animation: elegantFadeIn 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  animation-delay: 0.8s;
   animation-fill-mode: both;
+  opacity: 0;
 }
 
 .animate-slide-up {
-  animation: slideUpAuth 0.8s ease-out;
-  animation-delay: 0.2s;
+  animation: elegantSlideUp 1s cubic-bezier(0.16, 1, 0.3, 1);
+  animation-delay: 0.4s;
   animation-fill-mode: both;
+  opacity: 0;
 }
 
 .animate-glow {
-  animation: glowPulse 3s ease-in-out infinite;
+  animation: subtleGlow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-@keyframes fadeInAuth {
-  from {
+@keyframes elegantFadeIn {
+  0% {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px) scale(0.98);
+    filter: blur(2px);
   }
-  to {
+  60% {
+    opacity: 0.8;
+    transform: translateY(-2px) scale(1.01);
+    filter: blur(0px);
+  }
+  100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
   }
 }
 
-@keyframes slideUpAuth {
-  from {
+@keyframes elegantSlideUp {
+  0% {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(24px) scale(0.96);
+    filter: brightness(0.8);
   }
-  to {
+  40% {
+    opacity: 0.7;
+    transform: translateY(4px) scale(1.02);
+    filter: brightness(1.1);
+  }
+  100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
+    filter: brightness(1);
   }
 }
 
-@keyframes glowPulse {
+@keyframes subtleGlow {
   0%, 100% {
-    text-shadow: 0 0 10px rgba(251, 146, 60, 0.3);
+    text-shadow: 
+      0 0 8px rgba(251, 146, 60, 0.2),
+      0 0 16px rgba(251, 146, 60, 0.1);
+    filter: brightness(1);
   }
   50% {
-    text-shadow: 0 0 20px rgba(251, 146, 60, 0.5), 0 0 30px rgba(251, 146, 60, 0.2);
+    text-shadow: 
+      0 0 16px rgba(251, 146, 60, 0.4),
+      0 0 32px rgba(251, 146, 60, 0.2),
+      0 0 48px rgba(251, 146, 60, 0.1);
+    filter: brightness(1.05);
   }
 }
