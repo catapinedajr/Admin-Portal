@@ -2553,36 +2553,31 @@ export default function Home() {
             <div className="grid md:grid-cols-2 gap-6">
               <Card className="bg-zinc-900 border-zinc-800 hover:border-orange-500/50 transition-colors">
                 <CardContent className="p-6">
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                        <GraduationCap className="w-6 h-6 text-orange-400" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-xl font-bold text-white mb-1">{dayMetadata?.title || 'Loading...'}</h3>
-                        <p className="text-sm text-zinc-400">Day {currentDayIndex} of your Bitcoin journey</p>
-                      </div>
+                  <div className="space-y-4 text-center">
+                    {/* Day indicator at top */}
+                    <div className="text-sm text-zinc-400">
+                      Day {currentDayIndex} of your Bitcoin journey
                     </div>
                     
+                    {/* Title */}
+                    <h3 className="text-xl font-bold text-white">
+                      {dayMetadata?.title || 'Loading...'}
+                    </h3>
+                    
+                    {/* Subtitle - first daily fact */}
                     {dailyFacts && dailyFacts[0] && (
-                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-2 border-orange-500">
-                        <div className="text-sm text-zinc-300">{dailyFacts[0].title}</div>
-                      </div>
+                      <p className="text-zinc-300 text-sm">
+                        {dailyFacts[0].title}
+                      </p>
                     )}
                     
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-xs text-zinc-500">
-                        <Clock className="w-4 h-4" />
-                        <span>3 minute lesson • 6 quiz questions</span>
-                      </div>
-                      
-                      <button 
-                        onClick={() => setActiveSection("learn")}
-                        className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-medium transition-colors"
-                      >
-                        Continue Journey
-                      </button>
-                    </div>
+                    {/* Continue button */}
+                    <button 
+                      onClick={() => setActiveSection("learn")}
+                      className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-medium transition-colors w-full max-w-48 mx-auto"
+                    >
+                      Continue Journey
+                    </button>
                   </div>
                 </CardContent>
               </Card>
