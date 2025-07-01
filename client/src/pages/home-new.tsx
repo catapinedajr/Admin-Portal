@@ -6653,59 +6653,61 @@ export default function Home() {
                           <div className="text-xs text-zinc-400">Jan 2017 - Jan 2025</div>
                         </div>
                         <div className="relative">
-                          <svg viewBox="0 0 320 140" className="w-full h-32 bg-zinc-900/50 rounded">
-                            {/* Grid background */}
-                            <defs>
-                              <pattern id="grid" width="32" height="28" patternUnits="userSpaceOnUse">
-                                <path d="M 32 0 L 0 0 0 28" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.3"/>
-                              </pattern>
-                            </defs>
-                            <rect width="100%" height="100%" fill="url(#grid)" />
-                            
-                            {/* 5x Market Line */}
-                            <line x1="10" y1="90" x2="310" y2="90" stroke="#fbbf24" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                            <text x="315" y="94" fill="#fbbf24" fontSize="10" opacity="0.8">5x</text>
-                            
-                            {/* 10x Market Line */}
-                            <line x1="10" y1="60" x2="310" y2="60" stroke="#f97316" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                            <text x="315" y="64" fill="#f97316" fontSize="10" opacity="0.8">10x</text>
-                            
-                            {/* 100x Market Line */}
-                            <line x1="10" y1="20" x2="310" y2="20" stroke="#dc2626" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                            <text x="315" y="24" fill="#dc2626" fontSize="10" opacity="0.8">100x</text>
-                            
-                            {/* Bitcoin Price Line (realistic exponential growth) */}
-                            <path 
-                              d="M 10 120 Q 50 115 80 110 Q 120 105 160 95 Q 200 80 240 60 Q 280 35 310 25" 
-                              stroke="#f97316" 
-                              strokeWidth="3" 
-                              fill="none"
-                              className="drop-shadow-lg"
-                            />
-                            
-                            {/* Area fill */}
-                            <path 
-                              d="M 10 120 Q 50 115 80 110 Q 120 105 160 95 Q 200 80 240 60 Q 280 35 310 25 L 310 120 L 10 120 Z" 
-                              fill="url(#chartGradient)"
-                              opacity="0.2"
-                            />
-                            
-                            <defs>
-                              <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" stopColor="#f97316" stopOpacity="0.4"/>
-                                <stop offset="100%" stopColor="#f97316" stopOpacity="0.1"/>
-                              </linearGradient>
-                            </defs>
-                            
-                            {/* Start and end markers */}
-                            <circle cx="10" cy="120" r="3" fill="#10b981" stroke="#ffffff" strokeWidth="1"/>
-                            <circle cx="310" cy="25" r="4" fill="#f97316" stroke="#ffffff" strokeWidth="2" className="animate-pulse"/>
-                            
-                            {/* Time labels */}
-                            <text x="10" y="135" fill="#9ca3af" fontSize="9" textAnchor="start">2017</text>
-                            <text x="160" y="135" fill="#9ca3af" fontSize="9" textAnchor="middle">2021</text>
-                            <text x="310" y="135" fill="#9ca3af" fontSize="9" textAnchor="end">2025</text>
-                          </svg>
+                          <div className="w-full h-24 sm:h-32 md:h-40 bg-zinc-900/50 rounded overflow-hidden">
+                            <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="none">
+                              {/* Grid background */}
+                              <defs>
+                                <pattern id="grid-hodl-chart" width="10" height="10" patternUnits="userSpaceOnUse">
+                                  <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#374151" strokeWidth="0.2" opacity="0.3"/>
+                                </pattern>
+                              </defs>
+                              <rect width="100%" height="100%" fill="url(#grid-hodl-chart)" />
+                              
+                              {/* 5x Market Line */}
+                              <line x1="3" y1="64.3" x2="97" y2="64.3" stroke="#fbbf24" strokeWidth="0.3" opacity="0.6" strokeDasharray="1,1"/>
+                              <text x="98" y="65.5" fill="#fbbf24" fontSize="3" opacity="0.8">5x</text>
+                              
+                              {/* 10x Market Line */}
+                              <line x1="3" y1="42.9" x2="97" y2="42.9" stroke="#f97316" strokeWidth="0.3" opacity="0.6" strokeDasharray="1,1"/>
+                              <text x="98" y="44.1" fill="#f97316" fontSize="3" opacity="0.8">10x</text>
+                              
+                              {/* 100x Market Line */}
+                              <line x1="3" y1="14.3" x2="97" y2="14.3" stroke="#dc2626" strokeWidth="0.3" opacity="0.6" strokeDasharray="1,1"/>
+                              <text x="98" y="15.5" fill="#dc2626" fontSize="3" opacity="0.8">100x</text>
+                              
+                              {/* Bitcoin Price Line (realistic exponential growth) */}
+                              <path 
+                                d="M 3 85.7 Q 15.6 82.1 25 78.6 Q 37.5 75 50 67.9 Q 62.5 57.1 75 42.9 Q 87.5 25 97 17.9" 
+                                stroke="#f97316" 
+                                strokeWidth="1" 
+                                fill="none"
+                                className="drop-shadow-lg"
+                              />
+                              
+                              {/* Area fill */}
+                              <path 
+                                d="M 3 85.7 Q 15.6 82.1 25 78.6 Q 37.5 75 50 67.9 Q 62.5 57.1 75 42.9 Q 87.5 25 97 17.9 L 97 85.7 L 3 85.7 Z" 
+                                fill="url(#chartGradient-hodl)"
+                                opacity="0.2"
+                              />
+                              
+                              <defs>
+                                <linearGradient id="chartGradient-hodl" x1="0%" y1="0%" x2="0%" y2="100%">
+                                  <stop offset="0%" stopColor="#f97316" stopOpacity="0.4"/>
+                                  <stop offset="100%" stopColor="#f97316" stopOpacity="0.1"/>
+                                </linearGradient>
+                              </defs>
+                              
+                              {/* Start and end markers */}
+                              <circle cx="3" cy="85.7" r="1" fill="#10b981" stroke="#ffffff" strokeWidth="0.3"/>
+                              <circle cx="97" cy="17.9" r="1.5" fill="#f97316" stroke="#ffffff" strokeWidth="0.5" className="animate-pulse"/>
+                              
+                              {/* Time labels */}
+                              <text x="3" y="96.4" fill="#9ca3af" fontSize="2.5" textAnchor="start">2017</text>
+                              <text x="50" y="96.4" fill="#9ca3af" fontSize="2.5" textAnchor="middle">2021</text>
+                              <text x="97" y="96.4" fill="#9ca3af" fontSize="2.5" textAnchor="end">2025</text>
+                            </svg>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -6794,15 +6796,15 @@ export default function Home() {
                             {/* Growth Chart */}
                             <div className="mb-4 p-3 bg-zinc-900/50 rounded-lg">
                               <div className="text-xs text-zinc-400 mb-2">Portfolio Growth Over Time</div>
-                              <div className="h-32 relative">
-                                <svg width="100%" height="100%" className="overflow-visible">
+                              <div className="h-24 sm:h-32 md:h-40 relative">
+                                <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
                                   {/* Chart Background Grid */}
                                   <defs>
-                                    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                                      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.3"/>
+                                    <pattern id="grid-portfolio" width="10" height="10" patternUnits="userSpaceOnUse">
+                                      <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#374151" strokeWidth="0.2" opacity="0.3"/>
                                     </pattern>
                                   </defs>
-                                  <rect width="100%" height="100%" fill="url(#grid)" />
+                                  <rect width="100%" height="100%" fill="url(#grid-portfolio)" />
                                   
                                   {/* Growth Line */}
                                   {(() => {
@@ -6879,11 +6881,11 @@ export default function Home() {
                                       const logValue = Math.log(Math.max(value, startValue * 0.1)); // Prevent negative logs
                                       const logMaxValue = Math.log(startValue * maxPossibleGrowth);
                                       
-                                      const yPosition = 115 - ((logValue - logStartValue) / (logMaxValue - logStartValue)) * 105;
+                                      const yPosition = 82 - ((logValue - logStartValue) / (logMaxValue - logStartValue)) * 75;
                                       
                                       points.push({
-                                        x: (progress * 280) + 10,
-                                        y: Math.max(10, Math.min(115, yPosition)), // Keep within bounds
+                                        x: (progress * 80) + 3,
+                                        y: Math.max(7, Math.min(82, yPosition)), // Keep within bounds
                                         value
                                       });
                                     }
@@ -6901,8 +6903,8 @@ export default function Home() {
                                       <>
                                         {/* Background grid for reference */}
                                         <defs>
-                                          <pattern id="compoundGrid" width="35" height="25" patternUnits="userSpaceOnUse">
-                                            <path d="M 35 0 L 0 0 0 25" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.2"/>
+                                          <pattern id="compoundGrid" width="12" height="8" patternUnits="userSpaceOnUse">
+                                            <path d="M 12 0 L 0 0 0 8" fill="none" stroke="#374151" strokeWidth="0.2" opacity="0.2"/>
                                           </pattern>
                                           <linearGradient id="dramaticGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                                             <stop offset="0%" stopColor="#f97316" stopOpacity="0.4"/>
@@ -6916,19 +6918,19 @@ export default function Home() {
                                           const logMilestone = Math.log(startValue * milestone.multiplier);
                                           const logStartValue = Math.log(startValue);
                                           const logMaxValue = Math.log(startValue * maxPossibleGrowth);
-                                          const y = 115 - ((logMilestone - logStartValue) / (logMaxValue - logStartValue)) * 105;
+                                          const y = 82 - ((logMilestone - logStartValue) / (logMaxValue - logStartValue)) * 75;
                                           
                                           return (
                                             <g key={milestone.label}>
-                                              <line x1="10" y1={y} x2="290" y2={y} stroke="#fbbf24" strokeWidth="1" opacity="0.3" strokeDasharray="2,2"/>
-                                              <text x="295" y={y + 3} fill="#fbbf24" fontSize="8" opacity="0.7">{milestone.label}</text>
+                                              <line x1="3" y1={y} x2="83" y2={y} stroke="#fbbf24" strokeWidth="0.3" opacity="0.3" strokeDasharray="0.5,0.5"/>
+                                              <text x="85" y={y + 1} fill="#fbbf24" fontSize="2.5" opacity="0.7">{milestone.label}</text>
                                             </g>
                                           );
                                         })}
                                         
                                         {/* Area fill for dramatic effect */}
                                         <path
-                                          d={`${pathData} L ${points[points.length - 1].x} 115 L 10 115 Z`}
+                                          d={`${pathData} L ${points[points.length - 1].x} 82 L 3 82 Z`}
                                           fill="url(#dramaticGradient)"
                                           opacity="0.3"
                                         />
@@ -6937,7 +6939,7 @@ export default function Home() {
                                         <path
                                           d={pathData}
                                           stroke="#f97316"
-                                          strokeWidth="3"
+                                          strokeWidth="1"
                                           fill="none"
                                           className="drop-shadow-lg"
                                           filter="url(#glow)"
@@ -6955,22 +6957,22 @@ export default function Home() {
                                         </defs>
                                         
                                         {/* Enhanced start and end points */}
-                                        <circle cx={points[0].x} cy={points[0].y} r="4" fill="#10b981" stroke="#ffffff" strokeWidth="2" opacity="0.9" />
-                                        <circle cx={points[points.length - 1].x} cy={points[points.length - 1].y} r="5" fill="#f97316" stroke="#ffffff" strokeWidth="2" className="animate-pulse" />
+                                        <circle cx={points[0].x} cy={points[0].y} r="1.5" fill="#10b981" stroke="#ffffff" strokeWidth="0.5" opacity="0.9" />
+                                        <circle cx={points[points.length - 1].x} cy={points[points.length - 1].y} r="2" fill="#f97316" stroke="#ffffff" strokeWidth="0.5" className="animate-pulse" />
                                         
                                         {/* Time progression labels */}
-                                        <text x="10" y="135" fill="#9ca3af" fontSize="9" fontWeight="500" textAnchor="start">
+                                        <text x="3" y="96" fill="#9ca3af" fontSize="2.5" fontWeight="500" textAnchor="start">
                                           {hodlInputs.period}
                                         </text>
-                                        <text x="150" y="135" fill="#9ca3af" fontSize="8" textAnchor="middle">
+                                        <text x="43" y="96" fill="#9ca3af" fontSize="2" textAnchor="middle">
                                           {years > 3 ? `${Math.floor(years/2)} years` : ''}
                                         </text>
-                                        <text x="290" y="135" fill="#9ca3af" fontSize="9" fontWeight="500" textAnchor="end">
+                                        <text x="83" y="96" fill="#9ca3af" fontSize="2.5" fontWeight="500" textAnchor="end">
                                           Jan 2025
                                         </text>
                                         
                                         {/* Growth percentage indicator */}
-                                        <text x="150" y="20" fill="#f97316" fontSize="12" fontWeight="bold" textAnchor="middle">
+                                        <text x="43" y="12" fill="#f97316" fontSize="3.5" fontWeight="bold" textAnchor="middle">
                                           +{((currentGrowthRatio - 1) * 100).toLocaleString('en-US', {maximumFractionDigits: 0})}% Growth
                                         </text>
                                       </>
