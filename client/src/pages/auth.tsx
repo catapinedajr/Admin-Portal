@@ -18,7 +18,7 @@ const loginSchema = z.object({
 const registerSchema = z.object({
   username: z.string().min(3, 'Username must be at least 3 characters').max(20),
   password: z.string().min(6, 'Password must be at least 6 characters').max(100),
-  email: z.string().email('Invalid email').optional().or(z.literal('')),
+  email: z.string().email('Valid email is required for account recovery'),
 });
 
 type LoginForm = z.infer<typeof loginSchema>;
@@ -89,8 +89,7 @@ export function AuthPage() {
 
   const registerMutation = useMutation({
     mutationFn: async (data: RegisterForm) => {
-      const payload = data.email ? data : { username: data.username, password: data.password };
-      const response = await apiRequest('POST', '/api/auth/register', payload);
+      const response = await apiRequest('POST', '/api/auth/register', data);
       return await response.json() as AuthResponse;
     },
     onSuccess: (data) => {
