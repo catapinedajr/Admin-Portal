@@ -271,7 +271,12 @@ export function AuthPage() {
             <div className="text-center">
               <Button
                 variant="link"
-                onClick={() => setIsLogin(!isLogin)}
+                onClick={() => {
+                  setIsLogin(!isLogin);
+                  // Reset both forms when switching
+                  loginForm.reset();
+                  registerForm.reset();
+                }}
                 className="text-orange-500 hover:text-orange-600"
               >
                 {isLogin 
