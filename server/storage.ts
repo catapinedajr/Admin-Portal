@@ -14,6 +14,7 @@ import {
   contentMetadata,
   emailCollections,
   sessions,
+  passwordResetTokens,
   type User, 
   type InsertUser, 
   type UserProgress,
@@ -46,6 +47,8 @@ import {
   type InsertEmailCollection,
   type Session,
   type InsertSession,
+  type PasswordResetToken,
+  type InsertPasswordResetToken,
   type RegisterRequest,
   type LoginRequest
 } from "@shared/schema";
@@ -66,6 +69,14 @@ export interface IStorage {
   getSession(sessionId: string): Promise<Session | undefined>;
   deleteSession(sessionId: string): Promise<void>;
   cleanupExpiredSessions(): Promise<void>;
+
+  // Password reset methods
+  createPasswordResetToken(tokenData: InsertPasswordResetToken): Promise<PasswordResetToken>;
+  getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined>;
+  markPasswordResetTokenUsed(token: string): Promise<void>;
+  cleanupExpiredResetTokens(): Promise<void>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  updateUserPassword(userId: number, hashedPassword: string): Promise<void>;
 
   // Content Day methods
   getContentDay(dayIndex: number): Promise<ContentDay | undefined>;
@@ -203,6 +214,46 @@ export class DatabaseStorage implements IStorage {
 
   async cleanupExpiredSessions(): Promise<void> {
     await db.delete(sessions).where(sql`${sessions.expiresAt} < NOW()`);
+  }
+
+  // Password reset methods
+  async createPasswordResetToken(tokenData: InsertPasswordResetToken): Promise<PasswordResetToken> {
+    const [token] = await db
+      .insert(passwordResetTokens)
+      .values(tokenData)
+      .returning();
+    return token;
+  }
+
+  async getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined> {
+    const [resetToken] = await db
+      .select()
+      .from(passwordResetTokens)
+      .where(eq(passwordResetTokens.token, token));
+    return resetToken || undefined;
+  }
+
+  async markPasswordResetTokenUsed(token: string): Promise<void> {
+    await db
+      .update(passwordResetTokens)
+      .set({ usedAt: new Date() })
+      .where(eq(passwordResetTokens.token, token));
+  }
+
+  async cleanupExpiredResetTokens(): Promise<void> {
+    await db.delete(passwordResetTokens).where(sql`${passwordResetTokens.expiresAt} < NOW()`);
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
+  async updateUserPassword(userId: number, hashedPassword: string): Promise<void> {
+    await db
+      .update(users)
+      .set({ passwordHash: hashedPassword })
+      .where(eq(users.id, userId));
   }
 
   // Content Day methods

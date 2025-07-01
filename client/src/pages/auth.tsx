@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -21,8 +21,19 @@ const registerSchema = z.object({
   email: z.string().email('Valid email is required for account recovery'),
 });
 
+const forgotPasswordSchema = z.object({
+  email: z.string().email('Please enter a valid email address'),
+});
+
+const resetPasswordSchema = z.object({
+  token: z.string().uuid('Invalid reset token'),
+  newPassword: z.string().min(6, 'Password must be at least 6 characters').max(100),
+});
+
 type LoginForm = z.infer<typeof loginSchema>;
 type RegisterForm = z.infer<typeof registerSchema>;
+type ForgotPasswordForm = z.infer<typeof forgotPasswordSchema>;
+type ResetPasswordForm = z.infer<typeof resetPasswordSchema>;
 
 interface AuthResponse {
   user: {
@@ -39,8 +50,19 @@ interface AuthResponse {
 }
 
 export function AuthPage() {
-  const [isLogin, setIsLogin] = useState(true);
+  const [authMode, setAuthMode] = useState<'login' | 'register' | 'forgot-password' | 'reset-password'>('login');
   const { toast } = useToast();
+
+  // Check if we have a reset token in the URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const resetToken = urlParams.get('token');
+  
+  // If we have a reset token, show the reset password form
+  useEffect(() => {
+    if (resetToken && authMode !== 'reset-password') {
+      setAuthMode('reset-password');
+    }
+  }, [resetToken, authMode]);
 
   const loginForm = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -58,6 +80,21 @@ export function AuthPage() {
       email: '',
     },
     mode: 'onChange',
+  });
+
+  const forgotPasswordForm = useForm<ForgotPasswordForm>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      email: '',
+    },
+  });
+
+  const resetPasswordForm = useForm<ResetPasswordForm>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      token: resetToken || '',
+      newPassword: '',
+    },
   });
 
   const loginMutation = useMutation({
@@ -114,12 +151,69 @@ export function AuthPage() {
     },
   });
 
+  const forgotPasswordMutation = useMutation({
+    mutationFn: async (data: ForgotPasswordForm) => {
+      const response = await apiRequest('POST', '/api/auth/forgot-password', data);
+      return await response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: 'Reset link sent',
+        description: data.message,
+      });
+      // For development, show the token
+      if (data.developmentToken) {
+        toast({
+          title: 'Development Token',
+          description: `Token: ${data.developmentToken}`,
+          variant: 'default',
+        });
+      }
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to send reset email',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const resetPasswordMutation = useMutation({
+    mutationFn: async (data: ResetPasswordForm) => {
+      const response = await apiRequest('POST', '/api/auth/reset-password', data);
+      return await response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Password reset successful',
+        description: 'You can now log in with your new password',
+      });
+      setAuthMode('login');
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Reset failed',
+        description: error.message || 'Invalid or expired token',
+        variant: 'destructive',
+      });
+    },
+  });
+
   const onLoginSubmit = (data: LoginForm) => {
     loginMutation.mutate(data);
   };
 
   const onRegisterSubmit = (data: RegisterForm) => {
     registerMutation.mutate(data);
+  };
+
+  const onForgotPasswordSubmit = (data: ForgotPasswordForm) => {
+    forgotPasswordMutation.mutate(data);
+  };
+
+  const onResetPasswordSubmit = (data: ResetPasswordForm) => {
+    resetPasswordMutation.mutate(data);
   };
 
   return (
@@ -138,18 +232,22 @@ export function AuthPage() {
         <Card className="border-zinc-700 bg-zinc-800 shadow-xl">
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-2xl font-bold text-zinc-200">
-              {isLogin ? 'Welcome Back' : 'Create Your Account'}
+              {authMode === 'login' && 'Welcome Back'}
+              {authMode === 'register' && 'Create Your Account'}
+              {authMode === 'forgot-password' && 'Reset Password'}
+              {authMode === 'reset-password' && 'Set New Password'}
             </CardTitle>
             <p className="text-sm text-zinc-400">
-              {isLogin 
-                ? 'Continue your Bitcoin learning journey' 
-                : 'Start your Bitcoin education today'
-              }
+              {authMode === 'login' && 'Continue your Bitcoin learning journey'}
+              {authMode === 'register' && 'Start your Bitcoin education today'}
+              {authMode === 'forgot-password' && 'Enter your email to receive a reset link'}
+              {authMode === 'reset-password' && 'Enter your new password'}
             </p>
           </CardHeader>
           
           <CardContent className="space-y-6">
-            {isLogin ? (
+            {/* Login Form */}
+            {authMode === 'login' && (
               <Form {...loginForm}>
                 <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
                   <FormField
@@ -196,91 +294,208 @@ export function AuthPage() {
                   >
                     {loginMutation.isPending ? 'Signing in...' : 'Sign In'}
                   </Button>
+                  
+                  <div className="text-center">
+                    <Button
+                      type="button"
+                      variant="link"
+                      onClick={() => setAuthMode('forgot-password')}
+                      className="text-orange-500 hover:text-orange-600 text-sm"
+                    >
+                      Forgot password?
+                    </Button>
+                  </div>
                 </form>
               </Form>
-            ) : (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Username
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Choose a username"
-                    value={registerForm.watch('username') || ''}
-                    onChange={(e) => registerForm.setValue('username', e.target.value)}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  />
-                  {registerForm.formState.errors.username && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {registerForm.formState.errors.username.message}
-                    </p>
-                  )}
-                </div>
+            )}
 
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    placeholder="Create a password"
-                    value={registerForm.watch('password') || ''}
-                    onChange={(e) => registerForm.setValue('password', e.target.value)}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  />
-                  {registerForm.formState.errors.password && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {registerForm.formState.errors.password.message}
-                    </p>
-                  )}
-                </div>
+            {/* Register Form */}
+            {authMode === 'register' && (
+              <Form {...registerForm}>
+                <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-zinc-300 mb-1">
+                        Username
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Choose a username"
+                        value={registerForm.watch('username')}
+                        onChange={(e) => registerForm.setValue('username', e.target.value)}
+                        className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-zinc-200 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                        autoComplete="username"
+                      />
+                      {registerForm.formState.errors.username && (
+                        <p className="mt-1 text-sm text-red-400">
+                          {registerForm.formState.errors.username.message}
+                        </p>
+                      )}
+                    </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Email (optional)
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="your@email.com"
-                    value={registerForm.watch('email') || ''}
-                    onChange={(e) => registerForm.setValue('email', e.target.value)}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  />
-                  {registerForm.formState.errors.email && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {registerForm.formState.errors.email.message}
-                    </p>
-                  )}
-                </div>
+                    <div>
+                      <label className="block text-sm font-medium text-zinc-300 mb-1">
+                        Password
+                      </label>
+                      <input
+                        type="password"
+                        placeholder="Create a password (minimum 6 characters)"
+                        value={registerForm.watch('password')}
+                        onChange={(e) => registerForm.setValue('password', e.target.value)}
+                        className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-zinc-200 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                        autoComplete="new-password"
+                      />
+                      {registerForm.formState.errors.password && (
+                        <p className="mt-1 text-sm text-red-400">
+                          {registerForm.formState.errors.password.message}
+                        </p>
+                      )}
+                    </div>
 
-                <Button 
-                  onClick={registerForm.handleSubmit(onRegisterSubmit)}
-                  className="w-full bg-orange-500 hover:bg-orange-600"
-                  disabled={registerMutation.isPending}
+                    <div>
+                      <label className="block text-sm font-medium text-zinc-300 mb-1">
+                        Email <span className="text-orange-500">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="Enter your email for account recovery"
+                        value={registerForm.watch('email')}
+                        onChange={(e) => registerForm.setValue('email', e.target.value)}
+                        className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-zinc-200 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                        autoComplete="email"
+                      />
+                      {registerForm.formState.errors.email && (
+                        <p className="mt-1 text-sm text-red-400">
+                          {registerForm.formState.errors.email.message}
+                        </p>
+                      )}
+                      <p className="mt-1 text-xs text-zinc-400">
+                        Required for password recovery
+                      </p>
+                    </div>
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-orange-500 hover:bg-orange-600"
+                    disabled={registerMutation.isPending}
+                  >
+                    {registerMutation.isPending ? 'Creating Account...' : 'Create Account'}
+                  </Button>
+                </form>
+              </Form>
+            )}
+
+            {/* Forgot Password Form */}
+            {authMode === 'forgot-password' && (
+              <Form {...forgotPasswordForm}>
+                <form onSubmit={forgotPasswordForm.handleSubmit(onForgotPasswordSubmit)} className="space-y-4">
+                  <FormField
+                    control={forgotPasswordForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email Address</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="email"
+                            placeholder="Enter your email address" 
+                            {...field}
+                            autoComplete="email"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-orange-500 hover:bg-orange-600"
+                    disabled={forgotPasswordMutation.isPending}
+                  >
+                    {forgotPasswordMutation.isPending ? 'Sending...' : 'Send Reset Link'}
+                  </Button>
+                  
+                  <div className="text-center">
+                    <Button
+                      type="button"
+                      variant="link"
+                      onClick={() => setAuthMode('login')}
+                      className="text-orange-500 hover:text-orange-600 text-sm"
+                    >
+                      Back to Sign In
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            )}
+
+            {/* Reset Password Form */}
+            {authMode === 'reset-password' && (
+              <Form {...resetPasswordForm}>
+                <form onSubmit={resetPasswordForm.handleSubmit(onResetPasswordSubmit)} className="space-y-4">
+                  <FormField
+                    control={resetPasswordForm.control}
+                    name="newPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>New Password</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="password"
+                            placeholder="Enter your new password" 
+                            {...field}
+                            autoComplete="new-password"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-orange-500 hover:bg-orange-600"
+                    disabled={resetPasswordMutation.isPending}
+                  >
+                    {resetPasswordMutation.isPending ? 'Resetting...' : 'Reset Password'}
+                  </Button>
+                  
+                  <div className="text-center">
+                    <Button
+                      type="button"
+                      variant="link"
+                      onClick={() => setAuthMode('login')}
+                      className="text-orange-500 hover:text-orange-600 text-sm"
+                    >
+                      Back to Sign In
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            )}
+            
+            {/* Mode Switch Buttons */}
+            {(authMode === 'login' || authMode === 'register') && (
+              <div className="text-center">
+                <Button
+                  variant="link"
+                  onClick={() => {
+                    setAuthMode(authMode === 'login' ? 'register' : 'login');
+                    // Reset forms when switching
+                    loginForm.reset();
+                    registerForm.reset();
+                  }}
+                  className="text-orange-500 hover:text-orange-600"
                 >
-                  {registerMutation.isPending ? 'Creating account...' : 'Create Account'}
+                  {authMode === 'login'
+                    ? "Don't have an account? Sign up" 
+                    : 'Already have an account? Sign in'
+                  }
                 </Button>
               </div>
             )}
-            
-            <div className="text-center">
-              <Button
-                variant="link"
-                onClick={() => {
-                  setIsLogin(!isLogin);
-                  // Reset both forms when switching
-                  loginForm.reset();
-                  registerForm.reset();
-                }}
-                className="text-orange-500 hover:text-orange-600"
-              >
-                {isLogin 
-                  ? "Don't have an account? Sign up" 
-                  : 'Already have an account? Sign in'
-                }
-              </Button>
-            </div>
           </CardContent>
         </Card>
       </div>
