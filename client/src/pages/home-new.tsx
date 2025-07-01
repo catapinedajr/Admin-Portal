@@ -5454,6 +5454,36 @@ export default function Home() {
                                       {safetySimulations[safetyStage]?.explanation || 'This could have put your Bitcoin at risk. Review the training materials above.'}
                                     </p>
                                     
+                                    {/* Show Correct Answer */}
+                                    <div className="mt-3 p-2 bg-green-900/20 border border-green-700 rounded">
+                                      <div className="text-green-300 text-xs font-medium mb-1">✓ Correct Answer:</div>
+                                      <div className="text-green-100 text-xs">
+                                        {(() => {
+                                          const simulation = safetySimulations[safetyStage];
+                                          if (!simulation) return "Answer not found";
+                                          
+                                          // Find the correct answer based on stage type
+                                          if (safetyStage === 0) {
+                                            // Phishing Detection - find email marked as phishing
+                                            const correctEmail = simulation.emails?.find(email => email.isPhishing === true);
+                                            return correctEmail ? `"${correctEmail.subject}" - This was the phishing email you should have identified` : "Phishing email";
+                                          } else if (safetyStage === 2) {
+                                            // Address Verification - find option marked as correct
+                                            const correctOption = simulation.options?.find(option => 'correct' in option && option.correct === true);
+                                            return correctOption ? correctOption.text : "Addresses are different";
+                                          } else if (safetyStage === 3) {
+                                            // Scam Recognition - find scenario that is NOT a scam
+                                            const correctScenario = simulation.scenarios?.find(scenario => scenario.isScam === false);
+                                            return correctScenario ? `"${correctScenario.message.substring(0, 50)}..." - This was the legitimate message` : "The Bitcoin meetup message";
+                                          } else {
+                                            // All other stages - find option marked as safe
+                                            const correctOption = simulation.options?.find(option => 'safe' in option && option.safe === true);
+                                            return correctOption ? correctOption.method : "Safe option not found";
+                                          }
+                                        })()}
+                                      </div>
+                                    </div>
+                                    
                                     {/* Educational Explanations for Wrong Answers */}
                                     {safetyStage === 0 && (
                                       <div className="text-red-200 text-xs mt-2">
