@@ -6796,12 +6796,12 @@ export default function Home() {
                             {/* Growth Chart */}
                             <div className="mb-4 p-3 bg-zinc-900/50 rounded-lg">
                               <div className="text-xs text-zinc-400 mb-2">Portfolio Growth Over Time</div>
-                              <div className="h-24 sm:h-32 md:h-40 relative">
-                                <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+                              <div className="h-48 sm:h-56 md:h-64 lg:h-72 relative">
+                                <svg viewBox="0 0 400 200" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
                                   {/* Chart Background Grid */}
                                   <defs>
-                                    <pattern id="grid-portfolio" width="10" height="10" patternUnits="userSpaceOnUse">
-                                      <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#374151" strokeWidth="0.2" opacity="0.3"/>
+                                    <pattern id="grid-portfolio" width="40" height="20" patternUnits="userSpaceOnUse">
+                                      <path d="M 40 0 L 0 0 0 20" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.3"/>
                                     </pattern>
                                   </defs>
                                   <rect width="100%" height="100%" fill="url(#grid-portfolio)" />
@@ -6881,11 +6881,11 @@ export default function Home() {
                                       const logValue = Math.log(Math.max(value, startValue * 0.1)); // Prevent negative logs
                                       const logMaxValue = Math.log(startValue * maxPossibleGrowth);
                                       
-                                      const yPosition = 82 - ((logValue - logStartValue) / (logMaxValue - logStartValue)) * 75;
+                                      const yPosition = 164 - ((logValue - logStartValue) / (logMaxValue - logStartValue)) * 150;
                                       
                                       points.push({
-                                        x: (progress * 80) + 3,
-                                        y: Math.max(7, Math.min(82, yPosition)), // Keep within bounds
+                                        x: (progress * 320) + 20,
+                                        y: Math.max(14, Math.min(164, yPosition)), // Keep within bounds
                                         value
                                       });
                                     }
@@ -6903,8 +6903,8 @@ export default function Home() {
                                       <>
                                         {/* Background grid for reference */}
                                         <defs>
-                                          <pattern id="compoundGrid" width="12" height="8" patternUnits="userSpaceOnUse">
-                                            <path d="M 12 0 L 0 0 0 8" fill="none" stroke="#374151" strokeWidth="0.2" opacity="0.2"/>
+                                          <pattern id="compoundGrid" width="48" height="16" patternUnits="userSpaceOnUse">
+                                            <path d="M 48 0 L 0 0 0 16" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.2"/>
                                           </pattern>
                                           <linearGradient id="dramaticGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                                             <stop offset="0%" stopColor="#f97316" stopOpacity="0.4"/>
@@ -6918,19 +6918,19 @@ export default function Home() {
                                           const logMilestone = Math.log(startValue * milestone.multiplier);
                                           const logStartValue = Math.log(startValue);
                                           const logMaxValue = Math.log(startValue * maxPossibleGrowth);
-                                          const y = 82 - ((logMilestone - logStartValue) / (logMaxValue - logStartValue)) * 75;
+                                          const y = 164 - ((logMilestone - logStartValue) / (logMaxValue - logStartValue)) * 150;
                                           
                                           return (
                                             <g key={milestone.label}>
-                                              <line x1="3" y1={y} x2="83" y2={y} stroke="#fbbf24" strokeWidth="0.3" opacity="0.3" strokeDasharray="0.5,0.5"/>
-                                              <text x="85" y={y + 1} fill="#fbbf24" fontSize="2.5" opacity="0.7">{milestone.label}</text>
+                                              <line x1="20" y1={y} x2="340" y2={y} stroke="#fbbf24" strokeWidth="1" opacity="0.3" strokeDasharray="3,3"/>
+                                              <text x="350" y={y + 3} fill="#fbbf24" fontSize="8" opacity="0.7">{milestone.label}</text>
                                             </g>
                                           );
                                         })}
                                         
                                         {/* Area fill for dramatic effect */}
                                         <path
-                                          d={`${pathData} L ${points[points.length - 1].x} 82 L 3 82 Z`}
+                                          d={`${pathData} L ${points[points.length - 1].x} 164 L 20 164 Z`}
                                           fill="url(#dramaticGradient)"
                                           opacity="0.3"
                                         />
@@ -6939,7 +6939,7 @@ export default function Home() {
                                         <path
                                           d={pathData}
                                           stroke="#f97316"
-                                          strokeWidth="1"
+                                          strokeWidth="3"
                                           fill="none"
                                           className="drop-shadow-lg"
                                           filter="url(#glow)"
@@ -6957,22 +6957,22 @@ export default function Home() {
                                         </defs>
                                         
                                         {/* Enhanced start and end points */}
-                                        <circle cx={points[0].x} cy={points[0].y} r="1.5" fill="#10b981" stroke="#ffffff" strokeWidth="0.5" opacity="0.9" />
-                                        <circle cx={points[points.length - 1].x} cy={points[points.length - 1].y} r="2" fill="#f97316" stroke="#ffffff" strokeWidth="0.5" className="animate-pulse" />
+                                        <circle cx={points[0].x} cy={points[0].y} r="4" fill="#10b981" stroke="#ffffff" strokeWidth="1" opacity="0.9" />
+                                        <circle cx={points[points.length - 1].x} cy={points[points.length - 1].y} r="5" fill="#f97316" stroke="#ffffff" strokeWidth="1" className="animate-pulse" />
                                         
                                         {/* Time progression labels */}
-                                        <text x="3" y="96" fill="#9ca3af" fontSize="2.5" fontWeight="500" textAnchor="start">
+                                        <text x="20" y="185" fill="#9ca3af" fontSize="8" fontWeight="500" textAnchor="start">
                                           {hodlInputs.period}
                                         </text>
-                                        <text x="43" y="96" fill="#9ca3af" fontSize="2" textAnchor="middle">
+                                        <text x="200" y="185" fill="#9ca3af" fontSize="6" textAnchor="middle">
                                           {years > 3 ? `${Math.floor(years/2)} years` : ''}
                                         </text>
-                                        <text x="83" y="96" fill="#9ca3af" fontSize="2.5" fontWeight="500" textAnchor="end">
+                                        <text x="340" y="185" fill="#9ca3af" fontSize="8" fontWeight="500" textAnchor="end">
                                           Jan 2025
                                         </text>
                                         
                                         {/* Growth percentage indicator */}
-                                        <text x="43" y="12" fill="#f97316" fontSize="3.5" fontWeight="bold" textAnchor="middle">
+                                        <text x="200" y="25" fill="#f97316" fontSize="12" fontWeight="bold" textAnchor="middle">
                                           +{((currentGrowthRatio - 1) * 100).toLocaleString('en-US', {maximumFractionDigits: 0})}% Growth
                                         </text>
                                       </>
