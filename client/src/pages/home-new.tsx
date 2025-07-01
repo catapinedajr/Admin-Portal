@@ -2195,23 +2195,30 @@ export default function Home() {
     }
     
     try {
+      console.log(`[SAFETY DEBUG] Stage ${safetyStage}, Option ${optionIndex}, Simulation:`, simulation);
+      
       switch (safetyStage) {
         case 0: // Phishing Detection
           if (simulation.emails && simulation.emails[optionIndex]) {
-            correct = simulation.emails[optionIndex].isPhishing === true;
+            const email = simulation.emails[optionIndex];
+            correct = email.isPhishing === true;
+            console.log(`[SAFETY DEBUG] Stage 0 - Email isPhishing: ${email.isPhishing}, Correct: ${correct}`);
           }
           break;
           
         case 2: // Address Verification
           if (simulation.options && simulation.options[optionIndex]) {
             const option = simulation.options[optionIndex];
-            correct = 'correct' in option ? option.correct === true : false;
+            correct = ('safe' in option && option.safe === true) || ('correct' in option && option.correct === true);
+            console.log(`[SAFETY DEBUG] Stage 2 - Option:`, option, `Correct: ${correct}`);
           }
           break;
           
         case 3: // Scam Recognition
           if (simulation.scenarios && simulation.scenarios[optionIndex]) {
-            correct = simulation.scenarios[optionIndex].isScam === false;
+            const scenario = simulation.scenarios[optionIndex];
+            correct = scenario.isScam === false;
+            console.log(`[SAFETY DEBUG] Stage 3 - Scenario isScam: ${scenario.isScam}, Correct: ${correct}`);
           }
           break;
           
@@ -2226,7 +2233,8 @@ export default function Home() {
         case 11: // Recovery Scams
           if (simulation.options && simulation.options[optionIndex]) {
             const option = simulation.options[optionIndex];
-            correct = 'safe' in option ? option.safe === true : false;
+            correct = ('safe' in option && option.safe === true) || ('correct' in option && option.correct === true);
+            console.log(`[SAFETY DEBUG] Stage ${safetyStage} - Option:`, option, `Correct: ${correct}`);
           }
           break;
           
