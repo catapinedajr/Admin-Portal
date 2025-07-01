@@ -25,6 +25,7 @@ import {
   AlertTriangle,
   Heart,
   Plus,
+  Crown,
   Play,
   ShoppingCart,
   Quote,
@@ -2447,7 +2448,7 @@ export default function Home() {
                   className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-2.5 py-1.5"
                   title="Upgrade to Premium"
                 >
-                  <Plus className="w-4 h-4" />
+                  <Crown className="w-4 h-4" />
                   <span className="sr-only">Upgrade</span>
                 </Button>
               )}
