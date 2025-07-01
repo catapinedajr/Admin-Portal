@@ -341,6 +341,42 @@ export const emailCollections = pgTable("email_collections", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Safety Quiz Tables
+export const safetyQuestions = pgTable("safety_questions", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  question: text("question").notNull(),
+  options: json("options").$type<string[]>().notNull(), // Array of 4 options
+  correctAnswer: integer("correct_answer").notNull(), // Index 0-3
+  explanation: text("explanation").notNull(),
+  category: text("category").notNull(), // 'phishing', 'storage', 'transactions', etc.
+  difficulty: integer("difficulty").notNull().default(1), // 1-3 scale
+  orderIndex: integer("order_index").notNull(), // Question order in quiz
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const safetyQuizAttempts = pgTable("safety_quiz_attempts", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  score: integer("score").notNull(), // Number correct out of total
+  totalQuestions: integer("total_questions").notNull(),
+  percentage: integer("percentage").notNull(), // Score percentage
+  passed: boolean("passed").notNull(), // Whether they passed (80%+)
+  timeSpentSeconds: integer("time_spent_seconds"),
+  completedAt: timestamp("completed_at").notNull().defaultNow(),
+});
+
+export const safetyQuizAnswers = pgTable("safety_quiz_answers", {
+  id: serial("id").primaryKey(),
+  attemptId: integer("attempt_id").notNull().references(() => safetyQuizAttempts.id),
+  questionId: integer("question_id").notNull().references(() => safetyQuestions.id),
+  selectedAnswer: integer("selected_answer").notNull(), // Index 0-3
+  isCorrect: boolean("is_correct").notNull(),
+  answeredAt: timestamp("answered_at").notNull().defaultNow(),
+});
+
 export const insertEmailCollectionSchema = createInsertSchema(emailCollections).omit({
   id: true,
   createdAt: true,
