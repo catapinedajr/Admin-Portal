@@ -5155,8 +5155,9 @@ export default function Home() {
                                   <div className="space-y-2">
                                     {safetySimulations[0]?.emails?.map((email, index) => {
                                       const isSelected = selectedOption === index;
-                                      const isCorrectOption = email.isPhishing === true;
-                                      const wasSelectedIncorrectly = showResult && isSelected && !isCorrectOption;
+                                      // Only show as correct if this is the selected option AND it's phishing
+                                      const isCorrectOption = showResult && isSelected && email.isPhishing === true;
+                                      const wasSelectedIncorrectly = showResult && isSelected && !email.isPhishing;
                                       
                                       return (
                                         <button
@@ -5463,8 +5464,8 @@ export default function Home() {
                                     {currentSimulation?.options?.map((option, index) => {
                                       const isSelected = selectedOption === index;
                                       const isCorrectOption = (() => {
-                                        if (!currentSimulation) return false;
-                                        // Match backend validation logic: check both properties with OR
+                                        if (!currentSimulation || !showResult || !isSelected) return false;
+                                        // Only show as correct if this is the selected option AND it's actually correct
                                         return ('safe' in option && option.safe === true) || ('correct' in option && option.correct === true);
                                       })();
                                       const wasSelectedIncorrectly = showResult && isSelected && !isCorrectOption;
@@ -5565,6 +5566,7 @@ export default function Home() {
                                     {/* Educational Explanations - Only show for correct answers */}
                                     {safetyStage === 0 && (() => {
                                       // For stage 0, check if user selected a phishing email (correct answer)
+                                      if (selectedOption === null) return false;
                                       const selectedEmail = safetySimulations[0]?.emails?.[selectedOption];
                                       return showResult && selectedEmail?.isPhishing === true;
                                     })() && (
@@ -5574,16 +5576,20 @@ export default function Home() {
                                     )}
                                     {safetyStage === 1 && (() => {
                                       // For other stages, check if user selected the correct option
+                                      if (selectedOption === null) return false;
+                                      if (selectedOption === null) return false;
                                       const selectedOption_stg = safetySimulations[1]?.options?.[selectedOption];
-                                      return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
+                                      return showResult && selectedOption_stg && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
                                     })() && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> Never share your seed phrase with anyone. Real support never asks for it. This is the #1 way Bitcoin gets stolen.
                                       </div>
                                     )}
                                     {safetyStage === 2 && (() => {
+                                      if (selectedOption === null) return false;
+                                      if (selectedOption === null) return false;
                                       const selectedOption_stg = safetySimulations[2]?.options?.[selectedOption];
-                                      return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
+                                      return showResult && selectedOption_stg && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
                                     })() && (
                                       <div className="space-y-2">
                                         <div className="text-green-200 text-xs font-medium">The difference was subtle but critical:</div>
@@ -5597,6 +5603,7 @@ export default function Home() {
                                       </div>
                                     )}
                                     {safetyStage === 4 && (() => {
+                                      if (selectedOption === null) return false;
                                       const selectedOption_stg = safetySimulations[4]?.options?.[selectedOption];
                                       return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
                                     })() && (
@@ -5605,6 +5612,7 @@ export default function Home() {
                                       </div>
                                     )}
                                     {safetyStage === 5 && (() => {
+                                      if (selectedOption === null) return false;
                                       const selectedOption_stg = safetySimulations[5]?.options?.[selectedOption];
                                       return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
                                     })() && (
@@ -5621,6 +5629,7 @@ export default function Home() {
                                       </div>
                                     )}
                                     {safetyStage === 7 && (() => {
+                                      if (selectedOption === null) return false;
                                       const selectedOption_stg = safetySimulations[7]?.options?.[selectedOption];
                                       return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
                                     })() && (
@@ -5629,6 +5638,7 @@ export default function Home() {
                                       </div>
                                     )}
                                     {safetyStage === 8 && (() => {
+                                      if (selectedOption === null) return false;
                                       const selectedOption_stg = safetySimulations[8]?.options?.[selectedOption];
                                       return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
                                     })() && (
@@ -5637,6 +5647,7 @@ export default function Home() {
                                       </div>
                                     )}
                                     {safetyStage === 9 && (() => {
+                                      if (selectedOption === null) return false;
                                       const selectedOption_stg = safetySimulations[9]?.options?.[selectedOption];
                                       return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
                                     })() && (
@@ -5645,6 +5656,7 @@ export default function Home() {
                                       </div>
                                     )}
                                     {safetyStage === 10 && (() => {
+                                      if (selectedOption === null) return false;
                                       const selectedOption_stg = safetySimulations[10]?.options?.[selectedOption];
                                       return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
                                     })() && (
@@ -5653,6 +5665,7 @@ export default function Home() {
                                       </div>
                                     )}
                                     {safetyStage === 11 && (() => {
+                                      if (selectedOption === null) return false;
                                       const selectedOption_stg = safetySimulations[11]?.options?.[selectedOption];
                                       return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
                                     })() && (
