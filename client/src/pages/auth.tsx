@@ -230,8 +230,10 @@ export function AuthPage() {
             <p className="text-lg md:text-xl text-zinc-400">Building conviction takes discipline</p>
             <div className="text-center space-y-1 mt-8 animate-slide-up">
               <p className="text-xl md:text-2xl font-bold text-orange-400">This is</p>
-              <p className="text-3xl md:text-4xl font-bold text-orange-400 animate-glow">HODLearn</p>
-              <p className="text-xs md:text-sm text-zinc-400">How-to-learn BTC</p>
+              <div className="perspective-1000 overflow-hidden h-20 flex items-end justify-center">
+                <p className="text-3xl md:text-4xl font-bold text-orange-400 animate-starwars-intro">HODLearn</p>
+              </div>
+              <p className="text-xs md:text-sm text-zinc-400 animate-fade-in-delayed">How-to-learn BTC</p>
             </div>
           </div>
         </div>
