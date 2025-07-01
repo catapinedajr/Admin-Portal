@@ -5145,24 +5145,75 @@ export default function Home() {
                                 <div className="p-3 sm:p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
                                   <div className="text-xs text-zinc-500 mb-3">Email Inbox - Which email is dangerous?</div>
                                   <div className="space-y-2">
-                                    {safetySimulations[0]?.emails?.map((email, index) => (
-                                      <button
-                                        key={index}
-                                        onClick={() => setSelectedOption(index)}
-                                        className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
-                                          selectedOption === index 
-                                            ? 'border-orange-500 bg-orange-500/10' 
-                                            : 'border-zinc-600 hover:border-zinc-500'
-                                        }`}
-                                      >
-                                        <div className="flex justify-between items-start mb-1">
-                                          <span className="text-white text-xs sm:text-sm font-medium truncate mr-2">{email.from}</span>
-                                          <span className="text-zinc-500 text-xs shrink-0">Today</span>
-                                        </div>
-                                        <div className="text-white text-xs sm:text-sm mb-1 line-clamp-1">{email.subject}</div>
-                                        <div className="text-zinc-400 text-xs line-clamp-2 leading-relaxed">{email.preview}</div>
-                                      </button>
-                                    ))}
+                                    {safetySimulations[0]?.emails?.map((email, index) => {
+                                      const isSelected = selectedOption === index;
+                                      const isCorrectOption = email.isPhishing === true;
+                                      const wasSelectedIncorrectly = showResult && isSelected && !isCorrectOption;
+                                      
+                                      return (
+                                        <button
+                                          key={index}
+                                          onClick={() => !showResult && setSelectedOption(index)}
+                                          disabled={showResult}
+                                          className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
+                                            showResult
+                                              ? isCorrectOption
+                                                ? 'bg-green-900/30 border-green-700 text-green-100'
+                                                : wasSelectedIncorrectly
+                                                  ? 'bg-red-900/30 border-red-700 text-red-100'
+                                                  : 'bg-zinc-800/50 border-zinc-700 text-zinc-400'
+                                              : isSelected
+                                                ? 'border-orange-500 bg-orange-500/10 text-orange-100'
+                                                : 'border-zinc-600 hover:border-zinc-500 text-white'
+                                          }`}
+                                        >
+                                          <div className="flex items-start gap-3">
+                                            <span className={`flex-shrink-0 w-6 h-6 rounded-full text-sm flex items-center justify-center font-medium mt-1 ${
+                                              showResult && isCorrectOption 
+                                                ? 'bg-green-600 text-white' 
+                                                : showResult && wasSelectedIncorrectly
+                                                  ? 'bg-red-600 text-white'
+                                                  : isSelected
+                                                    ? 'bg-orange-600 text-white'
+                                                    : 'bg-zinc-700 text-zinc-300'
+                                            }`}>
+                                              {String.fromCharCode(65 + index)}
+                                            </span>
+                                            <div className="flex-1 min-w-0">
+                                              <div className="flex justify-between items-start mb-1">
+                                                <span className={`text-xs sm:text-sm font-medium truncate mr-2 ${
+                                                  showResult 
+                                                    ? isCorrectOption || wasSelectedIncorrectly ? 'text-current' : 'text-zinc-400'
+                                                    : isSelected ? 'text-orange-100' : 'text-white'
+                                                }`}>{email.from}</span>
+                                                <span className="text-zinc-500 text-xs shrink-0">Today</span>
+                                              </div>
+                                              <div className={`text-xs sm:text-sm mb-1 line-clamp-1 ${
+                                                showResult 
+                                                  ? isCorrectOption || wasSelectedIncorrectly ? 'text-current' : 'text-zinc-400'
+                                                  : isSelected ? 'text-orange-100' : 'text-white'
+                                              }`}>{email.subject}</div>
+                                              <div className={`text-xs line-clamp-2 leading-relaxed ${
+                                                showResult 
+                                                  ? isCorrectOption || wasSelectedIncorrectly ? 'text-current' : 'text-zinc-500'
+                                                  : 'text-zinc-400'
+                                              }`}>{email.preview}</div>
+                                            </div>
+                                            <div className="flex items-center gap-2 mt-1">
+                                              {showResult && isCorrectOption && (
+                                                <div className="flex items-center gap-1">
+                                                  <CheckCircle className="w-4 h-4 text-green-400" />
+                                                  <span className="text-xs text-green-400 font-medium">Correct</span>
+                                                </div>
+                                              )}
+                                              {showResult && wasSelectedIncorrectly && (
+                                                <XCircle className="w-5 h-5 text-red-500" />
+                                              )}
+                                            </div>
+                                          </div>
+                                        </button>
+                                      );
+                                    })}
                                   </div>
                                 </div>
                               </div>
@@ -5228,21 +5279,58 @@ export default function Home() {
                                     </div>
                                   </div>
                                   <div className="space-y-2 mt-3">
-                                    {safetySimulations[2]?.options?.map((option, index) => (
-                                      <button
-                                        key={index}
-                                        onClick={() => setSelectedOption(index)}
-                                        className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
-                                          selectedOption === index 
-                                            ? 'border-orange-500 bg-orange-500/10' 
-                                            : 'border-zinc-600 hover:border-zinc-500'
-                                        }`}
-                                      >
-                                        <div className="text-orange-300 text-xs sm:text-sm">
-                                          {'text' in option ? option.text : 'Option'}
-                                        </div>
-                                      </button>
-                                    ))}
+                                    {safetySimulations[2]?.options?.map((option, index) => {
+                                      const isSelected = selectedOption === index;
+                                      const isCorrectOption = 'correct' in option && option.correct === true;
+                                      const wasSelectedIncorrectly = showResult && isSelected && !isCorrectOption;
+                                      
+                                      return (
+                                        <button
+                                          key={index}
+                                          onClick={() => !showResult && setSelectedOption(index)}
+                                          disabled={showResult}
+                                          className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
+                                            showResult
+                                              ? isCorrectOption
+                                                ? 'bg-green-900/30 border-green-700 text-green-100'
+                                                : wasSelectedIncorrectly
+                                                  ? 'bg-red-900/30 border-red-700 text-red-100'
+                                                  : 'bg-zinc-800/50 border-zinc-700 text-zinc-400'
+                                              : isSelected
+                                                ? 'border-orange-500 bg-orange-500/10 text-orange-100'
+                                                : 'border-zinc-600 hover:border-zinc-500 text-white'
+                                          }`}
+                                        >
+                                          <div className="flex items-center gap-3">
+                                            <span className={`flex-shrink-0 w-6 h-6 rounded-full text-sm flex items-center justify-center font-medium ${
+                                              showResult && isCorrectOption 
+                                                ? 'bg-green-600 text-white' 
+                                                : showResult && wasSelectedIncorrectly
+                                                  ? 'bg-red-600 text-white'
+                                                  : isSelected
+                                                    ? 'bg-orange-600 text-white'
+                                                    : 'bg-zinc-700 text-zinc-300'
+                                            }`}>
+                                              {String.fromCharCode(65 + index)}
+                                            </span>
+                                            <span className="flex-1 text-xs sm:text-sm font-medium leading-relaxed">
+                                              {'text' in option ? option.text : 'Option'}
+                                            </span>
+                                            <div className="flex items-center gap-2">
+                                              {showResult && isCorrectOption && (
+                                                <div className="flex items-center gap-1">
+                                                  <CheckCircle className="w-4 h-4 text-green-400" />
+                                                  <span className="text-xs text-green-400 font-medium">Correct</span>
+                                                </div>
+                                              )}
+                                              {showResult && wasSelectedIncorrectly && (
+                                                <XCircle className="w-5 h-5 text-red-500" />
+                                              )}
+                                            </div>
+                                          </div>
+                                        </button>
+                                      );
+                                    })}
                                   </div>
                                 </div>
                               </div>
@@ -5256,21 +5344,64 @@ export default function Home() {
                                     Which message is legitimate and safe? Click on the safe message (avoid the two scams):
                                   </div>
                                   <div className="space-y-2">
-                                    {safetySimulations[3]?.scenarios?.map((scenario, index) => (
-                                      <button
-                                        key={index}
-                                        onClick={() => setSelectedOption(index)}
-                                        className={`w-full p-3 border rounded-lg text-left transition-colors ${
-                                          selectedOption === index 
-                                            ? 'border-orange-500 bg-orange-500/10' 
-                                            : 'border-zinc-600 hover:border-zinc-500'
-                                        }`}
-                                      >
-                                        <div className="text-white text-xs sm:text-sm leading-relaxed">
-                                          "{scenario.message}"
-                                        </div>
-                                      </button>
-                                    ))}
+                                    {safetySimulations[3]?.scenarios?.map((scenario, index) => {
+                                      const isSelected = selectedOption === index;
+                                      const isCorrectOption = scenario.isScam === false;
+                                      const wasSelectedIncorrectly = showResult && isSelected && !isCorrectOption;
+                                      
+                                      return (
+                                        <button
+                                          key={index}
+                                          onClick={() => !showResult && setSelectedOption(index)}
+                                          disabled={showResult}
+                                          className={`w-full p-3 border rounded-lg text-left transition-colors ${
+                                            showResult
+                                              ? isCorrectOption
+                                                ? 'bg-green-900/30 border-green-700 text-green-100'
+                                                : wasSelectedIncorrectly
+                                                  ? 'bg-red-900/30 border-red-700 text-red-100'
+                                                  : 'bg-zinc-800/50 border-zinc-700 text-zinc-400'
+                                              : isSelected
+                                                ? 'border-orange-500 bg-orange-500/10 text-orange-100'
+                                                : 'border-zinc-600 hover:border-zinc-500 text-white'
+                                          }`}
+                                        >
+                                          <div className="flex items-start gap-3">
+                                            <span className={`flex-shrink-0 w-6 h-6 rounded-full text-sm flex items-center justify-center font-medium ${
+                                              showResult && isCorrectOption 
+                                                ? 'bg-green-600 text-white' 
+                                                : showResult && wasSelectedIncorrectly
+                                                  ? 'bg-red-600 text-white'
+                                                  : isSelected
+                                                    ? 'bg-orange-600 text-white'
+                                                    : 'bg-zinc-700 text-zinc-300'
+                                            }`}>
+                                              {String.fromCharCode(65 + index)}
+                                            </span>
+                                            <div className="flex-1 min-w-0">
+                                              <div className={`text-xs sm:text-sm leading-relaxed ${
+                                                showResult 
+                                                  ? isCorrectOption || wasSelectedIncorrectly ? 'text-current' : 'text-zinc-400'
+                                                  : isSelected ? 'text-orange-100' : 'text-white'
+                                              }`}>
+                                                "{scenario.message}"
+                                              </div>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                              {showResult && isCorrectOption && (
+                                                <div className="flex items-center gap-1">
+                                                  <CheckCircle className="w-4 h-4 text-green-400" />
+                                                  <span className="text-xs text-green-400 font-medium">Correct</span>
+                                                </div>
+                                              )}
+                                              {showResult && wasSelectedIncorrectly && (
+                                                <XCircle className="w-5 h-5 text-red-500" />
+                                              )}
+                                            </div>
+                                          </div>
+                                        </button>
+                                      );
+                                    })}
                                   </div>
                                 </div>
                               </div>
