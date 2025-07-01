@@ -214,7 +214,7 @@ export function AuthPage() {
         {/* Welcome Message */}
         <div className="text-center mb-12">
           <div className="space-y-3">
-            <h1 className="text-4xl md:text-5xl font-bold text-orange-500">Welcome</h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-orange-500 mb-6">Welcome</h1>
             <p className="text-lg md:text-xl text-zinc-300">Understanding Bitcoin takes time</p>
             <p className="text-lg md:text-xl text-zinc-300">Building conviction takes discipline</p>
             <div className="text-center space-y-1">
