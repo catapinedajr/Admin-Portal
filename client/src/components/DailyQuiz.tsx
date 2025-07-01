@@ -52,15 +52,30 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
   const today = new Date().toISOString().split('T')[0];
   const userId = 1; // Default user
 
-  // Fetch quiz questions for today
+  // Fetch quiz questions for today - using new database-driven system
   const { data: questions = [], isLoading: loadingQuestions, error: questionsError } = useQuery({
-    queryKey: ['/api/quiz/daily', dayIndex],
+    queryKey: ['/api/quiz/questions', dayIndex],
     queryFn: async () => {
-      const res = await fetch(`/api/quiz/daily/${dayIndex}`);
+      const res = await fetch(`/api/quiz/questions/${dayIndex}`);
       if (!res.ok) {
         throw new Error(`Failed to load quiz questions: ${res.status}`);
       }
-      return res.json() as Promise<QuizQuestion[]>;
+      const newQuestions = await res.json();
+      
+      // Convert new database format to expected frontend format
+      return newQuestions.map((q: any) => ({
+        id: q.id,
+        dayIndex: dayIndex,
+        question: q.question,
+        optionA: q.options[0]?.text || '',
+        optionB: q.options[1]?.text || '',
+        optionC: q.options[2]?.text || '',
+        optionD: q.options[3]?.text || '',
+        correctAnswer: ['A', 'B', 'C', 'D'][q.options.findIndex((opt: any) => opt.isCorrect)] || 'A',
+        explanation: q.explanation,
+        category: q.category || 'Fundamentals',
+        difficulty: q.difficulty || 'beginner'
+      })) as QuizQuestion[];
     },
     retry: 3,
     retryDelay: 1000
