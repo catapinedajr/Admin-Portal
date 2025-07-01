@@ -14,7 +14,7 @@ interface SubscriptionContextType {
 
 const SubscriptionContext = createContext<SubscriptionContextType | undefined>(undefined);
 
-const FREE_TIER_MAX_DAY = 0; // Only day 0 is free (1 day total) - for testing email collection
+const FREE_TIER_MAX_DAY = 6; // Days 0-6 are free (7 days total)
 
 const FREE_TIER_SIMULATORS = [
   'inflation', // Basic inflation calculator
@@ -37,10 +37,9 @@ export function SubscriptionProvider({ children }: SubscriptionProviderProps) {
 
   // Load subscription state from localStorage on mount
   useEffect(() => {
-    const savedTier = localStorage.getItem('hodlearn_subscription_tier') as SubscriptionTier;
-    if (savedTier === 'free' || savedTier === 'premium') {
-      setSubscriptionTierState(savedTier);
-    }
+    // Clear any existing premium access for testing
+    localStorage.removeItem('hodlearn_subscription_tier');
+    setSubscriptionTierState('free');
   }, []);
 
   // Save subscription state to localStorage when it changes
