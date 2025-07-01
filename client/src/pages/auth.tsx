@@ -509,7 +509,7 @@ export function AuthPage() {
         {/* Value Proposition at Bottom */}
         <div className="text-center mt-8">
           <p className="text-sm text-zinc-500">
-            Master Bitcoin fundamentals through daily 5-minute lessons
+            Master Bitcoin through daily 5-minute easy lessons
           </p>
         </div>
       </div>
