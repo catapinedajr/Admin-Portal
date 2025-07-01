@@ -367,44 +367,62 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
                 </div>
               </div>
 
-              {/* Answer Result Summary */}
+              {/* Answer Feedback */}
               {userAnswer && (
-                <>
-                  {/* Show correct answer when user got it wrong */}
-                  {!userAnswer.isCorrect && (
-                    <div className="p-4 rounded-lg bg-red-900/20 border border-red-800/50">
-                      <div className="flex items-center gap-2 mb-2">
-                        <XCircle className="w-4 h-4 text-red-400" />
-                        <h4 className="font-medium text-red-100">Incorrect Answer</h4>
-                      </div>
-                      <p className="text-red-200 text-sm mb-2">
-                        You selected: <span className="font-medium">{userAnswer.selectedAnswer}. {currentQuestion[`option${userAnswer.selectedAnswer}` as keyof QuizQuestion]}</span>
-                      </p>
-                      <p className="text-green-200 text-sm">
-                        Correct answer: <span className="font-medium">{currentQuestion.correctAnswer}. {currentQuestion[`option${currentQuestion.correctAnswer}` as keyof QuizQuestion]}</span>
-                      </p>
+                <div className="space-y-4">
+                  {/* Result Summary */}
+                  <div className={`p-4 rounded-lg border ${
+                    userAnswer.isCorrect 
+                      ? 'bg-green-900/20 border-green-800/50' 
+                      : 'bg-orange-900/20 border-orange-800/50'
+                  }`}>
+                    <div className="flex items-center gap-2 mb-3">
+                      {userAnswer.isCorrect ? (
+                        <>
+                          <CheckCircle className="w-5 h-5 text-green-400" />
+                          <h4 className="font-semibold text-green-100">Correct!</h4>
+                        </>
+                      ) : (
+                        <>
+                          <XCircle className="w-5 h-5 text-orange-400" />
+                          <h4 className="font-semibold text-orange-100">Not quite right</h4>
+                        </>
+                      )}
                     </div>
-                  )}
-                  
-                  {/* Show success message when correct */}
-                  {userAnswer.isCorrect && (
-                    <div className="p-4 rounded-lg bg-green-900/20 border border-green-800/50">
-                      <div className="flex items-center gap-2 mb-2">
-                        <CheckCircle className="w-4 h-4 text-green-400" />
-                        <h4 className="font-medium text-green-100">Correct!</h4>
+                    
+                    {!userAnswer.isCorrect && (
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-start gap-2">
+                          <span className="text-orange-300 font-medium">Your answer:</span>
+                          <span className="text-orange-200">
+                            {userAnswer.selectedAnswer}. {currentQuestion[`option${userAnswer.selectedAnswer}` as keyof QuizQuestion]}
+                          </span>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <span className="text-green-300 font-medium">Correct answer:</span>
+                          <span className="text-green-200">
+                            {currentQuestion.correctAnswer}. {currentQuestion[`option${currentQuestion.correctAnswer}` as keyof QuizQuestion]}
+                          </span>
+                        </div>
                       </div>
+                    )}
+                    
+                    {userAnswer.isCorrect && (
                       <p className="text-green-200 text-sm">
-                        Well done! You selected the right answer.
+                        Great job! You understood this concept perfectly.
                       </p>
-                    </div>
-                  )}
+                    )}
+                  </div>
                   
                   {/* Explanation */}
-                  <div className="p-4 rounded-lg bg-blue-900/20 border border-blue-800/50">
-                    <h4 className="font-medium text-blue-100 mb-2">Explanation</h4>
-                    <p className="text-blue-200 text-sm">{currentQuestion.explanation}</p>
+                  <div className="p-4 rounded-lg bg-zinc-800/50 border border-zinc-700">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Brain className="w-4 h-4 text-blue-400" />
+                      <h4 className="font-medium text-zinc-200">Why this matters</h4>
+                    </div>
+                    <p className="text-zinc-300 text-sm leading-relaxed">{currentQuestion.explanation}</p>
                   </div>
-                </>
+                </div>
               )}
 
               {/* Action buttons */}
