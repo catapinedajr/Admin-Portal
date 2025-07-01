@@ -213,7 +213,7 @@ export default function HomeDashboard() {
         </Card>
 
         {/* Habit Building Quote */}
-        {user?.currentStreak && user.currentStreak > 0 && (
+        {(user?.currentStreak ?? 0) > 0 && (
           <Card className="bg-orange-500/10 border-orange-500/20 shadow-lg">
             <CardContent className="p-6 text-center">
               <p className="text-orange-200 italic mb-2">
