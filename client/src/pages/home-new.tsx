@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-import SafetySimulator from "@/components/SafetySimulator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -45,7 +44,6 @@ import {
   ChevronLeft,
   ChevronRight,
   CheckCircle,
-  XCircle,
   BarChart3,
   Clock,
   CreditCard,
@@ -2196,30 +2194,23 @@ export default function Home() {
     }
     
     try {
-      console.log(`[SAFETY DEBUG] Stage ${safetyStage}, Option ${optionIndex}, Simulation:`, simulation);
-      
       switch (safetyStage) {
         case 0: // Phishing Detection
           if (simulation.emails && simulation.emails[optionIndex]) {
-            const email = simulation.emails[optionIndex];
-            correct = email.isPhishing === true;
-            console.log(`[SAFETY DEBUG] Stage 0 - Email isPhishing: ${email.isPhishing}, Correct: ${correct}`);
+            correct = simulation.emails[optionIndex].isPhishing === true;
           }
           break;
           
         case 2: // Address Verification
           if (simulation.options && simulation.options[optionIndex]) {
             const option = simulation.options[optionIndex];
-            correct = ('safe' in option && option.safe === true) || ('correct' in option && option.correct === true);
-            console.log(`[SAFETY DEBUG] Stage 2 - Option:`, option, `Correct: ${correct}`);
+            correct = 'correct' in option ? option.correct === true : false;
           }
           break;
           
         case 3: // Scam Recognition
           if (simulation.scenarios && simulation.scenarios[optionIndex]) {
-            const scenario = simulation.scenarios[optionIndex];
-            correct = scenario.isScam === false;
-            console.log(`[SAFETY DEBUG] Stage 3 - Scenario isScam: ${scenario.isScam}, Correct: ${correct}`);
+            correct = simulation.scenarios[optionIndex].isScam === false;
           }
           break;
           
@@ -2234,8 +2225,7 @@ export default function Home() {
         case 11: // Recovery Scams
           if (simulation.options && simulation.options[optionIndex]) {
             const option = simulation.options[optionIndex];
-            correct = ('safe' in option && option.safe === true) || ('correct' in option && option.correct === true);
-            console.log(`[SAFETY DEBUG] Stage ${safetyStage} - Option:`, option, `Correct: ${correct}`);
+            correct = 'safe' in option ? option.safe === true : false;
           }
           break;
           
@@ -5154,91 +5144,24 @@ export default function Home() {
                                 <div className="p-3 sm:p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
                                   <div className="text-xs text-zinc-500 mb-3">Email Inbox - Which email is dangerous?</div>
                                   <div className="space-y-2">
-                                    {safetySimulations[0]?.emails?.map((email, index) => {
-                                      const isSelected = selectedOption === index;
-                                      
-                                      // Simple visual feedback
-                                      let bgClass = '';
-                                      let iconElement = null;
-                                      
-                                      if (showResult && isSelected) {
-                                        if (email.isPhishing) {
-                                          bgClass = 'bg-green-900/30 border-green-700 text-green-100';
-                                          iconElement = <CheckCircle className="w-4 h-4 text-green-400" />;
-                                        } else {
-                                          bgClass = 'bg-red-900/30 border-red-700 text-red-100';
-                                          iconElement = <XCircle className="w-4 h-4 text-red-400" />;
-                                        }
-                                      } else if (isSelected) {
-                                        bgClass = 'border-orange-500 bg-orange-500/10 text-orange-100';
-                                      } else {
-                                        bgClass = 'border-zinc-600 hover:border-zinc-500 text-white';
-                                      }
-                                      
-                                      return (
-                                        <button
-                                          key={index}
-                                          onClick={() => !showResult && setSelectedOption(index)}
-                                          disabled={showResult}
-                                          className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
-                                            showResult
-                                              ? isCorrect
-                                                ? 'bg-green-900/30 border-green-700 text-green-100'
-                                                : (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect)
-                                                  ? 'bg-red-900/30 border-red-700 text-red-100'
-                                                  : 'bg-zinc-800/50 border-zinc-700 text-zinc-400'
-                                              : isSelected
-                                                ? 'border-orange-500 bg-orange-500/10 text-orange-100'
-                                                : 'border-zinc-600 hover:border-zinc-500 text-white'
-                                          }`}
-                                        >
-                                          <div className="flex items-start gap-3">
-                                            <span className={`flex-shrink-0 w-6 h-6 rounded-full text-sm flex items-center justify-center font-medium mt-1 ${
-                                              showResult && isCorrect 
-                                                ? 'bg-green-600 text-white' 
-                                                : showResult && (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect)
-                                                  ? 'bg-red-600 text-white'
-                                                  : isSelected
-                                                    ? 'bg-orange-600 text-white'
-                                                    : 'bg-zinc-700 text-zinc-300'
-                                            }`}>
-                                              {String.fromCharCode(65 + index)}
-                                            </span>
-                                            <div className="flex-1 min-w-0">
-                                              <div className="flex justify-between items-start mb-1">
-                                                <span className={`text-xs sm:text-sm font-medium truncate mr-2 ${
-                                                  showResult 
-                                                    ? isCorrect || (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect) ? 'text-current' : 'text-zinc-400'
-                                                    : isSelected ? 'text-orange-100' : 'text-white'
-                                                }`}>{email.from}</span>
-                                                <span className="text-zinc-500 text-xs shrink-0">Today</span>
-                                              </div>
-                                              <div className={`text-xs sm:text-sm mb-1 line-clamp-1 ${
-                                                showResult 
-                                                  ? isCorrect || (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect) ? 'text-current' : 'text-zinc-400'
-                                                  : isSelected ? 'text-orange-100' : 'text-white'
-                                              }`}>{email.subject}</div>
-                                              <div className={`text-xs line-clamp-2 leading-relaxed ${
-                                                showResult 
-                                                  ? isCorrect || (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect) ? 'text-current' : 'text-zinc-500'
-                                                  : 'text-zinc-400'
-                                              }`}>{email.preview}</div>
-                                            </div>
-                                            <div className="flex items-center gap-2 mt-1">
-                                              {showResult && isCorrect && (
-                                                <div className="flex items-center gap-1">
-                                                  <CheckCircle className="w-4 h-4 text-green-400" />
-                                                  <span className="text-xs text-green-400 font-medium">Correct</span>
-                                                </div>
-                                              )}
-                                              {showResult && (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect) && (
-                                                <XCircle className="w-5 h-5 text-red-500" />
-                                              )}
-                                            </div>
-                                          </div>
-                                        </button>
-                                      );
-                                    })}
+                                    {safetySimulations[0]?.emails?.map((email, index) => (
+                                      <button
+                                        key={index}
+                                        onClick={() => setSelectedOption(index)}
+                                        className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
+                                          selectedOption === index 
+                                            ? 'border-orange-500 bg-orange-500/10' 
+                                            : 'border-zinc-600 hover:border-zinc-500'
+                                        }`}
+                                      >
+                                        <div className="flex justify-between items-start mb-1">
+                                          <span className="text-white text-xs sm:text-sm font-medium truncate mr-2">{email.from}</span>
+                                          <span className="text-zinc-500 text-xs shrink-0">Today</span>
+                                        </div>
+                                        <div className="text-white text-xs sm:text-sm mb-1 line-clamp-1">{email.subject}</div>
+                                        <div className="text-zinc-400 text-xs line-clamp-2 leading-relaxed">{email.preview}</div>
+                                      </button>
+                                    ))}
                                   </div>
                                 </div>
                               </div>
@@ -5304,58 +5227,21 @@ export default function Home() {
                                     </div>
                                   </div>
                                   <div className="space-y-2 mt-3">
-                                    {safetySimulations[2]?.options?.map((option, index) => {
-                                      const isSelected = selectedOption === index;
-                                      const isCorrect = ('safe' in option && option.safe === true) || ('correct' in option && option.correct === true);
-                                      const (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect) = showResult && isSelected && !isCorrect;
-                                      
-                                      return (
-                                        <button
-                                          key={index}
-                                          onClick={() => !showResult && setSelectedOption(index)}
-                                          disabled={showResult}
-                                          className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
-                                            showResult
-                                              ? isCorrect
-                                                ? 'bg-green-900/30 border-green-700 text-green-100'
-                                                : (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect)
-                                                  ? 'bg-red-900/30 border-red-700 text-red-100'
-                                                  : 'bg-zinc-800/50 border-zinc-700 text-zinc-400'
-                                              : isSelected
-                                                ? 'border-orange-500 bg-orange-500/10 text-orange-100'
-                                                : 'border-zinc-600 hover:border-zinc-500 text-white'
-                                          }`}
-                                        >
-                                          <div className="flex items-center gap-3">
-                                            <span className={`flex-shrink-0 w-6 h-6 rounded-full text-sm flex items-center justify-center font-medium ${
-                                              showResult && isCorrect 
-                                                ? 'bg-green-600 text-white' 
-                                                : showResult && (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect)
-                                                  ? 'bg-red-600 text-white'
-                                                  : isSelected
-                                                    ? 'bg-orange-600 text-white'
-                                                    : 'bg-zinc-700 text-zinc-300'
-                                            }`}>
-                                              {String.fromCharCode(65 + index)}
-                                            </span>
-                                            <span className="flex-1 text-xs sm:text-sm font-medium leading-relaxed">
-                                              {'text' in option ? option.text : 'Option'}
-                                            </span>
-                                            <div className="flex items-center gap-2">
-                                              {showResult && isCorrect && (
-                                                <div className="flex items-center gap-1">
-                                                  <CheckCircle className="w-4 h-4 text-green-400" />
-                                                  <span className="text-xs text-green-400 font-medium">Correct</span>
-                                                </div>
-                                              )}
-                                              {showResult && (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect) && (
-                                                <XCircle className="w-5 h-5 text-red-500" />
-                                              )}
-                                            </div>
-                                          </div>
-                                        </button>
-                                      );
-                                    })}
+                                    {safetySimulations[2]?.options?.map((option, index) => (
+                                      <button
+                                        key={index}
+                                        onClick={() => setSelectedOption(index)}
+                                        className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
+                                          selectedOption === index 
+                                            ? 'border-orange-500 bg-orange-500/10' 
+                                            : 'border-zinc-600 hover:border-zinc-500'
+                                        }`}
+                                      >
+                                        <div className="text-orange-300 text-xs sm:text-sm">
+                                          {'text' in option ? option.text : 'Option'}
+                                        </div>
+                                      </button>
+                                    ))}
                                   </div>
                                 </div>
                               </div>
@@ -5369,64 +5255,21 @@ export default function Home() {
                                     Which message is legitimate and safe? Click on the safe message (avoid the two scams):
                                   </div>
                                   <div className="space-y-2">
-                                    {safetySimulations[3]?.scenarios?.map((scenario, index) => {
-                                      const isSelected = selectedOption === index;
-                                      const isCorrect = scenario.isScam === false;
-                                      const (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect) = showResult && isSelected && !isCorrect;
-                                      
-                                      return (
-                                        <button
-                                          key={index}
-                                          onClick={() => !showResult && setSelectedOption(index)}
-                                          disabled={showResult}
-                                          className={`w-full p-3 border rounded-lg text-left transition-colors ${
-                                            showResult
-                                              ? isCorrect
-                                                ? 'bg-green-900/30 border-green-700 text-green-100'
-                                                : (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect)
-                                                  ? 'bg-red-900/30 border-red-700 text-red-100'
-                                                  : 'bg-zinc-800/50 border-zinc-700 text-zinc-400'
-                                              : isSelected
-                                                ? 'border-orange-500 bg-orange-500/10 text-orange-100'
-                                                : 'border-zinc-600 hover:border-zinc-500 text-white'
-                                          }`}
-                                        >
-                                          <div className="flex items-start gap-3">
-                                            <span className={`flex-shrink-0 w-6 h-6 rounded-full text-sm flex items-center justify-center font-medium ${
-                                              showResult && isCorrect 
-                                                ? 'bg-green-600 text-white' 
-                                                : showResult && (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect)
-                                                  ? 'bg-red-600 text-white'
-                                                  : isSelected
-                                                    ? 'bg-orange-600 text-white'
-                                                    : 'bg-zinc-700 text-zinc-300'
-                                            }`}>
-                                              {String.fromCharCode(65 + index)}
-                                            </span>
-                                            <div className="flex-1 min-w-0">
-                                              <div className={`text-xs sm:text-sm leading-relaxed ${
-                                                showResult 
-                                                  ? isCorrect || (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect) ? 'text-current' : 'text-zinc-400'
-                                                  : isSelected ? 'text-orange-100' : 'text-white'
-                                              }`}>
-                                                "{scenario.message}"
-                                              </div>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                              {showResult && isCorrect && (
-                                                <div className="flex items-center gap-1">
-                                                  <CheckCircle className="w-4 h-4 text-green-400" />
-                                                  <span className="text-xs text-green-400 font-medium">Correct</span>
-                                                </div>
-                                              )}
-                                              {showResult && (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect) && (
-                                                <XCircle className="w-5 h-5 text-red-500" />
-                                              )}
-                                            </div>
-                                          </div>
-                                        </button>
-                                      );
-                                    })}
+                                    {safetySimulations[3]?.scenarios?.map((scenario, index) => (
+                                      <button
+                                        key={index}
+                                        onClick={() => setSelectedOption(index)}
+                                        className={`w-full p-3 border rounded-lg text-left transition-colors ${
+                                          selectedOption === index 
+                                            ? 'border-orange-500 bg-orange-500/10' 
+                                            : 'border-zinc-600 hover:border-zinc-500'
+                                        }`}
+                                      >
+                                        <div className="text-white text-xs sm:text-sm leading-relaxed">
+                                          "{scenario.message}"
+                                        </div>
+                                      </button>
+                                    ))}
                                   </div>
                                 </div>
                               </div>
@@ -5477,69 +5320,21 @@ export default function Home() {
                                     </div>
                                   )}
                                   <div className="space-y-2">
-                                    {currentSimulation?.options?.map((option, index) => {
-                                      const isSelected = selectedOption === index;
-                                      
-                                      // Simple visual feedback logic
-                                      let bgClass = 'bg-zinc-800/50 border-zinc-700 text-zinc-300';
-                                      let isCorrect = false;
-                                      if (showResult && isSelected) {
-                                        // Check if this selected option is correct
-                                        isCorrect = ('safe' in option && option.safe === true) || ('correct' in option && option.correct === true);
-                                        if (isCorrect) {
-                                          bgClass = 'bg-green-900/30 border-green-700 text-green-100';
-                                        } else {
-                                          bgClass = 'bg-red-900/30 border-red-700 text-red-100';
-                                        }
-                                      }
-                                      
-                                      return (
-                                        <button
-                                          key={index}
-                                          onClick={() => !showResult && setSelectedOption(index)}
-                                          disabled={showResult}
-                                          className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
-                                            showResult
-                                              ? isCorrect
-                                                ? 'bg-green-900/30 border-green-700 text-green-100'
-                                                : (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect)
-                                                  ? 'bg-red-900/30 border-red-700 text-red-100'
-                                                  : 'bg-zinc-800/50 border-zinc-700 text-zinc-400'
-                                              : isSelected
-                                                ? 'border-orange-500 bg-orange-500/10 text-orange-100'
-                                                : 'border-zinc-600 hover:border-zinc-500 text-white'
-                                          }`}
-                                        >
-                                          <div className="flex items-center gap-3">
-                                            <span className={`flex-shrink-0 w-6 h-6 rounded-full text-sm flex items-center justify-center font-medium ${
-                                              showResult && isCorrect 
-                                                ? 'bg-green-600 text-white' 
-                                                : showResult && (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect)
-                                                  ? 'bg-red-600 text-white'
-                                                  : isSelected
-                                                    ? 'bg-orange-600 text-white'
-                                                    : 'bg-zinc-700 text-zinc-300'
-                                            }`}>
-                                              {String.fromCharCode(65 + index)} {/* A, B, C, D */}
-                                            </span>
-                                            <span className="flex-1 text-xs sm:text-sm font-medium leading-relaxed">
-                                              {'method' in option ? option.method : 'text' in option ? option.text : 'Option'}
-                                            </span>
-                                            <div className="flex items-center gap-2">
-                                              {showResult && isCorrect && (
-                                                <div className="flex items-center gap-1">
-                                                  <CheckCircle className="w-4 h-4 text-green-400" />
-                                                  <span className="text-xs text-green-400 font-medium">Correct</span>
-                                                </div>
-                                              )}
-                                              {showResult && (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect) && (
-                                                <XCircle className="w-5 h-5 text-red-500" />
-                                              )}
-                                            </div>
-                                          </div>
-                                        </button>
-                                      );
-                                    })}
+                                    {currentSimulation?.options?.map((option, index) => (
+                                      <button
+                                        key={index}
+                                        onClick={() => setSelectedOption(index)}
+                                        className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
+                                          selectedOption === index 
+                                            ? 'border-orange-500 bg-orange-500/10' 
+                                            : 'border-zinc-600 hover:border-zinc-500'
+                                        }`}
+                                      >
+                                        <div className="text-white text-xs sm:text-sm font-medium leading-relaxed">
+                                          {'method' in option ? option.method : 'Option'}
+                                        </div>
+                                      </button>
+                                    ))}
                                   </div>
                                 </div>
                               </div>
@@ -5585,34 +5380,18 @@ export default function Home() {
                                       {safetySimulations[safetyStage]?.explanation || 'Good job identifying the security threat!'}
                                     </p>
                                     
-                                    {/* Educational Explanations - Only show for correct answers */}
-                                    {safetyStage === 0 && (() => {
-                                      // For stage 0, check if user selected a phishing email (correct answer)
-                                      if (selectedOption === null) return false;
-                                      const selectedEmail = safetySimulations[0]?.emails?.[selectedOption];
-                                      return showResult && selectedEmail?.isPhishing === true;
-                                    })() && (
+                                    {/* Educational Explanations for Correct Answers */}
+                                    {safetyStage === 0 && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> Phishing emails copy real designs but use fake domains. Always check the sender's email address carefully.
                                       </div>
                                     )}
-                                    {safetyStage === 1 && (() => {
-                                      // For other stages, check if user selected the correct option
-                                      if (selectedOption === null) return false;
-                                      if (selectedOption === null) return false;
-                                      const selectedOption_stg = safetySimulations[1]?.options?.[selectedOption];
-                                      return showResult && selectedOption_stg && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
-                                    })() && (
+                                    {safetyStage === 1 && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> Never share your seed phrase with anyone. Real support never asks for it. This is the #1 way Bitcoin gets stolen.
                                       </div>
                                     )}
-                                    {safetyStage === 2 && (() => {
-                                      if (selectedOption === null) return false;
-                                      if (selectedOption === null) return false;
-                                      const selectedOption_stg = safetySimulations[2]?.options?.[selectedOption];
-                                      return showResult && selectedOption_stg && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
-                                    })() && (
+                                    {safetyStage === 2 && (
                                       <div className="space-y-2">
                                         <div className="text-green-200 text-xs font-medium">The difference was subtle but critical:</div>
                                         <div className="text-xs font-mono bg-black/30 p-2 rounded">
@@ -5624,73 +5403,42 @@ export default function Home() {
                                         </div>
                                       </div>
                                     )}
-                                    {safetyStage === 4 && (() => {
-                                      if (selectedOption === null) return false;
-                                      const selectedOption_stg = safetySimulations[4]?.options?.[selectedOption];
-                                      return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
-                                    })() && (
+                                    {safetyStage === 4 && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> Public WiFi can be monitored. Use your phone's data or VPN for sensitive Bitcoin activities.
                                       </div>
                                     )}
-                                    {safetyStage === 5 && (() => {
-                                      if (selectedOption === null) return false;
-                                      const selectedOption_stg = safetySimulations[5]?.options?.[selectedOption];
-                                      return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
-                                    })() && (
+                                    {safetyStage === 5 && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> Only download wallets from official sources. Fake wallets steal your Bitcoin immediately.
                                       </div>
                                     )}
-                                    {safetyStage === 6 && (() => {
-                                      const selectedOption_stg = safetySimulations[6]?.scenarios?.[selectedOption];
-                                      return showResult && selectedOption_stg && !selectedOption_stg.isScam;
-                                    })() && (
+                                    {safetyStage === 6 && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> Scammers impersonate celebrities and officials. Real Bitcoin giveaways don't exist.
                                       </div>
                                     )}
-                                    {safetyStage === 7 && (() => {
-                                      if (selectedOption === null) return false;
-                                      const selectedOption_stg = safetySimulations[7]?.options?.[selectedOption];
-                                      return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
-                                    })() && (
+                                    {safetyStage === 7 && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> Used hardware wallets could be tampered with. Always buy new from official manufacturers.
                                       </div>
                                     )}
-                                    {safetyStage === 8 && (() => {
-                                      if (selectedOption === null) return false;
-                                      const selectedOption_stg = safetySimulations[8]?.options?.[selectedOption];
-                                      return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
-                                    })() && (
+                                    {safetyStage === 8 && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> Test your backup by restoring it on another device. Unreadable backups = lost Bitcoin.
                                       </div>
                                     )}
-                                    {safetyStage === 9 && (() => {
-                                      if (selectedOption === null) return false;
-                                      const selectedOption_stg = safetySimulations[9]?.options?.[selectedOption];
-                                      return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
-                                    })() && (
+                                    {safetyStage === 9 && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> 100x higher fees suggests malicious software. Normal fees are $1-5, not $200.
                                       </div>
                                     )}
-                                    {safetyStage === 10 && (() => {
-                                      if (selectedOption === null) return false;
-                                      const selectedOption_stg = safetySimulations[10]?.options?.[selectedOption];
-                                      return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
-                                    })() && (
+                                    {safetyStage === 10 && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> 100x higher fees suggests malicious software. Normal fees are $1-5, not $200.
                                       </div>
                                     )}
-                                    {safetyStage === 11 && (() => {
-                                      if (selectedOption === null) return false;
-                                      const selectedOption_stg = safetySimulations[11]?.options?.[selectedOption];
-                                      return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
-                                    })() && (
+                                    {safetyStage === 11 && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> Recovery services are usually scams. If you have your seed phrase, you can recover yourself.
                                       </div>
