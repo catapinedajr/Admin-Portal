@@ -99,7 +99,7 @@ export function ConsistencyCalendar({ userId }: ConsistencyCalendarProps) {
         const totalCompleted = [lessonCompleted, quizCompleted, practiceCompleted]
           .filter(Boolean).length;
         
-        if (totalCompleted === 3) completedDays++;
+        if (lessonCompleted) completedDays++; // Count day as complete if lesson is done
         
         days.push({
           date: dateStr,
@@ -132,9 +132,9 @@ export function ConsistencyCalendar({ userId }: ConsistencyCalendarProps) {
               {[...Array(3)].map((_, i) => (
                 <div key={i} className="flex justify-between items-center">
                   <div className="h-3 bg-zinc-700 rounded w-20"></div>
-                  <div className="flex gap-1">
+                  <div className="flex gap-1.5">
                     {[...Array(7)].map((_, j) => (
-                      <div key={j} className="w-3 h-3 bg-zinc-700 rounded-full"></div>
+                      <div key={j} className="w-6 h-6 bg-zinc-700 rounded-md"></div>
                     ))}
                   </div>
                   <div className="h-3 bg-zinc-700 rounded w-12"></div>
@@ -165,41 +165,37 @@ export function ConsistencyCalendar({ userId }: ConsistencyCalendarProps) {
                 {week.weekLabel}
               </div>
               
-              {/* Daily Dots */}
+              {/* Daily Boxes */}
               <div className="flex gap-1.5">
-                {week.days.map((day, dayIndex) => (
-                  <div key={dayIndex} className="flex flex-col items-center gap-0.5">
-                    {/* Three small dots for lesson, quiz, practice */}
-                    <div className="flex gap-0.5">
-                      {/* Lesson dot */}
+                {week.days.map((day, dayIndex) => {
+                  // Consider day complete if at least lesson is done (main learning activity)
+                  const isCompleted = day.lessonCompleted;
+                  
+                  return (
+                    <div key={dayIndex} className="flex flex-col items-center gap-1">
+                      {/* Single completion box */}
                       <div 
-                        className={`w-1.5 h-1.5 rounded-full ${
-                          day.lessonCompleted ? 'bg-orange-500' : 'bg-zinc-600'
+                        className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${
+                          isCompleted 
+                            ? 'bg-orange-500 border-orange-500' 
+                            : 'bg-zinc-800 border-zinc-600 hover:border-zinc-500'
                         }`}
-                        title="Lesson"
-                      />
-                      {/* Quiz dot */}
-                      <div 
-                        className={`w-1.5 h-1.5 rounded-full ${
-                          day.quizCompleted ? 'bg-orange-500' : 'bg-zinc-600'
-                        }`}
-                        title="Quiz"
-                      />
-                      {/* Practice dot */}
-                      <div 
-                        className={`w-1.5 h-1.5 rounded-full ${
-                          day.practiceCompleted ? 'bg-orange-500' : 'bg-zinc-600'
-                        }`}
-                        title="Practice"
-                      />
+                        title={isCompleted ? 'Day completed' : 'Not completed'}
+                      >
+                        {isCompleted && (
+                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        )}
+                      </div>
+                      
+                      {/* Day abbreviation */}
+                      <div className="text-zinc-500 text-xs">
+                        {['S', 'M', 'T', 'W', 'T', 'F', 'S'][day.dayOfWeek]}
+                      </div>
                     </div>
-                    
-                    {/* Day abbreviation */}
-                    <div className="text-zinc-500 text-xs">
-                      {['S', 'M', 'T', 'W', 'T', 'F', 'S'][day.dayOfWeek]}
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
               
               {/* Completion Summary */}
