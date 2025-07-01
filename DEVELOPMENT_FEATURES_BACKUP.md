@@ -8,8 +8,8 @@ This file contains all development features that were hidden for production depl
 **Location:** Line 8686 in home-new.tsx
 **Current Code:**
 ```tsx
-{/* Development Tools - Hidden in production */}
-{process.env.NODE_ENV === 'development' && <DevSubscriptionToggle />}
+{/* Development Tools - Hidden for deployment */}
+{false && <DevSubscriptionToggle />}
 ```
 
 **To Restore:** Replace with:
@@ -22,8 +22,8 @@ This file contains all development features that were hidden for production depl
 **Location:** Line 2633 in home-new.tsx
 **Current Code:**
 ```tsx
-{/* Development Content Management Navigation - Hidden in production */}
-{process.env.NODE_ENV === 'development' && learnSubTab === "today" && (
+{/* Development Content Management Navigation - Hidden for deployment */}
+{false && learnSubTab === "today" && (
 ```
 
 **To Restore:** Replace with:

@@ -2629,8 +2629,8 @@ export default function Home() {
 
 
 
-            {/* Development Content Management Navigation - Hidden in production */}
-            {process.env.NODE_ENV === 'development' && learnSubTab === "today" && (
+            {/* Development Content Management Navigation - Hidden for deployment */}
+            {false && learnSubTab === "today" && (
               <div className="flex justify-center">
                 <div className="flex items-center gap-3 bg-zinc-800/50 rounded-lg p-3 border border-zinc-600">
                   <span className="text-xs text-zinc-400 font-medium">DEV CONTROL:</span>
@@ -8682,8 +8682,8 @@ export default function Home() {
         )}
       </main>
       
-      {/* Development Tools - Hidden in production */}
-      {process.env.NODE_ENV === 'development' && <DevSubscriptionToggle />}
+      {/* Development Tools - Hidden for deployment */}
+      {false && <DevSubscriptionToggle />}
       
       {/* Removed floating upgrade modal - now using inline upgrade cards */}
 
