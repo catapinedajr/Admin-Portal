@@ -250,6 +250,25 @@ export const insertContentGenerationStepsSchema = createInsertSchema(contentGene
   createdAt: true,
 });
 
+// Email collection table for progressive access
+export const emailCollections = pgTable("email_collections", {
+  id: serial("id").primaryKey(),
+  email: varchar("email", { length: 255 }).notNull(),
+  trigger: varchar("trigger", { length: 50 }), // 'day-limit', 'simulator', 'feature'
+  lockedFeature: varchar("locked_feature", { length: 100 }),
+  ipAddress: varchar("ip_address", { length: 45 }),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertEmailCollectionSchema = createInsertSchema(emailCollections).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type EmailCollection = typeof emailCollections.$inferSelect;
+export type InsertEmailCollection = z.infer<typeof insertEmailCollectionSchema>;
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type UserProgress = typeof userProgress.$inferSelect;

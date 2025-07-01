@@ -13,6 +13,7 @@ import {
   contentLessons,
   contentQuizzes,
   contentMetadata,
+  emailCollections,
   type User, 
   type InsertUser, 
   type UserProgress,
@@ -41,7 +42,9 @@ import {
   type BitcoinPrice,
   type InsertBitcoinPrice,
   type UserQuizAnswer,
-  type InsertUserQuizAnswer
+  type InsertUserQuizAnswer,
+  type EmailCollection,
+  type InsertEmailCollection
 } from "@shared/schema";
 
 import { db } from "./db";
@@ -112,6 +115,9 @@ export interface IStorage {
   getUserQuizAnswers(userId: number, date: string): Promise<UserQuizAnswer[]>;
   saveQuizAnswer(answer: InsertUserQuizAnswer): Promise<UserQuizAnswer>;
   getUserQuizStatistics(userId: number): Promise<{ totalQuizzesTaken: number; totalCorrectAnswers: number; averageScore: number }>;
+
+  // Email collection methods
+  saveEmailCollection(emailData: InsertEmailCollection): Promise<EmailCollection>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -441,6 +447,14 @@ export class DatabaseStorage implements IStorage {
       totalCorrectAnswers,
       averageScore: Math.round(averageScore)
     };
+  }
+
+  async saveEmailCollection(emailData: InsertEmailCollection): Promise<EmailCollection> {
+    const [result] = await db
+      .insert(emailCollections)
+      .values(emailData)
+      .returning();
+    return result;
   }
 }
 

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Lock, Crown } from 'lucide-react';
 import { useSubscription } from '@/contexts/SubscriptionContext';
-import UpgradeModal from './UpgradeModal';
+import EmailCollectionModal from './EmailCollectionModal';
 
 interface LockedContentProps {
   children: ReactNode;
@@ -109,8 +109,8 @@ export default function LockedContent({
         </div>
       </div>
 
-      {/* Upgrade Modal */}
-      <UpgradeModal
+      {/* Email Collection Modal */}
+      <EmailCollectionModal
         isOpen={showUpgradeModal}
         onClose={() => setShowUpgradeModal(false)}
         trigger={type === 'day' ? 'day-limit' : type === 'simulator' ? 'simulator' : 'feature'}
