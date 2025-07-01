@@ -418,7 +418,7 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
                   <div className="p-4 rounded-lg bg-zinc-800/50 border border-zinc-700">
                     <div className="flex items-center gap-2 mb-2">
                       <Brain className="w-4 h-4 text-blue-400" />
-                      <h4 className="font-medium text-zinc-200">Why this matters</h4>
+                      <h4 className="font-medium text-zinc-200">Explanation</h4>
                     </div>
                     <p className="text-zinc-300 text-sm leading-relaxed">{currentQuestion.explanation}</p>
                   </div>
