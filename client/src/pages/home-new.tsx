@@ -2482,55 +2482,40 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Journey Milestones */}
-              <div className="bg-zinc-900/50 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-white mb-4 text-center">Bitcoin Journey Progress</h3>
-                <div className="space-y-4">
-                  {/* 180-Day Journey Progress Bar */}
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-zinc-400">Day {user?.currentStreak || 0} of 180</span>
-                      <span className="text-zinc-400">{Math.round(((user?.currentStreak || 0) / 180) * 100)}% Complete</span>
-                    </div>
-                    <div className="w-full bg-zinc-800 rounded-full h-3">
-                      <div 
-                        className="bg-gradient-to-r from-orange-500 to-orange-400 h-3 rounded-full transition-all duration-500"
-                        style={{ width: `${((user?.currentStreak || 0) / 180) * 100}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Journey Milestones */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6">
-                    {[30, 60, 120, 180].map((milestone, index) => {
-                      const isCompleted = (user?.currentStreak || 0) >= milestone;
-                      const isCurrent = (user?.currentStreak || 0) < milestone && (index === 0 || (user?.currentStreak || 0) >= [0, 30, 60, 120][index]);
-                      const labels = ['Foundation', 'Economics', 'Advanced', 'Expert'];
-                      const descriptions = ['Month 1', 'Month 2', 'Month 4', 'Month 6'];
-                      
-                      return (
-                        <div key={milestone} className="flex flex-col items-center space-y-2">
-                          <div className={`w-14 h-14 rounded-full border-2 flex items-center justify-center text-sm font-bold transition-all duration-300 ${
-                            isCompleted 
-                              ? 'bg-orange-500 border-orange-500 text-white' 
-                              : isCurrent
-                              ? 'border-orange-400 text-orange-400 bg-orange-400/10'
-                              : 'border-zinc-600 text-zinc-600'
-                          }`}>
-                            {isCompleted ? '✓' : milestone}
-                          </div>
-                          <div className={`text-xs font-medium text-center ${isCompleted ? 'text-orange-400' : 'text-zinc-500'}`}>
-                            {labels[index]}
-                          </div>
-                          <div className={`text-xs text-center ${isCompleted ? 'text-orange-300' : 'text-zinc-600'}`}>
-                            {descriptions[index]}
-                          </div>
-                        </div>
-                      );
-                    })}
+              {/* Journey Progress - Compact Horizontal */}
+              <div className="bg-zinc-900/50 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-base font-semibold text-white">Bitcoin Journey Progress</h3>
+                  <div className="text-sm text-zinc-400">
+                    Day {user?.currentStreak || 0} of 180 • {Math.round(((user?.currentStreak || 0) / 180) * 100)}% Complete
                   </div>
                 </div>
+                
+                {/* Compact Progress Bar */}
+                <div className="w-full bg-zinc-800 rounded-full h-2 mb-3">
+                  <div 
+                    className="bg-gradient-to-r from-orange-500 to-orange-400 h-2 rounded-full transition-all duration-500"
+                    style={{ width: `${((user?.currentStreak || 0) / 180) * 100}%` }}
+                  />
+                </div>
+
+                {/* Horizontal Milestones */}
+                <div className="flex items-center justify-between text-xs text-zinc-500">
+                  {[30, 60, 120, 180].map((milestone, index) => {
+                    const isCompleted = (user?.currentStreak || 0) >= milestone;
+                    return (
+                      <div key={milestone} className="flex items-center gap-1">
+                        <div className={`w-2 h-2 rounded-full ${isCompleted ? 'bg-orange-400' : 'bg-zinc-600'}`} />
+                        <span className={isCompleted ? 'text-orange-400' : 'text-zinc-500'}>
+                          Day {milestone}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
+
+              {/* Continue Learning Journey */}
 
               {/* Stats Row */}
               <div className="grid grid-cols-3 gap-4">
