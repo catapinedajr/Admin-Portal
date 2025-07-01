@@ -2427,6 +2427,25 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
+            {/* Premium Status Indicator */}
+            <div className="flex items-center">
+              {isPremiumTier ? (
+                <Badge className="bg-orange-500 hover:bg-orange-600 text-white border-orange-500 px-3 py-1 font-medium">
+                  <Gem className="w-3 h-3 mr-1.5" />
+                  Premium
+                </Badge>
+              ) : (
+                <Button 
+                  onClick={() => setShowEmailModal(true)}
+                  size="sm"
+                  className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-3"
+                >
+                  <Plus className="w-3 h-3 mr-1.5" />
+                  Upgrade
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </header>
