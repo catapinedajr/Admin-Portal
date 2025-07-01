@@ -472,8 +472,10 @@ export class DatabaseStorage implements IStorage {
   // Quiz answers methods
   async getUserQuizAnswers(userId: number, date: string): Promise<UserQuizAnswer[]> {
     return await db.select().from(userQuizAnswers)
-      .where(eq(userQuizAnswers.userId, userId))
-      .where(eq(userQuizAnswers.date, date));
+      .where(and(
+        eq(userQuizAnswers.userId, userId),
+        eq(userQuizAnswers.date, date)
+      ));
   }
 
   async saveQuizAnswer(answer: InsertUserQuizAnswer): Promise<UserQuizAnswer> {
