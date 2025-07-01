@@ -18,6 +18,20 @@ This file contains all development features that were hidden for production depl
 <DevSubscriptionToggle />
 ```
 
+### Day Navigator and Approval Card System
+**Location:** Line 2633 in home-new.tsx
+**Current Code:**
+```tsx
+{/* Development Content Management Navigation - Hidden in production */}
+{process.env.NODE_ENV === 'development' && learnSubTab === "today" && (
+```
+
+**To Restore:** Replace with:
+```tsx
+{/* Development Content Management Navigation */}
+{learnSubTab === "today" && (
+```
+
 ## Backend Development Features (server/routes.ts)
 
 ### Debug Logging Statements

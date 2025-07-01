@@ -2629,8 +2629,8 @@ export default function Home() {
 
 
 
-            {/* Development Content Management Navigation */}
-            {learnSubTab === "today" && (
+            {/* Development Content Management Navigation - Hidden in production */}
+            {process.env.NODE_ENV === 'development' && learnSubTab === "today" && (
               <div className="flex justify-center">
                 <div className="flex items-center gap-3 bg-zinc-800/50 rounded-lg p-3 border border-zinc-600">
                   <span className="text-xs text-zinc-400 font-medium">DEV CONTROL:</span>
