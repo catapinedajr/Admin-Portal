@@ -161,14 +161,6 @@ export function AuthPage() {
         title: 'Reset link sent',
         description: data.message,
       });
-      // For development, show the token
-      if (data.developmentToken) {
-        toast({
-          title: 'Development Token',
-          description: `Token: ${data.developmentToken}`,
-          variant: 'default',
-        });
-      }
     },
     onError: (error: any) => {
       toast({
