@@ -2441,7 +2441,7 @@ export default function Home() {
               <h1 className="text-3xl font-bold text-white">Welcome to HODLearn</h1>
               <div className="text-lg space-y-1">
                 <div className="text-zinc-400">Understanding Bitcoin takes time</div>
-                <div className="text-zinc-400">Building conviction takes consistency</div>
+                <div className="text-zinc-400">Building conviction takes discipline</div>
                 <div className="text-orange-400 font-semibold">This is HODLearn</div>
               </div>
             </div>
