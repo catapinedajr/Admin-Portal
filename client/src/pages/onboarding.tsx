@@ -92,7 +92,7 @@ export default function Onboarding() {
     } else {
       // Mark onboarding as completed and redirect to Why BTC section
       localStorage.setItem('hodlearn-onboarding-completed', 'true');
-      setLocation('/?section=finance');
+      setLocation('/money');
     }
   };
 
