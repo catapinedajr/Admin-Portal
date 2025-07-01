@@ -2193,6 +2193,11 @@ export default function Home() {
     let correct = false;
     const simulation = safetySimulations[safetyStage];
     
+    console.log('🔍 DEBUG - Safety Answer Validation:');
+    console.log(`  Stage: ${safetyStage} (${simulation?.stage})`);
+    console.log(`  Option Selected: ${optionIndex}`);
+    console.log(`  Simulation Data:`, simulation);
+    
     if (!simulation) {
       console.error(`Invalid stage: ${safetyStage}`);
       return;
@@ -2231,6 +2236,11 @@ export default function Home() {
           if (simulation.options && simulation.options[optionIndex]) {
             const option = simulation.options[optionIndex];
             correct = 'safe' in option ? option.safe === true : false;
+            console.log(`  Option Data:`, option);
+            console.log(`  Safe Value: ${option.safe}`);
+            console.log(`  Validation Result: ${correct}`);
+          } else {
+            console.log(`  ERROR: No option found at index ${optionIndex}`);
           }
           break;
           
@@ -2244,7 +2254,11 @@ export default function Home() {
       correct = false;
     }
     
-    if (correct) setSafetyScore(prev => prev + 1);
+    console.log(`  FINAL RESULT: ${correct ? 'CORRECT ✓' : 'INCORRECT ✗'}`);
+    if (correct) {
+      setSafetyScore(prev => prev + 1);
+      console.log(`  Score updated +1`);
+    }
   };
 
   const nextSafetyStage = () => {
