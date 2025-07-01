@@ -6663,6 +6663,10 @@ export default function Home() {
                               </defs>
                               <rect width="100%" height="100%" fill="url(#grid-hodl-chart)" />
                               
+                              {/* 2x Market Line */}
+                              <line x1="20" y1="140" x2="350" y2="140" stroke="#6366f1" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                              <text x="360" y="144" fill="#6366f1" fontSize="12" opacity="0.8">2x</text>
+                              
                               {/* 5x Market Line */}
                               <line x1="20" y1="120" x2="350" y2="120" stroke="#10b981" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
                               <text x="360" y="124" fill="#10b981" fontSize="12" opacity="0.8">5x</text>
@@ -6894,6 +6898,7 @@ export default function Home() {
                                     
                                     // Show consistent milestone markers for all scenarios
                                     const keyMilestones = [
+                                      { label: '2x', multiplier: 2, color: '#6366f1' },
                                       { label: '5x', multiplier: 5, color: '#10b981' },
                                       { label: '10x', multiplier: 10, color: '#fbbf24' },
                                       { label: '100x', multiplier: 100, color: '#dc2626' }
