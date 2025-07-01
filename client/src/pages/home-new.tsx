@@ -1912,7 +1912,7 @@ export default function Home() {
     {
       stage: "Phishing Detection",
       title: "Spot the Phishing Email",
-      description: "Can you identify the dangerous email that's trying to steal your Bitcoin?",
+      description: "Which email is SAFE to open? Click the legitimate email and avoid the phishing attempts.",
       emails: [
         {
           from: "security@binance.com",
@@ -2202,7 +2202,7 @@ export default function Home() {
       switch (safetyStage) {
         case 0: // Phishing Detection
           if (simulation.emails && simulation.emails[optionIndex]) {
-            correct = simulation.emails[optionIndex].isPhishing === true;
+            correct = simulation.emails[optionIndex].isPhishing === false;
           }
           break;
           
