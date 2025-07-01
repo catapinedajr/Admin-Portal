@@ -2470,14 +2470,13 @@ export default function Home() {
                       stroke="#f97316"
                       strokeWidth="8"
                       strokeLinecap="round"
-                      strokeDasharray={`${((user?.currentStreak || 0) / 30) * 283} 283`}
+                      strokeDasharray={`${((user?.currentStreak || 0) / 180) * 283} 283`}
                       className="transition-all duration-700 ease-out"
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <div className="text-3xl font-bold text-orange-400">{user?.currentStreak || 0}</div>
                     <div className="text-sm text-zinc-400">Day Streak</div>
-                    <div className="text-xs text-zinc-500 mt-1">of 30 days</div>
                   </div>
                 </div>
               </div>
@@ -2500,15 +2499,17 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Monthly Milestones */}
-                  <div className="grid grid-cols-6 gap-2 mt-6">
-                    {[7, 14, 21, 30].map((milestone) => {
+                  {/* Journey Milestones */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                    {[30, 60, 120, 180].map((milestone, index) => {
                       const isCompleted = (user?.currentStreak || 0) >= milestone;
-                      const isCurrent = (user?.currentStreak || 0) < milestone && (user?.currentStreak || 0) >= milestone - 7;
+                      const isCurrent = (user?.currentStreak || 0) < milestone && (index === 0 || (user?.currentStreak || 0) >= [0, 30, 60, 120][index]);
+                      const labels = ['Foundation', 'Economics', 'Advanced', 'Expert'];
+                      const descriptions = ['Month 1', 'Month 2', 'Month 4', 'Month 6'];
                       
                       return (
                         <div key={milestone} className="text-center">
-                          <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all duration-300 ${
+                          <div className={`w-12 h-12 rounded-full border-2 flex items-center justify-center text-sm font-bold transition-all duration-300 ${
                             isCompleted 
                               ? 'bg-orange-500 border-orange-500 text-white' 
                               : isCurrent
@@ -2517,8 +2518,11 @@ export default function Home() {
                           }`}>
                             {isCompleted ? '✓' : milestone}
                           </div>
-                          <div className={`text-xs mt-1 ${isCompleted ? 'text-orange-400' : 'text-zinc-500'}`}>
-                            {milestone === 7 ? 'Foundation' : milestone === 14 ? 'Building' : milestone === 21 ? 'Growing' : 'Expert'}
+                          <div className={`text-xs mt-2 font-medium ${isCompleted ? 'text-orange-400' : 'text-zinc-500'}`}>
+                            {labels[index]}
+                          </div>
+                          <div className={`text-xs ${isCompleted ? 'text-orange-300' : 'text-zinc-600'}`}>
+                            {descriptions[index]}
                           </div>
                         </div>
                       );
@@ -2538,7 +2542,7 @@ export default function Home() {
                   <div className="text-sm text-zinc-400">Best Streak</div>
                 </div>
                 <div className="bg-zinc-900/50 rounded-lg p-4 text-center">
-                  <div className="text-xl font-bold text-zinc-300">{Math.round(((user?.currentStreak || 0) / 30) * 100)}%</div>
+                  <div className="text-xl font-bold text-zinc-300">{Math.round(((user?.currentStreak || 0) / 180) * 100)}%</div>
                   <div className="text-sm text-zinc-400">Complete</div>
                 </div>
               </div>
