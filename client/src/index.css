@@ -279,3 +279,55 @@
 button, a, .cyber-card, .cyber-button {
   transition: all 0.2s ease-in-out;
 }
+
+/* Auth page animations */
+.animate-fade-in {
+  animation: fadeInAuth 1s ease-out;
+}
+
+.animate-fade-in-delayed {
+  animation: fadeInAuth 1.2s ease-out;
+  animation-delay: 0.3s;
+  animation-fill-mode: both;
+}
+
+.animate-slide-up {
+  animation: slideUpAuth 0.8s ease-out;
+  animation-delay: 0.2s;
+  animation-fill-mode: both;
+}
+
+.animate-glow {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+@keyframes fadeInAuth {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUpAuth {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(251, 146, 60, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(251, 146, 60, 0.5), 0 0 30px rgba(251, 146, 60, 0.2);
+  }
+}

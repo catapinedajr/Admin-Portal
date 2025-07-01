@@ -209,17 +209,28 @@ export function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-zinc-900 relative overflow-hidden flex items-center justify-center p-4">
+      {/* Subtle background pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `
+            radial-gradient(circle at 20% 50%, orange 1px, transparent 1px),
+            radial-gradient(circle at 80% 50%, orange 1px, transparent 1px)
+          `,
+          backgroundSize: '100px 100px, 120px 120px'
+        }} />
+      </div>
+      
+      <div className="w-full max-w-md relative z-10">
         {/* Welcome Message */}
         <div className="text-center mb-12">
-          <div className="space-y-3">
-            <h1 className="text-4xl md:text-5xl font-bold text-orange-500 mb-6">Welcome</h1>
-            <p className="text-lg md:text-xl text-zinc-300">Understanding Bitcoin takes time</p>
-            <p className="text-lg md:text-xl text-zinc-300">Building conviction takes discipline</p>
-            <div className="text-center space-y-1">
+          <div className="space-y-3 animate-fade-in">
+            <h1 className="text-4xl md:text-5xl font-bold text-orange-500 mb-6 animate-glow">Welcome</h1>
+            <p className="text-xl md:text-2xl text-zinc-300 font-medium">Understanding Bitcoin takes time</p>
+            <p className="text-lg md:text-xl text-zinc-400">Building conviction takes discipline</p>
+            <div className="text-center space-y-1 mt-8 animate-slide-up">
               <p className="text-xl md:text-2xl font-bold text-orange-400">This is</p>
-              <p className="text-3xl md:text-4xl font-bold text-orange-400">HODLearn</p>
+              <p className="text-3xl md:text-4xl font-bold text-orange-400 animate-glow">HODLearn</p>
               <p className="text-xs md:text-sm text-zinc-400">How-to-learn BTC</p>
             </div>
           </div>
@@ -494,6 +505,13 @@ export function AuthPage() {
             )}
           </CardContent>
         </Card>
+        
+        {/* Value Proposition at Bottom */}
+        <div className="text-center mt-8 animate-fade-in-delayed">
+          <p className="text-sm text-zinc-500">
+            Master Bitcoin fundamentals through daily 5-minute lessons
+          </p>
+        </div>
       </div>
     </div>
   );
