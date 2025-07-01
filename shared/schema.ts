@@ -5,10 +5,20 @@ import { z } from "zod";
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
+  passwordHash: text("password_hash").notNull(),
+  email: text("email").unique(), // Optional for future use
   currentStreak: integer("current_streak").notNull().default(0),
   longestStreak: integer("longest_streak").notNull().default(0),
   completedLessons: integer("completed_lessons").notNull().default(0),
   lastActivityDate: text("last_activity_date"), // YYYY-MM-DD format
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Session management table
+export const sessions = pgTable("sessions", {
+  id: text("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -182,6 +192,22 @@ export const insertUserSchema = createInsertSchema(users).omit({
   createdAt: true,
 });
 
+export const insertSessionSchema = createInsertSchema(sessions).omit({
+  createdAt: true,
+});
+
+// Authentication schemas
+export const loginSchema = z.object({
+  username: z.string().min(3).max(20),
+  password: z.string().min(6).max(100),
+});
+
+export const registerSchema = z.object({
+  username: z.string().min(3).max(20),
+  password: z.string().min(6).max(100),
+  email: z.string().email().optional(),
+});
+
 
 
 export const insertUserProgressSchema = createInsertSchema(userProgress).omit({
@@ -273,6 +299,10 @@ export type InsertEmailCollection = z.infer<typeof insertEmailCollectionSchema>;
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type Session = typeof sessions.$inferSelect;
+export type InsertSession = z.infer<typeof insertSessionSchema>;
+export type LoginRequest = z.infer<typeof loginSchema>;
+export type RegisterRequest = z.infer<typeof registerSchema>;
 export type UserProgress = typeof userProgress.$inferSelect;
 export type InsertUserProgress = z.infer<typeof insertUserProgressSchema>;
 export type KnowledgeArea = typeof knowledgeAreas.$inferSelect;

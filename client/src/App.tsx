@@ -10,6 +10,7 @@ import Home from "@/pages/home-new";
 import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
 import NotFound from "@/pages/not-found";
+import { AuthPage } from "@/pages/auth";
 
 function OnboardingRedirect() {
   const [, setLocation] = useLocation();
@@ -40,6 +41,7 @@ function Router() {
     <>
       <ScrollToTop />
       <Switch>
+        <Route path="/auth" component={AuthPage} />
         <Route path="/onboarding" component={Onboarding} />
         <Route path="/learn" component={Home} />
         <Route path="/money" component={Home} />

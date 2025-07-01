@@ -9,11 +9,11 @@ import {
   userQuizAnswers,
   contentDays,
   contentSetUpQuestions,
-
   contentLessons,
   contentQuizzes,
   contentMetadata,
   emailCollections,
+  sessions,
   type User, 
   type InsertUser, 
   type UserProgress,
@@ -22,7 +22,6 @@ import {
   type InsertContentDay,
   type ContentSetUpQuestion,
   type InsertContentSetUpQuestion,
-
   type ContentLesson,
   type InsertContentLesson,
   type ContentQuiz,
@@ -44,7 +43,11 @@ import {
   type UserQuizAnswer,
   type InsertUserQuizAnswer,
   type EmailCollection,
-  type InsertEmailCollection
+  type InsertEmailCollection,
+  type Session,
+  type InsertSession,
+  type RegisterRequest,
+  type LoginRequest
 } from "@shared/schema";
 
 import { db } from "./db";
@@ -55,6 +58,14 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+
+  // Authentication methods
+  registerUser(userData: RegisterRequest): Promise<User>;
+  loginUser(credentials: LoginRequest): Promise<User | null>;
+  createSession(sessionData: InsertSession): Promise<Session>;
+  getSession(sessionId: string): Promise<Session | undefined>;
+  deleteSession(sessionId: string): Promise<void>;
+  cleanupExpiredSessions(): Promise<void>;
 
   // Content Day methods
   getContentDay(dayIndex: number): Promise<ContentDay | undefined>;
@@ -137,6 +148,61 @@ export class DatabaseStorage implements IStorage {
       .values(insertUser)
       .returning();
     return user;
+  }
+
+  // Authentication methods
+  async registerUser(userData: RegisterRequest): Promise<User> {
+    const bcrypt = await import('bcryptjs');
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
+    
+    const [user] = await db
+      .insert(users)
+      .values({
+        username: userData.username,
+        passwordHash: hashedPassword,
+        email: userData.email,
+        currentStreak: 0,
+        longestStreak: 0,
+        completedLessons: 0,
+        lastActivityDate: null
+      })
+      .returning();
+    return user;
+  }
+
+  async loginUser(credentials: LoginRequest): Promise<User | null> {
+    const user = await this.getUserByUsername(credentials.username);
+    if (!user) return null;
+
+    const bcrypt = await import('bcryptjs');
+    const isPasswordValid = await bcrypt.compare(credentials.password, user.passwordHash);
+    if (!isPasswordValid) return null;
+
+    return user;
+  }
+
+  async createSession(sessionData: InsertSession): Promise<Session> {
+    const [session] = await db
+      .insert(sessions)
+      .values(sessionData)
+      .returning();
+    return session;
+  }
+
+  async getSession(sessionId: string): Promise<Session | undefined> {
+    const [session] = await db
+      .select()
+      .from(sessions)
+      .where(eq(sessions.id, sessionId));
+    return session || undefined;
+  }
+
+  async deleteSession(sessionId: string): Promise<void> {
+    await db.delete(sessions).where(eq(sessions.id, sessionId));
+  }
+
+  async cleanupExpiredSessions(): Promise<void> {
+    await db.delete(sessions).where(sql`${sessions.expiresAt} < NOW()`);
   }
 
   // Content Day methods

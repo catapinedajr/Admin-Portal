@@ -3,11 +3,125 @@ import { createServer, type Server } from "http";
 import path from "path";
 import { storage } from "./storage";
 import { db } from "./db";
-import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentGenerationSteps, userQuizAnswers } from "@shared/schema";
+import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentGenerationSteps, userQuizAnswers, registerSchema, loginSchema } from "@shared/schema";
 import { eq, sql } from "drizzle-orm";
+import { v4 as uuidv4 } from 'uuid';
 
+// Authentication middleware
+function requireAuth(req: any, res: any, next: any) {
+  const sessionId = req.headers.authorization?.replace('Bearer ', '');
+  if (!sessionId) {
+    return res.status(401).json({ message: 'Authentication required' });
+  }
+  
+  // We'll check the session in the actual route handlers
+  req.sessionId = sessionId;
+  next();
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Authentication routes
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const userData = registerSchema.parse(req.body);
+      
+      // Check if username already exists
+      const existingUser = await storage.getUserByUsername(userData.username);
+      if (existingUser) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+
+      const user = await storage.registerUser(userData);
+      
+      // Create session
+      const sessionId = uuidv4();
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
+      
+      await storage.createSession({
+        id: sessionId,
+        userId: user.id,
+        expiresAt
+      });
+
+      // Don't send password hash
+      const { passwordHash, ...userResponse } = user;
+      
+      res.json({
+        user: userResponse,
+        sessionId,
+        message: "Registration successful"
+      });
+    } catch (error) {
+      console.error("Registration error:", error);
+      res.status(400).json({ message: "Registration failed" });
+    }
+  });
+
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const credentials = loginSchema.parse(req.body);
+      
+      const user = await storage.loginUser(credentials);
+      if (!user) {
+        return res.status(401).json({ message: "Invalid username or password" });
+      }
+
+      // Create session
+      const sessionId = uuidv4();
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
+      
+      await storage.createSession({
+        id: sessionId,
+        userId: user.id,
+        expiresAt
+      });
+
+      // Don't send password hash
+      const { passwordHash, ...userResponse } = user;
+      
+      res.json({
+        user: userResponse,
+        sessionId,
+        message: "Login successful"
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(400).json({ message: "Login failed" });
+    }
+  });
+
+  app.post("/api/auth/logout", requireAuth, async (req, res) => {
+    try {
+      await storage.deleteSession(req.sessionId);
+      res.json({ message: "Logout successful" });
+    } catch (error) {
+      console.error("Logout error:", error);
+      res.status(500).json({ message: "Logout failed" });
+    }
+  });
+
+  app.get("/api/auth/me", requireAuth, async (req, res) => {
+    try {
+      const session = await storage.getSession(req.sessionId);
+      if (!session || new Date() > session.expiresAt) {
+        return res.status(401).json({ message: "Session expired" });
+      }
+
+      const user = await storage.getUser(session.userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Don't send password hash
+      const { passwordHash, ...userResponse } = user;
+      res.json(userResponse);
+    } catch (error) {
+      console.error("Auth me error:", error);
+      res.status(500).json({ message: "Failed to get user" });
+    }
+  });
   // Combined dashboard endpoint for performance optimization
   app.get("/api/dashboard/:userId", async (req, res) => {
     try {
@@ -361,15 +475,33 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  // Get current user (default user for simplicity)
+  // Get current user (supports both authenticated and default user for backwards compatibility)
   app.get("/api/user", async (req, res) => {
     try {
-      const user = await storage.getUser(1); // Default user ID
+      const sessionId = req.headers.authorization?.replace('Bearer ', '');
+      let userId = 1; // Default user ID for backwards compatibility
+      
+      // If session provided, use authenticated user
+      if (sessionId) {
+        const session = await storage.getSession(sessionId);
+        if (session && new Date() <= session.expiresAt) {
+          userId = session.userId;
+        } else if (session) {
+          // Session expired
+          return res.status(401).json({ message: "Session expired" });
+        }
+      }
+      
+      const user = await storage.getUser(userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-      res.json(user);
+      
+      // Don't send password hash if it exists
+      const { passwordHash, ...userResponse } = user as any;
+      res.json(userResponse);
     } catch (error) {
+      console.error("Get user error:", error);
       res.status(500).json({ message: "Failed to get user" });
     }
   });
