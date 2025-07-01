@@ -130,14 +130,14 @@ export function ConsistencyCalendar({ userId }: ConsistencyCalendarProps) {
             <div className="h-4 bg-zinc-700 rounded mb-4"></div>
             <div className="space-y-3">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="flex justify-between items-center">
-                  <div className="h-3 bg-zinc-700 rounded w-20"></div>
+                <div key={i} className="flex items-center justify-between">
+                  <div className="h-3 bg-zinc-700 rounded w-20 flex items-center"></div>
                   <div className="flex gap-1.5">
                     {[...Array(7)].map((_, j) => (
                       <div key={j} className="w-6 h-6 bg-zinc-700 rounded-md"></div>
                     ))}
                   </div>
-                  <div className="h-3 bg-zinc-700 rounded w-12"></div>
+                  <div className="h-3 bg-zinc-700 rounded w-12 flex items-center justify-end"></div>
                 </div>
               ))}
             </div>
@@ -160,8 +160,8 @@ export function ConsistencyCalendar({ userId }: ConsistencyCalendarProps) {
         <div className="space-y-4">
           {weeks.map((week, weekIndex) => (
             <div key={weekIndex} className="flex items-center justify-between">
-              {/* Week Label */}
-              <div className="text-zinc-400 text-sm font-medium w-20">
+              {/* Week Label - vertically centered */}
+              <div className="text-zinc-400 text-sm font-medium w-20 flex items-center">
                 {week.weekLabel}
               </div>
               
@@ -198,8 +198,8 @@ export function ConsistencyCalendar({ userId }: ConsistencyCalendarProps) {
                 })}
               </div>
               
-              {/* Completion Summary */}
-              <div className="text-zinc-400 text-sm w-12 text-right">
+              {/* Completion Summary - vertically centered */}
+              <div className="text-zinc-400 text-sm w-12 text-right flex items-center justify-end">
                 {week.completedDays}/7
               </div>
             </div>
