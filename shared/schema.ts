@@ -49,6 +49,18 @@ export const userProgress = pgTable("user_progress", {
   progressPercentage: integer("progress_percentage").notNull().default(0),
 });
 
+// Daily activity tracking for consistency calendar
+export const dailyActivities = pgTable("daily_activities", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  date: text("date").notNull(), // YYYY-MM-DD format
+  lessonCompleted: boolean("lesson_completed").notNull().default(false),
+  quizCompleted: boolean("quiz_completed").notNull().default(false),
+  practiceCompleted: boolean("practice_completed").notNull().default(false), // simulator or safety training
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 export const knowledgeAreas = pgTable("knowledge_areas", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
@@ -376,3 +388,13 @@ export type DailyContentComplete = {
   quizzes: ContentQuiz[];
   metadata: ContentMetadata | null;
 };
+
+// Daily Activities schema and types
+export const insertDailyActivitySchema = createInsertSchema(dailyActivities).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type DailyActivity = typeof dailyActivities.$inferSelect;
+export type InsertDailyActivity = z.infer<typeof insertDailyActivitySchema>;

@@ -1680,6 +1680,59 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
+  // Daily Activities API for consistency tracking
+  app.get("/api/activities/:userId/calendar", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const weeks = parseInt(req.query.weeks as string) || 3; // Default to 3 weeks
+
+      const activities = await storage.getUserActivitiesForWeeks(userId, weeks);
+      res.json(activities);
+    } catch (error) {
+      console.error("Error fetching user activities:", error);
+      res.status(500).json({ message: "Failed to fetch activities" });
+    }
+  });
+
+  app.post("/api/activities/mark-lesson", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const date = new Date().toISOString().split('T')[0];
+      
+      await storage.markLessonCompleted(userId, date);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error marking lesson completed:", error);
+      res.status(500).json({ message: "Failed to mark lesson completed" });
+    }
+  });
+
+  app.post("/api/activities/mark-quiz", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const date = new Date().toISOString().split('T')[0];
+      
+      await storage.markQuizCompleted(userId, date);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error marking quiz completed:", error);
+      res.status(500).json({ message: "Failed to mark quiz completed" });
+    }
+  });
+
+  app.post("/api/activities/mark-practice", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const date = new Date().toISOString().split('T')[0];
+      
+      await storage.markPracticeCompleted(userId, date);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error marking practice completed:", error);
+      res.status(500).json({ message: "Failed to mark practice completed" });
+    }
+  });
+
   // Email collection endpoint for progressive paywall access
   app.post("/api/collect-email", async (req, res) => {
     try {

@@ -88,6 +88,7 @@ import LockedContent from "@/components/LockedContent";
 import DevSubscriptionToggle from "@/components/DevSubscriptionToggle";
 import BottomNavigation from "@/components/BottomNavigation";
 import EmailCollectionModal from "@/components/EmailCollectionModal";
+import { ConsistencyCalendar } from "@/components/ConsistencyCalendar";
 
 // Weekly Quiz Component
 interface WeeklyQuizProps {
@@ -2571,6 +2572,12 @@ export default function Home() {
                   <div className="text-sm text-zinc-400">Complete</div>
                 </div>
               </div>
+            </div>
+
+            {/* Consistency Calendar */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-white text-center">Daily Consistency Tracker</h3>
+              <ConsistencyCalendar userId={user?.id || 1} />
             </div>
 
             {/* Navigation Cards */}

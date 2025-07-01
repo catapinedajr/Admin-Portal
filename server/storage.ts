@@ -1,6 +1,7 @@
 import { 
   users, 
   userProgress, 
+  dailyActivities,
   knowledgeAreas,
   convictionContent,
   treasuryCompanies,
@@ -19,6 +20,8 @@ import {
   type InsertUser, 
   type UserProgress,
   type InsertUserProgress,
+  type DailyActivity,
+  type InsertDailyActivity,
   type ContentDay,
   type InsertContentDay,
   type ContentSetUpQuestion,
@@ -111,6 +114,14 @@ export interface IStorage {
   getNextAvailableDay(userId: number): Promise<number>;
   canAccessDay(userId: number, dayIndex: number): Promise<boolean>;
   getCompletedDays(userId: number): Promise<number[]>;
+
+  // Daily Activity methods for consistency tracking
+  getDailyActivity(userId: number, date: string): Promise<DailyActivity | undefined>;
+  createOrUpdateDailyActivity(activity: InsertDailyActivity): Promise<DailyActivity>;
+  getUserActivitiesForWeeks(userId: number, weeks: number): Promise<DailyActivity[]>;
+  markLessonCompleted(userId: number, date: string): Promise<void>;
+  markQuizCompleted(userId: number, date: string): Promise<void>;
+  markPracticeCompleted(userId: number, date: string): Promise<void>;
 
   // Knowledge areas methods
   getKnowledgeAreas(): Promise<KnowledgeArea[]>;
@@ -576,6 +587,81 @@ export class DatabaseStorage implements IStorage {
       .values(emailData)
       .returning();
     return result;
+  }
+
+  // Daily Activity methods for consistency tracking
+  async getDailyActivity(userId: number, date: string): Promise<DailyActivity | undefined> {
+    const [activity] = await db.select().from(dailyActivities)
+      .where(and(eq(dailyActivities.userId, userId), eq(dailyActivities.date, date)));
+    return activity || undefined;
+  }
+
+  async createOrUpdateDailyActivity(activity: InsertDailyActivity): Promise<DailyActivity> {
+    const existing = await this.getDailyActivity(activity.userId, activity.date);
+    
+    if (existing) {
+      // Update existing
+      const [updated] = await db.update(dailyActivities)
+        .set({
+          ...activity,
+          updatedAt: new Date()
+        })
+        .where(and(
+          eq(dailyActivities.userId, activity.userId),
+          eq(dailyActivities.date, activity.date)
+        ))
+        .returning();
+      return updated;
+    } else {
+      // Create new
+      const [created] = await db.insert(dailyActivities).values(activity).returning();
+      return created;
+    }
+  }
+
+  async getUserActivitiesForWeeks(userId: number, weeks: number): Promise<DailyActivity[]> {
+    const weeksAgo = new Date();
+    weeksAgo.setDate(weeksAgo.getDate() - (weeks * 7));
+    const startDate = weeksAgo.toISOString().split('T')[0];
+
+    return await db.select().from(dailyActivities)
+      .where(and(
+        eq(dailyActivities.userId, userId),
+        sql`${dailyActivities.date} >= ${startDate}`
+      ))
+      .orderBy(dailyActivities.date);
+  }
+
+  async markLessonCompleted(userId: number, date: string): Promise<void> {
+    await this.createOrUpdateDailyActivity({
+      userId,
+      date,
+      lessonCompleted: true,
+      quizCompleted: false,
+      practiceCompleted: false
+    });
+  }
+
+  async markQuizCompleted(userId: number, date: string): Promise<void> {
+    const existing = await this.getDailyActivity(userId, date);
+    await this.createOrUpdateDailyActivity({
+      userId,
+      date,
+      lessonCompleted: existing?.lessonCompleted || false,
+      quizCompleted: true,
+      practiceCompleted: existing?.practiceCompleted || false
+    });
+  }
+
+  async markPracticeCompleted(userId: number, date: string): Promise<void> {
+    const existing = await this.getDailyActivity(userId, date);
+    await this.createOrUpdateDailyActivity({
+      userId,
+      date,
+      lessonCompleted: existing?.lessonCompleted || false,
+      quizCompleted: existing?.quizCompleted || false,
+      practiceCompleted: true
+    });
   }
 }
 
