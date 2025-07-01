@@ -95,6 +95,13 @@ export default function HomeDashboard() {
     return "Good evening";
   };
 
+  // Calculate weekly progress
+  const getCurrentWeek = (dayIndex: number) => Math.ceil(dayIndex / 7);
+  const getDayInWeek = (dayIndex: number) => ((dayIndex - 1) % 7) + 1;
+  const currentWeek = getCurrentWeek(currentDayIndex);
+  const dayInWeek = getDayInWeek(currentDayIndex);
+  const weeklyProgress = Math.round((dayInWeek / 7) * 100);
+
   const todaysFact = dailyFacts?.[0];
 
   return (
@@ -150,8 +157,22 @@ export default function HomeDashboard() {
                 </p>
               </div>
               
+              {/* Weekly Progress */}
+              <div className="space-y-4">
+                <div className="text-center">
+                  <h4 className="text-lg font-semibold text-white mb-2">Week {currentWeek} Progress</h4>
+                  <p className="text-zinc-400 text-sm mb-3">Day {dayInWeek} of 7 this week</p>
+                </div>
+                <div className="max-w-md mx-auto">
+                  <Progress value={weeklyProgress} className="h-3" />
+                  <div className="flex justify-between text-sm text-zinc-400 mt-2">
+                    <span>0%</span>
+                    <span className="font-medium text-orange-400">{weeklyProgress}%</span>
+                    <span>100%</span>
+                  </div>
+                </div>
+              </div>
 
-              
               {/* Journey consistency metrics */}
               <div className="flex justify-center gap-16">
                 <div className="text-center">
