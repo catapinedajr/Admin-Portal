@@ -43,16 +43,14 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-function FirstTimeRedirect() {
+function OnboardingRedirect() {
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    const hasSeenWhyBTC = localStorage.getItem('hodlearn-seen-why-btc');
+    const hasCompletedOnboarding = localStorage.getItem('hodlearn-onboarding-completed');
     
-    if (!hasSeenWhyBTC) {
-      // Mark as seen and redirect to Finance/Why BTC page
-      localStorage.setItem('hodlearn-seen-why-btc', 'true');
-      setLocation('/finance');
+    if (!hasCompletedOnboarding) {
+      setLocation('/onboarding');
     }
   }, [setLocation]);
 
