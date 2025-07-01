@@ -62,7 +62,8 @@ import {
   Star,
   Brain,
   Key,
-  Gamepad2
+  Gamepad2,
+  MoreHorizontal
 } from "lucide-react";
 import type { User, UserProgress, ConvictionContent } from "@shared/schema";
 
@@ -2487,151 +2488,75 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Engaging Progress Tracker */}
-            <div className="space-y-6">
-              {/* Main Progress Circle */}
-              <div className="flex justify-center">
-                <div className="relative w-48 h-48">
-                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                    {/* Background circle */}
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="45"
-                      fill="none"
-                      stroke="#27272a"
-                      strokeWidth="8"
-                    />
-                    {/* Progress circle */}
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="45"
-                      fill="none"
-                      stroke="#f97316"
-                      strokeWidth="8"
-                      strokeLinecap="round"
-                      strokeDasharray={`${((((user?.currentStreak || 1) - 1) % 7) + 1) / 7 * 283} 283`}
-                      className="transition-all duration-700 ease-out"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <div className="text-3xl font-bold text-orange-400">{(((user?.currentStreak || 1) - 1) % 7) + 1}</div>
-                    <div className="text-sm text-zinc-400">Day {(((user?.currentStreak || 1) - 1) % 7) + 1}</div>
-                    <div className="text-xs text-zinc-500 mt-1">Week {Math.ceil((user?.currentStreak || 1) / 7)}</div>
-                  </div>
-                </div>
+            {/* Simple Streak Display */}
+            <div className="text-center space-y-2 mb-8">
+              <div className="text-orange-400 text-2xl font-bold">
+                {user?.currentStreak || 0} day streak
               </div>
+              <div className="text-zinc-400 text-sm">
+                Keep the habit strong
+              </div>
+            </div>
 
-              {/* Journey Progress - Compact Horizontal */}
-              <div className="bg-zinc-900/50 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-base font-semibold text-white">Bitcoin Journey Progress</h3>
+            {/* Main Learning Card */}
+            <Card className="bg-zinc-900 border-zinc-800 hover:border-orange-500/50 transition-colors">
+              <CardContent className="p-8">
+                <div className="space-y-6 text-center">
+                  {/* Day indicator at top */}
                   <div className="text-sm text-zinc-400">
-                    Day {user?.currentStreak || 0} of 180 • {Math.round(((user?.currentStreak || 0) / 180) * 100)}% Complete
+                    Day {currentDayIndex} of your Bitcoin journey
+                  </div>
+                  
+                  {/* Title */}
+                  <h3 className="text-2xl font-bold text-white">
+                    {dayMetadata?.title || 'Loading...'}
+                  </h3>
+                  
+                  {/* Subtitle - first daily fact */}
+                  {dailyFacts && dailyFacts[0] && (
+                    <p className="text-zinc-300">
+                      {dailyFacts[0].title}
+                    </p>
+                  )}
+                  
+                  {/* Continue button */}
+                  <button 
+                    onClick={() => setActiveSection("learn")}
+                    className="bg-orange-500 hover:bg-orange-600 text-white px-12 py-4 rounded-lg font-medium transition-colors text-lg"
+                  >
+                    Continue Learning
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Access */}
+            <div className="grid grid-cols-2 gap-4">
+              <button 
+                onClick={() => setActiveSection("simulations")}
+                className="bg-zinc-900/50 border border-zinc-800 hover:border-orange-500/50 rounded-lg p-4 text-left transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <Gamepad2 className="w-5 h-5 text-orange-400" />
+                  <div>
+                    <div className="text-white font-medium">Simulators</div>
+                    <div className="text-zinc-400 text-sm">Practice tools</div>
                   </div>
                 </div>
-                
-                {/* Compact Progress Bar */}
-                <div className="w-full bg-zinc-800 rounded-full h-2 mb-3">
-                  <div 
-                    className="bg-gradient-to-r from-orange-500 to-orange-400 h-2 rounded-full transition-all duration-500"
-                    style={{ width: `${((user?.currentStreak || 0) / 180) * 100}%` }}
-                  />
-                </div>
-
-                {/* Horizontal Milestones */}
-                <div className="flex items-center justify-between text-xs text-zinc-500">
-                  {[30, 60, 120, 180].map((milestone, index) => {
-                    const isCompleted = (user?.currentStreak || 0) >= milestone;
-                    return (
-                      <div key={milestone} className="flex items-center gap-1">
-                        <div className={`w-2 h-2 rounded-full ${isCompleted ? 'bg-orange-400' : 'bg-zinc-600'}`} />
-                        <span className={isCompleted ? 'text-orange-400' : 'text-zinc-500'}>
-                          Day {milestone}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Continue Learning Journey */}
-
-              {/* Stats Row */}
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-zinc-900/50 rounded-lg p-4 text-center">
-                  <div className="text-xl font-bold text-white">{user?.completedLessons || 0}</div>
-                  <div className="text-sm text-zinc-400">Total Days</div>
-                </div>
-                <div className="bg-zinc-900/50 rounded-lg p-4 text-center">
-                  <div className="text-xl font-bold text-orange-400">{user?.longestStreak || 0}</div>
-                  <div className="text-sm text-zinc-400">Best Streak</div>
-                </div>
-                <div className="bg-zinc-900/50 rounded-lg p-4 text-center">
-                  <div className="text-xl font-bold text-zinc-300">{Math.round(((user?.currentStreak || 0) / 180) * 100)}%</div>
-                  <div className="text-sm text-zinc-400">Complete</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Consistency Calendar */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-white text-center">Daily Consistency Tracker</h3>
-              <ConsistencyCalendar userId={user?.id || 1} />
-            </div>
-
-            {/* Monthly Simulator Tracker */}
-            <div className="space-y-4">
-              <MonthlySimulatorTracker userId={user?.id || 1} />
-            </div>
-
-            {/* Navigation Cards */}
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="bg-zinc-900 border-zinc-800 hover:border-orange-500/50 transition-colors">
-                <CardContent className="p-6">
-                  <div className="space-y-4 text-center">
-                    {/* Day indicator at top */}
-                    <div className="text-sm text-zinc-400">
-                      Day {currentDayIndex} of your Bitcoin journey
-                    </div>
-                    
-                    {/* Title */}
-                    <h3 className="text-xl font-bold text-white">
-                      {dayMetadata?.title || 'Loading...'}
-                    </h3>
-                    
-                    {/* Subtitle - first daily fact */}
-                    {dailyFacts && dailyFacts[0] && (
-                      <p className="text-zinc-300 text-sm">
-                        {dailyFacts[0].title}
-                      </p>
-                    )}
-                    
-                    {/* Continue button */}
-                    <button 
-                      onClick={() => setActiveSection("learn")}
-                      className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-medium transition-colors w-full max-w-48 mx-auto"
-                    >
-                      Continue Journey
-                    </button>
-                  </div>
-                </CardContent>
-              </Card>
+              </button>
               
-              <Card className="bg-zinc-900 border-zinc-800 hover:border-orange-500/50 transition-colors cursor-pointer" onClick={() => setActiveSection("simulations")}>
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                      <Gamepad2 className="w-6 h-6 text-orange-400" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-white">Practice Simulators</h3>
-                      <p className="text-sm text-zinc-400">Interactive Bitcoin tools and simulations</p>
-                    </div>
+              <button 
+                onClick={() => setActiveSection("more")}
+                className="bg-zinc-900/50 border border-zinc-800 hover:border-orange-500/50 rounded-lg p-4 text-left transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <MoreHorizontal className="w-5 h-5 text-orange-400" />
+                  <div>
+                    <div className="text-white font-medium">More</div>
+                    <div className="text-zinc-400 text-sm">Explore</div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </button>
             </div>
           </div>
         )}
