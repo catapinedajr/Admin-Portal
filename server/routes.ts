@@ -91,7 +91,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const dayIndex = parseInt(req.params.dayIndex);
       
-      console.log(`🔍 Debug: dayIndex=${dayIndex}, type=${typeof dayIndex}`);
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`🔍 Debug: dayIndex=${dayIndex}, type=${typeof dayIndex}`);
+      }
       
       if (dayIndex === 1) {
         console.log(`🧠 Executing Claude Day 1 content replacement...`);
@@ -386,9 +388,13 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
         // Default to Day 1 when no day specified (for current user's progress)
         dayIndex = 1;
       }
-      console.log(`[DEBUG] Getting facts for day ${dayIndex}`);
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`[DEBUG] Getting facts for day ${dayIndex}`);
+      }
       const facts = await storage.getContentSetUpQuestions(dayIndex);
-      console.log(`[DEBUG] Found ${facts.length} facts for day ${dayIndex}`);
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`[DEBUG] Found ${facts.length} facts for day ${dayIndex}`);
+      }
       res.json(facts);
     } catch (error) {
       console.error(`[ERROR] Failed to get daily facts for day ${dayIndex}:`, error);

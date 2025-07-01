@@ -8682,8 +8682,8 @@ export default function Home() {
         )}
       </main>
       
-      {/* Development Tools */}
-      <DevSubscriptionToggle />
+      {/* Development Tools - Hidden in production */}
+      {process.env.NODE_ENV === 'development' && <DevSubscriptionToggle />}
       
       {/* Removed floating upgrade modal - now using inline upgrade cards */}
 
