@@ -123,22 +123,22 @@ export function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-zinc-800 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-zinc-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Logo */}
+        {/* Logo - Same as header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-orange-500 mb-2">
-            H<span className="inline-block w-6 h-6 bg-orange-500 rounded-full mx-1"></span>DLearn
+          <h1 className="text-2xl font-bold text-orange-500 mb-1">
+            HODLearn
           </h1>
-          <p className="text-zinc-600 dark:text-zinc-400">Learn • HODL • Repeat</p>
+          <p className="text-sm text-zinc-400">How-to-learn BTC</p>
         </div>
 
-        <Card className="border-0 shadow-xl">
+        <Card className="border-zinc-700 bg-zinc-800 shadow-xl">
           <CardHeader className="text-center pb-4">
-            <CardTitle className="text-2xl font-bold text-zinc-800 dark:text-zinc-200">
+            <CardTitle className="text-2xl font-bold text-zinc-200">
               {isLogin ? 'Welcome Back' : 'Join HODLearn'}
             </CardTitle>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="text-sm text-zinc-400">
               {isLogin 
                 ? 'Continue your Bitcoin learning journey' 
                 : 'Start your Bitcoin education today'
