@@ -214,10 +214,13 @@ export function AuthPage() {
         {/* Welcome Message */}
         <div className="text-center mb-12">
           <div className="space-y-3">
-            <h1 className="text-4xl md:text-5xl font-bold text-orange-500">Welcome to HODLearn</h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-orange-500">Welcome</h1>
             <p className="text-lg md:text-xl text-zinc-300">Understanding Bitcoin takes time</p>
             <p className="text-lg md:text-xl text-zinc-300">Building conviction takes discipline</p>
-            <p className="text-xl md:text-2xl font-bold text-orange-400">This is HODLearn</p>
+            <div className="space-y-1">
+              <p className="text-xl md:text-2xl font-bold text-orange-400">This is HODLearn</p>
+              <p className="text-sm md:text-base text-zinc-400">How-to-learn BTC</p>
+            </div>
           </div>
         </div>
 
