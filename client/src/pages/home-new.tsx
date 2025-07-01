@@ -8524,12 +8524,16 @@ export default function Home() {
       <BottomNavigation 
         activeSection={activeSection}
         onSectionChange={(section) => {
-          setActiveSection(section as MainSection);
+          // Map navigation section names to MainSection type
+          let mappedSection: MainSection;
+          if (section === 'simulators') mappedSection = 'simulations';
+          else mappedSection = section as MainSection;
+          
+          setActiveSection(mappedSection);
           if (section === 'learn') setLocation('/learn');
           else if (section === 'money') setLocation('/money');
           else if (section === 'simulators') setLocation('/simulators');
           else if (section === 'more') setLocation('/more');
-          else if (section === 'home') setLocation('/');
         }}
       />
       
