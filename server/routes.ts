@@ -3,11 +3,39 @@ import { createServer, type Server } from "http";
 import path from "path";
 import { storage } from "./storage";
 import { db } from "./db";
-import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentGenerationSteps } from "@shared/schema";
-import { eq } from "drizzle-orm";
+import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentGenerationSteps, userQuizAnswers } from "@shared/schema";
+import { eq, sql } from "drizzle-orm";
 
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Combined dashboard endpoint for performance optimization
+  app.get("/api/dashboard/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId) || 1;
+      
+      // Get next available day for this user
+      const nextAvailableDay = await storage.getNextAvailableDay(userId);
+      
+      // Fetch all dashboard data in parallel - simplified version for now
+      const [user, dailyFacts, lesson] = await Promise.all([
+        storage.getUser(userId),
+        storage.getContentSetUpQuestions(nextAvailableDay),
+        storage.getContentLesson(nextAvailableDay)
+      ]);
+
+      res.json({
+        user,
+        currentDayIndex: nextAvailableDay,
+        dailyFacts: dailyFacts.slice(0, 3), // First 3 facts for preview
+        lesson,
+        userQuizData: { totalQuizzesTaken: 0, totalCorrectAnswers: 0, averageScore: 0 } // Will optimize later
+      });
+    } catch (error) {
+      console.error("Dashboard API error:", error);
+      res.status(500).json({ message: "Failed to load dashboard data" });
+    }
+  });
+
   // Test endpoint to create sample content
   app.post("/api/admin/create-sample", async (req, res) => {
     try {
