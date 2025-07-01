@@ -5289,7 +5289,7 @@ export default function Home() {
                                   <div className="space-y-2 mt-3">
                                     {safetySimulations[2]?.options?.map((option, index) => {
                                       const isSelected = selectedOption === index;
-                                      const isCorrectOption = 'correct' in option && option.correct === true;
+                                      const isCorrectOption = ('safe' in option && option.safe === true) || ('correct' in option && option.correct === true);
                                       const wasSelectedIncorrectly = showResult && isSelected && !isCorrectOption;
                                       
                                       return (
@@ -5464,9 +5464,8 @@ export default function Home() {
                                       const isSelected = selectedOption === index;
                                       const isCorrectOption = (() => {
                                         if (!currentSimulation) return false;
-                                        if ('safe' in option) return option.safe === true;
-                                        if ('correct' in option) return option.correct === true;
-                                        return false;
+                                        // Match backend validation logic: check both properties with OR
+                                        return ('safe' in option && option.safe === true) || ('correct' in option && option.correct === true);
                                       })();
                                       const wasSelectedIncorrectly = showResult && isSelected && !isCorrectOption;
                                       const wasSelectedCorrectly = showResult && isSelected && isCorrectOption;
@@ -5563,18 +5562,29 @@ export default function Home() {
                                       {safetySimulations[safetyStage]?.explanation || 'Good job identifying the security threat!'}
                                     </p>
                                     
-                                    {/* Educational Explanations for Correct Answers */}
-                                    {safetyStage === 0 && (
+                                    {/* Educational Explanations - Only show for correct answers */}
+                                    {safetyStage === 0 && (() => {
+                                      // For stage 0, check if user selected a phishing email (correct answer)
+                                      const selectedEmail = safetySimulations[0]?.emails?.[selectedOption];
+                                      return showResult && selectedEmail?.isPhishing === true;
+                                    })() && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> Phishing emails copy real designs but use fake domains. Always check the sender's email address carefully.
                                       </div>
                                     )}
-                                    {safetyStage === 1 && (
+                                    {safetyStage === 1 && (() => {
+                                      // For other stages, check if user selected the correct option
+                                      const selectedOption_stg = safetySimulations[1]?.options?.[selectedOption];
+                                      return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
+                                    })() && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> Never share your seed phrase with anyone. Real support never asks for it. This is the #1 way Bitcoin gets stolen.
                                       </div>
                                     )}
-                                    {safetyStage === 2 && (
+                                    {safetyStage === 2 && (() => {
+                                      const selectedOption_stg = safetySimulations[2]?.options?.[selectedOption];
+                                      return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
+                                    })() && (
                                       <div className="space-y-2">
                                         <div className="text-green-200 text-xs font-medium">The difference was subtle but critical:</div>
                                         <div className="text-xs font-mono bg-black/30 p-2 rounded">
@@ -5586,42 +5596,66 @@ export default function Home() {
                                         </div>
                                       </div>
                                     )}
-                                    {safetyStage === 4 && (
+                                    {safetyStage === 4 && (() => {
+                                      const selectedOption_stg = safetySimulations[4]?.options?.[selectedOption];
+                                      return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
+                                    })() && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> Public WiFi can be monitored. Use your phone's data or VPN for sensitive Bitcoin activities.
                                       </div>
                                     )}
-                                    {safetyStage === 5 && (
+                                    {safetyStage === 5 && (() => {
+                                      const selectedOption_stg = safetySimulations[5]?.options?.[selectedOption];
+                                      return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
+                                    })() && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> Only download wallets from official sources. Fake wallets steal your Bitcoin immediately.
                                       </div>
                                     )}
-                                    {safetyStage === 6 && (
+                                    {safetyStage === 6 && (() => {
+                                      const selectedOption_stg = safetySimulations[6]?.scenarios?.[selectedOption];
+                                      return showResult && selectedOption_stg && !selectedOption_stg.isScam;
+                                    })() && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> Scammers impersonate celebrities and officials. Real Bitcoin giveaways don't exist.
                                       </div>
                                     )}
-                                    {safetyStage === 7 && (
+                                    {safetyStage === 7 && (() => {
+                                      const selectedOption_stg = safetySimulations[7]?.options?.[selectedOption];
+                                      return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
+                                    })() && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> Used hardware wallets could be tampered with. Always buy new from official manufacturers.
                                       </div>
                                     )}
-                                    {safetyStage === 8 && (
+                                    {safetyStage === 8 && (() => {
+                                      const selectedOption_stg = safetySimulations[8]?.options?.[selectedOption];
+                                      return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
+                                    })() && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> Test your backup by restoring it on another device. Unreadable backups = lost Bitcoin.
                                       </div>
                                     )}
-                                    {safetyStage === 9 && (
+                                    {safetyStage === 9 && (() => {
+                                      const selectedOption_stg = safetySimulations[9]?.options?.[selectedOption];
+                                      return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
+                                    })() && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> 100x higher fees suggests malicious software. Normal fees are $1-5, not $200.
                                       </div>
                                     )}
-                                    {safetyStage === 10 && (
+                                    {safetyStage === 10 && (() => {
+                                      const selectedOption_stg = safetySimulations[10]?.options?.[selectedOption];
+                                      return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
+                                    })() && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> 100x higher fees suggests malicious software. Normal fees are $1-5, not $200.
                                       </div>
                                     )}
-                                    {safetyStage === 11 && (
+                                    {safetyStage === 11 && (() => {
+                                      const selectedOption_stg = safetySimulations[11]?.options?.[selectedOption];
+                                      return showResult && (('safe' in selectedOption_stg && selectedOption_stg.safe === true) || ('correct' in selectedOption_stg && selectedOption_stg.correct === true));
+                                    })() && (
                                       <div className="text-green-200 text-xs mt-2">
                                         <strong>Why:</strong> Recovery services are usually scams. If you have your seed phrase, you can recover yourself.
                                       </div>
