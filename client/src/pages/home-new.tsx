@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
+import SafetySimulator from "@/components/SafetySimulator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -5155,9 +5156,24 @@ export default function Home() {
                                   <div className="space-y-2">
                                     {safetySimulations[0]?.emails?.map((email, index) => {
                                       const isSelected = selectedOption === index;
-                                      // Only show as correct if this is the selected option AND it's phishing
-                                      const isCorrectOption = showResult && isSelected && email.isPhishing === true;
-                                      const wasSelectedIncorrectly = showResult && isSelected && !email.isPhishing;
+                                      
+                                      // Simple visual feedback
+                                      let bgClass = '';
+                                      let iconElement = null;
+                                      
+                                      if (showResult && isSelected) {
+                                        if (email.isPhishing) {
+                                          bgClass = 'bg-green-900/30 border-green-700 text-green-100';
+                                          iconElement = <CheckCircle className="w-4 h-4 text-green-400" />;
+                                        } else {
+                                          bgClass = 'bg-red-900/30 border-red-700 text-red-100';
+                                          iconElement = <XCircle className="w-4 h-4 text-red-400" />;
+                                        }
+                                      } else if (isSelected) {
+                                        bgClass = 'border-orange-500 bg-orange-500/10 text-orange-100';
+                                      } else {
+                                        bgClass = 'border-zinc-600 hover:border-zinc-500 text-white';
+                                      }
                                       
                                       return (
                                         <button
@@ -5166,9 +5182,9 @@ export default function Home() {
                                           disabled={showResult}
                                           className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
                                             showResult
-                                              ? isCorrectOption
+                                              ? isCorrect
                                                 ? 'bg-green-900/30 border-green-700 text-green-100'
-                                                : wasSelectedIncorrectly
+                                                : (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect)
                                                   ? 'bg-red-900/30 border-red-700 text-red-100'
                                                   : 'bg-zinc-800/50 border-zinc-700 text-zinc-400'
                                               : isSelected
@@ -5178,9 +5194,9 @@ export default function Home() {
                                         >
                                           <div className="flex items-start gap-3">
                                             <span className={`flex-shrink-0 w-6 h-6 rounded-full text-sm flex items-center justify-center font-medium mt-1 ${
-                                              showResult && isCorrectOption 
+                                              showResult && isCorrect 
                                                 ? 'bg-green-600 text-white' 
-                                                : showResult && wasSelectedIncorrectly
+                                                : showResult && (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect)
                                                   ? 'bg-red-600 text-white'
                                                   : isSelected
                                                     ? 'bg-orange-600 text-white'
@@ -5192,30 +5208,30 @@ export default function Home() {
                                               <div className="flex justify-between items-start mb-1">
                                                 <span className={`text-xs sm:text-sm font-medium truncate mr-2 ${
                                                   showResult 
-                                                    ? isCorrectOption || wasSelectedIncorrectly ? 'text-current' : 'text-zinc-400'
+                                                    ? isCorrect || (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect) ? 'text-current' : 'text-zinc-400'
                                                     : isSelected ? 'text-orange-100' : 'text-white'
                                                 }`}>{email.from}</span>
                                                 <span className="text-zinc-500 text-xs shrink-0">Today</span>
                                               </div>
                                               <div className={`text-xs sm:text-sm mb-1 line-clamp-1 ${
                                                 showResult 
-                                                  ? isCorrectOption || wasSelectedIncorrectly ? 'text-current' : 'text-zinc-400'
+                                                  ? isCorrect || (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect) ? 'text-current' : 'text-zinc-400'
                                                   : isSelected ? 'text-orange-100' : 'text-white'
                                               }`}>{email.subject}</div>
                                               <div className={`text-xs line-clamp-2 leading-relaxed ${
                                                 showResult 
-                                                  ? isCorrectOption || wasSelectedIncorrectly ? 'text-current' : 'text-zinc-500'
+                                                  ? isCorrect || (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect) ? 'text-current' : 'text-zinc-500'
                                                   : 'text-zinc-400'
                                               }`}>{email.preview}</div>
                                             </div>
                                             <div className="flex items-center gap-2 mt-1">
-                                              {showResult && isCorrectOption && (
+                                              {showResult && isCorrect && (
                                                 <div className="flex items-center gap-1">
                                                   <CheckCircle className="w-4 h-4 text-green-400" />
                                                   <span className="text-xs text-green-400 font-medium">Correct</span>
                                                 </div>
                                               )}
-                                              {showResult && wasSelectedIncorrectly && (
+                                              {showResult && (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect) && (
                                                 <XCircle className="w-5 h-5 text-red-500" />
                                               )}
                                             </div>
@@ -5290,8 +5306,8 @@ export default function Home() {
                                   <div className="space-y-2 mt-3">
                                     {safetySimulations[2]?.options?.map((option, index) => {
                                       const isSelected = selectedOption === index;
-                                      const isCorrectOption = ('safe' in option && option.safe === true) || ('correct' in option && option.correct === true);
-                                      const wasSelectedIncorrectly = showResult && isSelected && !isCorrectOption;
+                                      const isCorrect = ('safe' in option && option.safe === true) || ('correct' in option && option.correct === true);
+                                      const (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect) = showResult && isSelected && !isCorrect;
                                       
                                       return (
                                         <button
@@ -5300,9 +5316,9 @@ export default function Home() {
                                           disabled={showResult}
                                           className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
                                             showResult
-                                              ? isCorrectOption
+                                              ? isCorrect
                                                 ? 'bg-green-900/30 border-green-700 text-green-100'
-                                                : wasSelectedIncorrectly
+                                                : (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect)
                                                   ? 'bg-red-900/30 border-red-700 text-red-100'
                                                   : 'bg-zinc-800/50 border-zinc-700 text-zinc-400'
                                               : isSelected
@@ -5312,9 +5328,9 @@ export default function Home() {
                                         >
                                           <div className="flex items-center gap-3">
                                             <span className={`flex-shrink-0 w-6 h-6 rounded-full text-sm flex items-center justify-center font-medium ${
-                                              showResult && isCorrectOption 
+                                              showResult && isCorrect 
                                                 ? 'bg-green-600 text-white' 
-                                                : showResult && wasSelectedIncorrectly
+                                                : showResult && (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect)
                                                   ? 'bg-red-600 text-white'
                                                   : isSelected
                                                     ? 'bg-orange-600 text-white'
@@ -5326,13 +5342,13 @@ export default function Home() {
                                               {'text' in option ? option.text : 'Option'}
                                             </span>
                                             <div className="flex items-center gap-2">
-                                              {showResult && isCorrectOption && (
+                                              {showResult && isCorrect && (
                                                 <div className="flex items-center gap-1">
                                                   <CheckCircle className="w-4 h-4 text-green-400" />
                                                   <span className="text-xs text-green-400 font-medium">Correct</span>
                                                 </div>
                                               )}
-                                              {showResult && wasSelectedIncorrectly && (
+                                              {showResult && (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect) && (
                                                 <XCircle className="w-5 h-5 text-red-500" />
                                               )}
                                             </div>
@@ -5355,8 +5371,8 @@ export default function Home() {
                                   <div className="space-y-2">
                                     {safetySimulations[3]?.scenarios?.map((scenario, index) => {
                                       const isSelected = selectedOption === index;
-                                      const isCorrectOption = scenario.isScam === false;
-                                      const wasSelectedIncorrectly = showResult && isSelected && !isCorrectOption;
+                                      const isCorrect = scenario.isScam === false;
+                                      const (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect) = showResult && isSelected && !isCorrect;
                                       
                                       return (
                                         <button
@@ -5365,9 +5381,9 @@ export default function Home() {
                                           disabled={showResult}
                                           className={`w-full p-3 border rounded-lg text-left transition-colors ${
                                             showResult
-                                              ? isCorrectOption
+                                              ? isCorrect
                                                 ? 'bg-green-900/30 border-green-700 text-green-100'
-                                                : wasSelectedIncorrectly
+                                                : (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect)
                                                   ? 'bg-red-900/30 border-red-700 text-red-100'
                                                   : 'bg-zinc-800/50 border-zinc-700 text-zinc-400'
                                               : isSelected
@@ -5377,9 +5393,9 @@ export default function Home() {
                                         >
                                           <div className="flex items-start gap-3">
                                             <span className={`flex-shrink-0 w-6 h-6 rounded-full text-sm flex items-center justify-center font-medium ${
-                                              showResult && isCorrectOption 
+                                              showResult && isCorrect 
                                                 ? 'bg-green-600 text-white' 
-                                                : showResult && wasSelectedIncorrectly
+                                                : showResult && (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect)
                                                   ? 'bg-red-600 text-white'
                                                   : isSelected
                                                     ? 'bg-orange-600 text-white'
@@ -5390,20 +5406,20 @@ export default function Home() {
                                             <div className="flex-1 min-w-0">
                                               <div className={`text-xs sm:text-sm leading-relaxed ${
                                                 showResult 
-                                                  ? isCorrectOption || wasSelectedIncorrectly ? 'text-current' : 'text-zinc-400'
+                                                  ? isCorrect || (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect) ? 'text-current' : 'text-zinc-400'
                                                   : isSelected ? 'text-orange-100' : 'text-white'
                                               }`}>
                                                 "{scenario.message}"
                                               </div>
                                             </div>
                                             <div className="flex items-center gap-2">
-                                              {showResult && isCorrectOption && (
+                                              {showResult && isCorrect && (
                                                 <div className="flex items-center gap-1">
                                                   <CheckCircle className="w-4 h-4 text-green-400" />
                                                   <span className="text-xs text-green-400 font-medium">Correct</span>
                                                 </div>
                                               )}
-                                              {showResult && wasSelectedIncorrectly && (
+                                              {showResult && (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect) && (
                                                 <XCircle className="w-5 h-5 text-red-500" />
                                               )}
                                             </div>
@@ -5463,13 +5479,19 @@ export default function Home() {
                                   <div className="space-y-2">
                                     {currentSimulation?.options?.map((option, index) => {
                                       const isSelected = selectedOption === index;
-                                      const isCorrectOption = (() => {
-                                        if (!currentSimulation || !showResult || !isSelected) return false;
-                                        // Only show as correct if this is the selected option AND it's actually correct
-                                        return ('safe' in option && option.safe === true) || ('correct' in option && option.correct === true);
-                                      })();
-                                      const wasSelectedIncorrectly = showResult && isSelected && !isCorrectOption;
-                                      const wasSelectedCorrectly = showResult && isSelected && isCorrectOption;
+                                      
+                                      // Simple visual feedback logic
+                                      let bgClass = 'bg-zinc-800/50 border-zinc-700 text-zinc-300';
+                                      let isCorrect = false;
+                                      if (showResult && isSelected) {
+                                        // Check if this selected option is correct
+                                        isCorrect = ('safe' in option && option.safe === true) || ('correct' in option && option.correct === true);
+                                        if (isCorrect) {
+                                          bgClass = 'bg-green-900/30 border-green-700 text-green-100';
+                                        } else {
+                                          bgClass = 'bg-red-900/30 border-red-700 text-red-100';
+                                        }
+                                      }
                                       
                                       return (
                                         <button
@@ -5478,9 +5500,9 @@ export default function Home() {
                                           disabled={showResult}
                                           className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
                                             showResult
-                                              ? isCorrectOption
+                                              ? isCorrect
                                                 ? 'bg-green-900/30 border-green-700 text-green-100'
-                                                : wasSelectedIncorrectly
+                                                : (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect)
                                                   ? 'bg-red-900/30 border-red-700 text-red-100'
                                                   : 'bg-zinc-800/50 border-zinc-700 text-zinc-400'
                                               : isSelected
@@ -5490,9 +5512,9 @@ export default function Home() {
                                         >
                                           <div className="flex items-center gap-3">
                                             <span className={`flex-shrink-0 w-6 h-6 rounded-full text-sm flex items-center justify-center font-medium ${
-                                              showResult && isCorrectOption 
+                                              showResult && isCorrect 
                                                 ? 'bg-green-600 text-white' 
-                                                : showResult && wasSelectedIncorrectly
+                                                : showResult && (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect)
                                                   ? 'bg-red-600 text-white'
                                                   : isSelected
                                                     ? 'bg-orange-600 text-white'
@@ -5504,13 +5526,13 @@ export default function Home() {
                                               {'method' in option ? option.method : 'text' in option ? option.text : 'Option'}
                                             </span>
                                             <div className="flex items-center gap-2">
-                                              {showResult && isCorrectOption && (
+                                              {showResult && isCorrect && (
                                                 <div className="flex items-center gap-1">
                                                   <CheckCircle className="w-4 h-4 text-green-400" />
                                                   <span className="text-xs text-green-400 font-medium">Correct</span>
                                                 </div>
                                               )}
-                                              {showResult && wasSelectedIncorrectly && (
+                                              {showResult && (showResult wasSelectedIncorrectlywasSelectedIncorrectly isSelected wasSelectedIncorrectlywasSelectedIncorrectly !isCorrect) && (
                                                 <XCircle className="w-5 h-5 text-red-500" />
                                               )}
                                             </div>
