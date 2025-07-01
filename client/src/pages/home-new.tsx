@@ -2501,7 +2501,7 @@ export default function Home() {
                   </div>
 
                   {/* Journey Milestones */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6">
                     {[30, 60, 120, 180].map((milestone, index) => {
                       const isCompleted = (user?.currentStreak || 0) >= milestone;
                       const isCurrent = (user?.currentStreak || 0) < milestone && (index === 0 || (user?.currentStreak || 0) >= [0, 30, 60, 120][index]);
@@ -2509,8 +2509,8 @@ export default function Home() {
                       const descriptions = ['Month 1', 'Month 2', 'Month 4', 'Month 6'];
                       
                       return (
-                        <div key={milestone} className="text-center">
-                          <div className={`w-12 h-12 rounded-full border-2 flex items-center justify-center text-sm font-bold transition-all duration-300 ${
+                        <div key={milestone} className="flex flex-col items-center space-y-2">
+                          <div className={`w-14 h-14 rounded-full border-2 flex items-center justify-center text-sm font-bold transition-all duration-300 ${
                             isCompleted 
                               ? 'bg-orange-500 border-orange-500 text-white' 
                               : isCurrent
@@ -2519,10 +2519,10 @@ export default function Home() {
                           }`}>
                             {isCompleted ? '✓' : milestone}
                           </div>
-                          <div className={`text-xs mt-2 font-medium ${isCompleted ? 'text-orange-400' : 'text-zinc-500'}`}>
+                          <div className={`text-xs font-medium text-center ${isCompleted ? 'text-orange-400' : 'text-zinc-500'}`}>
                             {labels[index]}
                           </div>
-                          <div className={`text-xs ${isCompleted ? 'text-orange-300' : 'text-zinc-600'}`}>
+                          <div className={`text-xs text-center ${isCompleted ? 'text-orange-300' : 'text-zinc-600'}`}>
                             {descriptions[index]}
                           </div>
                         </div>
