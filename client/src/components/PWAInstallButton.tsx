@@ -11,6 +11,7 @@ export default function PWAInstallButton() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstallable, setIsInstallable] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
 
   useEffect(() => {
     // Check if app is already installed
@@ -46,20 +47,29 @@ export default function PWAInstallButton() {
   }, []);
 
   const handleInstall = async () => {
+    setIsClicked(true);
     console.log('HODLearn: Install button clicked');
     console.log('HODLearn: deferredPrompt available:', !!deferredPrompt);
     console.log('HODLearn: isInstallable:', isInstallable);
     console.log('HODLearn: isInstalled:', isInstalled);
+    console.log('HODLearn: User Agent:', navigator.userAgent);
 
     if (!deferredPrompt) {
       console.log('HODLearn: No install prompt available - trying manual instruction');
+      
+      // Reset click state after showing alert
+      setTimeout(() => setIsClicked(false), 100);
+      
       alert('To install HODLearn:\n\n1. Click the menu (⋮) in your browser\n2. Look for "Install HODLearn" or "Add to Home Screen"\n3. Click it to install the app\n\nOr try opening in Chrome/Edge on desktop for best results.');
       return;
     }
 
     try {
+      console.log('HODLearn: Attempting to show install prompt...');
       await deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
+      
+      console.log('HODLearn: User choice:', outcome);
       
       if (outcome === 'accepted') {
         console.log('HODLearn: PWA installation accepted');
@@ -72,6 +82,8 @@ export default function PWAInstallButton() {
     } catch (error) {
       console.error('HODLearn: PWA installation error:', error);
       alert('Installation not available in this browser. Try Chrome or Edge on desktop.');
+    } finally {
+      setIsClicked(false);
     }
   };
 
@@ -88,11 +100,11 @@ export default function PWAInstallButton() {
       size="sm"
       variant="outline"
       className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-3"
-      disabled={!deferredPrompt}
-      title={deferredPrompt ? "Install HODLearn app" : "Install not available"}
+      disabled={isClicked}
+      title={deferredPrompt ? "Install HODLearn app" : "Manual install available"}
     >
       <Download className="w-3 h-3 mr-1.5" />
-      {deferredPrompt ? "Install" : "Install"}
+      {isClicked ? "..." : "Install"}
     </Button>
   );
 }
