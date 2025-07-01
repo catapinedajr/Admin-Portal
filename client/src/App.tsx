@@ -22,7 +22,7 @@ function OnboardingRedirect() {
     }
   }, [setLocation]);
 
-  return <HomeDashboard />;
+  return <Home />;
 }
 
 function ScrollToTop() {

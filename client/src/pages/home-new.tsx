@@ -59,7 +59,8 @@ import {
   Target,
   Star,
   Brain,
-  Key
+  Key,
+  Gamepad2
 } from "lucide-react";
 import type { User, UserProgress, ConvictionContent } from "@shared/schema";
 
@@ -349,7 +350,7 @@ const seedPhraseScenarios = [
 
 
 
-type MainSection = "learn" | "money" | "simulations" | "more";
+type MainSection = "home" | "learn" | "money" | "simulations" | "more";
 type LearnSubTab = "today" | "reference";
 type SimulationsSubTab = "wallet" | "safety" | "transactions" | "transfer" | "hodl" | "dca" | "inflation" | "fees";
 type MoreSubTab = "store" | "about";
@@ -362,11 +363,12 @@ export default function Home() {
   
   // Determine active section from URL
   const getActiveSectionFromPath = (path: string): MainSection => {
+    if (path === '/' || path === '') return 'home';
     if (path.includes('/learn')) return 'learn';
     if (path.includes('/money')) return 'money';
     if (path.includes('/simulators')) return 'simulations';
     if (path.includes('/more')) return 'more';
-    return 'learn'; // default
+    return 'home'; // default to home instead of learn
   };
   
   // Determine simulator sub-tab from URL
@@ -2431,6 +2433,80 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-6">
+        {/* Home Section */}
+        {activeSection === "home" && (
+          <div className="space-y-8">
+            {/* Welcome Header */}
+            <div className="text-center space-y-4">
+              <h1 className="text-3xl font-bold text-white">Welcome to HODLearn</h1>
+              <div className="text-lg space-y-1">
+                <div className="text-zinc-400">Understanding Bitcoin takes time</div>
+                <div className="text-zinc-400">Building conviction takes consistency</div>
+                <div className="text-orange-400 font-semibold">This is HODLearn</div>
+              </div>
+            </div>
+
+            {/* Quick Stats Dashboard */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-orange-400">{user?.currentStreak || 0}</div>
+                  <div className="text-sm text-zinc-400">Current Streak</div>
+                </CardContent>
+              </Card>
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-white">{Math.ceil((user?.currentStreak || 1) / 7)}</div>
+                  <div className="text-sm text-zinc-400">Week {Math.ceil((user?.currentStreak || 1) / 7)}</div>
+                </CardContent>
+              </Card>
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-green-400">{user?.totalDaysCompleted || 0}</div>
+                  <div className="text-sm text-zinc-400">Days Learning</div>
+                </CardContent>
+              </Card>
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-blue-400">{user?.bestStreak || 0}</div>
+                  <div className="text-sm text-zinc-400">Best Streak</div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Navigation Cards */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <Card className="bg-zinc-900 border-zinc-800 hover:border-orange-500/50 transition-colors cursor-pointer" onClick={() => setActiveSection("learn")}>
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                      <GraduationCap className="w-6 h-6 text-orange-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-white">Continue Learning</h3>
+                      <p className="text-sm text-zinc-400">Daily lessons and Bitcoin fundamentals</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="bg-zinc-900 border-zinc-800 hover:border-orange-500/50 transition-colors cursor-pointer" onClick={() => setActiveSection("simulations")}>
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                      <Gamepad2 className="w-6 h-6 text-orange-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-white">Practice Simulators</h3>
+                      <p className="text-sm text-zinc-400">Interactive Bitcoin tools and simulations</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
+
         {/* Learn Section Header */}
         {activeSection === "learn" && (
           <div className="text-center mb-6">
