@@ -57,6 +57,7 @@ export function AuthPage() {
       password: '',
       email: '',
     },
+    mode: 'onChange',
   });
 
   const loginMutation = useMutation({
@@ -210,7 +211,10 @@ export function AuthPage() {
                         <FormControl>
                           <Input 
                             placeholder="Choose a username" 
-                            {...field}
+                            value={field.value}
+                            onChange={field.onChange}
+                            onBlur={field.onBlur}
+                            name={field.name}
                             autoComplete="username"
                           />
                         </FormControl>
@@ -229,7 +233,10 @@ export function AuthPage() {
                           <Input 
                             type="password" 
                             placeholder="Create a password" 
-                            {...field}
+                            value={field.value}
+                            onChange={field.onChange}
+                            onBlur={field.onBlur}
+                            name={field.name}
                             autoComplete="new-password"
                           />
                         </FormControl>
