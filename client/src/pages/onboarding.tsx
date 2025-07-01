@@ -58,25 +58,24 @@ const onboardingSteps = [
   },
   {
     id: 3,
-    title: "Start Your Journey",
-    subtitle: "Begin building Bitcoin knowledge today",
+    title: "Ready to Begin?",
+    subtitle: "First, let's understand why Bitcoin matters",
     content: (
       <div className="space-y-6 text-center">
         <div className="w-20 h-20 bg-orange-600/20 rounded-full flex items-center justify-center mx-auto">
           <TrendingUp className="w-10 h-10 text-orange-400" />
         </div>
         <div className="space-y-4">
-          <p className="text-zinc-200 text-xl">
-            Ready to understand what Bitcoin is really about?
-          </p>
-          <p className="text-zinc-400 text-lg">
-            Your 30-day structured learning experience starts now.
-          </p>
-          <div className="bg-orange-900/20 rounded-lg p-4 border border-orange-700/30">
-            <p className="text-orange-200 font-medium">
-              Take your time. Learn at your own pace.
-            </p>
+          <div className="bg-zinc-800/50 rounded-lg p-6 space-y-3">
+            <div className="text-lg space-y-2">
+              <div className="text-zinc-300">Understanding Bitcoin takes time</div>
+              <div className="text-zinc-300">Building conviction takes discipline</div>
+              <div className="text-orange-400 font-semibold text-xl">This is HODLearn</div>
+            </div>
           </div>
+          <p className="text-zinc-400 text-lg">
+            Before diving into daily lessons, let's explore why Bitcoin exists and what problems it solves.
+          </p>
         </div>
       </div>
     )
@@ -91,9 +90,9 @@ export default function Onboarding() {
     if (currentStep < onboardingSteps.length) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Mark onboarding as completed and redirect to main app
+      // Mark onboarding as completed and redirect to Why BTC section
       localStorage.setItem('hodlearn-onboarding-completed', 'true');
-      setLocation('/');
+      setLocation('/?section=finance');
     }
   };
 
@@ -175,7 +174,7 @@ export default function Onboarding() {
                 onClick={handleNext}
                 className="bg-orange-600 hover:bg-orange-700 px-6 py-2 font-semibold"
               >
-                {currentStep === onboardingSteps.length ? 'Begin Learning' : 'Continue'}
+                {currentStep === onboardingSteps.length ? 'Explore Why BTC' : 'Continue'}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </div>
