@@ -6884,7 +6884,7 @@ export default function Home() {
                                       const yPosition = 164 - ((logValue - logStartValue) / (logMaxValue - logStartValue)) * 150;
                                       
                                       points.push({
-                                        x: (progress * 320) + 20,
+                                        x: (progress * 380) + 10,
                                         y: Math.max(14, Math.min(164, yPosition)), // Keep within bounds
                                         value
                                       });
@@ -6922,15 +6922,15 @@ export default function Home() {
                                           
                                           return (
                                             <g key={milestone.label}>
-                                              <line x1="20" y1={y} x2="340" y2={y} stroke="#fbbf24" strokeWidth="1" opacity="0.3" strokeDasharray="3,3"/>
-                                              <text x="350" y={y + 3} fill="#fbbf24" fontSize="8" opacity="0.7">{milestone.label}</text>
+                                              <line x1="10" y1={y} x2="390" y2={y} stroke="#fbbf24" strokeWidth="1" opacity="0.3" strokeDasharray="3,3"/>
+                                              <text x="395" y={y + 3} fill="#fbbf24" fontSize="8" opacity="0.7">{milestone.label}</text>
                                             </g>
                                           );
                                         })}
                                         
                                         {/* Area fill for dramatic effect */}
                                         <path
-                                          d={`${pathData} L ${points[points.length - 1].x} 164 L 20 164 Z`}
+                                          d={`${pathData} L ${points[points.length - 1].x} 164 L 10 164 Z`}
                                           fill="url(#dramaticGradient)"
                                           opacity="0.3"
                                         />
@@ -6961,13 +6961,13 @@ export default function Home() {
                                         <circle cx={points[points.length - 1].x} cy={points[points.length - 1].y} r="5" fill="#f97316" stroke="#ffffff" strokeWidth="1" className="animate-pulse" />
                                         
                                         {/* Time progression labels */}
-                                        <text x="20" y="185" fill="#9ca3af" fontSize="8" fontWeight="500" textAnchor="start">
+                                        <text x="10" y="185" fill="#9ca3af" fontSize="8" fontWeight="500" textAnchor="start">
                                           {hodlInputs.period}
                                         </text>
                                         <text x="200" y="185" fill="#9ca3af" fontSize="6" textAnchor="middle">
                                           {years > 3 ? `${Math.floor(years/2)} years` : ''}
                                         </text>
-                                        <text x="340" y="185" fill="#9ca3af" fontSize="8" fontWeight="500" textAnchor="end">
+                                        <text x="390" y="185" fill="#9ca3af" fontSize="8" fontWeight="500" textAnchor="end">
                                           Jan 2025
                                         </text>
                                         
