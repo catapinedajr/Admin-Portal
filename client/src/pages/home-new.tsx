@@ -2650,16 +2650,16 @@ export default function Home() {
                         Day {currentDayIndex + 1} - Premium Content
                       </h3>
                       <p className="text-zinc-400 mb-4">
-                        You've completed the free 7-day introduction! Upgrade to premium to unlock the complete 30-day Bitcoin curriculum.
+                        You've completed the free 7-day introduction! Continue with premium access to unlock the complete 30-day Bitcoin curriculum.
                       </p>
                       <Button 
                         onClick={() => setShowUpgradeModal(true)}
                         className="bg-orange-500 hover:bg-orange-600 text-white px-8"
                       >
-                        Upgrade to Premium - $9.99/month
+                        Continue Free - Limited Time
                       </Button>
                       <p className="text-xs text-zinc-500 mt-3">
-                        Cancel anytime • Unlock all content
+                        Usually $9.99/month • Free during beta testing
                       </p>
                     </CardContent>
                   </Card>

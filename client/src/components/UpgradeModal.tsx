@@ -33,7 +33,7 @@ export default function UpgradeModal({ isOpen, onClose, trigger = 'day-limit', l
         return {
           title: "Continue Your Bitcoin Journey",
           subtitle: "You've completed the free 7-day introduction!",
-          description: "Unlock 23 more days of advanced Bitcoin education, interactive simulators, and exclusive content."
+          description: "Continue with 23 more days of advanced Bitcoin education, interactive simulators, and exclusive content - free during our beta period."
         };
       case 'simulator':
         return {
@@ -73,11 +73,12 @@ export default function UpgradeModal({ isOpen, onClose, trigger = 'day-limit', l
           <p className="text-center text-zinc-300">{content.description}</p>
 
           {/* Pricing Card */}
-          <div className="bg-zinc-800 rounded-lg p-6 border border-orange-500/20">
+          <div className="bg-zinc-800 rounded-lg p-6 border border-green-500/20">
             <div className="text-center">
-              <Badge className="bg-orange-500 text-white mb-3">Most Popular</Badge>
-              <div className="text-3xl font-bold text-white">$9.99</div>
-              <div className="text-zinc-400 text-sm">per month</div>
+              <Badge className="bg-green-500 text-white mb-3">Free Beta Access</Badge>
+              <div className="text-3xl font-bold text-white line-through text-zinc-500">$9.99</div>
+              <div className="text-2xl font-bold text-green-500">FREE</div>
+              <div className="text-zinc-400 text-sm">during beta testing</div>
             </div>
 
             <div className="mt-6 space-y-3">
@@ -109,9 +110,9 @@ export default function UpgradeModal({ isOpen, onClose, trigger = 'day-limit', l
             <Button 
               onClick={handleUpgrade} 
               disabled={isUpgrading}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+              className="w-full bg-green-500 hover:bg-green-600 text-white"
             >
-              {isUpgrading ? "Upgrading..." : "Upgrade to Premium"}
+              {isUpgrading ? "Activating..." : "Continue Learning - FREE"}
             </Button>
             
             <Button 
@@ -126,8 +127,8 @@ export default function UpgradeModal({ isOpen, onClose, trigger = 'day-limit', l
 
           {/* Trust Signals */}
           <div className="text-center text-xs text-zinc-500 space-y-1">
-            <p>🔒 Secure payment • Cancel anytime</p>
-            <p>Join 1,000+ Bitcoin learners</p>
+            <p>🔒 No payment required during beta</p>
+            <p>Join early adopters testing HODLearn</p>
           </div>
         </div>
       </DialogContent>
