@@ -166,9 +166,9 @@ export default function HomeDashboard() {
                 <div className="max-w-md mx-auto">
                   <Progress value={weeklyProgress} className="h-3" />
                   <div className="flex justify-between text-sm text-zinc-400 mt-2">
-                    <span>0%</span>
-                    <span className="font-medium text-orange-400">{weeklyProgress}%</span>
-                    <span>100%</span>
+                    <span>Day 1</span>
+                    <span className="font-medium text-orange-400">Day {dayInWeek}</span>
+                    <span>Day 7</span>
                   </div>
                 </div>
               </div>
