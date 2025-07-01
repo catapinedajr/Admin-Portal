@@ -280,3 +280,22 @@ button, a, .cyber-card, .cyber-button {
   transition: all 0.2s ease-in-out;
 }
 
+/* Subtle glow breathe animation for HODLearn */
+.animate-glow-breathe {
+  animation: glowBreathe 4s ease-in-out infinite;
+}
+
+@keyframes glowBreathe {
+  0%, 100% {
+    text-shadow: 
+      0 0 8px rgba(251, 146, 60, 0.3),
+      0 0 16px rgba(251, 146, 60, 0.15);
+  }
+  50% {
+    text-shadow: 
+      0 0 12px rgba(251, 146, 60, 0.5),
+      0 0 24px rgba(251, 146, 60, 0.25),
+      0 0 36px rgba(251, 146, 60, 0.1);
+  }
+}
+
