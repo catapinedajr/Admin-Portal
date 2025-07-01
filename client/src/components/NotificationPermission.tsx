@@ -109,13 +109,7 @@ export default function NotificationPermission({ userId }: NotificationPermissio
           'Authorization': `Bearer ${authKey}`,
         },
         body: JSON.stringify({
-          subscription: {
-            endpoint: subscription.endpoint,
-            keys: {
-              p256dh: subscription.getKey ? btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('p256dh') || new ArrayBuffer(0)))) : '',
-              auth: subscription.getKey ? btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('auth') || new ArrayBuffer(0)))) : '',
-            },
-          },
+          subscription: subscription.toJSON(),
         }),
       });
 
