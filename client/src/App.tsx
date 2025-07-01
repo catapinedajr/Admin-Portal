@@ -11,6 +11,7 @@ import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
 import NotFound from "@/pages/not-found";
 import { AuthPage } from "@/pages/auth";
+import TestQuizV2 from "@/components/TestQuizV2";
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const [, setLocation] = useLocation();
@@ -96,6 +97,11 @@ function Router() {
         <Route path="/more">
           <AuthGuard>
             <Home />
+          </AuthGuard>
+        </Route>
+        <Route path="/test-quiz">
+          <AuthGuard>
+            <TestQuizV2 />
           </AuthGuard>
         </Route>
         <Route path="/about">

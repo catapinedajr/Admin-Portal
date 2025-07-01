@@ -1377,6 +1377,39 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Quiz routes
+  // Database-driven quiz routes - eliminates answer validation bugs
+  app.get('/api/quiz/questions/:dayId', async (req, res) => {
+    try {
+      const dayId = parseInt(req.params.dayId);
+      if (isNaN(dayId) || dayId <= 0) {
+        return res.status(400).json({ message: "Invalid day ID" });
+      }
+
+      const questions = await storage.getQuizQuestions(dayId);
+      
+      // Transform to UI format with clear boolean correctness
+      const transformedQuestions = questions.map(q => ({
+        id: q.id,
+        dayId: q.dayId,
+        question: q.question,
+        options: q.options.map(opt => ({
+          id: opt.id,
+          text: opt.optionText,
+          isCorrect: opt.isCorrect // Clear boolean instead of number-to-letter conversion
+        })),
+        explanation: q.explanation,
+        category: q.category || 'Fundamentals',
+        difficulty: q.difficulty || 'beginner'
+      }));
+      
+      res.json(transformedQuestions);
+    } catch (error) {
+      console.error('Error fetching quiz questions:', error);
+      res.status(500).json({ message: "Failed to fetch quiz questions" });
+    }
+  });
+
+  // Legacy route for backward compatibility
   app.get('/api/quiz/daily/:dayIndex', async (req, res) => {
     try {
       let dayIndex = parseInt(req.params.dayIndex);
@@ -1416,6 +1449,50 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     } catch (error) {
       console.error('Error fetching daily quiz questions:', error);
       res.status(500).json({ message: "Failed to fetch quiz questions" });
+    }
+  });
+
+  // New database-driven quiz submission - eliminates validation bugs
+  app.post('/api/quiz/submit-v2', requireAuth, async (req, res) => {
+    try {
+      const { questionId, optionId } = req.body;
+      
+      // Get authenticated user ID from session
+      const session = await storage.getSession(req.sessionId);
+      if (!session || new Date() > session.expiresAt) {
+        return res.status(401).json({ message: "Invalid or expired session" });
+      }
+      
+      const userId = session.userId;
+      
+      // Get the complete question with options
+      const question = await storage.getQuizQuestion(questionId);
+      
+      if (!question) {
+        return res.status(404).json({ message: "Question not found" });
+      }
+
+      // Find the selected option
+      const selectedOption = question.options.find(opt => opt.id === optionId);
+      if (!selectedOption) {
+        return res.status(400).json({ message: "Invalid option selected" });
+      }
+
+      // Use the clear boolean isCorrect value - no conversion needed
+      const isCorrect = selectedOption.isCorrect;
+      
+      // Record the attempt (future implementation)
+      // For now, just return the result
+      res.json({
+        questionId,
+        optionId,
+        isCorrect,
+        explanation: question.explanation,
+        selectedText: selectedOption.optionText
+      });
+    } catch (error) {
+      console.error('Error submitting quiz answer:', error);
+      res.status(500).json({ message: "Failed to submit answer" });
     }
   });
 

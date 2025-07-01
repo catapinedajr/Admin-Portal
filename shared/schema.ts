@@ -49,6 +49,58 @@ export const userProgress = pgTable("user_progress", {
   progressPercentage: integer("progress_percentage").notNull().default(0),
 });
 
+// Quiz questions table - eliminates hardcoded quiz data
+export const quizQuestions = pgTable("quiz_questions", {
+  id: serial("id").primaryKey(),
+  dayId: integer("day_id").notNull(),
+  question: text("question").notNull(),
+  orderIndex: integer("order_index").notNull().default(0),
+  explanation: text("explanation").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Quiz options table - eliminates number/letter conversion issues
+export const quizOptions = pgTable("quiz_options", {
+  id: serial("id").primaryKey(),
+  questionId: integer("question_id").notNull(),
+  optionText: text("option_text").notNull(),
+  isCorrect: boolean("is_correct").notNull().default(false),
+  orderIndex: integer("order_index").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Safety scenarios table - replaces hardcoded safety simulator
+export const safetyScenarios = pgTable("safety_scenarios", {
+  id: serial("id").primaryKey(),
+  stageNumber: integer("stage_number").notNull(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  scenarioType: text("scenario_type").notNull(), // 'phishing', 'scam', 'security', etc.
+  orderIndex: integer("order_index").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Safety options table - eliminates hardcoded validation logic
+export const safetyOptions = pgTable("safety_options", {
+  id: serial("id").primaryKey(),
+  scenarioId: integer("scenario_id").notNull(),
+  optionText: text("option_text").notNull(),
+  isCorrect: boolean("is_correct").notNull().default(false),
+  explanation: text("explanation").notNull(),
+  orderIndex: integer("order_index").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// User safety attempts - tracks performance and identifies problem areas
+export const safetyAttempts = pgTable("safety_attempts", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  scenarioId: integer("scenario_id").notNull(),
+  selectedOptionId: integer("selected_option_id").notNull(),
+  isCorrect: boolean("is_correct").notNull(),
+  attemptedAt: timestamp("attempted_at").notNull().defaultNow(),
+});
+
 // Daily activity tracking for consistency calendar
 export const dailyActivities = pgTable("daily_activities", {
   id: serial("id").primaryKey(),
@@ -373,6 +425,20 @@ export type BitcoinPrice = typeof bitcoinPrice.$inferSelect;
 export type InsertBitcoinPrice = z.infer<typeof insertBitcoinPriceSchema>;
 export type UserQuizAnswer = typeof userQuizAnswers.$inferSelect;
 export type InsertUserQuizAnswer = z.infer<typeof insertUserQuizAnswerSchema>;
+
+// Quiz system types - eliminates answer validation bugs
+export type QuizQuestion = typeof quizQuestions.$inferSelect;
+export type InsertQuizQuestion = typeof quizQuestions.$inferInsert;
+export type QuizOption = typeof quizOptions.$inferSelect;
+export type InsertQuizOption = typeof quizOptions.$inferInsert;
+
+// Safety simulator types - replaces hardcoded scenarios
+export type SafetyScenario = typeof safetyScenarios.$inferSelect;
+export type InsertSafetyScenario = typeof safetyScenarios.$inferInsert;
+export type SafetyOption = typeof safetyOptions.$inferSelect;
+export type InsertSafetyOption = typeof safetyOptions.$inferInsert;
+export type SafetyAttempt = typeof safetyAttempts.$inferSelect;
+export type InsertSafetyAttempt = typeof safetyAttempts.$inferInsert;
 
 // Types for new content tables
 export type ContentDay = typeof contentDays.$inferSelect;
