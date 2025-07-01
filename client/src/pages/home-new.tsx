@@ -1953,7 +1953,7 @@ export default function Home() {
         },
         {
           method: "Save in password manager",
-          safe: true
+          safe: false
         },
         {
           method: "Memorize only",
@@ -2003,20 +2003,20 @@ export default function Home() {
       description: "You want to buy Bitcoin. Which exchange should you choose?",
       options: [
         {
-          method: "Brand new exchange offering 50% signup bonus",
+          method: "Random exchange found through Google ads",
           safe: false
         },
         {
-          method: "Well-known exchange like Coinbase or Kraken",
-          safe: true
-        },
-        {
-          method: "Random exchange found through Google ads",
+          method: "Brand new exchange offering 50% signup bonus",
           safe: false
         },
         {
           method: "Exchange recommended in a Telegram group",
           safe: false
+        },
+        {
+          method: "Well-known exchange like Coinbase or Kraken",
+          safe: true
         }
       ]
     },
@@ -2035,11 +2035,11 @@ export default function Home() {
         },
         {
           method: "Use public WiFi but only check prices, not access wallet",
-          safe: true
+          safe: false
         },
         {
           method: "Connect through a VPN on public WiFi",
-          safe: true
+          safe: false
         }
       ]
     },
@@ -2062,7 +2062,7 @@ export default function Home() {
         },
         {
           method: "Official app store or Google Play Store",
-          safe: true
+          safe: false
         }
       ]
     },
@@ -2072,20 +2072,20 @@ export default function Home() {
       description: "Someone calls claiming to be from your exchange, asking for your 2FA code. What do you do?",
       options: [
         {
-          method: "Give them the code since they knew my email",
+          method: "Ask them to verify my account details first",
           safe: false
         },
         {
-          method: "Hang up and call the exchange directly",
-          safe: true
-        },
-        {
-          method: "Ask them to verify my account details first",
+          method: "Give them the code since they knew my email",
           safe: false
         },
         {
           method: "Tell them to email me instead",
           safe: false
+        },
+        {
+          method: "Hang up and call the exchange directly",
+          safe: true
         }
       ]
     },
