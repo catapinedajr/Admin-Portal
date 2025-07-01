@@ -6654,7 +6654,7 @@ export default function Home() {
                         </div>
                         <div className="relative">
                           <div className="w-full h-24 sm:h-32 md:h-40 bg-zinc-900/50 rounded overflow-hidden">
-                            <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="none">
+                            <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
                               {/* Grid background */}
                               <defs>
                                 <pattern id="grid-hodl-chart" width="10" height="10" patternUnits="userSpaceOnUse">
