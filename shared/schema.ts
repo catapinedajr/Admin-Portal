@@ -253,6 +253,8 @@ export const insertContentGenerationStepsSchema = createInsertSchema(contentGene
 // Email collection table for progressive access
 export const emailCollections = pgTable("email_collections", {
   id: serial("id").primaryKey(),
+  firstName: varchar("first_name", { length: 100 }),
+  lastName: varchar("last_name", { length: 100 }),
   email: varchar("email", { length: 255 }).notNull(),
   trigger: varchar("trigger", { length: 50 }), // 'day-limit', 'simulator', 'feature'
   lockedFeature: varchar("locked_feature", { length: 100 }),

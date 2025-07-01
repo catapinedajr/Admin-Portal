@@ -14,7 +14,7 @@ interface SubscriptionContextType {
 
 const SubscriptionContext = createContext<SubscriptionContextType | undefined>(undefined);
 
-const FREE_TIER_MAX_DAY = 6; // Days 0-6 are free (7 days total)
+const FREE_TIER_MAX_DAY = 0; // Only day 0 is free (1 day total) - for testing email collection
 
 const FREE_TIER_SIMULATORS = [
   'inflation', // Basic inflation calculator

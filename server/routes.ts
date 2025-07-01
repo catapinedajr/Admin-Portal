@@ -1461,10 +1461,14 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   // Email collection endpoint for progressive paywall access
   app.post("/api/collect-email", async (req, res) => {
     try {
-      const { email, trigger, lockedFeature } = req.body;
+      const { firstName, lastName, email, trigger, lockedFeature } = req.body;
       
       if (!email || !email.includes('@')) {
         return res.status(400).json({ message: "Valid email required" });
+      }
+
+      if (!firstName || !lastName) {
+        return res.status(400).json({ message: "First name and last name required" });
       }
 
       // Get client IP and user agent for analytics
@@ -1472,6 +1476,8 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
       const userAgent = req.get('User-Agent') || '';
 
       const emailData = {
+        firstName,
+        lastName,
         email,
         trigger: trigger || 'unknown',
         lockedFeature: lockedFeature || null,

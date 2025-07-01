@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Mail, Crown, X } from 'lucide-react';
+import { Mail, Crown, X, User } from 'lucide-react';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 
 interface EmailCollectionModalProps {
@@ -22,13 +22,15 @@ export default function EmailCollectionModal({
   onEmailSubmitted 
 }: EmailCollectionModalProps) {
   const { setSubscriptionTier } = useSubscription();
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [emailSubmitted, setEmailSubmitted] = useState(false);
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !email.includes('@')) return;
+    if (!firstName || !lastName || !email || !email.includes('@')) return;
     
     setIsSubmitting(true);
     
@@ -38,6 +40,8 @@ export default function EmailCollectionModal({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
+          firstName,
+          lastName,
           email, 
           trigger,
           lockedFeature,
@@ -131,8 +135,40 @@ export default function EmailCollectionModal({
         <div className="space-y-6">
           <p className="text-center text-zinc-300">{content.description}</p>
 
-          {/* Email Collection Form */}
+          {/* Contact Information Form */}
           <form onSubmit={handleEmailSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <label htmlFor="firstName" className="text-sm font-medium text-zinc-300">
+                  First Name
+                </label>
+                <Input
+                  id="firstName"
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="John"
+                  className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="lastName" className="text-sm font-medium text-zinc-300">
+                  Last Name
+                </label>
+                <Input
+                  id="lastName"
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder="Doe"
+                  className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
+                  required
+                />
+              </div>
+            </div>
+
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium text-zinc-300">
                 Email Address
@@ -142,7 +178,7 @@ export default function EmailCollectionModal({
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
+                placeholder="john@email.com"
                 className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
                 required
               />
@@ -153,7 +189,7 @@ export default function EmailCollectionModal({
 
             <Button 
               type="submit"
-              disabled={isSubmitting || !email || !email.includes('@')}
+              disabled={isSubmitting || !firstName || !lastName || !email || !email.includes('@')}
               className="w-full bg-orange-500 hover:bg-orange-600 text-white"
             >
               {isSubmitting ? "Unlocking Access..." : "Get Instant Access - Free"}
