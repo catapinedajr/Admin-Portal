@@ -147,35 +147,36 @@ export default function Onboarding() {
               {currentStepData?.content}
             </div>
 
-            {/* Navigation */}
-            <div className="flex justify-between items-center">
+            {/* Progress Dots */}
+            <div className="flex justify-center gap-2 mb-6">
+              {onboardingSteps.map((_, index) => (
+                <div
+                  key={index}
+                  className={`w-3 h-3 rounded-full transition-colors ${
+                    index + 1 <= currentStep ? 'bg-orange-600' : 'bg-zinc-700'
+                  }`}
+                />
+              ))}
+            </div>
+
+            {/* Navigation Buttons */}
+            <div className="flex gap-3 justify-center">
               <Button
                 variant="outline"
                 onClick={handlePrevious}
                 disabled={currentStep === 1}
-                className="border-zinc-700 text-zinc-300 hover:bg-zinc-800 px-4 py-2 text-sm sm:text-base"
+                className="border-zinc-700 text-zinc-300 hover:bg-zinc-800 px-4 py-2 text-sm flex-shrink-0"
               >
-                <ArrowLeft className="w-4 h-4 mr-2 flex-shrink-0" />
+                <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
               </Button>
 
-              <div className="flex gap-2">
-                {onboardingSteps.map((_, index) => (
-                  <div
-                    key={index}
-                    className={`w-3 h-3 rounded-full transition-colors ${
-                      index + 1 <= currentStep ? 'bg-orange-600' : 'bg-zinc-700'
-                    }`}
-                  />
-                ))}
-              </div>
-
               <Button
                 onClick={handleNext}
-                className="bg-orange-600 hover:bg-orange-700 px-4 py-2 text-sm font-semibold w-full sm:w-auto sm:px-6 sm:text-base"
+                className="bg-orange-600 hover:bg-orange-700 px-6 py-2 text-sm font-semibold flex-1 max-w-48"
               >
                 {currentStep === onboardingSteps.length ? 'Explore Why BTC' : 'Continue'}
-                <ArrowRight className="w-4 h-4 ml-2 flex-shrink-0" />
+                <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </div>
           </CardContent>
