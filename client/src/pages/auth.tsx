@@ -136,7 +136,7 @@ export function AuthPage() {
         <Card className="border-zinc-700 bg-zinc-800 shadow-xl">
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-2xl font-bold text-zinc-200">
-              {isLogin ? 'Welcome Back' : 'Join HODLearn'}
+              {isLogin ? 'Welcome Back' : 'Create Your Account'}
             </CardTitle>
             <p className="text-sm text-zinc-400">
               {isLogin 
@@ -276,17 +276,6 @@ export function AuthPage() {
                   ? "Don't have an account? Sign up" 
                   : 'Already have an account? Sign in'
                 }
-              </Button>
-            </div>
-
-            {/* Demo mode option */}
-            <div className="border-t pt-4">
-              <Button
-                variant="outline"
-                onClick={() => window.location.href = '/?demo=true'}
-                className="w-full text-zinc-600 hover:text-zinc-800"
-              >
-                Continue as Guest (Demo Mode)
               </Button>
             </div>
           </CardContent>
