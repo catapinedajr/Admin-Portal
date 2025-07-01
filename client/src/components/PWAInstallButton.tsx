@@ -145,12 +145,12 @@ export default function PWAInstallButton() {
         onClick={handleInstall}
         size="sm"
         variant="outline"
-        className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-3"
+        className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-2.5 py-1.5"
         disabled={isClicked}
         title={deferredPrompt ? "Install HODLearn app" : "Manual install available"}
       >
-        <Download className="w-3 h-3 mr-1.5" />
-        {isClicked ? "..." : "Install"}
+        <Download className="w-4 h-4" />
+        <span className="sr-only">Install</span>
       </Button>
 
       {/* Safari iOS Install Modal */}

@@ -2430,24 +2430,25 @@ export default function Home() {
             </div>
 
             {/* Header Actions */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               {/* PWA Install Button */}
               <PWAInstallButton />
               
               {/* Premium Status Indicator */}
               {isPremiumTier ? (
-                <Badge className="bg-orange-500 hover:bg-orange-600 text-white border-orange-500 px-3 py-1 font-medium">
-                  <Gem className="w-3 h-3 mr-1.5" />
-                  Premium
+                <Badge className="bg-orange-500 hover:bg-orange-600 text-white border-orange-500 px-2.5 py-1.5 font-medium">
+                  <Gem className="w-4 h-4" />
+                  <span className="sr-only">Premium</span>
                 </Badge>
               ) : (
                 <Button 
                   onClick={() => setShowEmailModal(true)}
                   size="sm"
-                  className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-3"
+                  className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-2.5 py-1.5"
+                  title="Upgrade to Premium"
                 >
-                  <Plus className="w-3 h-3 mr-1.5" />
-                  Upgrade
+                  <Plus className="w-4 h-4" />
+                  <span className="sr-only">Upgrade</span>
                 </Button>
               )}
             </div>
