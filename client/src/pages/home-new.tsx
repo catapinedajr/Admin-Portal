@@ -2030,11 +2030,11 @@ export default function Home() {
         },
         {
           method: "Use public WiFi but only check prices, not access wallet",
-          safe: false
+          safe: true
         },
         {
           method: "Connect through a VPN on public WiFi",
-          safe: false
+          safe: true
         }
       ]
     },
@@ -2056,8 +2056,8 @@ export default function Home() {
           safe: false
         },
         {
-          method: "App store or Google Play",
-          safe: false
+          method: "Official app store or Google Play Store",
+          safe: true
         }
       ]
     },
@@ -2117,7 +2117,7 @@ export default function Home() {
           safe: false
         },
         {
-          method: "Test restore on the same device immediately",
+          method: "Test restore on a separate device or wallet",
           safe: true
         },
         {
