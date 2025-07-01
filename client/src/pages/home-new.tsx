@@ -2380,6 +2380,15 @@ export default function Home() {
     queryKey: ['/api/user'],
   });
 
+  // Dynamic greeting based on time of day
+  const getTimeBasedGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 17) return "Good afternoon";
+    if (hour < 21) return "Good evening";
+    return "Good night";
+  };
+
 
 
   // Splash Screen
@@ -2466,7 +2475,9 @@ export default function Home() {
           <div className="space-y-8">
             {/* Welcome Header */}
             <div className="text-center space-y-4">
-              <h1 className="text-3xl font-bold text-white">Welcome to HODLearn</h1>
+              <h1 className="text-3xl font-bold text-white">
+                {getTimeBasedGreeting()}{user?.firstName ? `, ${user.firstName}` : ''}!
+              </h1>
               <div className="text-lg space-y-1">
                 <div className="text-zinc-400">Understanding Bitcoin takes time</div>
                 <div className="text-zinc-400">Building conviction takes discipline</div>
