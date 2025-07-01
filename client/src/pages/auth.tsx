@@ -200,84 +200,69 @@ export function AuthPage() {
                 </form>
               </Form>
             ) : (
-              <Form {...registerForm}>
-                <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
-                  <FormField
-                    control={registerForm.control}
-                    name="username"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Username (Debug: {field.value || 'empty'})</FormLabel>
-                        <FormControl>
-                          <Input 
-                            type="text"
-                            placeholder="Choose a username" 
-                            value={field.value}
-                            onChange={(e) => {
-                              console.log('Username onChange:', e.target.value);
-                              field.onChange(e);
-                            }}
-                            onBlur={field.onBlur}
-                            name={field.name}
-                            autoComplete="off"
-                            spellCheck={false}
-                            onClick={() => console.log('Username clicked')}
-                            onFocus={() => console.log('Username focused')}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Choose a username"
+                    value={registerForm.watch('username') || ''}
+                    onChange={(e) => registerForm.setValue('username', e.target.value)}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   />
-                  
-                  <FormField
-                    control={registerForm.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <Input 
-                            type="password" 
-                            placeholder="Create a password" 
-                            {...field}
-                            autoComplete="off"
-                            spellCheck={false}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                  {registerForm.formState.errors.username && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {registerForm.formState.errors.username.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    placeholder="Create a password"
+                    value={registerForm.watch('password') || ''}
+                    onChange={(e) => registerForm.setValue('password', e.target.value)}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   />
-                  
-                  <FormField
-                    control={registerForm.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email (optional)</FormLabel>
-                        <FormControl>
-                          <Input 
-                            type="email" 
-                            placeholder="your@email.com" 
-                            {...field}
-                            autoComplete="email"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                  {registerForm.formState.errors.password && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {registerForm.formState.errors.password.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Email (optional)
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="your@email.com"
+                    value={registerForm.watch('email') || ''}
+                    onChange={(e) => registerForm.setValue('email', e.target.value)}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   />
-                  
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-orange-500 hover:bg-orange-600"
-                    disabled={registerMutation.isPending}
-                  >
-                    {registerMutation.isPending ? 'Creating account...' : 'Create Account'}
-                  </Button>
-                </form>
-              </Form>
+                  {registerForm.formState.errors.email && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {registerForm.formState.errors.email.message}
+                    </p>
+                  )}
+                </div>
+
+                <Button 
+                  onClick={registerForm.handleSubmit(onRegisterSubmit)}
+                  className="w-full bg-orange-500 hover:bg-orange-600"
+                  disabled={registerMutation.isPending}
+                >
+                  {registerMutation.isPending ? 'Creating account...' : 'Create Account'}
+                </Button>
+              </div>
             )}
             
             <div className="text-center">
