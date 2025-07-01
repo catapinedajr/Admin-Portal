@@ -1508,18 +1508,27 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
       
       const userId = session.userId;
       
-      // Get the question from database directly - this returns the raw database format
-      const allQuestions = await storage.getAllContentQuizzes();
-      const question = allQuestions.find(q => q.id === questionId);
+      // Use new database-driven quiz system - eliminates validation bugs
+      const question = await storage.getQuizQuestion(questionId);
       
       if (!question) {
         return res.status(404).json({ message: "Question not found" });
       }
 
-      // Convert numeric correct answer to letter format (0->A, 1->B, 2->C, 3->D)
-      // The database stores correctAnswer as numbers (0,1,2,3), frontend sends letters (A,B,C,D)
-      const correctAnswerLetter = ['A', 'B', 'C', 'D'][question.correctAnswer];
-      const isCorrect = selectedAnswer === correctAnswerLetter;
+      // Convert selected answer letter (A,B,C,D) to option index (0,1,2,3)
+      const optionIndex = ['A', 'B', 'C', 'D'].indexOf(selectedAnswer);
+      if (optionIndex === -1) {
+        return res.status(400).json({ message: "Invalid answer format" });
+      }
+      
+      // Get the selected option from the new database structure
+      const selectedOption = question.options.find(opt => opt.orderIndex === optionIndex);
+      if (!selectedOption) {
+        return res.status(400).json({ message: "Invalid option selected" });
+      }
+      
+      // Use the clear boolean isCorrect value - no conversion needed
+      const isCorrect = selectedOption.isCorrect;
       
       const answer = await storage.submitQuizAnswer(userId, questionId, selectedAnswer, isCorrect);
 
