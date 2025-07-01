@@ -1351,9 +1351,17 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.post('/api/quiz/submit', async (req, res) => {
+  app.post('/api/quiz/submit', requireAuth, async (req, res) => {
     try {
-      const { userId, questionId, selectedAnswer, date } = req.body;
+      const { questionId, selectedAnswer, date } = req.body;
+      
+      // Get authenticated user ID from session
+      const session = await storage.getSession(req.sessionId);
+      if (!session || new Date() > session.expiresAt) {
+        return res.status(401).json({ message: "Invalid or expired session" });
+      }
+      
+      const userId = session.userId;
       
       // Get the question from database directly - this returns the raw database format
       const allQuestions = await storage.getAllContentQuizzes();
@@ -1381,10 +1389,17 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.get('/api/quiz/score/:userId/:date', async (req, res) => {
+  app.get('/api/quiz/score/:userId/:date', requireAuth, async (req, res) => {
     try {
-      const userId = parseInt(req.params.userId);
       const date = req.params.date;
+      
+      // Get authenticated user ID from session
+      const session = await storage.getSession(req.sessionId);
+      if (!session || new Date() > session.expiresAt) {
+        return res.status(401).json({ message: "Invalid or expired session" });
+      }
+      
+      const userId = session.userId;
       
       // Get the current day index from query parameter or default to 1
       const dayIndex = parseInt(req.query.dayIndex as string) || 1;
@@ -1397,10 +1412,17 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.get('/api/quiz/answers/:userId/:date', async (req, res) => {
+  app.get('/api/quiz/answers/:userId/:date', requireAuth, async (req, res) => {
     try {
-      const userId = parseInt(req.params.userId);
       const date = req.params.date;
+      
+      // Get authenticated user ID from session
+      const session = await storage.getSession(req.sessionId);
+      if (!session || new Date() > session.expiresAt) {
+        return res.status(401).json({ message: "Invalid or expired session" });
+      }
+      
+      const userId = session.userId;
       
       const answers = await storage.getUserQuizAnswers(userId, date);
       res.json(answers);

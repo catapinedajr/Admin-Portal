@@ -69,23 +69,54 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
   // Fetch user's previous answers for today
   const { data: userAnswers = [] } = useQuery({
     queryKey: ['/api/quiz/answers', userId, today],
-    queryFn: () => fetch(`/api/quiz/answers/${userId}/${today}`).then(res => res.json()) as Promise<QuizAnswer[]>
+    queryFn: () => {
+      const sessionId = localStorage.getItem('hodlearn_session');
+      const headers: Record<string, string> = {};
+      
+      if (sessionId) {
+        headers['Authorization'] = `Bearer ${sessionId}`;
+      }
+      
+      return fetch(`/api/quiz/answers/${userId}/${today}`, { 
+        headers,
+        credentials: 'include' 
+      }).then(res => res.json()) as Promise<QuizAnswer[]>;
+    }
   });
 
   // Fetch quiz score for today
   const { data: score } = useQuery({
     queryKey: ['/api/quiz/score', userId, today, dayIndex],
-    queryFn: () => fetch(`/api/quiz/score/${userId}/${today}?dayIndex=${dayIndex}`).then(res => res.json()) as Promise<QuizScore>,
+    queryFn: () => {
+      const sessionId = localStorage.getItem('hodlearn_session');
+      const headers: Record<string, string> = {};
+      
+      if (sessionId) {
+        headers['Authorization'] = `Bearer ${sessionId}`;
+      }
+      
+      return fetch(`/api/quiz/score/${userId}/${today}?dayIndex=${dayIndex}`, { 
+        headers,
+        credentials: 'include' 
+      }).then(res => res.json()) as Promise<QuizScore>;
+    },
     enabled: userAnswers.length > 0
   });
 
   // Submit answer mutation
   const submitAnswerMutation = useMutation({
-    mutationFn: async (answer: { userId: number; questionId: number; selectedAnswer: string; date: string }) => {
+    mutationFn: async (answer: { questionId: number; selectedAnswer: string; date: string }) => {
       try {
+        const sessionId = localStorage.getItem('hodlearn_session');
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        
+        if (sessionId) {
+          headers['Authorization'] = `Bearer ${sessionId}`;
+        }
+        
         const response = await fetch('/api/quiz/submit', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify(answer),
           credentials: 'include'
         });
@@ -133,7 +164,6 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
     if (!currentQuestion || !selectedAnswers[currentQuestion.id]) return;
 
     submitAnswerMutation.mutate({
-      userId,
       questionId: currentQuestion.id,
       selectedAnswer: selectedAnswers[currentQuestion.id],
       date: today
