@@ -123,17 +123,20 @@ export function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-zinc-900 flex flex-col items-center justify-center p-4">
+      <div className="flex-1 flex items-center justify-center">
         {/* Welcome Message */}
-        <div className="text-center mb-8">
-          <div className="space-y-1">
-            <h1 className="text-xl font-bold text-orange-500">Welcome to HODLearn</h1>
-            <p className="text-sm text-zinc-400">Understanding Bitcoin takes time</p>
-            <p className="text-sm text-zinc-400">Building conviction takes discipline</p>
-            <p className="text-sm font-semibold text-orange-400">This is HODLearn</p>
+        <div className="text-center">
+          <div className="space-y-3">
+            <h1 className="text-4xl md:text-5xl font-bold text-orange-500">Welcome to HODLearn</h1>
+            <p className="text-lg md:text-xl text-zinc-300">Understanding Bitcoin takes time</p>
+            <p className="text-lg md:text-xl text-zinc-300">Building conviction takes discipline</p>
+            <p className="text-xl md:text-2xl font-bold text-orange-400">This is HODLearn</p>
           </div>
         </div>
+      </div>
+      
+      <div className="w-full max-w-md">
 
         <Card className="border-zinc-700 bg-zinc-800 shadow-xl">
           <CardHeader className="text-center pb-4">
