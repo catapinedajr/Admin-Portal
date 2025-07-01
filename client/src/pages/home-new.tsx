@@ -6653,31 +6653,31 @@ export default function Home() {
                           <div className="text-xs text-zinc-400">Jan 2017 - Jan 2025</div>
                         </div>
                         <div className="relative">
-                          <div className="w-full h-32 sm:h-40 md:h-48 bg-zinc-900/50 rounded overflow-hidden">
-                            <svg viewBox="0 0 320 140" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+                          <div className="w-full h-32 sm:h-40 md:h-48 lg:h-56 bg-zinc-900/50 rounded overflow-hidden">
+                            <svg viewBox="0 0 320 200" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
                               {/* Grid background */}
                               <defs>
-                                <pattern id="grid-hodl-chart" width="32" height="28" patternUnits="userSpaceOnUse">
-                                  <path d="M 32 0 L 0 0 0 28" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.3"/>
+                                <pattern id="grid-hodl-chart" width="32" height="40" patternUnits="userSpaceOnUse">
+                                  <path d="M 32 0 L 0 0 0 40" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.3"/>
                                 </pattern>
                               </defs>
                               <rect width="100%" height="100%" fill="url(#grid-hodl-chart)" />
                               
                               {/* 5x Market Line */}
-                              <line x1="10" y1="90" x2="280" y2="90" stroke="#fbbf24" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                              <text x="285" y="94" fill="#fbbf24" fontSize="10" opacity="0.8">5x</text>
+                              <line x1="10" y1="130" x2="280" y2="130" stroke="#fbbf24" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                              <text x="285" y="134" fill="#fbbf24" fontSize="10" opacity="0.8">5x</text>
                               
                               {/* 10x Market Line */}
-                              <line x1="10" y1="60" x2="280" y2="60" stroke="#f97316" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                              <text x="285" y="64" fill="#f97316" fontSize="10" opacity="0.8">10x</text>
+                              <line x1="10" y1="85" x2="280" y2="85" stroke="#f97316" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                              <text x="285" y="89" fill="#f97316" fontSize="10" opacity="0.8">10x</text>
                               
                               {/* 100x Market Line */}
-                              <line x1="10" y1="20" x2="280" y2="20" stroke="#dc2626" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                              <text x="285" y="24" fill="#dc2626" fontSize="10" opacity="0.8">100x</text>
+                              <line x1="10" y1="30" x2="280" y2="30" stroke="#dc2626" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                              <text x="285" y="34" fill="#dc2626" fontSize="10" opacity="0.8">100x</text>
                               
                               {/* Bitcoin Price Line (realistic exponential growth) */}
                               <path 
-                                d="M 10 120 Q 50 115 80 110 Q 120 105 160 95 Q 200 80 240 60 Q 280 35 310 25" 
+                                d="M 10 170 Q 50 165 80 157 Q 120 150 160 135 Q 200 115 240 85 Q 280 50 310 35" 
                                 stroke="#f97316" 
                                 strokeWidth="3" 
                                 fill="none"
@@ -6686,7 +6686,7 @@ export default function Home() {
                               
                               {/* Area fill */}
                               <path 
-                                d="M 10 120 Q 50 115 80 110 Q 120 105 160 95 Q 200 80 240 60 Q 280 35 310 25 L 310 120 L 10 120 Z" 
+                                d="M 10 170 Q 50 165 80 157 Q 120 150 160 135 Q 200 115 240 85 Q 280 50 310 35 L 310 170 L 10 170 Z" 
                                 fill="url(#chartGradient-hodl)"
                                 opacity="0.2"
                               />
@@ -6699,13 +6699,13 @@ export default function Home() {
                               </defs>
                               
                               {/* Start and end markers */}
-                              <circle cx="10" cy="120" r="3" fill="#10b981" stroke="#ffffff" strokeWidth="1"/>
-                              <circle cx="310" cy="25" r="4" fill="#f97316" stroke="#ffffff" strokeWidth="2" className="animate-pulse"/>
+                              <circle cx="10" cy="170" r="3" fill="#10b981" stroke="#ffffff" strokeWidth="1"/>
+                              <circle cx="310" cy="35" r="4" fill="#f97316" stroke="#ffffff" strokeWidth="2" className="animate-pulse"/>
                               
                               {/* Time labels */}
-                              <text x="10" y="135" fill="#9ca3af" fontSize="9" textAnchor="start">2017</text>
-                              <text x="160" y="135" fill="#9ca3af" fontSize="9" textAnchor="middle">2021</text>
-                              <text x="310" y="135" fill="#9ca3af" fontSize="9" textAnchor="end">2025</text>
+                              <text x="10" y="190" fill="#9ca3af" fontSize="9" textAnchor="start">2017</text>
+                              <text x="160" y="190" fill="#9ca3af" fontSize="9" textAnchor="middle">2021</text>
+                              <text x="310" y="190" fill="#9ca3af" fontSize="9" textAnchor="end">2025</text>
                             </svg>
                           </div>
                         </div>
