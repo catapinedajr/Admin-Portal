@@ -6664,12 +6664,12 @@ export default function Home() {
                               <rect width="100%" height="100%" fill="url(#grid-hodl-chart)" />
                               
                               {/* 5x Market Line */}
-                              <line x1="20" y1="120" x2="350" y2="120" stroke="#fbbf24" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                              <text x="360" y="124" fill="#fbbf24" fontSize="10" opacity="0.8">5x</text>
+                              <line x1="20" y1="120" x2="350" y2="120" stroke="#10b981" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                              <text x="360" y="124" fill="#10b981" fontSize="10" opacity="0.8">5x</text>
                               
                               {/* 10x Market Line */}
-                              <line x1="20" y1="80" x2="350" y2="80" stroke="#f97316" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                              <text x="360" y="84" fill="#f97316" fontSize="10" opacity="0.8">10x</text>
+                              <line x1="20" y1="80" x2="350" y2="80" stroke="#fbbf24" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                              <text x="360" y="84" fill="#fbbf24" fontSize="10" opacity="0.8">10x</text>
                               
                               {/* 100x Market Line */}
                               <line x1="20" y1="40" x2="350" y2="40" stroke="#dc2626" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
@@ -6894,9 +6894,9 @@ export default function Home() {
                                     
                                     // Show consistent milestone markers for all scenarios
                                     const keyMilestones = [
-                                      { label: '10x', multiplier: 10 },
-                                      { label: '50x', multiplier: 50 },
-                                      { label: '100x', multiplier: 100 }
+                                      { label: '5x', multiplier: 5, color: '#10b981' },
+                                      { label: '10x', multiplier: 10, color: '#fbbf24' },
+                                      { label: '100x', multiplier: 100, color: '#dc2626' }
                                     ];
                                     
                                     return (
@@ -6922,8 +6922,8 @@ export default function Home() {
                                           
                                           return (
                                             <g key={milestone.label}>
-                                              <line x1="10" y1={y} x2="390" y2={y} stroke="#fbbf24" strokeWidth="1" opacity="0.3" strokeDasharray="3,3"/>
-                                              <text x="395" y={y + 3} fill="#fbbf24" fontSize="8" opacity="0.7">{milestone.label}</text>
+                                              <line x1="10" y1={y} x2="390" y2={y} stroke={milestone.color} strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                                              <text x="395" y={y + 3} fill={milestone.color} fontSize="8" opacity="0.8">{milestone.label}</text>
                                             </g>
                                           );
                                         })}
