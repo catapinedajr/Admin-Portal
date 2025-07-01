@@ -15,7 +15,6 @@ import {
   emailCollections,
   sessions,
   passwordResetTokens,
-  pushSubscriptions,
   type User, 
   type InsertUser, 
   type UserProgress,
@@ -49,8 +48,6 @@ import {
   type Session,
   type InsertSession,
   type PasswordResetToken,
-  type PushSubscription,
-  type InsertPushSubscription,
   type InsertPasswordResetToken,
   type RegisterRequest,
   type LoginRequest
@@ -143,13 +140,6 @@ export interface IStorage {
 
   // Email collection methods
   saveEmailCollection(emailData: InsertEmailCollection): Promise<EmailCollection>;
-
-  // Push notification methods
-  createPushSubscription(subscription: InsertPushSubscription): Promise<PushSubscription>;
-  getPushSubscriptionsByUserId(userId: number): Promise<PushSubscription[]>;
-  deletePushSubscriptionsByUserId(userId: number): Promise<void>;
-  updatePushSubscriptionLastUsed(subscriptionId: number): Promise<void>;
-  getAllActivePushSubscriptions(): Promise<PushSubscription[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -586,46 +576,6 @@ export class DatabaseStorage implements IStorage {
       .values(emailData)
       .returning();
     return result;
-  }
-
-  // Push notification methods
-  async createPushSubscription(subscription: InsertPushSubscription): Promise<PushSubscription> {
-    const [result] = await db
-      .insert(pushSubscriptions)
-      .values(subscription)
-      .returning();
-    return result;
-  }
-
-  async getPushSubscriptionsByUserId(userId: number): Promise<PushSubscription[]> {
-    return await db
-      .select()
-      .from(pushSubscriptions)
-      .where(and(
-        eq(pushSubscriptions.userId, userId),
-        eq(pushSubscriptions.isActive, true)
-      ));
-  }
-
-  async deletePushSubscriptionsByUserId(userId: number): Promise<void> {
-    await db
-      .update(pushSubscriptions)
-      .set({ isActive: false })
-      .where(eq(pushSubscriptions.userId, userId));
-  }
-
-  async updatePushSubscriptionLastUsed(subscriptionId: number): Promise<void> {
-    await db
-      .update(pushSubscriptions)
-      .set({ lastUsed: new Date() })
-      .where(eq(pushSubscriptions.id, subscriptionId));
-  }
-
-  async getAllActivePushSubscriptions(): Promise<PushSubscription[]> {
-    return await db
-      .select()
-      .from(pushSubscriptions)
-      .where(eq(pushSubscriptions.isActive, true));
   }
 }
 

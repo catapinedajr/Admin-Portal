@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Crown, X } from 'lucide-react';
-// import { useSubscription } from '@/contexts/SubscriptionContext';
+import { useSubscription } from '@/contexts/SubscriptionContext';
 
 interface EmailCollectionModalProps {
   isOpen: boolean;
@@ -17,9 +17,7 @@ export default function EmailCollectionModal({
   trigger = 'day-limit', 
   lockedFeature
 }: EmailCollectionModalProps) {
-  // Temporarily disabled during notification system debugging
-  // const { setSubscriptionTier } = useSubscription();
-  const setSubscriptionTier = (tier: string) => {};
+  const { setSubscriptionTier } = useSubscription();
 
   const getTriggerContent = () => {
     switch (trigger) {

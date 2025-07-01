@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import PWAInstallButton from "@/components/PWAInstallButton";
-import NotificationPermission from "@/components/NotificationPermission";
 import { 
   Bitcoin, 
   Lightbulb, 
@@ -2433,9 +2432,6 @@ export default function Home() {
 
             {/* Header Actions */}
             <div className="flex items-center gap-2">
-              {/* Notification Permission Button */}
-              <NotificationPermission userId={user?.id || 0} />
-              
               {/* PWA Install Button */}
               <PWAInstallButton />
               
