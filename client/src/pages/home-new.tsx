@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import PWAInstallButton from "@/components/PWAInstallButton";
 import { 
   Bitcoin, 
   Lightbulb, 
@@ -2428,8 +2429,12 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Premium Status Indicator */}
-            <div className="flex items-center">
+            {/* Header Actions */}
+            <div className="flex items-center gap-3">
+              {/* PWA Install Button */}
+              <PWAInstallButton />
+              
+              {/* Premium Status Indicator */}
               {isPremiumTier ? (
                 <Badge className="bg-orange-500 hover:bg-orange-600 text-white border-orange-500 px-3 py-1 font-medium">
                   <Gem className="w-3 h-3 mr-1.5" />
