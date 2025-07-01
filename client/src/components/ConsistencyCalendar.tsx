@@ -130,14 +130,14 @@ export function ConsistencyCalendar({ userId }: ConsistencyCalendarProps) {
             <div className="h-4 bg-zinc-700 rounded mb-4"></div>
             <div className="space-y-3">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="flex items-center justify-between">
-                  <div className="h-3 bg-zinc-700 rounded w-20 flex items-center"></div>
+                <div key={i} className="flex items-start justify-between">
+                  <div className="h-3 bg-zinc-700 rounded w-20 flex items-start pt-1.5"></div>
                   <div className="flex gap-1.5">
                     {[...Array(7)].map((_, j) => (
                       <div key={j} className="w-6 h-6 bg-zinc-700 rounded-md"></div>
                     ))}
                   </div>
-                  <div className="h-3 bg-zinc-700 rounded w-12 flex items-center justify-end"></div>
+                  <div className="h-3 bg-zinc-700 rounded w-12 flex items-start justify-end pt-1.5"></div>
                 </div>
               ))}
             </div>
@@ -159,9 +159,9 @@ export function ConsistencyCalendar({ userId }: ConsistencyCalendarProps) {
         
         <div className="space-y-4">
           {weeks.map((week, weekIndex) => (
-            <div key={weekIndex} className="flex items-center justify-between">
-              {/* Week Label - vertically centered */}
-              <div className="text-zinc-400 text-sm font-medium w-20 flex items-center">
+            <div key={weekIndex} className="flex items-start justify-between">
+              {/* Week Label - aligned with boxes */}
+              <div className="text-zinc-400 text-sm font-medium w-20 flex items-start pt-1.5">
                 {week.weekLabel}
               </div>
               
@@ -198,8 +198,8 @@ export function ConsistencyCalendar({ userId }: ConsistencyCalendarProps) {
                 })}
               </div>
               
-              {/* Completion Summary - vertically centered */}
-              <div className="text-zinc-400 text-sm w-12 text-right flex items-center justify-end">
+              {/* Completion Summary - aligned with boxes */}
+              <div className="text-zinc-400 text-sm w-12 text-right flex items-start justify-end pt-1.5">
                 {week.completedDays}/7
               </div>
             </div>
