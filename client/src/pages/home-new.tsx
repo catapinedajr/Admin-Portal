@@ -6654,7 +6654,7 @@ export default function Home() {
                         </div>
                         <div className="relative">
                           <div className="w-full h-48 sm:h-56 md:h-64 lg:h-72 bg-zinc-900/50 rounded overflow-hidden">
-                            <svg viewBox="0 0 320 200" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+                            <svg viewBox="0 0 400 200" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
                               {/* Grid background */}
                               <defs>
                                 <pattern id="grid-hodl-chart" width="32" height="40" patternUnits="userSpaceOnUse">
@@ -6664,20 +6664,20 @@ export default function Home() {
                               <rect width="100%" height="100%" fill="url(#grid-hodl-chart)" />
                               
                               {/* 5x Market Line */}
-                              <line x1="10" y1="120" x2="280" y2="120" stroke="#fbbf24" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                              <text x="285" y="124" fill="#fbbf24" fontSize="10" opacity="0.8">5x</text>
+                              <line x1="20" y1="120" x2="350" y2="120" stroke="#fbbf24" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                              <text x="360" y="124" fill="#fbbf24" fontSize="10" opacity="0.8">5x</text>
                               
                               {/* 10x Market Line */}
-                              <line x1="10" y1="80" x2="280" y2="80" stroke="#f97316" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                              <text x="285" y="84" fill="#f97316" fontSize="10" opacity="0.8">10x</text>
+                              <line x1="20" y1="80" x2="350" y2="80" stroke="#f97316" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                              <text x="360" y="84" fill="#f97316" fontSize="10" opacity="0.8">10x</text>
                               
                               {/* 100x Market Line */}
-                              <line x1="10" y1="40" x2="280" y2="40" stroke="#dc2626" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                              <text x="285" y="44" fill="#dc2626" fontSize="10" opacity="0.8">100x</text>
+                              <line x1="20" y1="40" x2="350" y2="40" stroke="#dc2626" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                              <text x="360" y="44" fill="#dc2626" fontSize="10" opacity="0.8">100x</text>
                               
                               {/* Bitcoin Price Line (realistic exponential growth) */}
                               <path 
-                                d="M 10 150 Q 50 145 80 140 Q 120 130 160 115 Q 200 95 240 70 Q 280 45 310 30" 
+                                d="M 20 150 Q 70 145 110 140 Q 160 130 200 115 Q 250 95 300 70 Q 350 45 380 30" 
                                 stroke="#f97316" 
                                 strokeWidth="3" 
                                 fill="none"
@@ -6686,7 +6686,7 @@ export default function Home() {
                               
                               {/* Area fill */}
                               <path 
-                                d="M 10 150 Q 50 145 80 140 Q 120 130 160 115 Q 200 95 240 70 Q 280 45 310 30 L 310 150 L 10 150 Z" 
+                                d="M 20 150 Q 70 145 110 140 Q 160 130 200 115 Q 250 95 300 70 Q 350 45 380 30 L 380 150 L 20 150 Z" 
                                 fill="url(#chartGradient-hodl)"
                                 opacity="0.2"
                               />
@@ -6699,13 +6699,13 @@ export default function Home() {
                               </defs>
                               
                               {/* Start and end markers */}
-                              <circle cx="10" cy="150" r="3" fill="#10b981" stroke="#ffffff" strokeWidth="1"/>
-                              <circle cx="310" cy="30" r="4" fill="#f97316" stroke="#ffffff" strokeWidth="2" className="animate-pulse"/>
+                              <circle cx="20" cy="150" r="3" fill="#10b981" stroke="#ffffff" strokeWidth="1"/>
+                              <circle cx="380" cy="30" r="4" fill="#f97316" stroke="#ffffff" strokeWidth="2" className="animate-pulse"/>
                               
                               {/* Time labels */}
-                              <text x="10" y="175" fill="#9ca3af" fontSize="9" textAnchor="start">2017</text>
-                              <text x="160" y="175" fill="#9ca3af" fontSize="9" textAnchor="middle">2021</text>
-                              <text x="310" y="175" fill="#9ca3af" fontSize="9" textAnchor="end">2025</text>
+                              <text x="20" y="175" fill="#9ca3af" fontSize="9" textAnchor="start">2017</text>
+                              <text x="200" y="175" fill="#9ca3af" fontSize="9" textAnchor="middle">2021</text>
+                              <text x="380" y="175" fill="#9ca3af" fontSize="9" textAnchor="end">2025</text>
                             </svg>
                           </div>
                         </div>
