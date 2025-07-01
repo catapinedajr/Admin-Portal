@@ -82,7 +82,7 @@ import { ProgressIndicator, AchievementBadge, LearningAnalytics } from "@/compon
 import AchievementSystem from "@/components/AchievementSystem";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import LockedContent from "@/components/LockedContent";
-import UpgradeModal from "@/components/UpgradeModal";
+// Removed UpgradeModal import - now using inline upgrade cards
 import DevSubscriptionToggle from "@/components/DevSubscriptionToggle";
 import BottomNavigation from "@/components/BottomNavigation";
 
@@ -358,7 +358,7 @@ type MoreSubTab = "store" | "about";
 export default function Home() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { isPremiumTier } = useSubscription();
+  const { isPremiumTier, setSubscriptionTier } = useSubscription();
   const [location, setLocation] = useLocation();
   
   // Determine active section from URL
@@ -388,7 +388,7 @@ export default function Home() {
   const [learnSubTab, setLearnSubTab] = useState<LearnSubTab>("today");
   const [simulationsSubTab, setSimulationsSubTab] = useState<SimulationsSubTab>(getSimulatorSubTabFromPath(location));
   const [moreSubTab, setMoreSubTab] = useState<MoreSubTab>("about");
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  // Removed floating modal state - now using inline upgrade cards
   
   // Update active section and sub-tabs when URL changes
   useEffect(() => {
@@ -2806,7 +2806,12 @@ export default function Home() {
                         You've completed the free 7-day introduction! Continue with premium access to unlock the complete 30-day Bitcoin curriculum.
                       </p>
                       <Button 
-                        onClick={() => setShowUpgradeModal(true)}
+                        onClick={() => {
+                          // Direct upgrade action instead of modal
+                          setTimeout(() => {
+                            setSubscriptionTier('premium');
+                          }, 1000);
+                        }}
                         className="bg-orange-500 hover:bg-orange-600 text-white px-8"
                       >
                         Continue Free - Limited Time
@@ -4047,10 +4052,15 @@ export default function Home() {
                       Interactive Bitcoin simulations available to premium users. See what you're missing below!
                     </p>
                     <Button 
-                      onClick={() => setShowUpgradeModal(true)}
+                      onClick={() => {
+                        // Direct upgrade action instead of modal
+                        setTimeout(() => {
+                          setSubscriptionTier('premium');
+                        }, 1000);
+                      }}
                       className="bg-orange-500 hover:bg-orange-600 text-white px-8"
                     >
-                      Unlock All Simulators - $9.99/month
+                      Unlock All Simulators - FREE
                     </Button>
                     <p className="text-xs text-zinc-500 mt-3">
                       Cancel anytime • Access all interactive tools
@@ -4189,10 +4199,15 @@ export default function Home() {
 
                 <div className="text-center">
                   <Button 
-                    onClick={() => setShowUpgradeModal(true)}
+                    onClick={() => {
+                      // Direct upgrade action instead of modal
+                      setTimeout(() => {
+                        setSubscriptionTier('premium');
+                      }, 1000);
+                    }}
                     className="bg-orange-500 hover:bg-orange-600 text-white px-8"
                   >
-                    Unlock All 6 Simulators - $9.99/month
+                    Unlock All 6 Simulators - FREE
                   </Button>
                 </div>
               </div>
@@ -8670,13 +8685,7 @@ export default function Home() {
       {/* Development Tools */}
       <DevSubscriptionToggle />
       
-      {/* Upgrade Modal */}
-      <UpgradeModal
-        isOpen={showUpgradeModal}
-        onClose={() => setShowUpgradeModal(false)}
-        trigger="day-limit"
-        lockedFeature={`Day ${currentDayIndex + 1}`}
-      />
+      {/* Removed floating upgrade modal - now using inline upgrade cards */}
 
       {/* Bottom Navigation */}
       <BottomNavigation 
