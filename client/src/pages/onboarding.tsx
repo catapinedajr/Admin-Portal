@@ -16,10 +16,10 @@ const onboardingSteps = [
         </div>
         <div className="space-y-4">
           <p className="text-zinc-200 text-xl">
-            Learn Bitcoin fundamentals through daily lessons designed for beginners.
+            Master Bitcoin through structured lessons and interactive simulations.
           </p>
           <p className="text-zinc-400 text-lg">
-            Join thousands of learners building Bitcoin knowledge one day at a time.
+            Build deep understanding with our comprehensive 180-day journey.
           </p>
         </div>
       </div>
@@ -36,20 +36,20 @@ const onboardingSteps = [
         </div>
         <div className="space-y-5">
           <p className="text-zinc-200 text-xl">
-            Each day includes essential facts, detailed lessons, and practice simulations.
+            Comprehensive Bitcoin education through lessons, quizzes, and hands-on simulations.
           </p>
           <div className="bg-zinc-800/50 rounded-lg p-5 space-y-3">
             <div className="flex items-center gap-3 text-left">
               <div className="w-2 h-2 bg-orange-400 rounded-full flex-shrink-0"></div>
-              <span className="text-zinc-300">Daily Bitcoin facts with deeper explanations</span>
+              <span className="text-zinc-300">Step-by-step lessons building from basics to advanced</span>
             </div>
             <div className="flex items-center gap-3 text-left">
               <div className="w-2 h-2 bg-orange-400 rounded-full flex-shrink-0"></div>
-              <span className="text-zinc-300">Interactive lessons with real-world examples</span>
+              <span className="text-zinc-300">Interactive simulators for safe Bitcoin practice</span>
             </div>
             <div className="flex items-center gap-3 text-left">
               <div className="w-2 h-2 bg-orange-400 rounded-full flex-shrink-0"></div>
-              <span className="text-zinc-300">Safe practice environments with no real money</span>
+              <span className="text-zinc-300">Progress tracking across your 6-month journey</span>
             </div>
           </div>
         </div>
@@ -153,9 +153,9 @@ export default function Onboarding() {
                 variant="outline"
                 onClick={handlePrevious}
                 disabled={currentStep === 1}
-                className="border-zinc-700 text-zinc-300 hover:bg-zinc-800 px-4 py-2"
+                className="border-zinc-700 text-zinc-300 hover:bg-zinc-800 px-4 py-2 text-sm sm:text-base"
               >
-                <ArrowLeft className="w-4 h-4 mr-2" />
+                <ArrowLeft className="w-4 h-4 mr-2 flex-shrink-0" />
                 Back
               </Button>
 
@@ -172,10 +172,10 @@ export default function Onboarding() {
 
               <Button
                 onClick={handleNext}
-                className="bg-orange-600 hover:bg-orange-700 px-6 py-2 font-semibold"
+                className="bg-orange-600 hover:bg-orange-700 px-4 py-2 text-sm font-semibold w-full sm:w-auto sm:px-6 sm:text-base"
               >
                 {currentStep === onboardingSteps.length ? 'Explore Why BTC' : 'Continue'}
-                <ArrowRight className="w-4 h-4 ml-2" />
+                <ArrowRight className="w-4 h-4 ml-2 flex-shrink-0" />
               </Button>
             </div>
           </CardContent>
