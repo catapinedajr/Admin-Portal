@@ -6653,7 +6653,7 @@ export default function Home() {
                           <div className="text-xs text-zinc-400">Jan 2017 - Jan 2025</div>
                         </div>
                         <div className="relative">
-                          <div className="w-full h-32 sm:h-40 md:h-48 lg:h-56 bg-zinc-900/50 rounded overflow-hidden">
+                          <div className="w-full h-48 sm:h-56 md:h-64 lg:h-72 bg-zinc-900/50 rounded overflow-hidden">
                             <svg viewBox="0 0 320 200" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
                               {/* Grid background */}
                               <defs>
