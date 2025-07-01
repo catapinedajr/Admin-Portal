@@ -2817,7 +2817,7 @@ export default function Home() {
                         Continue Free - Limited Time
                       </Button>
                       <p className="text-xs text-zinc-500 mt-3">
-                        Usually $9.99/month • Free during beta testing
+                        Free for a limited timeuring beta testing
                       </p>
                     </CardContent>
                   </Card>

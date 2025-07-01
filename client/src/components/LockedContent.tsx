@@ -103,7 +103,7 @@ export default function LockedContent({
             </Button>
             
             <p className="text-xs text-zinc-500">
-              Starting at $9.99/month
+              Free for a limited time
             </p>
           </div>
         </div>
