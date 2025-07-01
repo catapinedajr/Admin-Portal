@@ -6,7 +6,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { useEffect, useState } from "react";
 import HomeDashboard from "@/pages/home-dashboard";
-import Home from "@/pages/home-new";
+import Home from "@/pages/temp-home";
+import SafetyQuizPage from "@/pages/safety-quiz-page";
 import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
 import NotFound from "@/pages/not-found";
@@ -96,6 +97,11 @@ function Router() {
         <Route path="/more">
           <AuthGuard>
             <Home />
+          </AuthGuard>
+        </Route>
+        <Route path="/safety-quiz">
+          <AuthGuard>
+            <SafetyQuizPage />
           </AuthGuard>
         </Route>
         <Route path="/about">

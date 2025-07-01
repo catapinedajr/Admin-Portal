@@ -1907,8 +1907,8 @@ export default function Home() {
   const [showResult, setShowResult] = useState(false);
   const [safetyCompleted, setSafetyCompleted] = useState(false);
 
-  // Comprehensive 12-Stage Safety Simulation Data
-  const safetySimulations = [
+  // REBUILT SAFETY QUIZ - Simple Multiple Choice Questions
+  const safetyQuestions = [
     {
       stage: "Phishing Detection",
       title: "Spot the Phishing Email",
