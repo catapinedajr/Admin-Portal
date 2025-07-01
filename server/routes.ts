@@ -7,6 +7,7 @@ import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, con
 import { eq, sql } from "drizzle-orm";
 import { v4 as uuidv4 } from 'uuid';
 import { randomUUID } from 'crypto';
+import { NotificationService } from './notifications';
 
 // Authentication middleware
 function requireAuth(req: any, res: any, next: any) {
@@ -1619,6 +1620,71 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     } catch (error) {
       console.error('Error updating weekly progress:', error);
       res.status(500).json({ message: "Failed to update weekly progress" });
+    }
+  });
+
+  // Push Notification API Routes
+  app.get("/api/notifications/vapid-key", (req, res) => {
+    try {
+      res.json({ publicKey: NotificationService.getVapidPublicKey() });
+    } catch (error) {
+      console.error('Error getting VAPID key:', error);
+      res.status(500).json({ message: "Failed to get VAPID key" });
+    }
+  });
+
+  app.post("/api/notifications/subscribe", requireAuth, async (req, res) => {
+    try {
+      const session = await storage.getSession(req.sessionId);
+      if (!session || session.expiresAt < new Date()) {
+        return res.status(401).json({ message: "Invalid session" });
+      }
+
+      const { subscription } = req.body;
+      
+      if (!subscription || !subscription.endpoint) {
+        return res.status(400).json({ message: "Invalid subscription data" });
+      }
+
+      await NotificationService.subscribeUser(session.userId, subscription);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error subscribing to notifications:', error);
+      res.status(500).json({ message: "Failed to subscribe to notifications" });
+    }
+  });
+
+  app.post("/api/notifications/unsubscribe", requireAuth, async (req, res) => {
+    try {
+      const session = await storage.getSession(req.sessionId);
+      if (!session || session.expiresAt < new Date()) {
+        return res.status(401).json({ message: "Invalid session" });
+      }
+
+      await NotificationService.unsubscribeUser(session.userId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error unsubscribing from notifications:', error);
+      res.status(500).json({ message: "Failed to unsubscribe from notifications" });
+    }
+  });
+
+  app.post("/api/notifications/send-test", requireAuth, async (req, res) => {
+    try {
+      const session = await storage.getSession(req.sessionId);
+      if (!session || session.expiresAt < new Date()) {
+        return res.status(401).json({ message: "Invalid session" });
+      }
+
+      await NotificationService.sendMotivationalMessage(
+        session.userId,
+        "Test notification from HODLearn! Your Bitcoin journey continues. 🧡"
+      );
+      
+      res.json({ success: true, message: "Test notification sent!" });
+    } catch (error) {
+      console.error('Error sending test notification:', error);
+      res.status(500).json({ message: "Failed to send test notification" });
     }
   });
 

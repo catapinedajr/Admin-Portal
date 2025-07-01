@@ -34,6 +34,18 @@ export const passwordResetTokens = pgTable("password_reset_tokens", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+// Push notification subscriptions
+export const pushSubscriptions = pgTable("push_subscriptions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  endpoint: text("endpoint").notNull(),
+  p256dhKey: text("p256dh_key").notNull(),
+  authKey: text("auth_key").notNull(),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  lastUsed: timestamp("last_used"),
+});
+
 
 
 export const userProgress = pgTable("user_progress", {
@@ -376,3 +388,10 @@ export type DailyContentComplete = {
   quizzes: ContentQuiz[];
   metadata: ContentMetadata | null;
 };
+
+// Push subscription types
+export type PushSubscription = typeof pushSubscriptions.$inferSelect;
+export type InsertPushSubscription = typeof pushSubscriptions.$inferInsert;
+
+export const insertPushSubscriptionSchema = createInsertSchema(pushSubscriptions);
+export type InsertPushSubscriptionData = z.infer<typeof insertPushSubscriptionSchema>;
