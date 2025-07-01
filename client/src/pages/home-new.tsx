@@ -2446,32 +2446,102 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Quick Stats Dashboard */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Card className="bg-zinc-900 border-zinc-800">
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-orange-400">{user?.currentStreak || 0}</div>
-                  <div className="text-sm text-zinc-400">Current Streak</div>
-                </CardContent>
-              </Card>
-              <Card className="bg-zinc-900 border-zinc-800">
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-white">{Math.ceil((user?.currentStreak || 1) / 7)}</div>
-                  <div className="text-sm text-zinc-400">Week {Math.ceil((user?.currentStreak || 1) / 7)}</div>
-                </CardContent>
-              </Card>
-              <Card className="bg-zinc-900 border-zinc-800">
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-green-400">{user?.totalDaysCompleted || 0}</div>
-                  <div className="text-sm text-zinc-400">Days Learning</div>
-                </CardContent>
-              </Card>
-              <Card className="bg-zinc-900 border-zinc-800">
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-blue-400">{user?.bestStreak || 0}</div>
+            {/* Engaging Progress Tracker */}
+            <div className="space-y-6">
+              {/* Main Progress Circle */}
+              <div className="flex justify-center">
+                <div className="relative w-48 h-48">
+                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                    {/* Background circle */}
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="45"
+                      fill="none"
+                      stroke="#27272a"
+                      strokeWidth="8"
+                    />
+                    {/* Progress circle */}
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="45"
+                      fill="none"
+                      stroke="#f97316"
+                      strokeWidth="8"
+                      strokeLinecap="round"
+                      strokeDasharray={`${((user?.currentStreak || 0) / 30) * 283} 283`}
+                      className="transition-all duration-700 ease-out"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <div className="text-3xl font-bold text-orange-400">{user?.currentStreak || 0}</div>
+                    <div className="text-sm text-zinc-400">Day Streak</div>
+                    <div className="text-xs text-zinc-500 mt-1">of 30 days</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Journey Milestones */}
+              <div className="bg-zinc-900/50 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-white mb-4 text-center">Bitcoin Journey Progress</h3>
+                <div className="space-y-4">
+                  {/* Week Progress Bar */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-zinc-400">Week {Math.ceil((user?.currentStreak || 1) / 7)}</span>
+                      <span className="text-zinc-400">{(((user?.currentStreak || 1) - 1) % 7) + 1}/7 days</span>
+                    </div>
+                    <div className="w-full bg-zinc-800 rounded-full h-3">
+                      <div 
+                        className="bg-gradient-to-r from-orange-500 to-orange-400 h-3 rounded-full transition-all duration-500"
+                        style={{ width: `${((((user?.currentStreak || 1) - 1) % 7) + 1) / 7 * 100}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Monthly Milestones */}
+                  <div className="grid grid-cols-6 gap-2 mt-6">
+                    {[7, 14, 21, 30].map((milestone) => {
+                      const isCompleted = (user?.currentStreak || 0) >= milestone;
+                      const isCurrent = (user?.currentStreak || 0) < milestone && (user?.currentStreak || 0) >= milestone - 7;
+                      
+                      return (
+                        <div key={milestone} className="text-center">
+                          <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all duration-300 ${
+                            isCompleted 
+                              ? 'bg-orange-500 border-orange-500 text-white' 
+                              : isCurrent
+                              ? 'border-orange-400 text-orange-400 bg-orange-400/10'
+                              : 'border-zinc-600 text-zinc-600'
+                          }`}>
+                            {isCompleted ? '✓' : milestone}
+                          </div>
+                          <div className={`text-xs mt-1 ${isCompleted ? 'text-orange-400' : 'text-zinc-500'}`}>
+                            {milestone === 7 ? 'Foundation' : milestone === 14 ? 'Building' : milestone === 21 ? 'Growing' : 'Expert'}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Stats Row */}
+              <div className="grid grid-cols-3 gap-4">
+                <div className="bg-zinc-900/50 rounded-lg p-4 text-center">
+                  <div className="text-xl font-bold text-white">{user?.completedLessons || 0}</div>
+                  <div className="text-sm text-zinc-400">Total Days</div>
+                </div>
+                <div className="bg-zinc-900/50 rounded-lg p-4 text-center">
+                  <div className="text-xl font-bold text-orange-400">{user?.longestStreak || 0}</div>
                   <div className="text-sm text-zinc-400">Best Streak</div>
-                </CardContent>
-              </Card>
+                </div>
+                <div className="bg-zinc-900/50 rounded-lg p-4 text-center">
+                  <div className="text-xl font-bold text-zinc-300">{Math.round(((user?.currentStreak || 0) / 30) * 100)}%</div>
+                  <div className="text-sm text-zinc-400">Complete</div>
+                </div>
+              </div>
             </div>
 
             {/* Navigation Cards */}
