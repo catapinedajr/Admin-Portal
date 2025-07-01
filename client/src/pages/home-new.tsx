@@ -6665,15 +6665,15 @@ export default function Home() {
                               
                               {/* 5x Market Line */}
                               <line x1="20" y1="120" x2="350" y2="120" stroke="#10b981" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                              <text x="360" y="124" fill="#10b981" fontSize="8" opacity="0.8">5x</text>
+                              <text x="360" y="124" fill="#10b981" fontSize="12" opacity="0.8">5x</text>
                               
                               {/* 10x Market Line */}
                               <line x1="20" y1="80" x2="350" y2="80" stroke="#fbbf24" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                              <text x="360" y="84" fill="#fbbf24" fontSize="8" opacity="0.8">10x</text>
+                              <text x="360" y="84" fill="#fbbf24" fontSize="12" opacity="0.8">10x</text>
                               
                               {/* 100x Market Line */}
                               <line x1="20" y1="40" x2="350" y2="40" stroke="#dc2626" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                              <text x="360" y="44" fill="#dc2626" fontSize="8" opacity="0.8">100x</text>
+                              <text x="360" y="44" fill="#dc2626" fontSize="12" opacity="0.8">100x</text>
                               
                               {/* Bitcoin Price Line (realistic exponential growth) */}
                               <path 
@@ -6703,9 +6703,9 @@ export default function Home() {
                               <circle cx="380" cy="30" r="4" fill="#f97316" stroke="#ffffff" strokeWidth="2" className="animate-pulse"/>
                               
                               {/* Time labels */}
-                              <text x="20" y="175" fill="#9ca3af" fontSize="8" textAnchor="start">2017</text>
-                              <text x="200" y="175" fill="#9ca3af" fontSize="8" textAnchor="middle">2021</text>
-                              <text x="380" y="175" fill="#9ca3af" fontSize="8" textAnchor="end">2025</text>
+                              <text x="20" y="175" fill="#9ca3af" fontSize="12" textAnchor="start">2017</text>
+                              <text x="200" y="175" fill="#9ca3af" fontSize="12" textAnchor="middle">2021</text>
+                              <text x="380" y="175" fill="#9ca3af" fontSize="12" textAnchor="end">2025</text>
                             </svg>
                           </div>
                         </div>
@@ -6923,7 +6923,7 @@ export default function Home() {
                                           return (
                                             <g key={milestone.label}>
                                               <line x1="10" y1={y} x2="390" y2={y} stroke={milestone.color} strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                                              <text x="395" y={y + 3} fill={milestone.color} fontSize="8" opacity="0.8">{milestone.label}</text>
+                                              <text x="395" y={y + 3} fill={milestone.color} fontSize="12" opacity="0.8">{milestone.label}</text>
                                             </g>
                                           );
                                         })}
@@ -6961,13 +6961,13 @@ export default function Home() {
                                         <circle cx={points[points.length - 1].x} cy={points[points.length - 1].y} r="5" fill="#f97316" stroke="#ffffff" strokeWidth="1" className="animate-pulse" />
                                         
                                         {/* Time progression labels */}
-                                        <text x="10" y="185" fill="#9ca3af" fontSize="8" fontWeight="500" textAnchor="start">
+                                        <text x="10" y="185" fill="#9ca3af" fontSize="12" fontWeight="500" textAnchor="start">
                                           {hodlInputs.period}
                                         </text>
-                                        <text x="200" y="185" fill="#9ca3af" fontSize="8" textAnchor="middle">
+                                        <text x="200" y="185" fill="#9ca3af" fontSize="12" textAnchor="middle">
                                           {years > 3 ? `${Math.floor(years/2)} years` : ''}
                                         </text>
-                                        <text x="390" y="185" fill="#9ca3af" fontSize="8" fontWeight="500" textAnchor="end">
+                                        <text x="390" y="185" fill="#9ca3af" fontSize="12" fontWeight="500" textAnchor="end">
                                           Jan 2025
                                         </text>
                                         
