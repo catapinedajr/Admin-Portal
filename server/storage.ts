@@ -61,6 +61,7 @@ import {
 
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
+import { desc } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -407,8 +408,31 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getNextAvailableDay(userId: number): Promise<number> {
-    // For now, return day 1 - could be made more sophisticated later
-    return 1;
+    // Get all completed days for this user
+    const completedDays = await this.getCompletedDays(userId);
+    
+    // Find the first incomplete day starting from 1
+    for (let day = 1; day <= 180; day++) {
+      if (!completedDays.includes(day)) {
+        // Check if content exists for this day
+        const hasContent = await db.select({ id: contentDays.id })
+          .from(contentDays)
+          .where(eq(contentDays.dayIndex, day))
+          .limit(1);
+        
+        if (hasContent.length > 0) {
+          return day;
+        }
+      }
+    }
+    
+    // If all available days are complete, return the last available day
+    const lastAvailableDay = await db.select({ dayIndex: contentDays.dayIndex })
+      .from(contentDays)
+      .orderBy(desc(contentDays.dayIndex))
+      .limit(1);
+    
+    return lastAvailableDay[0]?.dayIndex || 1;
   }
 
   async canAccessDay(userId: number, dayIndex: number): Promise<boolean> {
@@ -427,8 +451,10 @@ export class DatabaseStorage implements IStorage {
   async getCompletedDays(userId: number): Promise<number[]> {
     const completed = await db.select({ dayIndex: userProgress.dayIndex })
       .from(userProgress)
-      .where(eq(userProgress.userId, userId))
-      .where(eq(userProgress.dayCompleted, true));
+      .where(and(
+        eq(userProgress.userId, userId),
+        eq(userProgress.dayCompleted, true)
+      ));
     
     return completed.map(p => p.dayIndex);
   }
