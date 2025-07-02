@@ -474,16 +474,27 @@ export default function Home() {
   const [selectedSecurityAnswer, setSelectedSecurityAnswer] = useState<number | null>(null);
   const [showSecurityFeedback, setShowSecurityFeedback] = useState<boolean>(false);
   const [isSecurityAnswerCorrect, setIsSecurityAnswerCorrect] = useState<boolean>(false);
+  const [securityAnswerSubmitted, setSecurityAnswerSubmitted] = useState<boolean>(false);
   
   // Security Test Handler Functions
-  const handleSecurityAnswer = (selectedIndex: number, correctIndex: number) => {
-    setSelectedSecurityAnswer(selectedIndex);
-    const isCorrect = selectedIndex === correctIndex;
+  const handleSecurityAnswer = (selectedIndex: number) => {
+    if (!securityAnswerSubmitted) {
+      setSelectedSecurityAnswer(selectedIndex);
+    }
+  };
+
+  const submitSecurityAnswer = (correctIndex: number) => {
+    if (selectedSecurityAnswer === null) return;
+    
+    const isCorrect = selectedSecurityAnswer === correctIndex;
     setIsSecurityAnswerCorrect(isCorrect);
+    setShowSecurityFeedback(true);
+    setSecurityAnswerSubmitted(true);
+    
+    // Update score
     if (isCorrect) {
       setSecurityScore(securityScore + 1);
     }
-    setShowSecurityFeedback(true);
   };
 
   const getSecurityExplanation = (stage: number, isCorrect: boolean): string => {
@@ -5649,7 +5660,7 @@ export default function Home() {
                                       ].map((option, index) => (
                                         <button
                                           key={index}
-                                          onClick={() => handleSecurityAnswer(index, 2)}
+                                          onClick={() => handleSecurityAnswer(index)}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -5735,7 +5746,7 @@ export default function Home() {
                                       ].map((option, index) => (
                                         <button
                                           key={index}
-                                          onClick={() => handleSecurityAnswer(index, 1)}
+                                          onClick={() => handleSecurityAnswer(index)}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -5797,7 +5808,7 @@ export default function Home() {
                                       ].map((option, index) => (
                                         <button
                                           key={index}
-                                          onClick={() => handleSecurityAnswer(index, 1)}
+                                          onClick={() => handleSecurityAnswer(index)}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -5852,7 +5863,7 @@ export default function Home() {
                                       ].map((option, index) => (
                                         <button
                                           key={index}
-                                          onClick={() => handleSecurityAnswer(index, 2)}
+                                          onClick={() => handleSecurityAnswer(index)}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -5876,7 +5887,7 @@ export default function Home() {
                                       {['Keep it all on Coinbase for convenience', 'Move most to a hardware wallet, keep some for trading', 'Split across multiple exchanges', 'Convert to stablecoins'].map((option, index) => (
                                         <button
                                           key={index}
-                                          onClick={() => handleSecurityAnswer(index, 1)}
+                                          onClick={() => handleSecurityAnswer(index)}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -5900,7 +5911,7 @@ export default function Home() {
                                       {['Use the coffee shop WiFi directly', 'Use your phone\'s mobile data instead', 'Use WiFi but log out immediately', 'Use WiFi with a VPN'].map((option, index) => (
                                         <button
                                           key={index}
-                                          onClick={() => handleSecurityAnswer(index, 1)}
+                                          onClick={() => handleSecurityAnswer(index)}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -5929,7 +5940,7 @@ export default function Home() {
                                       ].map((option, index) => (
                                         <button
                                           key={index}
-                                          onClick={() => handleSecurityAnswer(index, 1)}
+                                          onClick={() => handleSecurityAnswer(index)}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -5953,7 +5964,7 @@ export default function Home() {
                                       {['Buy used from eBay for cheaper price', 'Buy new from official manufacturer', 'Buy from Amazon marketplace', 'Buy from local computer store'].map((option, index) => (
                                         <button
                                           key={index}
-                                          onClick={() => handleSecurityAnswer(index, 1)}
+                                          onClick={() => handleSecurityAnswer(index)}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -5998,7 +6009,7 @@ export default function Home() {
                                       ].map((option, index) => (
                                         <button
                                           key={index}
-                                          onClick={() => handleSecurityAnswer(index, 1)}
+                                          onClick={() => handleSecurityAnswer(index)}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -6053,7 +6064,7 @@ export default function Home() {
                                       ].map((option, index) => (
                                         <button
                                           key={index}
-                                          onClick={() => handleSecurityAnswer(index, 2)}
+                                          onClick={() => handleSecurityAnswer(index)}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -6108,7 +6119,7 @@ export default function Home() {
                                       ].map((option, index) => (
                                         <button
                                           key={index}
-                                          onClick={() => handleSecurityAnswer(index, 2)}
+                                          onClick={() => handleSecurityAnswer(index)}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -6132,7 +6143,7 @@ export default function Home() {
                                       {['Lend it - friends are trustworthy', 'Ask for collateral first', 'Politely decline - sounds too good to be true', 'Lend half to test'].map((option, index) => (
                                         <button
                                           key={index}
-                                          onClick={() => handleSecurityAnswer(index, 2)}
+                                          onClick={() => handleSecurityAnswer(index)}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -6186,7 +6197,7 @@ export default function Home() {
                                       ].map((option, index) => (
                                         <button
                                           key={index}
-                                          onClick={() => handleSecurityAnswer(index, 1)}
+                                          onClick={() => handleSecurityAnswer(index)}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -6248,7 +6259,7 @@ export default function Home() {
                                       ].map((option, index) => (
                                         <button
                                           key={index}
-                                          onClick={() => handleSecurityAnswer(index, 1)}
+                                          onClick={() => handleSecurityAnswer(index)}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -6304,7 +6315,7 @@ export default function Home() {
                                       ].map((option, index) => (
                                         <button
                                           key={index}
-                                          onClick={() => handleSecurityAnswer(index, 2)}
+                                          onClick={() => handleSecurityAnswer(index)}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -6370,7 +6381,7 @@ export default function Home() {
                                       ].map((option, index) => (
                                         <button
                                           key={index}
-                                          onClick={() => handleSecurityAnswer(index, 2)}
+                                          onClick={() => handleSecurityAnswer(index)}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -6381,6 +6392,36 @@ export default function Home() {
                                         </button>
                                       ))}
                                     </div>
+
+                                    {/* Submit Button */}
+                                    {selectedSecurityAnswer !== null && !securityAnswerSubmitted && (
+                                      <div className="flex justify-center mt-4">
+                                        <Button
+                                          onClick={() => {
+                                            // Call submit with correct answer for each scenario
+                                            if (securityTestStage === 1) submitSecurityAnswer(2);
+                                            else if (securityTestStage === 2) submitSecurityAnswer(1);
+                                            else if (securityTestStage === 3) submitSecurityAnswer(1);
+                                            else if (securityTestStage === 4) submitSecurityAnswer(2);
+                                            else if (securityTestStage === 5) submitSecurityAnswer(1);
+                                            else if (securityTestStage === 6) submitSecurityAnswer(1);
+                                            else if (securityTestStage === 7) submitSecurityAnswer(1);
+                                            else if (securityTestStage === 8) submitSecurityAnswer(2);
+                                            else if (securityTestStage === 9) submitSecurityAnswer(1);
+                                            else if (securityTestStage === 10) submitSecurityAnswer(1);
+                                            else if (securityTestStage === 11) submitSecurityAnswer(1);
+                                            else if (securityTestStage === 12) submitSecurityAnswer(2);
+                                            else if (securityTestStage === 13) submitSecurityAnswer(1);
+                                            else if (securityTestStage === 14) submitSecurityAnswer(1);
+                                            else if (securityTestStage === 15) submitSecurityAnswer(2);
+                                            else if (securityTestStage === 16) submitSecurityAnswer(2);
+                                          }}
+                                          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
+                                        >
+                                          Submit Answer
+                                        </Button>
+                                      </div>
+                                    )}
                                   </div>
                                 )}
 
@@ -6416,6 +6457,7 @@ export default function Home() {
                                       setSecurityTestStage(securityTestStage + 1);
                                       setSelectedSecurityAnswer(null);
                                       setShowSecurityFeedback(false);
+                                      setSecurityAnswerSubmitted(false);
                                     } else {
                                       setSecurityTestStage(17); // Show results
                                     }
