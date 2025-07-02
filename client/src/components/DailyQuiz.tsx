@@ -137,6 +137,24 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
         ...prev,
         [variables.questionId]: data
       }));
+      
+      // Check if this was the last unanswered question
+      const newSubmittedAnswers = {
+        ...submittedAnswers,
+        [variables.questionId]: data
+      };
+      
+      // Count total unique questions answered (including this new submission)
+      const totalAnswered = Object.keys(newSubmittedAnswers).length;
+      
+      if (totalAnswered === questions.length && onCompletion && !completionTriggeredRef.current) {
+        completionTriggeredRef.current = true;
+        // Small delay to ensure answer is processed
+        setTimeout(() => {
+          onCompletion();
+        }, 100);
+      }
+      
       // Invalidate queries to refresh data
       queryClient.invalidateQueries({ queryKey: ['/api/quiz/answers', userId, today] });
       queryClient.invalidateQueries({ queryKey: ['/api/quiz/score', userId, today] });
@@ -175,13 +193,8 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
   const nextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      // Quiz is complete - check if all questions answered and trigger completion if needed
-      if (userAnswers.length === questions.length && onCompletion && !completionTriggeredRef.current) {
-        completionTriggeredRef.current = true;
-        onCompletion();
-      }
     }
+    // Completion logic moved to submitAnswerMutation.onSuccess to prevent premature triggering
   };
 
   const prevQuestion = () => {
@@ -190,14 +203,7 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
     }
   };
 
-  // Check for quiz completion when all questions are answered
-  useEffect(() => {
-    if (questions.length > 0 && userAnswers.length === questions.length && onCompletion && !completionTriggeredRef.current) {
-      // All questions answered, trigger completion callback
-      completionTriggeredRef.current = true;
-      onCompletion();
-    }
-  }, [questions.length, userAnswers.length, onCompletion]);
+  // Removed automatic completion useEffect - completion now only happens when user submits the last answer
 
   // Reset completion tracking when dayIndex changes
   useEffect(() => {
