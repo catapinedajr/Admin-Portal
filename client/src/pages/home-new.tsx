@@ -5791,14 +5791,14 @@ export default function Home() {
                                         <div className="p-3 bg-blue-950/30 rounded border border-blue-800/50">
                                           <div className="text-xs text-blue-400 mb-1">PARTNER'S TEXT MESSAGE:</div>
                                           <div className="font-mono text-xs text-blue-300 break-all">
-                                            bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
+                                            bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w<span className="bg-blue-500 text-white px-1 rounded">lh</span>
                                           </div>
                                         </div>
                                         
                                         <div className="p-3 bg-green-950/30 rounded border border-green-800/50">
                                           <div className="text-xs text-green-400 mb-1">YOUR WALLET SHOWS:</div>
                                           <div className="font-mono text-xs text-green-300 break-all">
-                                            bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w1h
+                                            bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w<span className="bg-red-500 text-white px-1 rounded">1h</span>
                                           </div>
                                         </div>
                                       </div>
