@@ -3174,26 +3174,24 @@ export default function Home() {
               <CardContent className="p-8">
                 <div className="max-w-4xl mx-auto text-center space-y-6">
                   <h2 className="text-4xl font-bold text-white mb-4">
-                    Your Money Is Being <span className="text-red-400">Silently Stolen</span>
+                    The Hidden Tax <span className="text-red-400">Eating Your Savings</span>
                   </h2>
                   
                   <div className="text-lg text-zinc-300 leading-relaxed space-y-4">
                     <p>
-                      Every day you wait, your savings lose purchasing power. It's not your fault—the system is rigged. 
-                      Central banks print money endlessly, devaluing your hard-earned dollars while the wealthy protect 
-                      themselves with assets that can't be printed.
+                      Every year, your money buys less than it did the year before. This isn't an accident—it's how the current money system works.
                     </p>
                     
                     <p>
-                      <span className="text-orange-400 font-semibold">What cost $1 in 1920 now costs $15.50.</span> Your 
-                      great-grandparents could buy a house with one income and still save money. Today, two incomes barely 
-                      cover rent. This isn't progress—it's systematic wealth transfer from savers to money printers.
+                      <span className="text-orange-400 font-semibold">What cost $1 in 1920 now costs $15.50.</span> Your great-grandparents could buy a house with one income. Today, two incomes barely cover rent.
                     </p>
                     
                     <p>
-                      But there's an escape route. For the first time in human history, we have <span className="text-orange-400 font-semibold">
-                      mathematically perfect money</span> that can't be inflated away. Bitcoin isn't just digital gold—it's 
-                      the antidote to monetary debasement.
+                      The reason? Central banks can print unlimited money, making each dollar worth less over time.
+                    </p>
+                    
+                    <p>
+                      But what if there was <span className="text-orange-400 font-semibold">money that couldn't be printed?</span> For the first time in history, Bitcoin offers mathematically limited supply—only 21 million will ever exist.
                     </p>
                   </div>
                   
@@ -3219,11 +3217,11 @@ export default function Home() {
                   
                   <div className="mt-8 p-6 bg-orange-950/20 rounded-xl border border-orange-800/30">
                     <div className="text-orange-300 font-semibold text-lg mb-2">
-                      The choice is yours:
+                      Ready to understand the difference?
                     </div>
                     <div className="text-zinc-300">
-                      Keep letting inflation slowly drain your wealth, or learn about the money that can't be manipulated. 
-                      The calculators below show you exactly what you're losing—and what you could gain.
+                      The tools below show you exactly how inflation works and why Bitcoin offers an alternative. 
+                      No complicated math—just clear examples you can explore at your own pace.
                     </div>
                   </div>
                 </div>
