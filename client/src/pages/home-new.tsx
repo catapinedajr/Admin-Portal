@@ -9,7 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import PWAInstallButton from "@/components/PWAInstallButton";
 import Store from "@/components/Store";
 import About from "@/components/About";
-import LearnSection from "@/components/LearnSection";
 import { 
   Bitcoin, 
   Lightbulb, 
@@ -477,7 +476,7 @@ export default function Home() {
 
   const [convictionSubTab, setConvictionSubTab] = useState<"whitepaper" | "books" | "videos">("whitepaper");
   const [showSplash, setShowSplash] = useState(false);
-
+  const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
   const [expandedTopics, setExpandedTopics] = useState<Set<string>>(new Set());
   const [safetyQuizScore, setSafetyQuizScore] = useState<number>(0);
   
@@ -884,7 +883,17 @@ export default function Home() {
     }>;
   } | null>(null);
   
-
+  const toggleFactExpansion = useCallback((factId: number) => {
+    setExpandedFacts(prevExpanded => {
+      const newExpanded = new Set(prevExpanded);
+      if (newExpanded.has(factId)) {
+        newExpanded.delete(factId);
+      } else {
+        newExpanded.add(factId);
+      }
+      return newExpanded;
+    });
+  }, []);
 
   // All lesson content now comes from database - no frontend fallback needed
 
@@ -2033,17 +2042,6 @@ export default function Home() {
 
         {/* Learn Section */}
         {activeSection === "learn" && (
-          <LearnSection 
-            learnSubTab={learnSubTab}
-            setLearnSubTab={setLearnSubTab}
-            currentDayIndex={currentDayIndex}
-            setCurrentDayIndex={setCurrentDayIndex}
-            user={user}
-          />
-        )}
-
-        {/* TEMP - removing Learn section content below */}
-        {false && (
           <div className="space-y-6">
             {/* Learn Sub-navigation */}
             <div className="flex justify-center">
@@ -2278,7 +2276,8 @@ export default function Home() {
                       <div className="space-y-4">
                         {(dailyFacts as any[]).map((fact: any) => {
                           const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Coins;
-
+                          const deepDive = fact.diveDeeper; // Only use storage data - no frontend fallback
+                          const isExpanded = expandedFacts.has(fact.id);
                           
 
                           
@@ -2295,11 +2294,49 @@ export default function Home() {
                                 <div className="flex-1">
                                   <h4 className="font-semibold text-white">{fact.title}</h4>
                                   
-
+                                  {deepDive && (
+                                    <div className="flex justify-end">
+                                      <button
+                                        onClick={() => toggleFactExpansion(fact.id)}
+                                        className="text-orange-400 hover:text-orange-300 text-sm flex items-center gap-1 transition-colors"
+                                      >
+                                        <span>Dive Deeper</span>
+                                        {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                                      </button>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                               
+                              {isExpanded && deepDive && (
+                                <div className="border-t border-zinc-700 p-4 bg-zinc-900/50">
+                                  <div className="space-y-4">
+                                    <div>
+                                      <h5 className="font-medium text-orange-300 mb-2">Deep Explanation</h5>
+                                      <p className="text-zinc-300 text-sm leading-relaxed">{deepDive.explanation}</p>
+                                    </div>
+                                    
+                                    <div>
+                                      <h5 className="font-medium text-orange-300 mb-2">Visual Description</h5>
+                                      <p className="text-zinc-300 text-sm italic">{deepDive.visualDescription}</p>
+                                    </div>
+                                    
+                                    <div>
+                                      <h5 className="font-medium text-orange-300 mb-2">Real Examples</h5>
+                                      <ul className="space-y-1">
+                                        {deepDive.examples.map((example, idx) => (
+                                          <li key={idx} className="text-zinc-300 text-sm flex items-baseline gap-2">
+                                            <span className="text-orange-400 text-sm">•</span>
+                                            <span>{example}</span>
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                    
 
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           );
                         })}
