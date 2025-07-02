@@ -40,11 +40,15 @@ export default function About() {
             
             <div className="space-y-3 text-zinc-300 leading-relaxed">
               <p>
-                Three years ago, we were staring at Bitcoin articles at 2 AM, completely lost. Every explanation felt like it was written for computer experts. We wanted to understand Bitcoin, but it seemed impossible without a computer science degree.
+                Three years ago, we were staring at Bitcoin articles at 2 AM, completely lost. Every explanation felt like it was written for computer experts. We wanted to understand this thing everyone said was changing money forever, but felt like idiots every time someone mentioned "mining" or "wallets."
               </p>
               
               <p>
-                Sound familiar? That frustration led us to create something different.
+                We watched Bitcoin go from $20,000 to $60,000 while sitting on the sidelines, too confused and scared to do anything. Every time we tried to learn, we'd quit after 10 minutes feeling overwhelmed.
+              </p>
+              
+              <p>
+                Sound familiar? That exact frustration - feeling left behind while something important was happening - that's what drove us to figure this out.
               </p>
             </div>
           </CardContent>
@@ -65,12 +69,18 @@ export default function About() {
             
             <div className="space-y-3 text-zinc-300 leading-relaxed">
               <p>
-                When you learned to drive, you didn't start by rebuilding an engine. You learned the basics first: turn signals, parking, highway merging. Each day you got a little better.
+                The breakthrough came after years of struggling. One of our founders finally "got" Bitcoin - not from any single article or video, but from spending just 10 minutes every single day reading about it. After 18 months of this daily habit, something clicked. The pieces finally fit together.
               </p>
               
               <p>
-                Bitcoin works the same way. Start simple. Practice daily. Build confidence over time. That's the HODLearn approach - patience and steady progress, just like HODLing Bitcoin itself.
+                That's when we realized the secret wasn't finding the "perfect" explanation. It was consistency. Daily learning, even just a few minutes, slowly built real understanding over time. That moment of clarity - that's why we decided to start this app.
               </p>
+              
+              <div className="bg-orange-600/10 p-3 rounded-lg border border-orange-600/20">
+                <p className="text-sm text-orange-200">
+                  <strong>The realization:</strong> Bitcoin clicked not because of one great lesson, but because of hundreds of small daily moments that built on each other.
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>
