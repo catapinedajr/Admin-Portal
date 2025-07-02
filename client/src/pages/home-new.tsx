@@ -495,8 +495,8 @@ export default function Home() {
         ? "Excellent choice! Your paper backup in a fireproof safe protects your 2.5 BTC from hackers, device failures, and fires. You're prepared for any scenario."
         : "Risky decision! Digital storage can be hacked, corrupted, or accessed by others. Your 2.5 BTC could disappear if those files are compromised or lost.",
       3: isCorrect
-        ? "Correct! Always verify the entire address. Bitcoin transactions are irreversible, so accuracy is critical."
-        : "Always verify the complete address character by character. Malware can change addresses during copy-paste.",
+        ? "Sharp eye! You caught the missing 'l' at the end - classic address poisoning attack. Your 1.5 BTC stays safe because you verified every character."
+        : "Disaster! You missed the subtle difference and sent $60,000 to a scammer's address. Address poisoning attacks rely on people not checking every character.",
       4: isCorrect
         ? "Perfect! You hung up on a scammer. Bitcoin has no customer support because it's decentralized. Your 1.2 BTC remains secure because you recognized the social engineering attempt."
         : "Danger! That was a social engineering scam. Bitcoin has no customer support team. Anyone asking for your seed phrase is trying to steal your 1.2 BTC.",
@@ -5706,12 +5706,50 @@ export default function Home() {
 
                                 {securityTestStage === 3 && (
                                   <div className="space-y-4">
-                                    <h5 className="text-lg font-semibold text-white">Address Verification</h5>
-                                    <p className="text-zinc-300">
-                                      Before sending 1 BTC, what's the most important verification step?
+                                    <div className="flex items-center gap-3 mb-4">
+                                      <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                        <span className="text-orange-400 text-sm">💰</span>
+                                      </div>
+                                      <div>
+                                        <h5 className="text-lg font-semibold text-white">The Big Transfer</h5>
+                                        <p className="text-zinc-400 text-sm">Friday evening, sending to business partner</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                                      <p className="text-zinc-300 mb-3">
+                                        You're sending 1.5 BTC ($60,000) to your business partner for a deal. They texted you their address. 
+                                        Your wallet shows the destination after you pasted it.
+                                      </p>
+                                      
+                                      <div className="space-y-3">
+                                        <div className="p-3 bg-blue-950/30 rounded border border-blue-800/50">
+                                          <div className="text-xs text-blue-400 mb-1">PARTNER'S TEXT MESSAGE:</div>
+                                          <div className="font-mono text-xs text-blue-300 break-all">
+                                            bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
+                                          </div>
+                                        </div>
+                                        
+                                        <div className="p-3 bg-green-950/30 rounded border border-green-800/50">
+                                          <div className="text-xs text-green-400 mb-1">YOUR WALLET SHOWS:</div>
+                                          <div className="font-mono text-xs text-green-300 break-all">
+                                            bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w1h
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <p className="text-zinc-300 text-sm">
+                                      Something feels off, but you're in a hurry. What do you notice?
                                     </p>
+
                                     <div className="space-y-2">
-                                      {['Check the first 4 characters', 'Verify the entire address character by character', 'Trust your copy-paste', 'Just send a small amount first'].map((option, index) => (
+                                      {[
+                                        'The addresses look identical - send the payment',
+                                        'Missing an "l" at the end - this could be address poisoning',
+                                        'The first few characters match - that\'s good enough',
+                                        'Different length but close enough - probably fine'
+                                      ].map((option, index) => (
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index, 1)}
