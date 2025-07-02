@@ -484,8 +484,8 @@ export default function Home() {
     
     // Define correct answers for each scenario (0-based index)
     const correctAnswers: { [key: number]: number } = {
-      1: 2, 2: 1, 3: 1, 4: 2, 5: 1, 6: 1, 7: 1, 8: 1, 
-      9: 1, 10: 1, 11: 1, 12: 2, 13: 1, 14: 1, 15: 2, 16: 2
+      1: 2, 2: 1, 3: 1, 4: 2, 5: 0, 6: 1, 7: 1, 8: 1, 
+      9: 3, 10: 1, 11: 1, 12: 2, 13: 2, 14: 1, 15: 2, 16: 2
     };
     
     const correctIndex = correctAnswers[securityTestStage] || 0;
@@ -5895,7 +5895,7 @@ export default function Home() {
                                       You have 5 BTC on Coinbase. What's the safest long-term strategy?
                                     </p>
                                     <div className="space-y-2">
-                                      {['Keep it all on Coinbase for convenience', 'Move most to a hardware wallet, keep some for trading', 'Split across multiple exchanges', 'Convert to stablecoins'].map((option, index) => (
+                                      {['Move most to a hardware wallet, keep some for trading', 'Keep it all on Coinbase for convenience', 'Split across multiple exchanges', 'Convert to stablecoins'].map((option, index) => (
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index)}
@@ -6017,10 +6017,10 @@ export default function Home() {
 
                                     <div className="space-y-2">
                                       {[
-                                        'Start using it immediately - you wrote it down correctly',
-                                        'Test the backup by wiping and restoring the entire wallet',
                                         'Wait a month to make sure the paper doesn\'t fade',
-                                        'Store the paper safely and assume it works'
+                                        'Start using it immediately - you wrote it down correctly',
+                                        'Store the paper safely and assume it works',
+                                        'Test the backup by wiping and restoring the entire wallet'
                                       ].map((option, index) => (
                                         <button
                                           key={index}
@@ -6209,10 +6209,10 @@ export default function Home() {
 
                                     <div className="space-y-2">
                                       {[
+                                        'Contact the company to verify if this is normal',
                                         'Use the provided seed phrase - it saves time',
                                         'Return it immediately - this is a tampered device',
-                                        'Generate a new seed phrase but keep the old one as backup',
-                                        'Contact the company to verify if this is normal'
+                                        'Generate a new seed phrase but keep the old one as backup'
                                       ].map((option, index) => (
                                         <button
                                           key={index}
