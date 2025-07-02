@@ -7,6 +7,7 @@ import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { useEffect, useState } from "react";
 import HomeDashboard from "@/pages/home-dashboard";
 import Home from "@/pages/home-new";
+import ProductionSafeHome from "@/components/ProductionSafeHome";
 import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
 import NotFound from "@/pages/not-found";
@@ -79,7 +80,7 @@ function OnboardingRedirect() {
 
   return (
     <ErrorBoundary>
-      <Home />
+      <ProductionSafeHome />
     </ErrorBoundary>
   );
 }
@@ -108,28 +109,28 @@ function Router() {
         <Route path="/learn">
           <AuthGuard>
             <ErrorBoundary>
-              <Home />
+              <ProductionSafeHome />
             </ErrorBoundary>
           </AuthGuard>
         </Route>
         <Route path="/money">
           <AuthGuard>
             <ErrorBoundary>
-              <Home />
+              <ProductionSafeHome />
             </ErrorBoundary>
           </AuthGuard>
         </Route>
         <Route path="/simulators">
           <AuthGuard>
             <ErrorBoundary>
-              <Home />
+              <ProductionSafeHome />
             </ErrorBoundary>
           </AuthGuard>
         </Route>
         <Route path="/more">
           <AuthGuard>
             <ErrorBoundary>
-              <Home />
+              <ProductionSafeHome />
             </ErrorBoundary>
           </AuthGuard>
         </Route>
