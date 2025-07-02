@@ -3563,7 +3563,13 @@ export default function Home() {
                                   className={`h-full transition-all duration-1000 ${
                                     isActive ? 'bg-orange-500' : 'bg-zinc-600'
                                   }`}
-                                  style={{ width: isActive ? `${Math.min((btc/6617450)*100, 100)}%` : '0%' }}
+                                  style={{ width: isActive ? `${
+                                    btc <= 50000 ? (btc/50000) * 20 :
+                                    btc <= 250000 ? 20 + ((btc-50000)/200000) * 25 :
+                                    btc <= 1000000 ? 45 + ((btc-250000)/750000) * 25 :
+                                    btc <= 3000000 ? 70 + ((btc-1000000)/2000000) * 20 :
+                                    90 + ((btc-3000000)/4000000) * 10
+                                  }%` : '0%' }}
                                 ></div>
                               </div>
                             </div>
