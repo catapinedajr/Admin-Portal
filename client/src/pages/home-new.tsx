@@ -6572,17 +6572,8 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                {/* Settlement Workflow Visualization */}
-                <Card className="bg-zinc-900 border-zinc-800" data-transfer-simulator>
-                  <CardHeader className="pb-4">
-                    <CardTitle className="text-white flex items-center gap-3 text-xl">
-                      <Clock className="w-5 h-5 text-orange-400" />
-                      Interactive Transfer Race
-                    </CardTitle>
-                    <p className="text-zinc-400 text-sm">Watch $50,000 travel from New York to London - see the complexity difference</p>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    {!speedRaceActive && (
+            {/* Compact HODL Challenge Simulator */}
+            {isPremiumTier && simulationsSubTab === "hodl" && (
                       <div className="text-center space-y-4">
                         <div className="p-6 bg-zinc-800 rounded-lg border border-zinc-700">
                           <h3 className="text-lg font-medium text-white mb-3">Transfer Scenario</h3>
