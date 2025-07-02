@@ -25,6 +25,17 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+    
+    // For production, try to clear localStorage cache issues
+    if (typeof window !== 'undefined') {
+      try {
+        // Clear any corrupted cache
+        localStorage.removeItem('react-query-offline-cache');
+        localStorage.removeItem('vite-plugin-pwa:update-available');
+      } catch (e) {
+        // Ignore localStorage errors
+      }
+    }
   }
 
   render() {
