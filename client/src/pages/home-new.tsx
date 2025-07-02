@@ -3555,7 +3555,7 @@ export default function Home() {
                               <div className="flex justify-between text-xs">
                                 <span className={isActive ? 'text-orange-300' : 'text-zinc-500'}>Bitcoin</span>
                                 <span className={isActive ? 'text-orange-200 font-bold' : 'text-zinc-500'}>
-                                  ${btc.toLocaleString()}
+                                  ${btc >= 1000000 ? `${(btc/1000000).toFixed(1)}M` : btc.toLocaleString()}
                                 </span>
                               </div>
                               <div className="bg-zinc-700 rounded-full h-1.5 overflow-hidden">
