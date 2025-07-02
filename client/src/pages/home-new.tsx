@@ -3516,7 +3516,8 @@ export default function Home() {
                         { step: 2, year: "5 years", savings: 21467, btc: 76294, narrative: "Scarcity effect emerges" },
                         { step: 3, year: "10 years", savings: 18435, btc: 232831, narrative: "Fixed supply advantage" },
                         { step: 4, year: "15 years", savings: 15825, btc: 710543, narrative: "Compound growth accelerates" },
-                        { step: 5, year: "25 years", savings: 11675, btc: 6617445, narrative: "Long-term scarcity rewards" }
+                        { step: 5, year: "20 years", savings: 13595, btc: 2168405, narrative: "Exponential effect builds" },
+                        { step: 6, year: "25 years", savings: 11675, btc: 6617445, narrative: "Long-term scarcity rewards" }
                       ].map(({ step, year, savings, btc, narrative }) => {
                         const isActive = inflationProgress >= step;
                         
@@ -3572,7 +3573,7 @@ export default function Home() {
                     </div>
                     
                     {/* Historical Performance Summary */}
-                    {inflationProgress >= 5 && (
+                    {inflationProgress >= 6 && (
                       <div className="space-y-3 p-4 bg-zinc-800/30 rounded-lg border border-orange-400/20">
                         <div className="text-center">
                           <div className="text-orange-400 font-bold text-sm mb-2">The 25-Year Conservative Projection</div>
