@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { useEffect, useState, Component, ReactNode } from "react";
-import HomeDashboard from "@/pages/home-dashboard";
 import Home from "@/pages/home-new";
 import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
@@ -95,7 +94,7 @@ function OnboardingRedirect() {
     }
   }, [setLocation]);
 
-  return <HomeDashboard />;
+  return <Home />;
 }
 
 function ScrollToTop() {
@@ -121,22 +120,22 @@ function Router() {
         </Route>
         <Route path="/learn">
           <AuthGuard>
-            <HomeDashboard />
+            <Home />
           </AuthGuard>
         </Route>
         <Route path="/money">
           <AuthGuard>
-            <HomeDashboard />
+            <Home />
           </AuthGuard>
         </Route>
         <Route path="/simulators">
           <AuthGuard>
-            <HomeDashboard />
+            <Home />
           </AuthGuard>
         </Route>
         <Route path="/more">
           <AuthGuard>
-            <HomeDashboard />
+            <Home />
           </AuthGuard>
         </Route>
         <Route path="/about">
