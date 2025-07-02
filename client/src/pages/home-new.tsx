@@ -485,7 +485,7 @@ export default function Home() {
     // Define correct answers for each scenario (0-based index)
     const correctAnswers: { [key: number]: number } = {
       1: 2, 2: 1, 3: 1, 4: 2, 5: 0, 6: 1, 7: 1, 8: 1, 
-      9: 3, 10: 1, 11: 1, 12: 2, 13: 2, 14: 1, 15: 2, 16: 2
+      9: 3, 10: 2, 11: 1, 12: 2, 13: 2, 14: 1, 15: 2, 16: 2
     };
     
     const correctIndex = correctAnswers[securityTestStage] || 0;
