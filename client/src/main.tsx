@@ -3,8 +3,8 @@ import App from "./App";
 import SimpleApp from "./simple";
 import "./index.css";
 
-// Use simple app in production for testing
-const AppToRender = import.meta.env.PROD ? SimpleApp : App;
+// Use the full app for production
+const AppToRender = App;
 
 // Global error handling for production debugging
 window.addEventListener('error', (event) => {
