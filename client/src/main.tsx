@@ -3,8 +3,8 @@ import App from "./App";
 import MinimalApp from "./minimal";
 import "./index.css";
 
-// Use minimal app for production deployment to avoid bundle size issues
-const AppToRender = import.meta.env.PROD ? MinimalApp : App;
+// Always use full app - let's test if the issue is the conditional loading
+const AppToRender = App;
 
 // Global error handling for production debugging
 window.addEventListener('error', (event) => {
