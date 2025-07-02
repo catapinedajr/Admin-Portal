@@ -9,7 +9,7 @@ export default function Onboarding() {
 
   const handleStartLearning = () => {
     localStorage.setItem('hodlearn-onboarding-completed', 'true');
-    setLocation('/');
+    setLocation('/money');
   };
 
   return (
