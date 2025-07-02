@@ -412,10 +412,16 @@ export class DatabaseStorage implements IStorage {
     const user = await this.getUser(userId);
     if (!user) return 1;
 
-    // Calculate current calendar day since user joined
+    // Calculate current calendar day since user joined using proper date arithmetic
     const now = new Date();
     const userStartDate = new Date(user.createdAt);
-    const daysSinceJoined = Math.floor((now.getTime() - userStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    
+    // Set both dates to start of day for accurate day counting
+    const userStartDay = new Date(userStartDate.getFullYear(), userStartDate.getMonth(), userStartDate.getDate());
+    const currentDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    const daysDifference = Math.floor((currentDay.getTime() - userStartDay.getTime()) / (1000 * 60 * 60 * 24));
+    const daysSinceJoined = daysDifference + 1;
     
     // Cap at maximum available content
     const lastAvailableDay = await db.select({ dayIndex: contentDays.dayIndex })
@@ -451,10 +457,16 @@ export class DatabaseStorage implements IStorage {
     const user = await this.getUser(userId);
     if (!user) return false;
 
-    // Calculate current calendar day since user joined
+    // Calculate current calendar day since user joined using proper date arithmetic
     const now = new Date();
     const userStartDate = new Date(user.createdAt);
-    const daysSinceJoined = Math.floor((now.getTime() - userStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    
+    // Set both dates to start of day for accurate day counting
+    const userStartDay = new Date(userStartDate.getFullYear(), userStartDate.getMonth(), userStartDate.getDate());
+    const currentDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    const daysDifference = Math.floor((currentDay.getTime() - userStartDay.getTime()) / (1000 * 60 * 60 * 24));
+    const daysSinceJoined = daysDifference + 1;
     
     // User can ONLY access their exact current calendar day - no past or future
     return dayIndex === daysSinceJoined;
