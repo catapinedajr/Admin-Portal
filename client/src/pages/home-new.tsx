@@ -489,17 +489,17 @@ export default function Home() {
   const getSecurityExplanation = (stage: number, isCorrect: boolean): string => {
     const explanations = {
       1: isCorrect 
-        ? "Correct! All these elements make this email highly suspicious. Bitcoin is decentralized with no customer support team."
-        : "This email shows multiple red flags: suspicious domain, false urgency, and claiming Bitcoin has customer support when it doesn't.",
+        ? "Smart move! You recognized the scam. Bitcoin has no central authority or customer support - anyone claiming to represent 'Bitcoin' is lying. Your 0.5 BTC stays safe."
+        : "Oh no! That email was a phishing attempt. The domain, urgency tactics, and fake Bitcoin support claims are classic scammer tricks. Your Bitcoin could have been stolen.",
       2: isCorrect
-        ? "Correct! Paper storage in a secure location is the safest method. Digital storage can be hacked or lost."
-        : "Never store seed phrases digitally. Screenshots, cloud storage, and emails can all be compromised by hackers.",
+        ? "Excellent choice! Your paper backup in a fireproof safe protects your 2.5 BTC from hackers, device failures, and fires. You're prepared for any scenario."
+        : "Risky decision! Digital storage can be hacked, corrupted, or accessed by others. Your 2.5 BTC could disappear if those files are compromised or lost.",
       3: isCorrect
         ? "Correct! Always verify the entire address. Bitcoin transactions are irreversible, so accuracy is critical."
         : "Always verify the complete address character by character. Malware can change addresses during copy-paste.",
       4: isCorrect
-        ? "Correct! Bitcoin has no customer support. Anyone claiming to be 'Bitcoin support' is always a scammer."
-        : "Bitcoin is decentralized with no customer support team. Anyone asking for your seed phrase is a scammer.",
+        ? "Perfect! You hung up on a scammer. Bitcoin has no customer support because it's decentralized. Your 1.2 BTC remains secure because you recognized the social engineering attempt."
+        : "Danger! That was a social engineering scam. Bitcoin has no customer support team. Anyone asking for your seed phrase is trying to steal your 1.2 BTC.",
       5: isCorrect
         ? "Correct! Hardware wallets provide the best security for long-term storage while keeping some on exchange for convenience."
         : "Exchanges can be hacked or go bankrupt. Move most funds to a hardware wallet for long-term security.",
@@ -5537,41 +5537,42 @@ export default function Home() {
                     ) : (
                       /* Security Skills Test */
                       <div className="space-y-6">
-                        {/* Test Introduction */}
+                        {/* Simulation Introduction */}
                         {securityTestStage === 0 && (
                           <div className="text-center space-y-4">
                             <div className="p-6 rounded-lg border border-zinc-700 bg-zinc-800/50">
                               <Shield className="w-12 h-12 text-orange-400 mx-auto mb-4" />
-                              <h4 className="text-xl font-bold text-white mb-2">Bitcoin Security Skills Test</h4>
+                              <h4 className="text-xl font-bold text-white mb-2">Bitcoin Security Simulator</h4>
                               <p className="text-zinc-300 mb-4">
-                                Test your ability to identify and handle real Bitcoin security threats. 
-                                This assessment covers the most common risks Bitcoin users face.
+                                Experience real Bitcoin security scenarios and see the consequences of your decisions. 
+                                Navigate through 12 authentic situations that Bitcoin users face daily.
                               </p>
                               <div className="text-sm text-zinc-400 mb-4">
-                                • 12 real-world scenarios
-                                • Multiple choice questions
-                                • Immediate feedback on each answer
+                                • 12 immersive scenarios
+                                • Real-world decision making
+                                • See consequences of your choices
+                                • Learn from realistic outcomes
                               </div>
                               <Button 
                                 onClick={() => setSecurityTestStage(1)}
                                 className="bg-orange-600 hover:bg-orange-700 text-white"
                               >
-                                Start Security Test
+                                Begin Simulation
                               </Button>
                             </div>
                           </div>
                         )}
 
-                        {/* Test Questions */}
+                        {/* Simulation Scenarios */}
                         {securityTestStage > 0 && securityTestStage <= 12 && (
                           <div className="space-y-4">
                             {/* Progress Header */}
                             <div className="flex justify-between items-center">
                               <h4 className="text-lg font-semibold text-white">
-                                Question {securityTestStage} of 12
+                                Scenario {securityTestStage} of 12
                               </h4>
                               <div className="text-sm text-zinc-400">
-                                Score: {securityScore}/{securityTestStage - 1}
+                                Safe Choices: {securityScore}/{securityTestStage - 1}
                               </div>
                             </div>
 
@@ -5588,25 +5589,46 @@ export default function Home() {
                               <CardContent className="p-6">
                                 {securityTestStage === 1 && (
                                   <div className="space-y-4">
-                                    <h5 className="text-lg font-semibold text-white">Phishing Email Detection</h5>
-                                    <p className="text-zinc-300">
-                                      You receive this email. Which element makes it most suspicious?
-                                    </p>
-                                    <div className="p-4 bg-zinc-900 rounded border border-zinc-600">
-                                      <div className="text-sm space-y-2">
-                                        <div><strong>From:</strong> security@bitcoin-wallet.com</div>
-                                        <div><strong>Subject:</strong> URGENT: Verify Your Wallet Now</div>
-                                        <div className="text-zinc-300 mt-2">
-                                          "Your Bitcoin wallet has been compromised. Click here immediately to secure your funds: 
-                                          bitcoin-security-check.net/verify"
+                                    <div className="flex items-center gap-3 mb-4">
+                                      <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                        <span className="text-orange-400 text-sm">📧</span>
+                                      </div>
+                                      <div>
+                                        <h5 className="text-lg font-semibold text-white">The Urgent Email</h5>
+                                        <p className="text-zinc-400 text-sm">Monday morning, 8:47 AM</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                                      <p className="text-zinc-300 mb-3">
+                                        You're checking emails over coffee when this message catches your attention:
+                                      </p>
+                                      <div className="p-3 bg-red-950/30 rounded border border-red-800/50">
+                                        <div className="text-sm space-y-1">
+                                          <div><strong className="text-red-400">From:</strong> security@bitcoin-wallet.com</div>
+                                          <div><strong className="text-red-400">Subject:</strong> URGENT: Verify Your Wallet Now</div>
+                                          <div className="text-zinc-300 mt-2 text-xs">
+                                            "Your Bitcoin wallet has been compromised. Unauthorized access detected. 
+                                            Click here immediately to secure your funds: bitcoin-security-check.net/verify"
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
+
+                                    <p className="text-zinc-300 text-sm">
+                                      Your heart rate increases. You have 0.5 BTC in your wallet. What do you do?
+                                    </p>
+
                                     <div className="space-y-2">
-                                      {['Domain name is suspicious', 'Creates false urgency', 'Bitcoin has no central authority', 'All of the above'].map((option, index) => (
+                                      {[
+                                        'Click the link immediately - my Bitcoin could be stolen!',
+                                        'Check the sender domain more carefully first',
+                                        'Ignore it - Bitcoin has no customer support team',
+                                        'Forward it to friends to warn them'
+                                      ].map((option, index) => (
                                         <button
                                           key={index}
-                                          onClick={() => handleSecurityAnswer(index, 3)}
+                                          onClick={() => handleSecurityAnswer(index, 2)}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -5622,12 +5644,50 @@ export default function Home() {
 
                                 {securityTestStage === 2 && (
                                   <div className="space-y-4">
-                                    <h5 className="text-lg font-semibold text-white">Seed Phrase Security</h5>
-                                    <p className="text-zinc-300">
-                                      What's the safest way to store your 12-word seed phrase?
+                                    <div className="flex items-center gap-3 mb-4">
+                                      <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                        <span className="text-orange-400 text-sm">🔐</span>
+                                      </div>
+                                      <div>
+                                        <h5 className="text-lg font-semibold text-white">New Wallet Setup</h5>
+                                        <p className="text-zinc-400 text-sm">Your first hardware wallet</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                                      <p className="text-zinc-300 mb-3">
+                                        Congratulations! Your new hardware wallet has generated your recovery phrase. 
+                                        The device shows these 12 words on screen:
+                                      </p>
+                                      <div className="p-3 bg-green-950/30 rounded border border-green-800/50">
+                                        <div className="text-sm text-center grid grid-cols-3 gap-2">
+                                          <span className="text-green-400">1. mountain</span>
+                                          <span className="text-green-400">2. forest</span>
+                                          <span className="text-green-400">3. library</span>
+                                          <span className="text-green-400">4. ocean</span>
+                                          <span className="text-green-400">5. sunset</span>
+                                          <span className="text-green-400">6. garden</span>
+                                          <span className="text-green-400">7. whisper</span>
+                                          <span className="text-green-400">8. thunder</span>
+                                          <span className="text-green-400">9. crystal</span>
+                                          <span className="text-green-400">10. journey</span>
+                                          <span className="text-green-400">11. freedom</span>
+                                          <span className="text-green-400">12. wisdom</span>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <p className="text-zinc-300 text-sm">
+                                      These words are your master key to 2.5 BTC. If lost, your Bitcoin is gone forever. How do you store them?
                                     </p>
+
                                     <div className="space-y-2">
-                                      {['Screenshot on your phone', 'Write on paper and store securely', 'Save in cloud storage', 'Email it to yourself'].map((option, index) => (
+                                      {[
+                                        'Quick screenshot - easy and accessible',
+                                        'Write on paper, store in fireproof safe',
+                                        'Save in Google Drive for backup',
+                                        'Email them to myself for safekeeping'
+                                      ].map((option, index) => (
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index, 1)}
@@ -5670,12 +5730,43 @@ export default function Home() {
 
                                 {securityTestStage === 4 && (
                                   <div className="space-y-4">
-                                    <h5 className="text-lg font-semibold text-white">Social Engineering</h5>
-                                    <p className="text-zinc-300">
-                                      "Bitcoin Support" contacts you asking for your seed phrase to "secure your account." What do you do?
+                                    <div className="flex items-center gap-3 mb-4">
+                                      <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                        <span className="text-orange-400 text-sm">📞</span>
+                                      </div>
+                                      <div>
+                                        <h5 className="text-lg font-semibold text-white">The Unexpected Call</h5>
+                                        <p className="text-zinc-400 text-sm">Wednesday, 2:34 PM</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                                      <p className="text-zinc-300 mb-3">
+                                        Your phone rings. The caller ID shows a professional number. A friendly voice says:
+                                      </p>
+                                      <div className="p-3 bg-blue-950/30 rounded border border-blue-800/50">
+                                        <div className="text-sm italic text-blue-300">
+                                          "Hello! This is Alex from Bitcoin Security Services. We've detected suspicious activity 
+                                          on your wallet address. To secure your funds, I need to verify your recovery phrase. 
+                                          Can you read me your 12 words so we can activate enhanced protection?"
+                                        </div>
+                                      </div>
+                                      <p className="text-zinc-400 text-xs mt-2">
+                                        They sound professional and know you have Bitcoin. Your wallet contains 1.2 BTC.
+                                      </p>
+                                    </div>
+
+                                    <p className="text-zinc-300 text-sm">
+                                      This sounds urgent and legitimate. What's your response?
                                     </p>
+
                                     <div className="space-y-2">
-                                      {['Provide the seed phrase immediately', 'Ask for their credentials first', 'Ignore completely - Bitcoin has no customer support', 'Send half the words to verify they\'re real'].map((option, index) => (
+                                      {[
+                                        'Give them the words - they sound official',
+                                        'Ask for their company credentials and website',
+                                        'Hang up immediately - Bitcoin has no support team',
+                                        'Give them half the words to test if they\'re real'
+                                      ].map((option, index) => (
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index, 2)}
@@ -5929,41 +6020,41 @@ export default function Home() {
                           </div>
                         )}
 
-                        {/* Test Results */}
+                        {/* Simulation Results */}
                         {securityTestStage === 13 && (
                           <div className="text-center space-y-6">
                             <div className="p-6 rounded-lg border border-zinc-700 bg-zinc-800/50">
                               {securityScore >= 10 ? (
                                 <div>
                                   <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-4" />
-                                  <h4 className="text-xl font-bold text-white mb-2">Bitcoin Security Expert</h4>
+                                  <h4 className="text-xl font-bold text-white mb-2">Security Master</h4>
                                   <p className="text-zinc-300 mb-3">
-                                    Score: {securityScore}/12 ({Math.round((securityScore/12)*100)}%)
+                                    Safe Decisions: {securityScore}/12 ({Math.round((securityScore/12)*100)}%)
                                   </p>
                                   <p className="text-zinc-300 text-sm">
-                                    Excellent! You have strong security knowledge and can safely handle Bitcoin.
+                                    Outstanding! You navigated dangerous situations like a pro. Your Bitcoin would be safe in the real world.
                                   </p>
                                 </div>
                               ) : securityScore >= 8 ? (
                                 <div>
                                   <AlertTriangle className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
-                                  <h4 className="text-xl font-bold text-white mb-2">Good Security Awareness</h4>
+                                  <h4 className="text-xl font-bold text-white mb-2">Good Security Instincts</h4>
                                   <p className="text-zinc-300 mb-3">
-                                    Score: {securityScore}/12 ({Math.round((securityScore/12)*100)}%)
+                                    Safe Decisions: {securityScore}/12 ({Math.round((securityScore/12)*100)}%)
                                   </p>
                                   <p className="text-zinc-300 text-sm">
-                                    You understand most security basics. Review the areas you missed before handling large amounts.
+                                    You avoided most traps! Review the scenarios you missed - those situations could cost you Bitcoin.
                                   </p>
                                 </div>
                               ) : (
                                 <div>
                                   <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-                                  <h4 className="text-xl font-bold text-white mb-2">More Study Needed</h4>
+                                  <h4 className="text-xl font-bold text-white mb-2">High Risk Profile</h4>
                                   <p className="text-zinc-300 mb-3">
-                                    Score: {securityScore}/12 ({Math.round((securityScore/12)*100)}%)
+                                    Safe Decisions: {securityScore}/12 ({Math.round((securityScore/12)*100)}%)
                                   </p>
                                   <p className="text-zinc-300 text-sm">
-                                    Study Bitcoin security fundamentals before handling real Bitcoin. Practice with small amounts first.
+                                    You fell for several scams in this simulation. Study Bitcoin security before risking real money.
                                   </p>
                                 </div>
                               )}
@@ -5980,7 +6071,7 @@ export default function Home() {
                                 variant="outline"
                                 className="border-zinc-600 text-white"
                               >
-                                Retake Test
+                                Run New Simulation
                               </Button>
                             </div>
                           </div>
