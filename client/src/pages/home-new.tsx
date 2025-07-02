@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -361,7 +361,7 @@ type LearnSubTab = "today" | "reference";
 type SimulationsSubTab = "wallet" | "safety" | "transactions" | "transfer" | "hodl" | "dca" | "inflation" | "fees";
 type MoreSubTab = "store" | "about";
 
-export default function Home() {
+function Home() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { isPremiumTier, setSubscriptionTier } = useSubscription();
@@ -9754,3 +9754,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default memo(Home);
