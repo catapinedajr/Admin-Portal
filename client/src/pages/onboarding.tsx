@@ -9,11 +9,6 @@ export default function Onboarding() {
 
   const handleStartLearning = () => {
     localStorage.setItem('hodlearn-onboarding-completed', 'true');
-    setLocation('/money');
-  };
-
-  const handleSkip = () => {
-    localStorage.setItem('hodlearn-onboarding-completed', 'true');
     setLocation('/');
   };
 
@@ -23,51 +18,35 @@ export default function Onboarding() {
         <Card className="bg-zinc-900 border-zinc-800">
           <CardContent className="p-8 text-center">
             {/* HODLearn Logo */}
-            <div className="mb-8">
-              <div className="w-24 h-24 bg-orange-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Bitcoin className="w-12 h-12 text-orange-400" />
+            <div className="mb-10">
+              <div className="w-20 h-20 bg-orange-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Bitcoin className="w-10 h-10 text-orange-400" />
               </div>
-              <h1 className="text-4xl font-bold text-white mb-4">
-                Welcome to HODLearn
+              <h1 className="text-3xl font-bold text-white mb-3">
+                Ready to Start Your Bitcoin Journey?
               </h1>
               <p className="text-zinc-400 text-lg">
-                Master Bitcoin through easy daily 5-minute lessons
+                Learn Bitcoin fundamentals through daily lessons designed for complete beginners.
               </p>
             </div>
 
-            {/* Value Proposition */}
-            <div className="space-y-6 mb-8">
-              <div className="bg-zinc-800/50 rounded-lg p-6">
-                <div className="text-lg space-y-2">
-                  <div className="text-zinc-300">Understanding Bitcoin takes time</div>
-                  <div className="text-zinc-300">Building conviction takes consistency</div>
-                  <div className="text-orange-400 font-semibold text-xl">This is HODLearn</div>
-                </div>
+            {/* Simple Value Proposition */}
+            <div className="mb-10">
+              <div className="bg-zinc-800/50 rounded-lg p-6 space-y-3">
+                <div className="text-zinc-300">Understanding Bitcoin takes time</div>
+                <div className="text-zinc-300">Building conviction takes consistency</div>
+                <div className="text-orange-400 font-semibold">This is HODLearn</div>
               </div>
-              
-              <p className="text-zinc-300 text-base">
-                Join thousands learning Bitcoin through our structured 180-day journey. 
-                Start with why Bitcoin matters, then build deep knowledge step by step.
-              </p>
             </div>
 
-            {/* Action Buttons */}
-            <div className="space-y-3">
-              <Button
-                onClick={handleStartLearning}
-                className="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 text-lg font-semibold"
-              >
-                Start Learning
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-              
-              <button 
-                onClick={handleSkip}
-                className="text-zinc-400 hover:text-zinc-300 text-sm underline"
-              >
-                Skip to dashboard
-              </button>
-            </div>
+            {/* Action Button */}
+            <Button
+              onClick={handleStartLearning}
+              className="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 text-lg font-semibold"
+            >
+              Begin Your Journey
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
           </CardContent>
         </Card>
       </div>
