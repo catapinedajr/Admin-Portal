@@ -3512,11 +3512,11 @@ export default function Home() {
                     <div className="space-y-2">
                       {[
                         { step: 0, year: "Today", savings: 25000, btc: 25000, narrative: "Both start equal" },
-                        { step: 1, year: "2 years", savings: 23500, btc: 39063, narrative: "Conservative growth begins" },
-                        { step: 2, year: "5 years", savings: 21562, btc: 76294, narrative: "Scarcity effect emerges" },
-                        { step: 3, year: "8 years", savings: 19685, btc: 148698, narrative: "Compound growth accelerates" },
-                        { step: 4, year: "10 years", savings: 18584, btc: 232831, narrative: "Fixed supply advantage" },
-                        { step: 5, year: "25 years", savings: 17543, btc: 6617450, narrative: "Long-term scarcity rewards" }
+                        { step: 1, year: "2 years", savings: 23523, btc: 39063, narrative: "Conservative growth begins" },
+                        { step: 2, year: "5 years", savings: 21467, btc: 76294, narrative: "Scarcity effect emerges" },
+                        { step: 3, year: "10 years", savings: 18435, btc: 232831, narrative: "Fixed supply advantage" },
+                        { step: 4, year: "15 years", savings: 15825, btc: 710543, narrative: "Compound growth accelerates" },
+                        { step: 5, year: "25 years", savings: 11675, btc: 6617445, narrative: "Long-term scarcity rewards" }
                       ].map(({ step, year, savings, btc, narrative }) => {
                         const isActive = inflationProgress >= step;
                         
@@ -3579,8 +3579,8 @@ export default function Home() {
                           <div className="grid grid-cols-2 gap-4 text-xs">
                             <div className="text-center">
                               <div className="text-red-400 font-medium">Traditional Savings</div>
-                              <div className="text-red-300 text-lg font-bold">$17,543</div>
-                              <div className="text-red-400">Lost 30% to inflation</div>
+                              <div className="text-red-300 text-lg font-bold">$11,675</div>
+                              <div className="text-red-400">Lost 53% to inflation</div>
                             </div>
                             <div className="text-center">
                               <div className="text-orange-400 font-medium">Conservative Bitcoin</div>
