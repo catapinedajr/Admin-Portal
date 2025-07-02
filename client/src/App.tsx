@@ -7,6 +7,10 @@ import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { useEffect, useState } from "react";
 import HomeDashboard from "@/pages/home-dashboard";
 import Home from "@/pages/home-simple";
+import Learn from "@/pages/learn";
+import Finance from "@/pages/finance";
+import Simulators from "@/pages/simulators";
+import More from "@/pages/more";
 import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
 import NotFound from "@/pages/not-found";
@@ -80,22 +84,22 @@ function Router() {
         </Route>
         <Route path="/learn">
           <AuthGuard>
-            <Home />
+            <Learn />
           </AuthGuard>
         </Route>
-        <Route path="/money">
+        <Route path="/finance">
           <AuthGuard>
-            <Home />
+            <Finance />
           </AuthGuard>
         </Route>
         <Route path="/simulators">
           <AuthGuard>
-            <Home />
+            <Simulators />
           </AuthGuard>
         </Route>
         <Route path="/more">
           <AuthGuard>
-            <Home />
+            <More />
           </AuthGuard>
         </Route>
         <Route path="/about">
