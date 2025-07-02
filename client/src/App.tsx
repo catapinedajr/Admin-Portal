@@ -23,7 +23,28 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     const user = localStorage.getItem('hodlearn_user');
     
     if (!sessionId || !user) {
-      // Not authenticated, redirect to auth
+      // DEVELOPMENT MODE: Auto-login test user for immediate preview access
+      if (process.env.NODE_ENV === 'development' || window.location.hostname === 'localhost') {
+        // Create a test user session for development
+        const testUser = {
+          id: 1,
+          username: 'test_user',
+          email: 'test@example.com',
+          firstName: 'Bitcoin',
+          lastName: 'Learner',
+          currentStreak: 1,
+          bestStreak: 3,
+          totalDaysLearning: 5
+        };
+        const testSession = 'dev_session_' + Date.now();
+        
+        localStorage.setItem('hodlearn_user', JSON.stringify(testUser));
+        localStorage.setItem('hodlearn_session', testSession);
+        setIsAuthenticated(true);
+        return;
+      }
+      
+      // Production mode: redirect to auth
       setLocation('/auth');
       return;
     }
