@@ -519,8 +519,8 @@ export default function Home() {
         ? "Extremely high fees ($50 for $100) suggest your wallet may be compromised or configured incorrectly."
         : "Normal Bitcoin fees are much lower. A 50% fee suggests your wallet is compromised or misconfigured.",
       11: isCorrect
-        ? "Correct! Legitimate recovery services don't ask for payment upfront. This is a common scam."
-        : "Recovery scams are common. Legitimate services don't require Bitcoin payment upfront or take percentages.",
+        ? "Exactly right! All Bitcoin recovery services are scams. Only you can recover your Bitcoin using your seed phrase. No one else can help you - that's how Bitcoin is designed."
+        : "All Bitcoin recovery services are scams! Only you can recover your Bitcoin with your seed phrase. If you don't have your seed phrase, your Bitcoin is permanently lost.",
       12: isCorrect
         ? "Correct! 100% returns in a week is impossible and a classic Ponzi scheme red flag."
         : "Promising to double money in a week is a classic Ponzi scheme. No legitimate investment offers 100% weekly returns."
@@ -5186,10 +5186,19 @@ export default function Home() {
                                   </div>
                                   <div className="p-2 sm:p-3 bg-zinc-800 rounded border border-dashed border-zinc-500 mb-3">
                                     <div className="text-xs text-zinc-500 mb-2">Your Seed Phrase:</div>
-                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 sm:gap-2 text-xs text-orange-300 font-mono">
-                                      <span>1. abandon</span><span>2. ability</span><span>3. able</span><span>4. about</span>
-                                      <span>5. above</span><span>6. absent</span><span>7. absorb</span><span>8. abstract</span>
-                                      <span>9. absurd</span><span>10. abuse</span><span>11. access</span><span>12. accident</span>
+                                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-1 text-xs text-orange-300 font-mono">
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">1. abandon</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">2. ability</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">3. able</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">4. about</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">5. above</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">6. absent</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">7. absorb</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">8. abstract</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">9. absurd</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">10. abuse</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">11. access</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">12. accident</div>
                                     </div>
                                   </div>
                                   <div className="space-y-2">
@@ -5964,15 +5973,46 @@ export default function Home() {
 
                                 {securityTestStage === 10 && (
                                   <div className="space-y-4">
-                                    <h5 className="text-lg font-semibold text-white">Transaction Fees</h5>
-                                    <p className="text-zinc-300">
-                                      You're sending $100 of Bitcoin and the fee is $50. What should you do?
+                                    <div className="flex items-center gap-3 mb-4">
+                                      <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                        <span className="text-orange-400 text-sm">💸</span>
+                                      </div>
+                                      <div>
+                                        <h5 className="text-lg font-semibold text-white">Suspicious Fees</h5>
+                                        <p className="text-zinc-400 text-sm">Making a routine payment</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                                      <p className="text-zinc-300 mb-3">
+                                        You're trying to send $100 worth of Bitcoin to pay for something. Your wallet shows the transaction details:
+                                      </p>
+                                      <div className="p-3 bg-red-950/30 rounded border border-red-800/50">
+                                        <div className="text-sm space-y-1">
+                                          <div className="text-white"><strong>Amount:</strong> $100.00</div>
+                                          <div className="text-red-400"><strong>Network Fee:</strong> $47.50</div>
+                                          <div className="text-white"><strong>Total:</strong> $147.50</div>
+                                        </div>
+                                      </div>
+                                      <p className="text-zinc-400 text-xs mt-2">
+                                        This fee seems unusually high. Normal Bitcoin fees are typically $1-5.
+                                      </p>
+                                    </div>
+
+                                    <p className="text-zinc-300 text-sm">
+                                      What's your immediate response to this suspicious fee?
                                     </p>
+
                                     <div className="space-y-2">
-                                      {['Pay the fee - fees are normal', 'Wait for fees to drop', 'Use a different wallet', 'Check if your wallet is compromised'].map((option, index) => (
+                                      {[
+                                        'Pay it anyway - fees fluctuate',
+                                        'Wait a few hours for fees to normalize', 
+                                        'Stop using this wallet immediately - possible malware',
+                                        'Try lowering the priority to reduce fees'
+                                      ].map((option, index) => (
                                         <button
                                           key={index}
-                                          onClick={() => handleSecurityAnswer(index, 3)}
+                                          onClick={() => handleSecurityAnswer(index, 2)}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -5988,12 +6028,43 @@ export default function Home() {
 
                                 {securityTestStage === 11 && (
                                   <div className="space-y-4">
-                                    <h5 className="text-lg font-semibold text-white">Recovery Scams</h5>
-                                    <p className="text-zinc-300">
-                                      You lost your wallet. Someone offers to "recover" it for 50% of your Bitcoin. What do you do?
+                                    <div className="flex items-center gap-3 mb-4">
+                                      <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                        <span className="text-orange-400 text-sm">🎣</span>
+                                      </div>
+                                      <div>
+                                        <h5 className="text-lg font-semibold text-white">Recovery Scam</h5>
+                                        <p className="text-zinc-400 text-sm">Lost access to your Bitcoin</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                                      <p className="text-zinc-300 mb-3">
+                                        Your computer crashed and you lost access to your Bitcoin wallet. You're panicking because 
+                                        you think you might have lost 2.5 BTC forever.
+                                      </p>
+                                      <div className="p-3 bg-blue-950/30 rounded border border-blue-800/50">
+                                        <div className="text-sm">
+                                          <div className="text-blue-400 font-medium mb-1">Email from "BitcoinRecovery.com":</div>
+                                          <div className="text-zinc-300 text-xs">
+                                            "We specialize in recovering lost Bitcoin. Our experts can restore your wallet 
+                                            for just 30% of the recovered amount. We've helped thousands of people get their Bitcoin back!"
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <p className="text-zinc-300 text-sm">
+                                      What's the truth about Bitcoin "recovery services"?
                                     </p>
+
                                     <div className="space-y-2">
-                                      {['Accept - 50% is better than 0%', 'Negotiate for a lower percentage', 'Refuse - legitimate recovery doesn\'t require payment', 'Ask for credentials first'].map((option, index) => (
+                                      {[
+                                        'They\'re legitimate - 30% is reasonable for expert help',
+                                        'Shop around for a better rate - try to negotiate lower',
+                                        'All Bitcoin recovery services are scams - only you can recover with your seed phrase',
+                                        'Ask for proof of their previous successful recoveries'
+                                      ].map((option, index) => (
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index, 2)}
