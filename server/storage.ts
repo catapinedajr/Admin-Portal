@@ -408,11 +408,29 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getNextAvailableDay(userId: number): Promise<number> {
-    // Get all completed days for this user
+    // Get user's account creation date to determine their personal Day 1
+    const user = await this.getUser(userId);
+    if (!user) return 1;
+
+    // Calculate days since user joined (their personal curriculum day)
+    const now = new Date();
+    const userStartDate = new Date(user.createdAt);
+    const daysSinceJoined = Math.floor((now.getTime() - userStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    
+    // Cap at maximum available content
+    const lastAvailableDay = await db.select({ dayIndex: contentDays.dayIndex })
+      .from(contentDays)
+      .orderBy(desc(contentDays.dayIndex))
+      .limit(1);
+    
+    const maxAvailableDay = lastAvailableDay[0]?.dayIndex || 1;
+    const calendarBasedDay = Math.min(daysSinceJoined, maxAvailableDay);
+    
+    // Get completed days to see current progress
     const completedDays = await this.getCompletedDays(userId);
     
-    // Find the first incomplete day starting from 1
-    for (let day = 1; day <= 180; day++) {
+    // If user is behind (hasn't completed previous days), return earliest incomplete day
+    for (let day = 1; day < calendarBasedDay; day++) {
       if (!completedDays.includes(day)) {
         // Check if content exists for this day
         const hasContent = await db.select({ id: contentDays.id })
@@ -426,26 +444,38 @@ export class DatabaseStorage implements IStorage {
       }
     }
     
-    // If all available days are complete, return the last available day
-    const lastAvailableDay = await db.select({ dayIndex: contentDays.dayIndex })
+    // Return current calendar day (if content exists)
+    const hasContent = await db.select({ id: contentDays.id })
       .from(contentDays)
-      .orderBy(desc(contentDays.dayIndex))
+      .where(eq(contentDays.dayIndex, calendarBasedDay))
       .limit(1);
     
-    return lastAvailableDay[0]?.dayIndex || 1;
+    return hasContent.length > 0 ? calendarBasedDay : 1;
   }
 
   async canAccessDay(userId: number, dayIndex: number): Promise<boolean> {
     // Must be positive day index
     if (dayIndex < 1) return false;
     
-    // Check if content exists for this day by checking content_days table
+    // Check if content exists for this day
     const hasContent = await db.select({ id: contentDays.id })
       .from(contentDays)
       .where(eq(contentDays.dayIndex, dayIndex))
       .limit(1);
     
-    return hasContent.length > 0;
+    if (hasContent.length === 0) return false;
+    
+    // Get user's account creation date to determine calendar-based access
+    const user = await this.getUser(userId);
+    if (!user) return false;
+
+    // Calculate days since user joined
+    const now = new Date();
+    const userStartDate = new Date(user.createdAt);
+    const daysSinceJoined = Math.floor((now.getTime() - userStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    
+    // User can access days up to their current calendar day
+    return dayIndex <= daysSinceJoined;
   }
 
   async getCompletedDays(userId: number): Promise<number[]> {
