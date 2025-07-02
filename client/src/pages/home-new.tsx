@@ -495,8 +495,8 @@ export default function Home() {
         ? "Excellent choice! Your paper backup in a fireproof safe protects your 2.5 BTC from hackers, device failures, and fires. You're prepared for any scenario."
         : "Risky decision! Digital storage can be hacked, corrupted, or accessed by others. Your 2.5 BTC could disappear if those files are compromised or lost.",
       3: isCorrect
-        ? "Sharp eye! You caught the missing 'l' at the end - classic address poisoning attack. Your 1.5 BTC stays safe because you verified every character."
-        : "Disaster! You missed the subtle difference and sent $60,000 to a scammer's address. Address poisoning attacks rely on people not checking every character.",
+        ? "Smart choice! You spotted that the addresses are different. Address poisoning attacks change just one character to steal funds. Your $60,000 stays safe."
+        : "Disaster! You missed the subtle difference and sent $60,000 to a scammer's address. Bitcoin addresses must match exactly - even one wrong character means lost funds forever.",
       4: isCorrect
         ? "Perfect! You hung up on a scammer. Bitcoin has no customer support because it's decentralized. Your 1.2 BTC remains secure because you recognized the social engineering attempt."
         : "Danger! That was a social engineering scam. Bitcoin has no customer support team. Anyone asking for your seed phrase is trying to steal your 1.2 BTC.",
@@ -5754,10 +5754,10 @@ export default function Home() {
 
                                     <div className="space-y-2">
                                       {[
-                                        'The addresses look identical - send the payment',
-                                        'Missing an "l" at the end - this could be address poisoning',
-                                        'The first few characters match - that\'s good enough',
-                                        'Different length but close enough - probably fine'
+                                        'The addresses are identical - send the payment',
+                                        'The addresses are different - don\'t send anything',
+                                        'Close enough - the difference doesn\'t matter',
+                                        'First 20 characters match - that\'s sufficient verification'
                                       ].map((option, index) => (
                                         <button
                                           key={index}
