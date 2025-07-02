@@ -11,6 +11,7 @@ import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
 import NotFound from "@/pages/not-found";
 import { AuthPage } from "@/pages/auth";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const [, setLocation] = useLocation();
@@ -45,16 +46,41 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 
 function OnboardingRedirect() {
   const [, setLocation] = useLocation();
+  const [isCheckingOnboarding, setIsCheckingOnboarding] = useState(true);
 
   useEffect(() => {
-    const hasCompletedOnboarding = localStorage.getItem('hodlearn-onboarding-completed');
-    
-    if (!hasCompletedOnboarding) {
-      setLocation('/onboarding');
+    try {
+      const hasCompletedOnboarding = localStorage.getItem('hodlearn-onboarding-completed');
+      
+      // If no onboarding status, mark as completed for existing users and continue
+      if (!hasCompletedOnboarding) {
+        // For existing authenticated users, skip onboarding
+        localStorage.setItem('hodlearn-onboarding-completed', 'true');
+      }
+      
+      setIsCheckingOnboarding(false);
+    } catch (error) {
+      console.error('Onboarding check failed:', error);
+      // Fallback: mark onboarding as complete and continue
+      localStorage.setItem('hodlearn-onboarding-completed', 'true');
+      setIsCheckingOnboarding(false);
     }
   }, [setLocation]);
 
-  return <Home />;
+  // Show loading while checking onboarding
+  if (isCheckingOnboarding) {
+    return (
+      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
+        <div className="text-orange-500">Loading your Bitcoin journey...</div>
+      </div>
+    );
+  }
+
+  return (
+    <ErrorBoundary>
+      <Home />
+    </ErrorBoundary>
+  );
 }
 
 function ScrollToTop() {
@@ -80,22 +106,30 @@ function Router() {
         </Route>
         <Route path="/learn">
           <AuthGuard>
-            <Home />
+            <ErrorBoundary>
+              <Home />
+            </ErrorBoundary>
           </AuthGuard>
         </Route>
         <Route path="/money">
           <AuthGuard>
-            <Home />
+            <ErrorBoundary>
+              <Home />
+            </ErrorBoundary>
           </AuthGuard>
         </Route>
         <Route path="/simulators">
           <AuthGuard>
-            <Home />
+            <ErrorBoundary>
+              <Home />
+            </ErrorBoundary>
           </AuthGuard>
         </Route>
         <Route path="/more">
           <AuthGuard>
-            <Home />
+            <ErrorBoundary>
+              <Home />
+            </ErrorBoundary>
           </AuthGuard>
         </Route>
         <Route path="/about">
