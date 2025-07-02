@@ -4813,19 +4813,19 @@ export default function Home() {
                     )}
                   </CardContent>
                 </Card>
-
-                {/* NEW DATABASE-DRIVEN SAFETY SIMULATOR */}
-                <DatabaseSafetySimulator />
               </div>
             )}
 
-            {/* Safety Training - Only show for premium users */}
-            {isPremiumTier && simulationsSubTab === "safety" && (
+            {/* Safety Training - Show for all users during testing */}
+            {simulationsSubTab === "safety" && (
               <div className="space-y-6">
                 <div className="text-center space-y-4">
                   <h3 className="text-xl font-bold text-white">Bitcoin Security Training Center</h3>
                   <p className="text-zinc-400">Master essential security skills to protect your Bitcoin from real-world threats</p>
                 </div>
+
+                {/* NEW DATABASE-DRIVEN SAFETY SIMULATOR */}
+                <DatabaseSafetySimulator />
 
                 {/* Why Safety Matters Introduction */}
                 <Card className="bg-zinc-900 border-zinc-800">
