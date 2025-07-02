@@ -1,6 +1,10 @@
 import { createRoot } from "react-dom/client";
 import App from "./App";
+import SimpleApp from "./simple";
 import "./index.css";
+
+// Use simple app in production for testing
+const AppToRender = import.meta.env.PROD ? SimpleApp : App;
 
 // Global error handling for production debugging
 window.addEventListener('error', (event) => {
@@ -35,7 +39,7 @@ if (!rootElement) {
   console.error('HODLearn: Root element not found!');
 } else {
   try {
-    createRoot(rootElement).render(<App />);
+    createRoot(rootElement).render(<AppToRender />);
     console.log('HODLearn: App rendered successfully');
   } catch (error) {
     console.error('HODLearn: Failed to render app:', error);
