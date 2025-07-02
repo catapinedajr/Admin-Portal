@@ -5911,7 +5911,7 @@ export default function Home() {
                                     <div className="space-y-2">
                                       {[
                                         'Any crypto website (cryptowallets.com, bitcoindownloads.net)',
-                                        'Official websites only (bitcoin.org, exodus.com)',
+                                        'Official websites only (bitcoin.org, metamask.io)',
                                         'Download sites (download.com, softonic.com)',
                                         'First Google result (bitcoin-wallet-download.org)'
                                       ].map((option, index) => (
