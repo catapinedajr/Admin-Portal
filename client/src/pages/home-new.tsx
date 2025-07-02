@@ -4069,23 +4069,27 @@ export default function Home() {
 
             {/* Conclusion & Call to Action */}
             <div className="bg-zinc-900/50 rounded-lg p-8 border border-zinc-800/50">
-              <h3 className="text-2xl font-bold mb-6 text-orange-400 text-center">The Choice Is Yours</h3>
+              <h3 className="text-2xl font-bold mb-6 text-orange-400 text-center">Ready to Start Learning?</h3>
               <div className="space-y-6 text-zinc-300 leading-relaxed max-w-4xl mx-auto">
                 <p className="text-lg">
-                  You've seen the math. Every day you hold dollars, you lose purchasing power to inflation. Every international 
-                  transfer bleeds money to banking fees. Every "business day" delay costs you opportunity and freedom.
+                  You've seen how traditional finance works differently than most people realize. Inflation quietly erodes purchasing power. 
+                  International transfers take days and cost fees. Banking operates on schedules that don't match our global economy.
                 </p>
                 <p>
-                  Bitcoin isn't just an investment—it's a complete financial system upgrade. Fixed supply instead of endless printing. 
-                  Direct peer-to-peer transfers instead of middleman extraction. Mathematical certainty instead of central bank promises.
+                  Bitcoin offers a completely different approach. Fixed supply instead of endless printing. Direct peer-to-peer transfers 
+                  without intermediaries. A system that runs 24/7 without holidays or "business hours."
                 </p>
                 <p>
-                  The wealthy already know this. Major corporations hold Bitcoin on their balance sheets. Entire nations have made 
-                  it legal tender. Smart money is moving first, as it always does.
+                  This isn't about getting rich quick—it's about understanding a technology that's reshaping how money works. Major institutions, 
+                  governments, and millions of individuals worldwide are studying and adopting Bitcoin for good reasons.
+                </p>
+                <p>
+                  The best part? You can learn at your own pace, with no pressure and no risk. Start with the basics, practice with safe 
+                  simulations, and build genuine understanding of this fascinating technology.
                 </p>
                 <p className="text-orange-300 font-medium text-lg text-center">
-                  Your financial future depends on understanding this technology. The question isn't whether Bitcoin will succeed—
-                  it's whether you'll learn about it before it's too late to matter.
+                  Your journey to understanding Bitcoin starts with curiosity, not urgency. Every question you have is valid, 
+                  and every step forward builds real knowledge.
                 </p>
               </div>
             </div>
