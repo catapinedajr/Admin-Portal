@@ -17,11 +17,6 @@ import {
   emailCollections,
   sessions,
   passwordResetTokens,
-  quizQuestions,
-  quizOptions,
-  safetyScenarios,
-  safetyOptions,
-  safetyAttempts,
   type User, 
   type InsertUser, 
   type UserProgress,
@@ -61,17 +56,7 @@ import {
   type PasswordResetToken,
   type InsertPasswordResetToken,
   type RegisterRequest,
-  type LoginRequest,
-  type QuizQuestion,
-  type InsertQuizQuestion,
-  type QuizOption,
-  type InsertQuizOption,
-  type SafetyScenario,
-  type InsertSafetyScenario,
-  type SafetyOption,
-  type InsertSafetyOption,
-  type SafetyAttempt,
-  type InsertSafetyAttempt
+  type LoginRequest
 } from "@shared/schema";
 
 import { db } from "./db";
@@ -173,20 +158,6 @@ export interface IStorage {
 
   // Email collection methods
   saveEmailCollection(emailData: InsertEmailCollection): Promise<EmailCollection>;
-
-  // New database-driven quiz methods - eliminates answer validation bugs
-  getQuizQuestions(dayId: number): Promise<(QuizQuestion & { options: QuizOption[] })[]>;
-  getQuizQuestion(questionId: number): Promise<(QuizQuestion & { options: QuizOption[] }) | undefined>;
-  createQuizQuestion(question: InsertQuizQuestion): Promise<QuizQuestion>;
-  createQuizOption(option: InsertQuizOption): Promise<QuizOption>;
-
-  // Safety simulator methods - replaces hardcoded scenarios
-  getSafetyScenarios(): Promise<(SafetyScenario & { options: SafetyOption[] })[]>;
-  getSafetyScenario(scenarioId: number): Promise<(SafetyScenario & { options: SafetyOption[] }) | undefined>;
-  createSafetyScenario(scenario: InsertSafetyScenario): Promise<SafetyScenario>;
-  createSafetyOption(option: InsertSafetyOption): Promise<SafetyOption>;
-  recordSafetyAttempt(attempt: InsertSafetyAttempt): Promise<SafetyAttempt>;
-  getUserSafetyAttempts(userId: number): Promise<SafetyAttempt[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -740,149 +711,6 @@ export class DatabaseStorage implements IStorage {
     }
     
     return completion;
-  }
-
-  // New database-driven quiz methods - eliminates answer validation bugs
-  async getQuizQuestions(dayId: number): Promise<(QuizQuestion & { options: QuizOption[] })[]> {
-    const questions = await db
-      .select()
-      .from(quizQuestions)
-      .where(eq(quizQuestions.dayId, dayId))
-      .orderBy(quizQuestions.orderIndex);
-
-    const questionsWithOptions = await Promise.all(
-      questions.map(async (question) => {
-        const options = await db
-          .select()
-          .from(quizOptions)
-          .where(eq(quizOptions.questionId, question.id))
-          .orderBy(quizOptions.orderIndex);
-        
-        return { ...question, options };
-      })
-    );
-
-    return questionsWithOptions;
-  }
-
-  async getQuizQuestion(questionId: number): Promise<(QuizQuestion & { options: QuizOption[] }) | undefined> {
-    const [question] = await db
-      .select()
-      .from(quizQuestions)
-      .where(eq(quizQuestions.id, questionId));
-
-    if (!question) return undefined;
-
-    const options = await db
-      .select()
-      .from(quizOptions)
-      .where(eq(quizOptions.questionId, questionId))
-      .orderBy(quizOptions.orderIndex);
-
-    return { ...question, options };
-  }
-
-  async createQuizQuestion(question: InsertQuizQuestion): Promise<QuizQuestion> {
-    const [created] = await db
-      .insert(quizQuestions)
-      .values(question)
-      .returning();
-    return created;
-  }
-
-  async createQuizOption(option: InsertQuizOption): Promise<QuizOption> {
-    const [created] = await db
-      .insert(quizOptions)
-      .values(option)
-      .returning();
-    return created;
-  }
-
-  // Safety simulator methods - replaces hardcoded scenarios
-  async getSafetyScenarios(): Promise<(SafetyScenario & { options: SafetyOption[] })[]> {
-    const scenarios = await db
-      .select()
-      .from(safetyScenarios)
-      .orderBy(safetyScenarios.stageNumber);
-
-    const scenariosWithOptions = await Promise.all(
-      scenarios.map(async (scenario) => {
-        const options = await db
-          .select()
-          .from(safetyOptions)
-          .where(eq(safetyOptions.scenarioId, scenario.id))
-          .orderBy(safetyOptions.orderIndex);
-        
-        return { ...scenario, options };
-      })
-    );
-
-    return scenariosWithOptions;
-  }
-
-  async getSafetyScenario(id: number): Promise<SafetyScenario | undefined> {
-    const [scenario] = await db
-      .select()
-      .from(safetyScenarios)
-      .where(eq(safetyScenarios.id, id));
-    return scenario;
-  }
-
-  async getSafetyOption(id: number): Promise<SafetyOption | undefined> {
-    const [option] = await db
-      .select()
-      .from(safetyOptions)
-      .where(eq(safetyOptions.id, id));
-    return option;
-  }
-
-  async getSafetyScenarioWithOptions(scenarioId: number): Promise<(SafetyScenario & { options: SafetyOption[] }) | undefined> {
-    const [scenario] = await db
-      .select()
-      .from(safetyScenarios)
-      .where(eq(safetyScenarios.id, scenarioId));
-
-    if (!scenario) return undefined;
-
-    const options = await db
-      .select()
-      .from(safetyOptions)
-      .where(eq(safetyOptions.scenarioId, scenarioId))
-      .orderBy(safetyOptions.orderIndex);
-
-    return { ...scenario, options };
-  }
-
-  async createSafetyScenario(scenario: InsertSafetyScenario): Promise<SafetyScenario> {
-    const [created] = await db
-      .insert(safetyScenarios)
-      .values(scenario)
-      .returning();
-    return created;
-  }
-
-  async createSafetyOption(option: InsertSafetyOption): Promise<SafetyOption> {
-    const [created] = await db
-      .insert(safetyOptions)
-      .values(option)
-      .returning();
-    return created;
-  }
-
-  async recordSafetyAttempt(attempt: InsertSafetyAttempt): Promise<SafetyAttempt> {
-    const [created] = await db
-      .insert(safetyAttempts)
-      .values(attempt)
-      .returning();
-    return created;
-  }
-
-  async getUserSafetyAttempts(userId: number): Promise<SafetyAttempt[]> {
-    return await db
-      .select()
-      .from(safetyAttempts)
-      .where(eq(safetyAttempts.userId, userId))
-      .orderBy(safetyAttempts.attemptedAt);
   }
 }
 

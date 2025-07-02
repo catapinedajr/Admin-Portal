@@ -1377,39 +1377,6 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Quiz routes
-  // Database-driven quiz routes - eliminates answer validation bugs
-  app.get('/api/quiz/questions/:dayId', async (req, res) => {
-    try {
-      const dayId = parseInt(req.params.dayId);
-      if (isNaN(dayId) || dayId <= 0) {
-        return res.status(400).json({ message: "Invalid day ID" });
-      }
-
-      const questions = await storage.getQuizQuestions(dayId);
-      
-      // Transform to UI format with clear boolean correctness
-      const transformedQuestions = questions.map(q => ({
-        id: q.id,
-        dayId: q.dayId,
-        question: q.question,
-        options: q.options.map(opt => ({
-          id: opt.id,
-          text: opt.optionText,
-          isCorrect: opt.isCorrect // Clear boolean instead of number-to-letter conversion
-        })),
-        explanation: q.explanation,
-        category: q.category || 'Fundamentals',
-        difficulty: q.difficulty || 'beginner'
-      }));
-      
-      res.json(transformedQuestions);
-    } catch (error) {
-      console.error('Error fetching quiz questions:', error);
-      res.status(500).json({ message: "Failed to fetch quiz questions" });
-    }
-  });
-
-  // Legacy route for backward compatibility
   app.get('/api/quiz/daily/:dayIndex', async (req, res) => {
     try {
       let dayIndex = parseInt(req.params.dayIndex);
@@ -1452,50 +1419,6 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  // New database-driven quiz submission - eliminates validation bugs
-  app.post('/api/quiz/submit-v2', requireAuth, async (req, res) => {
-    try {
-      const { questionId, optionId } = req.body;
-      
-      // Get authenticated user ID from session
-      const session = await storage.getSession(req.sessionId);
-      if (!session || new Date() > session.expiresAt) {
-        return res.status(401).json({ message: "Invalid or expired session" });
-      }
-      
-      const userId = session.userId;
-      
-      // Get the complete question with options
-      const question = await storage.getQuizQuestion(questionId);
-      
-      if (!question) {
-        return res.status(404).json({ message: "Question not found" });
-      }
-
-      // Find the selected option
-      const selectedOption = question.options.find(opt => opt.id === optionId);
-      if (!selectedOption) {
-        return res.status(400).json({ message: "Invalid option selected" });
-      }
-
-      // Use the clear boolean isCorrect value - no conversion needed
-      const isCorrect = selectedOption.isCorrect;
-      
-      // Record the attempt (future implementation)
-      // For now, just return the result
-      res.json({
-        questionId,
-        optionId,
-        isCorrect,
-        explanation: question.explanation,
-        selectedText: selectedOption.optionText
-      });
-    } catch (error) {
-      console.error('Error submitting quiz answer:', error);
-      res.status(500).json({ message: "Failed to submit answer" });
-    }
-  });
-
   app.post('/api/quiz/submit', requireAuth, async (req, res) => {
     try {
       const { questionId, selectedAnswer, date } = req.body;
@@ -1508,45 +1431,18 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
       
       const userId = session.userId;
       
-      // Use new database-driven quiz system - eliminates validation bugs
-      const question = await storage.getQuizQuestion(questionId);
+      // Get the question from database directly - this returns the raw database format
+      const allQuestions = await storage.getAllContentQuizzes();
+      const question = allQuestions.find(q => q.id === questionId);
       
       if (!question) {
         return res.status(404).json({ message: "Question not found" });
       }
 
-      console.log('DEBUG Quiz Submission:', {
-        questionId,
-        selectedAnswer,
-        questionOptions: question.options.map(opt => ({
-          id: opt.id,
-          text: opt.optionText?.substring(0, 30) + '...',
-          orderIndex: opt.orderIndex,
-          isCorrect: opt.isCorrect
-        }))
-      });
-
-      // Convert selected answer letter (A,B,C,D) to option index (0,1,2,3)
-      const optionIndex = ['A', 'B', 'C', 'D'].indexOf(selectedAnswer);
-      if (optionIndex === -1) {
-        return res.status(400).json({ message: "Invalid answer format" });
-      }
-      
-      // Get the selected option from the new database structure
-      const selectedOption = question.options.find(opt => opt.orderIndex === optionIndex);
-      if (!selectedOption) {
-        console.log('ERROR: Could not find option with orderIndex:', optionIndex);
-        return res.status(400).json({ message: "Invalid option selected" });
-      }
-      
-      console.log('DEBUG Selected Option:', {
-        optionIndex,
-        selectedText: selectedOption.optionText?.substring(0, 30) + '...',
-        isCorrect: selectedOption.isCorrect
-      });
-      
-      // Use the clear boolean isCorrect value - no conversion needed
-      const isCorrect = selectedOption.isCorrect;
+      // Convert numeric correct answer to letter format (0->A, 1->B, 2->C, 3->D)
+      // The database stores correctAnswer as numbers (0,1,2,3), frontend sends letters (A,B,C,D)
+      const correctAnswerLetter = ['A', 'B', 'C', 'D'][question.correctAnswer];
+      const isCorrect = selectedAnswer === correctAnswerLetter;
       
       const answer = await storage.submitQuizAnswer(userId, questionId, selectedAnswer, isCorrect);
 
@@ -1763,63 +1659,6 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     } catch (error) {
       console.error('Error marking simulator completed:', error);
       res.status(500).json({ message: "Failed to mark simulator completed" });
-    }
-  });
-
-  // Safety simulator endpoints - database-driven with boolean validation
-  app.get('/api/safety/scenarios', async (req, res) => {
-    try {
-      const scenarios = await storage.getSafetyScenarios();
-      res.json(scenarios);
-    } catch (error) {
-      console.error('Error fetching safety scenarios:', error);
-      res.status(500).json({ message: "Failed to fetch safety scenarios" });
-    }
-  });
-
-  app.post('/api/safety/submit', requireAuth, async (req, res) => {
-    try {
-      const { scenarioId, optionId } = req.body;
-      const userId = req.user!.id;
-
-      console.log('🛡️ DATABASE Safety Simulator - Processing submission:', {
-        userId,
-        scenarioId,
-        optionId,
-        timestamp: new Date().toISOString()
-      });
-
-      // Get the selected option to check if it's correct
-      const selectedOption = await storage.getSafetyOption(optionId);
-      if (!selectedOption) {
-        return res.status(400).json({ message: "Invalid option selected" });
-      }
-
-      // Get scenario for context
-      const scenario = await storage.getSafetyScenario(scenarioId);
-      if (!scenario) {
-        return res.status(400).json({ message: "Invalid scenario" });
-      }
-
-      console.log('🛡️ DATABASE Safety - Validation result:', {
-        selectedOptionText: selectedOption.optionText,
-        isCorrect: selectedOption.isCorrect,
-        explanation: selectedOption.explanation
-      });
-
-      // Return the result with proper boolean validation
-      const result = {
-        scenarioId,
-        optionId,
-        isCorrect: selectedOption.isCorrect, // Direct boolean, no conversion needed!
-        explanation: selectedOption.explanation,
-        selectedText: selectedOption.optionText
-      };
-
-      res.json(result);
-    } catch (error) {
-      console.error('Error submitting safety answer:', error);
-      res.status(500).json({ message: "Failed to process safety submission" });
     }
   });
 
