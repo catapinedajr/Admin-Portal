@@ -11,6 +11,7 @@ import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
 import NotFound from "@/pages/not-found";
 import { AuthPage } from "@/pages/auth";
+import Diagnostic from "@/pages/diagnostic";
 import ErrorBoundary from "@/components/ErrorBoundary";
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -137,6 +138,7 @@ function Router() {
             <About />
           </AuthGuard>
         </Route>
+        <Route path="/diagnostic" component={Diagnostic} />
         <Route path="/">
           <AuthGuard>
             <OnboardingRedirect />
