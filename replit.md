@@ -269,6 +269,9 @@ Comprehensive component library built on Radix UI primitives:
 
 Preferred communication style: Simple, everyday language.
 
+**Content Design Guidelines:**
+- **Quiz Answer Distribution**: Avoid clustering correct answers on option B. Historical issue showed 11/16 questions having B as correct answer, making test predictable and gameable. Future content should distribute correct answers more evenly across A, B, C, D options to maintain assessment integrity and prevent answer pattern exploitation.
+
 ## Daily Content Build Strategy - REVISED PROCESS
 
 ### New Streamlined Content Creation Process
