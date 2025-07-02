@@ -5669,19 +5669,43 @@ export default function Home() {
                                         The device shows these 12 words on screen:
                                       </p>
                                       <div className="p-3 bg-green-950/30 rounded border border-green-800/50">
-                                        <div className="text-sm text-center grid grid-cols-3 gap-2">
-                                          <span className="text-green-400">1. mountain</span>
-                                          <span className="text-green-400">2. forest</span>
-                                          <span className="text-green-400">3. library</span>
-                                          <span className="text-green-400">4. ocean</span>
-                                          <span className="text-green-400">5. sunset</span>
-                                          <span className="text-green-400">6. garden</span>
-                                          <span className="text-green-400">7. whisper</span>
-                                          <span className="text-green-400">8. thunder</span>
-                                          <span className="text-green-400">9. crystal</span>
-                                          <span className="text-green-400">10. journey</span>
-                                          <span className="text-green-400">11. freedom</span>
-                                          <span className="text-green-400">12. wisdom</span>
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">1. mountain</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">2. forest</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">3. library</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">4. ocean</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">5. sunset</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">6. garden</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">7. whisper</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">8. thunder</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">9. crystal</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">10. journey</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">11. freedom</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">12. wisdom</span>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
