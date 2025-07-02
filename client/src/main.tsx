@@ -2,6 +2,21 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
+// Global error handling for production debugging
+window.addEventListener('error', (event) => {
+  console.error('HODLearn Global Error:', {
+    message: event.message,
+    filename: event.filename,
+    lineno: event.lineno,
+    colno: event.colno,
+    stack: event.error?.stack
+  });
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('HODLearn Unhandled Promise Rejection:', event.reason);
+});
+
 // Register service worker for PWA functionality
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -15,4 +30,14 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-createRoot(document.getElementById("root")!).render(<App />);
+const rootElement = document.getElementById("root");
+if (!rootElement) {
+  console.error('HODLearn: Root element not found!');
+} else {
+  try {
+    createRoot(rootElement).render(<App />);
+    console.log('HODLearn: App rendered successfully');
+  } catch (error) {
+    console.error('HODLearn: Failed to render app:', error);
+  }
+}
