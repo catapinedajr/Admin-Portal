@@ -95,7 +95,7 @@ function OnboardingRedirect() {
     }
   }, [setLocation]);
 
-  return <Home />;
+  return <HomeDashboard />;
 }
 
 function ScrollToTop() {
@@ -121,22 +121,22 @@ function Router() {
         </Route>
         <Route path="/learn">
           <AuthGuard>
-            <Home />
+            <HomeDashboard />
           </AuthGuard>
         </Route>
         <Route path="/money">
           <AuthGuard>
-            <Home />
+            <HomeDashboard />
           </AuthGuard>
         </Route>
         <Route path="/simulators">
           <AuthGuard>
-            <Home />
+            <HomeDashboard />
           </AuthGuard>
         </Route>
         <Route path="/more">
           <AuthGuard>
-            <Home />
+            <HomeDashboard />
           </AuthGuard>
         </Route>
         <Route path="/about">
