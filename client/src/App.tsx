@@ -5,8 +5,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { useEffect, useState } from "react";
-import HomeDashboard from "@/pages/home-dashboard";
-import Home from "@/pages/home-new";
 import ProductionSafeHome from "@/components/ProductionSafeHome";
 import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
@@ -46,44 +44,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-function OnboardingRedirect() {
-  const [, setLocation] = useLocation();
-  const [isCheckingOnboarding, setIsCheckingOnboarding] = useState(true);
 
-  useEffect(() => {
-    try {
-      const hasCompletedOnboarding = localStorage.getItem('hodlearn-onboarding-completed');
-      
-      // If no onboarding status, mark as completed for existing users and continue
-      if (!hasCompletedOnboarding) {
-        // For existing authenticated users, skip onboarding
-        localStorage.setItem('hodlearn-onboarding-completed', 'true');
-      }
-      
-      setIsCheckingOnboarding(false);
-    } catch (error) {
-      console.error('Onboarding check failed:', error);
-      // Fallback: mark onboarding as complete and continue
-      localStorage.setItem('hodlearn-onboarding-completed', 'true');
-      setIsCheckingOnboarding(false);
-    }
-  }, [setLocation]);
-
-  // Show loading while checking onboarding
-  if (isCheckingOnboarding) {
-    return (
-      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
-        <div className="text-orange-500">Loading your Bitcoin journey...</div>
-      </div>
-    );
-  }
-
-  return (
-    <ErrorBoundary>
-      <ProductionSafeHome />
-    </ErrorBoundary>
-  );
-}
 
 function ScrollToTop() {
   const [location] = useLocation();
@@ -142,7 +103,9 @@ function Router() {
         <Route path="/diagnostic" component={Diagnostic} />
         <Route path="/">
           <AuthGuard>
-            <OnboardingRedirect />
+            <ErrorBoundary>
+              <ProductionSafeHome />
+            </ErrorBoundary>
           </AuthGuard>
         </Route>
         <Route component={NotFound} />
