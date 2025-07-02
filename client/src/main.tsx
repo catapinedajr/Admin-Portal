@@ -1,11 +1,6 @@
 import { createRoot } from "react-dom/client";
 import App from "./App";
-import DiagnosticApp from "./diagnostic";
 import "./index.css";
-
-// Use diagnostic app in production to identify issues
-const isDevelopment = import.meta.env.DEV;
-const AppToRender = isDevelopment ? App : DiagnosticApp;
 
 // Global error handling for production debugging
 window.addEventListener('error', (event) => {
@@ -40,7 +35,7 @@ if (!rootElement) {
   console.error('HODLearn: Root element not found!');
 } else {
   try {
-    createRoot(rootElement).render(<AppToRender />);
+    createRoot(rootElement).render(<App />);
     console.log('HODLearn: App rendered successfully');
   } catch (error) {
     console.error('HODLearn: Failed to render app:', error);
