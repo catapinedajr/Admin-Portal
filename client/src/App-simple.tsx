@@ -1,9 +1,18 @@
 function App() {
   return (
-    <div className="min-h-screen bg-zinc-900 text-white flex items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-orange-500 mb-4">HODLearn</h1>
-        <p className="text-zinc-300">App is loading successfully...</p>
+    <div style={{ 
+      minHeight: '100vh', 
+      backgroundColor: '#18181b', 
+      color: 'white', 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center' 
+    }}>
+      <div style={{ textAlign: 'center' }}>
+        <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#f97316', marginBottom: '1rem' }}>
+          HODLearn
+        </h1>
+        <p style={{ color: '#a1a1aa' }}>React is working! Testing...</p>
       </div>
     </div>
   );
