@@ -1,9 +1,10 @@
 import { createRoot } from "react-dom/client";
 import App from "./App";
+import MinimalApp from "./minimal";
 import "./index.css";
 
-// Use the main app for both development and production
-const AppToRender = App;
+// Use minimal app for production deployment to avoid bundle size issues
+const AppToRender = import.meta.env.PROD ? MinimalApp : App;
 
 // Global error handling for production debugging
 window.addEventListener('error', (event) => {
