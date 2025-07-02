@@ -445,15 +445,20 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: 1, dayIndex })
       }),
-    onSuccess: () => {
+    onSuccess: (_, dayIndex) => {
       // Invalidate relevant queries to refresh access data
       queryClient.invalidateQueries({ queryKey: ['/api/day-access'] });
       queryClient.invalidateQueries({ queryKey: ['/api/day-completed'] });
       queryClient.invalidateQueries({ queryKey: ['/api/next-available-day'] });
-      toast({
-        title: "Day Complete!",
-        description: "Great progress! Come back tomorrow for the next lesson.",
-      });
+      
+      // Only show completion notification if not already shown for this day
+      if (!completionNotificationsShown.has(dayIndex)) {
+        setCompletionNotificationsShown(prev => new Set([...prev, dayIndex]));
+        toast({
+          title: "Day Complete!",
+          description: "Great progress! Come back tomorrow for the next lesson.",
+        });
+      }
     }
   });
 
@@ -462,11 +467,19 @@ export default function Home() {
     markDayCompletedMutation.mutate(currentDayIndex);
   }, [markDayCompletedMutation, currentDayIndex]);
 
+  // Reset completion notifications when the calendar day changes
+  useEffect(() => {
+    setCompletionNotificationsShown(new Set());
+  }, [currentDayIndex]);
+
   const [convictionSubTab, setConvictionSubTab] = useState<"whitepaper" | "books" | "videos">("whitepaper");
   const [showSplash, setShowSplash] = useState(false);
   const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
   const [expandedTopics, setExpandedTopics] = useState<Set<string>>(new Set());
   const [safetyQuizScore, setSafetyQuizScore] = useState<number>(0);
+  
+  // Track completion notifications shown for each day to prevent duplicates
+  const [completionNotificationsShown, setCompletionNotificationsShown] = useState<Set<number>>(new Set());
   
   // Security Test State
   const [securityTestStage, setSecurityTestStage] = useState<number>(0);
