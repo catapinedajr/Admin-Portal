@@ -5909,7 +5909,12 @@ export default function Home() {
                                       Where should you download Bitcoin wallet software?
                                     </p>
                                     <div className="space-y-2">
-                                      {['Any cryptocurrency website', 'Official project websites only', 'Popular download sites', 'Through Google search results'].map((option, index) => (
+                                      {[
+                                        'Any crypto website (cryptowallets.com, bitcoindownloads.net)',
+                                        'Official websites only (electrum.org, blockstream.com)',
+                                        'Download sites (download.com, softonic.com)',
+                                        'First Google result (bitcoin-wallet-download.org)'
+                                      ].map((option, index) => (
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index, 1)}
