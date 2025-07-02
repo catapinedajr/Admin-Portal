@@ -820,7 +820,23 @@ export class DatabaseStorage implements IStorage {
     return scenariosWithOptions;
   }
 
-  async getSafetyScenario(scenarioId: number): Promise<(SafetyScenario & { options: SafetyOption[] }) | undefined> {
+  async getSafetyScenario(id: number): Promise<SafetyScenario | undefined> {
+    const [scenario] = await db
+      .select()
+      .from(safetyScenarios)
+      .where(eq(safetyScenarios.id, id));
+    return scenario;
+  }
+
+  async getSafetyOption(id: number): Promise<SafetyOption | undefined> {
+    const [option] = await db
+      .select()
+      .from(safetyOptions)
+      .where(eq(safetyOptions.id, id));
+    return option;
+  }
+
+  async getSafetyScenarioWithOptions(scenarioId: number): Promise<(SafetyScenario & { options: SafetyOption[] }) | undefined> {
     const [scenario] = await db
       .select()
       .from(safetyScenarios)

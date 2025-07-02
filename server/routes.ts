@@ -1766,6 +1766,63 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
+  // Safety simulator endpoints - database-driven with boolean validation
+  app.get('/api/safety/scenarios', async (req, res) => {
+    try {
+      const scenarios = await storage.getSafetyScenarios();
+      res.json(scenarios);
+    } catch (error) {
+      console.error('Error fetching safety scenarios:', error);
+      res.status(500).json({ message: "Failed to fetch safety scenarios" });
+    }
+  });
+
+  app.post('/api/safety/submit', requireAuth, async (req, res) => {
+    try {
+      const { scenarioId, optionId } = req.body;
+      const userId = req.user!.id;
+
+      console.log('🛡️ DATABASE Safety Simulator - Processing submission:', {
+        userId,
+        scenarioId,
+        optionId,
+        timestamp: new Date().toISOString()
+      });
+
+      // Get the selected option to check if it's correct
+      const selectedOption = await storage.getSafetyOption(optionId);
+      if (!selectedOption) {
+        return res.status(400).json({ message: "Invalid option selected" });
+      }
+
+      // Get scenario for context
+      const scenario = await storage.getSafetyScenario(scenarioId);
+      if (!scenario) {
+        return res.status(400).json({ message: "Invalid scenario" });
+      }
+
+      console.log('🛡️ DATABASE Safety - Validation result:', {
+        selectedOptionText: selectedOption.optionText,
+        isCorrect: selectedOption.isCorrect,
+        explanation: selectedOption.explanation
+      });
+
+      // Return the result with proper boolean validation
+      const result = {
+        scenarioId,
+        optionId,
+        isCorrect: selectedOption.isCorrect, // Direct boolean, no conversion needed!
+        explanation: selectedOption.explanation,
+        selectedText: selectedOption.optionText
+      };
+
+      res.json(result);
+    } catch (error) {
+      console.error('Error submitting safety answer:', error);
+      res.status(500).json({ message: "Failed to process safety submission" });
+    }
+  });
+
   // Content Day Approval Routes
   app.patch("/api/content-day/:dayIndex/approval", async (req, res) => {
     try {
