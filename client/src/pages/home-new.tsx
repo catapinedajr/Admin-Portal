@@ -2486,6 +2486,9 @@ export default function Home() {
     queryKey: ['/api/user'],
   });
 
+  // Debug user data
+  console.log('Current user data:', user);
+
   // Dynamic greeting based on time of day
   const getTimeBasedGreeting = () => {
     const hour = new Date().getHours();
