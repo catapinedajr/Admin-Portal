@@ -513,8 +513,8 @@ export default function Home() {
         ? "Correct! Buy new from the manufacturer to ensure the device hasn't been tampered with."
         : "Used or third-party hardware wallets could be compromised. Always buy new directly from the manufacturer.",
       9: isCorrect
-        ? "Correct! Test your backup recovery process with a small amount to ensure it works before storing large amounts."
-        : "Always test your backup by restoring a small amount. Many people lose funds because they never tested their backup.",
+        ? "Smart! Testing backup restoration before using the wallet ensures your seed phrase works correctly. Many people skip this step and lose everything when they need recovery."
+        : "Dangerous! You should test your backup by completely wiping and restoring the wallet before using it. A broken backup means lost Bitcoin forever.",
       10: isCorrect
         ? "Extremely high fees ($50 for $100) suggest your wallet may be compromised or configured incorrectly."
         : "Normal Bitcoin fees are much lower. A 50% fee suggests your wallet is compromised or misconfigured.",
@@ -5919,12 +5919,33 @@ export default function Home() {
 
                                 {securityTestStage === 9 && (
                                   <div className="space-y-4">
-                                    <h5 className="text-lg font-semibold text-white">Backup Testing</h5>
-                                    <p className="text-zinc-300">
-                                      After writing down your seed phrase, what should you do next?
-                                    </p>
+                                    <div className="flex items-center gap-3 mb-4">
+                                      <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                        <span className="text-orange-400 text-sm">🔧</span>
+                                      </div>
+                                      <div>
+                                        <h5 className="text-lg font-semibold text-white">Backup Validation</h5>
+                                        <p className="text-zinc-400 text-sm">Just finished writing down your seed phrase</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                                      <p className="text-zinc-300 mb-3">
+                                        You've carefully written down your 12-word seed phrase on paper. Your hardware wallet 
+                                        is ready to receive Bitcoin, and you're excited to start using it.
+                                      </p>
+                                      <p className="text-zinc-300 text-sm">
+                                        Before sending any Bitcoin to this wallet, what's the most important step?
+                                      </p>
+                                    </div>
+
                                     <div className="space-y-2">
-                                      {['Start using the wallet immediately', 'Test the backup by restoring a small amount', 'Wait a month before testing', 'Store the paper and forget about it'].map((option, index) => (
+                                      {[
+                                        'Start using it immediately - you wrote it down correctly',
+                                        'Test the backup by wiping and restoring the entire wallet',
+                                        'Wait a month to make sure the paper doesn\'t fade',
+                                        'Store the paper safely and assume it works'
+                                      ].map((option, index) => (
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index, 1)}
