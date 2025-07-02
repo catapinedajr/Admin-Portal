@@ -3575,7 +3575,7 @@ export default function Home() {
                             <div className="text-center">
                               <div className="text-red-400 font-medium">Traditional Savings</div>
                               <div className="text-red-300 text-lg font-bold">$11,675</div>
-                              <div className="text-red-400">Lost 53% to inflation</div>
+                              <div className="text-red-400">Lost 53% to inflation (3% per year)</div>
                             </div>
                             <div className="text-center">
                               <div className="text-orange-400 font-medium">Conservative Bitcoin</div>
