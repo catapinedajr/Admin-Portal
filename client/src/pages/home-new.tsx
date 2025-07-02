@@ -2580,15 +2580,10 @@ export default function Home() {
         {activeSection === "home" && (
           <div className="space-y-8">
             {/* Welcome Header */}
-            <div className="text-center space-y-4">
+            <div className="text-center">
               <h1 className="text-3xl font-bold text-white">
                 {getTimeBasedGreeting()}{user?.firstName ? `, ${user.firstName}` : ''}!
               </h1>
-              <div className="text-lg space-y-1">
-                <div className="text-zinc-400">Understanding Bitcoin takes time</div>
-                <div className="text-zinc-400">Building conviction takes discipline</div>
-                <div className="text-orange-400 font-semibold">This is HODLearn</div>
-              </div>
             </div>
 
             {/* Simple Streak Display */}
