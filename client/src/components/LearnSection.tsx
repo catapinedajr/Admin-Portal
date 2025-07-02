@@ -2,16 +2,12 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { 
   Coins, 
-  Brain, 
-  Shield, 
-  Building2, 
-  Clock, 
-  CheckCircle, 
-  XCircle, 
+  Brain,
+  Shield,
+  Building2,
+  Clock,
   ChevronUp, 
   ChevronDown,
   Lightbulb,
@@ -45,10 +41,7 @@ import {
   Heart,
   Smile
 } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
+import { useQuery } from "@tanstack/react-query";
 import DailyQuiz from "@/components/DailyQuiz";
 
 type LearnSubTab = "today" | "reference";
@@ -61,7 +54,7 @@ interface LearnSectionProps {
   user: any;
 }
 
-interface LessonWithKeyTakeaways {
+interface Lesson {
   id: number;
   dayId: number;
   title: string;
@@ -70,6 +63,12 @@ interface LessonWithKeyTakeaways {
   whyItMatters?: string;
   estimatedReadTime: number;
   createdAt: string;
+}
+
+interface DayMetadata {
+  dayIndex: number;
+  title: string;
+  theme: string;
 }
 
 const iconMap = {
@@ -118,51 +117,27 @@ export default function LearnSection({
   user 
 }: LearnSectionProps) {
   const [showKeyTakeaways, setShowKeyTakeaways] = useState(false);
-  const [completionNotificationsShown, setCompletionNotificationsShown] = useState<Set<number>>(new Set());
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
 
-  // Reset completion notifications when the day changes
-  useEffect(() => {
-    setCompletionNotificationsShown(new Set());
-  }, [currentDayIndex]);
+
 
   // Queries
-  const { data: dayMetadata } = useQuery({
+  const { data: dayMetadata } = useQuery<DayMetadata>({
     queryKey: ['/api/day-metadata', currentDayIndex],
   });
 
-  const { data: dailyFacts, isLoading: factsLoading } = useQuery({
+  const { data: dailyFacts } = useQuery({
     queryKey: ['/api/daily-facts', currentDayIndex],
   });
 
-  const { data: lesson, isLoading: lessonLoading } = useQuery({
+  const { data: lesson } = useQuery<Lesson>({
     queryKey: ['/api/lesson', currentDayIndex],
-  });
-
-  const { data: quizQuestions, isLoading: quizLoading } = useQuery({
-    queryKey: ['/api/quiz/daily', currentDayIndex],
-  });
-
-  const { data: dayCompleted } = useQuery({
-    queryKey: ['/api/day-completed', user?.id, currentDayIndex],
-  });
-
-  const { data: quizScore } = useQuery({
-    queryKey: ['/api/quiz/score', user?.id, new Date().toISOString().split('T')[0]],
-  });
-
-  const { data: quizAnswers } = useQuery({
-    queryKey: ['/api/quiz/answers', user?.id, new Date().toISOString().split('T')[0]],
   });
 
   const { data: canAccessDay } = useQuery({
     queryKey: ['/api/day-access', user?.id, currentDayIndex],
   });
 
-  const isCurrentDay = new Date().toISOString().split('T')[0];
   const isDayLockedBySubscription = canAccessDay === false;
-  const hasCompletedCurrentDay = Boolean(dayCompleted);
 
   function cleanText(text: string): React.ReactNode {
     if (!text) return text;
