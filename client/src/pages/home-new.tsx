@@ -5661,6 +5661,7 @@ export default function Home() {
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -5747,6 +5748,7 @@ export default function Home() {
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -5809,6 +5811,7 @@ export default function Home() {
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -5864,6 +5867,7 @@ export default function Home() {
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -5888,6 +5892,7 @@ export default function Home() {
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -5912,6 +5917,7 @@ export default function Home() {
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -5941,6 +5947,7 @@ export default function Home() {
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -5965,6 +5972,7 @@ export default function Home() {
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -6010,6 +6018,7 @@ export default function Home() {
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -6065,6 +6074,7 @@ export default function Home() {
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -6120,6 +6130,7 @@ export default function Home() {
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -6144,6 +6155,7 @@ export default function Home() {
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -6198,6 +6210,7 @@ export default function Home() {
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -6260,6 +6273,7 @@ export default function Home() {
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -6316,6 +6330,7 @@ export default function Home() {
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -6382,6 +6397,7 @@ export default function Home() {
                                         <button
                                           key={index}
                                           onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
                                           className={`w-full p-3 text-left rounded border transition-colors ${
                                             selectedSecurityAnswer === index 
                                               ? 'border-orange-500 bg-orange-500/10' 
@@ -6398,23 +6414,12 @@ export default function Home() {
                                       <div className="flex justify-center mt-4">
                                         <Button
                                           onClick={() => {
-                                            // Call submit with correct answer for each scenario
-                                            if (securityTestStage === 1) submitSecurityAnswer(2);
-                                            else if (securityTestStage === 2) submitSecurityAnswer(1);
-                                            else if (securityTestStage === 3) submitSecurityAnswer(1);
-                                            else if (securityTestStage === 4) submitSecurityAnswer(2);
-                                            else if (securityTestStage === 5) submitSecurityAnswer(1);
-                                            else if (securityTestStage === 6) submitSecurityAnswer(1);
-                                            else if (securityTestStage === 7) submitSecurityAnswer(1);
-                                            else if (securityTestStage === 8) submitSecurityAnswer(2);
-                                            else if (securityTestStage === 9) submitSecurityAnswer(1);
-                                            else if (securityTestStage === 10) submitSecurityAnswer(1);
-                                            else if (securityTestStage === 11) submitSecurityAnswer(1);
-                                            else if (securityTestStage === 12) submitSecurityAnswer(2);
-                                            else if (securityTestStage === 13) submitSecurityAnswer(1);
-                                            else if (securityTestStage === 14) submitSecurityAnswer(1);
-                                            else if (securityTestStage === 15) submitSecurityAnswer(2);
-                                            else if (securityTestStage === 16) submitSecurityAnswer(2);
+                                            // Define correct answers for each scenario (0-based index)
+                                            const correctAnswers: { [key: number]: number } = {
+                                              1: 2, 2: 1, 3: 1, 4: 2, 5: 1, 6: 1, 7: 1, 8: 2, 
+                                              9: 1, 10: 1, 11: 1, 12: 2, 13: 1, 14: 1, 15: 2, 16: 2
+                                            };
+                                            submitSecurityAnswer(correctAnswers[securityTestStage] || 0);
                                           }}
                                           className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
                                         >
