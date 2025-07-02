@@ -385,15 +385,7 @@ export default function LearnSection({
           {/* Daily Quiz Component */}
           {!isDayLockedBySubscription && user && (
             <DailyQuiz 
-              currentDayIndex={currentDayIndex}
-              user={user}
-              quizQuestions={quizQuestions}
-              quizScore={quizScore}
-              quizAnswers={quizAnswers}
-              hasCompletedCurrentDay={hasCompletedCurrentDay}
-              completionNotificationsShown={completionNotificationsShown}
-              setCompletionNotificationsShown={setCompletionNotificationsShown}
-              toast={toast}
+              dayIndex={currentDayIndex}
             />
           )}
         </div>
