@@ -23,6 +23,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     
     if (!sessionId || !user) {
       // Not authenticated, redirect to auth
+      setIsAuthenticated(false);
       setLocation('/auth');
       return;
     }
@@ -35,9 +36,14 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   if (isAuthenticated === null) {
     return (
       <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
-        <div className="text-orange-500">Loading...</div>
+        <div className="text-orange-500 text-lg">Loading HODLearn...</div>
       </div>
     );
+  }
+
+  // If not authenticated, let the redirect happen
+  if (isAuthenticated === false) {
+    return null;
   }
 
   return <>{children}</>;
