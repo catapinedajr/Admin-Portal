@@ -412,7 +412,7 @@ export class DatabaseStorage implements IStorage {
     const user = await this.getUser(userId);
     if (!user) return 1;
 
-    // Calculate days since user joined (their personal curriculum day)
+    // Calculate current calendar day since user joined
     const now = new Date();
     const userStartDate = new Date(user.createdAt);
     const daysSinceJoined = Math.floor((now.getTime() - userStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
@@ -424,33 +424,15 @@ export class DatabaseStorage implements IStorage {
       .limit(1);
     
     const maxAvailableDay = lastAvailableDay[0]?.dayIndex || 1;
-    const calendarBasedDay = Math.min(daysSinceJoined, maxAvailableDay);
+    const currentCalendarDay = Math.min(daysSinceJoined, maxAvailableDay);
     
-    // Get completed days to see current progress
-    const completedDays = await this.getCompletedDays(userId);
-    
-    // If user is behind (hasn't completed previous days), return earliest incomplete day
-    for (let day = 1; day < calendarBasedDay; day++) {
-      if (!completedDays.includes(day)) {
-        // Check if content exists for this day
-        const hasContent = await db.select({ id: contentDays.id })
-          .from(contentDays)
-          .where(eq(contentDays.dayIndex, day))
-          .limit(1);
-        
-        if (hasContent.length > 0) {
-          return day;
-        }
-      }
-    }
-    
-    // Return current calendar day (if content exists)
+    // Only return current calendar day - no catching up on missed days
     const hasContent = await db.select({ id: contentDays.id })
       .from(contentDays)
-      .where(eq(contentDays.dayIndex, calendarBasedDay))
+      .where(eq(contentDays.dayIndex, currentCalendarDay))
       .limit(1);
     
-    return hasContent.length > 0 ? calendarBasedDay : 1;
+    return hasContent.length > 0 ? currentCalendarDay : 1;
   }
 
   async canAccessDay(userId: number, dayIndex: number): Promise<boolean> {
@@ -469,13 +451,13 @@ export class DatabaseStorage implements IStorage {
     const user = await this.getUser(userId);
     if (!user) return false;
 
-    // Calculate days since user joined
+    // Calculate current calendar day since user joined
     const now = new Date();
     const userStartDate = new Date(user.createdAt);
     const daysSinceJoined = Math.floor((now.getTime() - userStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
     
-    // User can access days up to their current calendar day
-    return dayIndex <= daysSinceJoined;
+    // User can ONLY access their exact current calendar day - no past or future
+    return dayIndex === daysSinceJoined;
   }
 
   async getCompletedDays(userId: number): Promise<number[]> {
