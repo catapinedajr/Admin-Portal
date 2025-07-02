@@ -478,15 +478,20 @@ export default function Home() {
   
   // Security Test Handler Functions
   const handleSecurityAnswer = (selectedIndex: number) => {
-    if (!securityAnswerSubmitted) {
-      setSelectedSecurityAnswer(selectedIndex);
-    }
-  };
-
-  const submitSecurityAnswer = (correctIndex: number) => {
-    if (selectedSecurityAnswer === null) return;
+    if (securityAnswerSubmitted) return;
     
-    const isCorrect = selectedSecurityAnswer === correctIndex;
+    setSelectedSecurityAnswer(selectedIndex);
+    
+    // Define correct answers for each scenario (0-based index)
+    const correctAnswers: { [key: number]: number } = {
+      1: 2, 2: 1, 3: 1, 4: 2, 5: 1, 6: 1, 7: 1, 8: 2, 
+      9: 1, 10: 1, 11: 1, 12: 2, 13: 1, 14: 1, 15: 2, 16: 2
+    };
+    
+    const correctIndex = correctAnswers[securityTestStage] || 0;
+    const isCorrect = selectedIndex === correctIndex;
+    
+    // Immediately show feedback
     setIsSecurityAnswerCorrect(isCorrect);
     setShowSecurityFeedback(true);
     setSecurityAnswerSubmitted(true);
@@ -496,6 +501,8 @@ export default function Home() {
       setSecurityScore(securityScore + 1);
     }
   };
+
+
 
   const getSecurityExplanation = (stage: number, isCorrect: boolean): string => {
     const explanations = {
@@ -6409,24 +6416,7 @@ export default function Home() {
                                       ))}
                                     </div>
 
-                                    {/* Submit Button */}
-                                    {selectedSecurityAnswer !== null && !securityAnswerSubmitted && (
-                                      <div className="flex justify-center mt-4">
-                                        <Button
-                                          onClick={() => {
-                                            // Define correct answers for each scenario (0-based index)
-                                            const correctAnswers: { [key: number]: number } = {
-                                              1: 2, 2: 1, 3: 1, 4: 2, 5: 1, 6: 1, 7: 1, 8: 2, 
-                                              9: 1, 10: 1, 11: 1, 12: 2, 13: 1, 14: 1, 15: 2, 16: 2
-                                            };
-                                            submitSecurityAnswer(correctAnswers[securityTestStage] || 0);
-                                          }}
-                                          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
-                                        >
-                                          Submit Answer
-                                        </Button>
-                                      </div>
-                                    )}
+
                                   </div>
                                 )}
 
