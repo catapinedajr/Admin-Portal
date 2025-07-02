@@ -3580,7 +3580,7 @@ export default function Home() {
                             <div className="text-center">
                               <div className="text-orange-400 font-medium">Conservative Bitcoin</div>
                               <div className="text-orange-300 text-lg font-bold">$6.6M</div>
-                              <div className="text-orange-400">264x growth (25% per year)</div>
+                              <div className="text-orange-400">264x growth<br/>(25% per year)</div>
                             </div>
                           </div>
                         </div>
