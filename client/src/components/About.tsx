@@ -1,70 +1,66 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Clock, Heart, ArrowRight } from "lucide-react";
+import { Lightbulb, BookOpen } from "lucide-react";
 
 export default function About() {
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
         <h3 className="text-xl font-bold text-white">About HODLearn</h3>
-        <p className="text-zinc-400">The story behind how to learn Bitcoin</p>
+        <p className="text-zinc-400">Why we built this learning platform</p>
       </div>
 
-      {/* Navigation to full About page */}
+      {/* Creator's Journey */}
       <Card className="bg-zinc-900 border-zinc-800">
         <CardContent className="p-6">
-          <div className="text-center space-y-4">
-            <div className="w-16 h-16 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-2xl mx-auto">
-              HL
+          <div className="space-y-4">
+            <div className="text-center">
+              <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mx-auto mb-3">
+                <Lightbulb className="w-6 h-6 text-white" />
+              </div>
+              <h4 className="text-lg font-bold text-white mb-3">A Personal Journey</h4>
             </div>
-            <div>
-              <h4 className="text-lg font-bold text-white mb-2">Learn Our Story</h4>
-              <p className="text-zinc-300 mb-4">
-                Discover how HODLearn connects the patience of HODLing with the journey of learning Bitcoin. 
-                From overwhelmed beginners to building conviction through understanding.
+            
+            <div className="space-y-3 text-zinc-300 leading-relaxed">
+              <p>
+                Bitcoin felt overwhelming at first. The technical jargon, the complex economics, the endless debates - it was hard to know where to start or who to trust.
               </p>
-              <Button 
-                onClick={() => window.location.href = '/about'}
-                className="bg-orange-600 hover:bg-orange-700 text-white"
-              >
-                Read Our Full Story
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
+              
+              <p>
+                So I took it <span className="text-orange-400 font-medium">one small step at a time</span>. Every day, I'd learn just a little bit more. I'd read one article, watch one video, ask one question.
+              </p>
+              
+              <p>
+                Slowly, those small daily steps built something powerful: <span className="text-orange-400 font-medium">genuine understanding and conviction</span>. Not because someone told me what to think, but because I built the knowledge myself, piece by piece.
+              </p>
+              
+              <p>
+                That's when I realized - if this approach worked for me, it could work for others too. That's why we built HODLearn.
+              </p>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Quick Philosophy Summary */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card className="bg-zinc-900 border-zinc-800">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <Clock className="w-5 h-5 text-orange-400 mt-1" />
-              <div>
-                <h5 className="font-semibold text-white mb-1">Your Pace</h5>
-                <p className="text-sm text-zinc-400">
-                  Everyone learns Bitcoin differently. We meet you where you are.
-                </p>
-              </div>
+      {/* Philosophy */}
+      <Card className="bg-zinc-900 border-zinc-800">
+        <CardContent className="p-6">
+          <div className="flex items-start gap-4">
+            <BookOpen className="w-6 h-6 text-orange-400 mt-1" />
+            <div className="space-y-3">
+              <h4 className="text-lg font-bold text-white">Our Approach</h4>
+              <p className="text-zinc-300 leading-relaxed">
+                We believe in the power of <span className="text-orange-400 font-medium">consistent, small steps</span>. 
+                No rushed decisions, no overwhelming information dumps. Just clear, accessible lessons 
+                that build on each other, day by day.
+              </p>
+              <p className="text-zinc-300 leading-relaxed">
+                Because true conviction isn't built overnight - it's built through understanding. 
+                And understanding comes from taking the time to learn properly.
+              </p>
             </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="bg-zinc-900 border-zinc-800">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <Heart className="w-5 h-5 text-orange-400 mt-1" />
-              <div>
-                <h5 className="font-semibold text-white mb-1">Built with Care</h5>
-                <p className="text-sm text-zinc-400">
-                  Every lesson is written like we're explaining it to our own family.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
