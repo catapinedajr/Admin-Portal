@@ -5056,15 +5056,9 @@ export default function Home() {
                 {/* Interactive Safety Skills Test */}
                 <Card id="safety-skills-test" className="bg-zinc-900 border-zinc-800">
                   <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-orange-600/20 rounded-lg">
-                        <Shield className="w-6 h-6 text-orange-400" />
-                      </div>
-                      <h4 className="text-xl font-bold text-white">Security Skill Simulator</h4>
-                    </div>
-                    <p className="text-zinc-400 mb-6">Apply what you've learned! Test your ability to identify real-world Bitcoin security threats.</p>
-                    {/* Phishing Email Simulator */}
-                    {!safetyCompleted ? (
+                    {/* Content temporarily removed for approval */}
+                    {/* Safety simulator functionality temporarily disabled */}
+                    {false && !safetyCompleted ? (
                       <div className="space-y-6">
                         {/* Progress Indicator */}
                         <div className="space-y-3 mb-6">
@@ -5481,7 +5475,19 @@ export default function Home() {
                         </Card>
                       </div>
                     ) : (
-                      /* Final Results */
+                      /* Simple placeholder content */
+                      <div className="text-center space-y-6">
+                        <div className="p-8 rounded-lg border border-zinc-700 bg-zinc-800/30">
+                          <Shield className="w-12 h-12 text-zinc-400 mx-auto mb-4" />
+                          <h4 className="text-lg font-semibold text-white mb-2">Security Skills Test</h4>
+                          <p className="text-zinc-400 text-sm">
+                            Coming soon - Interactive Bitcoin security training with real-world scenarios.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                    {false && (
+                      /* Final Results - disabled */
                       <div className="text-center space-y-3">
                         <div className="p-4 sm:p-6 rounded-lg border bg-zinc-800/50 border-zinc-700">
                           {safetyScore >= safetySimulations.length * 0.8 ? (
