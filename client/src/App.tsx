@@ -5,13 +5,12 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { useEffect, useState } from "react";
-import ProductionSafeHome from "@/components/ProductionSafeHome";
+import HomeDashboard from "@/pages/home-dashboard";
+import Home from "@/pages/home-new";
 import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
 import NotFound from "@/pages/not-found";
 import { AuthPage } from "@/pages/auth";
-import Diagnostic from "@/pages/diagnostic";
-import ErrorBoundary from "@/components/ErrorBoundary";
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const [, setLocation] = useLocation();
@@ -44,7 +43,19 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function OnboardingRedirect() {
+  const [, setLocation] = useLocation();
 
+  useEffect(() => {
+    const hasCompletedOnboarding = localStorage.getItem('hodlearn-onboarding-completed');
+    
+    if (!hasCompletedOnboarding) {
+      setLocation('/onboarding');
+    }
+  }, [setLocation]);
+
+  return <Home />;
+}
 
 function ScrollToTop() {
   const [location] = useLocation();
@@ -69,30 +80,22 @@ function Router() {
         </Route>
         <Route path="/learn">
           <AuthGuard>
-            <ErrorBoundary>
-              <ProductionSafeHome />
-            </ErrorBoundary>
+            <Home />
           </AuthGuard>
         </Route>
         <Route path="/money">
           <AuthGuard>
-            <ErrorBoundary>
-              <ProductionSafeHome />
-            </ErrorBoundary>
+            <Home />
           </AuthGuard>
         </Route>
         <Route path="/simulators">
           <AuthGuard>
-            <ErrorBoundary>
-              <ProductionSafeHome />
-            </ErrorBoundary>
+            <Home />
           </AuthGuard>
         </Route>
         <Route path="/more">
           <AuthGuard>
-            <ErrorBoundary>
-              <ProductionSafeHome />
-            </ErrorBoundary>
+            <Home />
           </AuthGuard>
         </Route>
         <Route path="/about">
@@ -100,12 +103,9 @@ function Router() {
             <About />
           </AuthGuard>
         </Route>
-        <Route path="/diagnostic" component={Diagnostic} />
         <Route path="/">
           <AuthGuard>
-            <ErrorBoundary>
-              <ProductionSafeHome />
-            </ErrorBoundary>
+            <OnboardingRedirect />
           </AuthGuard>
         </Route>
         <Route component={NotFound} />
