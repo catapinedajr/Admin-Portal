@@ -2,12 +2,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Gamepad2, MoreHorizontal } from "lucide-react";
 import type { User } from "@shared/schema";
 
+type MainSection = "home" | "learn" | "money" | "simulations" | "more";
+
 interface HomeProps {
   user: User | undefined;
   currentDayIndex: number;
   dayMetadata: any;
   dailyFacts: any[];
-  setActiveSection: (section: string) => void;
+  setActiveSection: (section: MainSection) => void;
 }
 
 // Dynamic greeting based on time of day
