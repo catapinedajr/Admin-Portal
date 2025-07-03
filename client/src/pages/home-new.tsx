@@ -2640,7 +2640,7 @@ export default function Home() {
 
         {/* Money 2 Section */}
         {activeSection === "money2" && (
-          <MoneySection />
+          <MoneySection setActiveSection={setActiveSection} />
         )}
 
         {/* Practice Section */}

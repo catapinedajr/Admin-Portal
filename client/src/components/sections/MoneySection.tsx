@@ -11,8 +11,10 @@ import {
   RefreshCw
 } from "lucide-react";
 
+type MainSection = "home" | "learn" | "money" | "money2" | "simulations" | "more";
+
 interface MoneySectionProps {
-  setActiveSection?: (section: string) => void;
+  setActiveSection?: (section: MainSection) => void;
 }
 
 export default function MoneySection({ setActiveSection }: MoneySectionProps) {
@@ -170,28 +172,121 @@ export default function MoneySection({ setActiveSection }: MoneySectionProps) {
         </CardContent>
       </Card>
 
-      {/* Placeholder for complete Money section - Working on 945-line extraction */}
+      {/* Money Supply Erosion Visualization */}
       <Card className="bg-zinc-900 border-zinc-800">
-        <CardHeader>
-          <CardTitle className="text-orange-400">Complete Money Section Extraction In Progress</CardTitle>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-white flex items-center gap-3 text-xl">
+            <TrendingDown className="w-5 h-5 text-orange-400" />
+            How Much Money Has Been Printed Over Time
+          </CardTitle>
+          <p className="text-zinc-400 text-sm">See how the government has created more and more dollars since 1920, making each dollar worth less</p>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-6">
+          {/* Year Selection Buttons */}
           <div className="space-y-4">
-            <p className="text-zinc-300">
-              The Money section is being extracted from home-new.tsx to this component.
-              This will reduce the main file from 527KB to under 500KB for deployment.
+            <div className="text-center">
+              <span className="text-orange-400 font-bold text-2xl">{moneySupplyYear}</span>
+              <p className="text-zinc-400 text-sm mt-1">Select a year to explore</p>
+            </div>
+            
+            {/* Clean milestone buttons */}
+            <div className="grid grid-cols-5 gap-1.5">
+              {[
+                { year: 1920, label: "'20", desc: "Gold Era" },
+                { year: 1971, label: "'71", desc: "Nixon" },
+                { year: 2000, label: "'00", desc: "Dot-com" },
+                { year: 2008, label: "'08", desc: "Crisis" },
+                { year: 2024, label: "'25", desc: "Today" }
+              ].map((milestone) => (
+                <button
+                  key={milestone.year}
+                  onClick={() => setMoneySupplyYear(milestone.year)}
+                  className={`p-2 rounded-md border transition-all duration-200 ${
+                    moneySupplyYear === milestone.year
+                      ? 'bg-orange-600/20 border-orange-500 text-orange-300'
+                      : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-300'
+                  }`}
+                >
+                  <div className="font-semibold text-sm">{milestone.label}</div>
+                  <div className="text-xs opacity-75">{milestone.desc}</div>
+                </button>
+              ))}
+            </div>
+
+            {/* Key Statistics Display */}
+            <div className="grid grid-cols-2 gap-3 mt-4">
+              <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
+                <div className="text-xl font-bold text-orange-400 transition-all duration-700">
+                  ${getMoneySupplyRaw(moneySupplyYear)}T
+                </div>
+                <div className="text-zinc-400 text-xs">Total Dollars in Circulation</div>
+              </div>
+              <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
+                <div className="text-xl font-bold text-orange-400 transition-all duration-700">
+                  {Math.round(getMoneySupplyRaw(moneySupplyYear) / getMoneySupplyRaw(1920))}x
+                </div>
+                <div className="text-zinc-400 text-xs">More Money Since 1920</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Simplified Chart */}
+          <div className="space-y-4">
+            <h4 className="text-white font-semibold flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-orange-400" />
+              Total Supply of Dollars
+            </h4>
+            <div className="bg-zinc-800/50 rounded-lg p-6">
+              <div className="relative h-56 w-full">
+                {/* Simple chart placeholder */}
+                <div className="w-full h-full bg-zinc-800/30 rounded flex items-center justify-center">
+                  <div className="text-center">
+                    <TrendingUp className="w-12 h-12 text-orange-400 mx-auto mb-2" />
+                    <p className="text-zinc-400">Money Supply Chart</p>
+                    <p className="text-zinc-500 text-sm">Year: {moneySupplyYear}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* THIS is INFLATION - Emphasis */}
+          <div className="text-center pt-4">
+            <div className="text-3xl font-bold">
+              <span className="text-zinc-300">THIS is</span>{" "}
+              <span className="text-orange-400">INFLATION</span>
+            </div>
+            <p className="text-zinc-400 text-sm mt-2 max-w-2xl mx-auto">
+              When governments create more money, each dollar becomes worth less. 
+              Your savings lose purchasing power while asset prices rise.
             </p>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-orange-400 rounded-full animate-pulse"></div>
-              <span className="text-zinc-400 text-sm">Extracting 945 lines of Money section content...</span>
-            </div>
-            <div className="bg-zinc-800/50 rounded-lg p-4">
-              <p className="text-orange-300 font-semibold mb-2">Progress:</p>
-              <p className="text-zinc-400 text-sm">✅ Routing fixed - Money 2 navigation working</p>
-              <p className="text-zinc-400 text-sm">✅ Component structure ready</p>
-              <p className="text-zinc-400 text-sm">✅ Helper functions extracted</p>
-              <p className="text-zinc-400 text-sm">🔄 Content extraction in progress</p>
-            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Call-to-Action Bridge */}
+      <Card className="bg-gradient-to-r from-orange-950/30 to-zinc-900 border-orange-800/50">
+        <CardContent className="p-8 text-center">
+          <h3 className="text-2xl font-bold text-white mb-4">
+            Ready to Stop the Wealth Transfer?
+          </h3>
+          <p className="text-zinc-300 mb-6 max-w-2xl mx-auto">
+            You've seen how your money loses value over time. Now discover how Bitcoin's fixed supply of 
+            21 million coins protects your purchasing power and gives you control over your financial future.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+            <Button 
+              onClick={() => setActiveSection?.("learn")}
+              className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex-1"
+            >
+              Start Learning Bitcoin
+            </Button>
+            <Button 
+              onClick={() => setActiveSection?.("simulations")}
+              className="bg-zinc-700 hover:bg-zinc-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex-1"
+            >
+              Try Simulators
+            </Button>
           </div>
         </CardContent>
       </Card>
