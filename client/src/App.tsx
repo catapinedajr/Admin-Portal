@@ -144,7 +144,7 @@ function Router() {
         </Route>
         <Route path="/money">
           <AuthGuard>
-            <Home />
+            <FinancePageUltraSimple />
           </AuthGuard>
         </Route>
         <Route path="/simulators">
