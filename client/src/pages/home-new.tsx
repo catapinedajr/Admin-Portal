@@ -93,7 +93,7 @@ import { ConsistencyCalendar } from "@/components/ConsistencyCalendar";
 import { MonthlySimulatorTracker } from "@/components/MonthlySimulatorTracker";
 import HomeSection from "@/components/sections/HomeSection";
 import MoreSection from "@/components/sections/MoreSection";
-import MoneySection from "@/components/sections/MoneySection";
+
 import { iconMap, bitcoinTerms, seedPhraseScenarios } from "@/constants/appData";
 import WeeklyQuiz from "@/components/WeeklyQuiz";
 import { cleanText, getExpandedLessonContent } from "@/utils/textUtils";
@@ -2635,12 +2635,188 @@ export default function Home() {
 
         {/* Finance Section */}
         {activeSection === "money" && (
-          <MoneySection setActiveSection={setActiveSection} />
+          <div className="space-y-8">
+            {/* Hero Narrative */}
+            <Card className="bg-gradient-to-br from-orange-950/30 via-zinc-900 to-red-950/30 border-orange-800/50">
+              <CardContent className="p-8">
+                <div className="max-w-4xl mx-auto text-center space-y-6">
+                  <h2 className="text-4xl font-bold text-white mb-4">
+                    Your Money Is Being <span className="text-red-400">Silently Stolen</span>
+                  </h2>
+                  
+                  <div className="text-lg text-zinc-300 leading-relaxed space-y-4">
+                    <p>
+                      Every day you wait, your savings lose purchasing power. It's not your fault—the system is rigged. 
+                      Central banks print money endlessly, devaluing your hard-earned dollars while the wealthy protect 
+                      themselves with assets that can't be printed.
+                    </p>
+                    
+                    <p>
+                      <span className="text-orange-400 font-semibold">What cost $1 in 1920 now costs $15.50.</span> Your 
+                      great-grandparents could buy a house with one income and still save money. Today, two incomes barely 
+                      cover rent. This isn't progress—it's systematic wealth transfer from savers to money printers.
+                    </p>
+                    
+                    <p>
+                      But there's an escape route. For the first time in human history, we have <span className="text-orange-400 font-semibold">
+                      mathematically perfect money</span> that can't be inflated away. Bitcoin isn't just digital gold—it's 
+                      the antidote to monetary debasement.
+                    </p>
+                  </div>
+                  
+                  <div className="grid gap-4 md:grid-cols-3 mt-8">
+                    <div className="p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50">
+                      <div className="text-orange-300 font-bold text-xl">21 Million</div>
+                      <div className="text-zinc-300 text-sm">Bitcoin's Maximum Supply</div>
+                      <div className="text-zinc-400 text-xs mt-1">No central bank can print more</div>
+                    </div>
+                    
+                    <div className="p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50">
+                      <div className="text-orange-300 font-bold text-xl">0%</div>
+                      <div className="text-zinc-300 text-sm">Bitcoin Inflation Rate</div>
+                      <div className="text-zinc-400 text-xs mt-1">After all 21M are mined</div>
+                    </div>
+                    
+                    <div className="p-4 bg-orange-950/50 rounded-xl border border-orange-800/50">
+                      <div className="text-orange-300 font-bold text-xl">100%</div>
+                      <div className="text-orange-400/80 text-sm">You Own Your Bitcoin</div>
+                      <div className="text-zinc-400 text-xs mt-1">No bank can freeze it</div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-8 p-6 bg-orange-950/20 rounded-xl border border-orange-800/30">
+                    <div className="text-orange-300 font-semibold text-lg mb-2">
+                      The choice is yours:
+                    </div>
+                    <div className="text-zinc-300">
+                      Keep letting inflation slowly drain your wealth, or learn about the money that can't be manipulated. 
+                      The calculators below show you exactly what you're losing—and what you could gain.
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Call-to-Action Bridge */}
+            <Card className="bg-gradient-to-r from-orange-950/30 to-zinc-900 border-orange-800/50">
+              <CardContent className="p-8 text-center">
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  Ready to Stop the Wealth Transfer?
+                </h3>
+                <p className="text-zinc-300 mb-6 max-w-2xl mx-auto">
+                  You've seen how your money loses value over time. Now discover how Bitcoin's fixed supply of 
+                  21 million coins protects your purchasing power and gives you control over your financial future.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+                  <button 
+                    onClick={() => setActiveSection("learn")}
+                    className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex-1"
+                  >
+                    Start Learning Bitcoin
+                  </button>
+                  <button 
+                    onClick={() => setActiveSection("simulations")}
+                    className="bg-zinc-700 hover:bg-zinc-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex-1"
+                  >
+                    Try Simulators
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         )}
 
         {/* Money 2 Section */}
         {activeSection === "money2" && (
-          <MoneySection setActiveSection={setActiveSection} />
+          <div className="space-y-8">
+            {/* Hero Narrative */}
+            <Card className="bg-gradient-to-br from-orange-950/30 via-zinc-900 to-red-950/30 border-orange-800/50">
+              <CardContent className="p-8">
+                <div className="max-w-4xl mx-auto text-center space-y-6">
+                  <h2 className="text-4xl font-bold text-white mb-4">
+                    Your Money Is Being <span className="text-red-400">Silently Stolen</span>
+                  </h2>
+                  
+                  <div className="text-lg text-zinc-300 leading-relaxed space-y-4">
+                    <p>
+                      Every day you wait, your savings lose purchasing power. It's not your fault—the system is rigged. 
+                      Central banks print money endlessly, devaluing your hard-earned dollars while the wealthy protect 
+                      themselves with assets that can't be printed.
+                    </p>
+                    
+                    <p>
+                      <span className="text-orange-400 font-semibold">What cost $1 in 1920 now costs $15.50.</span> Your 
+                      great-grandparents could buy a house with one income and still save money. Today, two incomes barely 
+                      cover rent. This isn't progress—it's systematic wealth transfer from savers to money printers.
+                    </p>
+                    
+                    <p>
+                      But there's an escape route. For the first time in human history, we have <span className="text-orange-400 font-semibold">
+                      mathematically perfect money</span> that can't be inflated away. Bitcoin isn't just digital gold—it's 
+                      the antidote to monetary debasement.
+                    </p>
+                  </div>
+                  
+                  <div className="grid gap-4 md:grid-cols-3 mt-8">
+                    <div className="p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50">
+                      <div className="text-orange-300 font-bold text-xl">21 Million</div>
+                      <div className="text-zinc-300 text-sm">Bitcoin's Maximum Supply</div>
+                      <div className="text-zinc-400 text-xs mt-1">No central bank can print more</div>
+                    </div>
+                    
+                    <div className="p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50">
+                      <div className="text-orange-300 font-bold text-xl">0%</div>
+                      <div className="text-zinc-300 text-sm">Bitcoin Inflation Rate</div>
+                      <div className="text-zinc-400 text-xs mt-1">After all 21M are mined</div>
+                    </div>
+                    
+                    <div className="p-4 bg-orange-950/50 rounded-xl border border-orange-800/50">
+                      <div className="text-orange-300 font-bold text-xl">100%</div>
+                      <div className="text-orange-400/80 text-sm">You Own Your Bitcoin</div>
+                      <div className="text-zinc-400 text-xs mt-1">No bank can freeze it</div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-8 p-6 bg-orange-950/20 rounded-xl border border-orange-800/30">
+                    <div className="text-orange-300 font-semibold text-lg mb-2">
+                      The choice is yours:
+                    </div>
+                    <div className="text-zinc-300">
+                      Keep letting inflation slowly drain your wealth, or learn about the money that can't be manipulated. 
+                      The calculators below show you exactly what you're losing—and what you could gain.
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Call-to-Action Bridge */}
+            <Card className="bg-gradient-to-r from-orange-950/30 to-zinc-900 border-orange-800/50">
+              <CardContent className="p-8 text-center">
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  Ready to Stop the Wealth Transfer?
+                </h3>
+                <p className="text-zinc-300 mb-6 max-w-2xl mx-auto">
+                  You've seen how your money loses value over time. Now discover how Bitcoin's fixed supply of 
+                  21 million coins protects your purchasing power and gives you control over your financial future.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+                  <button 
+                    onClick={() => setActiveSection("learn")}
+                    className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex-1"
+                  >
+                    Start Learning Bitcoin
+                  </button>
+                  <button 
+                    onClick={() => setActiveSection("simulations")}
+                    className="bg-zinc-700 hover:bg-zinc-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex-1"
+                  >
+                    Try Simulators
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         )}
 
         {/* Practice Section */}
