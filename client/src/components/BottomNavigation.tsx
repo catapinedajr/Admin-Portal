@@ -1,6 +1,6 @@
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Home, GraduationCap, Coins, Gamepad2, MoreHorizontal } from "lucide-react";
+import { Home, GraduationCap, TrendingUp, Coins, Gamepad2, MoreHorizontal } from "lucide-react";
 
 interface BottomNavigationProps {
   activeSection?: string;
@@ -22,6 +22,7 @@ export default function BottomNavigation({ activeSection, onSectionChange }: Bot
     if (activeSection) return activeSection;
     if (location === '/') return 'home';
     if (location.startsWith('/learn')) return 'learn';
+    if (location.startsWith('/why-btc')) return 'why-btc';
     if (location.startsWith('/money')) return 'money';
     if (location.startsWith('/simulators')) return 'simulators';
     if (location.startsWith('/more') || location.startsWith('/about')) return 'more';
@@ -42,6 +43,12 @@ export default function BottomNavigation({ activeSection, onSectionChange }: Bot
       label: 'Learn',
       icon: GraduationCap,
       path: '/learn'
+    },
+    {
+      id: 'why-btc',
+      label: 'Why BTC',
+      icon: TrendingUp,
+      path: '/why-btc'
     },
     {
       id: 'money',

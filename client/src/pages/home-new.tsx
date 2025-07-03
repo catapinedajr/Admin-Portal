@@ -93,6 +93,7 @@ import { ConsistencyCalendar } from "@/components/ConsistencyCalendar";
 import { MonthlySimulatorTracker } from "@/components/MonthlySimulatorTracker";
 import HomeSection from "@/components/sections/HomeSection";
 import MoreSection from "@/components/sections/MoreSection";
+import { WhyBTCSection } from "@/components/sections/WhyBTCSection";
 import { iconMap, bitcoinTerms, seedPhraseScenarios } from "@/constants/appData";
 import WeeklyQuiz from "@/components/WeeklyQuiz";
 import { cleanText, getExpandedLessonContent } from "@/utils/textUtils";
@@ -107,7 +108,7 @@ import { cleanText, getExpandedLessonContent } from "@/utils/textUtils";
 
 
 
-type MainSection = "home" | "learn" | "money" | "simulations" | "more";
+type MainSection = "home" | "learn" | "why-btc" | "money" | "simulations" | "more";
 type LearnSubTab = "today" | "reference";
 type SimulationsSubTab = "wallet" | "safety" | "transactions" | "transfer" | "hodl" | "dca" | "inflation" | "fees";
 type MoreSubTab = "store" | "about";
@@ -2623,6 +2624,11 @@ export default function Home() {
               </div>
             )}
           </div>
+        )}
+
+        {/* Why BTC Section */}
+        {activeSection === "why-btc" && (
+          <WhyBTCSection />
         )}
 
         {/* Finance Section */}
@@ -9020,6 +9026,7 @@ export default function Home() {
           
           setActiveSection(mappedSection);
           if (section === 'learn') setLocation('/learn');
+          else if (section === 'why-btc') setLocation('/why-btc');
           else if (section === 'money') setLocation('/money');
           else if (section === 'simulators') setLocation('/simulators');
           else if (section === 'more') setLocation('/more');
