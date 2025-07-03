@@ -280,6 +280,8 @@ Preferred communication style: Simple, everyday language.
 
 **PWA White Screen Bug**: User reported installed home screen version occasionally shows white screen requiring reinstallation. This likely occurs during service worker updates or caching conflicts. Need to investigate and implement better error recovery for PWA installations.
 
+**Safari Mac White Screen Bug**: User reported white screen after login on Safari Mac desktop. Fixed by implementing Safari-specific localStorage handling in AuthGuard component and adding delay-based redirects after authentication to ensure proper session storage and validation.
+
 **Content Design Guidelines:**
 - **Quiz Answer Distribution**: Avoid clustering correct answers on option B. Historical issue showed 11/16 questions having B as correct answer, making test predictable and gameable. Future content should distribute correct answers more evenly across A, B, C, D options to maintain assessment integrity and prevent answer pattern exploitation.
 

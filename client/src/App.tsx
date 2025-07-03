@@ -22,24 +22,35 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
         // Check localStorage first (if available)
         let sessionId = null;
         try {
-          sessionId = localStorage.getItem('hodlearn_session');
+          // Safari-specific localStorage check
+          if (typeof localStorage !== 'undefined' && localStorage.getItem) {
+            sessionId = localStorage.getItem('hodlearn_session');
+          }
         } catch (error) {
-          console.warn('LocalStorage not available:', error);
-        }
-        
-        if (!sessionId) {
-          // No session found, redirect to auth
+          console.warn('Safari localStorage access issue:', error);
+          // If localStorage is completely unavailable, redirect to auth
+          setIsAuthenticated(false);
           setLocation('/auth');
           return;
         }
         
-        // Validate session with server
+        if (!sessionId) {
+          // No session found, redirect to auth
+          setIsAuthenticated(false);
+          setLocation('/auth');
+          return;
+        }
+        
+        // Validate session with server with Safari-compatible fetch
         try {
           const response = await fetch('/api/user', {
+            method: 'GET',
             headers: {
-              'Authorization': `Bearer ${sessionId}`
+              'Authorization': `Bearer ${sessionId}`,
+              'Content-Type': 'application/json'
             },
-            credentials: 'same-origin'
+            credentials: 'same-origin',
+            cache: 'no-cache'
           });
           
           if (response.ok) {
@@ -47,25 +58,33 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
             setIsAuthenticated(true);
           } else {
             // Session invalid, clear storage and redirect
+            console.warn('Session validation failed:', response.status);
             try {
-              localStorage.removeItem('hodlearn_session');
-              localStorage.removeItem('hodlearn_user');
+              if (typeof localStorage !== 'undefined') {
+                localStorage.removeItem('hodlearn_session');
+                localStorage.removeItem('hodlearn_user');
+              }
             } catch (error) {
-              console.warn('Error clearing localStorage:', error);
+              console.warn('Error clearing Safari localStorage:', error);
             }
+            setIsAuthenticated(false);
             setLocation('/auth');
           }
         } catch (error) {
-          console.error('Auth check failed:', error);
+          console.error('Safari auth check network error:', error);
+          setIsAuthenticated(false);
           setLocation('/auth');
         }
       } catch (error) {
-        console.error('Auth guard error:', error);
+        console.error('Safari auth guard error:', error);
+        setIsAuthenticated(false);
         setLocation('/auth');
       }
     }
     
-    checkAuth();
+    // Add small delay for Safari to ensure DOM is ready
+    const timeoutId = setTimeout(checkAuth, 50);
+    return () => clearTimeout(timeoutId);
   }, [setLocation]);
 
   // Show loading while checking auth

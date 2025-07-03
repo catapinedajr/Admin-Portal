@@ -108,16 +108,22 @@ export function AuthPage() {
     },
     onSuccess: (data) => {
       // Store session in localStorage
-      localStorage.setItem('hodlearn_session', data.sessionId);
-      localStorage.setItem('hodlearn_user', JSON.stringify(data.user));
+      try {
+        localStorage.setItem('hodlearn_session', data.sessionId);
+        localStorage.setItem('hodlearn_user', JSON.stringify(data.user));
+      } catch (error) {
+        console.warn('Safari localStorage issue:', error);
+      }
       
       toast({
         title: 'Welcome back!',
         description: `Logged in as ${data.user.username}`,
       });
       
-      // Redirect to home
-      window.location.href = '/';
+      // Safari-compatible redirect with delay
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 100);
     },
     onError: (error: any) => {
       toast({
@@ -135,16 +141,22 @@ export function AuthPage() {
     },
     onSuccess: (data) => {
       // Store session in localStorage
-      localStorage.setItem('hodlearn_session', data.sessionId);
-      localStorage.setItem('hodlearn_user', JSON.stringify(data.user));
+      try {
+        localStorage.setItem('hodlearn_session', data.sessionId);
+        localStorage.setItem('hodlearn_user', JSON.stringify(data.user));
+      } catch (error) {
+        console.warn('Safari localStorage issue:', error);
+      }
       
       toast({
         title: 'Welcome to HODLearn!',
         description: `Account created for ${data.user.username}`,
       });
       
-      // Redirect to home
-      window.location.href = '/';
+      // Safari-compatible redirect with delay
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 100);
     },
     onError: (error: any) => {
       toast({
