@@ -17,18 +17,55 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
-    // Check for authentication
-    const sessionId = localStorage.getItem('hodlearn_session');
-    const user = localStorage.getItem('hodlearn_user');
-    
-    if (!sessionId || !user) {
-      // Not authenticated, redirect to auth
-      setLocation('/auth');
-      return;
+    async function checkAuth() {
+      try {
+        // Check localStorage first (if available)
+        let sessionId = null;
+        try {
+          sessionId = localStorage.getItem('hodlearn_session');
+        } catch (error) {
+          console.warn('LocalStorage not available:', error);
+        }
+        
+        if (!sessionId) {
+          // No session found, redirect to auth
+          setLocation('/auth');
+          return;
+        }
+        
+        // Validate session with server
+        try {
+          const response = await fetch('/api/user', {
+            headers: {
+              'Authorization': `Bearer ${sessionId}`
+            },
+            credentials: 'same-origin' // Changed from 'include' for better Safari compatibility
+          });
+          
+          if (response.ok) {
+            // Session is valid
+            setIsAuthenticated(true);
+          } else {
+            // Session invalid, clear storage and redirect
+            try {
+              localStorage.removeItem('hodlearn_session');
+              localStorage.removeItem('hodlearn_user');
+            } catch (error) {
+              console.warn('Error clearing localStorage:', error);
+            }
+            setLocation('/auth');
+          }
+        } catch (error) {
+          console.error('Auth check failed:', error);
+          setLocation('/auth');
+        }
+      } catch (error) {
+        console.error('Auth guard error:', error);
+        setLocation('/auth');
+      }
     }
     
-    // User is authenticated
-    setIsAuthenticated(true);
+    checkAuth();
   }, [setLocation]);
 
   // Show loading while checking auth

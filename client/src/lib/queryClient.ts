@@ -12,11 +12,23 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
+  // Get auth headers if available
+  const headers: Record<string, string> = data ? { "Content-Type": "application/json" } : {};
+  
+  try {
+    const sessionId = localStorage.getItem('hodlearn_session');
+    if (sessionId) {
+      headers['Authorization'] = `Bearer ${sessionId}`;
+    }
+  } catch (error) {
+    console.warn('LocalStorage not available for auth headers:', error);
+  }
+
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers,
     body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
+    credentials: "same-origin", // Better Safari compatibility
   });
 
   await throwIfResNotOk(res);
@@ -29,8 +41,21 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
+    // Get auth headers if available
+    const headers: Record<string, string> = {};
+    
+    try {
+      const sessionId = localStorage.getItem('hodlearn_session');
+      if (sessionId) {
+        headers['Authorization'] = `Bearer ${sessionId}`;
+      }
+    } catch (error) {
+      console.warn('LocalStorage not available for query auth:', error);
+    }
+
     const res = await fetch(queryKey[0] as string, {
-      credentials: "include",
+      headers,
+      credentials: "same-origin", // Better Safari compatibility
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
