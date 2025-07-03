@@ -12,12 +12,10 @@ import {
 } from "lucide-react";
 
 interface MoneySectionProps {
-  // No props needed - this is a self-contained component
+  setActiveSection?: (section: string) => void;
 }
 
-export default function MoneySection(props: MoneySectionProps) {
-  console.log("🟢 MoneySection component is rendering successfully!");
-  console.log("📍 Current location in MoneySection:", window.location.pathname);
+export default function MoneySection({ setActiveSection }: MoneySectionProps) {
   // Local state for this component (copied from original)
   const [inflationAmount, setInflationAmount] = useState<string>("10000");
   const [inflationYears, setInflationYears] = useState<number>(10);
@@ -105,17 +103,95 @@ export default function MoneySection(props: MoneySectionProps) {
     return dataPoints[2024];
   };
 
+  // Read the complete Money section content from the extracted file
+  const moneyContent = `INSERT_MONEY_CONTENT_HERE`;
+  
+  // For now, return a working component until complete extraction is done
   return (
     <div className="space-y-8">
-      <Card className="text-center p-8 bg-orange-950/20 border-orange-800/50">
+      {/* Hero Narrative */}
+      <Card className="bg-gradient-to-br from-orange-950/30 via-zinc-900 to-red-950/30 border-orange-800/50">
+        <CardContent className="p-8">
+          <div className="max-w-4xl mx-auto text-center space-y-6">
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Your Money Is Being <span className="text-red-400">Silently Stolen</span>
+            </h2>
+            
+            <div className="text-lg text-zinc-300 leading-relaxed space-y-4">
+              <p>
+                Every day you wait, your savings lose purchasing power. It's not your fault—the system is rigged. 
+                Central banks print money endlessly, devaluing your hard-earned dollars while the wealthy protect 
+                themselves with assets that can't be printed.
+              </p>
+              
+              <p>
+                <span className="text-orange-400 font-semibold">What cost $1 in 1920 now costs $15.50.</span> Your 
+                great-grandparents could buy a house with one income and still save money. Today, two incomes barely 
+                cover rent. This isn't progress—it's systematic wealth transfer from savers to money printers.
+              </p>
+              
+              <p>
+                But there's an escape route. For the first time in human history, we have <span className="text-orange-400 font-semibold">
+                mathematically perfect money</span> that can't be inflated away. Bitcoin isn't just digital gold—it's 
+                the antidote to monetary debasement.
+              </p>
+            </div>
+            
+            <div className="grid gap-4 md:grid-cols-3 mt-8">
+              <div className="p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50">
+                <div className="text-orange-300 font-bold text-xl">21 Million</div>
+                <div className="text-zinc-300 text-sm">Bitcoin's Maximum Supply</div>
+                <div className="text-zinc-400 text-xs mt-1">No central bank can print more</div>
+              </div>
+              
+              <div className="p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50">
+                <div className="text-orange-300 font-bold text-xl">0%</div>
+                <div className="text-zinc-300 text-sm">Bitcoin Inflation Rate</div>
+                <div className="text-zinc-400 text-xs mt-1">After all 21M are mined</div>
+              </div>
+              
+              <div className="p-4 bg-orange-950/50 rounded-xl border border-orange-800/50">
+                <div className="text-orange-300 font-bold text-xl">100%</div>
+                <div className="text-orange-400/80 text-sm">You Own Your Bitcoin</div>
+                <div className="text-zinc-400 text-xs mt-1">No bank can freeze it</div>
+              </div>
+            </div>
+            
+            <div className="mt-8 p-6 bg-orange-950/20 rounded-xl border border-orange-800/30">
+              <div className="text-orange-300 font-semibold text-lg mb-2">
+                The choice is yours:
+              </div>
+              <div className="text-zinc-300">
+                Keep letting inflation slowly drain your wealth, or learn about the money that can't be manipulated. 
+                The calculators below show you exactly what you're losing—and what you could gain.
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Placeholder for complete Money section - Working on 945-line extraction */}
+      <Card className="bg-zinc-900 border-zinc-800">
+        <CardHeader>
+          <CardTitle className="text-orange-400">Complete Money Section Extraction In Progress</CardTitle>
+        </CardHeader>
         <CardContent>
-          <h2 className="text-2xl font-bold text-orange-400 mb-4">MoneySection Component Active</h2>
-          <p className="text-zinc-400">This is the extracted MoneySection component with all helper functions ready.</p>
-          <p className="text-zinc-500 text-sm mt-2">Money 2 navigation is working! Ready to copy the remaining 800+ lines of Money section content.</p>
-          <div className="mt-4 p-4 bg-zinc-800/50 rounded-lg">
-            <p className="text-orange-300 font-semibold">Test Data:</p>
-            <p className="text-zinc-400">Money Supply for 2024: ${getMoneySupplyRaw(2024)}T</p>
-            <p className="text-zinc-400">Current Year: {moneySupplyYear}</p>
+          <div className="space-y-4">
+            <p className="text-zinc-300">
+              The Money section is being extracted from home-new.tsx to this component.
+              This will reduce the main file from 527KB to under 500KB for deployment.
+            </p>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-orange-400 rounded-full animate-pulse"></div>
+              <span className="text-zinc-400 text-sm">Extracting 945 lines of Money section content...</span>
+            </div>
+            <div className="bg-zinc-800/50 rounded-lg p-4">
+              <p className="text-orange-300 font-semibold mb-2">Progress:</p>
+              <p className="text-zinc-400 text-sm">✅ Routing fixed - Money 2 navigation working</p>
+              <p className="text-zinc-400 text-sm">✅ Component structure ready</p>
+              <p className="text-zinc-400 text-sm">✅ Helper functions extracted</p>
+              <p className="text-zinc-400 text-sm">🔄 Content extraction in progress</p>
+            </div>
           </div>
         </CardContent>
       </Card>
