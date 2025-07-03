@@ -127,6 +127,11 @@ function Router() {
             <Home />
           </AuthGuard>
         </Route>
+        <Route path="/money2">
+          <AuthGuard>
+            <Home />
+          </AuthGuard>
+        </Route>
         <Route path="/simulators">
           <AuthGuard>
             <Home />
