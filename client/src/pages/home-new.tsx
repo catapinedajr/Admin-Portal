@@ -2516,8 +2516,8 @@ export default function Home() {
                   
                   <div className="text-lg text-zinc-300 leading-relaxed space-y-4">
                     <p>
-                      Every day you wait, your savings lose purchasing power. It's not your fault—the system is rigged. 
-                      Central banks print money endlessly, devaluing your hard-earned dollars while the wealthy protect 
+                      Every day you wait, your savings buy less stuff. It's not your fault—the system is rigged. 
+                      The government prints money endlessly, making each dollar worth less while the wealthy protect 
                       themselves with assets that can't be printed.
                     </p>
                     
@@ -2530,7 +2530,7 @@ export default function Home() {
                     <p>
                       But there's an escape route. For the first time in human history, we have <span className="text-orange-400 font-semibold">
                       mathematically perfect money</span> that can't be inflated away. Bitcoin isn't just digital gold—it's 
-                      the antidote to monetary debasement.
+                      the solution to making each dollar worth less.
                     </p>
                   </div>
                   
@@ -2556,7 +2556,7 @@ export default function Home() {
                   
                   <div className="mt-8 p-4 bg-orange-950/20 rounded-xl border border-orange-800/30">
                     <div className="text-orange-300 font-semibold mb-2">
-                      Choose: lose to inflation, or learn sound money.
+                      Choose: watch your money lose value, or learn about money that can't be printed.
                     </div>
                   </div>
                 </div>
