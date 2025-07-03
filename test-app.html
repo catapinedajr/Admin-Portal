@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test App</title>
+</head>
+<body>
+    <div id="test">
+        <h1>Test Page</h1>
+        <p>This should display if the server is working</p>
+        <script>
+            console.log("Test script loaded");
+            fetch('/api/auth/me')
+                .then(response => {
+                    console.log("API Response:", response.status);
+                    return response.json();
+                })
+                .then(data => console.log("API Data:", data))
+                .catch(error => console.error("API Error:", error));
+        </script>
+    </div>
+</body>
+</html>
