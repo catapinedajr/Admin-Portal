@@ -2488,13 +2488,9 @@ export default function Home() {
                     </div>
                   </div>
                   
-                  <div className="mt-8 p-6 bg-orange-950/20 rounded-xl border border-orange-800/30">
-                    <div className="text-orange-300 font-semibold text-lg mb-2">
-                      The choice is yours:
-                    </div>
-                    <div className="text-zinc-300">
-                      Keep letting inflation slowly drain your wealth, or learn about the money that can't be manipulated. 
-                      The calculators below show you exactly what you're losing—and what you could gain.
+                  <div className="mt-8 p-4 bg-orange-950/20 rounded-xl border border-orange-800/30">
+                    <div className="text-orange-300 font-semibold mb-2">
+                      The choice is yours: keep losing wealth to inflation, or learn about money that can't be manipulated.
                     </div>
                   </div>
                 </div>
