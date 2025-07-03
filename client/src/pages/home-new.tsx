@@ -2516,7 +2516,7 @@ export default function Home() {
                   
                   <div className="text-lg text-zinc-300 leading-relaxed space-y-4">
                     <p>
-                      Every day you wait, your savings buy less stuff. It's not your fault—the system is rigged. 
+                      Every day you wait, your savings lose value. It's not your fault—the system is rigged. 
                       The government prints money endlessly, making each dollar worth less while the wealthy protect 
                       themselves with assets that can't be printed.
                     </p>
