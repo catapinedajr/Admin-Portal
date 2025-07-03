@@ -2629,7 +2629,21 @@ export default function Home() {
 
         {/* Why BTC Section */}
         {activeSection === "why-btc" && (
-          <WhyBTCSection />
+          <div className="min-h-screen bg-zinc-900 text-white p-4">
+            <div className="max-w-6xl mx-auto space-y-8">
+              <div className="text-center space-y-4">
+                <h1 className="text-4xl font-bold text-orange-400 mb-2">Why Bitcoin Matters</h1>
+                <p className="text-xl text-zinc-300 max-w-3xl mx-auto">
+                  Your money is being silently stolen through inflation. Bitcoin offers a way out.
+                </p>
+              </div>
+              <div className="text-center">
+                <p className="text-lg text-zinc-300">
+                  Why BTC section is working! This is a test to confirm routing works.
+                </p>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Finance Section */}
