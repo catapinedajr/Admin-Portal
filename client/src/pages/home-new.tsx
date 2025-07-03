@@ -93,7 +93,6 @@ import { ConsistencyCalendar } from "@/components/ConsistencyCalendar";
 import { MonthlySimulatorTracker } from "@/components/MonthlySimulatorTracker";
 import HomeSection from "@/components/sections/HomeSection";
 import MoreSection from "@/components/sections/MoreSection";
-import { WhyBTCSection } from "@/components/sections/WhyBTCSection";
 import { iconMap, bitcoinTerms, seedPhraseScenarios } from "@/constants/appData";
 import WeeklyQuiz from "@/components/WeeklyQuiz";
 import { cleanText, getExpandedLessonContent } from "@/utils/textUtils";
@@ -108,7 +107,7 @@ import { cleanText, getExpandedLessonContent } from "@/utils/textUtils";
 
 
 
-type MainSection = "home" | "learn" | "why-btc" | "money" | "simulations" | "more";
+type MainSection = "home" | "learn" | "money" | "simulations" | "more";
 type LearnSubTab = "today" | "reference";
 type SimulationsSubTab = "wallet" | "safety" | "transactions" | "transfer" | "hodl" | "dca" | "inflation" | "fees";
 type MoreSubTab = "store" | "about";
@@ -123,7 +122,6 @@ export default function Home() {
   const getActiveSectionFromPath = (path: string): MainSection => {
     if (path === '/' || path === '') return 'home';
     if (path.includes('/learn')) return 'learn';
-    if (path.includes('/why-btc')) return 'why-btc';
     if (path.includes('/money')) return 'money';
     if (path.includes('/simulators')) return 'simulations';
     if (path.includes('/more')) return 'more';
@@ -2624,30 +2622,6 @@ export default function Home() {
                 </Card>
               </div>
             )}
-          </div>
-        )}
-
-        {/* Debug Info */}
-        <div className="fixed top-20 right-4 bg-red-500 text-white p-2 text-xs z-50">
-          Active: {activeSection} | Path: {location}
-        </div>
-
-        {/* Why BTC Section */}
-        {activeSection === "why-btc" && (
-          <div className="min-h-screen bg-zinc-900 text-white p-4">
-            <div className="max-w-6xl mx-auto space-y-8">
-              <div className="text-center space-y-4">
-                <h1 className="text-4xl font-bold text-orange-400 mb-2">Why Bitcoin Matters</h1>
-                <p className="text-xl text-zinc-300 max-w-3xl mx-auto">
-                  Your money is being silently stolen through inflation. Bitcoin offers a way out.
-                </p>
-              </div>
-              <div className="text-center">
-                <p className="text-lg text-zinc-300">
-                  Why BTC section is working! This is a test to confirm routing works.
-                </p>
-              </div>
-            </div>
           </div>
         )}
 
@@ -9038,7 +9012,18 @@ export default function Home() {
       {/* Bottom Navigation */}
       <BottomNavigation 
         activeSection={activeSection}
-        onSectionChange={undefined}
+        onSectionChange={(section) => {
+          // Map navigation section names to MainSection type
+          let mappedSection: MainSection;
+          if (section === 'simulators') mappedSection = 'simulations';
+          else mappedSection = section as MainSection;
+          
+          setActiveSection(mappedSection);
+          if (section === 'learn') setLocation('/learn');
+          else if (section === 'money') setLocation('/money');
+          else if (section === 'simulators') setLocation('/simulators');
+          else if (section === 'more') setLocation('/more');
+        }}
       />
 
       {/* Email Collection Modal */}
