@@ -2627,6 +2627,11 @@ export default function Home() {
           </div>
         )}
 
+        {/* Debug Info */}
+        <div className="fixed top-20 right-4 bg-red-500 text-white p-2 text-xs z-50">
+          Active: {activeSection} | Path: {location}
+        </div>
+
         {/* Why BTC Section */}
         {activeSection === "why-btc" && (
           <div className="min-h-screen bg-zinc-900 text-white p-4">
