@@ -2909,7 +2909,7 @@ export default function Home() {
                     {inflationProgress >= 5 && (
                       <div className="space-y-3 p-4 bg-zinc-800/30 rounded-lg border border-orange-400/20">
                         <div className="text-center">
-                          <div className="text-orange-400 font-bold text-sm mb-2">Conservative 25% Growth Projection</div>
+                          <div className="text-white font-bold text-sm mb-2">Two Different Approaches to Money</div>
                           <div className="grid grid-cols-2 gap-4 text-xs">
                             <div className="text-center">
                               <div className="text-red-400 font-medium">Traditional Savings</div>
@@ -2926,8 +2926,13 @@ export default function Home() {
                         
                         <div className="text-center pt-2 border-t border-zinc-700/50">
                           <p className="text-zinc-400 text-xs leading-relaxed">
-                            Using a very conservative <span className="text-orange-400 font-medium">25% annual growth rate</span> compared to Bitcoin's historical 100%+ average. 
-                            Past performance doesn't guarantee future results, but Bitcoin's fixed supply creates structural advantages over inflation.
+                            <span className="text-white font-medium">The Traditional Story:</span> For decades, saving money in banks was considered safe and responsible. 
+                            But inflation quietly erodes purchasing power - what costs $1 today will cost more tomorrow.
+                          </p>
+                          <p className="text-zinc-400 text-xs leading-relaxed mt-2">
+                            <span className="text-orange-400 font-medium">The Alternative Story:</span> Bitcoin offers a different approach with mathematically limited supply. 
+                            While volatile and speculative, some see it as a hedge against currency debasement. 
+                            Past performance doesn't guarantee future results.
                           </p>
                         </div>
                       </div>
