@@ -123,8 +123,8 @@ export default function Home() {
   const getActiveSectionFromPath = (path: string): MainSection => {
     if (path === '/' || path === '') return 'home';
     if (path.includes('/learn')) return 'learn';
-    if (path.includes('/money2')) return 'money2';
-    if (path.includes('/money')) return 'money';
+    if (path.startsWith('/money2')) return 'money2';
+    if (path.startsWith('/money')) return 'money';
     if (path.includes('/simulators')) return 'simulations';
     if (path.includes('/more')) return 'more';
     return 'home'; // default to home instead of learn
