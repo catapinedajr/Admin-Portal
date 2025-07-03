@@ -4,53 +4,13 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
-import { useEffect, useState, Component, ReactNode } from "react";
+import { useEffect, useState } from "react";
+import HomeDashboard from "@/pages/home-dashboard";
 import Home from "@/pages/home-new";
 import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
 import NotFound from "@/pages/not-found";
 import { AuthPage } from "@/pages/auth";
-
-// Error Boundary for production crash recovery
-class ErrorBoundary extends Component<
-  { children: ReactNode },
-  { hasError: boolean; error?: Error }
-> {
-  constructor(props: { children: ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError(error: Error) {
-    console.error('HODLearn Error Boundary caught error:', error);
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error: Error, errorInfo: any) {
-    console.error('HODLearn Error Boundary details:', { error, errorInfo });
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-background">
-          <div className="text-center p-8">
-            <h1 className="text-2xl font-bold text-foreground mb-4">Something went wrong</h1>
-            <p className="text-muted-foreground mb-4">HODLearn encountered an error</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
-            >
-              Reload App
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    return this.props.children;
-  }
-}
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const [, setLocation] = useLocation();
@@ -156,16 +116,14 @@ function Router() {
 
 function App() {
   return (
-    <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <SubscriptionProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Router />
-          </TooltipProvider>
-        </SubscriptionProvider>
-      </QueryClientProvider>
-    </ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <SubscriptionProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </SubscriptionProvider>
+    </QueryClientProvider>
   );
 }
 
