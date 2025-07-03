@@ -2450,21 +2450,18 @@ export default function Home() {
                   
                   <div className="text-lg text-zinc-300 leading-relaxed space-y-4">
                     <p>
-                      Every day you wait, your savings lose purchasing power. It's not your fault—the system is rigged. 
-                      Central banks print money endlessly, devaluing your hard-earned dollars while the wealthy protect 
-                      themselves with assets that can't be printed.
+                      Every day you wait, your savings lose purchasing power. Central banks print money endlessly, 
+                      devaluing your dollars while the wealthy protect themselves with assets that can't be printed.
                     </p>
                     
                     <p>
                       <span className="text-orange-400 font-semibold">What cost $1 in 1920 now costs $15.50.</span> Your 
-                      great-grandparents could buy a house with one income and still save money. Today, two incomes barely 
-                      cover rent. This isn't progress—it's systematic wealth transfer from savers to money printers.
+                      great-grandparents could buy a house with one income. Today, two incomes barely cover rent.
                     </p>
                     
                     <p>
-                      But there's an escape route. For the first time in human history, we have <span className="text-orange-400 font-semibold">
-                      mathematically perfect money</span> that can't be inflated away. Bitcoin isn't just digital gold—it's 
-                      the antidote to monetary debasement.
+                      But there's an escape route. We now have <span className="text-orange-400 font-semibold">
+                      mathematically perfect money</span> that can't be inflated away. Bitcoin is the antidote to monetary debasement.
                     </p>
                   </div>
                   
