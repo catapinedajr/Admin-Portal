@@ -7892,6 +7892,22 @@ export default function Home() {
         lockedFeature="Premium Simulators"
       />
       
+      {/* INLINE COMPONENT TEST - DEBUG */}
+      {activeSection === 'home' && (
+        <div style={{ position: 'fixed', top: '10px', right: '10px', zIndex: 9999, backgroundColor: 'blue', color: 'white', padding: '10px' }}>
+          <button onClick={() => {
+            // Test inline rendering
+            const testDiv = document.createElement('div');
+            testDiv.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:red;color:white;z-index:10000;padding:50px;font-size:24px;';
+            testDiv.innerHTML = 'INLINE COMPONENT TEST WORKS!';
+            document.body.appendChild(testDiv);
+            setTimeout(() => document.body.removeChild(testDiv), 3000);
+          }}>
+            TEST INLINE
+          </button>
+        </div>
+      )}
+
       {/* Bottom padding to accommodate navigation */}
       <div className="h-20"></div>
     </div>
