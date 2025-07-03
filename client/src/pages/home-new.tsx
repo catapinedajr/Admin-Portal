@@ -445,20 +445,15 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: 1, dayIndex })
       }),
-    onSuccess: (_, dayIndex) => {
+    onSuccess: () => {
       // Invalidate relevant queries to refresh access data
       queryClient.invalidateQueries({ queryKey: ['/api/day-access'] });
       queryClient.invalidateQueries({ queryKey: ['/api/day-completed'] });
       queryClient.invalidateQueries({ queryKey: ['/api/next-available-day'] });
-      
-      // Only show completion notification if not already shown for this day
-      if (!completionNotificationsShown.has(dayIndex)) {
-        setCompletionNotificationsShown(prev => new Set([...prev, dayIndex]));
-        toast({
-          title: "Day Complete!",
-          description: "Great progress! Come back tomorrow for the next lesson.",
-        });
-      }
+      toast({
+        title: "Day Complete!",
+        description: "Great progress! Come back tomorrow for the next lesson.",
+      });
     }
   });
 
@@ -467,19 +462,11 @@ export default function Home() {
     markDayCompletedMutation.mutate(currentDayIndex);
   }, [markDayCompletedMutation, currentDayIndex]);
 
-  // Reset completion notifications when the calendar day changes
-  useEffect(() => {
-    setCompletionNotificationsShown(new Set());
-  }, [currentDayIndex]);
-
   const [convictionSubTab, setConvictionSubTab] = useState<"whitepaper" | "books" | "videos">("whitepaper");
   const [showSplash, setShowSplash] = useState(false);
   const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
   const [expandedTopics, setExpandedTopics] = useState<Set<string>>(new Set());
   const [safetyQuizScore, setSafetyQuizScore] = useState<number>(0);
-  
-  // Track completion notifications shown for each day to prevent duplicates
-  const [completionNotificationsShown, setCompletionNotificationsShown] = useState<Set<number>>(new Set());
   
   // Security Test State
   const [securityTestStage, setSecurityTestStage] = useState<number>(0);
@@ -3174,24 +3161,26 @@ export default function Home() {
               <CardContent className="p-8">
                 <div className="max-w-4xl mx-auto text-center space-y-6">
                   <h2 className="text-4xl font-bold text-white mb-4">
-                    The Hidden Tax <span className="text-red-400">Eating Your Savings</span>
+                    Your Money Is Being <span className="text-red-400">Silently Stolen</span>
                   </h2>
                   
                   <div className="text-lg text-zinc-300 leading-relaxed space-y-4">
                     <p>
-                      Every year, your money buys less than it did the year before. This isn't an accident—it's how the current money system works.
+                      Every day you wait, your savings lose purchasing power. It's not your fault—the system is rigged. 
+                      Central banks print money endlessly, devaluing your hard-earned dollars while the wealthy protect 
+                      themselves with assets that can't be printed.
                     </p>
                     
                     <p>
-                      <span className="text-orange-400 font-semibold">What cost $1 in 1920 now costs $15.50.</span> Your great-grandparents could buy a house with one income. Today, two incomes barely cover rent.
+                      <span className="text-orange-400 font-semibold">What cost $1 in 1920 now costs $15.50.</span> Your 
+                      great-grandparents could buy a house with one income and still save money. Today, two incomes barely 
+                      cover rent. This isn't progress—it's systematic wealth transfer from savers to money printers.
                     </p>
                     
                     <p>
-                      The reason? Central banks can print unlimited money, making each dollar worth less over time.
-                    </p>
-                    
-                    <p>
-                      But what if there was <span className="text-orange-400 font-semibold">money that couldn't be printed?</span> For the first time in history, Bitcoin offers mathematically limited supply—only 21 million will ever exist.
+                      But there's an escape route. For the first time in human history, we have <span className="text-orange-400 font-semibold">
+                      mathematically perfect money</span> that can't be inflated away. Bitcoin isn't just digital gold—it's 
+                      the antidote to monetary debasement.
                     </p>
                   </div>
                   
@@ -3217,11 +3206,11 @@ export default function Home() {
                   
                   <div className="mt-8 p-6 bg-orange-950/20 rounded-xl border border-orange-800/30">
                     <div className="text-orange-300 font-semibold text-lg mb-2">
-                      Ready to understand the difference?
+                      The choice is yours:
                     </div>
                     <div className="text-zinc-300">
-                      The tools below show you exactly how inflation works and why Bitcoin offers an alternative. 
-                      No complicated math—just clear examples you can explore at your own pace.
+                      Keep letting inflation slowly drain your wealth, or learn about the money that can't be manipulated. 
+                      The calculators below show you exactly what you're losing—and what you could gain.
                     </div>
                   </div>
                 </div>
@@ -3503,8 +3492,8 @@ export default function Home() {
                         The Tale of Two Strategies
                       </p>
                       <p className="text-zinc-400 text-xs leading-relaxed">
-                        Your $25,000 faces two very different futures. Bitcoin averaged 155% annual growth over the last 5 years (2019-2024), 
-                        but let's be conservative and see what happens with just 25% annual growth going forward:
+                        Your $25,000 faces two very different futures. Traditional savings slowly loses buying power to inflation, 
+                        while Bitcoin has averaged 155% annual growth over the last 5 years. Here's what historical performance shows:
                       </p>
                     </div>
                     
@@ -3512,11 +3501,11 @@ export default function Home() {
                     <div className="space-y-2">
                       {[
                         { step: 0, year: "Today", savings: 25000, btc: 25000, narrative: "Both start equal" },
-                        { step: 1, year: "2 years", savings: 23500, btc: 39063, narrative: "Conservative growth begins" },
-                        { step: 2, year: "5 years", savings: 21562, btc: 76294, narrative: "Scarcity effect emerges" },
-                        { step: 3, year: "8 years", savings: 19685, btc: 148698, narrative: "Compound growth accelerates" },
-                        { step: 4, year: "10 years", savings: 18584, btc: 232831, narrative: "Fixed supply advantage" },
-                        { step: 5, year: "25 years", savings: 17543, btc: 6617450, narrative: "Long-term scarcity rewards" }
+                        { step: 1, year: "2 years", savings: 23500, btc: 65000, narrative: "Historical growth begins" },
+                        { step: 2, year: "5 years", savings: 21562, btc: 325000, narrative: "5yr CAGR reality" },
+                        { step: 3, year: "8 years", savings: 19685, btc: 975000, narrative: "Compound growth accelerates" },
+                        { step: 4, year: "10 years", savings: 18584, btc: 1650000, narrative: "Wealth gap widens dramatically" },
+                        { step: 5, year: "25 years", savings: 17543, btc: 2750000, narrative: "Long-term holder rewards" }
                       ].map(({ step, year, savings, btc, narrative }) => {
                         const isActive = inflationProgress >= step;
                         
@@ -3562,7 +3551,7 @@ export default function Home() {
                                   className={`h-full transition-all duration-1000 ${
                                     isActive ? 'bg-orange-500' : 'bg-zinc-600'
                                   }`}
-                                  style={{ width: isActive ? `${Math.min((btc/6617450)*100, 100)}%` : '0%' }}
+                                  style={{ width: isActive ? `${Math.min((btc/2750000)*100, 100)}%` : '0%' }}
                                 ></div>
                               </div>
                             </div>
@@ -3575,7 +3564,7 @@ export default function Home() {
                     {inflationProgress >= 5 && (
                       <div className="space-y-3 p-4 bg-zinc-800/30 rounded-lg border border-orange-400/20">
                         <div className="text-center">
-                          <div className="text-orange-400 font-bold text-sm mb-2">The 25-Year Conservative Projection</div>
+                          <div className="text-orange-400 font-bold text-sm mb-2">The 25-Year Historical Outcome</div>
                           <div className="grid grid-cols-2 gap-4 text-xs">
                             <div className="text-center">
                               <div className="text-red-400 font-medium">Traditional Savings</div>
@@ -3583,16 +3572,16 @@ export default function Home() {
                               <div className="text-red-400">Lost 30% to inflation</div>
                             </div>
                             <div className="text-center">
-                              <div className="text-orange-400 font-medium">Conservative Bitcoin</div>
-                              <div className="text-orange-300 text-lg font-bold">$6.6M</div>
-                              <div className="text-orange-400">264x growth (25% CAGR)</div>
+                              <div className="text-orange-400 font-medium">Historical Bitcoin</div>
+                              <div className="text-orange-300 text-lg font-bold">$2.75M</div>
+                              <div className="text-orange-400">110x growth (historical rate)</div>
                             </div>
                           </div>
                         </div>
                         
                         <div className="text-center pt-2 border-t border-zinc-700/50">
                           <p className="text-zinc-400 text-xs leading-relaxed">
-                            Conservative projection using <span className="text-orange-400 font-medium">25% annual growth</span> despite Bitcoin's 155% historical rate (2019-2024). 
+                            Based on Bitcoin's actual <span className="text-orange-400 font-medium">155% annual growth rate</span> from 2019-2024. 
                             While past performance doesn't guarantee future results, Bitcoin's fixed supply and growing adoption 
                             create structural advantages over inflating fiat currencies.
                           </p>
