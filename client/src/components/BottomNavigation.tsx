@@ -22,6 +22,7 @@ export default function BottomNavigation({ activeSection, onSectionChange }: Bot
     if (activeSection) return activeSection;
     if (location === '/') return 'home';
     if (location.startsWith('/learn')) return 'learn';
+    if (location.startsWith('/money2')) return 'money2';
     if (location.startsWith('/money')) return 'money';
     if (location.startsWith('/simulators')) return 'simulators';
     if (location.startsWith('/more') || location.startsWith('/about')) return 'more';
@@ -48,6 +49,12 @@ export default function BottomNavigation({ activeSection, onSectionChange }: Bot
       label: 'Money',
       icon: Coins,
       path: '/money'
+    },
+    {
+      id: 'money2',
+      label: 'Money 2',
+      icon: Coins,
+      path: '/money2'
     },
     {
       id: 'simulators',
