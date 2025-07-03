@@ -4620,6 +4620,1382 @@ export default function Home() {
                   <CardContent className="p-6">
                     {/* Content temporarily removed for approval */}
                     {/* Safety simulator functionality temporarily disabled */}
+                    {false && !safetyCompleted ? (
+                      <div className="space-y-6">
+                        {/* Progress Indicator */}
+                        <div className="space-y-3 mb-6">
+                          <div className="flex items-center gap-3">
+                            <h5 className="font-semibold text-white">Scenario {safetyStage + 1} of {safetySimulations.length}</h5>
+                            <Badge variant="secondary">{safetyScore}/{safetyStage} correct</Badge>
+                          </div>
+                          <div className="flex flex-wrap gap-1 max-w-full">
+                            {safetySimulations.map((_, index) => (
+                              <div
+                                key={index}
+                                className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                                  index < safetyStage ? 'bg-orange-500' : 
+                                  index === safetyStage ? 'bg-orange-500' : 'bg-zinc-600'
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Current Simulation */}
+                        <Card className="bg-zinc-800 border-zinc-700">
+                          <CardContent className="p-4 sm:p-6">
+                            <div className="flex justify-between items-center mb-3">
+                              <h6 className="font-semibold text-white text-sm sm:text-base">{safetySimulations[safetyStage]?.title}</h6>
+                              <span className="text-xs text-zinc-500">{safetyStage + 1}/12</span>
+                            </div>
+                            <p className="text-zinc-400 text-xs sm:text-sm mb-4 leading-relaxed">{safetySimulations[safetyStage]?.description}</p>
+
+                            {/* Phishing Email Simulation */}
+                            {safetyStage === 0 && (
+                              <div className="space-y-3">
+                                <div className="p-3 sm:p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
+                                  <div className="text-xs text-zinc-500 mb-3">Email Inbox - Which email is dangerous?</div>
+                                  <div className="space-y-2">
+                                    {safetySimulations[0]?.emails?.map((email, index) => (
+                                      <button
+                                        key={index}
+                                        onClick={() => setSelectedOption(index)}
+                                        className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
+                                          selectedOption === index 
+                                            ? 'border-orange-500 bg-orange-500/10' 
+                                            : 'border-zinc-600 hover:border-zinc-500'
+                                        }`}
+                                      >
+                                        <div className="flex justify-between items-start mb-1">
+                                          <span className="text-white text-xs sm:text-sm font-medium truncate mr-2">{email.from}</span>
+                                          <span className="text-zinc-500 text-xs shrink-0">Today</span>
+                                        </div>
+                                        <div className="text-white text-xs sm:text-sm mb-1 line-clamp-1">{email.subject}</div>
+                                        <div className="text-zinc-400 text-xs line-clamp-2 leading-relaxed">{email.preview}</div>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Seed Phrase Storage Simulation */}
+                            {safetyStage === 1 && (
+                              <div className="space-y-3">
+                                <div className="p-3 sm:p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
+                                  <div className="text-sm sm:text-base text-zinc-300 mb-3">
+                                    You just received your 12-word seed phrase. Where should you store it?
+                                  </div>
+                                  <div className="p-2 sm:p-3 bg-zinc-800 rounded border border-dashed border-zinc-500 mb-3">
+                                    <div className="text-xs text-zinc-500 mb-2">Your Seed Phrase:</div>
+                                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-1 text-xs text-orange-300 font-mono">
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">1. abandon</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">2. ability</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">3. able</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">4. about</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">5. above</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">6. absent</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">7. absorb</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">8. abstract</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">9. absurd</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">10. abuse</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">11. access</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">12. accident</div>
+                                    </div>
+                                  </div>
+                                  <div className="space-y-2">
+                                    {safetySimulations[1]?.options?.map((option, index) => (
+                                      <button
+                                        key={index}
+                                        onClick={() => setSelectedOption(index)}
+                                        className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
+                                          selectedOption === index 
+                                            ? 'border-orange-500 bg-orange-500/10' 
+                                            : 'border-zinc-600 hover:border-zinc-500'
+                                        }`}
+                                      >
+                                        <div className="text-white text-xs sm:text-sm font-medium">
+                                          {'method' in option ? option.method : 'Option'}
+                                        </div>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Address Verification Simulation */}
+                            {safetyStage === 2 && (
+                              <div className="space-y-3">
+                                <div className="p-3 sm:p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
+                                  <div className="space-y-3">
+                                    <div>
+                                      <div className="text-sm sm:text-base text-zinc-300 mb-2">
+                                        Address you copied from your friend:
+                                      </div>
+                                      <div className="text-green-300 font-mono text-xs break-all bg-zinc-800 p-2 rounded border border-green-700/50">
+                                        {safetySimulations[2]?.copied}
+                                      </div>
+                                    </div>
+                                    
+                                    <div>
+                                      <div className="text-sm sm:text-base text-zinc-300 mb-2">
+                                        Address your wallet is showing:
+                                      </div>
+                                      <div className="text-red-300 font-mono text-xs break-all bg-zinc-800 p-2 rounded border border-red-700/50">
+                                        {safetySimulations[2]?.displayed}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="space-y-2 mt-3">
+                                    {safetySimulations[2]?.options?.map((option, index) => (
+                                      <button
+                                        key={index}
+                                        onClick={() => setSelectedOption(index)}
+                                        className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
+                                          selectedOption === index 
+                                            ? 'border-orange-500 bg-orange-500/10' 
+                                            : 'border-zinc-600 hover:border-zinc-500'
+                                        }`}
+                                      >
+                                        <div className="text-orange-300 text-xs sm:text-sm">
+                                          {'text' in option ? option.text : 'Option'}
+                                        </div>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Scam Recognition Simulation */}
+                            {safetyStage === 3 && (
+                              <div className="space-y-3">
+                                <div className="p-3 sm:p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
+                                  <div className="text-sm sm:text-base text-zinc-300 mb-3">
+                                    Which message is legitimate and safe? Click on the safe message (avoid the two scams):
+                                  </div>
+                                  <div className="space-y-2">
+                                    {safetySimulations[3]?.scenarios?.map((scenario, index) => (
+                                      <button
+                                        key={index}
+                                        onClick={() => setSelectedOption(index)}
+                                        className={`w-full p-3 border rounded-lg text-left transition-colors ${
+                                          selectedOption === index 
+                                            ? 'border-orange-500 bg-orange-500/10' 
+                                            : 'border-zinc-600 hover:border-zinc-500'
+                                        }`}
+                                      >
+                                        <div className="text-white text-xs sm:text-sm leading-relaxed">
+                                          "{scenario.message}"
+                                        </div>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Generic Options-based Simulations (stages 4-11) */}
+                            {safetyStage >= 4 && safetyStage <= 11 && (
+                              <div className="space-y-3">
+                                <div className="p-3 sm:p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
+                                  {safetyStage === 4 && (
+                                    <div className="text-sm sm:text-base text-zinc-300 mb-3">
+                                      You want to buy Bitcoin for the first time. Choose the safest approach:
+                                    </div>
+                                  )}
+                                  {safetyStage === 5 && (
+                                    <div className="text-sm sm:text-base text-zinc-300 mb-3">
+                                      You're at a coffee shop and want to check your Bitcoin wallet:
+                                    </div>
+                                  )}
+                                  {safetyStage === 6 && (
+                                    <div className="text-sm sm:text-base text-zinc-300 mb-3">
+                                      You need to download a Bitcoin wallet. Where do you get it?
+                                    </div>
+                                  )}
+                                  {safetyStage === 7 && (
+                                    <div className="text-sm sm:text-base text-zinc-300 mb-3">
+                                      Someone calls claiming to be from your exchange, asking for your 2FA code:
+                                    </div>
+                                  )}
+                                  {safetyStage === 8 && (
+                                    <div className="text-sm sm:text-base text-zinc-300 mb-3">
+                                      You wrote down your seed phrase. How should you verify it's correct?
+                                    </div>
+                                  )}
+                                  {safetyStage === 9 && (
+                                    <div className="text-sm sm:text-base text-zinc-300 mb-3">
+                                      You're sending $50 worth of Bitcoin. Your wallet suggests a $200 fee, but you checked other sources and normal fees are $2. What should you do?
+                                    </div>
+                                  )}
+                                  {safetyStage === 10 && (
+                                    <div className="text-sm sm:text-base text-zinc-300 mb-3">
+                                      Your wallet suggests a $200 fee for a $50 Bitcoin transaction. What should you do?
+                                    </div>
+                                  )}
+                                  {safetyStage === 11 && (
+                                    <div className="text-sm sm:text-base text-zinc-300 mb-3">
+                                      You lost access to your wallet. Someone offers to recover it for 50% of the funds:
+                                    </div>
+                                  )}
+                                  <div className="space-y-2">
+                                    {currentSimulation?.options?.map((option, index) => (
+                                      <button
+                                        key={index}
+                                        onClick={() => setSelectedOption(index)}
+                                        className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
+                                          selectedOption === index 
+                                            ? 'border-orange-500 bg-orange-500/10' 
+                                            : 'border-zinc-600 hover:border-zinc-500'
+                                        }`}
+                                      >
+                                        <div className="text-white text-xs sm:text-sm font-medium leading-relaxed">
+                                          {'method' in option ? option.method : 'Option'}
+                                        </div>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Action Buttons */}
+                            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-3">
+                              <Button
+                                onClick={() => {
+                                  if (selectedOption !== null) {
+                                    handleSafetyAnswer(selectedOption);
+                                  }
+                                }}
+                                disabled={selectedOption === null || showResult}
+                                className="bg-orange-600 hover:bg-orange-700 text-sm py-2 px-4"
+                              >
+                                Submit Answer
+                              </Button>
+                              
+                              {showResult && (
+                                <Button
+                                  onClick={nextSafetyStage}
+                                  variant="outline"
+                                  className="border-zinc-600 text-sm py-2 px-4"
+                                >
+                                  {safetyStage < safetySimulations.length - 1 ? 'Next Scenario' : 'Finish Test'}
+                                </Button>
+                              )}
+                            </div>
+
+                            {/* Result Feedback */}
+                            {showResult && (
+                              <div className={`mt-3 p-3 sm:p-4 rounded-lg border ${
+                                safetyScore > safetyStage ? 'bg-green-900/20 border-green-700' : 'bg-red-900/20 border-red-700'
+                              }`}>
+                                {safetyScore > safetyStage ? (
+                                  <div>
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" />
+                                      <span className="text-green-300 font-medium text-sm">Correct!</span>
+                                    </div>
+                                    <p className="text-green-100 text-xs sm:text-sm leading-relaxed mb-3">
+                                      {safetySimulations[safetyStage]?.explanation || 'Good job identifying the security threat!'}
+                                    </p>
+                                    
+                                    {/* Educational Explanations for Correct Answers */}
+                                    {safetyStage === 0 && (
+                                      <div className="text-green-200 text-xs mt-2">
+                                        <strong>Why:</strong> Phishing emails copy real designs but use fake domains. Always check the sender's email address carefully.
+                                      </div>
+                                    )}
+                                    {safetyStage === 1 && (
+                                      <div className="text-green-200 text-xs mt-2">
+                                        <strong>Why:</strong> Never share your seed phrase with anyone. Real support never asks for it. This is the #1 way Bitcoin gets stolen.
+                                      </div>
+                                    )}
+                                    {safetyStage === 2 && (
+                                      <div className="space-y-2">
+                                        <div className="text-green-200 text-xs font-medium">The difference was subtle but critical:</div>
+                                        <div className="text-xs font-mono bg-black/30 p-2 rounded">
+                                          <div>Copied: ...w<span className="bg-green-500 text-black px-1">l</span>h</div>
+                                          <div>Wallet: ...w<span className="bg-red-500 text-white px-1">1</span>h</div>
+                                        </div>
+                                        <div className="text-green-200 text-xs">
+                                          Malware changed "l" to "1" - this attack steals millions annually.
+                                        </div>
+                                      </div>
+                                    )}
+                                    {safetyStage === 4 && (
+                                      <div className="text-green-200 text-xs mt-2">
+                                        <strong>Why:</strong> Public WiFi can be monitored. Use your phone's data or VPN for sensitive Bitcoin activities.
+                                      </div>
+                                    )}
+                                    {safetyStage === 5 && (
+                                      <div className="text-green-200 text-xs mt-2">
+                                        <strong>Why:</strong> Only download wallets from official sources. Fake wallets steal your Bitcoin immediately.
+                                      </div>
+                                    )}
+                                    {safetyStage === 6 && (
+                                      <div className="text-green-200 text-xs mt-2">
+                                        <strong>Why:</strong> Scammers impersonate celebrities and officials. Real Bitcoin giveaways don't exist.
+                                      </div>
+                                    )}
+                                    {safetyStage === 7 && (
+                                      <div className="text-green-200 text-xs mt-2">
+                                        <strong>Why:</strong> Used hardware wallets could be tampered with. Always buy new from official manufacturers.
+                                      </div>
+                                    )}
+                                    {safetyStage === 8 && (
+                                      <div className="text-green-200 text-xs mt-2">
+                                        <strong>Why:</strong> Test your backup by restoring it on another device. Unreadable backups = lost Bitcoin.
+                                      </div>
+                                    )}
+                                    {safetyStage === 9 && (
+                                      <div className="text-green-200 text-xs mt-2">
+                                        <strong>Why:</strong> 100x higher fees suggests malicious software. Normal fees are $1-5, not $200.
+                                      </div>
+                                    )}
+                                    {safetyStage === 10 && (
+                                      <div className="text-green-200 text-xs mt-2">
+                                        <strong>Why:</strong> 100x higher fees suggests malicious software. Normal fees are $1-5, not $200.
+                                      </div>
+                                    )}
+                                    {safetyStage === 11 && (
+                                      <div className="text-green-200 text-xs mt-2">
+                                        <strong>Why:</strong> Recovery services are usually scams. If you have your seed phrase, you can recover yourself.
+                                      </div>
+                                    )}
+                                  </div>
+                                ) : (
+                                  <div>
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-red-400" />
+                                      <span className="text-red-300 font-medium text-sm">Be Careful!</span>
+                                    </div>
+                                    <p className="text-red-100 text-xs sm:text-sm leading-relaxed mb-3">
+                                      {safetySimulations[safetyStage]?.explanation || 'This could have put your Bitcoin at risk. Review the training materials above.'}
+                                    </p>
+                                    
+                                    {/* Educational Explanations for Wrong Answers */}
+                                    {safetyStage === 0 && (
+                                      <div className="text-red-200 text-xs mt-2">
+                                        <strong>Risk:</strong> You would have entered your login details on a fake site, giving attackers full account access.
+                                      </div>
+                                    )}
+                                    {safetyStage === 1 && (
+                                      <div className="text-red-200 text-xs mt-2">
+                                        <strong>Risk:</strong> Sharing your seed phrase = instant Bitcoin theft. This is how most people lose their coins.
+                                      </div>
+                                    )}
+                                    {safetyStage === 2 && (
+                                      <div className="space-y-2">
+                                        <div className="text-red-200 text-xs font-medium">Here's what you missed:</div>
+                                        <div className="text-xs font-mono bg-black/30 p-2 rounded">
+                                          <div>Copied: ...w<span className="bg-yellow-500 text-black px-1">l</span>h</div>
+                                          <div>Wallet: ...w<span className="bg-yellow-500 text-black px-1">1</span>h</div>
+                                        </div>
+                                        <div className="text-red-200 text-xs">
+                                          Your Bitcoin would be stolen! Always verify every character.
+                                        </div>
+                                      </div>
+                                    )}
+                                    {safetyStage === 4 && (
+                                      <div className="text-red-200 text-xs mt-2">
+                                        <strong>Risk:</strong> Public WiFi can be monitored. Attackers could see your private keys or passwords.
+                                      </div>
+                                    )}
+                                    {safetyStage === 5 && (
+                                      <div className="text-red-200 text-xs mt-2">
+                                        <strong>Risk:</strong> Fake wallets immediately steal your Bitcoin. Only use official sources like company websites.
+                                      </div>
+                                    )}
+                                    {safetyStage === 6 && (
+                                      <div className="text-red-200 text-xs mt-2">
+                                        <strong>Risk:</strong> You would send Bitcoin to scammers. No legitimate person gives away free Bitcoin.
+                                      </div>
+                                    )}
+                                    {safetyStage === 7 && (
+                                      <div className="text-red-200 text-xs mt-2">
+                                        <strong>Risk:</strong> Used devices could have hidden malware to steal your Bitcoin. Always buy new.
+                                      </div>
+                                    )}
+                                    {safetyStage === 8 && (
+                                      <div className="text-red-200 text-xs mt-2">
+                                        <strong>Risk:</strong> If your backup doesn't work, your Bitcoin is gone forever. Always test it first.
+                                      </div>
+                                    )}
+                                    {safetyStage === 9 && (
+                                      <div className="text-red-200 text-xs mt-2">
+                                        <strong>Risk:</strong> You would pay $200 for a $2 transaction. This wallet is likely stealing from you.
+                                      </div>
+                                    )}
+                                    {safetyStage === 10 && (
+                                      <div className="text-red-200 text-xs mt-2">
+                                        <strong>Risk:</strong> You would pay $200 for a $2 transaction. This wallet is likely stealing from you.
+                                      </div>
+                                    )}
+                                    {safetyStage === 11 && (
+                                      <div className="text-red-200 text-xs mt-2">
+                                        <strong>Risk:</strong> You would give scammers 50% of your Bitcoin for "help" you don't actually need.
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      </div>
+                    ) : (
+                      /* Security Skills Test */
+                      <div className="space-y-6">
+                        {/* Simulation Introduction */}
+                        {securityTestStage === 0 && (
+                          <div className="text-center space-y-4">
+                            <div className="p-6 rounded-lg border border-zinc-700 bg-zinc-800/50">
+                              <Shield className="w-12 h-12 text-orange-400 mx-auto mb-4" />
+                              <h4 className="text-xl font-bold text-white mb-2">Bitcoin Security Simulator</h4>
+                              <p className="text-zinc-300 mb-4">
+                                Experience real Bitcoin security scenarios and see the consequences of your decisions. 
+                                Navigate through 16 authentic situations that Bitcoin users face daily.
+                              </p>
+                              <div className="text-sm text-zinc-400 mb-4">
+                                • 16 immersive scenarios
+                                • Real-world decision making
+                                • See consequences of your choices
+                                • Learn from realistic outcomes
+                              </div>
+                              <Button 
+                                onClick={() => setSecurityTestStage(1)}
+                                className="bg-orange-600 hover:bg-orange-700 text-white"
+                              >
+                                Begin Simulation
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Simulation Scenarios */}
+                        {securityTestStage > 0 && securityTestStage <= 16 && (
+                          <div className="space-y-4">
+                            {/* Progress Header */}
+                            <div className="flex justify-between items-center">
+                              <h4 className="text-lg font-semibold text-white">
+                                Scenario {securityTestStage} of 16
+                              </h4>
+                              <div className="text-sm text-zinc-400">
+                                Safe Choices: {securityScore}/{securityTestStage - 1}
+                              </div>
+                            </div>
+
+                            {/* Progress Bar */}
+                            <div className="w-full bg-zinc-700 rounded-full h-2">
+                              <div 
+                                className="bg-orange-500 h-2 rounded-full transition-all duration-300"
+                                style={{ width: `${(securityTestStage / 16) * 100}%` }}
+                              />
+                            </div>
+
+                            {/* Current Question */}
+                            <Card className="bg-zinc-800 border-zinc-700">
+                              <CardContent className="p-6">
+                                {securityTestStage === 1 && (
+                                  <div className="space-y-4">
+                                    <div className="flex items-center gap-3 mb-4">
+                                      <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                        <span className="text-orange-400 text-sm">📧</span>
+                                      </div>
+                                      <div>
+                                        <h5 className="text-lg font-semibold text-white">The Urgent Email</h5>
+                                        <p className="text-zinc-400 text-sm">Monday morning, 8:47 AM</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                                      <p className="text-zinc-300 mb-3">
+                                        You're checking emails over coffee when this message catches your attention:
+                                      </p>
+                                      <div className="p-3 bg-red-950/30 rounded border border-red-800/50">
+                                        <div className="text-sm space-y-1">
+                                          <div><strong className="text-red-400">From:</strong> security@bitcoin-wallet.com</div>
+                                          <div><strong className="text-red-400">Subject:</strong> URGENT: Verify Your Wallet Now</div>
+                                          <div className="text-zinc-300 mt-2 text-xs">
+                                            "Your Bitcoin wallet has been compromised. Unauthorized access detected. 
+                                            Click here immediately to secure your funds: bitcoin-security-check.net/verify"
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <p className="text-zinc-300 text-sm">
+                                      Your heart rate increases. You have 0.5 BTC in your wallet. What do you do?
+                                    </p>
+
+                                    <div className="space-y-2">
+                                      {[
+                                        'Click the link immediately - my Bitcoin could be stolen!',
+                                        'Check the sender domain more carefully first',
+                                        'Ignore it - Bitcoin has no customer support team',
+                                        'Forward it to friends to warn them'
+                                      ].map((option, index) => (
+                                        <button
+                                          key={index}
+                                          onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
+                                          className={`w-full p-3 text-left rounded border transition-colors ${
+                                            selectedSecurityAnswer === index 
+                                              ? 'border-orange-500 bg-orange-500/10' 
+                                              : 'border-zinc-600 hover:border-zinc-500'
+                                          }`}
+                                        >
+                                          <span className="text-white text-sm">{option}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {securityTestStage === 2 && (
+                                  <div className="space-y-4">
+                                    <div className="flex items-center gap-3 mb-4">
+                                      <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                        <span className="text-orange-400 text-sm">🔐</span>
+                                      </div>
+                                      <div>
+                                        <h5 className="text-lg font-semibold text-white">New Wallet Setup</h5>
+                                        <p className="text-zinc-400 text-sm">Your first hardware wallet</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                                      <p className="text-zinc-300 mb-3">
+                                        Congratulations! Your new hardware wallet has generated your recovery phrase. 
+                                        The device shows these 12 words on screen:
+                                      </p>
+                                      <div className="p-3 bg-green-950/30 rounded border border-green-800/50">
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">1. mountain</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">2. forest</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">3. library</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">4. ocean</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">5. sunset</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">6. garden</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">7. whisper</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">8. thunder</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">9. crystal</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">10. journey</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">11. freedom</span>
+                                          </div>
+                                          <div className="bg-zinc-800/50 rounded px-1.5 py-1 text-center">
+                                            <span className="text-green-400 text-xs font-mono">12. wisdom</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <p className="text-zinc-300 text-sm">
+                                      These words are your master key to 2.5 BTC. If lost, your Bitcoin is gone forever. How do you store them?
+                                    </p>
+
+                                    <div className="space-y-2">
+                                      {[
+                                        'Quick screenshot - easy and accessible',
+                                        'Write on paper, store in fireproof safe',
+                                        'Save in Google Drive for backup',
+                                        'Email them to myself for safekeeping'
+                                      ].map((option, index) => (
+                                        <button
+                                          key={index}
+                                          onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
+                                          className={`w-full p-3 text-left rounded border transition-colors ${
+                                            selectedSecurityAnswer === index 
+                                              ? 'border-orange-500 bg-orange-500/10' 
+                                              : 'border-zinc-600 hover:border-zinc-500'
+                                          }`}
+                                        >
+                                          <span className="text-white text-sm">{option}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {securityTestStage === 3 && (
+                                  <div className="space-y-4">
+                                    <div className="flex items-center gap-3 mb-4">
+                                      <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                        <span className="text-orange-400 text-sm">💰</span>
+                                      </div>
+                                      <div>
+                                        <h5 className="text-lg font-semibold text-white">The Big Transfer</h5>
+                                        <p className="text-zinc-400 text-sm">Friday evening, sending to business partner</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                                      <p className="text-zinc-300 mb-3">
+                                        You're sending 1.5 BTC ($60,000) to your business partner for a deal. They texted you their address. 
+                                        Your wallet shows the destination after you pasted it.
+                                      </p>
+                                      
+                                      <div className="space-y-3">
+                                        <div className="p-3 bg-blue-950/30 rounded border border-blue-800/50">
+                                          <div className="text-xs text-blue-400 mb-1">PARTNER'S TEXT MESSAGE:</div>
+                                          <div className="font-mono text-xs text-blue-300 break-all">
+                                            bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w<span className="bg-blue-500 text-white px-1 rounded">lh</span>
+                                          </div>
+                                        </div>
+                                        
+                                        <div className="p-3 bg-green-950/30 rounded border border-green-800/50">
+                                          <div className="text-xs text-green-400 mb-1">YOUR WALLET SHOWS:</div>
+                                          <div className="font-mono text-xs text-green-300 break-all">
+                                            bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w<span className="bg-red-500 text-white px-1 rounded">1h</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <p className="text-zinc-300 text-sm">
+                                      Something feels off, but you're in a hurry. What do you notice?
+                                    </p>
+
+                                    <div className="space-y-2">
+                                      {[
+                                        'The addresses are identical - send the payment',
+                                        'The addresses are different - don\'t send anything',
+                                        'Close enough - the difference doesn\'t matter',
+                                        'First 20 characters match - that\'s sufficient verification'
+                                      ].map((option, index) => (
+                                        <button
+                                          key={index}
+                                          onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
+                                          className={`w-full p-3 text-left rounded border transition-colors ${
+                                            selectedSecurityAnswer === index 
+                                              ? 'border-orange-500 bg-orange-500/10' 
+                                              : 'border-zinc-600 hover:border-zinc-500'
+                                          }`}
+                                        >
+                                          <span className="text-white text-sm">{option}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {securityTestStage === 4 && (
+                                  <div className="space-y-4">
+                                    <div className="flex items-center gap-3 mb-4">
+                                      <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                        <span className="text-orange-400 text-sm">📞</span>
+                                      </div>
+                                      <div>
+                                        <h5 className="text-lg font-semibold text-white">The Unexpected Call</h5>
+                                        <p className="text-zinc-400 text-sm">Wednesday, 2:34 PM</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                                      <p className="text-zinc-300 mb-3">
+                                        Your phone rings. The caller ID shows a professional number. A friendly voice says:
+                                      </p>
+                                      <div className="p-3 bg-blue-950/30 rounded border border-blue-800/50">
+                                        <div className="text-sm italic text-blue-300">
+                                          "Hello! This is Alex from Bitcoin Security Services. We've detected suspicious activity 
+                                          on your wallet address. To secure your funds, I need to verify your recovery phrase. 
+                                          Can you read me your 12 words so we can activate enhanced protection?"
+                                        </div>
+                                      </div>
+                                      <p className="text-zinc-400 text-xs mt-2">
+                                        They sound professional and know you have Bitcoin. Your wallet contains 1.2 BTC.
+                                      </p>
+                                    </div>
+
+                                    <p className="text-zinc-300 text-sm">
+                                      This sounds urgent and legitimate. What's your response?
+                                    </p>
+
+                                    <div className="space-y-2">
+                                      {[
+                                        'Give them the words - they sound official',
+                                        'Ask for their company credentials and website',
+                                        'Hang up immediately - Bitcoin has no support team',
+                                        'Give them half the words to test if they\'re real'
+                                      ].map((option, index) => (
+                                        <button
+                                          key={index}
+                                          onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
+                                          className={`w-full p-3 text-left rounded border transition-colors ${
+                                            selectedSecurityAnswer === index 
+                                              ? 'border-orange-500 bg-orange-500/10' 
+                                              : 'border-zinc-600 hover:border-zinc-500'
+                                          }`}
+                                        >
+                                          <span className="text-white text-sm">{option}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {securityTestStage === 5 && (
+                                  <div className="space-y-4">
+                                    <h5 className="text-lg font-semibold text-white">Exchange Safety</h5>
+                                    <p className="text-zinc-300">
+                                      You have 5 BTC on Coinbase. What's the safest long-term strategy?
+                                    </p>
+                                    <div className="space-y-2">
+                                      {['Move most to a hardware wallet, keep some for trading', 'Keep it all on Coinbase for convenience', 'Split across multiple exchanges', 'Convert to stablecoins'].map((option, index) => (
+                                        <button
+                                          key={index}
+                                          onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
+                                          className={`w-full p-3 text-left rounded border transition-colors ${
+                                            selectedSecurityAnswer === index 
+                                              ? 'border-orange-500 bg-orange-500/10' 
+                                              : 'border-zinc-600 hover:border-zinc-500'
+                                          }`}
+                                        >
+                                          <span className="text-white text-sm">{option}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {securityTestStage === 6 && (
+                                  <div className="space-y-4">
+                                    <h5 className="text-lg font-semibold text-white">Public WiFi Risks</h5>
+                                    <p className="text-zinc-300">
+                                      You need to check your Bitcoin balance at a coffee shop. What's safest?
+                                    </p>
+                                    <div className="space-y-2">
+                                      {['Use the coffee shop WiFi directly', 'Use your phone\'s mobile data instead', 'Use WiFi but log out immediately', 'Use WiFi with a VPN'].map((option, index) => (
+                                        <button
+                                          key={index}
+                                          onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
+                                          className={`w-full p-3 text-left rounded border transition-colors ${
+                                            selectedSecurityAnswer === index 
+                                              ? 'border-orange-500 bg-orange-500/10' 
+                                              : 'border-zinc-600 hover:border-zinc-500'
+                                          }`}
+                                        >
+                                          <span className="text-white text-sm">{option}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {securityTestStage === 7 && (
+                                  <div className="space-y-4">
+                                    <h5 className="text-lg font-semibold text-white">Software Downloads</h5>
+                                    <p className="text-zinc-300">
+                                      Where should you download Bitcoin wallet software?
+                                    </p>
+                                    <div className="space-y-2">
+                                      {[
+                                        'Any crypto website (cryptowallets.com, bitcoindownloads.net)',
+                                        'Official websites only (bitcoin.org, metamask.io)',
+                                        'Download sites (download.com, softonic.com)',
+                                        'First Google result (bitcoin-wallet-download.org)'
+                                      ].map((option, index) => (
+                                        <button
+                                          key={index}
+                                          onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
+                                          className={`w-full p-3 text-left rounded border transition-colors ${
+                                            selectedSecurityAnswer === index 
+                                              ? 'border-orange-500 bg-orange-500/10' 
+                                              : 'border-zinc-600 hover:border-zinc-500'
+                                          }`}
+                                        >
+                                          <span className="text-white text-sm">{option}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {securityTestStage === 8 && (
+                                  <div className="space-y-4">
+                                    <h5 className="text-lg font-semibold text-white">Hardware Wallet Purchase</h5>
+                                    <p className="text-zinc-300">
+                                      What's the safest way to buy a hardware wallet?
+                                    </p>
+                                    <div className="space-y-2">
+                                      {['Buy used from eBay for cheaper price', 'Buy new from official manufacturer', 'Buy from Amazon marketplace', 'Buy from local computer store'].map((option, index) => (
+                                        <button
+                                          key={index}
+                                          onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
+                                          className={`w-full p-3 text-left rounded border transition-colors ${
+                                            selectedSecurityAnswer === index 
+                                              ? 'border-orange-500 bg-orange-500/10' 
+                                              : 'border-zinc-600 hover:border-zinc-500'
+                                          }`}
+                                        >
+                                          <span className="text-white text-sm">{option}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {securityTestStage === 9 && (
+                                  <div className="space-y-4">
+                                    <div className="flex items-center gap-3 mb-4">
+                                      <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                        <span className="text-orange-400 text-sm">🔧</span>
+                                      </div>
+                                      <div>
+                                        <h5 className="text-lg font-semibold text-white">Backup Validation</h5>
+                                        <p className="text-zinc-400 text-sm">Just finished writing down your seed phrase</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                                      <p className="text-zinc-300 mb-3">
+                                        You've carefully written down your 12-word seed phrase on paper. Your hardware wallet 
+                                        is ready to receive Bitcoin, and you're excited to start using it.
+                                      </p>
+                                      <p className="text-zinc-300 text-sm">
+                                        Before sending any Bitcoin to this wallet, what's the most important step?
+                                      </p>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                      {[
+                                        'Wait a month to make sure the paper doesn\'t fade',
+                                        'Start using it immediately - you wrote it down correctly',
+                                        'Store the paper safely and assume it works',
+                                        'Test the backup by wiping and restoring the entire wallet'
+                                      ].map((option, index) => (
+                                        <button
+                                          key={index}
+                                          onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
+                                          className={`w-full p-3 text-left rounded border transition-colors ${
+                                            selectedSecurityAnswer === index 
+                                              ? 'border-orange-500 bg-orange-500/10' 
+                                              : 'border-zinc-600 hover:border-zinc-500'
+                                          }`}
+                                        >
+                                          <span className="text-white text-sm">{option}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {securityTestStage === 10 && (
+                                  <div className="space-y-4">
+                                    <div className="flex items-center gap-3 mb-4">
+                                      <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                        <span className="text-orange-400 text-sm">💸</span>
+                                      </div>
+                                      <div>
+                                        <h5 className="text-lg font-semibold text-white">Suspicious Fees</h5>
+                                        <p className="text-zinc-400 text-sm">Making a routine payment</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                                      <p className="text-zinc-300 mb-3">
+                                        You're trying to send $100 worth of Bitcoin to pay for something. Your wallet shows the transaction details:
+                                      </p>
+                                      <div className="p-3 bg-red-950/30 rounded border border-red-800/50">
+                                        <div className="text-sm space-y-1">
+                                          <div className="text-white"><strong>Amount:</strong> $100.00</div>
+                                          <div className="text-red-400"><strong>Network Fee:</strong> $47.50</div>
+                                          <div className="text-white"><strong>Total:</strong> $147.50</div>
+                                        </div>
+                                      </div>
+                                      <p className="text-zinc-400 text-xs mt-2">
+                                        This fee seems unusually high. Normal Bitcoin fees are typically $1-5.
+                                      </p>
+                                    </div>
+
+                                    <p className="text-zinc-300 text-sm">
+                                      What's your immediate response to this suspicious fee?
+                                    </p>
+
+                                    <div className="space-y-2">
+                                      {[
+                                        'Pay it anyway - fees fluctuate',
+                                        'Wait a few hours for fees to normalize', 
+                                        'Stop using this wallet immediately - possible malware',
+                                        'Try lowering the priority to reduce fees'
+                                      ].map((option, index) => (
+                                        <button
+                                          key={index}
+                                          onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
+                                          className={`w-full p-3 text-left rounded border transition-colors ${
+                                            selectedSecurityAnswer === index 
+                                              ? 'border-orange-500 bg-orange-500/10' 
+                                              : 'border-zinc-600 hover:border-zinc-500'
+                                          }`}
+                                        >
+                                          <span className="text-white text-sm">{option}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {securityTestStage === 11 && (
+                                  <div className="space-y-4">
+                                    <div className="flex items-center gap-3 mb-4">
+                                      <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                        <span className="text-orange-400 text-sm">🎣</span>
+                                      </div>
+                                      <div>
+                                        <h5 className="text-lg font-semibold text-white">Recovery Scam</h5>
+                                        <p className="text-zinc-400 text-sm">Lost access to your Bitcoin</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                                      <p className="text-zinc-300 mb-3">
+                                        Your computer crashed and you lost access to your Bitcoin wallet. You're panicking because 
+                                        you think you might have lost 2.5 BTC forever.
+                                      </p>
+                                      <div className="p-3 bg-blue-950/30 rounded border border-blue-800/50">
+                                        <div className="text-sm">
+                                          <div className="text-blue-400 font-medium mb-1">Email from "BitcoinRecovery.com":</div>
+                                          <div className="text-zinc-300 text-xs">
+                                            "We specialize in recovering lost Bitcoin. Our experts can restore your wallet 
+                                            for just 30% of the recovered amount. We've helped thousands of people get their Bitcoin back!"
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <p className="text-zinc-300 text-sm">
+                                      What's the truth about Bitcoin "recovery services"?
+                                    </p>
+
+                                    <div className="space-y-2">
+                                      {[
+                                        'They\'re legitimate - 30% is reasonable for expert help',
+                                        'Shop around for a better rate - try to negotiate lower',
+                                        'All Bitcoin recovery services are scams - only you can recover with your seed phrase',
+                                        'Ask for proof of their previous successful recoveries'
+                                      ].map((option, index) => (
+                                        <button
+                                          key={index}
+                                          onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
+                                          className={`w-full p-3 text-left rounded border transition-colors ${
+                                            selectedSecurityAnswer === index 
+                                              ? 'border-orange-500 bg-orange-500/10' 
+                                              : 'border-zinc-600 hover:border-zinc-500'
+                                          }`}
+                                        >
+                                          <span className="text-white text-sm">{option}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {securityTestStage === 12 && (
+                                  <div className="space-y-4">
+                                    <h5 className="text-lg font-semibold text-white">Investment Scams</h5>
+                                    <p className="text-zinc-300">
+                                      A friend asks to borrow 0.5 BTC and promises to return 1 BTC next week. What do you do?
+                                    </p>
+                                    <div className="space-y-2">
+                                      {['Lend it - friends are trustworthy', 'Ask for collateral first', 'Politely decline - sounds too good to be true', 'Lend half to test'].map((option, index) => (
+                                        <button
+                                          key={index}
+                                          onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
+                                          className={`w-full p-3 text-left rounded border transition-colors ${
+                                            selectedSecurityAnswer === index 
+                                              ? 'border-orange-500 bg-orange-500/10' 
+                                              : 'border-zinc-600 hover:border-zinc-500'
+                                          }`}
+                                        >
+                                          <span className="text-white text-sm">{option}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {securityTestStage === 13 && (
+                                  <div className="space-y-4">
+                                    <div className="flex items-center gap-3 mb-4">
+                                      <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                        <span className="text-orange-400 text-sm">📦</span>
+                                      </div>
+                                      <div>
+                                        <h5 className="text-lg font-semibold text-white">Hardware Wallet Delivery</h5>
+                                        <p className="text-zinc-400 text-sm">New device arrives at your door</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                                      <p className="text-zinc-300 mb-3">
+                                        Your new hardware wallet arrives, but when you open the box, there's a small note that says 
+                                        "For your convenience, we've already generated your seed phrase. Use this to get started quickly!"
+                                      </p>
+                                      <div className="p-3 bg-red-950/30 rounded border border-red-800/50">
+                                        <div className="text-sm">
+                                          <div className="text-red-400 font-medium mb-1">Pre-written seed phrase included:</div>
+                                          <div className="text-zinc-300 text-xs font-mono">
+                                            "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <p className="text-zinc-300 text-sm">
+                                      What do you do with this hardware wallet?
+                                    </p>
+
+                                    <div className="space-y-2">
+                                      {[
+                                        'Contact the company to verify if this is normal',
+                                        'Use the provided seed phrase - it saves time',
+                                        'Return it immediately - this is a tampered device',
+                                        'Generate a new seed phrase but keep the old one as backup'
+                                      ].map((option, index) => (
+                                        <button
+                                          key={index}
+                                          onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
+                                          className={`w-full p-3 text-left rounded border transition-colors ${
+                                            selectedSecurityAnswer === index 
+                                              ? 'border-orange-500 bg-orange-500/10' 
+                                              : 'border-zinc-600 hover:border-zinc-500'
+                                          }`}
+                                        >
+                                          <span className="text-white text-sm">{option}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {securityTestStage === 14 && (
+                                  <div className="space-y-4">
+                                    <div className="flex items-center gap-3 mb-4">
+                                      <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                        <span className="text-orange-400 text-sm">📋</span>
+                                      </div>
+                                      <div>
+                                        <h5 className="text-lg font-semibold text-white">The Copy-Paste Attack</h5>
+                                        <p className="text-zinc-400 text-sm">Sending Bitcoin to a friend</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                                      <p className="text-zinc-300 mb-3">
+                                        You're sending 0.2 BTC to your friend. You copy their Bitcoin address from their text message, 
+                                        then paste it into your wallet. But something looks wrong...
+                                      </p>
+                                      
+                                      <div className="space-y-3">
+                                        <div className="p-3 bg-blue-950/30 rounded border border-blue-800/50">
+                                          <div className="text-xs text-blue-400 mb-1">FRIEND'S TEXT MESSAGE:</div>
+                                          <div className="font-mono text-xs text-blue-300 break-all">
+                                            bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
+                                          </div>
+                                        </div>
+                                        
+                                        <div className="p-3 bg-red-950/30 rounded border border-red-800/50">
+                                          <div className="text-xs text-red-400 mb-1">WHAT YOU PASTED IN YOUR WALLET:</div>
+                                          <div className="font-mono text-xs text-red-300 break-all">
+                                            bc1qhacker123456789abcdefghijklmnopqrstuvwx
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <p className="text-zinc-300 text-sm">
+                                      What most likely happened to your computer?
+                                    </p>
+
+                                    <div className="space-y-2">
+                                      {[
+                                        'Your friend sent the wrong address by mistake',
+                                        'Your clipboard was infected with address-replacing malware',
+                                        'You copied the wrong text from the message',
+                                        'The wallet software has a display bug'
+                                      ].map((option, index) => (
+                                        <button
+                                          key={index}
+                                          onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
+                                          className={`w-full p-3 text-left rounded border transition-colors ${
+                                            selectedSecurityAnswer === index 
+                                              ? 'border-orange-500 bg-orange-500/10' 
+                                              : 'border-zinc-600 hover:border-zinc-500'
+                                          }`}
+                                        >
+                                          <span className="text-white text-sm">{option}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {securityTestStage === 15 && (
+                                  <div className="space-y-4">
+                                    <div className="flex items-center gap-3 mb-4">
+                                      <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                        <span className="text-orange-400 text-sm">☎️</span>
+                                      </div>
+                                      <div>
+                                        <h5 className="text-lg font-semibold text-white">The Support Call</h5>
+                                        <p className="text-zinc-400 text-sm">Unexpected phone call</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                                      <p className="text-zinc-300 mb-3">
+                                        Your phone rings. The caller says: "Hello, this is Bitcoin Technical Support. 
+                                        We've detected suspicious activity on your wallet and need to secure your funds immediately."
+                                      </p>
+                                      <div className="p-3 bg-red-950/30 rounded border border-red-800/50">
+                                        <div className="text-sm">
+                                          <div className="text-red-400 font-medium mb-1">Caller continues:</div>
+                                          <div className="text-zinc-300 text-xs">
+                                            "To protect your Bitcoin, we need you to read us your 12-word recovery phrase. 
+                                            This will allow us to secure your wallet before the hackers can access it. 
+                                            Please hurry - your Bitcoin could be stolen at any moment!"
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <p className="text-zinc-300 text-sm">
+                                      What's the correct response to this caller?
+                                    </p>
+
+                                    <div className="space-y-2">
+                                      {[
+                                        'Give them the seed phrase - they\'re trying to help',
+                                        'Ask for their employee ID and company verification first',
+                                        'Hang up immediately - Bitcoin has no customer support',
+                                        'Ask them to call back later when you have more time'
+                                      ].map((option, index) => (
+                                        <button
+                                          key={index}
+                                          onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
+                                          className={`w-full p-3 text-left rounded border transition-colors ${
+                                            selectedSecurityAnswer === index 
+                                              ? 'border-orange-500 bg-orange-500/10' 
+                                              : 'border-zinc-600 hover:border-zinc-500'
+                                          }`}
+                                        >
+                                          <span className="text-white text-sm">{option}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {securityTestStage === 16 && (
+                                  <div className="space-y-4">
+                                    <div className="flex items-center gap-3 mb-4">
+                                      <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                        <span className="text-orange-400 text-sm">📱</span>
+                                      </div>
+                                      <div>
+                                        <h5 className="text-lg font-semibold text-white">App Store Trap</h5>
+                                        <p className="text-zinc-400 text-sm">Downloading your first wallet</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                                      <p className="text-zinc-300 mb-3">
+                                        You're new to Bitcoin and search "Bitcoin wallet" in your phone's app store. 
+                                        You see several options and need to choose wisely.
+                                      </p>
+                                      
+                                      <div className="space-y-3">
+                                        <div className="p-3 bg-zinc-800/50 rounded border border-zinc-600">
+                                          <div className="text-sm">
+                                            <div className="text-white font-medium mb-1">App Option A: "Bitcoin Wallet"</div>
+                                            <div className="text-zinc-400 text-xs">
+                                              • 2.1M downloads • 4.8 stars • By "Bitcoin Foundation Inc"
+                                            </div>
+                                          </div>
+                                        </div>
+                                        
+                                        <div className="p-3 bg-zinc-800/50 rounded border border-zinc-600">
+                                          <div className="text-sm">
+                                            <div className="text-white font-medium mb-1">App Option B: "BitCoin Wallet Pro"</div>
+                                            <div className="text-zinc-400 text-xs">
+                                              • 150k downloads • 4.9 stars • By "CryptoSafe Solutions"
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <p className="text-zinc-300 text-sm">
+                                      Which app would be the safer choice?
+                                    </p>
+
+                                    <div className="space-y-2">
+                                      {[
+                                        'App B - higher star rating means better quality',
+                                        'App A - more downloads means more trusted',
+                                        'Research both apps on official Bitcoin websites first',
+                                        'Download both and compare features'
+                                      ].map((option, index) => (
+                                        <button
+                                          key={index}
+                                          onClick={() => handleSecurityAnswer(index)}
+                                          disabled={securityAnswerSubmitted}
+                                          className={`w-full p-3 text-left rounded border transition-colors ${
+                                            selectedSecurityAnswer === index 
+                                              ? 'border-orange-500 bg-orange-500/10' 
+                                              : 'border-zinc-600 hover:border-zinc-500'
+                                          }`}
+                                        >
+                                          <span className="text-white text-sm">{option}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+
+
+                                  </div>
+                                )}
+
+                                {/* Answer Feedback */}
+                                {showSecurityFeedback && (
+                                  <div className="mt-4 p-4 rounded border bg-zinc-800/50 border-zinc-700">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      {isSecurityAnswerCorrect ? (
+                                        <CheckCircle className="w-5 h-5 text-green-400" />
+                                      ) : (
+                                        <div className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
+                                          <span className="text-white text-xs font-bold">✗</span>
+                                        </div>
+                                      )}
+                                      <span className="text-white font-medium">
+                                        {isSecurityAnswerCorrect ? 'Correct!' : 'Incorrect'}
+                                      </span>
+                                    </div>
+                                    <p className="text-zinc-300 text-sm">
+                                      {getSecurityExplanation(securityTestStage, isSecurityAnswerCorrect)}
+                                    </p>
+                                  </div>
+                                )}
+                              </CardContent>
+                            </Card>
+
+                            {/* Next Button */}
+                            {showSecurityFeedback && (
+                              <div className="flex justify-center">
+                                <Button
+                                  onClick={() => {
+                                    if (securityTestStage < 16) {
+                                      setSecurityTestStage(securityTestStage + 1);
+                                      setSelectedSecurityAnswer(null);
+                                      setShowSecurityFeedback(false);
+                                      setSecurityAnswerSubmitted(false);
+                                    } else {
+                                      setSecurityTestStage(17); // Show results
+                                    }
+                                  }}
+                                  className="bg-orange-600 hover:bg-orange-700 text-white"
+                                >
+                                  {securityTestStage < 16 ? 'Next Question' : 'View Results'}
+                                </Button>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Simulation Results */}
+                        {securityTestStage === 17 && (
+                          <div className="text-center space-y-6">
+                            <div className="p-6 rounded-lg border border-zinc-700 bg-zinc-800/50">
+                              {securityScore >= 14 ? (
+                                <div>
+                                  <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-4" />
+                                  <h4 className="text-xl font-bold text-white mb-2">Security Master</h4>
+                                  <p className="text-zinc-300 mb-3">
+                                    Safe Decisions: {securityScore}/16 ({Math.round((securityScore/16)*100)}%)
+                                  </p>
+                                  <p className="text-zinc-300 text-sm">
+                                    Outstanding! You navigated dangerous situations like a pro. Your Bitcoin would be safe in the real world.
+                                  </p>
+                                </div>
+                              ) : securityScore >= 11 ? (
+                                <div>
+                                  <AlertTriangle className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
+                                  <h4 className="text-xl font-bold text-white mb-2">Good Security Instincts</h4>
+                                  <p className="text-zinc-300 mb-3">
+                                    Safe Decisions: {securityScore}/16 ({Math.round((securityScore/16)*100)}%)
+                                  </p>
+                                  <p className="text-zinc-300 text-sm">
+                                    You avoided most traps! Review the scenarios you missed - those situations could cost you Bitcoin.
+                                  </p>
+                                </div>
+                              ) : (
+                                <div>
+                                  <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-4" />
+                                  <h4 className="text-xl font-bold text-white mb-2">High Risk Profile</h4>
+                                  <p className="text-zinc-300 mb-3">
+                                    Safe Decisions: {securityScore}/16 ({Math.round((securityScore/16)*100)}%)
+                                  </p>
+                                  <p className="text-zinc-300 text-sm">
+                                    You fell for several scams in this simulation. Study Bitcoin security before risking real money.
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                            
+                            <div className="flex justify-center space-x-4">
+                              <Button
+                                onClick={() => {
+                                  setSecurityTestStage(0);
+                                  setSecurityScore(0);
+                                  setSelectedSecurityAnswer(null);
+                                  setShowSecurityFeedback(false);
+                                }}
+                                variant="outline"
+                                className="border-zinc-600 text-white"
+                              >
+                                Run New Simulation
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
                     {false && (
                       /* Final Results - disabled */
                       <div className="text-center space-y-3">
