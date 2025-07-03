@@ -90,7 +90,7 @@ import DevSubscriptionToggle from "@/components/DevSubscriptionToggle";
 import BottomNavigation from "@/components/BottomNavigation";
 import EmailCollectionModal from "@/components/EmailCollectionModal";
 import { ConsistencyCalendar } from "@/components/ConsistencyCalendar";
-import { MonthlySimulatorTracker } from "@/components/MonthlySimulatorTracker";
+
 import HomeSection from "@/components/sections/HomeSection";
 import MoreSection from "@/components/sections/MoreSection";
 import { iconMap, bitcoinTerms, seedPhraseScenarios } from "@/constants/appData";
