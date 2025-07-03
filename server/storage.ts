@@ -395,6 +395,8 @@ export class DatabaseStorage implements IStorage {
 
   async markDayCompleted(userId: number, dayIndex: number): Promise<void> {
     const today = new Date().toISOString().split('T')[0];
+    const now = new Date();
+    
     await this.createOrUpdateUserProgress({
       userId,
       date: today,
@@ -403,43 +405,81 @@ export class DatabaseStorage implements IStorage {
       lessonCompleted: true,
       quizCompleted: true,
       dayCompleted: true,
+      completedAt: now,
       progressPercentage: 100
     });
   }
 
   async getNextAvailableDay(userId: number): Promise<number> {
-    // Get all completed days for this user
-    const completedDays = await this.getCompletedDays(userId);
-    
-    // Find the first incomplete day starting from 1
+    // Find the first accessible day starting from 1
     for (let day = 1; day <= 180; day++) {
-      if (!completedDays.includes(day)) {
-        // Check if content exists for this day
-        const hasContent = await db.select({ id: contentDays.id })
-          .from(contentDays)
-          .where(eq(contentDays.dayIndex, day))
-          .limit(1);
-        
-        if (hasContent.length > 0) {
-          return day;
-        }
+      const canAccess = await this.canAccessDay(userId, day);
+      const isCompleted = await this.isDayCompleted(userId, day);
+      
+      // Return the first day that is accessible but not completed
+      if (canAccess && !isCompleted) {
+        return day;
       }
     }
     
-    // If all available days are complete, return the last available day
-    const lastAvailableDay = await db.select({ dayIndex: contentDays.dayIndex })
-      .from(contentDays)
-      .orderBy(desc(contentDays.dayIndex))
-      .limit(1);
+    // If all accessible days are complete, return the last completed day
+    const completedDays = await this.getCompletedDays(userId);
+    if (completedDays.length > 0) {
+      return Math.max(...completedDays);
+    }
     
-    return lastAvailableDay[0]?.dayIndex || 1;
+    // Fallback to day 1
+    return 1;
   }
 
   async canAccessDay(userId: number, dayIndex: number): Promise<boolean> {
     // Must be positive day index
     if (dayIndex < 1) return false;
     
-    // Check if content exists for this day by checking content_days table
+    // Day 1 is always accessible (starting point)
+    if (dayIndex === 1) {
+      // Check if content exists for day 1
+      const hasContent = await db.select({ id: contentDays.id })
+        .from(contentDays)
+        .where(eq(contentDays.dayIndex, 1))
+        .limit(1);
+      return hasContent.length > 0;
+    }
+    
+    // For days 2+, check previous day completion and time restriction
+    const previousDay = dayIndex - 1;
+    
+    // Check if previous day is completed
+    const previousDayProgress = await db.select({ 
+      dayCompleted: userProgress.dayCompleted,
+      completedAt: userProgress.completedAt 
+    })
+      .from(userProgress)
+      .where(and(
+        eq(userProgress.userId, userId),
+        eq(userProgress.dayIndex, previousDay)
+      ))
+      .limit(1);
+    
+    // Previous day must be completed
+    if (previousDayProgress.length === 0 || !previousDayProgress[0].dayCompleted) {
+      return false;
+    }
+    
+    // Check if at least 24 hours have passed since previous day completion
+    const completedAt = previousDayProgress[0].completedAt;
+    if (completedAt) {
+      const completionTime = new Date(completedAt);
+      const now = new Date();
+      const hoursSinceCompletion = (now.getTime() - completionTime.getTime()) / (1000 * 60 * 60);
+      
+      // Must wait at least 24 hours
+      if (hoursSinceCompletion < 24) {
+        return false;
+      }
+    }
+    
+    // Check if content exists for this day
     const hasContent = await db.select({ id: contentDays.id })
       .from(contentDays)
       .where(eq(contentDays.dayIndex, dayIndex))

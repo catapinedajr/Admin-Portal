@@ -756,6 +756,51 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
+  // Get day access info with wait time details
+  app.get("/api/day-access-info/:userId/:dayIndex", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      let dayIndex = parseInt(req.params.dayIndex);
+      
+      if (dayIndex <= 0) {
+        dayIndex = 1;
+      }
+
+      const canAccess = await storage.canAccessDay(userId, dayIndex);
+      
+      if (canAccess || dayIndex === 1) {
+        res.json({ canAccess: true, hoursRemaining: 0 });
+        return;
+      }
+
+      // Check if previous day is completed and calculate remaining wait time
+      const previousDay = dayIndex - 1;
+      const previousDayProgress = await storage.getUserProgressByDay(userId, previousDay);
+      
+      if (!previousDayProgress?.dayCompleted || !previousDayProgress.completedAt) {
+        res.json({ 
+          canAccess: false, 
+          hoursRemaining: null, 
+          reason: "previous_day_incomplete" 
+        });
+        return;
+      }
+
+      const completionTime = new Date(previousDayProgress.completedAt);
+      const now = new Date();
+      const hoursSinceCompletion = (now.getTime() - completionTime.getTime()) / (1000 * 60 * 60);
+      const hoursRemaining = Math.max(0, 24 - hoursSinceCompletion);
+
+      res.json({ 
+        canAccess: hoursRemaining === 0, 
+        hoursRemaining: Math.ceil(hoursRemaining),
+        reason: hoursRemaining > 0 ? "waiting_period" : null
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to check day access info" });
+    }
+  });
+
   // Add the day-access endpoint that the UI expects
   app.get("/api/day-access/:userId/:dayIndex", async (req, res) => {
     try {

@@ -176,6 +176,13 @@ export default function Home() {
   // Check if day is locked by subscription tier (Days 1-7 free, 8+ premium)
   const isDayLockedBySubscription = currentDayIndex > 7 && !isPremiumTier;
   
+  // Check day access info for waiting period restrictions
+  const { data: dayAccessInfo } = useQuery({
+    queryKey: ['/api/day-access-info', 1, currentDayIndex],
+    queryFn: () => fetch(`/api/day-access-info/1/${currentDayIndex}`).then(res => res.json()),
+    refetchInterval: isDayLockedBySubscription ? false : 60000, // Refresh every minute if not locked by subscription
+  });
+  
   const { data: dayCompleted = false } = useQuery({
     queryKey: ['/api/day-completed', 1, currentDayIndex],
     queryFn: () => fetch(`/api/day-completed/1/${currentDayIndex}`).then(res => res.json())
@@ -2193,6 +2200,51 @@ export default function Home() {
 
 
 
+                {/* Waiting Period Check */}
+                {!isDayLockedBySubscription && dayAccessInfo && !dayAccessInfo.canAccess && dayAccessInfo.reason === "waiting_period" && (
+                  <Card className="bg-zinc-900/95 border-orange-500/20">
+                    <CardContent className="p-8 text-center">
+                      <div className="w-16 h-16 bg-zinc-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Clock className="w-8 h-8 text-zinc-400" />
+                      </div>
+                      <h3 className="text-xl font-bold text-white mb-2">
+                        Day {currentDayIndex} - Available Soon
+                      </h3>
+                      <p className="text-zinc-400 mb-4">
+                        Great job completing Day {currentDayIndex - 1}! To help you absorb what you've learned, please wait {dayAccessInfo.hoursRemaining} more hours before continuing.
+                      </p>
+                      <div className="bg-zinc-800/50 rounded-lg p-4">
+                        <p className="text-sm text-zinc-300">
+                          <strong>Why the wait?</strong> Learning Bitcoin effectively requires time to process each concept. This spacing helps build stronger understanding and lasting conviction.
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Previous Day Incomplete Check */}
+                {!isDayLockedBySubscription && dayAccessInfo && !dayAccessInfo.canAccess && dayAccessInfo.reason === "previous_day_incomplete" && (
+                  <Card className="bg-zinc-900/95 border-orange-500/20">
+                    <CardContent className="p-8 text-center">
+                      <div className="w-16 h-16 bg-zinc-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Lock className="w-8 h-8 text-zinc-400" />
+                      </div>
+                      <h3 className="text-xl font-bold text-white mb-2">
+                        Complete Day {currentDayIndex - 1} First
+                      </h3>
+                      <p className="text-zinc-400 mb-4">
+                        To access Day {currentDayIndex}, you'll need to complete the lesson and quiz for Day {currentDayIndex - 1} first.
+                      </p>
+                      <Button
+                        onClick={() => setCurrentDayIndex(currentDayIndex - 1)}
+                        className="bg-orange-500 hover:bg-orange-600 text-white"
+                      >
+                        Go to Day {currentDayIndex - 1}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                )}
+
                 {/* Paywall Check */}
                 {isDayLockedBySubscription && (
                   <Card className="bg-zinc-900/95 border-orange-500/20">
@@ -2224,8 +2276,8 @@ export default function Home() {
                   </Card>
                 )}
 
-                {/* Daily Facts - Only show if not locked by subscription */}
-                {!isDayLockedBySubscription && dailyFacts && Array.isArray(dailyFacts) && dailyFacts.length > 0 && (
+                {/* Daily Facts - Only show if accessible */}
+                {!isDayLockedBySubscription && (!dayAccessInfo || dayAccessInfo.canAccess) && dailyFacts && Array.isArray(dailyFacts) && dailyFacts.length > 0 && (
                   <Card className="bg-zinc-900 border-zinc-800">
                     <CardContent className="p-6">
                       <h3 className="text-lg font-bold text-white border-b border-zinc-700 pb-3 mb-6">Today's Learning Preview</h3>
@@ -2261,7 +2313,7 @@ export default function Home() {
                 )}
 
                 {/* No Lesson Available Message */}
-                {!isDayLockedBySubscription && !lesson && (
+                {!isDayLockedBySubscription && (!dayAccessInfo || dayAccessInfo.canAccess) && !lesson && (
                   <Card className="bg-zinc-900 border-zinc-800">
                     <CardContent className="p-6">
                       <div className="text-center space-y-4">
@@ -2272,8 +2324,8 @@ export default function Home() {
                   </Card>
                 )}
 
-                {/* Enhanced Daily Lesson - Only show if not locked by subscription */}
-                {!isDayLockedBySubscription && lesson && (
+                {/* Enhanced Daily Lesson - Only show if accessible */}
+                {!isDayLockedBySubscription && (!dayAccessInfo || dayAccessInfo.canAccess) && lesson && (
                   <Card className="bg-zinc-900 border-zinc-800">
                     <CardContent className="p-6">
                       <div className="space-y-6">
@@ -2329,8 +2381,8 @@ export default function Home() {
                   </Card>
                 )}
 
-                {/* Daily Quiz - Only show if not locked by subscription */}
-                {!isDayLockedBySubscription && (
+                {/* Daily Quiz - Only show if accessible */}
+                {!isDayLockedBySubscription && (!dayAccessInfo || dayAccessInfo.canAccess) && (
                   <div data-testid="daily-quiz">
                     <DailyQuiz 
                       dayIndex={currentDayIndex} 
