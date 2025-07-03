@@ -5,7 +5,6 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
-import HomeDashboard from "@/pages/home-dashboard";
 import Home from "@/pages/home-minimal";
 import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
