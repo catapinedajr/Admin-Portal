@@ -107,7 +107,7 @@ import { cleanText, getExpandedLessonContent } from "@/utils/textUtils";
 
 
 
-type MainSection = "home" | "learn" | "simulations" | "more";
+type MainSection = "home" | "learn" | "money" | "simulations" | "more";
 type LearnSubTab = "today" | "reference";
 type SimulationsSubTab = "wallet" | "safety" | "transactions" | "transfer" | "hodl" | "dca" | "inflation" | "fees";
 type MoreSubTab = "store" | "about";
@@ -7840,16 +7840,36 @@ export default function Home() {
       <BottomNavigation 
         activeSection={activeSection}
         onSectionChange={(section) => {
-          // Map navigation section names to MainSection type
+          // Navigate immediately for external pages
+          if (section === 'learn') {
+            setLocation('/learn');
+            return;
+          }
+          if (section === 'money') {
+            setLocation('/money');
+            return;
+          }
+          if (section === 'simulators') {
+            setLocation('/simulators');
+            return;
+          }
+          if (section === 'more') {
+            setLocation('/more');
+            return;
+          }
+          
+          // Handle home section
+          if (section === 'home') {
+            setLocation('/');
+            return;
+          }
+          
+          // Map navigation section names to MainSection type for current page
           let mappedSection: MainSection;
           if (section === 'simulators') mappedSection = 'simulations';
           else mappedSection = section as MainSection;
           
           setActiveSection(mappedSection);
-          if (section === 'learn') setLocation('/learn');
-          else if (section === 'money') setLocation('/money');
-          else if (section === 'simulators') setLocation('/simulators');
-          else if (section === 'more') setLocation('/more');
         }}
       />
 
