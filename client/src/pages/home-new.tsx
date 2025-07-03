@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import PWAInstallButton from "@/components/PWAInstallButton";
-import SafetyQuizSection from "@/components/simulators/SafetyQuizSection";
 import { 
   Bitcoin, 
   Lightbulb, 
@@ -1546,9 +1545,67 @@ export default function Home() {
 
   const [selectedWalletType, setSelectedWalletType] = useState<string | null>(null);
   
+  // Safety Simulator State
+  const [safetyStage, setSafetyStage] = useState(0);
+  const [safetyScore, setSafetyScore] = useState(0);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [showResult, setShowResult] = useState(false);
+  const [safetyCompleted, setSafetyCompleted] = useState(false);
 
-
-
+  // Comprehensive 12-Stage Safety Simulation Data
+  const safetySimulations = [
+    {
+      stage: "Phishing Detection",
+      title: "Spot the Phishing Email",
+      description: "Can you identify the dangerous email that's trying to steal your Bitcoin?",
+      emails: [
+        {
+          from: "security@binance.com",
+          subject: "Account Security Alert - Action Required",
+          preview: "We noticed unusual activity on your account. Click here to verify your identity immediately or your account will be suspended.",
+          isPhishing: true,
+          redFlags: ["Urgency tactics", "Suspicious domain", "Threatening suspension"]
+        },
+        {
+          from: "noreply@coinbase.com", 
+          subject: "Your Weekly Portfolio Summary",
+          preview: "Here's your portfolio performance for the week ending January 27, 2025. Your Bitcoin holdings are up 3.2%.",
+          isPhishing: false,
+          redFlags: []
+        },
+        {
+          from: "support@electrum.org",
+          subject: "Critical Security Update Required",
+          preview: "Download our urgent security patch at electrum-update[.]net to protect your wallet from new vulnerabilities.",
+          isPhishing: true,
+          redFlags: ["Fake domain", "Malicious download link", "Impersonation"]
+        }
+      ]
+    },
+    {
+      stage: "Seed Phrase Security",
+      title: "Protect Your Seed Phrase",
+      description: "You just generated a new Bitcoin wallet. Where should you store your 12-word recovery phrase?",
+      scenario: "apple bacon chair dog eagle five grape happy ice jelly king lemon",
+      options: [
+        {
+          method: "Screenshot on phone",
+          safe: false
+        },
+        {
+          method: "Write on paper, store in safe",
+          safe: true
+        },
+        {
+          method: "Save in password manager",
+          safe: true
+        },
+        {
+          method: "Memorize only",
+          safe: false
+        }
+      ]
+    },
     {
       stage: "Address Verification", 
       title: "🎯 Verify Bitcoin Address",
@@ -1853,7 +1910,50 @@ export default function Home() {
     setSafetyCompleted(false);
   };
   
-
+  const safetyQuestions = [
+    {
+      question: "What should you NEVER share with anyone?",
+      options: ["Your Bitcoin address", "Your private key", "Your transaction history", "Your wallet software"],
+      correct: 1,
+      explanation: "Your private key gives complete control over your Bitcoin. Never share it with anyone."
+    },
+    {
+      question: "What's the safest way to store large amounts of Bitcoin?",
+      options: ["Mobile wallet", "Exchange", "Hardware wallet", "Web wallet"],
+      correct: 2,
+      explanation: "Hardware wallets keep your private keys offline and are the most secure for large amounts."
+    },
+    {
+      question: "How should you backup your seed phrase?",
+      options: ["Take a photo", "Save in cloud storage", "Write on paper", "Email to yourself"],
+      correct: 2,
+      explanation: "Write your seed phrase on paper and store it in a secure physical location."
+    },
+    {
+      question: "How many words are typically in a Bitcoin seed phrase?",
+      options: ["8 words", "12 or 24 words", "16 words", "32 words"],
+      correct: 1,
+      explanation: "Most Bitcoin wallets use either 12 or 24-word seed phrases following the BIP39 standard."
+    },
+    {
+      question: "What does 'Not your keys, not your coins' mean?",
+      options: ["Hardware is expensive", "Exchanges are unsafe", "Self-custody gives you control", "Bitcoin is complicated"],
+      correct: 2,
+      explanation: "If you don't control the private keys, you don't truly own the Bitcoin. Self-custody means you control your keys."
+    },
+    {
+      question: "What is a 'hot wallet'?",
+      options: ["A wallet that's overheating", "A wallet connected to internet", "A popular wallet brand", "A wallet with high fees"],
+      correct: 1,
+      explanation: "A hot wallet is connected to the internet, making it convenient but potentially less secure than cold storage."
+    },
+    {
+      question: "What is the biggest risk of keeping Bitcoin on an exchange?",
+      options: ["High fees", "Slow transactions", "Exchange could be hacked or fail", "Limited features"],
+      correct: 2,
+      explanation: "Exchanges can be hacked, go bankrupt, or freeze accounts. You don't control the private keys when using exchanges."
+    }
+  ];
 
   const walletTypes = [
     {
@@ -4322,16 +4422,136 @@ export default function Home() {
 
 
                 {/* Interactive Safety Skills Test */}
-                <div id="safety-skills-test">
-                  <SafetyQuizSection
-                    safetyStage={safetyStage}
-                    setSafetyStage={setSafetyStage}
-                    safetyAnswers={safetyAnswers}
-                    setSafetyAnswers={setSafetyAnswers}
-                    safetyResults={safetyResults}
-                    setSafetyResults={setSafetyResults}
-                  />
-                </div>
+                <Card id="safety-skills-test" className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    {/* Content temporarily removed for approval */}
+                    {/* Safety simulator functionality temporarily disabled */}
+                    {false && !safetyCompleted ? (
+                      <div className="space-y-6">
+                        {/* Progress Indicator */}
+                        <div className="space-y-3 mb-6">
+                          <div className="flex items-center gap-3">
+                            <h5 className="font-semibold text-white">Scenario {safetyStage + 1} of {safetySimulations.length}</h5>
+                            <Badge variant="secondary">{safetyScore}/{safetyStage} correct</Badge>
+                          </div>
+                          <div className="flex flex-wrap gap-1 max-w-full">
+                            {safetySimulations.map((_, index) => (
+                              <div
+                                key={index}
+                                className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                                  index < safetyStage ? 'bg-orange-500' : 
+                                  index === safetyStage ? 'bg-orange-500' : 'bg-zinc-600'
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Current Simulation */}
+                        <Card className="bg-zinc-800 border-zinc-700">
+                          <CardContent className="p-4 sm:p-6">
+                            <div className="flex justify-between items-center mb-3">
+                              <h6 className="font-semibold text-white text-sm sm:text-base">{safetySimulations[safetyStage]?.title}</h6>
+                              <span className="text-xs text-zinc-500">{safetyStage + 1}/12</span>
+                            </div>
+                            <p className="text-zinc-400 text-xs sm:text-sm mb-4 leading-relaxed">{safetySimulations[safetyStage]?.description}</p>
+
+                            {/* Phishing Email Simulation */}
+                            {safetyStage === 0 && (
+                              <div className="space-y-3">
+                                <div className="p-3 sm:p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
+                                  <div className="text-xs text-zinc-500 mb-3">Email Inbox - Which email is dangerous?</div>
+                                  <div className="space-y-2">
+                                    {safetySimulations[0]?.emails?.map((email, index) => (
+                                      <button
+                                        key={index}
+                                        onClick={() => setSelectedOption(index)}
+                                        className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
+                                          selectedOption === index 
+                                            ? 'border-orange-500 bg-orange-500/10' 
+                                            : 'border-zinc-600 hover:border-zinc-500'
+                                        }`}
+                                      >
+                                        <div className="flex justify-between items-start mb-1">
+                                          <span className="text-white text-xs sm:text-sm font-medium truncate mr-2">{email.from}</span>
+                                          <span className="text-zinc-500 text-xs shrink-0">Today</span>
+                                        </div>
+                                        <div className="text-white text-xs sm:text-sm mb-1 line-clamp-1">{email.subject}</div>
+                                        <div className="text-zinc-400 text-xs line-clamp-2 leading-relaxed">{email.preview}</div>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Seed Phrase Storage Simulation */}
+                            {safetyStage === 1 && (
+                              <div className="space-y-3">
+                                <div className="p-3 sm:p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
+                                  <div className="text-sm sm:text-base text-zinc-300 mb-3">
+                                    You just received your 12-word seed phrase. Where should you store it?
+                                  </div>
+                                  <div className="p-2 sm:p-3 bg-zinc-800 rounded border border-dashed border-zinc-500 mb-3">
+                                    <div className="text-xs text-zinc-500 mb-2">Your Seed Phrase:</div>
+                                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-1 text-xs text-orange-300 font-mono">
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">1. abandon</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">2. ability</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">3. able</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">4. about</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">5. above</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">6. absent</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">7. absorb</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">8. abstract</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">9. absurd</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">10. abuse</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">11. access</div>
+                                      <div className="p-1 bg-zinc-700/50 rounded text-center">12. accident</div>
+                                    </div>
+                                  </div>
+                                  <div className="space-y-2">
+                                    {safetySimulations[1]?.options?.map((option, index) => (
+                                      <button
+                                        key={index}
+                                        onClick={() => setSelectedOption(index)}
+                                        className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
+                                          selectedOption === index 
+                                            ? 'border-orange-500 bg-orange-500/10' 
+                                            : 'border-zinc-600 hover:border-zinc-500'
+                                        }`}
+                                      >
+                                        <div className="text-white text-xs sm:text-sm font-medium">
+                                          {'method' in option ? option.method : 'Option'}
+                                        </div>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Address Verification Simulation */}
+                            {safetyStage === 2 && (
+                              <div className="space-y-3">
+                                <div className="p-3 sm:p-4 bg-zinc-900 border border-zinc-600 rounded-lg">
+                                  <div className="space-y-3">
+                                    <div>
+                                      <div className="text-sm sm:text-base text-zinc-300 mb-2">
+                                        Address you copied from your friend:
+                                      </div>
+                                      <div className="text-green-300 font-mono text-xs break-all bg-zinc-800 p-2 rounded border border-green-700/50">
+                                        {safetySimulations[2]?.copied}
+                                      </div>
+                                    </div>
+                                    
+                                    <div>
+                                      <div className="text-sm sm:text-base text-zinc-300 mb-2">
+                                        Address your wallet is showing:
+                                      </div>
+                                      <div className="text-red-300 font-mono text-xs break-all bg-zinc-800 p-2 rounded border border-red-700/50">
+                                        {safetySimulations[2]?.displayed}
+                                      </div>
+                                    </div>
                                   </div>
                                   <div className="space-y-2 mt-3">
                                     {safetySimulations[2]?.options?.map((option, index) => (
