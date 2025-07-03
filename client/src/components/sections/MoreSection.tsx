@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Info, ShoppingCart, ArrowRight, Clock, Heart } from "lucide-react";
+import { Info, ShoppingCart, Clock, Heart } from "lucide-react";
 
 interface MoreSectionProps {
   moreSubTab: string;
@@ -133,27 +133,24 @@ export default function MoreSection({ moreSubTab, setMoreSubTab }: MoreSectionPr
             <p className="text-zinc-400">The story behind how to learn Bitcoin</p>
           </div>
 
-          {/* Navigation to full About page */}
+          {/* Full About Content */}
           <Card className="bg-zinc-900 border-zinc-800">
-            <CardContent className="p-6">
-              <div className="text-center space-y-4">
-                <div className="w-16 h-16 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-2xl mx-auto">
-                  HL
-                </div>
-                <div>
-                  <h4 className="text-lg font-bold text-white mb-2">Learn Our Story</h4>
-                  <p className="text-zinc-300 mb-4">
-                    Discover how HODLearn connects the patience of HODLing with the journey of learning Bitcoin. 
-                    From overwhelmed beginners to building conviction through understanding.
-                  </p>
-                  <Button 
-                    onClick={() => window.location.href = '/about'}
-                    className="bg-orange-600 hover:bg-orange-700 text-white"
-                  >
-                    Read Our Full Story
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </div>
+            <CardContent className="p-8 text-center space-y-6">
+              <div className="w-16 h-16 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-2xl mx-auto">
+                HL
+              </div>
+              
+              <div className="space-y-4">
+                <h4 className="text-xl font-bold">Why HODLearn?</h4>
+                <p className="text-zinc-300 leading-relaxed">
+                  Bitcoin learning was overwhelming and confusing. We created HODLearn to make it simple, 
+                  daily, and accessible for everyone - no technical background required.
+                </p>
+                
+                <p className="text-zinc-300 leading-relaxed">
+                  Just like HODLing requires patience, learning Bitcoin takes time. Small daily steps 
+                  build real understanding and lasting conviction.
+                </p>
               </div>
             </CardContent>
           </Card>
