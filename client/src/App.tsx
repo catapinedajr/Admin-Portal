@@ -7,7 +7,7 @@ import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { useEffect, useState } from "react";
 
 import Home from "@/pages/home-new";
-import FinancePage from "@/pages/FinancePage";
+import FinancePage from "@/pages/FinancePageSimple";
 import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
 import NotFound from "@/pages/not-found";
