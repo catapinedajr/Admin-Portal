@@ -1,12 +1,15 @@
 import { useState, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { iconMap, bitcoinTerms } from "@/constants/appData";
-import { getExpandedLessonContent } from "@/utils/textUtils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { iconMap, bitcoinTerms } from "@/constants/appData";
+import { getExpandedLessonContent } from "@/utils/textUtils";
+import WeeklyQuiz from "@/components/WeeklyQuiz";
+import type { User } from "@shared/schema";
 import { 
   Bitcoin, 
   Lightbulb, 
@@ -50,24 +53,7 @@ import {
   Lock,
   Wallet,
   RefreshCw,
-  Eye,
-  ArrowLeft,
-  Calculator,
-  Info,
-  TrendingDown,
-  Target,
-  Star,
-  Brain,
-  Key
 } from "lucide-react";
-import type { User } from "@shared/schema";
-import DailyQuiz from "@/components/DailyQuiz";
-import { BitcoinTerm, AutoGlossary } from "@/components/BitcoinGlossary";
-import { useToast } from "@/hooks/use-toast";
-import { ProgressIndicator, AchievementBadge, LearningAnalytics } from "@/components/ProgressIndicator";
-import AchievementSystem from "@/components/AchievementSystem";
-import { useSubscription } from "@/contexts/SubscriptionContext";
-import LockedContent from "@/components/LockedContent";
 
 type LearnSubTab = "today" | "reference";
 
@@ -88,7 +74,7 @@ interface LearnSectionProps {
   markDayCompleted: () => void;
 }
 
-export default function LearnSection({
+export default function LearnSectionNew({
   user,
   currentDayIndex,
   dayMetadata,
@@ -107,8 +93,7 @@ export default function LearnSection({
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // This is a placeholder for the actual Learn section content
-  // I need to extract the full content from lines 2574-3062
+  // For now, return a simplified version to test the connection
   return (
     <div className="space-y-6">
       {/* Learn Sub-navigation */}
@@ -133,13 +118,29 @@ export default function LearnSection({
         </div>
       </div>
 
-      {/* Placeholder for rest of Learn section content */}
-      <div className="text-center text-zinc-400">
-        Learn section content will be extracted here...
-        <br />
-        Current day: {currentDayIndex}
-        <br />
-        Sub tab: {learnSubTab}
+      {/* Test content to verify it's working */}
+      <div className="text-center">
+        <Card className="bg-zinc-900 border-zinc-800">
+          <CardContent className="p-6">
+            <h2 className="text-xl font-bold text-white mb-4">
+              NEW LearnSection Component Working!
+            </h2>
+            <p className="text-zinc-400 mb-4">
+              Current day: {currentDayIndex}
+            </p>
+            <p className="text-zinc-400 mb-4">
+              Current tab: {learnSubTab}
+            </p>
+            <p className="text-zinc-400">
+              User: {user?.firstName || 'Loading...'}
+            </p>
+            {dayMetadata && (
+              <p className="text-orange-400 mt-2">
+                Today's topic: {dayMetadata.title}
+              </p>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

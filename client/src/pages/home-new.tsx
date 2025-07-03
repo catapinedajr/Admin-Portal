@@ -2309,6 +2309,55 @@ export default function Home() {
                 >
                   Today
                 </Button>
+                <Button
+                  variant={learnSubTab === "reference" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setLearnSubTab("reference")}
+                  className="text-xs px-3 py-1"
+                >
+                  Reference
+                </Button>
+              </div>
+            </div>
+
+            {/* Placeholder for Learn content - will extract later */}
+            <div className="text-center">
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-6">
+                  <h2 className="text-xl font-bold text-white mb-4">
+                    Learn Section - Original Implementation
+                  </h2>
+                  <p className="text-zinc-400 mb-4">
+                    Current day: {currentDayIndex}
+                  </p>
+                  <p className="text-zinc-400 mb-4">
+                    Current tab: {learnSubTab}
+                  </p>
+                  <p className="text-zinc-400">
+                    User: {user?.firstName || 'Loading...'}
+                  </p>
+                  {dayMetadata && (
+                    <p className="text-orange-400 mt-2">
+                      Today's topic: {dayMetadata.title}
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
+
+
+        {/* Finance Section */}
+        {activeSection === "money" && (
+                <Button
+                  variant={learnSubTab === "today" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setLearnSubTab("today")}
+                  className="text-xs px-3 py-1"
+                >
+                  Today
+                </Button>
 
 
 
