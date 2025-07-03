@@ -316,7 +316,28 @@ export default function Home() {
     return explanations[stage as keyof typeof explanations] || "Invalid question.";
   };
   
-  // Finance section state removed - now in FinancePage.tsx
+  // Finance section interactive states
+  const [inflationAmount, setInflationAmount] = useState<string>("10000");
+  const [inflationYears, setInflationYears] = useState<number>(10);
+  const [inflationRate, setInflationRate] = useState<number>(3.0);
+  
+  // Banking Fees Calculator State
+  const [monthlyFee, setMonthlyFee] = useState<string>("12");
+  const [wireTransfers, setWireTransfers] = useState<string>("1");
+  const [atmWithdrawals, setAtmWithdrawals] = useState<string>("4");
+  const [atmFees, setAtmFees] = useState<string>("4");
+  const [overdraftFees, setOverdraftFees] = useState<string>("0");
+  const [internationalFees, setInternationalFees] = useState<string>("500");
+  const [paperFees, setPaperFees] = useState<string>("5");
+  const [creditCardFees, setCreditCardFees] = useState<string>("95");
+  const [inflationSliderYear, setInflationSliderYear] = useState<number>(0);
+  const [transferCount, setTransferCount] = useState<string>("2");
+  const [transferAmount, setTransferAmount] = useState<string>("1000");
+  const [speedRaceActive, setSpeedRaceActive] = useState<boolean>(false);
+  const [animationActive, setAnimationActive] = useState(false);
+  const [inflationSimActive, setInflationSimActive] = useState(false);
+  const [inflationProgress, setInflationProgress] = useState(0); // 0-6 representing years 0,1,5,10,15,20,25
+  const [settlementProgress, setSettlementProgress] = useState<{traditional: number; bitcoin: number}>({ traditional: 0, bitcoin: 0 });
   
   // Seed Phrase Recovery Simulator State
   const [seedPhraseActive, setSeedPhraseActive] = useState(false);
@@ -327,7 +348,40 @@ export default function Home() {
   const [recoveryComplete, setRecoveryComplete] = useState(false);
   const [showSeedHints, setShowSeedHints] = useState(false);
   
-  // Money Supply functions removed - now in FinancePage.tsx
+  // Money Supply Visualization State
+  const [moneySupplyYear, setMoneySupplyYear] = useState(2025);
+
+  // Money Supply Helper Functions
+  const getMoneySupplyRaw = (year: number): number => {
+    // Authentic M2 Money Supply data (in trillions) - 1920 to 2025
+    const dataPoints: { [key: number]: number } = {
+      1920: 0.023, 1929: 0.026, 1933: 0.020, 1940: 0.040, 1945: 0.107, 
+      1950: 0.117, 1960: 0.167, 1971: 0.583, 1980: 1.600, 1990: 3.200, 
+      2000: 4.900, 2008: 7.500, 2010: 8.700, 2015: 12.400, 2020: 15.400, 
+      2021: 20.100, 2024: 21.000, 2025: 21.200
+    };
+    
+    // Linear interpolation between known points
+    const years = Object.keys(dataPoints).map(Number).sort();
+    if (year <= years[0]) return dataPoints[years[0]];
+    if (year >= years[years.length - 1]) return dataPoints[years[years.length - 1]];
+    
+    for (let i = 0; i < years.length - 1; i++) {
+      if (year >= years[i] && year <= years[i + 1]) {
+        const progress = (year - years[i]) / (years[i + 1] - years[i]);
+        return dataPoints[years[i]] + progress * (dataPoints[years[i + 1]] - dataPoints[years[i]]);
+      }
+    }
+    return dataPoints[2025];
+  };
+
+  const getMoneySupplyForYear = (year: number): string => {
+    return getMoneySupplyRaw(year).toFixed(1);
+  };
+
+  const getMoneySupplyMultiplier = (year: number): string => {
+    return (getMoneySupplyRaw(year) / 0.023).toFixed(0);
+  };
 
   const getPurchasingPowerRaw = (year: number): number => {
     // What $1 from 1920 is worth today (inverse of cumulative inflation)
@@ -424,7 +478,85 @@ export default function Home() {
 
 
   // Settlement Animation Logic
-  // Finance animation functions removed - now in FinancePage.tsx
+  const startSettlementAnimation = () => {
+    setSpeedRaceActive(true);
+    setAnimationActive(true);
+    setSettlementProgress({ traditional: 0, bitcoin: 0 });
+
+    // Bitcoin animation: completes all 4 steps in 18 seconds (20% slower for better visibility)
+    const bitcoinSteps = [
+      { step: 1, delay: 2400 },   // Step 1 at 2.4 seconds (transaction creation)
+      { step: 2, delay: 6000 },   // Step 2 at 6 seconds (network broadcast)
+      { step: 3, delay: 14400 },  // Step 3 at 14.4 seconds (mining consensus)
+      { step: 4, delay: 18000 }   // Step 4 at 18 seconds (final settlement)
+    ];
+
+    // Traditional banking: takes much longer with realistic banking delays
+    const traditionalSteps = [
+      { step: 1, delay: 8000 },   // Step 1 at 8 seconds (bank visit takes longer)
+      { step: 2, delay: 20000 },  // Step 2 at 20 seconds (compliance review)
+      { step: 3, delay: 44000 },  // Step 3 at 44 seconds (SWIFT processing)
+      { step: 4, delay: 70000 },  // Step 4 at 70 seconds (intermediary banks)
+      { step: 5, delay: 86000 }   // Step 5 at 86 seconds (final settlement)
+    ];
+
+    // Animate Bitcoin steps
+    bitcoinSteps.forEach(({ step, delay }) => {
+      setTimeout(() => {
+        setSettlementProgress(prev => ({ ...prev, bitcoin: step }));
+      }, delay);
+    });
+
+    // Animate Traditional steps  
+    traditionalSteps.forEach(({ step, delay }) => {
+      setTimeout(() => {
+        setSettlementProgress(prev => ({ ...prev, traditional: step }));
+      }, delay);
+    });
+
+    // End animation after 90 seconds
+    setTimeout(() => {
+      setAnimationActive(false);
+    }, 90000);
+  };
+
+  const resetSettlementAnimation = () => {
+    setSpeedRaceActive(false);
+    setAnimationActive(false);
+    setSettlementProgress({ traditional: 0, bitcoin: 0 });
+  };
+
+  // Inflation Simulation Logic  
+  const startInflationSimulation = () => {
+    setInflationSimActive(true);
+    setInflationProgress(0);
+
+    // Animate through years: 0 -> 1yr -> 5yr -> 10yr -> 15yr -> 20yr -> 25yr (2x faster)
+    const timePoints = [
+      { step: 1, delay: 800 },    // 1 year at 0.8 seconds
+      { step: 2, delay: 1600 },   // 5 years at 1.6 seconds  
+      { step: 3, delay: 2400 },   // 10 years at 2.4 seconds
+      { step: 4, delay: 3200 },   // 15 years at 3.2 seconds
+      { step: 5, delay: 4000 },   // 20 years at 4 seconds
+      { step: 6, delay: 4800 }    // 25 years at 4.8 seconds
+    ];
+
+    timePoints.forEach(({ step, delay }) => {
+      setTimeout(() => {
+        setInflationProgress(step);
+      }, delay);
+    });
+
+    // End simulation after 6 seconds (2x faster)
+    setTimeout(() => {
+      setInflationSimActive(false);
+    }, 6000);
+  };
+
+  const resetInflationSimulation = () => {
+    setInflationSimActive(false);
+    setInflationProgress(0);
+  };
   const [transactionInputs, setTransactionInputs] = useState({
     fromAddress: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
     toAddress: "",
@@ -2370,8 +2502,8 @@ export default function Home() {
           </div>
         )}
 
-        {/* Finance Section - Moved to /money route */}
-        {false && activeSection === "money" && (
+        {/* Finance Section */}
+        {activeSection === "money" && (
           <div className="space-y-8">
             {/* Hero Narrative */}
             <Card className="bg-gradient-to-br from-orange-950/30 via-zinc-900 to-red-950/30 border-orange-800/50">
