@@ -84,31 +84,48 @@ export default function LearnContainer({
   const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: string }>({});
   const [showResults, setShowResults] = useState(false);
 
-  // API Queries for dynamic content
-  const { data: dayMetadata, isLoading: metadataLoading } = useQuery({
+  // API Queries for dynamic content with error handling
+  const { data: dayMetadata, isLoading: metadataLoading, error: metadataError } = useQuery({
     queryKey: ['/api/day-metadata', currentDayIndex],
     enabled: currentDayIndex > 0
   });
 
-  const { data: dailyFacts, isLoading: factsLoading } = useQuery({
+  const { data: dailyFacts, isLoading: factsLoading, error: factsError } = useQuery({
     queryKey: ['/api/daily-facts', currentDayIndex],
     enabled: currentDayIndex > 0
   });
 
-  const { data: lesson, isLoading: lessonLoading } = useQuery({
+  const { data: lesson, isLoading: lessonLoading, error: lessonError } = useQuery({
     queryKey: ['/api/lesson', currentDayIndex],
     enabled: currentDayIndex > 0
   });
 
-  const { data: quizQuestions, isLoading: quizLoading } = useQuery({
+  const { data: quizQuestions, isLoading: quizLoading, error: quizError } = useQuery({
     queryKey: ['/api/quiz/daily', currentDayIndex],
     enabled: currentDayIndex > 0
   });
 
-  const { data: userAnswers } = useQuery({
+  const { data: userAnswers, error: answersError } = useQuery({
     queryKey: ['/api/quiz/answers', userId, new Date().toISOString().split('T')[0]],
     enabled: userId > 0
   });
+
+  // Debug errors
+  if (metadataError) console.error('Metadata error:', metadataError);
+  if (factsError) console.error('Facts error:', factsError);
+  if (lessonError) console.error('Lesson error:', lessonError);
+  if (quizError) console.error('Quiz error:', quizError);
+  if (answersError) console.error('Answers error:', answersError);
+
+  // Type guards for data safety
+  const safeMetadata = dayMetadata && typeof dayMetadata === 'object' ? dayMetadata : {};
+  const safeFacts = dailyFacts && Array.isArray(dailyFacts) ? dailyFacts : [];
+  const safeLesson = lesson && typeof lesson === 'object' ? lesson : {};
+  const safeQuizQuestions = quizQuestions && Array.isArray(quizQuestions) ? quizQuestions : [];
+  const safeUserAnswers = userAnswers && Array.isArray(userAnswers) ? userAnswers : [];
+
+  // Loading states
+  const isLoading = metadataLoading || factsLoading || lessonLoading || quizLoading;
 
   // Check if day is locked by subscription
   const isDayLockedBySubscription = !userPremium && currentDayIndex > 7;
@@ -134,7 +151,7 @@ export default function LearnContainer({
 
   // Submit quiz answers
   const submitQuiz = async () => {
-    if (!quizQuestions || Object.keys(selectedAnswers).length !== quizQuestions.length) {
+    if (!safeQuizQuestions.length || Object.keys(selectedAnswers).length !== safeQuizQuestions.length) {
       return;
     }
 
@@ -229,7 +246,7 @@ export default function LearnContainer({
                     </div>
                   ))}
                 </div>
-              ) : dailyFacts && dailyFacts.length > 0 ? (
+              ) : dailyFacts && Array.isArray(dailyFacts) && dailyFacts.length > 0 ? (
                 <div className="space-y-4">
                   {dailyFacts.map((fact: any) => {
                     const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Lightbulb;
