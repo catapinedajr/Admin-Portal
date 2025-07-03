@@ -93,6 +93,7 @@ import { ConsistencyCalendar } from "@/components/ConsistencyCalendar";
 import { MonthlySimulatorTracker } from "@/components/MonthlySimulatorTracker";
 import HomeSection from "@/components/sections/HomeSection";
 import MoreSection from "@/components/sections/MoreSection";
+import MoneySection from "@/components/sections/MoneySection";
 import { iconMap, bitcoinTerms, seedPhraseScenarios } from "@/constants/appData";
 import WeeklyQuiz from "@/components/WeeklyQuiz";
 import { cleanText, getExpandedLessonContent } from "@/utils/textUtils";
@@ -2627,6 +2628,11 @@ export default function Home() {
 
         {/* Finance Section */}
         {activeSection === "money" && (
+          <MoneySection />
+        )}
+
+        {/* OLD FINANCE SECTION - REMOVE THIS ENTIRE BLOCK */}
+        {false && activeSection === "money" && (
           <div className="space-y-8">
             {/* Hero Narrative */}
             <Card className="bg-gradient-to-br from-orange-950/30 via-zinc-900 to-red-950/30 border-orange-800/50">
