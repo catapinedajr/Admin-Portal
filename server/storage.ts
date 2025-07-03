@@ -292,7 +292,7 @@ export class DatabaseStorage implements IStorage {
     return result;
   }
 
-  async updateContentDayApproval(dayIndex: number, isApproved: boolean): Promise<ContentDay | undefined> {
+  async updateContentDayApproval(dayIndex: number, isApproved: boolean | null): Promise<ContentDay | undefined> {
     const [result] = await db.update(contentDays)
       .set({ isApproved, updatedAt: new Date() })
       .where(eq(contentDays.dayIndex, dayIndex))
@@ -331,7 +331,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createContentLesson(lesson: InsertContentLesson): Promise<ContentLesson> {
-    const [result] = await db.insert(contentLessons).values(lesson).returning();
+    const [result] = await db.insert(contentLessons).values([lesson]).returning();
     return result;
   }
 
@@ -348,7 +348,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createContentQuiz(quiz: InsertContentQuiz): Promise<ContentQuiz> {
-    const [result] = await db.insert(contentQuizzes).values(quiz).returning();
+    const [result] = await db.insert(contentQuizzes).values([quiz]).returning();
     return result;
   }
 
