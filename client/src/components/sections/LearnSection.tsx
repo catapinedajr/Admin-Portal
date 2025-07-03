@@ -1,7 +1,5 @@
 import { useState, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { iconMap, bitcoinTerms } from "@/constants/appData";
-import { getExpandedLessonContent } from "@/utils/textUtils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -87,6 +85,15 @@ interface LearnSectionProps {
   isPremiumTier: boolean;
   markDayCompleted: () => void;
 }
+
+// Define bitcoin terms and other constants
+const bitcoinTerms = [
+  // ... (will need to extract these from the main file)
+];
+
+const iconMap = {
+  // ... (will need to extract these from the main file)
+};
 
 export default function LearnSection({
   user,
