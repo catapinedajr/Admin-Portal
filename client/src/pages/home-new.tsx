@@ -121,9 +121,13 @@ export default function Home() {
   
   // Determine active section from URL
   const getActiveSectionFromPath = (path: string): MainSection => {
+    console.log("🔍 Checking path:", path);
     if (path === '/' || path === '') return 'home';
     if (path.includes('/learn')) return 'learn';
-    if (path.startsWith('/money2')) return 'money2';
+    if (path.startsWith('/money2')) {
+      console.log("✅ Detected money2 path, returning 'money2'");
+      return 'money2';
+    }
     if (path.startsWith('/money')) return 'money';
     if (path.includes('/simulators')) return 'simulations';
     if (path.includes('/more')) return 'more';

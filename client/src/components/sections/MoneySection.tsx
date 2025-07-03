@@ -16,6 +16,8 @@ interface MoneySectionProps {
 }
 
 export default function MoneySection(props: MoneySectionProps) {
+  console.log("🟢 MoneySection component is rendering successfully!");
+  console.log("📍 Current location in MoneySection:", window.location.pathname);
   // Local state for this component (copied from original)
   const [inflationAmount, setInflationAmount] = useState<string>("10000");
   const [inflationYears, setInflationYears] = useState<number>(10);
@@ -106,9 +108,16 @@ export default function MoneySection(props: MoneySectionProps) {
   return (
     <div className="space-y-8">
       <Card className="text-center p-8 bg-orange-950/20 border-orange-800/50">
-        <h2 className="text-2xl font-bold text-orange-400 mb-4">MoneySection Component Active</h2>
-        <p className="text-zinc-400">This is the extracted MoneySection component with all helper functions ready.</p>
-        <p className="text-zinc-500 text-sm mt-2">I am ready to copy the remaining 800+ lines of Money section content to complete the extraction.</p>
+        <CardContent>
+          <h2 className="text-2xl font-bold text-orange-400 mb-4">MoneySection Component Active</h2>
+          <p className="text-zinc-400">This is the extracted MoneySection component with all helper functions ready.</p>
+          <p className="text-zinc-500 text-sm mt-2">Money 2 navigation is working! Ready to copy the remaining 800+ lines of Money section content.</p>
+          <div className="mt-4 p-4 bg-zinc-800/50 rounded-lg">
+            <p className="text-orange-300 font-semibold">Test Data:</p>
+            <p className="text-zinc-400">Money Supply for 2024: ${getMoneySupplyRaw(2024)}T</p>
+            <p className="text-zinc-400">Current Year: {moneySupplyYear}</p>
+          </div>
+        </CardContent>
       </Card>
     </div>
   );
