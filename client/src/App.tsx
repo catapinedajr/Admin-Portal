@@ -39,7 +39,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
             headers: {
               'Authorization': `Bearer ${sessionId}`
             },
-            credentials: 'same-origin' // Changed from 'include' for better Safari compatibility
+            credentials: 'same-origin'
           });
           
           if (response.ok) {
@@ -72,7 +72,9 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   if (isAuthenticated === null) {
     return (
       <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
-        <div className="text-orange-500">Loading...</div>
+        <div className="text-orange-500 text-xl font-bold">
+          Loading HODLearn...
+        </div>
       </div>
     );
   }
