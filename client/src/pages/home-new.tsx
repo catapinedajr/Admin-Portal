@@ -2063,7 +2063,7 @@ export default function Home() {
           </div>
           <div className="space-y-3">
             <h1 className="text-4xl font-bold text-white">HODLearn</h1>
-            <p className="text-zinc-400 text-lg">Building your Bitcoin knowledge...</p>
+            <p className="text-zinc-400 text-lg">Loading your conviction</p>
             <div className="flex justify-center">
               <div className="text-xs text-zinc-500 bg-zinc-800/50 px-3 py-1 rounded-full">
                 Learn • HODL • Repeat
