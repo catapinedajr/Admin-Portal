@@ -7,7 +7,7 @@ import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { useEffect, useState } from "react";
 
 import Home from "@/pages/home-new";
-import TestPage from "@/pages/TestPage";
+import FinancePageWorking from "@/pages/FinancePageWorking";
 import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
 import NotFound from "@/pages/not-found";
@@ -143,7 +143,7 @@ function Router() {
           </AuthGuard>
         </Route>
         <Route path="/money">
-          <TestPage />
+          <FinancePageWorking />
         </Route>
         <Route path="/simulators">
           <AuthGuard>

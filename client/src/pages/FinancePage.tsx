@@ -1,26 +1,16 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
-import { 
-  TrendingDown, 
-  TrendingUp,
-  ArrowRight,
-  DollarSign,
-  BarChart3
-} from "lucide-react";
 import BottomNavigation from "@/components/BottomNavigation";
 
 export default function FinancePage() {
   const [, setLocation] = useLocation();
-
-  // Money supply visualization state
-  const [moneySupplyYear, setMoneySupplyYear] = useState(2025);
   
   // Inflation calculator state
-  const [inflationAmount, setInflationAmount] = useState("10000");
+  const [inflationAmount, setInflationAmount] = useState(10000);
   const [inflationRate, setInflationRate] = useState(4);
-  const [inflationSliderYear, setInflationSliderYear] = useState(10);
+  const [inflationYears, setInflationYears] = useState(10);
 
   // Money Supply Helper Functions
   const getMoneySupplyRaw = (year: number): number => {
