@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, lazy, Suspense } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -96,6 +96,11 @@ import MoreSection from "@/components/sections/MoreSection";
 import { iconMap, bitcoinTerms, seedPhraseScenarios } from "@/constants/appData";
 import WeeklyQuiz from "@/components/WeeklyQuiz";
 import { cleanText, getExpandedLessonContent } from "@/utils/textUtils";
+
+// Dynamic imports for code splitting to reduce main bundle size
+const LearnSection = lazy(() => import("@/components/sections/LearnSection"));
+const FinanceSection = lazy(() => import("@/components/sections/FinanceSection"));
+const SimulatorsSection = lazy(() => import("@/components/sections/SimulatorsSection"));
 
 
 
