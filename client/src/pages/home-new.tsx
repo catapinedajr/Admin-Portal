@@ -2490,7 +2490,7 @@ export default function Home() {
                   
                   <div className="mt-8 p-4 bg-orange-950/20 rounded-xl border border-orange-800/30">
                     <div className="text-orange-300 font-semibold mb-2">
-                      The choice is yours: keep losing wealth to inflation, or learn about money that can't be manipulated.
+                      Choose: lose to inflation, or learn sound money.
                     </div>
                   </div>
                 </div>
