@@ -31,7 +31,7 @@ export default function Onboarding() {
                 Welcome to HODLearn
               </h1>
               <p className="text-zinc-400 text-lg">
-                Master Bitcoin through easy daily 5-minute lessons
+                Learn Bitcoin through daily bite-sized lessons
               </p>
             </div>
 
@@ -40,14 +40,14 @@ export default function Onboarding() {
               <div className="bg-zinc-800/50 rounded-lg p-6">
                 <div className="text-lg space-y-2">
                   <div className="text-zinc-300">Understanding Bitcoin takes time</div>
-                  <div className="text-zinc-300">Building conviction takes consistency</div>
+                  <div className="text-zinc-300">Building conviction takes discipline</div>
                   <div className="text-orange-400 font-semibold text-xl">This is HODLearn</div>
                 </div>
               </div>
               
               <p className="text-zinc-300 text-base">
-                Join thousands learning Bitcoin through our structured 180-day journey. 
-                Start with why Bitcoin matters, then build deep knowledge step by step.
+                Start your Bitcoin journey with simple daily lessons. 
+                Build knowledge step by step at your own pace.
               </p>
             </div>
 
