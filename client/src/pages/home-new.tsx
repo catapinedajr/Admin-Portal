@@ -2059,7 +2059,7 @@ export default function Home() {
                 <span className="text-lg font-bold text-white">HL</span>
               </div>
             </div>
-            <div className="absolute -inset-4 bg-orange-400/20 rounded-full animate-ping"></div>
+            <div className="absolute -inset-4 bg-orange-400/10 rounded-full animate-pulse"></div>
           </div>
           <div className="space-y-3">
             <h1 className="text-4xl font-bold text-white">HODLearn</h1>
