@@ -2781,11 +2781,9 @@ export default function Home() {
                     <div className="space-y-2">
                       {[
                         { step: 0, year: "Today", savings: 25000, btc: 25000, narrative: "Both start equal" },
-                        { step: 1, year: "2 years", savings: 23500, btc: 65000, narrative: "Historical growth begins" },
-                        { step: 2, year: "5 years", savings: 21562, btc: 325000, narrative: "5yr CAGR reality" },
-                        { step: 3, year: "8 years", savings: 19685, btc: 975000, narrative: "Compound growth accelerates" },
-                        { step: 4, year: "10 years", savings: 18584, btc: 1650000, narrative: "Wealth gap widens dramatically" },
-                        { step: 5, year: "25 years", savings: 17543, btc: 2750000, narrative: "Long-term holder rewards" }
+                        { step: 1, year: "5 years", savings: 21562, btc: 325000, narrative: "5yr CAGR reality" },
+                        { step: 2, year: "10 years", savings: 18584, btc: 1650000, narrative: "Wealth gap widens dramatically" },
+                        { step: 3, year: "25 years", savings: 17543, btc: 2750000, narrative: "Long-term holder rewards" }
                       ].map(({ step, year, savings, btc, narrative }) => {
                         const isActive = inflationProgress >= step;
                         
