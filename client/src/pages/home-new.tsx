@@ -148,6 +148,8 @@ export default function Home() {
   };
   
   const [activeSection, setActiveSection] = useState<MainSection>(getActiveSectionFromPath(location));
+  console.log("🔥 Current activeSection state:", activeSection);
+  console.log("🔥 Current location:", location);
   const [learnSubTab, setLearnSubTab] = useState<LearnSubTab>("today");
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [simulationsSubTab, setSimulationsSubTab] = useState<SimulationsSubTab>(getSimulatorSubTabFromPath(location));
@@ -9024,15 +9026,20 @@ export default function Home() {
       <BottomNavigation 
         activeSection={activeSection}
         onSectionChange={(section) => {
+          console.log("🎯 BottomNav clicked section:", section);
           // Map navigation section names to MainSection type
           let mappedSection: MainSection;
           if (section === 'simulators') mappedSection = 'simulations';
           else mappedSection = section as MainSection;
           
+          console.log("🎯 Setting activeSection to:", mappedSection);
           setActiveSection(mappedSection);
           if (section === 'learn') setLocation('/learn');
           else if (section === 'money') setLocation('/money');
-          else if (section === 'money2') setLocation('/money2');
+          else if (section === 'money2') {
+            console.log("🎯 Setting location to /money2");
+            setLocation('/money2');
+          }
           else if (section === 'simulators') setLocation('/simulators');
           else if (section === 'more') setLocation('/more');
         }}
