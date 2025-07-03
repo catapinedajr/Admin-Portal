@@ -2175,9 +2175,9 @@ export default function Home() {
             <LearnContainer
               currentDayIndex={currentDayIndex}
               userId={user?.id || 0}
-              userPremium={false}
+              userPremium={user?.premium || false}
               learnSubTab={learnSubTab}
-              setLearnSubTab={(tab: string) => setLearnSubTab(tab as LearnSubTab)}
+              setLearnSubTab={setLearnSubTab}
             />
 
             {/* Reference Content - Temporary placeholder for removed hardcoded content */}
