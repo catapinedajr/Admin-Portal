@@ -128,3 +128,8 @@ function App() {
 }
 
 export default App;
+
+// Ensure React Refresh compatibility
+if (import.meta.hot) {
+  import.meta.hot.accept();
+}
