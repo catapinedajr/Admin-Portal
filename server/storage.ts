@@ -466,15 +466,18 @@ export class DatabaseStorage implements IStorage {
       return false;
     }
     
-    // Check if at least 24 hours have passed since previous day completion
+    // Check if it's the next calendar day since previous day completion
     const completedAt = previousDayProgress[0].completedAt;
     if (completedAt) {
-      const completionTime = new Date(completedAt);
+      const completionDate = new Date(completedAt);
       const now = new Date();
-      const hoursSinceCompletion = (now.getTime() - completionTime.getTime()) / (1000 * 60 * 60);
       
-      // Must wait at least 24 hours
-      if (hoursSinceCompletion < 24) {
+      // Check if we're on a different calendar day (ignoring time)
+      const completionDay = completionDate.toISOString().split('T')[0];
+      const currentDay = now.toISOString().split('T')[0];
+      
+      // Must be a different calendar day
+      if (completionDay === currentDay) {
         return false;
       }
     }

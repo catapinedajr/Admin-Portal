@@ -2201,21 +2201,21 @@ export default function Home() {
 
 
                 {/* Waiting Period Check */}
-                {!isDayLockedBySubscription && dayAccessInfo && !dayAccessInfo.canAccess && dayAccessInfo.reason === "waiting_period" && (
+                {!isDayLockedBySubscription && dayAccessInfo && !dayAccessInfo.canAccess && dayAccessInfo.reason === "next_day_wait" && (
                   <Card className="bg-zinc-900/95 border-orange-500/20">
                     <CardContent className="p-8 text-center">
                       <div className="w-16 h-16 bg-zinc-700 rounded-full flex items-center justify-center mx-auto mb-4">
                         <Clock className="w-8 h-8 text-zinc-400" />
                       </div>
                       <h3 className="text-xl font-bold text-white mb-2">
-                        Day {currentDayIndex} - Available Soon
+                        Day {currentDayIndex} - Available Tomorrow
                       </h3>
                       <p className="text-zinc-400 mb-4">
-                        Great job completing Day {currentDayIndex - 1}! To help you absorb what you've learned, please wait {dayAccessInfo.hoursRemaining} more hours before continuing.
+                        Great job completing Day {currentDayIndex - 1}! To help you absorb what you've learned, this lesson will unlock tomorrow.
                       </p>
                       <div className="bg-zinc-800/50 rounded-lg p-4">
                         <p className="text-sm text-zinc-300">
-                          <strong>Why the wait?</strong> Learning Bitcoin effectively requires time to process each concept. This spacing helps build stronger understanding and lasting conviction.
+                          <strong>Why wait until tomorrow?</strong> Learning Bitcoin effectively requires time to process each concept. This daily progression helps build stronger understanding and lasting conviction.
                         </p>
                       </div>
                     </CardContent>
@@ -2236,7 +2236,11 @@ export default function Home() {
                         To access Day {currentDayIndex}, you'll need to complete the lesson and quiz for Day {currentDayIndex - 1} first.
                       </p>
                       <Button
-                        onClick={() => setCurrentDayIndex(currentDayIndex - 1)}
+                        onClick={() => {
+                          // Navigate to the previous day to complete it first
+                          window.location.hash = `#day-${currentDayIndex - 1}`;
+                          window.location.reload();
+                        }}
                         className="bg-orange-500 hover:bg-orange-600 text-white"
                       >
                         Go to Day {currentDayIndex - 1}

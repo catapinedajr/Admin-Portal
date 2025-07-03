@@ -786,15 +786,19 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
         return;
       }
 
-      const completionTime = new Date(previousDayProgress.completedAt);
+      const completionDate = new Date(previousDayProgress.completedAt);
       const now = new Date();
-      const hoursSinceCompletion = (now.getTime() - completionTime.getTime()) / (1000 * 60 * 60);
-      const hoursRemaining = Math.max(0, 24 - hoursSinceCompletion);
+      
+      // Check if we're on a different calendar day
+      const completionDay = completionDate.toISOString().split('T')[0];
+      const currentDay = now.toISOString().split('T')[0];
+      
+      const isNextDay = completionDay !== currentDay;
 
       res.json({ 
-        canAccess: hoursRemaining === 0, 
-        hoursRemaining: Math.ceil(hoursRemaining),
-        reason: hoursRemaining > 0 ? "waiting_period" : null
+        canAccess: isNextDay, 
+        hoursRemaining: isNextDay ? 0 : 1, // Show as "tomorrow" when same day
+        reason: isNextDay ? null : "next_day_wait"
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to check day access info" });
