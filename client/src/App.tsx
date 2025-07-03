@@ -122,6 +122,11 @@ function Router() {
             <Home />
           </AuthGuard>
         </Route>
+        <Route path="/why-btc">
+          <AuthGuard>
+            <Home />
+          </AuthGuard>
+        </Route>
         <Route path="/money">
           <AuthGuard>
             <Home />

@@ -123,6 +123,7 @@ export default function Home() {
   const getActiveSectionFromPath = (path: string): MainSection => {
     if (path === '/' || path === '') return 'home';
     if (path.includes('/learn')) return 'learn';
+    if (path.includes('/why-btc')) return 'why-btc';
     if (path.includes('/money')) return 'money';
     if (path.includes('/simulators')) return 'simulations';
     if (path.includes('/more')) return 'more';
