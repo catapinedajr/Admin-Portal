@@ -211,7 +211,7 @@ export default function Home() {
       toast({
         title: "Day Complete!",
         description: "Great progress! Come back tomorrow for the next lesson.",
-        duration: 3000, // 3 seconds
+        duration: 2500, // 2.5 seconds
       });
     }
   });
