@@ -2281,7 +2281,7 @@ export default function Home() {
                                     <div>
                                       <h5 className="font-medium text-orange-300 mb-2">Real Examples</h5>
                                       <ul className="space-y-1">
-                                        {deepDive.examples.map((example, idx) => (
+                                        {deepDive.examples.map((example: string, idx: number) => (
                                           <li key={idx} className="text-zinc-300 text-sm flex items-baseline gap-2">
                                             <span className="text-orange-400 text-sm">•</span>
                                             <span>{example}</span>
