@@ -2054,12 +2054,12 @@ export default function Home() {
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center space-y-6">
           <div className="relative">
-            <div className="w-24 h-24 mx-auto bg-gradient-to-r from-orange-400 to-orange-600 rounded-2xl flex items-center justify-center mb-6 transform rotate-3">
+            <div className="w-24 h-24 mx-auto bg-gradient-to-r from-orange-400 to-orange-600 rounded-2xl flex items-center justify-center mb-6 transform rotate-3 animate-pulse">
               <div className="flex items-center gap-1">
                 <span className="text-lg font-bold text-white">HL</span>
               </div>
             </div>
-            <div className="absolute -inset-4 bg-orange-400/10 rounded-full animate-pulse"></div>
+            <div className="absolute -inset-6 bg-orange-400/15 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
           </div>
           <div className="space-y-3">
             <h1 className="text-4xl font-bold text-white">HODLearn</h1>
