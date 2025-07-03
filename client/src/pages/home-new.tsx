@@ -2773,7 +2773,7 @@ export default function Home() {
                       </p>
                       <p className="text-zinc-400 text-xs leading-relaxed">
                         Your $25,000 faces two very different futures. Traditional savings slowly loses buying power to inflation, 
-                        while Bitcoin has averaged 155% annual growth over the last 5 years. Here's what historical performance shows:
+                        while Bitcoin has historically averaged over 100% annual growth. We're using a very conservative 25% growth rate below:
                       </p>
                     </div>
                     
@@ -2822,7 +2822,7 @@ export default function Home() {
                               <div className="flex justify-between text-xs">
                                 <span className={isActive ? 'text-orange-300' : 'text-zinc-500'}>Bitcoin</span>
                                 <span className={isActive ? 'text-orange-200 font-bold' : 'text-zinc-500'}>
-                                  ${btc.toLocaleString()}
+                                  ${btc >= 1000000 ? `${(btc/1000000).toFixed(1)}M` : btc.toLocaleString()}
                                 </span>
                               </div>
                               <div className="bg-zinc-700 rounded-full h-1.5 overflow-hidden">
@@ -2843,26 +2843,25 @@ export default function Home() {
                     {inflationProgress >= 5 && (
                       <div className="space-y-3 p-4 bg-zinc-800/30 rounded-lg border border-orange-400/20">
                         <div className="text-center">
-                          <div className="text-orange-400 font-bold text-sm mb-2">The 25-Year Historical Outcome</div>
+                          <div className="text-orange-400 font-bold text-sm mb-2">Conservative 25% Growth Projection</div>
                           <div className="grid grid-cols-2 gap-4 text-xs">
                             <div className="text-center">
                               <div className="text-red-400 font-medium">Traditional Savings</div>
-                              <div className="text-red-300 text-lg font-bold">$17,543</div>
-                              <div className="text-red-400">Lost 30% to inflation</div>
+                              <div className="text-red-300 text-lg font-bold">$13,670</div>
+                              <div className="text-red-400">Lost 45% to inflation</div>
                             </div>
                             <div className="text-center">
-                              <div className="text-orange-400 font-medium">Historical Bitcoin</div>
-                              <div className="text-orange-300 text-lg font-bold">$2.75M</div>
-                              <div className="text-orange-400">110x growth (historical rate)</div>
+                              <div className="text-orange-400 font-medium">Conservative Bitcoin</div>
+                              <div className="text-orange-300 text-lg font-bold">$6.8M</div>
+                              <div className="text-orange-400">271x growth (25% annual)</div>
                             </div>
                           </div>
                         </div>
                         
                         <div className="text-center pt-2 border-t border-zinc-700/50">
                           <p className="text-zinc-400 text-xs leading-relaxed">
-                            Based on Bitcoin's actual <span className="text-orange-400 font-medium">155% annual growth rate</span> from 2019-2024. 
-                            While past performance doesn't guarantee future results, Bitcoin's fixed supply and growing adoption 
-                            create structural advantages over inflating fiat currencies.
+                            Using a very conservative <span className="text-orange-400 font-medium">25% annual growth rate</span> compared to Bitcoin's historical 100%+ average. 
+                            Past performance doesn't guarantee future results, but Bitcoin's fixed supply creates structural advantages over inflation.
                           </p>
                         </div>
                       </div>
