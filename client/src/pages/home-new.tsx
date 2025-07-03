@@ -2781,9 +2781,10 @@ export default function Home() {
                     <div className="space-y-2">
                       {[
                         { step: 0, year: "Today", savings: 25000, btc: 25000, narrative: "Both start equal" },
-                        { step: 1, year: "5 years", savings: 21562, btc: 325000, narrative: "5yr CAGR reality" },
-                        { step: 2, year: "10 years", savings: 18584, btc: 1650000, narrative: "Wealth gap widens dramatically" },
-                        { step: 3, year: "25 years", savings: 17543, btc: 2750000, narrative: "Long-term holder rewards" }
+                        { step: 1, year: "5 years", savings: 21562, btc: 76294, narrative: "Conservative 25% growth" },
+                        { step: 2, year: "10 years", savings: 18584, btc: 232831, narrative: "Compound growth builds" },
+                        { step: 3, year: "20 years", savings: 15342, btc: 2183468, narrative: "Two decades of growth" },
+                        { step: 4, year: "25 years", savings: 13670, btc: 6781371, narrative: "Long-term holder rewards" }
                       ].map(({ step, year, savings, btc, narrative }) => {
                         const isActive = inflationProgress >= step;
                         
