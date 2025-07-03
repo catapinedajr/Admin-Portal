@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import PWAInstallButton from "@/components/PWAInstallButton";
+import LearnContainer from "@/components/containers/LearnContainer";
 import { 
   Bitcoin, 
   Lightbulb, 
@@ -2170,8 +2171,17 @@ export default function Home() {
 
 
 
-            {/* Today's Learning */}
-            {learnSubTab === "today" && (
+            {/* Dynamic Learn Container */}
+            <LearnContainer
+              currentDayIndex={currentDayIndex}
+              userId={user?.id || 0}
+              userPremium={user?.premium || false}
+              learnSubTab={learnSubTab}
+              setLearnSubTab={setLearnSubTab}
+            />
+
+            {/* Reference Content - Temporary placeholder for removed hardcoded content */}
+            {false && learnSubTab === "today" && (
               <div className="space-y-6">
                 <div className="text-center space-y-3">
                   {/* Streamlined Header with Better Hierarchy */}
