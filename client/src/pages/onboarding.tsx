@@ -42,6 +42,7 @@ export default function Onboarding() {
                   <div className="text-zinc-300">Understanding Bitcoin takes time</div>
                   <div className="text-zinc-300">Building conviction takes discipline</div>
                   <div className="text-orange-400 font-semibold text-xl">This is HODLearn</div>
+                  <div className="text-zinc-500 text-sm mt-1">How-to-Learn BTC</div>
                 </div>
               </div>
               
