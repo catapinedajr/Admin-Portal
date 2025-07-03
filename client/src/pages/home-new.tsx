@@ -93,7 +93,6 @@ import { ConsistencyCalendar } from "@/components/ConsistencyCalendar";
 import { MonthlySimulatorTracker } from "@/components/MonthlySimulatorTracker";
 import HomeSection from "@/components/sections/HomeSection";
 import MoreSection from "@/components/sections/MoreSection";
-import MoneySection from "@/components/sections/MoneySection";
 import { iconMap, bitcoinTerms, seedPhraseScenarios } from "@/constants/appData";
 import WeeklyQuiz from "@/components/WeeklyQuiz";
 import { cleanText, getExpandedLessonContent } from "@/utils/textUtils";
@@ -108,7 +107,7 @@ import { cleanText, getExpandedLessonContent } from "@/utils/textUtils";
 
 
 
-type MainSection = "home" | "learn" | "money" | "money2" | "simulations" | "more";
+type MainSection = "home" | "learn" | "money" | "simulations" | "more";
 type LearnSubTab = "today" | "reference";
 type SimulationsSubTab = "wallet" | "safety" | "transactions" | "transfer" | "hodl" | "dca" | "inflation" | "fees";
 type MoreSubTab = "store" | "about";
@@ -123,7 +122,6 @@ export default function Home() {
   const getActiveSectionFromPath = (path: string): MainSection => {
     if (path === '/' || path === '') return 'home';
     if (path.includes('/learn')) return 'learn';
-    if (path.includes('/money2')) return 'money2';
     if (path.includes('/money')) return 'money';
     if (path.includes('/simulators')) return 'simulations';
     if (path.includes('/more')) return 'more';
@@ -3573,11 +3571,6 @@ export default function Home() {
               </CardContent>
             </Card>
           </div>
-        )}
-
-        {/* Money 2 Section */}
-        {activeSection === "money2" && (
-          <MoneySection />
         )}
 
         {/* Practice Section */}
@@ -9028,7 +9021,6 @@ export default function Home() {
           setActiveSection(mappedSection);
           if (section === 'learn') setLocation('/learn');
           else if (section === 'money') setLocation('/money');
-          else if (section === 'money2') setLocation('/money2');
           else if (section === 'simulators') setLocation('/simulators');
           else if (section === 'more') setLocation('/more');
         }}
