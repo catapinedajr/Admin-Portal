@@ -277,6 +277,23 @@ Comprehensive component library built on Radix UI primitives:
 
 Preferred communication style: Simple, everyday language.
 
+## Business Strategy Considerations
+
+**Current Focus:** Transitioning from product development to business commercialization and go-to-market strategy.
+
+**Market Timing:** User recognizing Bitcoin bull market cycle opportunity for rapid launch within next month to capture retail interest surge.
+
+**Strategic Options Under Consideration:**
+- Phased launch approach with 30-60 day curriculum vs full 180-day experience
+- Potential curriculum restructure from long-term education to urgent "Bitcoin bull market survival guide"
+- Market-responsive positioning targeting immediate needs of new Bitcoin buyers during market peaks
+
+**Key Business Development Areas:**
+- Team building (content creator, marketing, part-time developer)
+- Investment strategy (bootstrap vs angel/seed funding)
+- IP protection (trademark filing for HODLearn brand)
+- Revenue projections and monetization timeline
+
 ## Known Issues
 
 **PWA White Screen Bug**: User reported installed home screen version occasionally shows white screen requiring reinstallation. This likely occurs during service worker updates or caching conflicts. Need to investigate and implement better error recovery for PWA installations.
