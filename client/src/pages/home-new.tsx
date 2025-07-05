@@ -3591,9 +3591,15 @@ export default function Home() {
                             const calculator = document.querySelector('[data-dca-calculator]');
                             if (calculator) {
                               const rect = calculator.getBoundingClientRect();
-                              const offsetTop = window.pageYOffset + rect.top - 150; // Add 150px buffer for dropdown visibility
+                              const viewportHeight = window.innerHeight;
+                              const elementHeight = rect.height;
+                              
+                              // Calculate ideal position: center the calculator with enough room for dropdowns
+                              const idealTop = (viewportHeight - elementHeight) / 3; // Position in upper third
+                              const scrollTarget = window.pageYOffset + rect.top - idealTop;
+                              
                               window.scrollTo({
-                                top: offsetTop,
+                                top: Math.max(0, scrollTarget), // Prevent negative scroll
                                 behavior: 'smooth'
                               });
                             }
@@ -3604,6 +3610,7 @@ export default function Home() {
                           Start DCA Analysis
                         </Button>
                       </div>
+
                     </div>
                   </CardContent>
                 </Card>
