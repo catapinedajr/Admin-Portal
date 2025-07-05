@@ -339,12 +339,6 @@ export default function SafetyTraining({
         {/* Interactive Safety Skills Test */}
         <Card id="safety-skills-test" className="bg-zinc-900 border-zinc-800">
           <CardContent className="p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-orange-600/20 rounded-lg">
-                <Shield className="w-6 h-6 text-orange-400" />
-              </div>
-              <h4 className="text-xl font-bold text-white">Test Your Security Skills</h4>
-            </div>
 
             <div className="space-y-3">
               <h5 className="font-semibold text-white">Ready to Test Your Skills?</h5>
