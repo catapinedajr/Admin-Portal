@@ -2235,7 +2235,14 @@ export default function Home() {
 
             {/* Safety Training - Extracted to SafetyTraining component */}
             {simulationsSubTab === "safety" && (
-              <SafetyTraining />
+              <SafetyTraining 
+                securityStage={securityStage}
+                setSecurityStage={setSecurityStage}
+                securityScore={securityScore}
+                setSecurityScore={setSecurityScore}
+                userSecurityAnswers={userSecurityAnswers}
+                setUserSecurityAnswers={setUserSecurityAnswers}
+              />
             )}
 
             {/* Wallet Explorer - Extracted to WalletSimulator component */}
@@ -2245,7 +2252,7 @@ export default function Home() {
 
             {/* Transactions Simulator - Extracted to TransactionsSimulator component */}
             {simulationsSubTab === "transactions" && (
-              <TransactionsSimulator />
+              <TransactionsSimulator isPremiumTier={isPremiumTier} />
             )}
 
             {/* Transfer Simulator - Extracted to TransferSimulator component */}
