@@ -102,37 +102,42 @@ export function FinancePage() {
     setSpeedRaceActive(true);
     setAnimationActive(true);
     setSettlementProgress({ traditional: 0, bitcoin: 0 });
-    
+
+    // Bitcoin animation: completes all 4 steps in 18 seconds (20% slower for better visibility)
     const bitcoinSteps = [
-      { delay: 1000, step: 1 },
-      { delay: 2500, step: 2 },
-      { delay: 4000, step: 3 },
-      { delay: 6000, step: 4 }
+      { step: 1, delay: 2400 },   // Step 1 at 2.4 seconds (transaction creation)
+      { step: 2, delay: 6000 },   // Step 2 at 6 seconds (network broadcast)
+      { step: 3, delay: 14400 },  // Step 3 at 14.4 seconds (mining consensus)
+      { step: 4, delay: 18000 }   // Step 4 at 18 seconds (final settlement)
     ];
-    
+
+    // Traditional banking: takes much longer with realistic banking delays
     const traditionalSteps = [
-      { delay: 1500, step: 1 },
-      { delay: 4000, step: 2 },
-      { delay: 7000, step: 3 },
-      { delay: 10000, step: 4 },
-      { delay: 13000, step: 5 }
+      { step: 1, delay: 8000 },   // Step 1 at 8 seconds (bank visit takes longer)
+      { step: 2, delay: 20000 },  // Step 2 at 20 seconds (compliance review)
+      { step: 3, delay: 44000 },  // Step 3 at 44 seconds (SWIFT processing)
+      { step: 4, delay: 70000 },  // Step 4 at 70 seconds (intermediary banks)
+      { step: 5, delay: 86000 }   // Step 5 at 86 seconds (final settlement)
     ];
-    
-    bitcoinSteps.forEach(({ delay, step }) => {
+
+    // Animate Bitcoin steps
+    bitcoinSteps.forEach(({ step, delay }) => {
       setTimeout(() => {
         setSettlementProgress((prev: { traditional: number; bitcoin: number }) => ({ ...prev, bitcoin: step }));
       }, delay);
     });
-    
-    traditionalSteps.forEach(({ delay, step }) => {
+
+    // Animate Traditional steps  
+    traditionalSteps.forEach(({ step, delay }) => {
       setTimeout(() => {
         setSettlementProgress((prev: { traditional: number; bitcoin: number }) => ({ ...prev, traditional: step }));
       }, delay);
     });
-    
+
+    // End animation after 90 seconds
     setTimeout(() => {
       setAnimationActive(false);
-    }, 14000);
+    }, 90000);
   };
 
   const resetSettlementAnimation = () => {
