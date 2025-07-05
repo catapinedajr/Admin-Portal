@@ -229,81 +229,26 @@ export default function LearnPage() {
             </Card>
           ) : (
             <div className="space-y-6">
-              {/* Today's Bitcoin Insights */}
+              {/* Today's Learning Preview */}
               <Card className="bg-zinc-900/50 border-zinc-700">
                 <CardHeader>
                   <CardTitle className="text-xl text-white flex items-center gap-2">
-                    <Lightbulb className="w-5 h-5 text-orange-500" />
-                    Today's Bitcoin Insights
+                    <Brain className="w-5 h-5 text-orange-500" />
+                    Today's Learning Preview
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {dailyFacts && dailyFacts.length > 0 ? (
-                    dailyFacts.map((fact: any, index: number) => {
-                      const diveDeeper = getDiveDeeperForFact(fact.title);
-                      const isExpanded = expandedFacts.has(fact.id);
-                      
-                      return (
-                        <div key={fact.id} className="border border-zinc-700 rounded-lg p-4 space-y-3">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <h4 className="font-semibold text-white text-base mb-2">{fact.title}</h4>
-                              <p className="text-zinc-300 text-sm leading-relaxed">{fact.content}</p>
-                            </div>
-                          </div>
-                          
-                          {diveDeeper && (
-                            <div className="space-y-3">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => toggleFactExpansion(fact.id)}
-                                className="text-orange-400 hover:text-orange-300 p-0 h-auto font-normal text-sm"
-                              >
-                                {isExpanded ? (
-                                  <>
-                                    <ChevronUp className="w-4 h-4 mr-1" />
-                                    Show Less
-                                  </>
-                                ) : (
-                                  <>
-                                    <ChevronDown className="w-4 h-4 mr-1" />
-                                    Dive Deeper
-                                  </>
-                                )}
-                              </Button>
-                              
-                              {isExpanded && (
-                                <div className="bg-zinc-800/50 rounded-lg p-4 space-y-3 border-l-2 border-orange-500/50">
-                                  <div className="space-y-3">
-                                    <div>
-                                      <h5 className="font-medium text-zinc-200 mb-2">Explanation</h5>
-                                      <p className="text-zinc-300 text-sm leading-relaxed">{diveDeeper.explanation}</p>
-                                    </div>
-                                    
-                                    {diveDeeper.examples && (
-                                      <div>
-                                        <h5 className="font-medium text-zinc-200 mb-2">Examples</h5>
-                                        <p className="text-zinc-300 text-sm leading-relaxed">{diveDeeper.examples}</p>
-                                      </div>
-                                    )}
-                                    
-                                    {diveDeeper.visualDescription && (
-                                      <div>
-                                        <h5 className="font-medium text-zinc-200 mb-2">Visual Description</h5>
-                                        <p className="text-zinc-300 text-sm leading-relaxed">{diveDeeper.visualDescription}</p>
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          )}
+                    dailyFacts.map((fact: any, index: number) => (
+                      <div key={fact.id} className="border border-zinc-700 rounded-lg p-4">
+                        <div className="flex items-center gap-3">
+                          <span className="text-xl">{fact.icon}</span>
+                          <h4 className="font-medium text-white text-base leading-relaxed">{fact.title}</h4>
                         </div>
-                      );
-                    })
+                      </div>
+                    ))
                   ) : (
-                    <p className="text-zinc-400 text-center py-4">Loading today's insights...</p>
+                    <p className="text-zinc-400 text-center py-4">Loading today's preview...</p>
                   )}
                 </CardContent>
               </Card>
