@@ -631,36 +631,43 @@ export default function SafetyTraining({
                     <span className="text-orange-400 text-sm">🎯</span>
                   </div>
                   <div>
-                    <h5 className="text-lg font-semibold text-white">Address Verification Challenge</h5>
-                    <p className="text-zinc-400 text-sm">Testing your attention to detail</p>
+                    <h5 className="text-lg font-semibold text-white">Verify Bitcoin Address</h5>
+                    <p className="text-zinc-400 text-sm">Compare these two addresses carefully before sending</p>
                   </div>
                 </div>
                 
                 <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
                   <p className="text-zinc-300 mb-3">
-                    You're about to send 0.1 BTC ($4,200) to pay for a Ledger hardware wallet. You copied this address from the seller's website:
+                    Compare these two addresses carefully before sending:
                   </p>
-                  <div className="p-3 bg-green-950/30 rounded border border-green-800/50 mb-3">
-                    <p className="text-green-400 font-mono text-sm break-all">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</p>
-                  </div>
-                  <p className="text-zinc-300 mb-3">
-                    But when you paste it into your wallet, it shows:
-                  </p>
-                  <div className="p-3 bg-red-950/30 rounded border border-red-800/50">
-                    <p className="text-red-400 font-mono text-sm break-all">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w1h</p>
+                  
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-zinc-400 text-xs mb-1">Copied:</p>
+                      <div className="p-3 bg-green-950/30 rounded border border-green-800/50">
+                        <p className="text-green-400 font-mono text-sm break-all">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</p>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <p className="text-zinc-400 text-xs mb-1">Displayed:</p>
+                      <div className="p-3 bg-red-950/30 rounded border border-red-800/50">
+                        <p className="text-red-400 font-mono text-sm break-all">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w1h</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
                 <p className="text-zinc-300 text-sm">
-                  Compare carefully. Are these addresses the same?
+                  Are these Bitcoin addresses identical?
                 </p>
 
                 <div className="space-y-2">
                   {[
-                    'Yes, they match exactly',
-                    'No, they are different',
-                    'Close enough to proceed',
-                    'First 10 characters match, good enough'
+                    'Addresses match exactly',
+                    'Addresses are different',
+                    'Close enough',
+                    'First 10 characters match'
                   ].map((option, index) => (
                     <button
                       key={index}
@@ -704,15 +711,15 @@ export default function SafetyTraining({
                       </p>
                     </div>
                     
-                    <div className="p-3 bg-green-950/30 rounded border border-green-800/50">
-                      <p className="text-green-300 text-sm">
-                        "Your local Bitcoin meetup is next Thursday at 7 PM. Bring questions and let's learn together!"
-                      </p>
-                    </div>
-                    
                     <div className="p-3 bg-red-950/30 rounded border border-red-800/50">
                       <p className="text-red-300 text-sm">
                         "I'm a prince who needs help moving my Bitcoin fortune. I'll share 50% if you help with transaction fees."
+                      </p>
+                    </div>
+                    
+                    <div className="p-3 bg-green-950/30 rounded border border-green-800/50">
+                      <p className="text-green-300 text-sm">
+                        "Your local Bitcoin meetup is next Thursday at 7 PM. Bring questions and let's learn together!"
                       </p>
                     </div>
                   </div>
@@ -725,8 +732,8 @@ export default function SafetyTraining({
                 <div className="space-y-2">
                   {[
                     'The Elon Musk Bitcoin giveaway',
-                    'The local Bitcoin meetup invitation',
                     'The prince\'s Bitcoin fortune offer',
+                    'The local Bitcoin meetup invitation',
                     'None of them are safe'
                   ].map((option, index) => (
                     <button
