@@ -206,6 +206,62 @@ const securityScenarios: SecurityScenario[] = [
     ],
     correctIndex: 2,
     explanation: "Exchanges can be hacked or go offline. Enable 2FA for security and withdraw to your personal wallet for long-term storage."
+  },
+  {
+    id: 9,
+    title: "Software Download Safety",
+    description: "Verifying authentic Bitcoin software",
+    question: "You need to download a Bitcoin wallet app. What's the safest approach?",
+    options: [
+      "Download from the first Google search result",
+      "Use the official website or verified app store",
+      "Download from a crypto forum recommendation",
+      "Get it from a friend's USB drive"
+    ],
+    correctIndex: 1,
+    explanation: "Always download Bitcoin software from official sources. Fake wallet apps have stolen millions by looking legitimate but containing malware."
+  },
+  {
+    id: 10,
+    title: "Backup Testing",
+    description: "Ensuring recovery phrases work",
+    question: "After writing down your seed phrase, what should you do next?",
+    options: [
+      "Store it safely and assume it works",
+      "Test the recovery process with a small amount",
+      "Make multiple copies immediately",
+      "Share it with a trusted family member"
+    ],
+    correctIndex: 1,
+    explanation: "Always test your backup! Many people lose Bitcoin because their untested backup doesn't actually work when needed."
+  },
+  {
+    id: 11,
+    title: "Fee Manipulation Detection",
+    description: "Recognizing wallet malware",
+    question: "Your wallet suggests a $200 fee for sending $50 worth of Bitcoin. What should you do?",
+    options: [
+      "Pay the fee - network must be busy",
+      "Wait for fees to go down",
+      "Stop - this indicates possible malware",
+      "Try sending a smaller amount"
+    ],
+    correctIndex: 2,
+    explanation: "Extremely high fees (400% of transaction value) indicate wallet malware designed to steal through excessive fees. Legitimate wallets suggest reasonable fees."
+  },
+  {
+    id: 12,
+    title: "Recovery Service Scams",
+    description: "Avoiding Bitcoin recovery fraud",
+    question: "You lost access to old Bitcoin. Someone offers to recover it for 50% of the value. What should you do?",
+    options: [
+      "Accept - better than losing everything",
+      "Negotiate for a lower percentage",
+      "Decline - most recovery services are scams",
+      "Ask for references from other customers"
+    ],
+    correctIndex: 2,
+    explanation: "Most 'Bitcoin recovery services' are scams. If you lost your private keys, the Bitcoin is likely gone forever. Don't pay scammers for false hope."
   }
 ];
 
@@ -540,6 +596,26 @@ export default function SafetyTraining({
                 }`}>
                   {currentScenario.explanation}
                 </p>
+                
+                {/* Special highlighting for address verification scenario */}
+                {currentScenario.id === 3 && showFeedback && (
+                  <div className="mt-4 space-y-2">
+                    <p className="text-xs text-zinc-400">Address comparison with difference highlighted:</p>
+                    <div className="space-y-2">
+                      <div className="bg-zinc-800/50 rounded border border-zinc-600 p-2">
+                        <p className="text-zinc-300 font-mono text-xs break-all">
+                          bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w<span className="bg-yellow-400/30 text-yellow-300">l</span>h
+                        </p>
+                      </div>
+                      <div className="bg-zinc-800/50 rounded border border-zinc-600 p-2">
+                        <p className="text-zinc-300 font-mono text-xs break-all">
+                          bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w<span className="bg-yellow-400/30 text-yellow-300">1</span>h
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-xs text-yellow-400">Character 34: 'l' vs '1' - This would send your Bitcoin to the wrong address!</p>
+                  </div>
+                )}
               </div>
             )}
           </div>
