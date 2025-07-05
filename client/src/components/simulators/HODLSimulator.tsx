@@ -313,17 +313,19 @@ const HODLSimulator: React.FC = () => {
                           const multiplier = hodlResults.currentValue / hodlResults.initialInvestment;
                           const milestones = [];
                           
+                          // Chart coordinates: y=100 is bottom, y=20 is top
+                          // Calculate milestone positions based on chart's coordinate system
                           if (multiplier >= 100) {
-                            milestones.push({ label: '100x', y: 20, color: '#dc2626' });
+                            milestones.push({ label: '100x', y: 20, color: '#dc2626' }); // Top
                           }
                           if (multiplier >= 10) {
-                            milestones.push({ label: '10x', y: 40, color: '#fbbf24' });
+                            milestones.push({ label: '10x', y: 40, color: '#fbbf24' }); // Upper middle
                           }
                           if (multiplier >= 5) {
-                            milestones.push({ label: '5x', y: 60, color: '#10b981' });
+                            milestones.push({ label: '5x', y: 60, color: '#10b981' }); // Lower middle
                           }
                           if (multiplier >= 2) {
-                            milestones.push({ label: '2x', y: 80, color: '#6366f1' });
+                            milestones.push({ label: '2x', y: 80, color: '#6366f1' }); // Lower
                           }
                           
                           return milestones.map(milestone => (
@@ -443,7 +445,7 @@ const HODLSimulator: React.FC = () => {
                     
                     <div className="flex justify-between items-center">
                       <span className="text-zinc-400">Current Value:</span>
-                      <span className="text-green-400 font-mono text-lg">${hodlResults.currentValue.toLocaleString()}</span>
+                      <span className="text-green-400 font-mono text-lg">${Math.round(hodlResults.currentValue).toLocaleString()}</span>
                     </div>
                     
                     <div className="flex justify-between items-center">
@@ -453,7 +455,7 @@ const HODLSimulator: React.FC = () => {
                     
                     <div className="flex justify-between items-center">
                       <span className="text-zinc-400">Profit:</span>
-                      <span className="text-green-400 font-mono">+${hodlResults.totalGain.toLocaleString()}</span>
+                      <span className="text-green-400 font-mono">+${Math.round(hodlResults.totalGain).toLocaleString()}</span>
                     </div>
                     
                     <div className="pt-3 border-t border-zinc-700">
