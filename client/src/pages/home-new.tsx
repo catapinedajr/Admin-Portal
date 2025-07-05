@@ -94,6 +94,7 @@ import SafetyTraining from "@/components/simulators/SafetyTrainingSustainable";
 import TransactionsSimulator from "@/components/simulators/TransactionsSimulator";
 import { TransferSimulator } from "@/components/simulators/TransferSimulator";
 import WalletSimulator from "@/components/simulators/WalletSimulator";
+import HODLSimulator from "@/components/simulators/HODLSimulator";
 import EmailCollectionModal from "@/components/EmailCollectionModal";
 import { ConsistencyCalendar } from "@/components/ConsistencyCalendar";
 
@@ -2990,8 +2991,13 @@ export default function Home() {
               <TransferSimulator />
             )}
 
-            {/* Compact HODL Challenge Simulator */}
-            {isPremiumTier && simulationsSubTab === "hodl" && (
+            {/* HODL Simulator - Extracted to HODLSimulator component */}
+            {simulationsSubTab === "hodl" && (
+              <HODLSimulator />
+            )}
+
+            {/* OLD HODL SECTION - TO BE REMOVED */}
+            {false && isPremiumTier && simulationsSubTab === "hodl" && (
               <div className="space-y-6">
                 {/* Why HODL Strategy Matters */}
                 <Card className="bg-zinc-900 border-zinc-800">
