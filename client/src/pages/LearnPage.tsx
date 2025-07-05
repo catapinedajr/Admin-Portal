@@ -10,12 +10,14 @@ import {
   ChevronDown,
   ChevronUp,
   Brain,
-  Key
+  Key,
+  Coins
 } from "lucide-react";
 import DailyQuiz from "@/components/DailyQuiz";
 import { BitcoinTerm, AutoGlossary } from "@/components/BitcoinGlossary";
 import { useAppContext } from "@/components/shared/AppContextProvider";
 import { cleanText, getExpandedLessonContent } from "@/utils/textUtils";
+import { iconMap } from "@/constants/appData";
 
 // Temporary interface for database-driven lesson content
 interface LessonWithKeyTakeaways {
@@ -230,26 +232,31 @@ export default function LearnPage() {
           ) : (
             <div className="space-y-6">
               {/* Today's Learning Preview */}
-              <Card className="bg-zinc-900/50 border-zinc-700">
-                <CardHeader>
-                  <CardTitle className="text-xl text-white flex items-center gap-2">
-                    <Brain className="w-5 h-5 text-orange-500" />
-                    Today's Learning Preview
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {dailyFacts && dailyFacts.length > 0 ? (
-                    dailyFacts.map((fact: any, index: number) => (
-                      <div key={fact.id} className="border border-zinc-700 rounded-lg p-4">
-                        <div className="flex items-center gap-3">
-                          <span className="text-xl">{fact.icon}</span>
-                          <h4 className="font-medium text-white text-base leading-relaxed">{fact.title}</h4>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-zinc-400 text-center py-4">Loading today's preview...</p>
-                  )}
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-bold text-white border-b border-zinc-700 pb-3 mb-6">Today's Learning Preview</h3>
+                  <div className="space-y-4">
+                    {dailyFacts && dailyFacts.length > 0 ? (
+                      dailyFacts.map((fact: any) => {
+                        const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Coins;
+                        
+                        return (
+                          <div key={fact.id} className="bg-zinc-800/50 rounded-lg overflow-hidden">
+                            <div className="flex items-center gap-4 p-4">
+                              <div className="p-2 bg-orange-600/20 rounded-lg flex-shrink-0">
+                                <IconComponent className="w-5 h-5 text-orange-400" />
+                              </div>
+                              <div className="flex-1">
+                                <h4 className="font-semibold text-white">{fact.title}</h4>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <p className="text-zinc-400 text-center py-4">Loading today's preview...</p>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
 
