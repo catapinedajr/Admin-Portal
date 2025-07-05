@@ -19,12 +19,45 @@ interface SafetyTrainingProps {
 }
 
 // Sustainable Security Scenarios - Self-contained and maintainable
-const securityScenarios = [
+interface SecurityScenario {
+  id: number;
+  title: string;
+  description: string;
+  question: string;
+  options: string[];
+  correctIndex: number;
+  explanation: string;
+  visualAid?: React.ReactNode;
+}
+
+const securityScenarios: SecurityScenario[] = [
   {
     id: 1,
     title: "Phishing Email Detection",
     description: "Identifying legitimate vs fraudulent emails",
-    question: "You receive an email claiming to be from Coinbase asking you to verify your account. What should you do?",
+    question: "You receive this email claiming to be from Coinbase. What should you do?",
+    visualAid: (
+      <div className="bg-zinc-800 rounded-lg p-4 mb-4 border border-zinc-600">
+        <div className="bg-white rounded-lg p-4 text-black">
+          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-gray-200">
+            <div className="w-6 h-6 bg-blue-600 rounded text-white text-xs flex items-center justify-center font-bold">C</div>
+            <span className="font-semibold">Coinbase Security</span>
+            <span className="text-gray-500 text-sm">&lt;security@coinbase-verify.net&gt;</span>
+          </div>
+          <div className="space-y-3">
+            <p className="font-semibold">Urgent: Account Verification Required</p>
+            <p className="text-sm">Your account has been temporarily restricted due to unusual activity. Please verify your account immediately to restore access.</p>
+            <div className="bg-blue-600 text-white px-4 py-2 rounded text-center font-semibold cursor-pointer hover:bg-blue-700">
+              Verify Account Now
+            </div>
+            <p className="text-xs text-gray-500">If you don't verify within 24 hours, your account will be permanently suspended.</p>
+          </div>
+        </div>
+        <div className="mt-2 text-xs text-red-400">
+          ⚠️ Notice the suspicious sender domain: "coinbase-verify.net" (not coinbase.com)
+        </div>
+      </div>
+    ),
     options: [
       "Click the link and enter your login details",
       "Forward the email to friends for their opinion", 
@@ -52,11 +85,39 @@ const securityScenarios = [
     id: 3,
     title: "Address Verification",
     description: "Ensuring payment accuracy",
-    question: "Before sending Bitcoin, you should:",
+    question: "Compare these Bitcoin addresses carefully. Are they identical?",
+    visualAid: (
+      <div className="space-y-4">
+        <div className="bg-zinc-800 rounded-lg p-4 border border-zinc-600">
+          <div className="space-y-3">
+            <div>
+              <p className="text-zinc-400 text-xs mb-2">Address you copied:</p>
+              <div className="bg-green-950/30 rounded border border-green-800/50 p-3">
+                <p className="text-green-400 font-mono text-sm break-all">
+                  bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w<span className="bg-green-400/30">l</span>h
+                </p>
+              </div>
+            </div>
+            
+            <div>
+              <p className="text-zinc-400 text-xs mb-2">Address displayed in your wallet:</p>
+              <div className="bg-red-950/30 rounded border border-red-800/50 p-3">
+                <p className="text-red-400 font-mono text-sm break-all">
+                  bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w<span className="bg-red-400/30">1</span>h
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="text-xs text-orange-400 bg-orange-950/30 rounded p-2 border border-orange-800/50">
+          💡 Look carefully at the highlighted characters - are they the same?
+        </div>
+      </div>
+    ),
     options: [
       "Send a small test amount first",
       "Verify every character of the receiving address",
-      "Only check the first and last 4 characters",
+      "Only check the first and last 4 characters", 
       "Trust the address if it looks similar"
     ],
     correctIndex: 1,
@@ -400,6 +461,12 @@ export default function SafetyTraining({
           
           <div className="space-y-4">
             <p className="text-zinc-300 text-base">{currentScenario.question}</p>
+            
+            {currentScenario.visualAid && (
+              <div className="my-4">
+                {currentScenario.visualAid}
+              </div>
+            )}
             
             <div className="space-y-2">
               {currentScenario.options.map((option, index) => (
