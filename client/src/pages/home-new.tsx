@@ -3590,7 +3590,11 @@ export default function Home() {
                           onClick={() => {
                             const calculator = document.querySelector('[data-dca-calculator]');
                             if (calculator) {
-                              calculator.scrollIntoView({ behavior: 'smooth' });
+                              calculator.scrollIntoView({ 
+                                behavior: 'smooth', 
+                                block: 'start',
+                                inline: 'nearest'
+                              });
                             }
                           }}
                           className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
