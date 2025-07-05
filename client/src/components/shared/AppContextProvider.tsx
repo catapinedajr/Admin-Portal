@@ -223,7 +223,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [inflationAmount, setInflationAmount] = useState<number>(10000);
   const [inflationRate, setInflationRate] = useState<number>(2);
   const [inflationTimeFrame, setInflationTimeFrame] = useState<number>(10);
-  const [moneySupplyYear, setMoneySupplyYear] = useState<number>(2024);
+  const [moneySupplyYear, setMoneySupplyYear] = useState<number>(2025);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [animationStep, setAnimationStep] = useState<number>(0);
   

@@ -58,7 +58,7 @@ export function FinancePage() {
   // Money supply data helper functions
   const getMoneySupplyRaw = (year: number) => {
     const m2Data: { [key: number]: number } = {
-      1920: 0.023, 1971: 0.583, 2000: 4.9, 2008: 7.5, 2024: 21.0
+      1920: 0.023, 1971: 0.583, 2000: 4.9, 2008: 7.5, 2024: 21.0, 2025: 21.2
     };
     
     if (m2Data[year]) return m2Data[year];
@@ -280,7 +280,7 @@ export function FinancePage() {
                   { year: 1971, label: "'71", desc: "Nixon" },
                   { year: 2000, label: "'00", desc: "Dot-com" },
                   { year: 2008, label: "'08", desc: "Crisis" },
-                  { year: 2024, label: "'25", desc: "Today" }
+                  { year: 2025, label: "'25", desc: "Today" }
                 ].map((milestone) => (
                   <button
                     key={milestone.year}
