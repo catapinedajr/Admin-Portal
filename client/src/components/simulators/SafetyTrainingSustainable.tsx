@@ -53,9 +53,7 @@ const securityScenarios: SecurityScenario[] = [
             <p className="text-xs text-gray-500">If you don't verify within 24 hours, your account will be permanently suspended.</p>
           </div>
         </div>
-        <div className="mt-2 text-xs text-red-400">
-          ⚠️ Notice the suspicious sender domain: "coinbase-verify.net" (not coinbase.com)
-        </div>
+
       </div>
     ),
     options: [
@@ -128,9 +126,7 @@ const securityScenarios: SecurityScenario[] = [
             </div>
           </div>
         </div>
-        <div className="text-xs text-orange-400 bg-orange-950/30 rounded p-2 border border-orange-800/50">
-          💡 Look carefully - compare every character to ensure they match exactly
-        </div>
+
       </div>
     ),
     options: [
