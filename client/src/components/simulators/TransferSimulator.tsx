@@ -232,15 +232,7 @@ export function TransferSimulator() {
                         pay upfront fees, get tracking number
                       </div>
                       
-                      {/* Vertical Flow Arrow */}
-                      <div className={`absolute -bottom-4 left-1/2 transform -translate-x-1/2 transition-all duration-500 ${
-                        settlementProgress.traditional >= 1 ? 'opacity-100' : 'opacity-30'
-                      }`}>
-                        <div className={`w-0.5 h-4 ${settlementProgress.traditional >= 1 ? 'bg-red-400' : 'bg-zinc-600'}`}></div>
-                        <div className={`w-0 h-0 border-l-2 border-r-2 border-t-4 border-transparent ${
-                          settlementProgress.traditional >= 1 ? 'border-t-red-400' : 'border-t-zinc-600'
-                        }`}></div>
-                      </div>
+
                     </div>
                     
                     {/* Bitcoin Step 1 */}
@@ -260,15 +252,7 @@ export function TransferSimulator() {
                         sign with private key - takes 30 seconds
                       </div>
                       
-                      {/* Vertical Flow Arrow */}
-                      <div className={`absolute -bottom-4 left-1/2 transform -translate-x-1/2 transition-all duration-500 ${
-                        settlementProgress.bitcoin >= 1 ? 'opacity-100' : 'opacity-30'
-                      }`}>
-                        <div className={`w-0.5 h-4 ${settlementProgress.bitcoin >= 1 ? 'bg-green-400' : 'bg-zinc-600'}`}></div>
-                        <div className={`w-0 h-0 border-l-2 border-r-2 border-t-4 border-transparent ${
-                          settlementProgress.bitcoin >= 1 ? 'border-t-green-400' : 'border-t-zinc-600'
-                        }`}></div>
-                      </div>
+
                     </div>
                   </div>
 
