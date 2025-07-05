@@ -338,7 +338,36 @@ export function FinancePage() {
                     <text x="370" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">2025</text>
                     
                     <path
-                      d="M 50,175 L 140,170 L 230,150 L 320,100 L 370,20"
+                      d={(() => {
+                        // Real M2 data points matching original implementation
+                        const m2Data = [
+                          { year: 1920, m2: 0.023 },   // Gold Standard era ($23B)
+                          { year: 1929, m2: 0.026 },   // Pre-Depression ($26B)
+                          { year: 1933, m2: 0.020 },   // Depression low ($20B)
+                          { year: 1940, m2: 0.040 },   // Pre-WWII ($40B)
+                          { year: 1945, m2: 0.107 },   // Post-WWII expansion ($107B)
+                          { year: 1950, m2: 0.117 },   // Korean War ($117B)
+                          { year: 1960, m2: 0.167 },   // 60s growth ($167B)
+                          { year: 1971, m2: 0.583 },   // Nixon Shock baseline ($583B)
+                          { year: 1980, m2: 1.600 },   // Early 80s ($1.6T)
+                          { year: 1990, m2: 3.200 },   // 90s expansion ($3.2T)
+                          { year: 2000, m2: 4.900 },   // Dot-com era ($4.9T)
+                          { year: 2008, m2: 7.500 },   // Pre-crisis ($7.5T)
+                          { year: 2010, m2: 8.700 },   // Post-crisis QE1 ($8.7T)
+                          { year: 2015, m2: 12.400 },  // QE era ($12.4T)
+                          { year: 2020, m2: 15.400 },  // Pre-COVID ($15.4T)
+                          { year: 2021, m2: 20.100 },  // COVID peak ($20.1T)
+                          { year: 2024, m2: 21.000 },  // 2024 ($21T)
+                          { year: 2025, m2: 21.200 }   // Current estimate ($21.2T)
+                        ];
+                        
+                        return m2Data.map((point, index) => {
+                          // Linear time positioning: 3.048px per year (320px / 105 years)
+                          const x = 50 + ((point.year - 1920) / 105) * 320;
+                          const y = 175 - ((point.m2 - 0.023) / (21.2 - 0.023)) * 155;
+                          return `${index === 0 ? 'M' : 'L'} ${x},${y}`;
+                        }).join(' ');
+                      })()}
                       fill="none"
                       stroke="#f97316"
                       strokeWidth="3"
@@ -352,7 +381,39 @@ export function FinancePage() {
                     </defs>
                     
                     <path
-                      d="M 50,175 L 140,170 L 230,150 L 320,100 L 370,20 L 370,180 L 50,180 Z"
+                      d={(() => {
+                        // Same M2 data for fill area
+                        const m2Data = [
+                          { year: 1920, m2: 0.023 },   // Gold Standard era ($23B)
+                          { year: 1929, m2: 0.026 },   // Pre-Depression ($26B)
+                          { year: 1933, m2: 0.020 },   // Depression low ($20B)
+                          { year: 1940, m2: 0.040 },   // Pre-WWII ($40B)
+                          { year: 1945, m2: 0.107 },   // Post-WWII expansion ($107B)
+                          { year: 1950, m2: 0.117 },   // Korean War ($117B)
+                          { year: 1960, m2: 0.167 },   // 60s growth ($167B)
+                          { year: 1971, m2: 0.583 },   // Nixon Shock baseline ($583B)
+                          { year: 1980, m2: 1.600 },   // Early 80s ($1.6T)
+                          { year: 1990, m2: 3.200 },   // 90s expansion ($3.2T)
+                          { year: 2000, m2: 4.900 },   // Dot-com era ($4.9T)
+                          { year: 2008, m2: 7.500 },   // Pre-crisis ($7.5T)
+                          { year: 2010, m2: 8.700 },   // Post-crisis QE1 ($8.7T)
+                          { year: 2015, m2: 12.400 },  // QE era ($12.4T)
+                          { year: 2020, m2: 15.400 },  // Pre-COVID ($15.4T)
+                          { year: 2021, m2: 20.100 },  // COVID peak ($20.1T)
+                          { year: 2024, m2: 21.000 },  // 2024 ($21T)
+                          { year: 2025, m2: 21.200 }   // Current estimate ($21.2T)
+                        ];
+                        
+                        const linePath = m2Data.map((point, index) => {
+                          const x = 50 + ((point.year - 1920) / 105) * 320;
+                          const y = 175 - ((point.m2 - 0.023) / (21.2 - 0.023)) * 155;
+                          return `${index === 0 ? 'M' : 'L'} ${x},${y}`;
+                        }).join(' ');
+                        
+                        // Close the path to create fill area
+                        const lastX = 50 + ((2025 - 1920) / 105) * 320;
+                        return `${linePath} L ${lastX},180 L 50,180 Z`;
+                      })()}
                       fill="url(#orangeGradient)"
                       opacity="0.3"
                     />
