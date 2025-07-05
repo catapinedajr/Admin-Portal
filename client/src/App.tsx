@@ -149,7 +149,7 @@ function Router() {
         <Route path="/money">
           <AuthGuard>
             <AppContextProvider>
-              <FinancePage />
+              <Home />
             </AppContextProvider>
           </AuthGuard>
         </Route>
