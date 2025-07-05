@@ -11,7 +11,9 @@ import {
   ChevronUp,
   Brain,
   Key,
-  Coins
+  Coins,
+  Clock,
+  CheckCircle
 } from "lucide-react";
 import DailyQuiz from "@/components/DailyQuiz";
 import { BitcoinTerm, AutoGlossary } from "@/components/BitcoinGlossary";
@@ -262,75 +264,56 @@ export default function LearnPage() {
 
               {/* Today's Lesson */}
               {lesson && (
-                <Card className="bg-zinc-900/50 border-zinc-700">
-                  <CardHeader>
-                    <CardTitle className="text-xl text-white flex items-center gap-2">
-                      <BookOpen className="w-5 h-5 text-orange-500" />
-                      Today's Lesson
-                    </CardTitle>
-                    {lesson.estimatedReadTime && (
-                      <p className="text-sm text-zinc-400">
-                        {lesson.estimatedReadTime} minute read
-                      </p>
-                    )}
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="prose prose-invert max-w-none">
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="space-y-6">
+                      {/* Lesson Header */}
                       <div className="space-y-4">
-                        {getExpandedLessonContent(lesson.title, lesson.content).map((section, index: number) => (
-                          <div key={index} className="space-y-4">
-                            <h5 className="text-orange-400 font-semibold text-lg">{section.title}</h5>
-                            {section.paragraphs.map((paragraph, pIndex) => (
-                              <p key={pIndex} className="text-zinc-300 leading-relaxed text-base">
-                                {cleanText(paragraph)}
-                              </p>
-                            ))}
-                            {section.keyPoints && section.keyPoints.length > 0 && (
-                              <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-3">
-                                <ul className="space-y-2">
-                                  {section.keyPoints.map((point, kIndex) => (
-                                    <li key={kIndex} className="text-orange-200 text-sm flex items-baseline gap-2">
-                                      <span className="text-orange-500 text-xs">●</span>
-                                      {point}
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-                            {section.realWorldExample && (
-                              <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
-                                <p className="text-blue-200 text-sm font-medium mb-2">Real-World Example:</p>
-                                <p className="text-blue-100 text-sm">{section.realWorldExample}</p>
-                              </div>
-                            )}
+                        <h3 className="text-lg font-bold text-white border-b border-zinc-700 pb-3">Today's Lesson</h3>
+                        <div className="flex items-start justify-between gap-4">
+                          <h4 className="text-xl font-bold text-white leading-tight flex-1">{lesson.title}</h4>
+                          <Badge variant="outline" className="border-zinc-700 text-zinc-400 flex-shrink-0">
+                            <Clock className="w-3 h-3 mr-1" />
+                            {lesson.estimatedReadTime || 3} min read
+                          </Badge>
+                        </div>
+                      </div>
+                      
+                      {/* Database-driven Lesson Content */}
+                      <div className="prose prose-invert max-w-none space-y-6">
+                        <div className="text-zinc-300 leading-relaxed space-y-4 text-base leading-[1.8]">
+                          <div>
+                            {cleanText(lesson.content)}
                           </div>
-                        ))}
+                        </div>
+                        
+                        {/* Database-driven Key Takeaways */}
+                        {lesson.keyTakeaways && Array.isArray(lesson.keyTakeaways) && lesson.keyTakeaways.length > 0 && (
+                          <div className="my-6">
+                            <h5 className="font-medium text-orange-300 mb-3">Key Points</h5>
+                            <div className="grid gap-2">
+                              {lesson.keyTakeaways.map((point, pointIdx) => (
+                                <div key={pointIdx} className="flex items-start gap-2 p-2 bg-orange-600/10 rounded-lg border border-orange-600/20">
+                                  <CheckCircle className="w-4 h-4 text-orange-400 flex-shrink-0 mt-0.5" />
+                                  <span className="text-orange-100 text-sm leading-relaxed">{point}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
+
+                      {/* Why This Matters - Database-driven */}
+                      <div className="bg-zinc-800/50 rounded-lg p-6 border border-zinc-700 mt-8">
+                        <h4 className="text-white font-semibold mb-6 text-lg">Why This Matters</h4>
+                        <div className="text-zinc-300 text-base leading-[1.7]">
+                          <div>
+                            {cleanText(lesson.whyItMatters || "Understanding these fundamentals helps you make informed decisions about Bitcoin and see why it represents a significant advancement in monetary technology.")}
+                          </div>
+                        </div>
+                      </div>
+
                     </div>
-                    
-                    {lesson.keyTakeaways && lesson.keyTakeaways.length > 0 && (
-                      <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-4">
-                        <h4 className="font-semibold text-orange-400 mb-3 flex items-center gap-2">
-                          <GraduationCap className="w-4 h-4" />
-                          Key Takeaways
-                        </h4>
-                        <ul className="space-y-2">
-                          {lesson.keyTakeaways.map((takeaway: string, index: number) => (
-                            <li key={index} className="flex items-baseline gap-2 text-sm">
-                              <div className="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0 mt-2"></div>
-                              <span className="text-zinc-300 leading-relaxed">{takeaway}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    
-                    {lesson.whyItMatters && (
-                      <div className="bg-zinc-800/50 border border-zinc-600 rounded-lg p-4">
-                        <h4 className="font-semibold text-zinc-200 mb-2">Why It Matters</h4>
-                        <p className="text-zinc-300 text-sm leading-relaxed">{lesson.whyItMatters}</p>
-                      </div>
-                    )}
                   </CardContent>
                 </Card>
               )}
