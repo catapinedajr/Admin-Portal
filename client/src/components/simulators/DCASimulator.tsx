@@ -465,7 +465,7 @@ export function DCASimulator() {
                   <p className="text-blue-300 text-sm">
                     <Info className="w-4 h-4 inline mr-1" />
                     Your average purchase price: <span className="font-medium">${Math.round(dcaResults.averagePrice).toLocaleString()}</span> 
-                    {' '}vs current Bitcoin price: <span className="font-medium">$65,000</span>
+                    {' '}vs current Bitcoin price: <span className="font-medium">$95,000</span>
                   </p>
                 </div>
               </div>
