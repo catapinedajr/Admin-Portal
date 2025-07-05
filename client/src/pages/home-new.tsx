@@ -93,6 +93,7 @@ import FinancePage from "@/pages/FinancePage";
 import SafetyTraining from "@/components/simulators/SafetyTrainingSustainable";
 import TransactionsSimulator from "@/components/simulators/TransactionsSimulator";
 import { TransferSimulator } from "@/components/simulators/TransferSimulator";
+import WalletSimulator from "@/components/simulators/WalletSimulator";
 import EmailCollectionModal from "@/components/EmailCollectionModal";
 import { ConsistencyCalendar } from "@/components/ConsistencyCalendar";
 
@@ -2405,8 +2406,13 @@ export default function Home() {
             </div>
             )}
 
-            {/* Wallet Explorer - Only show for premium users */}
-            {isPremiumTier && simulationsSubTab === "wallet" && (
+            {/* Wallet Explorer - Extracted to WalletSimulator component */}
+            {simulationsSubTab === "wallet" && (
+              <WalletSimulator />
+            )}
+
+            {/* OLD WALLET SECTION - TO BE REMOVED */}
+            {false && isPremiumTier && simulationsSubTab === "wallet" && (
               <div className="space-y-6">
                 <div className="text-center space-y-4">
                   <h3 className="text-xl font-bold text-white">Interactive Wallet Explorer</h3>
