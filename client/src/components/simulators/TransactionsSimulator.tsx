@@ -499,7 +499,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
 
       {/* Full-Screen Transaction Journey Modal */}
       {showJourneyModal && (
-        <div className="fixed inset-0 bg-black/95 flex items-center justify-center p-2 z-50">
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-2 z-50">
           <div className="w-full max-w-xl max-h-[85vh] overflow-y-auto">
             
             {/* Broadcasting/Mempool Phase */}
