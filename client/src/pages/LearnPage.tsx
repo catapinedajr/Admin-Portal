@@ -4,21 +4,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Lightbulb, 
-  BookOpen, 
-  GraduationCap,
   ChevronDown,
   ChevronUp,
-  Brain,
-  Key,
   Coins,
   Clock,
-  CheckCircle
+  CheckCircle,
+  Key,
+  GraduationCap,
+  Brain
 } from "lucide-react";
 import DailyQuiz from "@/components/DailyQuiz";
 import { BitcoinTerm, AutoGlossary } from "@/components/BitcoinGlossary";
 import { useAppContext } from "@/components/shared/AppContextProvider";
-import { cleanText, getExpandedLessonContent } from "@/utils/textUtils";
+import { cleanText } from "@/utils/textUtils";
 import { iconMap } from "@/constants/appData";
 
 // Temporary interface for database-driven lesson content
@@ -38,16 +36,12 @@ export default function LearnPage() {
     learnSubTab,
     setLearnSubTab,
     currentDayIndex,
-    dayAccessible,
     isDayLockedBySubscription,
-    dayAccessInfo,
     dayCompleted,
-    nextAvailableDay,
     handleQuizCompletion,
-    expandedTopics,
-    setExpandedTopics,
-    isPremiumTier,
-    setShowEmailModal
+    setShowEmailModal,
+    dayAccessible,
+    dayAccessInfo
   } = useAppContext();
 
   // Local state for expandable content
