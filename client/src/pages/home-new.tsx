@@ -3591,7 +3591,7 @@ export default function Home() {
                             const calculator = document.querySelector('[data-dca-calculator]');
                             if (calculator) {
                               const rect = calculator.getBoundingClientRect();
-                              const offsetTop = window.pageYOffset + rect.top - 80; // Add 80px buffer from top
+                              const offsetTop = window.pageYOffset + rect.top - 150; // Add 150px buffer for dropdown visibility
                               window.scrollTo({
                                 top: offsetTop,
                                 behavior: 'smooth'
