@@ -3590,10 +3590,11 @@ export default function Home() {
                           onClick={() => {
                             const calculator = document.querySelector('[data-dca-calculator]');
                             if (calculator) {
-                              calculator.scrollIntoView({ 
-                                behavior: 'smooth', 
-                                block: 'start',
-                                inline: 'nearest'
+                              const rect = calculator.getBoundingClientRect();
+                              const offsetTop = window.pageYOffset + rect.top - 80; // Add 80px buffer from top
+                              window.scrollTo({
+                                top: offsetTop,
+                                behavior: 'smooth'
                               });
                             }
                           }}
