@@ -705,20 +705,20 @@ export default function SafetyTraining({
                   </p>
                   
                   <div className="space-y-3">
-                    <div className="p-3 bg-red-950/30 rounded border border-red-800/50">
-                      <p className="text-red-300 text-sm">
+                    <div className="p-3 bg-zinc-800/50 rounded border border-zinc-600">
+                      <p className="text-zinc-300 text-sm">
                         "Elon Musk is giving away Bitcoin! Send 0.1 BTC to get 1 BTC back! Limited time offer!"
                       </p>
                     </div>
                     
-                    <div className="p-3 bg-red-950/30 rounded border border-red-800/50">
-                      <p className="text-red-300 text-sm">
+                    <div className="p-3 bg-zinc-800/50 rounded border border-zinc-600">
+                      <p className="text-zinc-300 text-sm">
                         "I'm a prince who needs help moving my Bitcoin fortune. I'll share 50% if you help with transaction fees."
                       </p>
                     </div>
                     
-                    <div className="p-3 bg-green-950/30 rounded border border-green-800/50">
-                      <p className="text-green-300 text-sm">
+                    <div className="p-3 bg-zinc-800/50 rounded border border-zinc-600">
+                      <p className="text-zinc-300 text-sm">
                         "Your local Bitcoin meetup is next Thursday at 7 PM. Bring questions and let's learn together!"
                       </p>
                     </div>
