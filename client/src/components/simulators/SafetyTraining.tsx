@@ -147,40 +147,239 @@ export default function SafetyTraining({
               </div>
               
               <div className="space-y-3">
-                <h5 className="font-semibold text-white">Ready to Test Your Skills?</h5>
+                <h5 className="font-semibold text-white">What You'll Find Below:</h5>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
                     <Shield className="w-5 h-5 text-orange-400" />
                     <div>
-                      <p className="font-medium text-white text-sm">16 Immersive Scenarios</p>
-                      <p className="text-zinc-400 text-xs">Real-world decision making with consequences</p>
+                      <p className="font-medium text-white text-sm">Security Essentials</p>
+                      <p className="text-zinc-400 text-xs">Complete guide covering all security fundamentals</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
                     <Target className="w-5 h-5 text-orange-400" />
                     <div>
-                      <p className="font-medium text-white text-sm">Learn from Outcomes</p>
-                      <p className="text-zinc-400 text-xs">See realistic consequences of your choices</p>
+                      <p className="font-medium text-white text-sm">Security Simulator</p>
+                      <p className="text-zinc-400 text-xs">Test your skills with 16 real-world scenarios</p>
                     </div>
                   </div>
-                </div>
-                
-                <div className="text-sm text-zinc-400 mb-4">
-                  • 16 immersive scenarios<br/>
-                  • Real-world decision making<br/>
-                  • See consequences of your choices<br/>
-                  • Learn from realistic outcomes
                 </div>
               </div>
               
               <div className="flex justify-center pt-2">
                 <Button
-                  onClick={() => setSecurityTestStage(1)}
+                  onClick={() => {
+                    const simulator = document.getElementById('safety-skills-test');
+                    if (simulator) {
+                      simulator.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
                   className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
                 >
-                  Begin Simulation
+                  <ChevronDown className="w-4 h-4 mr-2" />
+                  Skip to Security Simulator
                 </Button>
               </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Essential Bitcoin Security Guidelines */}
+        <Card className="bg-zinc-900 border-zinc-800">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-orange-600/20 rounded-lg">
+                <Shield className="w-6 h-6 text-orange-400" />
+              </div>
+              <h4 className="text-xl font-bold text-white">Essential Bitcoin Security Guidelines</h4>
+            </div>
+
+            <div className="space-y-6">
+              {/* Private Key Security Fundamentals */}
+              <div className="space-y-3">
+                <h5 className="font-semibold text-white text-lg">Private Key Security Fundamentals</h5>
+                <div className="bg-zinc-800/50 rounded-lg p-4 space-y-2">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Never share your private keys or seed phrases with anyone - not even support staff</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Store seed phrases physically on paper or metal - never digitally or in photos</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Screenshots of seed phrases can be stolen by malware or cloud backups</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Private keys control your Bitcoin - losing them means losing your funds permanently</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Exchange Safety Guidelines */}
+              <div className="space-y-3">
+                <h5 className="font-semibold text-white text-lg">Exchange Safety Guidelines</h5>
+                <div className="bg-zinc-800/50 rounded-lg p-4 space-y-2">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Remember: Not your keys, not your coins - withdraw Bitcoin to your own wallet</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Research exchange security history and reputation before using</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Watch for exit scam warning signs: withdrawal delays, lack of communication</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Understand withdrawal limits and verification requirements before depositing</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Social Engineering Awareness */}
+              <div className="space-y-3">
+                <h5 className="font-semibold text-white text-lg">Social Engineering Awareness</h5>
+                <div className="bg-zinc-800/50 rounded-lg p-4 space-y-2">
+                  <div className="flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Fake giveaway scams: No legitimate person gives away Bitcoin for free</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Impersonation attacks: Verify identities through official channels</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Urgency tactics: Scammers create false deadlines to pressure quick decisions</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Take time to research and verify before making Bitcoin transactions</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Network Security Basics */}
+              <div className="space-y-3">
+                <h5 className="font-semibold text-white text-lg">Network Security Basics</h5>
+                <div className="bg-zinc-800/50 rounded-lg p-4 space-y-2">
+                  <div className="flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Avoid accessing Bitcoin wallets on public WiFi networks</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Use VPN when accessing Bitcoin services on untrusted networks</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Enable two-factor authentication and keep backup codes secure</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Type wallet URLs directly - avoid clicking suspicious links</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Hardware Wallet Best Practices */}
+              <div className="space-y-3">
+                <h5 className="font-semibold text-white text-lg">Hardware Wallet Best Practices</h5>
+                <div className="bg-zinc-800/50 rounded-lg p-4 space-y-2">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Use hardware wallets for storing larger Bitcoin amounts long-term</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Buy hardware wallets directly from manufacturers or authorized dealers</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Initialize with fresh seed phrase - never use pre-generated seeds</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Test recovery process with small amounts before storing large funds</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Software Security Essentials */}
+              <div className="space-y-3">
+                <h5 className="font-semibold text-white text-lg">Software Security Essentials</h5>
+                <div className="bg-zinc-800/50 rounded-lg p-4 space-y-2">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Keep wallet software updated to latest security patches</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Verify software downloads using digital signatures when available</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Avoid counterfeit wallet apps - download from official sources only</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-zinc-300 text-sm">Use dedicated computer for Bitcoin operations when handling large amounts</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Interactive Safety Skills Test */}
+        <Card id="safety-skills-test" className="bg-zinc-900 border-zinc-800">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-orange-600/20 rounded-lg">
+                <Shield className="w-6 h-6 text-orange-400" />
+              </div>
+              <h4 className="text-xl font-bold text-white">Test Your Security Skills</h4>
+            </div>
+
+            <div className="space-y-3">
+              <h5 className="font-semibold text-white">Ready to Test Your Skills?</h5>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                  <Shield className="w-5 h-5 text-orange-400" />
+                  <div>
+                    <p className="font-medium text-white text-sm">16 Immersive Scenarios</p>
+                    <p className="text-zinc-400 text-xs">Real-world decision making with consequences</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                  <Target className="w-5 h-5 text-orange-400" />
+                  <div>
+                    <p className="font-medium text-white text-sm">Learn from Outcomes</p>
+                    <p className="text-zinc-400 text-xs">See realistic consequences of your choices</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="text-sm text-zinc-400 mb-4">
+                • 16 immersive scenarios<br/>
+                • Real-world decision making<br/>
+                • See consequences of your choices<br/>
+                • Learn from realistic outcomes
+              </div>
+            </div>
+            
+            <div className="flex justify-center pt-2">
+              <Button
+                onClick={() => setSecurityTestStage(1)}
+                className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
+              >
+                Begin Simulation
+              </Button>
             </div>
           </CardContent>
         </Card>
