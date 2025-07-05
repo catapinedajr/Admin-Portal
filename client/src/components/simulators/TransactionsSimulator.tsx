@@ -493,6 +493,205 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
           </div>
         </div>
       )}
+
+      {/* Transaction Journey Visualization */}
+      {(transactionState === "broadcasting" || transactionState === "confirming" || transactionState === "confirmed") && (
+        <Card className="bg-zinc-900 border-zinc-800">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-green-600/20 rounded-lg">
+                <CheckCircle className="w-6 h-6 text-green-400" />
+              </div>
+              <div>
+                <h4 className="text-xl font-bold text-white">Transaction Status</h4>
+                <p className="text-zinc-400">Tracking your Bitcoin transaction</p>
+              </div>
+            </div>
+
+            {/* Transaction ID */}
+            {transactionId && (
+              <div className="mb-6 p-4 bg-zinc-800/50 rounded-lg">
+                <div className="flex justify-between items-center">
+                  <span className="text-zinc-400 text-sm">Transaction ID:</span>
+                  <span className="text-orange-400 font-mono text-sm">{transactionId.slice(0, 20)}...</span>
+                </div>
+              </div>
+            )}
+
+            {/* Journey Steps */}
+            <div className="space-y-4">
+              {/* Step 1: Broadcasting */}
+              <div className={`flex items-center gap-4 p-4 rounded-lg transition-colors ${
+                transactionJourney === "broadcast" ? 'bg-blue-600/20 border border-blue-600/30' :
+                transactionJourney !== "broadcast" ? 'bg-green-600/10 border border-green-600/20' :
+                'bg-zinc-800/30 border border-zinc-700'
+              }`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  transactionJourney === "broadcast" ? 'bg-blue-600 animate-pulse' :
+                  transactionJourney !== "broadcast" ? 'bg-green-600' :
+                  'bg-zinc-600'
+                }`}>
+                  {transactionJourney === "broadcast" ? (
+                    <Clock className="w-4 h-4 text-white" />
+                  ) : transactionJourney !== "broadcast" ? (
+                    <CheckCircle className="w-4 h-4 text-white" />
+                  ) : (
+                    <span className="text-white text-sm">1</span>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <h5 className="font-medium text-white">Broadcasting to Network</h5>
+                  <p className="text-zinc-400 text-sm">
+                    {transactionJourney === "broadcast" ? 
+                      "Sending transaction to Bitcoin nodes..." :
+                      "Transaction successfully broadcast"
+                    }
+                  </p>
+                </div>
+                {transactionJourney === "broadcast" && (
+                  <div className="text-blue-400 text-sm">In Progress...</div>
+                )}
+              </div>
+
+              {/* Step 2: Mempool */}
+              <div className={`flex items-center gap-4 p-4 rounded-lg transition-colors ${
+                transactionJourney === "mempool" ? 'bg-orange-600/20 border border-orange-600/30' :
+                ["confirming", "settled"].includes(transactionJourney) ? 'bg-green-600/10 border border-green-600/20' :
+                'bg-zinc-800/30 border border-zinc-700'
+              }`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  transactionJourney === "mempool" ? 'bg-orange-600 animate-pulse' :
+                  ["confirming", "settled"].includes(transactionJourney) ? 'bg-green-600' :
+                  'bg-zinc-600'
+                }`}>
+                  {transactionJourney === "mempool" ? (
+                    <Clock className="w-4 h-4 text-white" />
+                  ) : ["confirming", "settled"].includes(transactionJourney) ? (
+                    <CheckCircle className="w-4 h-4 text-white" />
+                  ) : (
+                    <span className="text-white text-sm">2</span>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <h5 className="font-medium text-white">In Mempool</h5>
+                  <p className="text-zinc-400 text-sm">
+                    {transactionJourney === "mempool" ?
+                      "Waiting for miners to include in block..." :
+                      ["confirming", "settled"].includes(transactionJourney) ?
+                      "Transaction included in mempool" :
+                      "Waiting for network broadcast"
+                    }
+                  </p>
+                </div>
+                {transactionJourney === "mempool" && (
+                  <div className="text-orange-400 text-sm">Pending...</div>
+                )}
+              </div>
+
+              {/* Step 3: Confirming */}
+              <div className={`flex items-center gap-4 p-4 rounded-lg transition-colors ${
+                transactionJourney === "confirming" ? 'bg-purple-600/20 border border-purple-600/30' :
+                transactionJourney === "settled" ? 'bg-green-600/10 border border-green-600/20' :
+                'bg-zinc-800/30 border border-zinc-700'
+              }`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  transactionJourney === "confirming" ? 'bg-purple-600' :
+                  transactionJourney === "settled" ? 'bg-green-600' :
+                  'bg-zinc-600'
+                }`}>
+                  {transactionJourney === "confirming" ? (
+                    <span className="text-white text-sm font-bold">{confirmationCount}</span>
+                  ) : transactionJourney === "settled" ? (
+                    <CheckCircle className="w-4 h-4 text-white" />
+                  ) : (
+                    <span className="text-white text-sm">3</span>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <h5 className="font-medium text-white">Getting Confirmations</h5>
+                  <p className="text-zinc-400 text-sm">
+                    {transactionJourney === "confirming" ?
+                      `${confirmationCount}/6 confirmations (Est. ${timeRemaining}s remaining)` :
+                      transactionJourney === "settled" ?
+                      "6/6 confirmations - Transaction confirmed!" :
+                      "Waiting for block inclusion"
+                    }
+                  </p>
+                </div>
+                {transactionJourney === "confirming" && (
+                  <div className="text-purple-400 text-sm">{Math.round((confirmationCount / 6) * 100)}%</div>
+                )}
+              </div>
+
+              {/* Step 4: Settled */}
+              <div className={`flex items-center gap-4 p-4 rounded-lg transition-colors ${
+                transactionJourney === "settled" ? 'bg-green-600/20 border border-green-600/30' :
+                'bg-zinc-800/30 border border-zinc-700'
+              }`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  transactionJourney === "settled" ? 'bg-green-600' : 'bg-zinc-600'
+                }`}>
+                  {transactionJourney === "settled" ? (
+                    <CheckCircle className="w-4 h-4 text-white" />
+                  ) : (
+                    <span className="text-white text-sm">4</span>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <h5 className="font-medium text-white">Transaction Settled</h5>
+                  <p className="text-zinc-400 text-sm">
+                    {transactionJourney === "settled" ?
+                      "Bitcoin successfully transferred! Transaction is final." :
+                      "Waiting for confirmations"
+                    }
+                  </p>
+                </div>
+                {transactionJourney === "settled" && (
+                  <div className="text-green-400 text-sm font-medium">Complete!</div>
+                )}
+              </div>
+            </div>
+
+            {/* Progress Bar */}
+            {transactionJourney === "confirming" && (
+              <div className="mt-6 p-4 bg-zinc-800/50 rounded-lg">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-zinc-300 text-sm">Confirmation Progress</span>
+                  <span className="text-zinc-300 text-sm">{confirmationCount}/6</span>
+                </div>
+                <div className="w-full bg-zinc-700 rounded-full h-2">
+                  <div 
+                    className="bg-gradient-to-r from-purple-600 to-green-600 h-2 rounded-full transition-all duration-500"
+                    style={{ width: `${(confirmationCount / 6) * 100}%` }}
+                  />
+                </div>
+                <p className="text-zinc-500 text-xs mt-2">
+                  Each confirmation adds security. 6 confirmations make the transaction irreversible.
+                </p>
+              </div>
+            )}
+
+            {/* Reset Button */}
+            {transactionState === "confirmed" && (
+              <div className="mt-6 text-center">
+                <Button
+                  onClick={() => {
+                    setTransactionState("building");
+                    setTransactionJourney("broadcast");
+                    setConfirmationCount(0);
+                    setTimeRemaining(45);
+                    setTransactionId("");
+                    setTransactionInputs(prev => ({ ...prev, toAddress: "", amount: "0.001" }));
+                  }}
+                  className="bg-orange-600 hover:bg-orange-700 text-white px-8"
+                >
+                  Build Another Transaction
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
