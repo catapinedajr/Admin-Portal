@@ -166,31 +166,18 @@ const HODLSimulator: React.FC = () => {
                   </defs>
                   <rect width="100%" height="100%" fill="url(#grid-hodl-chart)" />
                   
-                  {/* Dynamic milestone reference lines based on results */}
-                  {hodlResults && (() => {
-                    const multiplier = hodlResults.currentValue / hodlResults.initialInvestment;
-                    const milestones = [];
-                    
-                    if (multiplier >= 100) {
-                      milestones.push({ label: '100x', y: 40, color: '#dc2626' });
-                    }
-                    if (multiplier >= 10) {
-                      milestones.push({ label: '10x', y: 70, color: '#fbbf24' });
-                    }
-                    if (multiplier >= 5) {
-                      milestones.push({ label: '5x', y: 105, color: '#10b981' });
-                    }
-                    if (multiplier >= 2) {
-                      milestones.push({ label: '2x', y: 135, color: '#6366f1' });
-                    }
-                    
-                    return milestones.map(milestone => (
-                      <g key={milestone.label}>
-                        <line x1="20" y1={milestone.y} x2="350" y2={milestone.y} stroke={milestone.color} strokeWidth="1.5" opacity="0.8" strokeDasharray="3,3"/>
-                        <text x="360" y={milestone.y + 4} fill={milestone.color} fontSize="12" opacity="0.9">{milestone.label}</text>
-                      </g>
-                    ));
-                  })()}
+                  {/* Static milestone reference lines - always visible */}
+                  <line x1="20" y1="40" x2="350" y2="40" stroke="#dc2626" strokeWidth="1.5" opacity="0.8" strokeDasharray="3,3"/>
+                  <text x="360" y="44" fill="#dc2626" fontSize="12" opacity="0.9">100x</text>
+                  
+                  <line x1="20" y1="70" x2="350" y2="70" stroke="#fbbf24" strokeWidth="1.5" opacity="0.8" strokeDasharray="3,3"/>
+                  <text x="360" y="74" fill="#fbbf24" fontSize="12" opacity="0.9">10x</text>
+                  
+                  <line x1="20" y1="105" x2="350" y2="105" stroke="#10b981" strokeWidth="1.5" opacity="0.8" strokeDasharray="3,3"/>
+                  <text x="360" y="109" fill="#10b981" fontSize="12" opacity="0.9">5x</text>
+                  
+                  <line x1="20" y1="135" x2="350" y2="135" stroke="#6366f1" strokeWidth="1.5" opacity="0.8" strokeDasharray="3,3"/>
+                  <text x="360" y="139" fill="#6366f1" fontSize="12" opacity="0.9">2x</text>
                   
                   {/* Bitcoin Price Line (realistic exponential growth) */}
                   <path 
