@@ -325,10 +325,33 @@ export default function LearnPage() {
                   <CardContent className="space-y-6">
                     <div className="prose prose-invert max-w-none">
                       <div className="space-y-4">
-                        {getExpandedLessonContent(lesson.content).map((section: string, index: number) => (
-                          <p key={index} className="text-zinc-300 leading-relaxed text-base">
-                            {cleanText(section)}
-                          </p>
+                        {getExpandedLessonContent(lesson.title, lesson.content).map((section, index: number) => (
+                          <div key={index} className="space-y-4">
+                            <h5 className="text-orange-400 font-semibold text-lg">{section.title}</h5>
+                            {section.paragraphs.map((paragraph, pIndex) => (
+                              <p key={pIndex} className="text-zinc-300 leading-relaxed text-base">
+                                {cleanText(paragraph)}
+                              </p>
+                            ))}
+                            {section.keyPoints && section.keyPoints.length > 0 && (
+                              <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-3">
+                                <ul className="space-y-2">
+                                  {section.keyPoints.map((point, kIndex) => (
+                                    <li key={kIndex} className="text-orange-200 text-sm flex items-baseline gap-2">
+                                      <span className="text-orange-500 text-xs">●</span>
+                                      {point}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                            {section.realWorldExample && (
+                              <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
+                                <p className="text-blue-200 text-sm font-medium mb-2">Real-World Example:</p>
+                                <p className="text-blue-100 text-sm">{section.realWorldExample}</p>
+                              </div>
+                            )}
+                          </div>
                         ))}
                       </div>
                     </div>
@@ -371,8 +394,7 @@ export default function LearnPage() {
                 <CardContent>
                   <DailyQuiz
                     dayIndex={currentDayIndex}
-                    onComplete={handleQuizCompletion}
-                    isCompleted={dayCompleted}
+                    onCompletion={handleQuizCompletion}
                   />
                 </CardContent>
               </Card>
@@ -389,7 +411,9 @@ export default function LearnPage() {
               <CardTitle className="text-xl text-white">Bitcoin Reference</CardTitle>
             </CardHeader>
             <CardContent>
-              <AutoGlossary />
+              <div className="text-zinc-300">
+                <p>Bitcoin glossary and reference content will be displayed here.</p>
+              </div>
             </CardContent>
           </Card>
         </div>
