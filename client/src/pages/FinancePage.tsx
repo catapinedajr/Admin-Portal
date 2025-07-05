@@ -86,17 +86,27 @@ export default function FinancePage() {
   const startInflationSimulation = () => {
     setInflationSimActive(true);
     setInflationProgress(0);
-    
-    const delays = [0, 2000, 4000, 6000, 8000, 10000];
-    
-    delays.forEach((delay, index) => {
+
+    // Animate through years: 0 -> 1yr -> 5yr -> 10yr -> 15yr -> 20yr -> 25yr (optimized timing)
+    const timePoints = [
+      { step: 1, delay: 800 },    // 1 year at 0.8 seconds
+      { step: 2, delay: 1600 },   // 5 years at 1.6 seconds  
+      { step: 3, delay: 2400 },   // 10 years at 2.4 seconds
+      { step: 4, delay: 3200 },   // 15 years at 3.2 seconds
+      { step: 5, delay: 4000 },   // 20 years at 4 seconds
+      { step: 6, delay: 4800 }    // 25 years at 4.8 seconds
+    ];
+
+    timePoints.forEach(({ step, delay }) => {
       setTimeout(() => {
-        setInflationProgress(index);
-        if (index === delays.length - 1) {
-          setTimeout(() => setInflationProgress(5), 1000);
-        }
+        setInflationProgress(step);
       }, delay);
     });
+
+    // End simulation after 6 seconds
+    setTimeout(() => {
+      setInflationSimActive(false);
+    }, 6000);
   };
 
   const startSettlementAnimation = () => {
@@ -497,7 +507,7 @@ export default function FinancePage() {
                   onClick={startInflationSimulation}
                   className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg font-medium"
                 >
-                  Show Me the Impact
+                  Watch Your Money Disappear
                 </Button>
               </div>
             )}
