@@ -354,38 +354,37 @@ const HODLSimulator: React.FC = () => {
                             // Simulate realistic Bitcoin growth with dramatic volatility
                             let value;
                             if (hodlInputs.scenario === 'jan2017') {
-                              // Early adopter with realistic major volatility events
-                              const baseGrowth = Math.pow(currentGrowthRatio, progress);
-                              let volatilityMultiplier = 1;
+                              // Jan 2017 to Jan 2025: Realistic Bitcoin journey with major volatility
+                              // Starting at ~$850, ending at ~$100,000+ (118x growth)
                               
-                              // Major market events with smoother transitions
-                              if (progress < 0.12) {
-                                // Early 2017 growth
-                                volatilityMultiplier = 1 + progress * 8;
+                              if (progress < 0.1) {
+                                // Early 2017: Steady growth (1x to 2x)
+                                value = startValue * (1 + progress * 10);
                               } else if (progress < 0.25) {
-                                // Mid 2017 bubble
-                                volatilityMultiplier = 2 + (progress - 0.12) * 40;
-                              } else if (progress < 0.35) {
-                                // Late 2017 peak then crash
-                                volatilityMultiplier = 7 - (progress - 0.25) * 15;
-                              } else if (progress < 0.5) {
-                                // 2018 bear market
-                                volatilityMultiplier = 0.8 + (progress - 0.35) * 0.5;
-                              } else if (progress < 0.65) {
-                                // 2019-2020 recovery
-                                volatilityMultiplier = 1.2 + (progress - 0.5) * 2;
-                              } else if (progress < 0.8) {
-                                // 2021 institutional adoption
-                                volatilityMultiplier = 2.5 + (progress - 0.65) * 10;
+                                // Mid-Late 2017: Bubble peak (2x to 23x at peak)
+                                const bubbleProgress = (progress - 0.1) / 0.15;
+                                value = startValue * (2 + bubbleProgress * 21);
+                              } else if (progress < 0.4) {
+                                // 2018 Crash: Peak to bottom (23x down to 3.5x)
+                                const crashProgress = (progress - 0.25) / 0.15;
+                                value = startValue * (23 - crashProgress * 19.5);
+                              } else if (progress < 0.6) {
+                                // 2019-2020: Slow recovery (3.5x to 12x)
+                                const recoveryProgress = (progress - 0.4) / 0.2;
+                                value = startValue * (3.5 + recoveryProgress * 8.5);
+                              } else if (progress < 0.75) {
+                                // 2021: Bull run peak (12x to 80x)
+                                const bullProgress = (progress - 0.6) / 0.15;
+                                value = startValue * (12 + bullProgress * 68);
                               } else if (progress < 0.9) {
-                                // 2022 bear market
-                                volatilityMultiplier = 5 - (progress - 0.8) * 20;
+                                // 2022: Bear market (80x to 15x)
+                                const bearProgress = (progress - 0.75) / 0.15;
+                                value = startValue * (80 - bearProgress * 65);
                               } else {
-                                // 2023-2025 recovery and ETF approval
-                                volatilityMultiplier = 2 + (progress - 0.9) * 50;
+                                // 2023-2025: Recovery to ATH (15x to 118x)
+                                const finalProgress = (progress - 0.9) / 0.1;
+                                value = startValue * (15 + finalProgress * 103);
                               }
-                              
-                              value = startValue * Math.min(volatilityMultiplier, baseGrowth);
                             } else {
                               // Simpler growth model for other scenarios
                               value = startValue * Math.pow(currentGrowthRatio, progress);
