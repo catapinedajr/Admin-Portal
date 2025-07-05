@@ -155,12 +155,16 @@ function Router() {
         </Route>
         <Route path="/simulators">
           <AuthGuard>
-            <Home />
+            <AppContextProvider>
+              <Home />
+            </AppContextProvider>
           </AuthGuard>
         </Route>
         <Route path="/more">
           <AuthGuard>
-            <Home />
+            <AppContextProvider>
+              <Home />
+            </AppContextProvider>
           </AuthGuard>
         </Route>
         <Route path="/about">
@@ -170,7 +174,9 @@ function Router() {
         </Route>
         <Route path="/">
           <AuthGuard>
-            <OnboardingRedirect />
+            <AppContextProvider>
+              <OnboardingRedirect />
+            </AppContextProvider>
           </AuthGuard>
         </Route>
         <Route component={NotFound} />
