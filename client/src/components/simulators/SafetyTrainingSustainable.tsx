@@ -92,25 +92,25 @@ const securityScenarios: SecurityScenario[] = [
           <div className="space-y-3">
             <div>
               <p className="text-zinc-400 text-xs mb-2">Address you copied:</p>
-              <div className="bg-green-950/30 rounded border border-green-800/50 p-3">
-                <p className="text-green-400 font-mono text-sm break-all">
-                  bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w<span className="bg-green-400/30">l</span>h
+              <div className="bg-zinc-800/50 rounded border border-zinc-600 p-3">
+                <p className="text-zinc-300 font-mono text-sm break-all">
+                  bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
                 </p>
               </div>
             </div>
             
             <div>
               <p className="text-zinc-400 text-xs mb-2">Address displayed in your wallet:</p>
-              <div className="bg-red-950/30 rounded border border-red-800/50 p-3">
-                <p className="text-red-400 font-mono text-sm break-all">
-                  bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w<span className="bg-red-400/30">1</span>h
+              <div className="bg-zinc-800/50 rounded border border-zinc-600 p-3">
+                <p className="text-zinc-300 font-mono text-sm break-all">
+                  bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w1h
                 </p>
               </div>
             </div>
           </div>
         </div>
         <div className="text-xs text-orange-400 bg-orange-950/30 rounded p-2 border border-orange-800/50">
-          💡 Look carefully at the highlighted characters - are they the same?
+          💡 Look carefully - compare every character to ensure they match exactly
         </div>
       </div>
     ),
