@@ -88,6 +88,7 @@ import LockedContent from "@/components/LockedContent";
 // Removed UpgradeModal import - now using inline upgrade cards
 import DevSubscriptionToggle from "@/components/DevSubscriptionToggle";
 import BottomNavigation from "@/components/BottomNavigation";
+import LearnPage from "@/pages/LearnPage";
 import EmailCollectionModal from "@/components/EmailCollectionModal";
 import { ConsistencyCalendar } from "@/components/ConsistencyCalendar";
 
@@ -2140,6 +2141,9 @@ export default function Home() {
         )}
 
         {/* Learn Section - Extracted to LearnPage.tsx */}
+        {activeSection === "learn" && (
+          <LearnPage />
+        )}
 
         {/* Finance Section */}
         {activeSection === "money" && (
