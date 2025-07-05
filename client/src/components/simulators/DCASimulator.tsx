@@ -34,8 +34,26 @@ export function DCASimulator() {
     startDate: '2020-01-01'
   });
   const [dcaResults, setDcaResults] = useState<DCAResults | null>(null);
+  const [currentBitcoinPrice, setCurrentBitcoinPrice] = useState<number>(95000); // Default fallback
 
+  // Fetch current Bitcoin price on component mount
+  useEffect(() => {
+    const fetchBitcoinPrice = async () => {
+      try {
+        const response = await fetch('/api/bitcoin-price');
+        if (response.ok) {
+          const data = await response.json();
+          const price = parseFloat(data.priceUsd);
+          setCurrentBitcoinPrice(price);
+        }
+      } catch (error) {
+        console.error('Failed to fetch Bitcoin price:', error);
+        // Keep using fallback price if API fails
+      }
+    };
 
+    fetchBitcoinPrice();
+  }, []);
 
   // Calculate DCA results
   const calculateDCA = () => {
@@ -90,8 +108,7 @@ export function DCASimulator() {
     let totalInvested = 0;
     let totalBitcoin = 0;
     
-    // Use current Bitcoin price (January 2025)
-    const currentBitcoinPrice = 95000; // Current Bitcoin price January 2025
+    // Use live current Bitcoin price from API
     
     // Calculate mathematically accurate growth rate with safety checks
     const totalGrowthRatio = currentBitcoinPrice / startingPrice;
@@ -143,7 +160,7 @@ export function DCASimulator() {
 
   useEffect(() => {
     calculateDCA();
-  }, [dcaInputs]);
+  }, [dcaInputs, currentBitcoinPrice]);
 
   return (
     <div className="space-y-4">
@@ -465,7 +482,7 @@ export function DCASimulator() {
                   <p className="text-blue-300 text-sm">
                     <Info className="w-4 h-4 inline mr-1" />
                     Your average purchase price: <span className="font-medium">${Math.round(dcaResults.averagePrice).toLocaleString()}</span> 
-                    {' '}vs current Bitcoin price: <span className="font-medium">$95,000</span>
+                    {' '}vs current Bitcoin price: <span className="font-medium">${Math.round(currentBitcoinPrice).toLocaleString()}</span>
                   </p>
                 </div>
               </div>
