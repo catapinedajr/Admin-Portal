@@ -8,7 +8,9 @@ import {
   XCircle,
   AlertTriangle,
   Target,
-  ChevronDown
+  ChevronDown,
+  Mail,
+  Copy
 } from "lucide-react";
 
 interface SafetyTrainingProps {
@@ -28,70 +30,350 @@ export default function SafetyTraining({
   userSecurityAnswers,
   setUserSecurityAnswers
 }: SafetyTrainingProps) {
-  const [showResults, setShowResults] = useState(false);
+  const [safetyStage, setSafetyStage] = useState(0);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [showResult, setShowResult] = useState(false);
 
-  const securityScenarios = [
+  // Complete original safety simulations data structure
+  const safetySimulations = [
     {
-      id: 1,
-      title: "Phishing Email Detection",
-      scenario: "You receive an email claiming to be from Coinbase saying 'Urgent: Verify your account within 24 hours or your funds will be frozen.' The email has a link to 'coinbase-security.net'.",
-      options: [
-        { text: "Click the link immediately to secure my account", safe: false },
-        { text: "Delete the email and log into Coinbase directly through my browser", safe: true },
-        { text: "Forward the email to friends to warn them", safe: false },
-        { text: "Reply asking for more verification", safe: false }
-      ],
-      explanation: "Real companies never ask you to verify accounts through email links. Always access your accounts directly through official websites or apps."
+      stage: "Phishing Detection",
+      title: "Spot the Phishing Email",
+      description: "Can you identify the dangerous email that's trying to steal your Bitcoin?",
+      emails: [
+        {
+          from: "security@binance.com",
+          subject: "Account Security Alert - Action Required",
+          preview: "We noticed unusual activity on your account. Click here to verify your identity immediately or your account will be suspended.",
+          isPhishing: true,
+          redFlags: ["Urgency tactics", "Suspicious domain", "Threatening suspension"]
+        },
+        {
+          from: "noreply@coinbase.com", 
+          subject: "Your Weekly Portfolio Summary",
+          preview: "Here's your portfolio performance for the week ending January 27, 2025. Your Bitcoin holdings are up 3.2%.",
+          isPhishing: false,
+          redFlags: []
+        },
+        {
+          from: "support@electrum.org",
+          subject: "Critical Security Update Required",
+          preview: "Download our urgent security patch at electrum-update[.]net to protect your wallet from new vulnerabilities.",
+          isPhishing: true,
+          redFlags: ["Fake domain", "Malicious download link", "Impersonation"]
+        }
+      ]
     },
     {
-      id: 2,
-      title: "Seed Phrase Storage",
-      scenario: "You just set up a new Bitcoin wallet and need to store your 24-word seed phrase safely. What's the most secure approach?",
+      stage: "Seed Phrase Security",
+      title: "Protect Your Seed Phrase",
+      description: "You just generated a new Bitcoin wallet. Where should you store your 12-word recovery phrase?",
+      scenario: "apple bacon chair dog eagle five grape happy ice jelly king lemon",
       options: [
-        { text: "Take a photo and store it in my phone's cloud backup", safe: false },
-        { text: "Write it on paper and store in a fireproof safe", safe: true },
-        { text: "Save it in a password-protected document on my computer", safe: false },
-        { text: "Email it to myself for safekeeping", safe: false }
-      ],
-      explanation: "Physical storage is safest. Digital storage risks theft through malware, cloud breaches, or computer failures."
+        {
+          method: "Screenshot on phone",
+          safe: false
+        },
+        {
+          method: "Write on paper, store in safe",
+          safe: true
+        },
+        {
+          method: "Save in password manager",
+          safe: true
+        },
+        {
+          method: "Memorize only",
+          safe: false
+        }
+      ]
     },
-    // Add remaining 10 scenarios...
     {
-      id: 12,
-      title: "Recovery Scam Recognition",
-      scenario: "Someone contacts you claiming they can recover your lost Bitcoin for a 50% fee upfront, showing 'proof' of previous successful recoveries.",
+      stage: "Address Verification", 
+      title: "🎯 Verify Bitcoin Address",
+      description: "Compare these two addresses carefully before sending:",
+      copied: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+      displayed: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w1h",
       options: [
-        { text: "Pay the fee since they seem legitimate", safe: false },
-        { text: "Ask for references from previous clients", safe: false },
-        { text: "Recognize this as a scam and ignore it", safe: true },
-        { text: "Negotiate a lower fee", safe: false }
+        { text: "Addresses match exactly", correct: false },
+        { text: "Addresses are different", correct: true },
+        { text: "Close enough", correct: false },
+        { text: "First 10 characters match", correct: false }
+      ]
+    },
+    {
+      stage: "Scam Recognition",
+      title: "🚨 Spot the Bitcoin Scam", 
+      description: "Click on the legitimate (safe) message - avoid the scams!",
+      scenarios: [
+        {
+          message: "Elon Musk is giving away Bitcoin! Send 0.1 BTC to get 1 BTC back! Limited time offer!",
+          isScam: true,
+          tactics: ["Impersonation", "Too good to be true", "Urgency", "Upfront payment required"]
+        },
+        {
+          message: "Your local Bitcoin meetup is next Thursday at 7 PM. Bring questions and let's learn together!",
+          isScam: false,
+          tactics: []
+        },
+        {
+          message: "I'm a prince who needs help moving my Bitcoin fortune. I'll share 50% if you help with transaction fees.",
+          isScam: true,
+          tactics: ["Classic advance fee fraud", "Unrealistic returns", "Emotional manipulation"]
+        }
       ],
-      explanation: "Lost Bitcoin cannot be recovered by third parties. These are always scams designed to steal more money."
+      explanation: "The Bitcoin meetup message is legitimate and safe - it's just an educational gathering. The other two are classic scams: the 'Elon giveaway' uses celebrity impersonation and impossible returns, while the 'prince' message is a traditional advance fee fraud adapted for Bitcoin."
+    },
+    {
+      stage: "Exchange Security",
+      title: "🏪 Exchange Safety Check",
+      description: "You want to buy Bitcoin. Which exchange should you choose?",
+      options: [
+        {
+          method: "Brand new exchange offering 50% signup bonus",
+          safe: false
+        },
+        {
+          method: "Well-known exchange like Coinbase or Kraken",
+          safe: true
+        },
+        {
+          method: "Random exchange found through Google ads",
+          safe: false
+        },
+        {
+          method: "Exchange recommended in a Telegram group",
+          safe: false
+        }
+      ]
+    },
+    {
+      stage: "WiFi Security",
+      title: "📶 Public WiFi Warning",
+      description: "You're at a coffee shop and want to check your Bitcoin wallet. What should you do?",
+      options: [
+        {
+          method: "Connect to free public WiFi and log in normally",
+          safe: false
+        },
+        {
+          method: "Use your phone's mobile data instead",
+          safe: true
+        },
+        {
+          method: "Use public WiFi but only check prices, not access wallet",
+          safe: true
+        },
+        {
+          method: "Connect through a VPN on public WiFi",
+          safe: true
+        }
+      ]
+    },
+    {
+      stage: "Software Downloads",
+      title: "💾 Safe Wallet Downloads",
+      description: "You need to download a Bitcoin wallet. Where should you get it?",
+      options: [
+        {
+          method: "Google search and click the first result",
+          safe: false
+        },
+        {
+          method: "Official website directly (electrum.org, bitcoin.org)",
+          safe: true
+        },
+        {
+          method: "Download from a Bitcoin forum recommendation",
+          safe: false
+        },
+        {
+          method: "Official app store or Google Play Store",
+          safe: true
+        }
+      ]
+    },
+    {
+      stage: "Social Engineering",
+      title: "🎭 Social Engineering Defense",
+      description: "Someone calls claiming to be from your exchange, asking for your 2FA code. What do you do?",
+      options: [
+        {
+          method: "Give them the code since they knew my email",
+          safe: false
+        },
+        {
+          method: "Hang up and call the exchange directly",
+          safe: true
+        },
+        {
+          method: "Ask them to verify my account details first",
+          safe: false
+        },
+        {
+          method: "Tell them to email me instead",
+          safe: false
+        }
+      ]
+    },
+    {
+      stage: "Hardware Wallet",
+      title: "🔧 Hardware Wallet Safety",
+      description: "You want to buy a hardware wallet for storing Bitcoin. What's the SAFEST approach?",
+      options: [
+        {
+          method: "Buy used on eBay to save money",
+          safe: false
+        },
+        {
+          method: "Buy new directly from the official manufacturer website",
+          safe: true
+        },
+        {
+          method: "Buy from Amazon third-party seller",
+          safe: false
+        },
+        {
+          method: "Buy from local computer store",
+          safe: false
+        }
+      ]
+    },
+    {
+      stage: "Backup Testing",
+      title: "💾 Backup Verification",
+      description: "You wrote down your seed phrase. How should you verify it's correct?",
+      options: [
+        {
+          method: "Wait until you need to restore the wallet",
+          safe: false
+        },
+        {
+          method: "Test restore on a separate device or wallet",
+          safe: true
+        },
+        {
+          method: "Take a photo of the seed phrase as backup",
+          safe: false
+        },
+        {
+          method: "Share with trusted family member to verify",
+          safe: false
+        }
+      ]
+    },
+    {
+      stage: "Transaction Fees",
+      title: "💰 Fee Manipulation",
+      description: "You're sending $50 worth of Bitcoin. Your wallet suggests a $200 fee, but you checked other sources and normal fees are $2. What should you do?",
+      options: [
+        {
+          method: "Pay the $200 fee since the wallet knows best",
+          safe: false
+        },
+        {
+          method: "Never use this wallet again - it might be malicious",
+          safe: true
+        },
+        {
+          method: "Try sending anyway with the high fee",
+          safe: false
+        },
+        {
+          method: "Ignore the fee warning and send anyway",
+          safe: false
+        }
+      ]
+    },
+    {
+      stage: "Recovery Scams", 
+      title: "🔍 Recovery Service Warning",
+      description: "You lost access to your wallet. Someone offers to recover it for 50% of the funds. What should you do?",
+      options: [
+        {
+          method: "Agree since 50% is better than 0%",
+          safe: false
+        },
+        {
+          method: "Ask for references and research the company",
+          safe: false
+        },
+        {
+          method: "Decline and try to recover yourself",
+          safe: true
+        },
+        {
+          method: "Negotiate for a lower percentage",
+          safe: false
+        }
+      ]
     }
   ];
 
-  const currentScenario = securityScenarios.find(s => s.id === securityStage);
+  const currentSimulation = safetySimulations[safetyStage];
 
-  const handleAnswer = (scenarioId: number, isCorrect: boolean) => {
-    const newAnswers = { ...userSecurityAnswers, [scenarioId]: isCorrect };
-    setUserSecurityAnswers(newAnswers);
+  const handleSafetyAnswer = (optionIndex: number) => {
+    setSelectedOption(optionIndex);
+    setShowResult(true);
     
-    if (isCorrect) {
-      setSecurityScore(securityScore + 1);
+    // Calculate score based on stage with comprehensive validation
+    let correct = false;
+    const simulation = safetySimulations[safetyStage];
+    
+    if (!simulation) {
+      console.error(`Invalid stage: ${safetyStage}`);
+      return;
     }
     
-    // Auto-advance after short delay
-    setTimeout(() => {
-      if (securityStage < 12) {
-        setSecurityStage(securityStage + 1);
-      } else {
-        setShowResults(true);
+    try {
+      switch (safetyStage) {
+        case 0: // Phishing Detection
+          if (simulation.emails && simulation.emails[optionIndex]) {
+            correct = simulation.emails[optionIndex].isPhishing === false;
+          }
+          break;
+          
+        case 2: // Address Verification
+          if (simulation.options && simulation.options[optionIndex]) {
+            correct = simulation.options[optionIndex].correct === true;
+          }
+          break;
+          
+        case 3: // Scam Recognition
+          if (simulation.scenarios && simulation.scenarios[optionIndex]) {
+            correct = simulation.scenarios[optionIndex].isScam === false;
+          }
+          break;
+          
+        default: // Options-based simulations (stages 1, 4-11)
+          if (simulation.options && simulation.options[optionIndex]) {
+            correct = simulation.options[optionIndex].safe === true;
+          }
+          break;
       }
-    }, 2000);
+    } catch (error) {
+      console.error(`Error calculating score for stage ${safetyStage}:`, error);
+    }
+    
+    if (correct) {
+      setSecurityScore(prev => prev + 1);
+    }
+    
+    // Auto-advance after delay
+    setTimeout(() => {
+      if (safetyStage < 11) {
+        setSafetyStage(prev => prev + 1);
+        setSelectedOption(null);
+        setShowResult(false);
+      } else {
+        // Show final results
+        setSafetyStage(12);
+      }
+    }, 3000);
   };
 
   // Results screen
-  if (showResults) {
+  if (safetyStage === 12) {
     const percentage = Math.round((securityScore / 12) * 100);
     
     return (
@@ -106,17 +388,17 @@ export default function SafetyTraining({
             
             <div className="text-6xl font-bold text-orange-400 mb-2">{percentage}%</div>
             <div className="text-zinc-400 mb-6">
-              You answered {securityScore} out of 12 questions correctly
+              Safe Decisions: {securityScore}/12
             </div>
 
             <div className="space-y-4 text-left max-w-2xl mx-auto">
               <div className="p-4 bg-zinc-800 rounded-lg">
                 <h4 className="font-semibold text-white mb-2">Your Security Level:</h4>
                 <div className="text-zinc-300">
-                  {percentage >= 90 && "🎯 Security Expert - You have excellent Bitcoin security knowledge"}
-                  {percentage >= 75 && percentage < 90 && "🛡️ Security Conscious - Good knowledge with room for improvement"}
-                  {percentage >= 60 && percentage < 75 && "⚠️ Security Aware - Basic knowledge, continue learning"}
-                  {percentage < 60 && "🚨 Security Risk - Important to strengthen your Bitcoin security knowledge"}
+                  {securityScore >= 11 && "🎯 Security Master - Outstanding! You navigated dangerous situations like a pro. Your Bitcoin would be safe in the real world."}
+                  {securityScore >= 8 && securityScore < 11 && "🛡️ Security Conscious - Good awareness but room for improvement. Review the scenarios you missed."}
+                  {securityScore >= 5 && securityScore < 8 && "⚠️ Security Student - Basic knowledge present. Continue learning to protect your Bitcoin properly."}
+                  {securityScore < 5 && "🚨 Security Risk - Important gaps in knowledge detected. Study security fundamentals before using Bitcoin."}
                 </div>
               </div>
             </div>
@@ -124,10 +406,10 @@ export default function SafetyTraining({
             <div className="flex gap-3 justify-center mt-8">
               <Button
                 onClick={() => {
-                  setSecurityStage(1);
+                  setSafetyStage(0);
                   setSecurityScore(0);
-                  setUserSecurityAnswers({});
-                  setShowResults(false);
+                  setSelectedOption(null);
+                  setShowResult(false);
                 }}
                 className="bg-orange-600 hover:bg-orange-700 text-white"
               >
@@ -140,7 +422,7 @@ export default function SafetyTraining({
     );
   }
 
-  if (!currentScenario) return null;
+  if (!currentSimulation) return null;
 
   return (
     <div className="space-y-6">
@@ -374,53 +656,249 @@ export default function SafetyTraining({
             <h4 className="text-xl font-bold text-white">Test Your Security Skills</h4>
           </div>
 
-          {/* Progress Indicator */}
-          <div className="flex items-center justify-between mb-6">
-            <Badge variant="outline" className="text-orange-400 border-orange-500">
-              Question {securityStage} of 12
-            </Badge>
-            <div className="text-zinc-400 text-sm">
-              Score: {securityScore}/{securityStage - 1}
+          {/* Progress indicators */}
+          <div className="flex justify-between items-center mb-4">
+            <h6 className="font-semibold text-white text-sm sm:text-base">{currentSimulation.title}</h6>
+            <span className="text-xs text-zinc-500">{safetyStage + 1}/12</span>
+          </div>
+
+          {/* Progress dots */}
+          <div className="flex justify-center mb-6">
+            <div className="flex gap-1">
+              {safetySimulations.map((_, index) => (
+                <div
+                  key={index}
+                  className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                    index < safetyStage ? 'bg-orange-500' : 
+                    index === safetyStage ? 'bg-orange-500' : 'bg-zinc-600'
+                  }`}
+                />
+              ))}
             </div>
           </div>
 
-          {/* Current Question */}
+          <p className="text-zinc-400 text-xs sm:text-sm mb-4 leading-relaxed">{currentSimulation.description}</p>
+
+          {/* Current Simulation */}
           <Card className="bg-zinc-800 border-zinc-700">
-            <CardContent className="p-6">
-              <h4 className="text-lg font-semibold text-white mb-4">{currentScenario.title}</h4>
+            <CardContent className="p-4 sm:p-6">
               
-              <div className="bg-zinc-900 p-4 rounded-lg mb-6">
-                <p className="text-zinc-300">{currentScenario.scenario}</p>
-              </div>
+              {/* Phishing Email Simulation */}
+              {safetyStage === 0 && (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Mail className="w-4 h-4 text-zinc-400" />
+                    <span className="text-zinc-300 text-sm">Choose the SAFE email (not phishing):</span>
+                  </div>
+                  <div className="space-y-2">
+                    {currentSimulation.emails?.map((email, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleSafetyAnswer(index)}
+                        disabled={showResult}
+                        className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
+                          selectedOption === index 
+                            ? 'border-orange-500 bg-orange-500/10' 
+                            : 'border-zinc-600 hover:border-zinc-500'
+                        }`}
+                      >
+                        <div className="flex justify-between items-start mb-1">
+                          <span className="text-white text-xs sm:text-sm font-medium truncate mr-2">{email.from}</span>
+                          <span className="text-zinc-500 text-xs shrink-0">Today</span>
+                        </div>
+                        <div className="text-white text-xs sm:text-sm mb-1 line-clamp-1">{email.subject}</div>
+                        <div className="text-zinc-400 text-xs line-clamp-2 leading-relaxed">{email.preview}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-              <div className="space-y-3">
-                {currentScenario.options.map((option, index) => (
-                  <Button
-                    key={index}
-                    onClick={() => handleAnswer(currentScenario.id, option.safe)}
-                    variant="outline"
-                    className="w-full text-left justify-start p-4 h-auto whitespace-normal border-zinc-600 hover:border-orange-500"
-                    disabled={userSecurityAnswers[currentScenario.id] !== undefined}
-                  >
-                    <span className="mr-3 text-orange-400">{String.fromCharCode(65 + index)}.</span>
-                    {option.text}
-                  </Button>
-                ))}
-              </div>
+              {/* Seed Phrase Simulation */}
+              {safetyStage === 1 && (
+                <div className="space-y-4">
+                  <div className="bg-zinc-900 p-3 rounded border border-zinc-600">
+                    <div className="text-orange-300 text-xs mb-2">Your Recovery Phrase:</div>
+                    <div className="text-white text-sm font-mono">{currentSimulation.scenario}</div>
+                  </div>
+                  <div className="space-y-2">
+                    {currentSimulation.options?.map((option, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleSafetyAnswer(index)}
+                        disabled={showResult}
+                        className={`w-full p-3 border rounded-lg text-left transition-colors ${
+                          selectedOption === index 
+                            ? 'border-orange-500 bg-orange-500/10' 
+                            : 'border-zinc-600 hover:border-zinc-500'
+                        }`}
+                      >
+                        <div className="text-orange-300 text-xs sm:text-sm">
+                          {option.method}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-              {userSecurityAnswers[currentScenario.id] !== undefined && (
-                <div className="mt-6 p-4 bg-zinc-900 rounded-lg">
+              {/* Address Verification Simulation */}
+              {safetyStage === 2 && (
+                <div className="space-y-4">
+                  <div className="space-y-3">
+                    <div className="bg-zinc-900 p-3 rounded border border-zinc-600">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Copy className="w-4 h-4 text-zinc-400" />
+                        <span className="text-orange-300 text-xs">Copied to clipboard:</span>
+                      </div>
+                      <div className="text-white text-sm font-mono break-all">{currentSimulation.copied}</div>
+                    </div>
+                    <div className="bg-zinc-900 p-3 rounded border border-zinc-600">
+                      <div className="text-orange-300 text-xs mb-2">Displayed on screen:</div>
+                      <div className="text-white text-sm font-mono break-all">{currentSimulation.displayed}</div>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    {currentSimulation.options?.map((option, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleSafetyAnswer(index)}
+                        disabled={showResult}
+                        className={`w-full p-2 sm:p-3 border rounded-lg text-left transition-colors ${
+                          selectedOption === index 
+                            ? 'border-orange-500 bg-orange-500/10' 
+                            : 'border-zinc-600 hover:border-zinc-500'
+                        }`}
+                      >
+                        <div className="text-orange-300 text-xs sm:text-sm">
+                          {option.text}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Scam Recognition Simulation */}
+              {safetyStage === 3 && (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    {currentSimulation.scenarios?.map((scenario, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleSafetyAnswer(index)}
+                        disabled={showResult}
+                        className={`w-full p-3 border rounded-lg text-left transition-colors ${
+                          selectedOption === index 
+                            ? 'border-orange-500 bg-orange-500/10' 
+                            : 'border-zinc-600 hover:border-zinc-500'
+                        }`}
+                      >
+                        <div className="text-white text-xs sm:text-sm leading-relaxed">
+                          "{scenario.message}"
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Generic Options-based Simulations (stages 4-11) */}
+              {safetyStage >= 4 && safetyStage <= 11 && (
+                <div className="space-y-2">
+                  {currentSimulation.options?.map((option, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSafetyAnswer(index)}
+                      disabled={showResult}
+                      className={`w-full p-3 border rounded-lg text-left transition-colors ${
+                        selectedOption === index 
+                          ? 'border-orange-500 bg-orange-500/10' 
+                          : 'border-zinc-600 hover:border-zinc-500'
+                      }`}
+                    >
+                      <div className="text-orange-300 text-xs sm:text-sm">
+                        {option.method}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Result Display */}
+              {showResult && selectedOption !== null && (
+                <div className="mt-4 p-3 bg-zinc-900 rounded border border-zinc-600">
                   <div className="flex items-center gap-2 mb-2">
-                    {userSecurityAnswers[currentScenario.id] ? (
-                      <CheckCircle className="w-5 h-5 text-green-400" />
-                    ) : (
-                      <XCircle className="w-5 h-5 text-red-400" />
-                    )}
+                    {(() => {
+                      let correct = false;
+                      switch (safetyStage) {
+                        case 0:
+                          correct = currentSimulation.emails?.[selectedOption]?.isPhishing === false;
+                          break;
+                        case 2:
+                          correct = currentSimulation.options?.[selectedOption]?.correct === true;
+                          break;
+                        case 3:
+                          correct = currentSimulation.scenarios?.[selectedOption]?.isScam === false;
+                          break;
+                        default:
+                          correct = currentSimulation.options?.[selectedOption]?.safe === true;
+                          break;
+                      }
+                      return correct ? (
+                        <CheckCircle className="w-5 h-5 text-green-400" />
+                      ) : (
+                        <XCircle className="w-5 h-5 text-red-400" />
+                      );
+                    })()}
                     <span className="font-semibold text-white">
-                      {userSecurityAnswers[currentScenario.id] ? "Correct!" : "Incorrect"}
+                      {(() => {
+                        let correct = false;
+                        switch (safetyStage) {
+                          case 0:
+                            correct = currentSimulation.emails?.[selectedOption]?.isPhishing === false;
+                            break;
+                          case 2:
+                            correct = currentSimulation.options?.[selectedOption]?.correct === true;
+                            break;
+                          case 3:
+                            correct = currentSimulation.scenarios?.[selectedOption]?.isScam === false;
+                            break;
+                          default:
+                            correct = currentSimulation.options?.[selectedOption]?.safe === true;
+                            break;
+                        }
+                        return correct ? "Correct!" : "Incorrect";
+                      })()}
                     </span>
                   </div>
-                  <p className="text-zinc-300 text-sm">{currentScenario.explanation}</p>
+                  
+                  {/* Stage-specific risk explanations */}
+                  {safetyStage === 0 && selectedOption !== null && currentSimulation.emails?.[selectedOption]?.isPhishing && (
+                    <div className="text-red-200 text-xs mt-2">
+                      <strong>Risk:</strong> You would click a phishing link. This could steal your login credentials and empty your Bitcoin wallet.
+                    </div>
+                  )}
+                  {safetyStage === 1 && selectedOption !== null && !currentSimulation.options?.[selectedOption]?.safe && (
+                    <div className="text-red-200 text-xs mt-2">
+                      <strong>Risk:</strong> You would store your seed phrase insecurely. Hackers could steal it and access all your Bitcoin.
+                    </div>
+                  )}
+                  {safetyStage === 9 && (
+                    <div className="text-red-200 text-xs mt-2">
+                      <strong>Risk:</strong> You would pay $200 for a $2 transaction. This wallet is likely stealing from you.
+                    </div>
+                  )}
+                  {safetyStage === 10 && (
+                    <div className="text-red-200 text-xs mt-2">
+                      <strong>Risk:</strong> You would pay $200 for a $2 transaction. This wallet is likely stealing from you.
+                    </div>
+                  )}
+                  {safetyStage === 11 && (
+                    <div className="text-red-200 text-xs mt-2">
+                      <strong>Risk:</strong> You would give scammers 50% of your Bitcoin for "help" you don't actually need.
+                    </div>
+                  )}
                 </div>
               )}
             </CardContent>
