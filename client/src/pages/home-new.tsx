@@ -2153,15 +2153,7 @@ export default function Home() {
                 <Button
                   variant={simulationsSubTab === "safety" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => {
-                    setSimulationsSubTab("safety");
-                    setTimeout(() => {
-                      const element = document.querySelector('[data-safety-simulator]');
-                      if (element) {
-                        element.scrollIntoView({ behavior: 'smooth' });
-                      }
-                    }, 100);
-                  }}
+                  onClick={() => setSimulationsSubTab("safety")}
                   className="text-xs px-3 py-1"
                 >
                   <Shield className="w-3 h-3 mr-1" />
@@ -2170,15 +2162,7 @@ export default function Home() {
                 <Button
                   variant={simulationsSubTab === "wallet" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => {
-                    setSimulationsSubTab("wallet");
-                    setTimeout(() => {
-                      const element = document.querySelector('[data-wallet-simulator]');
-                      if (element) {
-                        element.scrollIntoView({ behavior: 'smooth' });
-                      }
-                    }, 100);
-                  }}
+                  onClick={() => setSimulationsSubTab("wallet")}
                   className="text-xs px-3 py-1"
                 >
                   <Wallet className="w-3 h-3 mr-1" />
@@ -2187,15 +2171,7 @@ export default function Home() {
                 <Button
                   variant={simulationsSubTab === "transactions" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => {
-                    setSimulationsSubTab("transactions");
-                    setTimeout(() => {
-                      const element = document.querySelector('[data-transactions-simulator]');
-                      if (element) {
-                        element.scrollIntoView({ behavior: 'smooth' });
-                      }
-                    }, 100);
-                  }}
+                  onClick={() => setSimulationsSubTab("transactions")}
                   className="text-xs px-3 py-1"
                 >
                   <CreditCard className="w-3 h-3 mr-1" />
@@ -2204,15 +2180,7 @@ export default function Home() {
                 <Button
                   variant={simulationsSubTab === "transfer" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => {
-                    setSimulationsSubTab("transfer");
-                    setTimeout(() => {
-                      const element = document.querySelector('[data-transfer-simulator]');
-                      if (element) {
-                        element.scrollIntoView({ behavior: 'smooth' });
-                      }
-                    }, 100);
-                  }}
+                  onClick={() => setSimulationsSubTab("transfer")}
                   className="text-xs px-3 py-1"
                 >
                   <ArrowRight className="w-3 h-3 mr-1" />
@@ -2221,15 +2189,7 @@ export default function Home() {
                 <Button
                   variant={simulationsSubTab === "hodl" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => {
-                    setSimulationsSubTab("hodl");
-                    setTimeout(() => {
-                      const element = document.querySelector('[data-hodl-simulator]');
-                      if (element) {
-                        element.scrollIntoView({ behavior: 'smooth' });
-                      }
-                    }, 100);
-                  }}
+                  onClick={() => setSimulationsSubTab("hodl")}
                   className="text-xs px-3 py-1"
                 >
                   <TrendingUp className="w-3 h-3 mr-1" />
@@ -2238,15 +2198,7 @@ export default function Home() {
                 <Button
                   variant={simulationsSubTab === "dca" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => {
-                    setSimulationsSubTab("dca");
-                    setTimeout(() => {
-                      const element = document.querySelector('[data-dca-simulator]');
-                      if (element) {
-                        element.scrollIntoView({ behavior: 'smooth' });
-                      }
-                    }, 100);
-                  }}
+                  onClick={() => setSimulationsSubTab("dca")}
                   className="text-xs px-3 py-1"
                 >
                   <BarChart3 className="w-3 h-3 mr-1" />
@@ -2255,15 +2207,7 @@ export default function Home() {
                 <Button
                   variant={simulationsSubTab === "inflation" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => {
-                    setSimulationsSubTab("inflation");
-                    setTimeout(() => {
-                      const element = document.querySelector('[data-inflation-simulator]');
-                      if (element) {
-                        element.scrollIntoView({ behavior: 'smooth' });
-                      }
-                    }, 100);
-                  }}
+                  onClick={() => setSimulationsSubTab("inflation")}
                   className="text-xs px-3 py-1"
                 >
                   <TrendingDown className="w-3 h-3 mr-1" />
@@ -2272,15 +2216,7 @@ export default function Home() {
                 <Button
                   variant={simulationsSubTab === "fees" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => {
-                    setSimulationsSubTab("fees");
-                    setTimeout(() => {
-                      const element = document.querySelector('[data-fees-simulator]');
-                      if (element) {
-                        element.scrollIntoView({ behavior: 'smooth' });
-                      }
-                    }, 100);
-                  }}
+                  onClick={() => setSimulationsSubTab("fees")}
                   className="text-xs px-3 py-1"
                 >
                   <FileText className="w-3 h-3 mr-1" />
@@ -2292,52 +2228,40 @@ export default function Home() {
 
             {/* Safety Training - Extracted to SafetyTraining component */}
             {simulationsSubTab === "safety" && (
-              <div data-safety-simulator>
-                <SafetyTraining 
-                  securityStage={securityStage}
-                  setSecurityStage={setSecurityStage}
-                  securityScore={securityScore}
-                  setSecurityScore={setSecurityScore}
-                  userSecurityAnswers={userSecurityAnswers}
-                  setUserSecurityAnswers={setUserSecurityAnswers}
-                />
-              </div>
+              <SafetyTraining 
+                securityStage={securityStage}
+                setSecurityStage={setSecurityStage}
+                securityScore={securityScore}
+                setSecurityScore={setSecurityScore}
+                userSecurityAnswers={userSecurityAnswers}
+                setUserSecurityAnswers={setUserSecurityAnswers}
+              />
             )}
 
             {/* Wallet Explorer - Extracted to WalletSimulator component */}
             {simulationsSubTab === "wallet" && (
-              <div data-wallet-simulator>
-                <WalletSimulator />
-              </div>
+              <WalletSimulator />
             )}
 
             {/* Transactions Simulator - Extracted to TransactionsSimulator component */}
             {simulationsSubTab === "transactions" && (
-              <div data-transactions-simulator>
-                <TransactionsSimulator isPremiumTier={isPremiumTier} />
-              </div>
+              <TransactionsSimulator isPremiumTier={isPremiumTier} />
             )}
 
             {/* Transfer Simulator - Extracted to TransferSimulator component */}
             {simulationsSubTab === "transfer" && (
-              <div data-transfer-simulator>
-                <TransferSimulator />
-              </div>
+              <TransferSimulator />
             )}
 
             {/* HODL Simulator - Extracted to HODLSimulator component */}
             {simulationsSubTab === "hodl" && (
-              <div data-hodl-simulator>
-                <HODLSimulator />
-              </div>
+              <HODLSimulator />
             )}
 
             {/* OLD HODL SECTION - TO BE REMOVED */}
             {/* DCA Calculator - Extracted to DCASimulator component */}
             {simulationsSubTab === "dca" && (
-              <div data-dca-simulator>
-                <DCASimulator />
-              </div>
+              <DCASimulator />
             )}
 
             {/* DCA Calculator implementation moved to DCASimulator component */}
@@ -2427,9 +2351,7 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                <div data-inflation-simulator>
-                  <InflationSimulator />
-                </div>
+                <InflationSimulator />
 
 
               </div>
@@ -2437,9 +2359,7 @@ export default function Home() {
 
             {/* Banking Fees vs Bitcoin Fees Simulator */}
             {isPremiumTier && simulationsSubTab === "fees" && (
-              <div data-fees-simulator>
-                <FeesSimulator />
-              </div>
+              <FeesSimulator />
             )}
 
             {/* More section */}
