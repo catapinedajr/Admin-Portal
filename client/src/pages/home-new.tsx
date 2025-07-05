@@ -90,6 +90,7 @@ import DevSubscriptionToggle from "@/components/DevSubscriptionToggle";
 import BottomNavigation from "@/components/BottomNavigation";
 import LearnPage from "@/pages/LearnPage";
 import FinancePage from "@/pages/FinancePage";
+import SafetyTraining from "@/components/simulators/SafetyTraining";
 import EmailCollectionModal from "@/components/EmailCollectionModal";
 import { ConsistencyCalendar } from "@/components/ConsistencyCalendar";
 
@@ -2955,8 +2956,27 @@ export default function Home() {
               </div>
             )}
 
-            {/* Safety Training - Only show for premium users */}
+            {/* Safety Training - Extracted to SafetyTraining component */}
             {isPremiumTier && simulationsSubTab === "safety" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-4">
+                  <h3 className="text-xl font-bold text-white">Bitcoin Security Training Center</h3>
+                  <p className="text-zinc-400">Master essential security skills to protect your Bitcoin from real-world threats</p>
+                </div>
+
+                <SafetyTraining
+                  securityStage={securityStage}
+                  setSecurityStage={setSecurityStage}
+                  securityScore={securityScore}
+                  setSecurityScore={setSecurityScore}
+                  userSecurityAnswers={userSecurityAnswers}
+                  setUserSecurityAnswers={setUserSecurityAnswers}
+                />
+              </div>
+            )}
+
+            {/* Original Safety Training (to be removed after testing) */}
+            {false && isPremiumTier && simulationsSubTab === "safety" && (
               <div className="space-y-6">
                 <div className="text-center space-y-4">
                   <h3 className="text-xl font-bold text-white">Bitcoin Security Training Center</h3>
