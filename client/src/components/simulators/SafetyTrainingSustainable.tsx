@@ -72,6 +72,25 @@ const securityScenarios: SecurityScenario[] = [
     title: "Seed Phrase Storage",
     description: "Proper backup and storage methods",
     question: "What's the safest way to store your 12-word recovery phrase?",
+    visualAid: (
+      <div className="bg-zinc-800 rounded-lg p-4 border border-zinc-600">
+        <p className="text-zinc-400 text-xs mb-3">Example recovery phrase (fake words for demonstration):</p>
+        <div className="grid grid-cols-3 gap-2 p-4 bg-zinc-900/50 rounded border border-zinc-700">
+          {[
+            "1. hodlearn", "2. bitcoin", "3. example", "4. demo",
+            "5. practice", "6. testing", "7. sample", "8. training",
+            "9. education", "10. learning", "11. simulate", "12. guide"
+          ].map((word, index) => (
+            <div key={index} className="text-orange-400 font-mono text-sm text-center p-2 bg-zinc-800/50 rounded">
+              {word}
+            </div>
+          ))}
+        </div>
+        <p className="text-zinc-400 text-xs mt-3">
+          ⚠️ Never share your real seed phrase with anyone. This is just an example using fake words.
+        </p>
+      </div>
+    ),
     options: [
       "Take a photo and store it in Google Photos",
       "Write it on paper and store in a safe place",
