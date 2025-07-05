@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { BarChart3, ChevronDown, Calculator, Clock, Calendar, TrendingUp, Info } from 'lucide-react';
+import { BarChart3, ChevronDown, Calculator, Clock, Calendar, TrendingUp, Info, GraduationCap } from 'lucide-react';
 
 interface DCAInputs {
   monthlyAmount: number;
@@ -509,6 +509,43 @@ export function DCASimulator() {
                     </div>
                   </div>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Educational Insights */}
+          <Card className="bg-zinc-900 border-zinc-800">
+            <CardContent className="p-6">
+              <h4 className="text-lg font-bold text-zinc-300 mb-4">DCA Education</h4>
+              
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <h5 className="font-medium text-zinc-300 mb-2">Why DCA Works</h5>
+                  <ul className="space-y-1 text-zinc-300 text-sm">
+                    <li>• <strong>Volatility smoothing:</strong> Reduces impact of price swings</li>
+                    <li>• <strong>Lower average cost:</strong> Buys more when prices are low</li>
+                    <li>• <strong>Emotion-free:</strong> Removes timing and FOMO decisions</li>
+                    <li>• <strong>Accessibility:</strong> Start with any amount you can afford</li>
+                  </ul>
+                </div>
+                
+                <div>
+                  <h5 className="font-medium text-zinc-300 mb-2">Key Insights</h5>
+                  <ul className="space-y-1 text-zinc-300 text-sm">
+                    <li>• Time in market beats timing the market</li>
+                    <li>• Consistency builds wealth over time</li>
+                    <li>• Market dips become buying opportunities</li>
+                    <li>• Reduces risk of buying at the peak</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="mt-4 p-3 bg-orange-600/20 rounded-lg border border-orange-500/30">
+                <p className="text-orange-200 text-sm">
+                  <GraduationCap className="w-4 h-4 inline mr-1 text-orange-300" />
+                  <strong>Pro Tip:</strong> The best DCA strategy is one you can stick to consistently. 
+                  Start with an amount that won't strain your budget and increase it as your income grows.
+                </p>
               </div>
             </CardContent>
           </Card>
