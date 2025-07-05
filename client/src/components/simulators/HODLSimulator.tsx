@@ -166,21 +166,18 @@ const HODLSimulator: React.FC = () => {
                   </defs>
                   <rect width="100%" height="100%" fill="url(#grid-hodl-chart)" />
                   
-                  {/* 2x Market Line */}
-                  <line x1="20" y1="140" x2="350" y2="140" stroke="#6366f1" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                  <text x="360" y="144" fill="#6366f1" fontSize="12" opacity="0.8">2x</text>
-                  
-                  {/* 5x Market Line */}
-                  <line x1="20" y1="120" x2="350" y2="120" stroke="#10b981" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                  <text x="360" y="124" fill="#10b981" fontSize="12" opacity="0.8">5x</text>
-                  
-                  {/* 10x Market Line */}
-                  <line x1="20" y1="80" x2="350" y2="80" stroke="#fbbf24" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                  <text x="360" y="84" fill="#fbbf24" fontSize="12" opacity="0.8">10x</text>
-                  
-                  {/* 100x Market Line */}
+                  {/* Milestone reference lines */}
                   <line x1="20" y1="40" x2="350" y2="40" stroke="#dc2626" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
                   <text x="360" y="44" fill="#dc2626" fontSize="12" opacity="0.8">100x</text>
+                  
+                  <line x1="20" y1="70" x2="350" y2="70" stroke="#fbbf24" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                  <text x="360" y="74" fill="#fbbf24" fontSize="12" opacity="0.8">10x</text>
+                  
+                  <line x1="20" y1="100" x2="350" y2="100" stroke="#10b981" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                  <text x="360" y="104" fill="#10b981" fontSize="12" opacity="0.8">5x</text>
+                  
+                  <line x1="20" y1="130" x2="350" y2="130" stroke="#6366f1" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                  <text x="360" y="134" fill="#6366f1" fontSize="12" opacity="0.8">2x</text>
                   
                   {/* Bitcoin Price Line (realistic exponential growth) */}
                   <path 
@@ -310,6 +307,19 @@ const HODLSimulator: React.FC = () => {
                           </pattern>
                         </defs>
                         <rect width="100%" height="100%" fill="url(#portfolioGrid)" />
+                        
+                        {/* Milestone reference lines */}
+                        <line x1="20" y1="20" x2="280" y2="20" stroke="#dc2626" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                        <text x="285" y="24" fill="#dc2626" fontSize="10" opacity="0.8">100x</text>
+                        
+                        <line x1="20" y1="40" x2="280" y2="40" stroke="#fbbf24" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                        <text x="285" y="44" fill="#fbbf24" fontSize="10" opacity="0.8">10x</text>
+                        
+                        <line x1="20" y1="60" x2="280" y2="60" stroke="#10b981" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                        <text x="285" y="64" fill="#10b981" fontSize="10" opacity="0.8">5x</text>
+                        
+                        <line x1="20" y1="80" x2="280" y2="80" stroke="#6366f1" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                        <text x="285" y="84" fill="#6366f1" fontSize="10" opacity="0.8">2x</text>
                         
                         {/* Growth Line */}
                         {(() => {
