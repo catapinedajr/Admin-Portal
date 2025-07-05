@@ -35,7 +35,7 @@ export function DCASimulator() {
   });
   const [dcaResults, setDcaResults] = useState<DCAResults | null>(null);
 
-  // Historical Bitcoin price data simulation with very smooth curves
+  // Historical Bitcoin price data simulation
   const getHistoricalPrice = (date: string): number => {
     const timestamp = new Date(date).getTime();
     const startTime = new Date('2009-01-03').getTime();
@@ -44,23 +44,21 @@ export function DCASimulator() {
     if (daysSinceStart < 0) return 0.001;
     
     const basePrice = 0.001;
-    const growthRate = 0.0024; // Slightly reduced for smoother growth
+    const growthRate = 0.0025;
+    const volatilityFactor = 0.3;
     
     let price = basePrice * Math.exp(growthRate * daysSinceStart);
     
-    // Much smoother volatility - reduced frequency and amplitude
-    const longCycle = Math.sin(daysSinceStart / 730) * 0.15; // 2-year cycles
-    const mediumCycle = Math.sin(daysSinceStart / 365) * 0.08; // Annual cycles  
-    const smoothNoise = Math.sin(daysSinceStart / 30) * 0.03; // Monthly variation
+    const cycleFactor = Math.sin(daysSinceStart / 365) * volatilityFactor;
+    const randomFactor = (Math.sin(daysSinceStart * 7) * 0.1);
     
-    price *= (1 + longCycle + mediumCycle + smoothNoise);
+    price *= (1 + cycleFactor + randomFactor);
     
-    // Smoother market cycle adjustments
-    if (date >= '2017-01-01' && date < '2018-06-01') price *= 2.2;
-    if (date >= '2018-06-01' && date < '2020-03-01') price *= 0.45;
-    if (date >= '2020-03-01' && date < '2022-01-01') price *= 2.8;
-    if (date >= '2022-01-01' && date < '2023-01-01') price *= 0.35;
-    if (date >= '2023-01-01') price *= 1.6;
+    if (date >= '2017-01-01' && date < '2018-03-01') price *= 2.5;
+    if (date >= '2018-03-01' && date < '2020-03-01') price *= 0.4;
+    if (date >= '2020-03-01' && date < '2022-01-01') price *= 3.2;
+    if (date >= '2022-01-01' && date < '2023-01-01') price *= 0.3;
+    if (date >= '2023-01-01') price *= 1.8;
     
     return Math.max(price, 0.001);
   };
@@ -104,7 +102,7 @@ export function DCASimulator() {
       currentDate.setDate(currentDate.getDate() + intervalDays);
     }
     
-    const currentPrice = getHistoricalPrice('2025-01-05'); // Current Bitcoin price
+    const currentPrice = 65000; // Current Bitcoin price
     const currentValue = totalBitcoin * currentPrice;
     const totalGain = currentValue - totalInvested;
     const percentageReturn = (totalGain / totalInvested) * 100;
@@ -336,44 +334,25 @@ export function DCASimulator() {
                       Now
                     </div>
                     
-                    {/* Accurate DCA Chart with continuous Bitcoin price */}
+                    {/* Accurate DCA Chart using real purchase data */}
                     <svg className="w-full h-full" viewBox="0 0 400 200">
                       {dcaResults?.purchases && (() => {
                         const purchases = dcaResults.purchases;
                         const chartWidth = 360;
                         const chartHeight = 160;
                         
-                        // Create continuous Bitcoin price data for smooth curve
-                        const startDate = new Date(purchases[0].date);
-                        const endDate = new Date(purchases[purchases.length - 1].date);
-                        const totalDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
-                        
-                        // Generate daily price points for smooth curve
-                        const dailyPrices = [];
-                        for (let day = 0; day <= totalDays; day += Math.max(1, Math.floor(totalDays / 100))) {
-                          const currentDate = new Date(startDate.getTime() + (day * 24 * 60 * 60 * 1000));
-                          const dateStr = currentDate.toISOString().split('T')[0];
-                          const price = getHistoricalPrice(dateStr);
-                          dailyPrices.push({ date: dateStr, price, dayOffset: day });
-                        }
-                        
                         // Find price range for proper scaling
-                        const allPrices = [...dailyPrices.map(d => d.price), ...purchases.map(p => p.price)];
-                        const minPrice = Math.min(...allPrices);
-                        const maxPrice = Math.max(...allPrices);
+                        const minPrice = Math.min(...purchases.map(p => p.price));
+                        const maxPrice = Math.max(...purchases.map(p => p.price));
                         const priceRange = maxPrice - minPrice;
                         
-                        // Create smooth Bitcoin price curve points
-                        const priceDataPoints = dailyPrices.map((daily) => {
-                          const x = 20 + (daily.dayOffset / totalDays) * chartWidth;
-                          const y = 180 - ((daily.price - minPrice) / priceRange) * chartHeight;
-                          return { x, y, price: daily.price };
-                        });
+                        // Find average cost range
+                        const minAvg = Math.min(...purchases.map(p => p.runningAvgCost));
+                        const maxAvg = Math.max(...purchases.map(p => p.runningAvgCost));
                         
-                        // Create purchase points and DCA average line
-                        const purchasePoints = purchases.map((purchase, index) => {
-                          const dayOffset = Math.ceil((new Date(purchase.date).getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
-                          const x = 20 + (dayOffset / totalDays) * chartWidth;
+                        // Calculate positions for each data point
+                        const dataPoints = purchases.map((purchase, index) => {
+                          const x = 20 + (index / (purchases.length - 1)) * chartWidth;
                           const priceY = 180 - ((purchase.price - minPrice) / priceRange) * chartHeight;
                           const avgY = 180 - ((purchase.runningAvgCost - minPrice) / priceRange) * chartHeight;
                           
@@ -396,10 +375,10 @@ export function DCASimulator() {
                             </defs>
                             <rect width="100%" height="100%" fill="url(#dcaGrid)" />
                             
-                            {/* Smooth Bitcoin price line (orange - continuous market price) */}
+                            {/* Bitcoin price line (orange - actual market prices) */}
                             <path
-                              d={priceDataPoints.map((point, i) => 
-                                `${i === 0 ? 'M' : 'L'} ${point.x},${point.y}`
+                              d={dataPoints.map((point, i) => 
+                                `${i === 0 ? 'M' : 'L'} ${point.x},${point.priceY}`
                               ).join(' ')}
                               stroke="#f97316"
                               strokeWidth="3"
@@ -409,7 +388,7 @@ export function DCASimulator() {
                             
                             {/* DCA running average cost line (blue - your evolving average) */}
                             <path
-                              d={purchasePoints.map((point, i) => 
+                              d={dataPoints.map((point, i) => 
                                 `${i === 0 ? 'M' : 'L'} ${point.x},${point.avgY}`
                               ).join(' ')}
                               stroke="#3b82f6"
@@ -419,8 +398,8 @@ export function DCASimulator() {
                               opacity="0.9"
                             />
                             
-                            {/* Purchase points (green dots at actual buy prices on the price curve) */}
-                            {purchasePoints.map((point, i) => (
+                            {/* Purchase points (green dots at actual buy prices) */}
+                            {dataPoints.map((point, i) => (
                               <g key={i}>
                                 <circle
                                   cx={point.x}
