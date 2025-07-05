@@ -136,7 +136,9 @@ function Router() {
         <Route path="/auth" component={AuthPage} />
         <Route path="/onboarding">
           <AuthGuard>
-            <Onboarding />
+            <AppContextProvider>
+              <Onboarding />
+            </AppContextProvider>
           </AuthGuard>
         </Route>
         <Route path="/learn">
@@ -169,7 +171,9 @@ function Router() {
         </Route>
         <Route path="/about">
           <AuthGuard>
-            <About />
+            <AppContextProvider>
+              <About />
+            </AppContextProvider>
           </AuthGuard>
         </Route>
         <Route path="/">
