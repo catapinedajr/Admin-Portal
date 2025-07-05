@@ -95,6 +95,7 @@ import TransactionsSimulator from "@/components/simulators/TransactionsSimulator
 import { TransferSimulator } from "@/components/simulators/TransferSimulator";
 import WalletSimulator from "@/components/simulators/WalletSimulator";
 import HODLSimulator from "@/components/simulators/HODLSimulator";
+import { DCASimulator } from "@/components/simulators/DCASimulator";
 import EmailCollectionModal from "@/components/EmailCollectionModal";
 import { ConsistencyCalendar } from "@/components/ConsistencyCalendar";
 
@@ -3512,8 +3513,13 @@ export default function Home() {
               </div>
             )}
 
-            {/* Interactive DCA Calculator */}
-            {isPremiumTier && simulationsSubTab === "dca" && (
+            {/* DCA Calculator - Extracted to DCASimulator component */}
+            {simulationsSubTab === "dca" && (
+              <DCASimulator />
+            )}
+
+            {/* OLD DCA CALCULATOR - TO BE REMOVED */}
+            {false && isPremiumTier && simulationsSubTab === "dca" && (
               <div className="space-y-4">
                 <div className="text-center space-y-1">
                   <h3 className="text-lg font-bold text-white">DCA Calculator</h3>
