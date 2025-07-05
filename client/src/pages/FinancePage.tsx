@@ -12,9 +12,17 @@ import {
   Zap,
   Home,
   Coffee,
-  Car
+  Car,
+  Crown,
+  Gem,
+  User as UserIcon
 } from "lucide-react";
 import { useAppContext } from "@/components/shared/AppContextProvider";
+import { useQuery } from "@tanstack/react-query";
+import PWAInstallButton from "@/components/PWAInstallButton";
+import BottomNavigation from '@/components/BottomNavigation';
+import EmailCollectionModal from '@/components/EmailCollectionModal';
+import type { User } from '@shared/schema';
 
 export default function FinancePage() {
   const {
@@ -31,8 +39,18 @@ export default function FinancePage() {
     isAnimating,
     setIsAnimating,
     animationStep,
-    setAnimationStep
+    setAnimationStep,
+    showEmailModal,
+    setShowEmailModal,
+    setLocation
   } = useAppContext();
+
+  // User data query
+  const { data: user } = useQuery<User>({
+    queryKey: ['/api/user'],
+  });
+
+  const isPremiumTier = false; // Simplified for now since no subscription tier in schema
 
   // Inflation calculation
   const calculateInflationImpact = () => {
@@ -102,7 +120,58 @@ export default function FinancePage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="min-h-screen bg-black text-white">
+      {/* Header */}
+      <header className="border-b border-zinc-800 bg-black/50 backdrop-blur-lg sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div 
+              className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => setLocation('/')}
+            >
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-sm">
+                  HL
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold">HODLearn</h1>
+                  <p className="text-xs text-zinc-400">How-to-learn BTC</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <PWAInstallButton />
+              
+              {/* Premium Status / Upgrade Button */}
+              {isPremiumTier ? (
+                <div className="flex items-center gap-2 bg-orange-600/20 px-3 py-2 rounded-lg border border-orange-600/30">
+                  <Crown className="w-4 h-4 text-orange-400" />
+                  <span className="text-orange-300 text-sm font-medium">Premium</span>
+                </div>
+              ) : (
+                <Button
+                  size="sm"
+                  onClick={() => setShowEmailModal(true)}
+                  className="bg-orange-600 hover:bg-orange-700 text-white gap-2"
+                >
+                  <Gem className="w-4 h-4" />
+                  <span className="sr-only">Upgrade to Premium</span>
+                </Button>
+              )}
+              
+              {/* User Profile */}
+              <div className="flex items-center gap-2 text-zinc-400">
+                <UserIcon className="w-5 h-5" />
+                <span className="text-sm">{user?.username || 'User'}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-6xl mx-auto px-4 py-8">
+        <div className="space-y-8">
       {/* Hero Narrative */}
       <Card className="bg-gradient-to-br from-orange-950/30 via-zinc-900 to-red-950/30 border-orange-800/50">
         <CardContent className="p-8">
@@ -417,6 +486,35 @@ export default function FinancePage() {
           </div>
         </CardContent>
       </Card>
+        </div>
+      </main>
+
+      {/* Bottom Navigation */}
+      <BottomNavigation 
+        activeSection={activeSection}
+        onSectionChange={(section) => {
+          let mappedSection: any;
+          if (section === 'simulators') mappedSection = 'simulations';
+          else mappedSection = section;
+          
+          setActiveSection(mappedSection);
+          if (section === 'learn') setLocation('/learn');
+          else if (section === 'money') setLocation('/money');
+          else if (section === 'simulators') setLocation('/simulators');
+          else if (section === 'more') setLocation('/more');
+        }}
+      />
+
+      {/* Email Collection Modal */}
+      <EmailCollectionModal
+        isOpen={showEmailModal}
+        onClose={() => setShowEmailModal(false)}
+        trigger="feature"
+        lockedFeature="Finance Analysis"
+      />
+      
+      {/* Bottom padding to accommodate navigation */}
+      <div className="h-20"></div>
     </div>
   );
 }
