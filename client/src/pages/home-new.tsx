@@ -103,7 +103,7 @@ import { ConsistencyCalendar } from "@/components/ConsistencyCalendar";
 
 import HomeSection from "@/components/sections/HomeSection";
 import MoreSection from "@/components/sections/MoreSection";
-import { iconMap, bitcoinTerms, seedPhraseScenarios } from "@/constants/appData";
+import { iconMap, bitcoinTerms } from "@/constants/appData";
 import WeeklyQuiz from "@/components/WeeklyQuiz";
 import { cleanText, getExpandedLessonContent } from "@/utils/textUtils";
 
@@ -340,14 +340,7 @@ export default function Home() {
   const [inflationProgress, setInflationProgress] = useState(0); // 0-6 representing years 0,1,5,10,15,20,25
   const [settlementProgress, setSettlementProgress] = useState<{traditional: number; bitcoin: number}>({ traditional: 0, bitcoin: 0 });
   
-  // Seed Phrase Recovery Simulator State
-  const [seedPhraseActive, setSeedPhraseActive] = useState(false);
-  const [seedPhraseScenario, setSeedPhraseScenario] = useState(0);
-  const [seedPhraseProgress, setSeedPhraseProgress] = useState(0);
-  const [enteredWords, setEnteredWords] = useState<string[]>([]);
-  const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [recoveryComplete, setRecoveryComplete] = useState(false);
-  const [showSeedHints, setShowSeedHints] = useState(false);
+
   
   // Money Supply Visualization State
   const [moneySupplyYear, setMoneySupplyYear] = useState(2025);
