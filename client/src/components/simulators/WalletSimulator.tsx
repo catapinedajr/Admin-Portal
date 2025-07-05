@@ -183,9 +183,9 @@ export default function WalletSimulator() {
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <Button
                 onClick={() => {
-                  const explorer = document.querySelector('[data-wallet-explorer]');
-                  if (explorer) {
-                    explorer.scrollIntoView({ behavior: 'smooth' });
+                  const comparison = document.querySelector('[data-wallet-comparison]');
+                  if (comparison) {
+                    comparison.scrollIntoView({ behavior: 'smooth' });
                   }
                 }}
                 className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 flex-1"
@@ -232,7 +232,7 @@ export default function WalletSimulator() {
             </div>
           </div>
           
-          <p className="text-zinc-400 text-sm mb-6">Click on any wallet type below to learn detailed information</p>
+          <p className="text-zinc-400 text-sm mb-6" data-wallet-comparison>Click on any wallet type below to learn detailed information</p>
           
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4 mb-6">
             {walletTypes.map((wallet, index) => (
