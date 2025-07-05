@@ -57,6 +57,20 @@ interface AppContextType {
   handleSecurityAnswer: (selectedIndex: number) => void;
   getSecurityExplanation: (stage: number, isCorrect: boolean) => string;
   
+  // Finance/inflation state
+  inflationAmount: number;
+  setInflationAmount: (amount: number) => void;
+  inflationRate: number;
+  setInflationRate: (rate: number) => void;
+  inflationTimeFrame: number;
+  setInflationTimeFrame: (timeFrame: number) => void;
+  moneySupplyYear: number;
+  setMoneySupplyYear: (year: number) => void;
+  isAnimating: boolean;
+  setIsAnimating: (animating: boolean) => void;
+  animationStep: number;
+  setAnimationStep: (step: number) => void;
+  
   // Other state
   expandedTopics: Set<string>;
   setExpandedTopics: (topics: Set<string>) => void;
@@ -193,6 +207,14 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     markDayCompletedMutation.mutate(currentDayIndex);
   }, [markDayCompletedMutation, currentDayIndex]);
 
+  // Finance/inflation state
+  const [inflationAmount, setInflationAmount] = useState<number>(10000);
+  const [inflationRate, setInflationRate] = useState<number>(2);
+  const [inflationTimeFrame, setInflationTimeFrame] = useState<number>(10);
+  const [moneySupplyYear, setMoneySupplyYear] = useState<number>(2024);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  const [animationStep, setAnimationStep] = useState<number>(0);
+  
   // Other state
   const [convictionSubTab, setConvictionSubTab] = useState<"whitepaper" | "books" | "videos">("whitepaper");
   const [showSplash, setShowSplash] = useState(false);
@@ -318,6 +340,20 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     setSecurityAnswerSubmitted,
     handleSecurityAnswer,
     getSecurityExplanation,
+    
+    // Finance/inflation state
+    inflationAmount,
+    setInflationAmount,
+    inflationRate,
+    setInflationRate,
+    inflationTimeFrame,
+    setInflationTimeFrame,
+    moneySupplyYear,
+    setMoneySupplyYear,
+    isAnimating,
+    setIsAnimating,
+    animationStep,
+    setAnimationStep,
     
     // Other state
     expandedTopics,

@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 
 import Home from "@/pages/home-new";
 import LearnPage from "@/pages/LearnPage";
+import FinancePage from "@/pages/FinancePage";
+import { AppContextProvider } from "@/components/shared/AppContextProvider";
 import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
 import NotFound from "@/pages/not-found";
@@ -139,12 +141,14 @@ function Router() {
         </Route>
         <Route path="/learn">
           <AuthGuard>
-            <LearnPage />
+            <Home />
           </AuthGuard>
         </Route>
         <Route path="/money">
           <AuthGuard>
-            <Home />
+            <AppContextProvider>
+              <FinancePage />
+            </AppContextProvider>
           </AuthGuard>
         </Route>
         <Route path="/simulators">
