@@ -80,6 +80,19 @@ export default function WalletSimulator() {
   };
   const [selectedWalletType, setSelectedWalletType] = useState<string | null>(null);
   
+  // Helper function for header-aware scrolling
+  const scrollToElementWithOffset = (selector: string) => {
+    const element = document.querySelector(selector);
+    if (element) {
+      const rect = element.getBoundingClientRect();
+      const headerHeight = 80; // Account for header height
+      window.scrollTo({
+        top: window.pageYOffset + rect.top - headerHeight,
+        behavior: 'smooth'
+      });
+    }
+  };
+  
   // Seed Phrase Recovery Simulator State
   const [seedPhraseActive, setSeedPhraseActive] = useState(false);
   const [seedPhraseScenario, setSeedPhraseScenario] = useState(0);
@@ -182,24 +195,14 @@ export default function WalletSimulator() {
             
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <Button
-                onClick={() => {
-                  const comparison = document.querySelector('[data-wallet-comparison]');
-                  if (comparison) {
-                    comparison.scrollIntoView({ behavior: 'smooth' });
-                  }
-                }}
+                onClick={() => scrollToElementWithOffset('[data-wallet-comparison]')}
                 className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 flex-1"
               >
                 <ChevronDown className="w-4 h-4 mr-2" />
                 Explore Wallet Types
               </Button>
               <Button
-                onClick={() => {
-                  const simulator = document.querySelector('[data-seed-phrase-simulator]');
-                  if (simulator) {
-                    simulator.scrollIntoView({ behavior: 'smooth' });
-                  }
-                }}
+                onClick={() => scrollToElementWithOffset('[data-seed-phrase-simulator]')}
                 variant="outline"
                 className="border-orange-600 text-orange-300 hover:bg-orange-600/10 px-6 py-2 flex-1"
               >
