@@ -211,29 +211,29 @@ const securityScenarios: SecurityScenario[] = [
     id: 9,
     title: "Software Download Safety",
     description: "Verifying authentic Bitcoin software",
-    question: "You need to download a Bitcoin wallet app. What's the safest approach?",
+    question: "You need to download Electrum wallet. You find several websites in search results. How do you verify you're downloading the real software?",
     options: [
-      "Download from the first Google search result",
-      "Use the official website or verified app store",
-      "Download from a crypto forum recommendation",
-      "Get it from a friend's USB drive"
+      "Download from the first search result that looks official",
+      "Check the official website URL and verify digital signatures",
+      "Use whichever site has the most downloads",
+      "Ask on Reddit which link to use"
     ],
     correctIndex: 1,
-    explanation: "Always download Bitcoin software from official sources. Fake wallet apps have stolen millions by looking legitimate but containing malware."
+    explanation: "Scammers create fake websites with similar URLs and malicious software. Always verify you're on the official site (electrum.org) and check GPG signatures to confirm authenticity."
   },
   {
     id: 10,
     title: "Backup Testing",
     description: "Ensuring recovery phrases work",
-    question: "After writing down your seed phrase, what should you do next?",
+    question: "You've written down your 12-word seed phrase. Before storing Bitcoin on this wallet, what should you do?",
     options: [
-      "Store it safely and assume it works",
-      "Test the recovery process with a small amount",
-      "Make multiple copies immediately",
-      "Share it with a trusted family member"
+      "Store the paper safely and start using the wallet",
+      "Wipe the wallet and restore it using your written seed phrase",
+      "Make multiple copies first",
+      "Test it by sharing the words with someone you trust"
     ],
     correctIndex: 1,
-    explanation: "Always test your backup! Many people lose Bitcoin because their untested backup doesn't actually work when needed."
+    explanation: "Always test your backup by wiping the wallet and recovering it with your written seed phrase. If you can't restore the wallet, your backup is worthless."
   },
   {
     id: 11,
