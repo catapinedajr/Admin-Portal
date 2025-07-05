@@ -308,32 +308,23 @@ const HODLSimulator: React.FC = () => {
                         </defs>
                         <rect width="100%" height="100%" fill="url(#portfolioGrid)" />
                         
-                        {/* Dynamic milestone reference lines for Portfolio Growth Chart */}
+                        {/* Simple growth label for this specific result */}
                         {(() => {
                           const multiplier = hodlResults.currentValue / hodlResults.initialInvestment;
-                          const milestones = [];
+                          const endY = 100 - ((endValue / Math.max(endValue, startValue * 10)) * 80);
                           
-                          // Chart coordinates: y=100 is bottom, y=20 is top
-                          // Calculate milestone positions based on chart's coordinate system
-                          if (multiplier >= 100) {
-                            milestones.push({ label: '100x', y: 20, color: '#dc2626' }); // Top
-                          }
-                          if (multiplier >= 10) {
-                            milestones.push({ label: '10x', y: 40, color: '#fbbf24' }); // Upper middle
-                          }
-                          if (multiplier >= 5) {
-                            milestones.push({ label: '5x', y: 60, color: '#10b981' }); // Lower middle
-                          }
-                          if (multiplier >= 2) {
-                            milestones.push({ label: '2x', y: 80, color: '#6366f1' }); // Lower
-                          }
-                          
-                          return milestones.map(milestone => (
-                            <g key={milestone.label}>
-                              <line x1="20" y1={milestone.y} x2="280" y2={milestone.y} stroke={milestone.color} strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                              <text x="285" y={milestone.y + 4} fill={milestone.color} fontSize="10" opacity="0.8">{milestone.label}</text>
-                            </g>
-                          ));
+                          return (
+                            <text 
+                              x="150" 
+                              y={endY - 10} 
+                              fill="#f97316" 
+                              fontSize="12" 
+                              textAnchor="middle" 
+                              fontWeight="bold"
+                            >
+                              {Math.round(multiplier)}x Growth
+                            </text>
+                          );
                         })()}
                         
                         {/* Growth Line */}
