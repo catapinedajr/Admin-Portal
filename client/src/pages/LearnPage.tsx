@@ -17,7 +17,7 @@ import DailyQuiz from "@/components/DailyQuiz";
 import { BitcoinTerm, AutoGlossary } from "@/components/BitcoinGlossary";
 import { useAppContext } from "@/components/shared/AppContextProvider";
 import { cleanText } from "@/utils/textUtils";
-import { iconMap } from "@/constants/appData";
+import { iconMap, bitcoinTerms } from "@/constants/appData";
 
 // Temporary interface for database-driven lesson content
 interface LessonWithKeyTakeaways {
@@ -335,13 +335,30 @@ export default function LearnPage() {
       {/* Reference Tab */}
       {learnSubTab === "reference" && (
         <div className="space-y-6">
+          <div className="text-center space-y-2">
+            <h3 className="text-xl font-bold text-white">Bitcoin Reference Guide</h3>
+            <p className="text-zinc-400 max-w-2xl mx-auto">
+              Essential Bitcoin terminology and concepts. Click on any term to learn more.
+            </p>
+          </div>
+
           <Card className="bg-zinc-900/50 border-zinc-700">
             <CardHeader>
-              <CardTitle className="text-xl text-white">Bitcoin Reference</CardTitle>
+              <CardTitle className="text-lg text-white">Bitcoin Glossary</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-zinc-300">
-                <p>Bitcoin glossary and reference content will be displayed here.</p>
+              <div className="space-y-3">
+                {bitcoinTerms.map((termData) => (
+                  <div key={termData.term} className="p-3 bg-zinc-800/30 rounded-lg border border-zinc-700/50">
+                    <div className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <div>
+                        <h4 className="text-orange-400 font-medium mb-1">{termData.term}</h4>
+                        <p className="text-zinc-300 text-sm leading-relaxed">{termData.definition}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
