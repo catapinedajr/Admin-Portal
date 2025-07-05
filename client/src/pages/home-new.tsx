@@ -2960,21 +2960,14 @@ export default function Home() {
 
             {/* Safety Training - Extracted to SafetyTraining component */}
             {isPremiumTier && simulationsSubTab === "safety" && (
-              <div className="space-y-6">
-                <div className="text-center space-y-4">
-                  <h3 className="text-xl font-bold text-white">Bitcoin Security Training Center</h3>
-                  <p className="text-zinc-400">Master essential security skills to protect your Bitcoin from real-world threats</p>
-                </div>
-
-                <SafetyTraining
-                  securityStage={securityStage}
-                  setSecurityStage={setSecurityStage}
-                  securityScore={securityScore}
-                  setSecurityScore={setSecurityScore}
-                  userSecurityAnswers={userSecurityAnswers}
-                  setUserSecurityAnswers={setUserSecurityAnswers}
-                />
-              </div>
+              <SafetyTraining
+                securityStage={securityStage}
+                setSecurityStage={setSecurityStage}
+                securityScore={securityScore}
+                setSecurityScore={setSecurityScore}
+                userSecurityAnswers={userSecurityAnswers}
+                setUserSecurityAnswers={setUserSecurityAnswers}
+              />
             )}
 
             {/* Original Safety Training (to be removed after testing) */}
