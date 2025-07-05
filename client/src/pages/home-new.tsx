@@ -91,6 +91,7 @@ import BottomNavigation from "@/components/BottomNavigation";
 import LearnPage from "@/pages/LearnPage";
 import FinancePage from "@/pages/FinancePage";
 import SafetyTraining from "@/components/simulators/SafetyTrainingSustainable";
+import TransactionsSimulator from "@/components/simulators/TransactionsSimulator";
 import EmailCollectionModal from "@/components/EmailCollectionModal";
 import { ConsistencyCalendar } from "@/components/ConsistencyCalendar";
 
@@ -2967,6 +2968,13 @@ export default function Home() {
                 setSecurityScore={setSecurityScore}
                 userSecurityAnswers={userSecurityAnswers}
                 setUserSecurityAnswers={setUserSecurityAnswers}
+              />
+            )}
+
+            {/* Transaction Simulator - Only show for premium users */}
+            {simulationsSubTab === "transactions" && (
+              <TransactionsSimulator 
+                isPremiumTier={isPremiumTier}
               />
             )}
 
