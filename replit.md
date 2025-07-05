@@ -294,6 +294,42 @@ Preferred communication style: Simple, everyday language.
 - IP protection (trademark filing for HODLearn brand)
 - Revenue projections and monetization timeline
 
+## Critical Technical Debt - Refactoring Project
+
+**URGENT: File Size Issue**: home-new.tsx at 8,862 lines (529KB) exceeds 500KB Babel compilation limit, causing build warnings and performance issues. Requires architectural refactoring while preserving exact UX.
+
+### **Approved Refactoring Plan (5-Day Execution)**
+
+**Objectives:**
+- Reduce home-new.tsx from 529KB to <100KB
+- Extract all sections into dedicated page components
+- Remove "Dive Deeper" functionality (user decision)
+- Implement indefinite curriculum support (not limited to 180 days)
+- Preserve 100% identical UX experience
+
+**Architecture Transformation:**
+```
+CURRENT: home-new.tsx (8,862 lines) - monolithic
+FUTURE: HomePage.tsx (<100 lines) + LearnPage.tsx + FinancePage.tsx + SimulatorsPage.tsx + MorePage.tsx
+```
+
+**All Simulators to Extract:**
+- DCA Calculator, HODL Simulator, Security Training (12 stages)
+- Wallet Comparison, Seed Phrase Recovery, Inflation Calculator
+- Settlement Simulator, Transaction Fee Calculator, Money Supply Chart
+
+**Execution Rules:**
+- One step only execution with approval gates
+- Rollback-first safety (test revert before each step)
+- Zero tolerance for UX changes (pixel-perfect preservation)
+- Parallel development in isolated branch
+
+**Success Metrics:**
+- File size: 529KB → <100KB (80%+ reduction)
+- Build warnings eliminated
+- Identical UX preserved (screenshot validation)
+- Infinite curriculum scaling ready
+
 ## Known Issues
 
 **PWA White Screen Bug**: User reported installed home screen version occasionally shows white screen requiring reinstallation. This likely occurs during service worker updates or caching conflicts. Need to investigate and implement better error recovery for PWA installations.
