@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { TrendingUp, Clock, DollarSign, Calendar, Target } from 'lucide-react';
+import { TrendingUp, Clock, DollarSign, Calendar, Target, TrendingDown, Star, ChevronDown } from 'lucide-react';
 
 interface HodlInputs {
   initialAmount: number;
@@ -79,40 +79,84 @@ const HODLSimulator: React.FC = () => {
             </div>
             <h4 className="text-xl font-bold text-white">The Power of Time in Market vs Timing the Market</h4>
           </div>
-          <div className="text-zinc-300 space-y-3">
-            <p>
-              Bitcoin's most successful investors aren't day traders trying to time the market. They're people who bought Bitcoin and held it for years, riding out the volatility and capturing the long-term growth.
+          
+          <div className="space-y-4">
+            <p className="text-zinc-300 leading-relaxed">
+              Bitcoin's price swings can be extreme - dropping 80% in bear markets and rising 2000% in bull markets. 
+              Most people try to time these movements perfectly, but history shows that simply holding through all 
+              volatility (HODLing) often produces superior results with less stress and risk.
             </p>
-            <p>
-              The term "HODL" comes from a misspelling of "hold" in a Bitcoin forum post during the 2013 crash. It's now a philosophy: Buy Bitcoin, hold it long-term, and let compound growth work its magic.
-            </p>
+            
+            <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-orange-500">
+              <p className="text-zinc-300 text-sm">
+                <span className="font-semibold text-orange-300">Historical Truth:</span> Even if you bought Bitcoin 
+                at the absolute peak of 2017 ($19,783), you would still be profitable today. Meanwhile, traders 
+                trying to time the market often buy high, sell low, and miss the biggest gains.
+              </p>
+            </div>
+            
+            <div className="space-y-3">
+              <h5 className="font-semibold text-white">Real Historical Scenarios You'll Test:</h5>
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                  <Calendar className="w-5 h-5 text-red-400" />
+                  <div>
+                    <p className="font-medium text-white text-sm">COVID Crash</p>
+                    <p className="text-zinc-400 text-xs">March 2020 panic buying opportunity</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                  <TrendingDown className="w-5 h-5 text-yellow-400" />
+                  <div>
+                    <p className="font-medium text-white text-sm">Bear Market</p>
+                    <p className="text-zinc-400 text-xs">2018-2021 patience test period</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                  <Star className="w-5 h-5 text-purple-400" />
+                  <div>
+                    <p className="font-medium text-white text-sm">Early Adopter</p>
+                    <p className="text-zinc-400 text-xs">2017-2025 ultimate diamond hands</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex justify-center pt-2">
+              <Button
+                onClick={() => {
+                  const calculator = document.querySelector('[data-hodl-calculator]');
+                  if (calculator) {
+                    calculator.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+                className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
+              >
+                <ChevronDown className="w-4 h-4 mr-2" />
+                Test HODL Scenarios
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Interactive HODL Challenge */}
-      <Card className="bg-zinc-900 border-zinc-800">
+      {/* HODL Calculator Section */}
+      <Card className="bg-zinc-900 border-zinc-800" data-hodl-calculator>
         <CardContent className="p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-orange-600/20 rounded-lg">
-              <Target className="w-6 h-6 text-orange-400" />
-            </div>
-            <div>
-              <h3 className="text-2xl font-bold text-white">HODL Challenge</h3>
-              <p className="text-zinc-400">See what happens when you buy and hold Bitcoin through real market cycles</p>
-            </div>
+          <div className="text-center mb-6">
+            <h3 className="text-xl font-bold text-white mb-2">HODL Calculator</h3>
+            <p className="text-zinc-400">See how much your Bitcoin investment would be worth today</p>
           </div>
 
-          {/* Bitcoin Performance Chart */}
+          {/* Always-Visible Chart Section */}
           <div className="mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <div>
+            <div className="bg-zinc-800/30 rounded-lg p-4 border border-zinc-700">
+              <div className="flex justify-between items-center mb-4">
                 <h4 className="text-white font-semibold">Bitcoin Performance Chart</h4>
                 <div className="text-xs text-zinc-400">Jan 2017 - Jan 2025</div>
               </div>
-            </div>
-            <div className="relative">
-              <div className="w-full h-48 sm:h-56 md:h-64 lg:h-72 bg-zinc-900/50 rounded overflow-hidden">
+              <div className="relative">
+                <div className="w-full h-48 sm:h-56 md:h-64 lg:h-72 bg-zinc-900/50 rounded overflow-hidden">
                 <svg viewBox="0 0 400 200" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
                   {/* Grid background */}
                   <defs>
@@ -229,7 +273,6 @@ const HODLSimulator: React.FC = () => {
                       period: scenario.period
                     }));
                   }}
-                  className="w-full bg-zinc-800 border-zinc-700 text-white"
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select purchase date" />
@@ -408,6 +451,13 @@ const HODLSimulator: React.FC = () => {
               )}
             </div>
           </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* HODL vs Market Timing Educational Section */}
+      <Card className="bg-zinc-900 border-zinc-800">
+        <CardContent className="p-6">
         </CardContent>
       </Card>
 
