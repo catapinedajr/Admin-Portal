@@ -35,7 +35,7 @@ export function DCASimulator() {
   });
   const [dcaResults, setDcaResults] = useState<DCAResults | null>(null);
 
-  // Historical Bitcoin price data simulation
+  // Historical Bitcoin price data simulation with very smooth curves
   const getHistoricalPrice = (date: string): number => {
     const timestamp = new Date(date).getTime();
     const startTime = new Date('2009-01-03').getTime();
@@ -44,21 +44,23 @@ export function DCASimulator() {
     if (daysSinceStart < 0) return 0.001;
     
     const basePrice = 0.001;
-    const growthRate = 0.0025;
-    const volatilityFactor = 0.3;
+    const growthRate = 0.0024; // Slightly reduced for smoother growth
     
     let price = basePrice * Math.exp(growthRate * daysSinceStart);
     
-    const cycleFactor = Math.sin(daysSinceStart / 365) * volatilityFactor;
-    const randomFactor = (Math.sin(daysSinceStart * 7) * 0.1);
+    // Much smoother volatility - reduced frequency and amplitude
+    const longCycle = Math.sin(daysSinceStart / 730) * 0.15; // 2-year cycles
+    const mediumCycle = Math.sin(daysSinceStart / 365) * 0.08; // Annual cycles  
+    const smoothNoise = Math.sin(daysSinceStart / 30) * 0.03; // Monthly variation
     
-    price *= (1 + cycleFactor + randomFactor);
+    price *= (1 + longCycle + mediumCycle + smoothNoise);
     
-    if (date >= '2017-01-01' && date < '2018-03-01') price *= 2.5;
-    if (date >= '2018-03-01' && date < '2020-03-01') price *= 0.4;
-    if (date >= '2020-03-01' && date < '2022-01-01') price *= 3.2;
-    if (date >= '2022-01-01' && date < '2023-01-01') price *= 0.3;
-    if (date >= '2023-01-01') price *= 1.8;
+    // Smoother market cycle adjustments
+    if (date >= '2017-01-01' && date < '2018-06-01') price *= 2.2;
+    if (date >= '2018-06-01' && date < '2020-03-01') price *= 0.45;
+    if (date >= '2020-03-01' && date < '2022-01-01') price *= 2.8;
+    if (date >= '2022-01-01' && date < '2023-01-01') price *= 0.35;
+    if (date >= '2023-01-01') price *= 1.6;
     
     return Math.max(price, 0.001);
   };
@@ -102,7 +104,7 @@ export function DCASimulator() {
       currentDate.setDate(currentDate.getDate() + intervalDays);
     }
     
-    const currentPrice = 65000; // Current Bitcoin price
+    const currentPrice = getHistoricalPrice('2025-01-05'); // Current Bitcoin price
     const currentValue = totalBitcoin * currentPrice;
     const totalGain = currentValue - totalInvested;
     const percentageReturn = (totalGain / totalInvested) * 100;

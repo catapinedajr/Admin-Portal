@@ -3518,8 +3518,7 @@ export default function Home() {
               <DCASimulator />
             )}
 
-            {/* OLD DCA CALCULATOR - TO BE REMOVED */}
-            {false && isPremiumTier && simulationsSubTab === "dca" && (
+
               <div className="space-y-4">
                 <div className="text-center space-y-1">
                   <h3 className="text-lg font-bold text-white">DCA Calculator</h3>
