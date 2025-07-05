@@ -499,14 +499,14 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
 
       {/* Full-Screen Transaction Journey Modal */}
       {showJourneyModal && (
-        <div className="fixed inset-0 bg-black/95 flex items-center justify-center p-4 z-50">
-          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/95 flex items-center justify-center p-2 z-50">
+          <div className="w-full max-w-xl max-h-[85vh] overflow-y-auto">
             
             {/* Broadcasting/Mempool Phase */}
             {(transactionState === "broadcasting" || transactionJourney === "mempool") && (
               <Card className="bg-blue-900/20 border-blue-800">
-                <CardContent className="p-4">
-                  <h5 className="font-bold text-blue-300 mb-4 text-center text-xl">Transaction Journey</h5>
+                <CardContent className="p-3">
+                  <h5 className="font-bold text-blue-300 mb-3 text-center text-lg">Transaction Journey</h5>
                   
                   {/* Journey Progress Indicator */}
                   <div className="space-y-3 mb-4">
@@ -536,8 +536,8 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
                     </div>
                   </div>
 
-                  <div className="text-center text-blue-200 bg-blue-900/30 p-3 rounded-lg">
-                    <p className="text-sm">
+                  <div className="text-center text-blue-200 bg-blue-900/30 p-2 rounded">
+                    <p className="text-xs">
                       {transactionJourney === "broadcast" && "Broadcasting transaction to Bitcoin network nodes..."}
                       {transactionJourney === "mempool" && "Transaction queued in mempool, awaiting miner selection..."}
                     </p>
@@ -549,39 +549,39 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
             {/* Confirmation Phase */}
             {transactionState === "confirming" && (
               <Card className="bg-yellow-900/20 border-yellow-800">
-                <CardContent className="p-4">
-                  <h5 className="font-bold text-yellow-300 mb-4 text-center text-xl">Transaction Journey - Block Confirmation</h5>
+                <CardContent className="p-3">
+                  <h5 className="font-bold text-yellow-300 mb-3 text-center text-lg">Transaction Journey - Block Confirmation</h5>
 
                   {/* Journey Progress */}
-                  <div className="space-y-2 mb-4">
+                  <div className="space-y-1 mb-3">
                     <div className="flex items-center gap-2 text-green-400">
-                      <CheckCircle className="w-4 h-4" />
-                      <span className="text-sm">✓ Broadcast to Network</span>
+                      <CheckCircle className="w-3 h-3" />
+                      <span className="text-xs">✓ Broadcast to Network</span>
                     </div>
                     <div className="flex items-center gap-2 text-green-400">
-                      <CheckCircle className="w-4 h-4" />
-                      <span className="text-sm">✓ Mempool Queue</span>
+                      <CheckCircle className="w-3 h-3" />
+                      <span className="text-xs">✓ Mempool Queue</span>
                     </div>
                     <div className="flex items-center gap-2 text-yellow-300">
-                      <Clock className="w-4 h-4 animate-pulse" />
-                      <span className="text-sm font-medium">🔄 Block Confirmation ({confirmationCount}/6)</span>
+                      <Clock className="w-3 h-3 animate-pulse" />
+                      <span className="text-xs font-medium">🔄 Block Confirmation ({confirmationCount}/6)</span>
                     </div>
                     <div className="flex items-center gap-2 text-zinc-500">
-                      <div className="w-4 h-4 rounded-full bg-zinc-600"></div>
-                      <span className="text-sm">Final Settlement</span>
+                      <div className="w-3 h-3 rounded-full bg-zinc-600"></div>
+                      <span className="text-xs">Final Settlement</span>
                     </div>
                   </div>
 
                   {/* Confirmation Progress */}
-                  <div className="space-y-3">
-                    <div className="flex justify-between text-sm">
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs">
                       <span className="text-yellow-200">Confirmations: {confirmationCount}/6</span>
                       <span className="text-yellow-200">Time remaining: ~{timeRemaining}s</span>
                     </div>
                     
-                    <div className="w-full bg-yellow-900/30 rounded-full h-3">
+                    <div className="w-full bg-yellow-900/30 rounded-full h-2">
                       <div 
-                        className="bg-yellow-400 h-3 rounded-full transition-all duration-1000"
+                        className="bg-yellow-400 h-2 rounded-full transition-all duration-1000"
                         style={{ width: `${(confirmationCount / 6) * 100}%` }}
                       ></div>
                     </div>
@@ -590,7 +590,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
                       {[...Array(6)].map((_, i) => (
                         <div
                           key={i}
-                          className={`h-6 rounded-sm transition-colors flex items-center justify-center text-xs font-bold ${
+                          className={`h-5 rounded-sm transition-colors flex items-center justify-center text-xs font-bold ${
                             i < confirmationCount 
                               ? 'bg-yellow-400 text-yellow-900' 
                               : 'bg-yellow-900/50 text-yellow-600'
@@ -602,15 +602,15 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
                     </div>
 
                     {transactionId && (
-                      <div className="text-xs text-yellow-200 font-mono bg-yellow-900/30 p-2 rounded break-all">
+                      <div className="text-xs text-yellow-200 font-mono bg-yellow-900/30 p-1 rounded break-all">
                         TxID: {transactionId}
                       </div>
                     )}
                     
                     {/* Educational Content Based on Confirmation Count */}
-                    <div className="bg-blue-900/30 p-3 rounded border border-blue-800/50">
-                      <div className="font-medium text-blue-300 mb-2 text-sm">🎓 What's happening now:</div>
-                      <div className="text-blue-200 text-xs leading-relaxed">
+                    <div className="bg-blue-900/30 p-2 rounded border border-blue-800/50">
+                      <div className="font-medium text-blue-300 mb-1 text-xs">🎓 What's happening now:</div>
+                      <div className="text-blue-200 text-xs leading-tight">
                         {confirmationCount === 0 && "Your transaction is waiting in the mempool - a pool of unconfirmed transactions that miners are selecting from."}
                         {confirmationCount === 1 && "First confirmation! A miner has included your transaction in a block. This provides basic security against double-spending."}
                         {confirmationCount === 2 && "Second confirmation means another block was added on top. Your transaction is becoming more secure with each block."}
@@ -621,7 +621,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
                       </div>
                     </div>
                     
-                    <div className="text-xs text-yellow-300 bg-yellow-900/20 p-2 rounded">
+                    <div className="text-xs text-yellow-300 bg-yellow-900/20 p-1 rounded">
                       <AlertTriangle className="w-3 h-3 inline mr-1" />
                       Real Bitcoin transactions typically take 10-60 minutes. This simulation runs in 45 seconds for educational purposes.
                     </div>
@@ -633,48 +633,48 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
             {/* Completion Phase */}
             {transactionState === "confirmed" && (
               <Card className="bg-green-900/20 border-green-800">
-                <CardContent className="p-4">
-                  <div className="text-center mb-4">
-                    <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-3" />
-                    <h5 className="font-bold text-green-300 mb-2 text-xl">Transaction Complete!</h5>
-                    <p className="text-green-100 text-sm">Journey complete - {transactionInputs.amount} BTC successfully transferred</p>
+                <CardContent className="p-3">
+                  <div className="text-center mb-3">
+                    <CheckCircle className="w-10 h-10 text-green-400 mx-auto mb-2" />
+                    <h5 className="font-bold text-green-300 mb-1 text-lg">Transaction Complete!</h5>
+                    <p className="text-green-100 text-xs">Journey complete - {transactionInputs.amount} BTC successfully transferred</p>
                   </div>
 
                   {/* Complete Journey Overview */}
-                  <div className="space-y-2 mb-4">
+                  <div className="space-y-1 mb-3">
                     <div className="flex items-center gap-2 text-green-400">
-                      <CheckCircle className="w-4 h-4" />
-                      <span className="text-sm">✓ Broadcast to Network</span>
+                      <CheckCircle className="w-3 h-3" />
+                      <span className="text-xs">✓ Broadcast to Network</span>
                       <span className="text-xs text-green-300 ml-auto">3s</span>
                     </div>
                     <div className="flex items-center gap-2 text-green-400">
-                      <CheckCircle className="w-4 h-4" />
-                      <span className="text-sm">✓ Mempool Queue</span>
+                      <CheckCircle className="w-3 h-3" />
+                      <span className="text-xs">✓ Mempool Queue</span>
                       <span className="text-xs text-green-300 ml-auto">5s</span>
                     </div>
                     <div className="flex items-center gap-2 text-green-400">
-                      <CheckCircle className="w-4 h-4" />
-                      <span className="text-sm">✓ Block Confirmation (6/6)</span>
+                      <CheckCircle className="w-3 h-3" />
+                      <span className="text-xs">✓ Block Confirmation (6/6)</span>
                       <span className="text-xs text-green-300 ml-auto">36s</span>
                     </div>
                     <div className="flex items-center gap-2 text-green-400">
-                      <CheckCircle className="w-4 h-4" />
-                      <span className="text-sm font-medium">✓ Final Settlement</span>
+                      <CheckCircle className="w-3 h-3" />
+                      <span className="text-xs font-medium">✓ Final Settlement</span>
                       <span className="text-xs text-green-300 ml-auto">1s</span>
                     </div>
                   </div>
                   
-                  <div className="space-y-2 mb-4">
-                    <div className="bg-green-900/30 p-3 rounded">
-                      <div className="font-medium text-green-300 mb-2 text-sm">🎓 Transaction Complete:</div>
-                      <div className="text-green-200 text-xs leading-relaxed">
+                  <div className="space-y-2 mb-3">
+                    <div className="bg-green-900/30 p-2 rounded">
+                      <div className="font-medium text-green-300 mb-1 text-xs">🎓 Transaction Complete:</div>
+                      <div className="text-green-200 text-xs leading-tight">
                         Your Bitcoin transaction has achieved 6 confirmations and is now permanently settled on the blockchain. 
                         This transaction is irreversible and the recipient now has full control of the {transactionInputs.amount} BTC.
                       </div>
                     </div>
                     
-                    <div className="bg-green-900/20 p-2 rounded border border-green-800/50">
-                      <span className="text-green-300 text-sm">💡 </span>
+                    <div className="bg-green-900/20 p-1 rounded border border-green-800/50">
+                      <span className="text-green-300 text-xs">💡 </span>
                       <span className="text-green-200 text-xs">
                         In real Bitcoin transactions, this entire process would take 10-60 minutes depending on network congestion and fee priority.
                       </span>
@@ -692,7 +692,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
                         setTransactionId("");
                         setTransactionInputs(prev => ({ ...prev, toAddress: "", amount: "0.001" }));
                       }}
-                      className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
+                      className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 text-sm"
                     >
                       Build Another Transaction
                     </Button>
