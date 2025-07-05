@@ -233,6 +233,8 @@ export default function Home() {
   // Security Test State
   const [securityTestStage, setSecurityTestStage] = useState<number>(0);
   const [securityScore, setSecurityScore] = useState<number>(0);
+  const [securityStage, setSecurityStage] = useState<number>(1);
+  const [userSecurityAnswers, setUserSecurityAnswers] = useState<Record<number, boolean>>({});
   const [selectedSecurityAnswer, setSelectedSecurityAnswer] = useState<number | null>(null);
   const [showSecurityFeedback, setShowSecurityFeedback] = useState<boolean>(false);
   const [isSecurityAnswerCorrect, setIsSecurityAnswerCorrect] = useState<boolean>(false);
