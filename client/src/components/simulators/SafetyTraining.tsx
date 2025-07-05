@@ -623,10 +623,185 @@ export default function SafetyTraining({
               </div>
             )}
 
-            {/* Add more scenarios 3-16 here... For brevity, I'll add a few key ones */}
-            
-            {/* Show all remaining scenarios with similar structure... */}
-            {securityTestStage >= 3 && securityTestStage <= 16 && (
+            {/* Scenario 3: Address Verification */}
+            {securityTestStage === 3 && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                    <span className="text-orange-400 text-sm">🎯</span>
+                  </div>
+                  <div>
+                    <h5 className="text-lg font-semibold text-white">Address Verification Challenge</h5>
+                    <p className="text-zinc-400 text-sm">Testing your attention to detail</p>
+                  </div>
+                </div>
+                
+                <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                  <p className="text-zinc-300 mb-3">
+                    You're about to send 0.1 BTC ($4,200) to pay for a Ledger hardware wallet. You copied this address from the seller's website:
+                  </p>
+                  <div className="p-3 bg-green-950/30 rounded border border-green-800/50 mb-3">
+                    <p className="text-green-400 font-mono text-sm break-all">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</p>
+                  </div>
+                  <p className="text-zinc-300 mb-3">
+                    But when you paste it into your wallet, it shows:
+                  </p>
+                  <div className="p-3 bg-red-950/30 rounded border border-red-800/50">
+                    <p className="text-red-400 font-mono text-sm break-all">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w1h</p>
+                  </div>
+                </div>
+
+                <p className="text-zinc-300 text-sm">
+                  Compare carefully. Are these addresses the same?
+                </p>
+
+                <div className="space-y-2">
+                  {[
+                    'Yes, they match exactly',
+                    'No, they are different',
+                    'Close enough to proceed',
+                    'First 10 characters match, good enough'
+                  ].map((option, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSecurityAnswer(index)}
+                      disabled={securityAnswerSubmitted}
+                      className={`w-full p-3 text-left rounded border transition-colors ${
+                        selectedSecurityAnswer === index 
+                          ? 'border-orange-500 bg-orange-500/10' 
+                          : 'border-zinc-600 hover:border-zinc-500'
+                      }`}
+                    >
+                      <span className="text-white text-sm">{option}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Scenario 4: Bitcoin Giveaway Scam */}
+            {securityTestStage === 4 && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                    <span className="text-orange-400 text-sm">🚨</span>
+                  </div>
+                  <div>
+                    <h5 className="text-lg font-semibold text-white">The Bitcoin Giveaway</h5>
+                    <p className="text-zinc-400 text-sm">Twitter scam recognition test</p>
+                  </div>
+                </div>
+                
+                <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                  <p className="text-zinc-300 mb-3">
+                    While browsing Twitter, you see this trending message:
+                  </p>
+                  <div className="p-3 bg-blue-950/30 rounded border border-blue-800/50">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs font-bold">EM</span>
+                      </div>
+                      <span className="text-blue-400 font-semibold">@ElonMusk</span>
+                      <span className="text-blue-300">✓</span>
+                    </div>
+                    <p className="text-white text-sm">
+                      "To celebrate Bitcoin reaching $100K, I'm giving away 1000 BTC! Send 0.1 BTC to 
+                      bc1q...xyz and get 1 BTC back instantly! Only first 1000 people! ⏰"
+                    </p>
+                  </div>
+                </div>
+
+                <p className="text-zinc-300 text-sm">
+                  You have 0.1 BTC in your wallet. What's your response?
+                </p>
+
+                <div className="space-y-2">
+                  {[
+                    'Send 0.1 BTC immediately - free money!',
+                    'Check if it\'s really from Elon first',
+                    'Ignore it - obvious scam',
+                    'Send 0.05 BTC to test if it works'
+                  ].map((option, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSecurityAnswer(index)}
+                      disabled={securityAnswerSubmitted}
+                      className={`w-full p-3 text-left rounded border transition-colors ${
+                        selectedSecurityAnswer === index 
+                          ? 'border-orange-500 bg-orange-500/10' 
+                          : 'border-zinc-600 hover:border-zinc-500'
+                      }`}
+                    >
+                      <span className="text-white text-sm">{option}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Scenario 5: Exchange Selection */}
+            {securityTestStage === 5 && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                    <span className="text-orange-400 text-sm">🏪</span>
+                  </div>
+                  <div>
+                    <h5 className="text-lg font-semibold text-white">Choose Your Exchange</h5>
+                    <p className="text-zinc-400 text-sm">First Bitcoin purchase decision</p>
+                  </div>
+                </div>
+                
+                <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
+                  <p className="text-zinc-300 mb-3">
+                    You're ready to buy your first Bitcoin. You see these options online:
+                  </p>
+                  <div className="space-y-2 text-sm">
+                    <div className="p-2 bg-zinc-800/50 rounded">
+                      <span className="text-yellow-400">🎉 CryptoBonus.com:</span> <span className="text-zinc-300">"50% signup bonus! New exchange!"</span>
+                    </div>
+                    <div className="p-2 bg-zinc-800/50 rounded">
+                      <span className="text-blue-400">📱 Coinbase:</span> <span className="text-zinc-300">"Regulated, established since 2012"</span>
+                    </div>
+                    <div className="p-2 bg-zinc-800/50 rounded">
+                      <span className="text-green-400">💰 BitcoinFast.net:</span> <span className="text-zinc-300">"Google Ad: Buy Bitcoin instantly!"</span>
+                    </div>
+                    <div className="p-2 bg-zinc-800/50 rounded">
+                      <span className="text-purple-400">💬 CryptoKing Exchange:</span> <span className="text-zinc-300">"Recommended in Telegram group"</span>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-zinc-300 text-sm">
+                  Which exchange should you choose for your first Bitcoin purchase?
+                </p>
+
+                <div className="space-y-2">
+                  {[
+                    'CryptoBonus.com - 50% bonus sounds amazing!',
+                    'Coinbase - established and regulated',
+                    'BitcoinFast.net - Google ads are trustworthy',
+                    'CryptoKing - Telegram group recommended it'
+                  ].map((option, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSecurityAnswer(index)}
+                      disabled={securityAnswerSubmitted}
+                      className={`w-full p-3 text-left rounded border transition-colors ${
+                        selectedSecurityAnswer === index 
+                          ? 'border-orange-500 bg-orange-500/10' 
+                          : 'border-zinc-600 hover:border-zinc-500'
+                      }`}
+                    >
+                      <span className="text-white text-sm">{option}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Continue with remaining scenarios 6-16... */}
+            {securityTestStage >= 6 && securityTestStage <= 16 && (
               <div className="space-y-4">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
@@ -634,18 +809,233 @@ export default function SafetyTraining({
                   </div>
                   <div>
                     <h5 className="text-lg font-semibold text-white">Security Scenario {securityTestStage}</h5>
-                    <p className="text-zinc-400 text-sm">Test your security knowledge</p>
+                    <p className="text-zinc-400 text-sm">Testing security knowledge</p>
                   </div>
                 </div>
                 
                 <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
                   <p className="text-zinc-300 mb-3">
-                    Scenario {securityTestStage} content goes here...
+                    {securityTestStage === 6 && "You're at a coffee shop and want to check your Bitcoin wallet balance. The free WiFi is available. What's your move?"}
+                    {securityTestStage === 7 && "You need to download a Bitcoin wallet app. Where do you get it from?"}
+                    {securityTestStage === 8 && "Someone calls claiming to be from your exchange, asking for your 2FA authentication code to 'verify your account'. What do you do?"}
+                    {securityTestStage === 9 && "You want to buy a hardware wallet for long-term Bitcoin storage. What's the safest approach?"}
+                    {securityTestStage === 10 && "You've written down your seed phrase on paper. How do you verify it's correct?"}
+                    {securityTestStage === 11 && "Your wallet suggests a $200 fee for sending $50 worth of Bitcoin. Normal fees are around $2. What's your response?"}
+                    {securityTestStage === 12 && "You lost access to your Bitcoin wallet. Someone offers to recover it for 50% of the funds. What do you do?"}
+                    {securityTestStage === 13 && "A friend asks for your Bitcoin wallet address to 'see how much you have'. Do you share it?"}
+                    {securityTestStage === 14 && "Bitcoin crashes 30% in one day. You're down $2,000. What's your move?"}
+                    {securityTestStage === 15 && "A YouTube influencer promotes a 'guaranteed 100x' cryptocurrency. Should you invest?"}
+                    {securityTestStage === 16 && "You want to download a Bitcoin wallet app on your phone. Where's the safest place?"}
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  {['Option A', 'Option B', 'Option C', 'Option D'].map((option, index) => (
+                  {securityTestStage === 6 && [
+                    'Connect to free WiFi and check normally',
+                    'Use mobile data instead of public WiFi',
+                    'Use WiFi but only check prices, not wallet',
+                    'Connect through VPN on public WiFi'
+                  ].map((option, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSecurityAnswer(index)}
+                      disabled={securityAnswerSubmitted}
+                      className={`w-full p-3 text-left rounded border transition-colors ${
+                        selectedSecurityAnswer === index 
+                          ? 'border-orange-500 bg-orange-500/10' 
+                          : 'border-zinc-600 hover:border-zinc-500'
+                      }`}
+                    >
+                      <span className="text-white text-sm">{option}</span>
+                    </button>
+                  ))}
+
+                  {securityTestStage === 7 && [
+                    'Google search and click first result',
+                    'Official website (electrum.org, bitcoin.org)',
+                    'Bitcoin forum recommendation',
+                    'Official app store (iOS/Google Play)'
+                  ].map((option, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSecurityAnswer(index)}
+                      disabled={securityAnswerSubmitted}
+                      className={`w-full p-3 text-left rounded border transition-colors ${
+                        selectedSecurityAnswer === index 
+                          ? 'border-orange-500 bg-orange-500/10' 
+                          : 'border-zinc-600 hover:border-zinc-500'
+                      }`}
+                    >
+                      <span className="text-white text-sm">{option}</span>
+                    </button>
+                  ))}
+
+                  {securityTestStage === 8 && [
+                    'Give them the code - they knew my email',
+                    'Hang up and call exchange directly',
+                    'Ask them to verify my details first',
+                    'Tell them to email me instead'
+                  ].map((option, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSecurityAnswer(index)}
+                      disabled={securityAnswerSubmitted}
+                      className={`w-full p-3 text-left rounded border transition-colors ${
+                        selectedSecurityAnswer === index 
+                          ? 'border-orange-500 bg-orange-500/10' 
+                          : 'border-zinc-600 hover:border-zinc-500'
+                      }`}
+                    >
+                      <span className="text-white text-sm">{option}</span>
+                    </button>
+                  ))}
+
+                  {securityTestStage === 9 && [
+                    'Buy used on eBay to save money',
+                    'Buy from Amazon third-party seller',
+                    'Buy from local computer store',
+                    'Buy new from official manufacturer'
+                  ].map((option, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSecurityAnswer(index)}
+                      disabled={securityAnswerSubmitted}
+                      className={`w-full p-3 text-left rounded border transition-colors ${
+                        selectedSecurityAnswer === index 
+                          ? 'border-orange-500 bg-orange-500/10' 
+                          : 'border-zinc-600 hover:border-zinc-500'
+                      }`}
+                    >
+                      <span className="text-white text-sm">{option}</span>
+                    </button>
+                  ))}
+
+                  {securityTestStage === 10 && [
+                    'Wait until I need to restore the wallet',
+                    'Take a photo as backup verification',
+                    'Test restore on separate device',
+                    'Share with trusted family to verify'
+                  ].map((option, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSecurityAnswer(index)}
+                      disabled={securityAnswerSubmitted}
+                      className={`w-full p-3 text-left rounded border transition-colors ${
+                        selectedSecurityAnswer === index 
+                          ? 'border-orange-500 bg-orange-500/10' 
+                          : 'border-zinc-600 hover:border-zinc-500'
+                      }`}
+                    >
+                      <span className="text-white text-sm">{option}</span>
+                    </button>
+                  ))}
+
+                  {securityTestStage === 11 && [
+                    'Pay the $200 - wallet knows best',
+                    'Try a different wallet immediately',
+                    'Never use this wallet again',
+                    'Ignore warning and send anyway'
+                  ].map((option, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSecurityAnswer(index)}
+                      disabled={securityAnswerSubmitted}
+                      className={`w-full p-3 text-left rounded border transition-colors ${
+                        selectedSecurityAnswer === index 
+                          ? 'border-orange-500 bg-orange-500/10' 
+                          : 'border-zinc-600 hover:border-zinc-500'
+                      }`}
+                    >
+                      <span className="text-white text-sm">{option}</span>
+                    </button>
+                  ))}
+
+                  {securityTestStage === 12 && [
+                    'Agree - 50% better than 0%',
+                    'Research the company first',
+                    'Decline and try yourself',
+                    'Negotiate for lower percentage'
+                  ].map((option, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSecurityAnswer(index)}
+                      disabled={securityAnswerSubmitted}
+                      className={`w-full p-3 text-left rounded border transition-colors ${
+                        selectedSecurityAnswer === index 
+                          ? 'border-orange-500 bg-orange-500/10' 
+                          : 'border-zinc-600 hover:border-zinc-500'
+                      }`}
+                    >
+                      <span className="text-white text-sm">{option}</span>
+                    </button>
+                  ))}
+
+                  {securityTestStage === 13 && [
+                    'Sure - friends should trust each other',
+                    'Only share one address, not all',
+                    'No - wallet addresses reveal balance',
+                    'Share but ask them not to check balance'
+                  ].map((option, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSecurityAnswer(index)}
+                      disabled={securityAnswerSubmitted}
+                      className={`w-full p-3 text-left rounded border transition-colors ${
+                        selectedSecurityAnswer === index 
+                          ? 'border-orange-500 bg-orange-500/10' 
+                          : 'border-zinc-600 hover:border-zinc-500'
+                      }`}
+                    >
+                      <span className="text-white text-sm">{option}</span>
+                    </button>
+                  ))}
+
+                  {securityTestStage === 14 && [
+                    'Panic sell to prevent more losses',
+                    'Hold and ignore short-term volatility',
+                    'Sell half to reduce risk',
+                    'Buy more while price is lower'
+                  ].map((option, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSecurityAnswer(index)}
+                      disabled={securityAnswerSubmitted}
+                      className={`w-full p-3 text-left rounded border transition-colors ${
+                        selectedSecurityAnswer === index 
+                          ? 'border-orange-500 bg-orange-500/10' 
+                          : 'border-zinc-600 hover:border-zinc-500'
+                      }`}
+                    >
+                      <span className="text-white text-sm">{option}</span>
+                    </button>
+                  ))}
+
+                  {securityTestStage === 15 && [
+                    'Invest immediately - 100x sounds amazing',
+                    'Research independently first',
+                    'Invest small amount to test',
+                    'Follow the influencer\'s advice'
+                  ].map((option, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSecurityAnswer(index)}
+                      disabled={securityAnswerSubmitted}
+                      className={`w-full p-3 text-left rounded border transition-colors ${
+                        selectedSecurityAnswer === index 
+                          ? 'border-orange-500 bg-orange-500/10' 
+                          : 'border-zinc-600 hover:border-zinc-500'
+                      }`}
+                    >
+                      <span className="text-white text-sm">{option}</span>
+                    </button>
+                  ))}
+
+                  {securityTestStage === 16 && [
+                    'Download from first Google result',
+                    'Use a Bitcoin forum link',
+                    'Official app store only',
+                    'Download from crypto news website'
+                  ].map((option, index) => (
                     <button
                       key={index}
                       onClick={() => handleSecurityAnswer(index)}
