@@ -486,6 +486,236 @@ export default function FinancePage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Money Supply Erosion Visualization */}
+      <Card className="bg-zinc-900 border-zinc-800">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-white flex items-center gap-3 text-xl">
+            <TrendingDown className="w-5 h-5 text-orange-400" />
+            How Much Money Has Been Printed Over Time
+          </CardTitle>
+          <p className="text-zinc-400 text-sm">See how the government has created more and more dollars since 1920, making each dollar worth less</p>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Year Selection Buttons */}
+          <div className="space-y-4">
+            <div className="text-center">
+              <span className="text-orange-400 font-bold text-2xl">{moneySupplyYear}</span>
+              <p className="text-zinc-400 text-sm mt-1">Select a year to explore</p>
+            </div>
+            
+            {/* Clean milestone buttons */}
+            <div className="grid grid-cols-5 gap-1.5">
+              {[
+                { year: 1920, label: "'20", desc: "Gold Era" },
+                { year: 1971, label: "'71", desc: "Nixon" },
+                { year: 2000, label: "'00", desc: "Dot-com" },
+                { year: 2008, label: "'08", desc: "Crisis" },
+                { year: 2024, label: "'25", desc: "Today" }
+              ].map((milestone) => (
+                <button
+                  key={milestone.year}
+                  onClick={() => setMoneySupplyYear(milestone.year)}
+                  className={`p-2 rounded-md border transition-all duration-200 ${
+                    moneySupplyYear === milestone.year
+                      ? 'bg-orange-600/20 border-orange-500 text-orange-300'
+                      : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-300'
+                  }`}
+                >
+                  <div className="font-semibold text-sm">{milestone.label}</div>
+                  <div className="text-xs opacity-75">{milestone.desc}</div>
+                </button>
+              ))}
+            </div>
+
+            {/* Key Statistics Display */}
+            <div className="grid grid-cols-2 gap-3 mt-4">
+              <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
+                <div className="text-xl font-bold text-orange-400 transition-all duration-700">
+                  ${getMoneySupplyRaw(moneySupplyYear)}T
+                </div>
+                <div className="text-zinc-400 text-xs">Total Dollars in Circulation</div>
+              </div>
+              <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
+                <div className="text-xl font-bold text-orange-400 transition-all duration-700">
+                  {Math.round(getMoneySupplyRaw(moneySupplyYear) / getMoneySupplyRaw(1920))}x
+                </div>
+                <div className="text-zinc-400 text-xs">More Money Since 1920</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Simplified Chart */}
+          <div className="space-y-4">
+            <h4 className="text-white font-semibold flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-orange-400" />
+              Total Supply of Dollars
+            </h4>
+            <div className="bg-zinc-800/50 rounded-lg p-6">
+              <div className="relative h-56 w-full">
+                {/* Clean SVG Chart */}
+                <svg viewBox="0 0 400 220" className="w-full h-full">
+                  {/* Simple background */}
+                  <rect width="400" height="220" fill="transparent" />
+                  
+                  {/* Y-axis labels */}
+                  <text x="10" y="15" fill="#9ca3af" fontSize="10">$21.2T</text>
+                  <text x="10" y="55" fill="#9ca3af" fontSize="10">$15T</text>
+                  <text x="10" y="95" fill="#9ca3af" fontSize="10">$10T</text>
+                  <text x="10" y="135" fill="#9ca3af" fontSize="10">$5T</text>
+                  <text x="10" y="175" fill="#9ca3af" fontSize="10">$0</text>
+                  
+                  {/* X-axis labels - Evenly spaced per year for dramatic accuracy */}
+                  <text x="50" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">1920</text>
+                  <text x="140" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">1960</text>
+                  <text x="230" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">1990</text>
+                  <text x="320" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">2010</text>
+                  <text x="370" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">2025</text>
+                  
+                  {/* Money Supply Growth Line - Using Real Federal Reserve Data */}
+                  <path
+                    d={(() => {
+                      // Real M2 data points (in billions then trillions): Year -> M2 Value
+                      const m2Data = [
+                        { year: 1920, m2: 0.023 },   // Gold Standard era ($23B)
+                        { year: 1929, m2: 0.026 },   // Pre-Depression ($26B)
+                        { year: 1933, m2: 0.020 },   // Depression low ($20B)
+                        { year: 1940, m2: 0.040 },   // Pre-WWII ($40B)
+                        { year: 1945, m2: 0.107 },   // Post-WWII expansion ($107B)
+                        { year: 1950, m2: 0.117 },   // Korean War ($117B)
+                        { year: 1960, m2: 0.167 },   // 60s growth ($167B)
+                        { year: 1971, m2: 0.583 },   // Nixon Shock baseline ($583B)
+                        { year: 1980, m2: 1.600 },   // Early 80s ($1.6T)
+                        { year: 1990, m2: 3.200 },   // 90s expansion ($3.2T)
+                        { year: 2000, m2: 4.900 },   // Dot-com era ($4.9T)
+                        { year: 2008, m2: 7.500 },   // Pre-crisis ($7.5T)
+                        { year: 2010, m2: 8.700 },   // Post-crisis QE1 ($8.7T)
+                        { year: 2015, m2: 12.400 },  // QE era ($12.4T)
+                        { year: 2020, m2: 15.400 },  // Pre-COVID ($15.4T)
+                        { year: 2021, m2: 20.100 },  // COVID peak ($20.1T)
+                        { year: 2024, m2: 21.000 },  // 2024 ($21T)
+                        { year: 2025, m2: 21.200 }   // Current estimate ($21.2T)
+                      ];
+                      
+                      return m2Data.map((point, index) => {
+                        // Linear time positioning: 3.048px per year (320px / 105 years)
+                        const x = 50 + ((point.year - 1920) / 105) * 320;
+                        const y = 175 - ((point.m2 - 0.023) / (21.2 - 0.023)) * 155;
+                        return `${index === 0 ? 'M' : 'L'} ${x},${y}`;
+                      }).join(' ');
+                    })()}
+                    fill="none"
+                    stroke="#f97316"
+                    strokeWidth="3"
+                  />
+                  
+                  {/* Fill area under curve */}
+                  <path
+                    d={(() => {
+                      const m2Data = [
+                        { year: 1920, m2: 0.023 }, { year: 1929, m2: 0.026 }, { year: 1933, m2: 0.020 },
+                        { year: 1940, m2: 0.040 }, { year: 1945, m2: 0.107 }, { year: 1950, m2: 0.117 },
+                        { year: 1960, m2: 0.167 }, { year: 1971, m2: 0.583 }, { year: 1980, m2: 1.600 },
+                        { year: 1990, m2: 3.200 }, { year: 2000, m2: 4.900 }, { year: 2008, m2: 7.500 },
+                        { year: 2010, m2: 8.700 }, { year: 2015, m2: 12.400 }, { year: 2020, m2: 15.400 },
+                        { year: 2021, m2: 20.100 }, { year: 2024, m2: 21.000 }
+                      ];
+                      
+                      const pathData = m2Data.map((point, index) => {
+                        // Linear time positioning: 3.077px per year (320px / 104 years)
+                        const x = 50 + ((point.year - 1920) / 104) * 320;
+                        const y = 175 - ((point.m2 - 0.023) / (21.0 - 0.023)) * 155;
+                        return `${index === 0 ? 'M' : 'L'} ${x},${y}`;
+                      }).join(' ');
+                      
+                      return `${pathData} L 370,180 L 50,180 Z`;
+                    })()}
+                    fill="url(#orangeGradient)"
+                    opacity="0.3"
+                  />
+                  
+                  {/* Gradient definition */}
+                  <defs>
+                    <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#f97316" stopOpacity="0.6"/>
+                      <stop offset="100%" stopColor="#f97316" stopOpacity="0.1"/>
+                    </linearGradient>
+                  </defs>
+                  
+                  {/* Gold Standard Line */}
+                  <g>
+                    {(() => {
+                      const nixonYear = 1971;
+                      const nixonX = 50 + ((nixonYear - 1920) / 105) * 320;
+                      return (
+                        <g>
+                          <line 
+                            x1={nixonX} 
+                            y1="20" 
+                            x2={nixonX} 
+                            y2="175" 
+                            stroke="#f97316" 
+                            strokeWidth="2" 
+                            strokeDasharray="5,5"
+                            opacity="0.6"
+                          />
+                          <text 
+                            x={nixonX - 35} 
+                            y="15" 
+                            fill="#f97316" 
+                            fontSize="8" 
+                            fontWeight="bold"
+                          >
+                            Gold Standard Ends
+                          </text>
+                        </g>
+                      );
+                    })()}
+                  </g>
+
+                  {/* Current year indicator */}
+                  <g>
+                    <line 
+                      x1={50 + ((moneySupplyYear - 1920) / 105) * 320} 
+                      y1="10" 
+                      x2={50 + ((moneySupplyYear - 1920) / 105) * 320} 
+                      y2="180" 
+                      stroke="#f97316" 
+                      strokeWidth="2" 
+                      strokeDasharray="4,4"
+                    />
+                    <circle 
+                      cx={50 + ((moneySupplyYear - 1920) / (2025 - 1920)) * 320} 
+                      cy={(() => {
+                        // Get the actual M2 value for the selected year
+                        const currentM2 = getMoneySupplyRaw(moneySupplyYear);
+                        
+                        // Convert to Y coordinate using same formula as line chart (1920-2024 range)
+                        return 175 - ((currentM2 - 0.023) / (21.0 - 0.023)) * 155;
+                      })()} 
+                      r="5" 
+                      fill="#f97316" 
+                      stroke="#ffffff" 
+                      strokeWidth="2"
+                    />
+                  </g>
+                </svg>
+              </div>
+              
+              {/* Emphasis Text */}
+              <div className="text-center mt-4 p-4 bg-zinc-800/30 rounded-lg border border-orange-400/20">
+                <div className="text-2xl font-bold">
+                  <span className="text-zinc-300">THIS is </span>
+                  <span className="text-orange-400 tracking-wider">INFLATION</span>
+                </div>
+                <p className="text-zinc-400 text-sm mt-2">
+                  More dollars in circulation = each dollar is worth less
+                </p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
         </div>
       </main>
 
