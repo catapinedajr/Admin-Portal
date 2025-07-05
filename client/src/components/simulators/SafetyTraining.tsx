@@ -679,7 +679,7 @@ export default function SafetyTraining({
               </div>
             )}
 
-            {/* Scenario 4: Bitcoin Giveaway Scam */}
+            {/* Scenario 4: Scam Recognition */}
             {securityTestStage === 4 && (
               <div className="space-y-4">
                 <div className="flex items-center gap-3 mb-4">
@@ -687,40 +687,47 @@ export default function SafetyTraining({
                     <span className="text-orange-400 text-sm">🚨</span>
                   </div>
                   <div>
-                    <h5 className="text-lg font-semibold text-white">The Bitcoin Giveaway</h5>
-                    <p className="text-zinc-400 text-sm">Twitter scam recognition test</p>
+                    <h5 className="text-lg font-semibold text-white">Spot the Bitcoin Scam</h5>
+                    <p className="text-zinc-400 text-sm">Click on the legitimate (safe) message</p>
                   </div>
                 </div>
                 
                 <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
                   <p className="text-zinc-300 mb-3">
-                    While browsing Twitter, you see this trending message:
+                    You see these three messages online. Click on the legitimate (safe) message - avoid the scams!
                   </p>
-                  <div className="p-3 bg-blue-950/30 rounded border border-blue-800/50">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                        <span className="text-white text-xs font-bold">EM</span>
-                      </div>
-                      <span className="text-blue-400 font-semibold">@ElonMusk</span>
-                      <span className="text-blue-300">✓</span>
+                  
+                  <div className="space-y-3">
+                    <div className="p-3 bg-red-950/30 rounded border border-red-800/50">
+                      <p className="text-red-300 text-sm">
+                        "Elon Musk is giving away Bitcoin! Send 0.1 BTC to get 1 BTC back! Limited time offer!"
+                      </p>
                     </div>
-                    <p className="text-white text-sm">
-                      "To celebrate Bitcoin reaching $100K, I'm giving away 1000 BTC! Send 0.1 BTC to 
-                      bc1q...xyz and get 1 BTC back instantly! Only first 1000 people! ⏰"
-                    </p>
+                    
+                    <div className="p-3 bg-green-950/30 rounded border border-green-800/50">
+                      <p className="text-green-300 text-sm">
+                        "Your local Bitcoin meetup is next Thursday at 7 PM. Bring questions and let's learn together!"
+                      </p>
+                    </div>
+                    
+                    <div className="p-3 bg-red-950/30 rounded border border-red-800/50">
+                      <p className="text-red-300 text-sm">
+                        "I'm a prince who needs help moving my Bitcoin fortune. I'll share 50% if you help with transaction fees."
+                      </p>
+                    </div>
                   </div>
                 </div>
 
                 <p className="text-zinc-300 text-sm">
-                  You have 0.1 BTC in your wallet. What's your response?
+                  Which message is legitimate and safe to trust?
                 </p>
 
                 <div className="space-y-2">
                   {[
-                    'Send 0.1 BTC immediately - free money!',
-                    'Check if it\'s really from Elon first',
-                    'Ignore it - obvious scam',
-                    'Send 0.05 BTC to test if it works'
+                    'The Elon Musk Bitcoin giveaway',
+                    'The local Bitcoin meetup invitation',
+                    'The prince\'s Bitcoin fortune offer',
+                    'None of them are safe'
                   ].map((option, index) => (
                     <button
                       key={index}
