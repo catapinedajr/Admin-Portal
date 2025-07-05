@@ -167,17 +167,17 @@ const HODLSimulator: React.FC = () => {
                   <rect width="100%" height="100%" fill="url(#grid-hodl-chart)" />
                   
                   {/* Milestone reference lines */}
-                  <line x1="20" y1="40" x2="350" y2="40" stroke="#dc2626" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                  <text x="360" y="44" fill="#dc2626" fontSize="12" opacity="0.8">100x</text>
+                  <line x1="20" y1="40" x2="350" y2="40" stroke="#dc2626" strokeWidth="1.5" opacity="0.8" strokeDasharray="3,3"/>
+                  <text x="360" y="44" fill="#dc2626" fontSize="12" opacity="0.9">100x</text>
                   
-                  <line x1="20" y1="70" x2="350" y2="70" stroke="#fbbf24" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                  <text x="360" y="74" fill="#fbbf24" fontSize="12" opacity="0.8">10x</text>
+                  <line x1="20" y1="70" x2="350" y2="70" stroke="#fbbf24" strokeWidth="1.5" opacity="0.8" strokeDasharray="3,3"/>
+                  <text x="360" y="74" fill="#fbbf24" fontSize="12" opacity="0.9">10x</text>
                   
-                  <line x1="20" y1="100" x2="350" y2="100" stroke="#10b981" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                  <text x="360" y="104" fill="#10b981" fontSize="12" opacity="0.8">5x</text>
+                  <line x1="20" y1="105" x2="350" y2="105" stroke="#10b981" strokeWidth="1.5" opacity="0.8" strokeDasharray="3,3"/>
+                  <text x="360" y="109" fill="#10b981" fontSize="12" opacity="0.9">5x</text>
                   
-                  <line x1="20" y1="130" x2="350" y2="130" stroke="#6366f1" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                  <text x="360" y="134" fill="#6366f1" fontSize="12" opacity="0.8">2x</text>
+                  <line x1="20" y1="135" x2="350" y2="135" stroke="#6366f1" strokeWidth="1.5" opacity="0.8" strokeDasharray="3,3"/>
+                  <text x="360" y="139" fill="#6366f1" fontSize="12" opacity="0.9">2x</text>
                   
                   {/* Bitcoin Price Line (realistic exponential growth) */}
                   <path 
