@@ -2153,7 +2153,15 @@ export default function Home() {
                 <Button
                   variant={simulationsSubTab === "safety" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => setSimulationsSubTab("safety")}
+                  onClick={() => {
+                    setSimulationsSubTab("safety");
+                    setTimeout(() => {
+                      const element = document.querySelector('[data-safety-simulator]');
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }, 100);
+                  }}
                   className="text-xs px-3 py-1"
                 >
                   <Shield className="w-3 h-3 mr-1" />
@@ -2162,7 +2170,15 @@ export default function Home() {
                 <Button
                   variant={simulationsSubTab === "wallet" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => setSimulationsSubTab("wallet")}
+                  onClick={() => {
+                    setSimulationsSubTab("wallet");
+                    setTimeout(() => {
+                      const element = document.querySelector('[data-wallet-simulator]');
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }, 100);
+                  }}
                   className="text-xs px-3 py-1"
                 >
                   <Wallet className="w-3 h-3 mr-1" />
@@ -2171,7 +2187,15 @@ export default function Home() {
                 <Button
                   variant={simulationsSubTab === "transactions" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => setSimulationsSubTab("transactions")}
+                  onClick={() => {
+                    setSimulationsSubTab("transactions");
+                    setTimeout(() => {
+                      const element = document.querySelector('[data-transactions-simulator]');
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }, 100);
+                  }}
                   className="text-xs px-3 py-1"
                 >
                   <CreditCard className="w-3 h-3 mr-1" />
@@ -2180,7 +2204,15 @@ export default function Home() {
                 <Button
                   variant={simulationsSubTab === "transfer" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => setSimulationsSubTab("transfer")}
+                  onClick={() => {
+                    setSimulationsSubTab("transfer");
+                    setTimeout(() => {
+                      const element = document.querySelector('[data-transfer-simulator]');
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }, 100);
+                  }}
                   className="text-xs px-3 py-1"
                 >
                   <ArrowRight className="w-3 h-3 mr-1" />
@@ -2189,7 +2221,15 @@ export default function Home() {
                 <Button
                   variant={simulationsSubTab === "hodl" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => setSimulationsSubTab("hodl")}
+                  onClick={() => {
+                    setSimulationsSubTab("hodl");
+                    setTimeout(() => {
+                      const element = document.querySelector('[data-hodl-simulator]');
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }, 100);
+                  }}
                   className="text-xs px-3 py-1"
                 >
                   <TrendingUp className="w-3 h-3 mr-1" />
@@ -2198,7 +2238,15 @@ export default function Home() {
                 <Button
                   variant={simulationsSubTab === "dca" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => setSimulationsSubTab("dca")}
+                  onClick={() => {
+                    setSimulationsSubTab("dca");
+                    setTimeout(() => {
+                      const element = document.querySelector('[data-dca-simulator]');
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }, 100);
+                  }}
                   className="text-xs px-3 py-1"
                 >
                   <BarChart3 className="w-3 h-3 mr-1" />
@@ -2207,7 +2255,15 @@ export default function Home() {
                 <Button
                   variant={simulationsSubTab === "inflation" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => setSimulationsSubTab("inflation")}
+                  onClick={() => {
+                    setSimulationsSubTab("inflation");
+                    setTimeout(() => {
+                      const element = document.querySelector('[data-inflation-simulator]');
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }, 100);
+                  }}
                   className="text-xs px-3 py-1"
                 >
                   <TrendingDown className="w-3 h-3 mr-1" />
@@ -2216,7 +2272,15 @@ export default function Home() {
                 <Button
                   variant={simulationsSubTab === "fees" ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => setSimulationsSubTab("fees")}
+                  onClick={() => {
+                    setSimulationsSubTab("fees");
+                    setTimeout(() => {
+                      const element = document.querySelector('[data-fees-simulator]');
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }, 100);
+                  }}
                   className="text-xs px-3 py-1"
                 >
                   <FileText className="w-3 h-3 mr-1" />
@@ -2228,40 +2292,52 @@ export default function Home() {
 
             {/* Safety Training - Extracted to SafetyTraining component */}
             {simulationsSubTab === "safety" && (
-              <SafetyTraining 
-                securityStage={securityStage}
-                setSecurityStage={setSecurityStage}
-                securityScore={securityScore}
-                setSecurityScore={setSecurityScore}
-                userSecurityAnswers={userSecurityAnswers}
-                setUserSecurityAnswers={setUserSecurityAnswers}
-              />
+              <div data-safety-simulator>
+                <SafetyTraining 
+                  securityStage={securityStage}
+                  setSecurityStage={setSecurityStage}
+                  securityScore={securityScore}
+                  setSecurityScore={setSecurityScore}
+                  userSecurityAnswers={userSecurityAnswers}
+                  setUserSecurityAnswers={setUserSecurityAnswers}
+                />
+              </div>
             )}
 
             {/* Wallet Explorer - Extracted to WalletSimulator component */}
             {simulationsSubTab === "wallet" && (
-              <WalletSimulator />
+              <div data-wallet-simulator>
+                <WalletSimulator />
+              </div>
             )}
 
             {/* Transactions Simulator - Extracted to TransactionsSimulator component */}
             {simulationsSubTab === "transactions" && (
-              <TransactionsSimulator isPremiumTier={isPremiumTier} />
+              <div data-transactions-simulator>
+                <TransactionsSimulator isPremiumTier={isPremiumTier} />
+              </div>
             )}
 
             {/* Transfer Simulator - Extracted to TransferSimulator component */}
             {simulationsSubTab === "transfer" && (
-              <TransferSimulator />
+              <div data-transfer-simulator>
+                <TransferSimulator />
+              </div>
             )}
 
             {/* HODL Simulator - Extracted to HODLSimulator component */}
             {simulationsSubTab === "hodl" && (
-              <HODLSimulator />
+              <div data-hodl-simulator>
+                <HODLSimulator />
+              </div>
             )}
 
             {/* OLD HODL SECTION - TO BE REMOVED */}
             {/* DCA Calculator - Extracted to DCASimulator component */}
             {simulationsSubTab === "dca" && (
-              <DCASimulator />
+              <div data-dca-simulator>
+                <DCASimulator />
+              </div>
             )}
 
             {/* DCA Calculator implementation moved to DCASimulator component */}
@@ -2351,7 +2427,9 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                <InflationSimulator />
+                <div data-inflation-simulator>
+                  <InflationSimulator />
+                </div>
 
 
               </div>
@@ -2359,7 +2437,9 @@ export default function Home() {
 
             {/* Banking Fees vs Bitcoin Fees Simulator */}
             {isPremiumTier && simulationsSubTab === "fees" && (
-              <FeesSimulator />
+              <div data-fees-simulator>
+                <FeesSimulator />
+              </div>
             )}
 
             {/* More section */}
