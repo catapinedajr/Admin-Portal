@@ -92,6 +92,7 @@ import LearnPage from "@/pages/LearnPage";
 import FinancePage from "@/pages/FinancePage";
 import SafetyTraining from "@/components/simulators/SafetyTrainingSustainable";
 import TransactionsSimulator from "@/components/simulators/TransactionsSimulator";
+import { TransferSimulator } from "@/components/simulators/TransferSimulator";
 import EmailCollectionModal from "@/components/EmailCollectionModal";
 import { ConsistencyCalendar } from "@/components/ConsistencyCalendar";
 
@@ -2976,6 +2977,11 @@ export default function Home() {
               <TransactionsSimulator 
                 isPremiumTier={isPremiumTier}
               />
+            )}
+
+            {/* Transfer Speed Simulator */}
+            {isPremiumTier && simulationsSubTab === "transfer" && (
+              <TransferSimulator />
             )}
 
             {/* Compact HODL Challenge Simulator */}
