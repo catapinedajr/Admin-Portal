@@ -309,23 +309,16 @@ const HODLSimulator: React.FC = () => {
                         <rect width="100%" height="100%" fill="url(#portfolioGrid)" />
                         
                         {/* Simple growth label for this specific result */}
-                        {(() => {
-                          const multiplier = hodlResults.currentValue / hodlResults.initialInvestment;
-                          const endY = 100 - ((endValue / Math.max(endValue, startValue * 10)) * 80);
-                          
-                          return (
-                            <text 
-                              x="150" 
-                              y={endY - 10} 
-                              fill="#f97316" 
-                              fontSize="12" 
-                              textAnchor="middle" 
-                              fontWeight="bold"
-                            >
-                              {Math.round(multiplier)}x Growth
-                            </text>
-                          );
-                        })()}
+                        <text 
+                          x="150" 
+                          y="30" 
+                          fill="#f97316" 
+                          fontSize="12" 
+                          textAnchor="middle" 
+                          fontWeight="bold"
+                        >
+                          {Math.round(hodlResults.currentValue / hodlResults.initialInvestment)}x Growth
+                        </text>
                         
                         {/* Growth Line */}
                         {(() => {
