@@ -2233,12 +2233,27 @@ export default function Home() {
             </div>
             )}
 
+            {/* Safety Training - Extracted to SafetyTraining component */}
+            {simulationsSubTab === "safety" && (
+              <SafetyTraining />
+            )}
+
             {/* Wallet Explorer - Extracted to WalletSimulator component */}
             {simulationsSubTab === "wallet" && (
               <WalletSimulator />
             )}
 
-            {/* OLD WALLET SECTION - TO BE REMOVED */}
+            {/* Transactions Simulator - Extracted to TransactionsSimulator component */}
+            {simulationsSubTab === "transactions" && (
+              <TransactionsSimulator />
+            )}
+
+            {/* Transfer Simulator - Extracted to TransferSimulator component */}
+            {simulationsSubTab === "transfer" && (
+              <TransferSimulator />
+            )}
+
+            {/* HODL Simulator - Extracted to HODLSimulator component */}
             {simulationsSubTab === "hodl" && (
               <HODLSimulator />
             )}
