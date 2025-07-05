@@ -90,7 +90,7 @@ import DevSubscriptionToggle from "@/components/DevSubscriptionToggle";
 import BottomNavigation from "@/components/BottomNavigation";
 import LearnPage from "@/pages/LearnPage";
 import FinancePage from "@/pages/FinancePage";
-import SafetyTraining from "@/components/simulators/SafetyTraining";
+import SafetyTraining from "@/components/simulators/SafetyTrainingSustainable";
 import EmailCollectionModal from "@/components/EmailCollectionModal";
 import { ConsistencyCalendar } from "@/components/ConsistencyCalendar";
 

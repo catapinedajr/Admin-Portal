@@ -33,19 +33,129 @@ export default function SafetyTraining({
   const [securityAnswerSubmitted, setSecurityAnswerSubmitted] = useState(false);
   const [isSecurityAnswerCorrect, setIsSecurityAnswerCorrect] = useState(false);
 
+  // Self-contained security scenarios - sustainable long-term design
+  const securityScenarios = [
+    {
+      id: 1,
+      title: "Phishing Email Detection",
+      description: "Identifying legitimate vs fraudulent emails",
+      question: "You receive an email claiming to be from Coinbase asking you to verify your account. What should you do?",
+      options: [
+        "Click the link and enter your login details",
+        "Forward the email to friends for their opinion",
+        "Go directly to Coinbase website and check your account",
+        "Reply with your account information"
+      ],
+      correctIndex: 2,
+      explanation: "Always navigate directly to the official website rather than clicking email links. Legitimate companies never ask for credentials via email."
+    },
+    {
+      id: 2,
+      title: "Seed Phrase Storage",
+      description: "Proper backup and storage methods",
+      question: "What's the safest way to store your 12-word recovery phrase?",
+      options: [
+        "Take a photo and store it in Google Photos",
+        "Write it on paper and store in a safe place",
+        "Save it in a text file on your computer",
+        "Email it to yourself for backup"
+      ],
+      correctIndex: 1,
+      explanation: "Physical paper storage in a secure location is safest. Digital storage creates hacking risks, and cloud storage can be compromised."
+    },
+    {
+      id: 3,
+      title: "Address Verification",
+      description: "Ensuring payment accuracy",
+      question: "Before sending Bitcoin, you should:",
+      options: [
+        "Send a small test amount first",
+        "Verify every character of the receiving address",
+        "Only check the first and last 4 characters",
+        "Trust the address if it looks similar"
+      ],
+      correctIndex: 1,
+      explanation: "Bitcoin transactions are irreversible. Every single character must match exactly - one wrong character sends funds to the wrong address forever."
+    },
+    {
+      id: 4,
+      title: "Scam Recognition",
+      description: "Identifying legitimate vs fraudulent opportunities",
+      question: "Which message is legitimate and safe to trust?",
+      options: [
+        "Elon Musk Bitcoin giveaway requiring BTC deposit",
+        "Prince offering Bitcoin fortune sharing opportunity",
+        "Local Bitcoin meetup invitation for learning",
+        "Urgent wallet verification requiring private keys"
+      ],
+      correctIndex: 2,
+      explanation: "Educational meetups are legitimate community events. All others are common scam patterns - no one gives away free Bitcoin or needs your private keys."
+    },
+    {
+      id: 5,
+      title: "Public WiFi Security",
+      description: "Safe practices on untrusted networks",
+      question: "You're at a coffee shop and want to check your Bitcoin wallet. What's the safest approach?",
+      options: [
+        "Use your mobile data instead of public WiFi",
+        "Connect to any WiFi and check quickly",
+        "Use the coffee shop's guest WiFi",
+        "Ask other customers for the WiFi password"
+      ],
+      correctIndex: 0,
+      explanation: "Public WiFi networks can be monitored or compromised. Always use your cellular data for financial activities when possible."
+    },
+    {
+      id: 6,
+      title: "Hardware Wallet Safety",
+      description: "Secure hardware wallet practices",
+      question: "When buying a hardware wallet, you should:",
+      options: [
+        "Buy from any online marketplace for best price",
+        "Purchase directly from manufacturer or authorized dealer",
+        "Buy a used one to save money",
+        "Get one that comes pre-configured"
+      ],
+      correctIndex: 1,
+      explanation: "Only buy from official sources to avoid tampered devices. Used or pre-configured wallets may have compromised security."
+    },
+    {
+      id: 7,
+      title: "Social Engineering Defense", 
+      description: "Recognizing manipulation tactics",
+      question: "Someone calls claiming to be from your bank, asking for your Bitcoin wallet details to 'help secure your account'. You should:",
+      options: [
+        "Provide the information since they called you",
+        "Hang up and call your bank directly using official numbers",
+        "Ask them to call back later",
+        "Give partial information to verify they're legitimate"
+      ],
+      correctIndex: 1,
+      explanation: "Banks never ask for Bitcoin wallet information. Always hang up and call official numbers to verify any unexpected contact."
+    },
+    {
+      id: 8,
+      title: "Exchange Security",
+      description: "Safe exchange practices",
+      question: "What's the best practice for using cryptocurrency exchanges?",
+      options: [
+        "Keep all your Bitcoin on the exchange for easy trading",
+        "Use the same password across multiple exchanges",
+        "Enable 2FA and withdraw funds to your personal wallet",
+        "Share your account with trusted friends"
+      ],
+      correctIndex: 2,
+      explanation: "Exchanges can be hacked or go offline. Enable 2FA for security and withdraw to your personal wallet for long-term storage."
+    }
+  ];
+
   const handleSecurityAnswer = (selectedIndex: number) => {
     if (securityAnswerSubmitted) return;
     
     setSelectedSecurityAnswer(selectedIndex);
     
-    // Define correct answers for each scenario (0-based index)
-    const correctAnswers: { [key: number]: number } = {
-      1: 2, 2: 1, 3: 1, 4: 2, 5: 0, 6: 1, 7: 1, 8: 1, 
-      9: 3, 10: 2, 11: 2, 12: 2, 13: 2, 14: 1, 15: 2, 16: 2
-    };
-    
-    const correctIndex = correctAnswers[securityTestStage] || 0;
-    const isCorrect = selectedIndex === correctIndex;
+    const currentScenario = securityScenarios[securityTestStage - 1];
+    const isCorrect = selectedIndex === currentScenario.correctIndex;
     
     // Immediately show feedback
     setIsSecurityAnswerCorrect(isCorrect);
