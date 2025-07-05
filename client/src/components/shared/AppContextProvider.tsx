@@ -71,6 +71,18 @@ interface AppContextType {
   animationStep: number;
   setAnimationStep: (step: number) => void;
   
+  // Finance animations
+  inflationSimActive: boolean;
+  setInflationSimActive: (active: boolean) => void;
+  inflationProgress: number;
+  setInflationProgress: (progress: number) => void;
+  speedRaceActive: boolean;
+  setSpeedRaceActive: (active: boolean) => void;
+  animationActive: boolean;
+  setAnimationActive: (active: boolean) => void;
+  settlementProgress: { traditional: number; bitcoin: number };
+  setSettlementProgress: (progress: { traditional: number; bitcoin: number }) => void;
+  
   // Other state
   expandedTopics: Set<string>;
   setExpandedTopics: (topics: Set<string>) => void;
@@ -215,6 +227,13 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [animationStep, setAnimationStep] = useState<number>(0);
   
+  // Finance animations
+  const [inflationSimActive, setInflationSimActive] = useState<boolean>(false);
+  const [inflationProgress, setInflationProgress] = useState<number>(0);
+  const [speedRaceActive, setSpeedRaceActive] = useState<boolean>(false);
+  const [animationActive, setAnimationActive] = useState<boolean>(false);
+  const [settlementProgress, setSettlementProgress] = useState<{ traditional: number; bitcoin: number }>({ traditional: 0, bitcoin: 0 });
+  
   // Other state
   const [convictionSubTab, setConvictionSubTab] = useState<"whitepaper" | "books" | "videos">("whitepaper");
   const [showSplash, setShowSplash] = useState(false);
@@ -354,6 +373,18 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     setIsAnimating,
     animationStep,
     setAnimationStep,
+    
+    // Finance animations
+    inflationSimActive,
+    setInflationSimActive,
+    inflationProgress,
+    setInflationProgress,
+    speedRaceActive,
+    setSpeedRaceActive,
+    animationActive,
+    setAnimationActive,
+    settlementProgress,
+    setSettlementProgress,
     
     // Other state
     expandedTopics,

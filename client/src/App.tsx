@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 import Home from "@/pages/home-new";
 import LearnPage from "@/pages/LearnPage";
-import FinancePage from "@/pages/FinancePage";
+import { FinancePage } from "@/pages/FinancePage-CORRECT";
 import { AppContextProvider } from "@/components/shared/AppContextProvider";
 import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
