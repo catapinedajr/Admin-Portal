@@ -11,7 +11,6 @@ import {
   CheckCircle,
   AlertTriangle
 } from "lucide-react";
-import { useAppContext } from "@/components/shared/AppContextProvider";
 import { seedPhraseScenarios } from "@/constants/appData";
 
 interface WalletType {
@@ -74,7 +73,11 @@ const walletTypes: WalletType[] = [
 ];
 
 export default function WalletSimulator() {
-  const { isPremiumTier, setActiveSection } = useAppContext();
+  // Premium access and navigation - handled by parent component
+  const isPremiumTier = true; // Assuming premium access for simulator
+  const handleNavigateToMore = () => {
+    window.location.href = "/?section=more"; // Navigate to more section
+  };
   const [selectedWalletType, setSelectedWalletType] = useState<string | null>(null);
   
   // Seed Phrase Recovery Simulator State
@@ -101,7 +104,7 @@ export default function WalletSimulator() {
               The Interactive Wallet Explorer helps you choose the right wallet type and practice emergency recovery scenarios.
             </p>
             <Button
-              onClick={() => setActiveSection("home")}
+              onClick={() => window.location.href = "/"}
               className="bg-orange-600 hover:bg-orange-700 text-white"
             >
               Upgrade to Access
@@ -220,7 +223,7 @@ export default function WalletSimulator() {
             </p>
             <div className="flex justify-center">
               <Button
-                onClick={() => setActiveSection('more')}
+                onClick={handleNavigateToMore}
                 className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 text-sm"
               >
                 <Shield className="w-4 h-4 mr-2" />
