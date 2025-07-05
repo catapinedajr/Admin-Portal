@@ -102,7 +102,7 @@ const securityScenarios: SecurityScenario[] = [
     id: 3,
     title: "Address Verification",
     description: "Ensuring payment accuracy",
-    question: "Compare these Bitcoin addresses carefully. Are they identical?",
+    question: "You're about to send $500 worth of Bitcoin. After pasting the address, you see this comparison. What should you do?",
     visualAid: (
       <div className="space-y-4">
         <div className="bg-zinc-800 rounded-lg p-4 border border-zinc-600">
@@ -126,17 +126,16 @@ const securityScenarios: SecurityScenario[] = [
             </div>
           </div>
         </div>
-
       </div>
     ),
     options: [
-      "Send a small test amount first",
-      "Verify every character of the receiving address",
-      "Only check the first and last 4 characters", 
-      "Trust the address if it looks similar"
+      "Send the Bitcoin - addresses look close enough",
+      "Stop and verify every single character before sending", 
+      "Send a small test amount first to check",
+      "Only verify the first and last few characters"
     ],
     correctIndex: 1,
-    explanation: "Bitcoin transactions are irreversible. Every single character must match exactly - one wrong character sends funds to the wrong address forever."
+    explanation: "STOP! The addresses are different - character 34 shows 'l' vs '1'. You almost sent $500 to the wrong address forever. Always verify every character before sending Bitcoin."
   },
   {
     id: 4,
