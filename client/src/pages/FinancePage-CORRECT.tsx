@@ -321,7 +321,7 @@ export function FinancePage() {
                 Total Supply of Dollars
               </h4>
               <div className="bg-zinc-800/50 rounded-lg p-6">
-                <div className="relative h-56 w-full">
+                <div className="relative h-48 w-full">
                   <svg viewBox="0 0 400 220" className="w-full h-full">
                     <rect width="400" height="220" fill="transparent" />
                     
