@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -811,13 +812,13 @@ export function FinancePage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
-                  onClick={() => setActiveSection("learn")}
+                  onClick={() => setLocation("/learn")}
                   className="bg-orange-600 hover:bg-orange-700 px-8 py-4 text-lg font-medium h-auto"
                 >
                   Start Daily Bitcoin Lessons
                 </Button>
                 <Button 
-                  onClick={() => setActiveSection("simulations")}
+                  onClick={() => setLocation("/simulators")}
                   variant="outline"
                   className="border-orange-600 text-orange-400 hover:bg-orange-600/20 px-8 py-4 text-lg font-medium h-auto"
                 >
