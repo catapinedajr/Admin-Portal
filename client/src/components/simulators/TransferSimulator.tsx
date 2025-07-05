@@ -129,7 +129,15 @@ export function TransferSimulator() {
               <Button
                 onClick={() => {
                   // Scroll to the interactive section
-                  document.querySelector('[data-transfer-simulator]')?.scrollIntoView({ behavior: 'smooth' });
+                  const simulator = document.querySelector('[data-transfer-simulator]');
+                  if (simulator) {
+                    const rect = simulator.getBoundingClientRect();
+                    const headerHeight = 80;
+                    window.scrollTo({
+                      top: window.pageYOffset + rect.top - headerHeight,
+                      behavior: 'smooth'
+                    });
+                  }
                 }}
                 className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 text-sm"
               >

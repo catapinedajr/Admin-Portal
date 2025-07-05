@@ -234,7 +234,12 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
                 onClick={() => {
                   const builder = document.querySelector('[data-transaction-builder]');
                   if (builder) {
-                    builder.scrollIntoView({ behavior: 'smooth' });
+                    const rect = builder.getBoundingClientRect();
+                    const headerHeight = 80;
+                    window.scrollTo({
+                      top: window.pageYOffset + rect.top - headerHeight,
+                      behavior: 'smooth'
+                    });
                   }
                 }}
                 className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"

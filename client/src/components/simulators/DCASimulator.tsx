@@ -233,7 +233,12 @@ export function DCASimulator() {
                 onClick={() => {
                   const calculator = document.querySelector('[data-dca-calculator]');
                   if (calculator) {
-                    calculator.scrollIntoView({ behavior: 'smooth' });
+                    const rect = calculator.getBoundingClientRect();
+                    const headerHeight = 80;
+                    window.scrollTo({
+                      top: window.pageYOffset + rect.top - headerHeight,
+                      behavior: 'smooth'
+                    });
                   }
                 }}
                 className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
