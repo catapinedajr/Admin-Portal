@@ -142,7 +142,7 @@ function Router() {
         <Route path="/learn">
           <AuthGuard>
             <AppContextProvider>
-              <LearnPage />
+              <Home />
             </AppContextProvider>
           </AuthGuard>
         </Route>
