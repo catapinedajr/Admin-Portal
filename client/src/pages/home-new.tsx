@@ -89,6 +89,7 @@ import LockedContent from "@/components/LockedContent";
 import DevSubscriptionToggle from "@/components/DevSubscriptionToggle";
 import BottomNavigation from "@/components/BottomNavigation";
 import LearnPage from "@/pages/LearnPage";
+import FinancePage from "@/pages/FinancePage";
 import EmailCollectionModal from "@/components/EmailCollectionModal";
 import { ConsistencyCalendar } from "@/components/ConsistencyCalendar";
 
@@ -2145,8 +2146,13 @@ export default function Home() {
           <LearnPage />
         )}
 
-        {/* Finance Section */}
+        {/* Finance Section - Extracted to FinancePage.tsx */}
         {activeSection === "money" && (
+          <FinancePage />
+        )}
+
+        {/* Original Finance Section (to be removed after testing) */}
+        {false && activeSection === "money" && (
           <div className="space-y-8">
             {/* Hero Narrative */}
             <Card className="bg-gradient-to-br from-orange-950/30 via-zinc-900 to-red-950/30 border-orange-800/50">

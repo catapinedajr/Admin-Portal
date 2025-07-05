@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import PWAInstallButton from "@/components/PWAInstallButton";
 import { 
   TrendingUp, 
   TrendingDown,
@@ -16,31 +18,31 @@ import {
   Car,
   Crown,
   Gem,
-  User as UserIcon
+  User as UserIcon,
+  Building2
 } from "lucide-react";
 import { useAppContext } from "@/components/shared/AppContextProvider";
 import { useQuery } from "@tanstack/react-query";
-import PWAInstallButton from "@/components/PWAInstallButton";
-import BottomNavigation from '@/components/BottomNavigation';
-import EmailCollectionModal from '@/components/EmailCollectionModal';
-import type { User } from '@shared/schema';
+import { User } from "@shared/schema";
+import BottomNavigation from "@/components/BottomNavigation";
+import EmailCollectionModal from "@/components/EmailCollectionModal";
 
 export default function FinancePage() {
   const {
     activeSection,
     setActiveSection,
-    inflationAmount,
-    setInflationAmount,
-    inflationRate,
-    setInflationRate,
-    inflationTimeFrame,
-    setInflationTimeFrame,
     moneySupplyYear,
     setMoneySupplyYear,
-    isAnimating,
-    setIsAnimating,
-    animationStep,
-    setAnimationStep,
+    inflationSimActive,
+    setInflationSimActive,
+    inflationProgress,
+    setInflationProgress,
+    speedRaceActive,
+    setSpeedRaceActive,
+    animationActive,
+    setAnimationActive,
+    settlementProgress,
+    setSettlementProgress,
     showEmailModal,
     setShowEmailModal,
     setLocation
@@ -53,24 +55,10 @@ export default function FinancePage() {
 
   const isPremiumTier = false; // Simplified for now since no subscription tier in schema
 
-  // Inflation calculation
-  const calculateInflationImpact = () => {
-    const rate = inflationRate / 100;
-    const futureValue = inflationAmount * Math.pow(1 + rate, inflationTimeFrame);
-    const purchasing = inflationAmount / Math.pow(1 + rate, inflationTimeFrame);
-    return {
-      futureValue,
-      purchasingPower: purchasing,
-      valueDestroyed: inflationAmount - purchasing
-    };
-  };
-
-  const inflationResult = calculateInflationImpact();
-
   // Money supply data helper functions
   const getMoneySupplyRaw = (year: number) => {
     const m2Data: { [key: number]: number } = {
-      1920: 0.023, 1971: 0.583, 2000: 4.9, 2008: 7.5, 2024: 21.0
+      1920: 0.023, 1971: 0.583, 2000: 4.9, 2008: 7.5, 2024: 21.0, 2025: 21.2
     };
     
     if (m2Data[year]) return m2Data[year];
@@ -87,37 +75,75 @@ export default function FinancePage() {
       }
     }
     
+    const lowerValue = m2Data[lower];
+    const upperValue = m2Data[upper];
     const ratio = (year - lower) / (upper - lower);
-    return m2Data[lower] + (m2Data[upper] - m2Data[lower]) * ratio;
+    
+    return lowerValue + (upperValue - lowerValue) * ratio;
   };
 
-  const startAnimation = () => {
-    setIsAnimating(true);
-    setAnimationStep(0);
+  // Animation functions
+  const startInflationSimulation = () => {
+    setInflationSimActive(true);
+    setInflationProgress(0);
     
-    const totalSteps = 12;
-    const stepDuration = 1000; // 1 second per step
+    const delays = [0, 2000, 4000, 6000, 8000, 10000];
     
-    const animateStep = (step: number) => {
-      if (step <= totalSteps) {
-        setAnimationStep(step);
-        setTimeout(() => animateStep(step + 1), stepDuration);
-      } else {
-        setIsAnimating(false);
-      }
-    };
-    
-    animateStep(1);
+    delays.forEach((delay, index) => {
+      setTimeout(() => {
+        setInflationProgress(index);
+        if (index === delays.length - 1) {
+          setTimeout(() => setInflationProgress(5), 1000);
+        }
+      }, delay);
+    });
   };
 
-  const getCurrentValue = () => {
-    if (!isAnimating) return inflationAmount;
-    
-    const totalSteps = 12;
-    const valuePerStep = inflationResult.valueDestroyed / totalSteps;
-    const currentLoss = valuePerStep * animationStep;
-    
-    return Math.max(inflationAmount - currentLoss, inflationResult.purchasingPower);
+  const startSettlementAnimation = () => {
+    setSpeedRaceActive(true);
+    setAnimationActive(true);
+    setSettlementProgress({ traditional: 0, bitcoin: 0 });
+
+    // Bitcoin animation: completes all 4 steps in 18 seconds (20% slower for better visibility)
+    const bitcoinSteps = [
+      { step: 1, delay: 2400 },   // Step 1 at 2.4 seconds (transaction creation)
+      { step: 2, delay: 6000 },   // Step 2 at 6 seconds (network broadcast)
+      { step: 3, delay: 14400 },  // Step 3 at 14.4 seconds (mining consensus)
+      { step: 4, delay: 18000 }   // Step 4 at 18 seconds (final settlement)
+    ];
+
+    // Traditional banking: takes much longer with realistic banking delays
+    const traditionalSteps = [
+      { step: 1, delay: 8000 },   // Step 1 at 8 seconds (bank visit takes longer)
+      { step: 2, delay: 20000 },  // Step 2 at 20 seconds (compliance review)
+      { step: 3, delay: 44000 },  // Step 3 at 44 seconds (SWIFT processing)
+      { step: 4, delay: 70000 },  // Step 4 at 70 seconds (intermediary banks)
+      { step: 5, delay: 86000 }   // Step 5 at 86 seconds (final settlement)
+    ];
+
+    // Animate Bitcoin steps
+    bitcoinSteps.forEach(({ step, delay }) => {
+      setTimeout(() => {
+        setSettlementProgress((prev: { traditional: number; bitcoin: number }) => ({ ...prev, bitcoin: step }));
+      }, delay);
+    });
+
+    // Animate Traditional steps  
+    traditionalSteps.forEach(({ step, delay }) => {
+      setTimeout(() => {
+        setSettlementProgress((prev: { traditional: number; bitcoin: number }) => ({ ...prev, traditional: step }));
+      }, delay);
+    });
+
+    // End animation after 90 seconds
+    setTimeout(() => {
+      setAnimationActive(false);
+    }, 90000);
+  };
+
+  const resetSettlementAnimation = () => {
+    setAnimationActive(false);
+    setSettlementProgress({ traditional: 0, bitcoin: 0 });
   };
 
   return (
@@ -141,541 +167,277 @@ export default function FinancePage() {
               </div>
             </div>
 
+            {/* Header Actions */}
             <div className="flex items-center gap-2">
-              <PWAInstallButton />
-              
-              {/* Premium Status / Upgrade Button */}
+              {/* Premium Status Indicator */}
               {isPremiumTier ? (
-                <div className="flex items-center gap-2 bg-orange-600/20 px-3 py-2 rounded-lg border border-orange-600/30">
-                  <Crown className="w-4 h-4 text-orange-400" />
-                  <span className="text-orange-300 text-sm font-medium">Premium</span>
+                <div className="bg-orange-500 hover:bg-orange-600 text-white border-orange-500 px-2.5 py-1.5 font-medium rounded-md flex items-center gap-1">
+                  <Gem className="w-4 h-4" />
+                  <span className="sr-only">Premium</span>
                 </div>
               ) : (
-                <Button
-                  size="sm"
+                <Button 
                   onClick={() => setShowEmailModal(true)}
-                  className="bg-orange-600 hover:bg-orange-700 text-white gap-2"
+                  size="sm"
+                  className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-2.5 py-1.5"
+                  title="Upgrade to Premium"
                 >
-                  <Gem className="w-4 h-4" />
-                  <span className="sr-only">Upgrade to Premium</span>
+                  <Crown className="w-4 h-4" />
+                  <span className="sr-only">Upgrade</span>
                 </Button>
               )}
               
-              {/* User Profile */}
-              <div className="flex items-center gap-2 text-zinc-400">
-                <UserIcon className="w-5 h-5" />
-                <span className="text-sm">{user?.username || 'User'}</span>
-              </div>
+              {user && (
+                <div className="flex items-center gap-2 text-zinc-400 text-sm">
+                  <UserIcon className="w-4 h-4" />
+                  <span>{user.username}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        <div className="space-y-8">
-      {/* Hero Narrative */}
-      <Card className="bg-gradient-to-br from-orange-950/30 via-zinc-900 to-red-950/30 border-orange-800/50">
-        <CardContent className="p-8">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <h2 className="text-4xl font-bold text-white mb-4">
-              Your Money Is Being <span className="text-red-400">Silently Stolen</span>
-            </h2>
-            
-            <div className="text-lg text-zinc-300 leading-relaxed space-y-4">
-              <p>
-                Every day you wait, your savings lose value. It's not your fault—the system is rigged. 
-                The government prints money endlessly, making each dollar worth less while the wealthy protect 
-                themselves with assets that can't be printed.
-              </p>
+      <main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+        {/* Hero Narrative */}
+        <Card className="bg-gradient-to-br from-orange-950/30 via-zinc-900 to-red-950/30 border-orange-800/50">
+          <CardContent className="p-8">
+            <div className="max-w-4xl mx-auto text-center space-y-6">
+              <h2 className="text-4xl font-bold text-white mb-4">
+                Your Money Is Being <span className="text-red-400">Silently Stolen</span>
+              </h2>
               
-              <p>
-                <span className="text-orange-400 font-semibold">What cost $1 in 1920 now costs $15.50.</span> Your 
-                great-grandparents could buy a house with one income and still save money. Today, two incomes barely 
-                cover rent. This isn't progress—it's systematic wealth transfer from savers to money printers.
-              </p>
-              
-              <p>
-                But there's an escape route. For the first time in human history, we have <span className="text-orange-400 font-semibold">
-                mathematically perfect money</span> that can't be inflated away. Bitcoin isn't just digital gold—it's 
-                the solution to making each dollar worth less.
-              </p>
-            </div>
-            
-            <div className="grid gap-4 md:grid-cols-3 mt-8">
-              <div className="p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50">
-                <div className="text-orange-300 font-bold text-xl">21 Million</div>
-                <div className="text-zinc-300 text-sm">Bitcoin's Maximum Supply</div>
-                <div className="text-zinc-400 text-xs mt-1">No central bank can print more</div>
+              <div className="text-lg text-zinc-300 leading-relaxed space-y-4">
+                <p>
+                  Every day you wait, your savings lose value. It's not your fault—the system is rigged. 
+                  The government prints money endlessly, making each dollar worth less while the wealthy protect 
+                  themselves with assets that can't be printed.
+                </p>
+                
+                <p>
+                  <span className="text-orange-400 font-semibold">What cost $1 in 1920 now costs $15.50.</span> Your 
+                  great-grandparents could buy a house with one income and still save money. Today, two incomes barely 
+                  cover rent. This isn't progress—it's systematic wealth transfer from savers to money printers.
+                </p>
+                
+                <p>
+                  But there's an escape route. For the first time in human history, we have <span className="text-orange-400 font-semibold">
+                  mathematically perfect money</span> that can't be inflated away. Bitcoin isn't just digital gold—it's 
+                  the solution to making each dollar worth less.
+                </p>
               </div>
               
-              <div className="p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50">
-                <div className="text-orange-300 font-bold text-xl">0%</div>
-                <div className="text-zinc-300 text-sm">Bitcoin Inflation Rate</div>
-                <div className="text-zinc-400 text-xs mt-1">After all 21M are mined</div>
-              </div>
-              
-              <div className="p-4 bg-orange-950/50 rounded-xl border border-orange-800/50">
-                <div className="text-orange-300 font-bold text-xl">100%</div>
-                <div className="text-zinc-300 text-sm">Your Financial Control</div>
-                <div className="text-zinc-400 text-xs mt-1">No banks, no intermediaries</div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Interactive Inflation Calculator */}
-      <Card className="bg-zinc-900/50 border-zinc-700">
-        <CardHeader>
-          <CardTitle className="text-2xl text-white flex items-center gap-2">
-            <TrendingUp className="w-6 h-6 text-red-500" />
-            Watch Your Money Disappear
-          </CardTitle>
-          <p className="text-zinc-400">See how inflation silently steals your purchasing power</p>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Amount Selection */}
-          <div className="space-y-3">
-            <label className="text-sm font-medium text-zinc-300">Your Savings Amount</label>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              {[1000, 5000, 10000, 25000, 50000, 100000].map((amount) => (
-                <Button
-                  key={amount}
-                  variant={inflationAmount === amount ? "secondary" : "outline"}
-                  onClick={() => setInflationAmount(amount)}
-                  className="h-12 text-sm font-medium"
-                >
-                  ${amount.toLocaleString()}
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          {/* Inflation Rate Selection */}
-          <div className="space-y-3">
-            <label className="text-sm font-medium text-zinc-300">Inflation Scenario</label>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { rate: 2, label: "Fed Target", desc: "Official 2% goal", color: "zinc" },
-                { rate: 4, label: "Moderate Rise", desc: "Economic uncertainty", color: "yellow" },
-                { rate: 8.5, label: "Recent Peak", desc: "2022 inflation high", color: "orange" },
-                { rate: 15, label: "Crisis Level", desc: "1980s-style crisis", color: "red" }
-              ].map((scenario) => (
-                <Button
-                  key={scenario.rate}
-                  variant={inflationRate === scenario.rate ? "secondary" : "outline"}
-                  onClick={() => setInflationRate(scenario.rate)}
-                  className={`h-16 flex flex-col p-3 text-left ${
-                    inflationRate === scenario.rate 
-                      ? `bg-${scenario.color}-900/50 border-${scenario.color}-600` 
-                      : `border-${scenario.color}-800/50 hover:bg-${scenario.color}-900/20`
-                  }`}
-                >
-                  <div className="font-medium text-sm">{scenario.label}</div>
-                  <div className="text-xs opacity-75">{scenario.desc}</div>
-                  <div className="font-bold text-orange-400">{scenario.rate}%</div>
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          {/* Time Frame */}
-          <div className="space-y-3">
-            <label className="text-sm font-medium text-zinc-300">Time Period (years)</label>
-            <div className="grid grid-cols-4 gap-2">
-              {[5, 10, 20, 30].map((years) => (
-                <Button
-                  key={years}
-                  variant={inflationTimeFrame === years ? "secondary" : "outline"}
-                  onClick={() => setInflationTimeFrame(years)}
-                  className="h-12"
-                >
-                  {years} years
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          {/* Animation and Results */}
-          <div className="bg-zinc-800/50 rounded-lg p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <div className="text-2xl font-bold text-white">
-                  ${getCurrentValue().toLocaleString()}
+              <div className="grid gap-4 md:grid-cols-3 mt-8">
+                <div className="p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50">
+                  <div className="text-orange-300 font-bold text-xl">21 Million</div>
+                  <div className="text-zinc-300 text-sm">Bitcoin's Maximum Supply</div>
+                  <div className="text-zinc-400 text-xs mt-1">No central bank can print more</div>
                 </div>
-                <div className="text-sm text-zinc-400">Current Purchasing Power</div>
+                
+                <div className="p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50">
+                  <div className="text-orange-300 font-bold text-xl">0%</div>
+                  <div className="text-zinc-300 text-sm">Bitcoin Inflation Rate</div>
+                  <div className="text-zinc-400 text-xs mt-1">After all 21M are mined</div>
+                </div>
+                
+                <div className="p-4 bg-orange-950/50 rounded-xl border border-orange-800/50">
+                  <div className="text-orange-300 font-bold text-xl">100%</div>
+                  <div className="text-orange-400/80 text-sm">You Own Your Bitcoin</div>
+                  <div className="text-zinc-400 text-xs mt-1">No bank can freeze it</div>
+                </div>
               </div>
               
-              <div className="text-right space-y-1">
-                <div className="text-lg font-bold text-red-400">
-                  -${inflationResult.valueDestroyed.toLocaleString()}
+              <div className="mt-8 p-4 bg-orange-950/20 rounded-xl border border-orange-800/30">
+                <div className="text-orange-300 font-semibold mb-2">
+                  Choose: watch your money lose value, or learn about money that can't be printed.
                 </div>
-                <div className="text-sm text-zinc-400">Value Destroyed</div>
               </div>
             </div>
+          </CardContent>
+        </Card>
 
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm text-zinc-400">
-                <span>Purchasing Power</span>
-                <span>{Math.round((inflationResult.purchasingPower / inflationAmount) * 100)}% remaining</span>
-              </div>
-              <Progress 
-                value={isAnimating 
-                  ? Math.max((getCurrentValue() / inflationAmount) * 100, (inflationResult.purchasingPower / inflationAmount) * 100)
-                  : (inflationResult.purchasingPower / inflationAmount) * 100
-                }
-                className="h-3"
-              />
-            </div>
-
-            <Button 
-              onClick={startAnimation}
-              disabled={isAnimating}
-              className="w-full bg-red-600 hover:bg-red-700 text-white"
-            >
-              {isAnimating ? "Watching Money Disappear..." : "Watch Your Money Disappear"}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Historical Money Supply Chart */}
-      <Card className="bg-zinc-900/50 border-zinc-700">
-        <CardHeader>
-          <CardTitle className="text-2xl text-white flex items-center gap-2">
-            <DollarSign className="w-6 h-6 text-orange-500" />
-            The Money Printing Machine
-          </CardTitle>
-          <p className="text-zinc-400">100+ years of endless dollar creation</p>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Year Selection */}
-          <div className="space-y-3">
-            <label className="text-sm font-medium text-zinc-300">Select Historical Period</label>
-            <div className="grid grid-cols-5 gap-2">
-              {[1920, 1971, 2000, 2008, 2024].map((year) => (
-                <Button
-                  key={year}
-                  variant={moneySupplyYear === year ? "secondary" : "outline"}
-                  onClick={() => setMoneySupplyYear(year)}
-                  className="h-12 text-sm font-medium"
-                >
-                  {year}
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          {/* Key Statistics Display */}
-          <div className="grid grid-cols-2 gap-3 mt-4">
-            <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
-              <div className="text-xl font-bold text-orange-400 transition-all duration-700">
-                ${getMoneySupplyRaw(moneySupplyYear)}T
-              </div>
-              <div className="text-zinc-400 text-xs">Total Dollars in Circulation</div>
-            </div>
-            <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
-              <div className="text-xl font-bold text-orange-400 transition-all duration-700">
-                {Math.round(getMoneySupplyRaw(moneySupplyYear) / getMoneySupplyRaw(1920))}x
-              </div>
-              <div className="text-zinc-400 text-xs">More Money Since 1920</div>
-            </div>
-          </div>
-
-          {/* Simplified Chart */}
-          <div className="space-y-4">
-            <h4 className="text-white font-semibold flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-orange-400" />
-              Total Supply of Dollars
-            </h4>
-            <div className="bg-zinc-800/50 rounded-lg p-6">
-              <div className="relative h-56 w-full">
-                {/* Clean SVG Chart */}
-                <svg viewBox="0 0 400 220" className="w-full h-full">
-                  {/* Simple background */}
-                  <rect width="400" height="220" fill="transparent" />
-                  
-                  {/* Y-axis labels */}
-                  <text x="10" y="15" fill="#9ca3af" fontSize="10">$21.2T</text>
-                  <text x="10" y="55" fill="#9ca3af" fontSize="10">$15T</text>
-                  <text x="10" y="95" fill="#9ca3af" fontSize="10">$10T</text>
-                  <text x="10" y="135" fill="#9ca3af" fontSize="10">$5T</text>
-                  <text x="10" y="175" fill="#9ca3af" fontSize="10">$0</text>
-                  
-                  {/* X-axis labels */}
-                  <text x="50" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">1920</text>
-                  <text x="140" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">1960</text>
-                  <text x="230" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">1990</text>
-                  <text x="320" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">2010</text>
-                  <text x="370" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">2025</text>
-                  
-                  {/* Money Supply Growth Line */}
-                  <path
-                    d={(() => {
-                      const m2Data = [
-                        { year: 1920, m2: 0.023 }, { year: 1929, m2: 0.026 }, { year: 1933, m2: 0.020 },
-                        { year: 1940, m2: 0.040 }, { year: 1945, m2: 0.107 }, { year: 1950, m2: 0.117 },
-                        { year: 1960, m2: 0.167 }, { year: 1971, m2: 0.583 }, { year: 1980, m2: 1.600 },
-                        { year: 1990, m2: 3.200 }, { year: 2000, m2: 4.900 }, { year: 2008, m2: 7.500 },
-                        { year: 2010, m2: 8.700 }, { year: 2015, m2: 12.400 }, { year: 2020, m2: 15.400 },
-                        { year: 2021, m2: 20.100 }, { year: 2024, m2: 21.000 }, { year: 2025, m2: 21.200 }
-                      ];
-                      
-                      return m2Data.map((point, index) => {
-                        const x = 50 + ((point.year - 1920) / 105) * 320;
-                        const y = 175 - ((point.m2 - 0.023) / (21.2 - 0.023)) * 155;
-                        return `${index === 0 ? 'M' : 'L'} ${x},${y}`;
-                      }).join(' ');
-                    })()}
-                    fill="none"
-                    stroke="#f97316"
-                    strokeWidth="3"
-                  />
-                  
-                  {/* Gold Standard End Marker */}
-                  <line x1="190" y1="20" x2="190" y2="185" stroke="#fbbf24" strokeWidth="2" strokeDasharray="4,4" />
-                  <rect x="120" y="30" width="100" height="30" fill="#1e293b" stroke="#fbbf24" strokeWidth="1" rx="4" />
-                  <text x="170" y="42" fill="#fbbf24" fontSize="9" textAnchor="middle" fontWeight="bold">Gold Standard</text>
-                  <text x="170" y="52" fill="#9ca3af" fontSize="8" textAnchor="middle">Ends (1971)</text>
-                </svg>
+        {/* Money Supply Erosion Visualization */}
+        <Card className="bg-zinc-900 border-zinc-800">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-white flex items-center gap-3 text-xl">
+              <TrendingDown className="w-5 h-5 text-orange-400" />
+              How Much Money Has Been Printed Over Time
+            </CardTitle>
+            <p className="text-zinc-400 text-sm">See how the government has created more and more dollars since 1920, making each dollar worth less</p>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Year Selection Buttons */}
+            <div className="space-y-4">
+              <div className="text-center">
+                <span className="text-orange-400 font-bold text-2xl">{moneySupplyYear}</span>
+                <p className="text-zinc-400 text-sm mt-1">Select a year to explore</p>
               </div>
               
-              <div className="mt-4 text-center">
-                <div className="text-orange-400 font-bold text-lg">THIS is INFLATION</div>
-                <div className="text-zinc-400 text-sm">More money = less value per dollar</div>
+              {/* Clean milestone buttons */}
+              <div className="grid grid-cols-5 gap-1.5">
+                {[
+                  { year: 1920, label: "'20", desc: "Gold Era" },
+                  { year: 1971, label: "'71", desc: "Nixon" },
+                  { year: 2000, label: "'00", desc: "Dot-com" },
+                  { year: 2008, label: "'08", desc: "Crisis" },
+                  { year: 2025, label: "'25", desc: "Today" }
+                ].map((milestone) => (
+                  <button
+                    key={milestone.year}
+                    onClick={() => setMoneySupplyYear(milestone.year)}
+                    className={`p-2 rounded-md border transition-all duration-200 ${
+                      moneySupplyYear === milestone.year
+                        ? 'bg-orange-600/20 border-orange-500 text-orange-300'
+                        : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-300'
+                    }`}
+                  >
+                    <div className="font-semibold text-sm">{milestone.label}</div>
+                    <div className="text-xs opacity-75">{milestone.desc}</div>
+                  </button>
+                ))}
               </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
-      {/* Call to Action */}
-      <Card className="bg-gradient-to-br from-orange-950/50 via-zinc-900 to-orange-950/30 border-orange-700/50">
-        <CardContent className="p-8">
-          <div className="max-w-3xl mx-auto text-center space-y-6">
-            <h3 className="text-3xl font-bold text-white">
-              Stop Being a Victim of the System
-            </h3>
-            
-            <p className="text-lg text-zinc-300 leading-relaxed">
-              Every day you keep your wealth in depreciating dollars, you're voluntarily participating in your own 
-              financial destruction. The wealthy understand this—that's why they hold assets, not cash.
-            </p>
-            
-            <p className="text-lg text-zinc-300 leading-relaxed">
-              Bitcoin gives you the same protection they have, but better. No storage costs, no maintenance, 
-              no counterparty risk. Just mathematically guaranteed scarcity in your pocket.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button 
-                size="lg"
-                onClick={() => setActiveSection("learn")}
-                className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 text-lg font-medium h-auto"
-              >
-                Learn How Bitcoin Works
-              </Button>
-              <Button 
-                size="lg"
-                onClick={() => setActiveSection("simulations")}
-                variant="outline"
-                className="border-orange-600 text-orange-400 hover:bg-orange-600/20 px-8 py-4 text-lg font-medium h-auto"
-              >
-                Practice with Simulators
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Money Supply Erosion Visualization */}
-      <Card className="bg-zinc-900 border-zinc-800">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-white flex items-center gap-3 text-xl">
-            <TrendingDown className="w-5 h-5 text-orange-400" />
-            How Much Money Has Been Printed Over Time
-          </CardTitle>
-          <p className="text-zinc-400 text-sm">See how the government has created more and more dollars since 1920, making each dollar worth less</p>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Year Selection Buttons */}
-          <div className="space-y-4">
-            <div className="text-center">
-              <span className="text-orange-400 font-bold text-2xl">{moneySupplyYear}</span>
-              <p className="text-zinc-400 text-sm mt-1">Select a year to explore</p>
-            </div>
-            
-            {/* Clean milestone buttons */}
-            <div className="grid grid-cols-5 gap-1.5">
-              {[
-                { year: 1920, label: "'20", desc: "Gold Era" },
-                { year: 1971, label: "'71", desc: "Nixon" },
-                { year: 2000, label: "'00", desc: "Dot-com" },
-                { year: 2008, label: "'08", desc: "Crisis" },
-                { year: 2024, label: "'25", desc: "Today" }
-              ].map((milestone) => (
-                <button
-                  key={milestone.year}
-                  onClick={() => setMoneySupplyYear(milestone.year)}
-                  className={`p-2 rounded-md border transition-all duration-200 ${
-                    moneySupplyYear === milestone.year
-                      ? 'bg-orange-600/20 border-orange-500 text-orange-300'
-                      : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-300'
-                  }`}
-                >
-                  <div className="font-semibold text-sm">{milestone.label}</div>
-                  <div className="text-xs opacity-75">{milestone.desc}</div>
-                </button>
-              ))}
-            </div>
-
-            {/* Key Statistics Display */}
-            <div className="grid grid-cols-2 gap-3 mt-4">
-              <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
-                <div className="text-xl font-bold text-orange-400 transition-all duration-700">
-                  ${getMoneySupplyRaw(moneySupplyYear)}T
+              {/* Key Statistics Display */}
+              <div className="grid grid-cols-2 gap-3 mt-4">
+                <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
+                  <div className="text-xl font-bold text-orange-400 transition-all duration-700">
+                    ${getMoneySupplyRaw(moneySupplyYear)}T
+                  </div>
+                  <div className="text-zinc-400 text-xs">Total Dollars in Circulation</div>
                 </div>
-                <div className="text-zinc-400 text-xs">Total Dollars in Circulation</div>
-              </div>
-              <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
-                <div className="text-xl font-bold text-orange-400 transition-all duration-700">
-                  {Math.round(getMoneySupplyRaw(moneySupplyYear) / getMoneySupplyRaw(1920))}x
+                <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
+                  <div className="text-xl font-bold text-orange-400 transition-all duration-700">
+                    {Math.round(getMoneySupplyRaw(moneySupplyYear) / getMoneySupplyRaw(1920))}x
+                  </div>
+                  <div className="text-zinc-400 text-xs">More Money Since 1920</div>
                 </div>
-                <div className="text-zinc-400 text-xs">More Money Since 1920</div>
               </div>
             </div>
-          </div>
 
-          {/* Simplified Chart */}
-          <div className="space-y-4">
-            <h4 className="text-white font-semibold flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-orange-400" />
-              Total Supply of Dollars
-            </h4>
-            <div className="bg-zinc-800/50 rounded-lg p-6">
-              <div className="relative h-56 w-full">
-                {/* Clean SVG Chart */}
-                <svg viewBox="0 0 400 220" className="w-full h-full">
-                  {/* Simple background */}
-                  <rect width="400" height="220" fill="transparent" />
-                  
-                  {/* Y-axis labels */}
-                  <text x="10" y="15" fill="#9ca3af" fontSize="10">$21.2T</text>
-                  <text x="10" y="55" fill="#9ca3af" fontSize="10">$15T</text>
-                  <text x="10" y="95" fill="#9ca3af" fontSize="10">$10T</text>
-                  <text x="10" y="135" fill="#9ca3af" fontSize="10">$5T</text>
-                  <text x="10" y="175" fill="#9ca3af" fontSize="10">$0</text>
-                  
-                  {/* X-axis labels - Evenly spaced per year for dramatic accuracy */}
-                  <text x="50" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">1920</text>
-                  <text x="140" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">1960</text>
-                  <text x="230" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">1990</text>
-                  <text x="320" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">2010</text>
-                  <text x="370" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">2025</text>
-                  
-                  {/* Money Supply Growth Line - Using Real Federal Reserve Data */}
-                  <path
-                    d={(() => {
-                      // Real M2 data points (in billions then trillions): Year -> M2 Value
-                      const m2Data = [
-                        { year: 1920, m2: 0.023 },   // Gold Standard era ($23B)
-                        { year: 1929, m2: 0.026 },   // Pre-Depression ($26B)
-                        { year: 1933, m2: 0.020 },   // Depression low ($20B)
-                        { year: 1940, m2: 0.040 },   // Pre-WWII ($40B)
-                        { year: 1945, m2: 0.107 },   // Post-WWII expansion ($107B)
-                        { year: 1950, m2: 0.117 },   // Korean War ($117B)
-                        { year: 1960, m2: 0.167 },   // 60s growth ($167B)
-                        { year: 1971, m2: 0.583 },   // Nixon Shock baseline ($583B)
-                        { year: 1980, m2: 1.600 },   // Early 80s ($1.6T)
-                        { year: 1990, m2: 3.200 },   // 90s expansion ($3.2T)
-                        { year: 2000, m2: 4.900 },   // Dot-com era ($4.9T)
-                        { year: 2008, m2: 7.500 },   // Pre-crisis ($7.5T)
-                        { year: 2010, m2: 8.700 },   // Post-crisis QE1 ($8.7T)
-                        { year: 2015, m2: 12.400 },  // QE era ($12.4T)
-                        { year: 2020, m2: 15.400 },  // Pre-COVID ($15.4T)
-                        { year: 2021, m2: 20.100 },  // COVID peak ($20.1T)
-                        { year: 2024, m2: 21.000 },  // 2024 ($21T)
-                        { year: 2025, m2: 21.200 }   // Current estimate ($21.2T)
-                      ];
-                      
-                      return m2Data.map((point, index) => {
-                        // Linear time positioning: 3.048px per year (320px / 105 years)
-                        const x = 50 + ((point.year - 1920) / 105) * 320;
-                        const y = 175 - ((point.m2 - 0.023) / (21.2 - 0.023)) * 155;
-                        return `${index === 0 ? 'M' : 'L'} ${x},${y}`;
-                      }).join(' ');
-                    })()}
-                    fill="none"
-                    stroke="#f97316"
-                    strokeWidth="3"
-                  />
-                  
-                  {/* Fill area under curve */}
-                  <path
-                    d={(() => {
-                      const m2Data = [
-                        { year: 1920, m2: 0.023 }, { year: 1929, m2: 0.026 }, { year: 1933, m2: 0.020 },
-                        { year: 1940, m2: 0.040 }, { year: 1945, m2: 0.107 }, { year: 1950, m2: 0.117 },
-                        { year: 1960, m2: 0.167 }, { year: 1971, m2: 0.583 }, { year: 1980, m2: 1.600 },
-                        { year: 1990, m2: 3.200 }, { year: 2000, m2: 4.900 }, { year: 2008, m2: 7.500 },
-                        { year: 2010, m2: 8.700 }, { year: 2015, m2: 12.400 }, { year: 2020, m2: 15.400 },
-                        { year: 2021, m2: 20.100 }, { year: 2024, m2: 21.000 }
-                      ];
-                      
-                      const pathData = m2Data.map((point, index) => {
-                        // Linear time positioning: 3.077px per year (320px / 104 years)
-                        const x = 50 + ((point.year - 1920) / 104) * 320;
-                        const y = 175 - ((point.m2 - 0.023) / (21.0 - 0.023)) * 155;
-                        return `${index === 0 ? 'M' : 'L'} ${x},${y}`;
-                      }).join(' ');
-                      
-                      return `${pathData} L 370,180 L 50,180 Z`;
-                    })()}
-                    fill="url(#orangeGradient)"
-                    opacity="0.3"
-                  />
-                  
-                  {/* Gradient definition */}
-                  <defs>
-                    <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#f97316" stopOpacity="0.6"/>
-                      <stop offset="100%" stopColor="#f97316" stopOpacity="0.1"/>
-                    </linearGradient>
-                  </defs>
-                  
-                  {/* Gold Standard Line */}
-                  <g>
-                    {(() => {
-                      const nixonYear = 1971;
-                      const nixonX = 50 + ((nixonYear - 1920) / 105) * 320;
-                      return (
-                        <g>
-                          <line 
-                            x1={nixonX} 
-                            y1="20" 
-                            x2={nixonX} 
-                            y2="175" 
-                            stroke="#f97316" 
-                            strokeWidth="2" 
-                            strokeDasharray="5,5"
-                            opacity="0.6"
-                          />
-                          <text 
-                            x={nixonX - 35} 
-                            y="15" 
-                            fill="#f97316" 
-                            fontSize="8" 
-                            fontWeight="bold"
-                          >
-                            Gold Standard Ends
-                          </text>
-                        </g>
-                      );
-                    })()}
-                  </g>
+            {/* Chart and emphasis text */}
+            <div className="space-y-4">
+              <h4 className="text-white font-semibold flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-orange-400" />
+                Total Supply of Dollars
+              </h4>
+              <div className="bg-zinc-800/50 rounded-lg p-6">
+                <div className="relative h-48 w-full">
+                  <svg viewBox="0 0 400 220" className="w-full h-full">
+                    <rect width="400" height="220" fill="transparent" />
+                    
+                    <text x="10" y="15" fill="#9ca3af" fontSize="10">$21.2T</text>
+                    <text x="10" y="55" fill="#9ca3af" fontSize="10">$15T</text>
+                    <text x="10" y="95" fill="#9ca3af" fontSize="10">$10T</text>
+                    <text x="10" y="135" fill="#9ca3af" fontSize="10">$5T</text>
+                    <text x="10" y="175" fill="#9ca3af" fontSize="10">$0</text>
+                    
+                    <text x="50" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">1920</text>
+                    <text x="140" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">1960</text>
+                    <text x="230" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">1990</text>
+                    <text x="320" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">2010</text>
+                    <text x="370" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">2025</text>
+                    
+                    <path
+                      d={(() => {
+                        // Real M2 data points matching original implementation
+                        const m2Data = [
+                          { year: 1920, m2: 0.023 },   // Gold Standard era ($23B)
+                          { year: 1929, m2: 0.026 },   // Pre-Depression ($26B)
+                          { year: 1933, m2: 0.020 },   // Depression low ($20B)
+                          { year: 1940, m2: 0.040 },   // Pre-WWII ($40B)
+                          { year: 1945, m2: 0.107 },   // Post-WWII expansion ($107B)
+                          { year: 1950, m2: 0.117 },   // Korean War ($117B)
+                          { year: 1960, m2: 0.167 },   // 60s growth ($167B)
+                          { year: 1971, m2: 0.583 },   // Nixon Shock baseline ($583B)
+                          { year: 1980, m2: 1.600 },   // Early 80s ($1.6T)
+                          { year: 1990, m2: 3.200 },   // 90s expansion ($3.2T)
+                          { year: 2000, m2: 4.900 },   // Dot-com era ($4.9T)
+                          { year: 2008, m2: 7.500 },   // Pre-crisis ($7.5T)
+                          { year: 2010, m2: 8.700 },   // Post-crisis QE1 ($8.7T)
+                          { year: 2015, m2: 12.400 },  // QE era ($12.4T)
+                          { year: 2020, m2: 15.400 },  // Pre-COVID ($15.4T)
+                          { year: 2021, m2: 20.100 },  // COVID peak ($20.1T)
+                          { year: 2024, m2: 21.000 },  // 2024 ($21T)
+                          { year: 2025, m2: 21.200 }   // Current estimate ($21.2T)
+                        ];
+                        
+                        return m2Data.map((point, index) => {
+                          // Linear time positioning: 3.048px per year (320px / 105 years)
+                          const x = 50 + ((point.year - 1920) / 105) * 320;
+                          const y = 175 - ((point.m2 - 0.023) / (21.2 - 0.023)) * 155;
+                          return `${index === 0 ? 'M' : 'L'} ${x},${y}`;
+                        }).join(' ');
+                      })()}
+                      fill="none"
+                      stroke="#f97316"
+                      strokeWidth="3"
+                    />
+                    
+                    <defs>
+                      <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="#f97316" stopOpacity="0.6"/>
+                        <stop offset="100%" stopColor="#f97316" stopOpacity="0.1"/>
+                      </linearGradient>
+                    </defs>
+                    
+                    <path
+                      d={(() => {
+                        // Same M2 data for fill area
+                        const m2Data = [
+                          { year: 1920, m2: 0.023 },   // Gold Standard era ($23B)
+                          { year: 1929, m2: 0.026 },   // Pre-Depression ($26B)
+                          { year: 1933, m2: 0.020 },   // Depression low ($20B)
+                          { year: 1940, m2: 0.040 },   // Pre-WWII ($40B)
+                          { year: 1945, m2: 0.107 },   // Post-WWII expansion ($107B)
+                          { year: 1950, m2: 0.117 },   // Korean War ($117B)
+                          { year: 1960, m2: 0.167 },   // 60s growth ($167B)
+                          { year: 1971, m2: 0.583 },   // Nixon Shock baseline ($583B)
+                          { year: 1980, m2: 1.600 },   // Early 80s ($1.6T)
+                          { year: 1990, m2: 3.200 },   // 90s expansion ($3.2T)
+                          { year: 2000, m2: 4.900 },   // Dot-com era ($4.9T)
+                          { year: 2008, m2: 7.500 },   // Pre-crisis ($7.5T)
+                          { year: 2010, m2: 8.700 },   // Post-crisis QE1 ($8.7T)
+                          { year: 2015, m2: 12.400 },  // QE era ($12.4T)
+                          { year: 2020, m2: 15.400 },  // Pre-COVID ($15.4T)
+                          { year: 2021, m2: 20.100 },  // COVID peak ($20.1T)
+                          { year: 2024, m2: 21.000 },  // 2024 ($21T)
+                          { year: 2025, m2: 21.200 }   // Current estimate ($21.2T)
+                        ];
+                        
+                        const linePath = m2Data.map((point, index) => {
+                          const x = 50 + ((point.year - 1920) / 105) * 320;
+                          const y = 175 - ((point.m2 - 0.023) / (21.2 - 0.023)) * 155;
+                          return `${index === 0 ? 'M' : 'L'} ${x},${y}`;
+                        }).join(' ');
+                        
+                        // Close the path to create fill area
+                        const lastX = 50 + ((2025 - 1920) / 105) * 320;
+                        return `${linePath} L ${lastX},180 L 50,180 Z`;
+                      })()}
+                      fill="url(#orangeGradient)"
+                      opacity="0.3"
+                    />
+                    
+                    <line 
+                      x1={50 + ((1971 - 1920) / 105) * 320} 
+                      y1="20" 
+                      x2={50 + ((1971 - 1920) / 105) * 320} 
+                      y2="175" 
+                      stroke="#f97316" 
+                      strokeWidth="2" 
+                      strokeDasharray="5,5"
+                      opacity="0.6"
+                    />
+                    <text 
+                      x={50 + ((1971 - 1920) / 105) * 320 - 35} 
+                      y="15" 
+                      fill="#f97316" 
+                      fontSize="8" 
+                      fontWeight="bold"
+                    >
+                      Gold Standard Ends
+                    </text>
 
-                  {/* Current year indicator */}
-                  <g>
                     <line 
                       x1={50 + ((moneySupplyYear - 1920) / 105) * 320} 
                       y1="10" 
@@ -687,37 +449,446 @@ export default function FinancePage() {
                     />
                     <circle 
                       cx={50 + ((moneySupplyYear - 1920) / (2025 - 1920)) * 320} 
-                      cy={(() => {
-                        // Get the actual M2 value for the selected year
-                        const currentM2 = getMoneySupplyRaw(moneySupplyYear);
-                        
-                        // Convert to Y coordinate using same formula as line chart (1920-2024 range)
-                        return 175 - ((currentM2 - 0.023) / (21.0 - 0.023)) * 155;
-                      })()} 
+                      cy={175 - ((getMoneySupplyRaw(moneySupplyYear) - 0.023) / (21.0 - 0.023)) * 155} 
                       r="5" 
                       fill="#f97316" 
                       stroke="#ffffff" 
                       strokeWidth="2"
                     />
-                  </g>
-                </svg>
-              </div>
-              
-              {/* Emphasis Text */}
-              <div className="text-center mt-4 p-4 bg-zinc-800/30 rounded-lg border border-orange-400/20">
-                <div className="text-2xl font-bold">
-                  <span className="text-zinc-300">THIS is </span>
-                  <span className="text-orange-400 tracking-wider">INFLATION</span>
+                  </svg>
                 </div>
-                <p className="text-zinc-400 text-sm mt-2">
-                  More dollars in circulation = each dollar is worth less
-                </p>
+                
+                <div className="text-center mt-4 p-4 bg-zinc-800/30 rounded-lg border border-orange-400/20">
+                  <div className="text-2xl font-bold">
+                    <span className="text-zinc-300">THIS is </span>
+                    <span className="text-orange-400 tracking-wider">INFLATION</span>
+                  </div>
+                  <p className="text-zinc-400 text-sm mt-2">
+                    More dollars in circulation = each dollar is worth less
+                  </p>
+                </div>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Purchasing Power Erosion Simulator */}
+        <Card className="bg-zinc-900 border-zinc-800">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-white flex items-center gap-3 text-xl">
+              <TrendingDown className="w-5 h-5 text-orange-400" />
+              Let's See What This Is Doing to Your Money
+            </CardTitle>
+            <p className="text-zinc-400 text-sm">See how $25,000 loses buying power over time</p>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {!inflationSimActive && inflationProgress === 0 && (
+              <div className="text-center space-y-4">
+                <div className="p-4 bg-zinc-800 rounded-lg border border-zinc-700">
+                  <p className="text-zinc-300 mb-3">
+                    You saved <span className="text-orange-400 font-bold">$25,000</span>. 
+                    Watch what happens to your money's buying power over 25 years.
+                  </p>
+                  <p className="text-zinc-400 text-sm">
+                    This is what inflation does to your savings.
+                  </p>
+                </div>
+                <Button 
+                  onClick={startInflationSimulation}
+                  className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg font-medium"
+                >
+                  Show Me the Impact
+                </Button>
+              </div>
+            )}
+
+            {/* Conservative Savings vs Bitcoin Comparison */}
+            {(inflationSimActive || inflationProgress > 0) && (
+              <div className="space-y-4">
+                {/* Narrative Introduction */}
+                <div className="text-center space-y-2">
+                  <p className="text-zinc-300 text-sm font-medium">
+                    The Tale of Two Strategies
+                  </p>
+                  <p className="text-zinc-400 text-xs leading-relaxed">
+                    Your $25,000 faces two very different futures. Traditional savings slowly loses buying power to inflation, 
+                    while Bitcoin has historically averaged over 100% annual growth. We're using a very conservative 25% growth rate below:
+                  </p>
+                </div>
+                
+                {/* Compact Racing Animation */}
+                <div className="space-y-2">
+                  {[
+                    { step: 0, year: "Today", savings: 25000, btc: 25000, narrative: "Both start equal" },
+                    { step: 1, year: "5 years", savings: 21562, btc: 76294, narrative: "Conservative 25% growth" },
+                    { step: 2, year: "10 years", savings: 18584, btc: 232831, narrative: "Compound growth builds" },
+                    { step: 3, year: "20 years", savings: 15342, btc: 2183468, narrative: "Two decades of growth" },
+                    { step: 4, year: "25 years", savings: 13670, btc: 6781371, narrative: "Long-term holder rewards" }
+                  ].map(({ step, year, savings, btc, narrative }) => {
+                    const isActive = inflationProgress >= step;
+                    
+                    return (
+                      <div key={step} className={`grid grid-cols-3 gap-2 p-2 rounded transition-all duration-700 ${
+                        isActive ? 'bg-zinc-800/50' : 'bg-zinc-900/30'
+                      }`}>
+                        {/* Year Label */}
+                        <div className={`text-sm font-medium flex items-center ${
+                          isActive ? 'text-zinc-200' : 'text-zinc-500'
+                        }`}>
+                          {year}
+                        </div>
+                        
+                        {/* Savings Bar */}
+                        <div className="space-y-1">
+                          <div className="flex justify-between text-xs">
+                            <span className={isActive ? 'text-red-300' : 'text-zinc-500'}>Savings</span>
+                            <span className={isActive ? 'text-red-200 font-bold' : 'text-zinc-500'}>
+                              ${savings.toLocaleString()}
+                            </span>
+                          </div>
+                          <div className="bg-zinc-700 rounded-full h-1.5 overflow-hidden">
+                            <div 
+                              className={`h-full transition-all duration-1000 ${
+                                isActive ? 'bg-red-500' : 'bg-zinc-600'
+                              }`}
+                              style={{ width: isActive ? `${(savings/25000)*100}%` : '100%' }}
+                            ></div>
+                          </div>
+                        </div>
+                        
+                        {/* Bitcoin Bar */}
+                        <div className="space-y-1">
+                          <div className="flex justify-between text-xs">
+                            <span className={isActive ? 'text-orange-300' : 'text-zinc-500'}>Bitcoin</span>
+                            <span className={isActive ? 'text-orange-200 font-bold' : 'text-zinc-500'}>
+                              ${btc >= 1000000 ? `${(btc/1000000).toFixed(1)}M` : btc.toLocaleString()}
+                            </span>
+                          </div>
+                          <div className="bg-zinc-700 rounded-full h-1.5 overflow-hidden">
+                            <div 
+                              className={`h-full transition-all duration-1000 ${
+                                isActive ? 'bg-orange-500' : 'bg-zinc-600'
+                              }`}
+                              style={{ width: isActive ? `${Math.min((btc/2750000)*100, 100)}%` : '0%' }}
+                            ></div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                
+                {/* Historical Performance Summary */}
+                {inflationProgress >= 5 && (
+                  <div className="space-y-3 p-4 bg-zinc-800/30 rounded-lg border border-orange-400/20">
+                    <div className="text-center">
+                      <div className="text-white font-bold text-sm mb-2">Two Different Approaches to Money</div>
+                      <div className="grid grid-cols-2 gap-4 text-xs">
+                        <div className="text-center">
+                          <div className="text-red-400 font-medium">Traditional Savings</div>
+                          <div className="text-red-300 text-lg font-bold">$13,670</div>
+                          <div className="text-red-400">Lost 45% to inflation</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-orange-400 font-medium">Conservative Bitcoin</div>
+                          <div className="text-orange-300 text-lg font-bold">$6.8M</div>
+                          <div className="text-orange-400">271x growth (25% annual)</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="text-center pt-2 border-t border-zinc-700/50">
+                      <p className="text-zinc-400 text-xs leading-relaxed">
+                        <span className="text-white font-medium">The Traditional Story:</span> For decades, saving money in banks was considered safe and responsible. 
+                        But inflation quietly erodes purchasing power - what costs $1 today will cost more tomorrow.
+                      </p>
+                      <p className="text-zinc-400 text-xs leading-relaxed mt-2">
+                        <span className="text-orange-400 font-medium">The Alternative Story:</span> Bitcoin offers a different approach with mathematically limited supply. 
+                        While volatile and speculative, some see it as a hedge against currency debasement. 
+                        Past performance doesn't guarantee future results.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Settlement Workflow Visualization */}
+        <Card className="bg-zinc-900 border-zinc-800">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-white flex items-center gap-3 text-xl">
+              <Clock className="w-5 h-5 text-orange-400" />
+              Plus, it's faster and you stay in control
+            </CardTitle>
+            <p className="text-zinc-400 text-sm">Watch $50,000 travel from New York to London - see the complexity difference</p>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {!speedRaceActive && (
+              <div className="text-center space-y-4">
+                <div className="p-6 bg-zinc-800 rounded-lg border border-zinc-700">
+                  <h3 className="text-lg font-medium text-white mb-3">Transfer Scenario</h3>
+                  <p className="text-zinc-300 mb-4">
+                    Your business needs to send <span className="text-orange-400 font-bold">$50,000</span> from 
+                    Chase Bank (New York) to Wells Fargo (London) for an urgent deal.
+                  </p>
+                  <p className="text-zinc-400 text-sm">
+                    Compare how traditional banking vs Bitcoin handles this international transfer.
+                  </p>
+                </div>
+                <Button 
+                  onClick={startSettlementAnimation}
+                  className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg font-medium"
+                >
+                  Initiate Transfer Race
+                </Button>
+              </div>
+            )}
+
+            {speedRaceActive && (
+              <div className="space-y-6">
+                <div className="text-center">
+                  <Button 
+                    onClick={resetSettlementAnimation}
+                    className="bg-orange-600 hover:bg-orange-700"
+                    disabled={animationActive}
+                  >
+                    {animationActive ? "Animation Running..." : "Reset Journey"}
+                  </Button>
+                  {animationActive && (
+                    <p className="text-zinc-400 text-sm mt-2">
+                      Watch Bitcoin complete while traditional banking gets stuck...
+                    </p>
+                  )}
+                </div>
+                
+                {/* Compact Side-by-Side Settlement Race */}
+                <div className="space-y-4">
+                  
+                  {/* Headers */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex items-center gap-3 p-3 bg-red-950/30 rounded-lg border border-red-800/30">
+                      <Building2 className="w-5 h-5 text-red-400" />
+                      <div>
+                        <div className="text-red-300 font-bold text-sm">Traditional Banking</div>
+                        <div className="text-zinc-400 text-xs">Complex, slow, expensive</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-green-950/30 rounded-lg border border-green-800/30">
+                      <Zap className="w-5 h-5 text-green-400" />
+                      <div>
+                        <div className="text-green-300 font-bold text-sm">Bitcoin Network</div>
+                        <div className="text-zinc-400 text-xs">Simple, fast, global</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Processing Steps - Side by Side */}
+                  <div className="space-y-3">
+                    
+                    {/* Steps 1-5 comparison */}
+                    {[1, 2, 3, 4, 5].map((stepNum) => (
+                      <div key={stepNum} className="grid grid-cols-2 gap-4">
+                        {/* Traditional Step */}
+                        <div className={`p-3 rounded-lg border transition-all duration-500 ${
+                          settlementProgress.traditional >= stepNum 
+                            ? 'bg-red-800/30 border-red-600/50' 
+                            : 'bg-zinc-800 border-zinc-700'
+                        }`}>
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold transition-all duration-500 ${
+                              settlementProgress.traditional >= stepNum ? 'bg-red-500' : 'bg-zinc-600'
+                            }`}>
+                              {settlementProgress.traditional >= stepNum ? '✓' : stepNum}
+                            </div>
+                            <span className={`font-medium text-sm transition-colors duration-500 ${
+                              settlementProgress.traditional >= stepNum ? 'text-red-200' : 'text-zinc-400'
+                            }`}>
+                              {stepNum === 1 && "Bank processes"}
+                              {stepNum === 2 && "Correspondent Bank"}
+                              {stepNum === 3 && "SWIFT Network"}
+                              {stepNum === 4 && "Compliance Review"}
+                              {stepNum === 5 && "Final Bank Approval"}
+                            </span>
+                          </div>
+                          <div className={`text-xs transition-colors duration-500 ${
+                            settlementProgress.traditional >= stepNum ? 'text-red-300' : 'text-zinc-500'
+                          }`}>
+                            {stepNum === 1 && "Submitting paperwork and security checks"}
+                            {stepNum === 2 && "Finding intermediary bank for routing"}
+                            {stepNum === 3 && "Routing through SWIFT messaging"}
+                            {stepNum === 4 && "Anti-money laundering verification"}
+                            {stepNum === 5 && "Receiving bank review • Add money to account"}
+                          </div>
+                        </div>
+
+                        {/* Bitcoin Step (only show for steps 1-4) */}
+                        {stepNum <= 4 ? (
+                          <div className={`p-4 rounded-lg border transition-all duration-500 min-h-[120px] ${
+                            settlementProgress.bitcoin >= stepNum 
+                              ? 'bg-green-800/30 border-green-600/50' 
+                              : 'bg-zinc-800 border-zinc-700'
+                          }`}>
+                            <div className="flex items-center gap-2 mb-3">
+                              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold transition-all duration-500 ${
+                                settlementProgress.bitcoin >= stepNum ? 'bg-green-500' : 'bg-zinc-600'
+                              }`}>
+                                {settlementProgress.bitcoin >= stepNum ? '✓' : stepNum}
+                              </div>
+                              <span className={`font-medium text-sm transition-colors duration-500 ${
+                                settlementProgress.bitcoin >= stepNum ? 'text-green-200' : 'text-zinc-400'
+                              }`}>
+                                {stepNum === 1 && "Broadcast to Network"}
+                                {stepNum === 2 && "Mempool Inclusion"}
+                                {stepNum === 3 && "Block Mining"}
+                                {stepNum === 4 && "Confirmation"}
+                              </span>
+                            </div>
+                            <div className={`text-xs mb-3 transition-colors duration-500 ${
+                              settlementProgress.bitcoin >= stepNum ? 'text-green-300' : 'text-zinc-500'
+                            }`}>
+                              {stepNum === 1 && "Instantly broadcast to global network"}
+                              {stepNum === 2 && "Transaction picked up by miners"}
+                              {stepNum === 3 && "Miners compete to include transaction"}
+                              {stepNum === 4 && "Transaction confirmed in block"}
+                            </div>
+                          </div>
+                        ) : (
+                          <div></div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Status Summary */}
+                  <div className="grid grid-cols-2 gap-4 mt-6">
+                    <div className="p-4 bg-red-950/40 rounded-lg border border-red-800/50">
+                      <div className="text-center">
+                        <div className="text-red-400 font-bold text-lg">
+                          {settlementProgress.traditional === 0 && "Waiting..."}
+                          {settlementProgress.traditional === 1 && "At Bank Branch"}
+                          {settlementProgress.traditional === 2 && "Stuck in Compliance"}
+                          {settlementProgress.traditional >= 3 && settlementProgress.traditional < 5 && "Still Processing..."}
+                          {settlementProgress.traditional === 5 && "Finally Complete"}
+                        </div>
+                        <div className="text-zinc-400 text-xs mt-1">
+                          Step {settlementProgress.traditional}/5 • Traditional Banking
+                        </div>
+                        <div className="text-red-300 text-xs mt-2 font-medium">
+                          {settlementProgress.traditional === 2 && "Estimated: 3-5 business days"}
+                          {settlementProgress.traditional === 5 && "Total time: 3-5 business days"}
+                          {settlementProgress.traditional > 0 && settlementProgress.traditional < 2 && "Estimated: 3-5 business days"}
+                          {settlementProgress.traditional > 2 && settlementProgress.traditional < 5 && "Estimated: 3-5 business days"}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="p-4 bg-green-950/40 rounded-lg border border-green-800/50">
+                      <div className="text-center">
+                        <div className="text-green-400 font-bold text-lg">
+                          {settlementProgress.bitcoin === 0 && "Ready"}
+                          {settlementProgress.bitcoin === 1 && "Creating..."}
+                          {settlementProgress.bitcoin === 2 && "Broadcasting..."}
+                          {settlementProgress.bitcoin === 3 && "Mining..."}
+                          {settlementProgress.bitcoin === 4 && "✅ COMPLETE!"}
+                        </div>
+                        <div className="text-zinc-400 text-xs mt-1">
+                          Step {settlementProgress.bitcoin}/4 • Bitcoin Network
+                        </div>
+                        <div className="text-green-300 text-xs mt-2 font-medium">
+                          {settlementProgress.bitcoin === 4 && "Total time: ~10 minutes"}
+                          {settlementProgress.bitcoin > 0 && settlementProgress.bitcoin < 4 && "Estimated: ~10 minutes"}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Final Comparison */}
+                <div className="p-6 bg-gradient-to-r from-green-950/30 to-orange-950/30 rounded-xl border border-green-800/30">
+                  <div className="text-center space-y-4">
+                    <div className="text-orange-300 font-bold text-xl">The Difference is Clear</div>
+                    
+                    <div className="grid gap-4 md:grid-cols-3 text-center">
+                      <div className="p-4 bg-zinc-800 rounded-lg">
+                        <div className="text-green-400 font-bold text-2xl">432x</div>
+                        <div className="text-zinc-300 text-sm">Faster Settlement</div>
+                        <div className="text-zinc-500 text-xs">Days vs Minutes</div>
+                      </div>
+                      <div className="p-4 bg-zinc-800 rounded-lg">
+                        <div className="text-green-400 font-bold text-2xl">93%</div>
+                        <div className="text-zinc-300 text-sm">Lower Fees</div>
+                        <div className="text-zinc-500 text-xs">$2-5 vs $45-75</div>
+                      </div>
+                      <div className="p-4 bg-zinc-800 rounded-lg">
+                        <div className="text-green-400 font-bold text-2xl">0</div>
+                        <div className="text-zinc-300 text-sm">Intermediaries</div>
+                        <div className="text-zinc-500 text-xs">Direct vs 5+ Banks</div>
+                      </div>
+                    </div>
+                    
+                    <div className="text-zinc-300 leading-relaxed max-w-2xl mx-auto">
+                      Traditional banking turns a simple transfer into a 5-institution relay race spanning days. 
+                      Bitcoin eliminates all intermediaries with direct, cryptographic settlement in minutes. 
+                      <span className="text-orange-400 font-medium">This is another reason why Bitcoin is the future of money.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Conclusion & Call to Action */}
+        <div className="bg-zinc-900/50 rounded-lg p-8 border border-zinc-800/50">
+          <h3 className="text-2xl font-bold mb-6 text-orange-400 text-center">The Choice Is Yours</h3>
+          <div className="space-y-6 text-zinc-300 leading-relaxed max-w-4xl mx-auto">
+            <p className="text-lg">
+              You've seen the math. Every day you hold dollars, you lose purchasing power to inflation. Every international 
+              transfer bleeds money to banking fees. Every "business day" delay costs you opportunity and freedom.
+            </p>
+            <p>
+              Bitcoin isn't just an investment—it's a complete financial system upgrade. Fixed supply instead of endless printing. 
+              Direct peer-to-peer transfers instead of middleman extraction. Mathematical certainty instead of central bank promises.
+            </p>
+            <p>
+              The wealthy already know this. Major corporations hold Bitcoin on their balance sheets. Entire nations have made 
+              it legal tender. Smart money is moving first, as it always does.
+            </p>
+            <p className="text-orange-300 font-medium text-lg text-center">
+              Your financial future depends on understanding this technology. The question isn't whether Bitcoin will succeed—
+              it's whether you'll learn about it before it's too late to matter.
+            </p>
           </div>
-        </CardContent>
-      </Card>
         </div>
+
+        <Card className="bg-gradient-to-br from-orange-950/50 to-amber-950/50 border-orange-800/50">
+          <CardContent className="p-8 text-center">
+            <div className="max-w-2xl mx-auto space-y-6">
+              <h3 className="text-3xl font-bold text-white">Ready to Learn How Bitcoin Works?</h3>
+              <p className="text-zinc-300 text-lg">
+                Start with daily lessons, practice with real simulations, and understand why Bitcoin represents 
+                the future of money. Your financial education begins here.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button 
+                  onClick={() => setLocation("/learn")}
+                  className="bg-orange-600 hover:bg-orange-700 px-8 py-4 text-lg font-medium h-auto"
+                >
+                  Start Daily Bitcoin Lessons
+                </Button>
+                <Button 
+                  onClick={() => setLocation("/simulators")}
+                  variant="outline"
+                  className="border-orange-600 text-orange-400 hover:bg-orange-600/20 px-8 py-4 text-lg font-medium h-auto"
+                >
+                  Practice with Simulators
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </main>
 
       {/* Bottom Navigation */}
