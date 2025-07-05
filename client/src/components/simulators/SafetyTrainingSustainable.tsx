@@ -543,6 +543,78 @@ export default function SafetyTraining({
           </CardContent>
         </Card>
 
+        {/* Essential Bitcoin Security Guidelines */}
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardContent className="p-6">
+            <h4 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <Shield className="w-5 h-5 text-orange-500" />
+              Essential Bitcoin Security Guidelines
+            </h4>
+            <div className="grid md:grid-cols-2 gap-4 text-sm">
+              <div className="space-y-3">
+                <div className="flex items-start gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-zinc-200">Secure Your Seed Phrase</p>
+                    <p className="text-zinc-400">Write on paper, store offline, never share or type online</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-zinc-200">Verify Every Address</p>
+                    <p className="text-zinc-400">Check each character before sending - one mistake loses everything</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-zinc-200">Use Hardware Wallets</p>
+                    <p className="text-zinc-400">Buy new from official sources for large amounts</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-zinc-200">Enable 2FA Everywhere</p>
+                    <p className="text-zinc-400">Use authenticator apps, avoid SMS when possible</p>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-start gap-2">
+                  <XCircle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-zinc-200">Never Share Private Keys</p>
+                    <p className="text-zinc-400">No legitimate service ever needs your seed phrase</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <XCircle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-zinc-200">Avoid Public WiFi</p>
+                    <p className="text-zinc-400">Use cellular data for Bitcoin transactions</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <XCircle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-zinc-200">Don't Trust "Doubling" Offers</p>
+                    <p className="text-zinc-400">All Bitcoin doubling schemes are scams</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <XCircle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-zinc-200">Don't Rush Transactions</p>
+                    <p className="text-zinc-400">Take time to verify - Bitcoin transactions are irreversible</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="text-center">
           <Button 
             onClick={() => {
