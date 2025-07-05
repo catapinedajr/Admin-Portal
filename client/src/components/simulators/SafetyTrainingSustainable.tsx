@@ -262,6 +262,62 @@ const securityScenarios: SecurityScenario[] = [
     ],
     correctIndex: 2,
     explanation: "Most 'Bitcoin recovery services' are scams. If you lost your private keys, the Bitcoin is likely gone forever. Don't pay scammers for false hope."
+  },
+  {
+    id: 13,
+    title: "Password Security",
+    description: "Protecting wallet access credentials",
+    question: "You're setting up a new Bitcoin wallet. Which password approach is most secure?",
+    options: [
+      "Use your birthday and name for easy remembering",
+      "Create a long, unique password with random characters",
+      "Use the same password as your email account",
+      "Write 'password123' since it's just for testing"
+    ],
+    correctIndex: 1,
+    explanation: "Strong, unique passwords are critical for wallet security. Weak or reused passwords are easily cracked by attackers who gain access to your wallet file."
+  },
+  {
+    id: 14,
+    title: "Multi-Signature Understanding",
+    description: "Advanced wallet security concepts",
+    question: "Your business wants to secure large Bitcoin holdings. What's the best approach?",
+    options: [
+      "Give one person full control of the private key",
+      "Use a multi-signature wallet requiring multiple approvals",
+      "Store everything on a hardware wallet",
+      "Split the private key and email pieces to different people"
+    ],
+    correctIndex: 1,
+    explanation: "Multi-signature wallets require multiple private keys to authorize transactions, preventing any single person from moving funds alone. Never split private keys."
+  },
+  {
+    id: 15,
+    title: "Privacy Protection",
+    description: "Maintaining transaction privacy",
+    question: "You want to protect your Bitcoin privacy. What should you avoid?",
+    options: [
+      "Using the same address for multiple transactions",
+      "Running your own Bitcoin node",
+      "Using different addresses for each transaction",
+      "Connecting through a VPN"
+    ],
+    correctIndex: 0,
+    explanation: "Address reuse destroys privacy by linking all your transactions together. Always use a new address for each transaction to maintain privacy."
+  },
+  {
+    id: 16,
+    title: "Physical Security",
+    description: "Protecting devices and backups",
+    question: "Someone could gain physical access to your computer. How should you protect your Bitcoin wallet?",
+    options: [
+      "Hide the wallet file in a secret folder",
+      "Encrypt the wallet file with a strong password",
+      "Rename the wallet file to something ordinary",
+      "Store it on a USB drive instead"
+    ],
+    correctIndex: 1,
+    explanation: "Wallet encryption is essential for physical security. Without encryption, anyone with access to your device can steal your Bitcoin immediately."
   }
 ];
 
