@@ -166,18 +166,31 @@ const HODLSimulator: React.FC = () => {
                   </defs>
                   <rect width="100%" height="100%" fill="url(#grid-hodl-chart)" />
                   
-                  {/* Milestone reference lines */}
-                  <line x1="20" y1="40" x2="350" y2="40" stroke="#dc2626" strokeWidth="1.5" opacity="0.8" strokeDasharray="3,3"/>
-                  <text x="360" y="44" fill="#dc2626" fontSize="12" opacity="0.9">100x</text>
-                  
-                  <line x1="20" y1="70" x2="350" y2="70" stroke="#fbbf24" strokeWidth="1.5" opacity="0.8" strokeDasharray="3,3"/>
-                  <text x="360" y="74" fill="#fbbf24" fontSize="12" opacity="0.9">10x</text>
-                  
-                  <line x1="20" y1="105" x2="350" y2="105" stroke="#10b981" strokeWidth="1.5" opacity="0.8" strokeDasharray="3,3"/>
-                  <text x="360" y="109" fill="#10b981" fontSize="12" opacity="0.9">5x</text>
-                  
-                  <line x1="20" y1="135" x2="350" y2="135" stroke="#6366f1" strokeWidth="1.5" opacity="0.8" strokeDasharray="3,3"/>
-                  <text x="360" y="139" fill="#6366f1" fontSize="12" opacity="0.9">2x</text>
+                  {/* Dynamic milestone reference lines based on results */}
+                  {hodlResults && (() => {
+                    const multiplier = hodlResults.currentValue / hodlResults.initialInvestment;
+                    const milestones = [];
+                    
+                    if (multiplier >= 100) {
+                      milestones.push({ label: '100x', y: 40, color: '#dc2626' });
+                    }
+                    if (multiplier >= 10) {
+                      milestones.push({ label: '10x', y: 70, color: '#fbbf24' });
+                    }
+                    if (multiplier >= 5) {
+                      milestones.push({ label: '5x', y: 105, color: '#10b981' });
+                    }
+                    if (multiplier >= 2) {
+                      milestones.push({ label: '2x', y: 135, color: '#6366f1' });
+                    }
+                    
+                    return milestones.map(milestone => (
+                      <g key={milestone.label}>
+                        <line x1="20" y1={milestone.y} x2="350" y2={milestone.y} stroke={milestone.color} strokeWidth="1.5" opacity="0.8" strokeDasharray="3,3"/>
+                        <text x="360" y={milestone.y + 4} fill={milestone.color} fontSize="12" opacity="0.9">{milestone.label}</text>
+                      </g>
+                    ));
+                  })()}
                   
                   {/* Bitcoin Price Line (realistic exponential growth) */}
                   <path 
@@ -308,18 +321,31 @@ const HODLSimulator: React.FC = () => {
                         </defs>
                         <rect width="100%" height="100%" fill="url(#portfolioGrid)" />
                         
-                        {/* Milestone reference lines */}
-                        <line x1="20" y1="20" x2="280" y2="20" stroke="#dc2626" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                        <text x="285" y="24" fill="#dc2626" fontSize="10" opacity="0.8">100x</text>
-                        
-                        <line x1="20" y1="40" x2="280" y2="40" stroke="#fbbf24" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                        <text x="285" y="44" fill="#fbbf24" fontSize="10" opacity="0.8">10x</text>
-                        
-                        <line x1="20" y1="60" x2="280" y2="60" stroke="#10b981" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                        <text x="285" y="64" fill="#10b981" fontSize="10" opacity="0.8">5x</text>
-                        
-                        <line x1="20" y1="80" x2="280" y2="80" stroke="#6366f1" strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
-                        <text x="285" y="84" fill="#6366f1" fontSize="10" opacity="0.8">2x</text>
+                        {/* Dynamic milestone reference lines for Portfolio Growth Chart */}
+                        {(() => {
+                          const multiplier = hodlResults.currentValue / hodlResults.initialInvestment;
+                          const milestones = [];
+                          
+                          if (multiplier >= 100) {
+                            milestones.push({ label: '100x', y: 20, color: '#dc2626' });
+                          }
+                          if (multiplier >= 10) {
+                            milestones.push({ label: '10x', y: 40, color: '#fbbf24' });
+                          }
+                          if (multiplier >= 5) {
+                            milestones.push({ label: '5x', y: 60, color: '#10b981' });
+                          }
+                          if (multiplier >= 2) {
+                            milestones.push({ label: '2x', y: 80, color: '#6366f1' });
+                          }
+                          
+                          return milestones.map(milestone => (
+                            <g key={milestone.label}>
+                              <line x1="20" y1={milestone.y} x2="280" y2={milestone.y} stroke={milestone.color} strokeWidth="1" opacity="0.6" strokeDasharray="3,3"/>
+                              <text x="285" y={milestone.y + 4} fill={milestone.color} fontSize="10" opacity="0.8">{milestone.label}</text>
+                            </g>
+                          ));
+                        })()}
                         
                         {/* Growth Line */}
                         {(() => {
@@ -435,7 +461,7 @@ const HODLSimulator: React.FC = () => {
                     
                     <div className="flex justify-between items-center">
                       <span className="text-zinc-400">Total Gain:</span>
-                      <span className="text-orange-400 font-mono text-lg">+{hodlResults.percentageReturn.toLocaleString('en-US', {maximumFractionDigits: 1})}%</span>
+                      <span className="text-orange-400 font-mono text-lg">+{Math.round(hodlResults.percentageReturn).toLocaleString()}%</span>
                     </div>
                     
                     <div className="flex justify-between items-center">
@@ -446,7 +472,7 @@ const HODLSimulator: React.FC = () => {
                     <div className="pt-3 border-t border-zinc-700">
                       <div className="text-center">
                         <div className="text-zinc-300 text-sm">Held for {hodlInputs.years} years</div>
-                        <div className="text-orange-300 font-medium">{hodlResults.annualReturn.toFixed(1)}% annual return</div>
+                        <div className="text-orange-300 font-medium">{Math.round(hodlResults.annualReturn)}% annual return</div>
                       </div>
                     </div>
                   </div>
