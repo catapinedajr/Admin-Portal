@@ -90,7 +90,6 @@ import DevSubscriptionToggle from "@/components/DevSubscriptionToggle";
 import BottomNavigation from "@/components/BottomNavigation";
 import LearnPage from "@/pages/LearnPage";
 import FinancePage from "@/pages/FinancePage";
-import SimulatorsPage from "@/pages/SimulatorsPage";
 import EmailCollectionModal from "@/components/EmailCollectionModal";
 import { ConsistencyCalendar } from "@/components/ConsistencyCalendar";
 
@@ -2152,13 +2151,8 @@ export default function Home() {
           <FinancePage />
         )}
 
-        {/* Simulators Section - Extracted to SimulatorsPage.tsx */}
+        {/* Practice Section */}
         {activeSection === "simulations" && (
-          <SimulatorsPage />
-        )}
-
-        {/* Original Simulators Section (to be removed after testing) */}
-        {false && activeSection === "simulations" && (
           <div className="space-y-6">
             {/* Simulators Preview for Free Users */}
             {!isPremiumTier && (
