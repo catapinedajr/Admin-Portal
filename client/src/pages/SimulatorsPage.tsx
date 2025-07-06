@@ -16,28 +16,34 @@ const FeesSimulator = lazy(() => import("@/components/simulators/FeesSimulator")
 type SimulationsSubTab = "wallet" | "safety" | "transactions" | "transfer" | "hodl" | "dca" | "inflation" | "fees";
 
 interface SimulatorsPageProps {
-  simulationsSubTab: SimulationsSubTab;
-  setSimulationsSubTab: (tab: SimulationsSubTab) => void;
-  isPremiumTier: boolean;
-  securityStage: number;
-  setSecurityStage: (stage: number) => void;
-  securityScore: number;
-  setSecurityScore: (score: number) => void;
-  userSecurityAnswers: Record<number, boolean>;
-  setUserSecurityAnswers: (answers: Record<number, boolean>) => void;
+  simulationsSubTab?: SimulationsSubTab;
+  setSimulationsSubTab?: (tab: SimulationsSubTab) => void;
+  isPremiumTier?: boolean;
+  securityStage?: number;
+  setSecurityStage?: (stage: number) => void;
+  securityScore?: number;
+  setSecurityScore?: (score: number) => void;
+  userSecurityAnswers?: Record<number, boolean>;
+  setUserSecurityAnswers?: (answers: Record<number, boolean>) => void;
 }
 
-export default function SimulatorsPage({
-  simulationsSubTab,
-  setSimulationsSubTab,
-  isPremiumTier,
-  securityStage,
-  setSecurityStage,
-  securityScore,
-  setSecurityScore,
-  userSecurityAnswers,
-  setUserSecurityAnswers
-}: SimulatorsPageProps) {
+export default function SimulatorsPage(props: SimulatorsPageProps = {}) {
+  // Create internal state when props aren't provided (standalone mode)
+  const [internalSimulationsSubTab, setInternalSimulationsSubTab] = useState<SimulationsSubTab>("safety");
+  const [internalSecurityStage, setInternalSecurityStage] = useState(1);
+  const [internalSecurityScore, setInternalSecurityScore] = useState(0);
+  const [internalUserSecurityAnswers, setInternalUserSecurityAnswers] = useState<Record<number, boolean>>({});
+  
+  // Use props if provided, otherwise use internal state
+  const simulationsSubTab = props.simulationsSubTab ?? internalSimulationsSubTab;
+  const setSimulationsSubTab = props.setSimulationsSubTab ?? setInternalSimulationsSubTab;
+  const isPremiumTier = props.isPremiumTier ?? true; // Default to premium for standalone
+  const securityStage = props.securityStage ?? internalSecurityStage;
+  const setSecurityStage = props.setSecurityStage ?? setInternalSecurityStage;
+  const securityScore = props.securityScore ?? internalSecurityScore;
+  const setSecurityScore = props.setSecurityScore ?? setInternalSecurityScore;
+  const userSecurityAnswers = props.userSecurityAnswers ?? internalUserSecurityAnswers;
+  const setUserSecurityAnswers = props.setUserSecurityAnswers ?? setInternalUserSecurityAnswers;
 
   // Loading component for lazy loaded simulators
   const SimulatorLoading = () => (

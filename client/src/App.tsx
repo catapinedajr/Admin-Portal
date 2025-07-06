@@ -6,9 +6,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { useEffect, useState } from "react";
 
-import Home from "@/pages/home-new";
+import HomePage from "@/pages/HomePage";
 import LearnPage from "@/pages/LearnPage";
 import FinancePage from "@/pages/FinancePage";
+import SimulatorsPage from "@/pages/SimulatorsPage";
+import MorePage from "@/pages/MorePage";
 import { AppContextProvider } from "@/components/shared/AppContextProvider";
 import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
@@ -115,7 +117,7 @@ function OnboardingRedirect() {
     }
   }, [setLocation]);
 
-  return <Home />;
+  return <HomePage />;
 }
 
 function ScrollToTop() {
@@ -144,28 +146,28 @@ function Router() {
         <Route path="/learn">
           <AuthGuard>
             <AppContextProvider>
-              <Home />
+              <LearnPage />
             </AppContextProvider>
           </AuthGuard>
         </Route>
         <Route path="/money">
           <AuthGuard>
             <AppContextProvider>
-              <Home />
+              <FinancePage />
             </AppContextProvider>
           </AuthGuard>
         </Route>
         <Route path="/simulators">
           <AuthGuard>
             <AppContextProvider>
-              <Home />
+              <SimulatorsPage />
             </AppContextProvider>
           </AuthGuard>
         </Route>
         <Route path="/more">
           <AuthGuard>
             <AppContextProvider>
-              <Home />
+              <MorePage />
             </AppContextProvider>
           </AuthGuard>
         </Route>
