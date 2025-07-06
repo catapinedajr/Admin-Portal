@@ -120,9 +120,9 @@ export default function SimulatorsPage({
   };
 
   return (
-    <div className="space-y-6">
-      {/* Practice Sub-navigation - Only show for premium users */}
-      {isPremiumTier && (
+    <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+      {/* Practice Sub-navigation */}
+      {true && (
         <div className="flex justify-center">
           <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2">
           <Button
