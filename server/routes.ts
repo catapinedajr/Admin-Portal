@@ -8,8 +8,17 @@ import { eq, sql } from "drizzle-orm";
 import { v4 as uuidv4 } from 'uuid';
 import { randomUUID } from 'crypto';
 
-// Authentication middleware
+// Demo mode - simplified authentication
+const DEMO_MODE = true; // Set to true for deployment simplicity
+
 function requireAuth(req: any, res: any, next: any) {
+  if (DEMO_MODE) {
+    // In demo mode, use default user
+    req.user = { id: 1 };
+    req.sessionId = 'demo_session';
+    return next();
+  }
+  
   const sessionId = req.headers.authorization?.replace('Bearer ', '');
   if (!sessionId) {
     return res.status(401).json({ message: 'Authentication required' });
@@ -1455,13 +1464,8 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     try {
       const { questionId, selectedAnswer, date } = req.body;
       
-      // Get authenticated user ID from session
-      const session = await storage.getSession(req.sessionId);
-      if (!session || new Date() > session.expiresAt) {
-        return res.status(401).json({ message: "Invalid or expired session" });
-      }
-      
-      const userId = session.userId;
+      // Demo mode - use default user
+      const userId = DEMO_MODE ? 1 : req.user.id;
       
       console.log('[DEBUG] Quiz submission:', { userId, questionId, selectedAnswer, date });
       
@@ -1495,13 +1499,8 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     try {
       const date = req.params.date;
       
-      // Get authenticated user ID from session
-      const session = await storage.getSession(req.sessionId);
-      if (!session || new Date() > session.expiresAt) {
-        return res.status(401).json({ message: "Invalid or expired session" });
-      }
-      
-      const userId = session.userId;
+      // Demo mode - use default user
+      const userId = DEMO_MODE ? 1 : req.user.id;
       
       // Get the current day index from query parameter or default to 1
       const dayIndex = parseInt(req.query.dayIndex as string) || 1;
@@ -1518,13 +1517,8 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     try {
       const date = req.params.date;
       
-      // Get authenticated user ID from session
-      const session = await storage.getSession(req.sessionId);
-      if (!session || new Date() > session.expiresAt) {
-        return res.status(401).json({ message: "Invalid or expired session" });
-      }
-      
-      const userId = session.userId;
+      // Demo mode - use default user  
+      const userId = DEMO_MODE ? 1 : req.user.id;
       
       const answers = await storage.getUserQuizAnswers(userId, date);
       res.json(answers);

@@ -17,47 +17,8 @@ import About from "@/pages/about";
 import NotFound from "@/pages/not-found";
 import { AuthPage } from "@/pages/auth";
 
+// Demo mode - simplified for deployment
 function AuthGuard({ children }: { children: React.ReactNode }) {
-  const [, setLocation] = useLocation();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    async function checkAuth() {
-      try {
-        // Simplified Safari-compatible authentication
-        const response = await fetch('/api/user', {
-          method: 'GET',
-          credentials: 'include',
-          cache: 'no-cache'
-        });
-        
-        if (response.ok) {
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-          setLocation('/auth');
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        setIsAuthenticated(false);
-        setLocation('/auth');
-      }
-    }
-    
-    checkAuth();
-  }, [setLocation]);
-
-  // Show loading while checking auth
-  if (isAuthenticated === null) {
-    return (
-      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
-        <div className="text-orange-500 text-xl font-bold">
-          Loading HODLearn...
-        </div>
-      </div>
-    );
-  }
-
   return <>{children}</>;
 }
 
