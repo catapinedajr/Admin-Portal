@@ -82,7 +82,7 @@ export default function HomePage() {
     if (currentStreak === 0) return "Start your learning journey today";
     if (currentStreak < 3) return "Keep the momentum going";
     if (currentStreak < 7) return "Building a strong habit";
-    if (currentStreak < 14) return "Consistency builds conviction";
+    if (currentStreak < 14) return "Discipline builds conviction";
     if (currentStreak < 30) return "You're developing real discipline";
     return "Bitcoin conviction through daily learning";
   };
@@ -94,7 +94,7 @@ export default function HomePage() {
         <h2 className="text-4xl font-bold text-white">{greeting}</h2>
         <div className="space-y-2">
           <p className="text-xl text-zinc-300">Understanding Bitcoin takes time</p>
-          <p className="text-xl text-zinc-300">Building conviction takes consistency</p>
+          <p className="text-xl text-zinc-300">Building conviction takes discipline</p>
           <p className="text-xl text-orange-500 font-semibold">This is HODLearn</p>
         </div>
       </div>
@@ -148,7 +148,7 @@ export default function HomePage() {
                   style={{ width: `${weeklyProgress}%` }}
                 />
               </div>
-              <p className="text-xs text-zinc-500">Weekly consistency builds lasting habits</p>
+              <p className="text-xs text-zinc-500">Weekly discipline builds lasting habits</p>
             </div>
           </CardContent>
         </Card>
