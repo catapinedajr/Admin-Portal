@@ -1,5 +1,10 @@
 import React, { useState, lazy, Suspense } from "react";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
+import BottomNavigation from "@/components/BottomNavigation";
+import PWAInstallButton from "@/components/PWAInstallButton";
+import { useSubscription } from "@/contexts/SubscriptionContext";
+import { Crown, Gem } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, Wallet, ArrowLeftRight, Coins, TrendingUp, DollarSign, TrendingDown, FileText } from "lucide-react";
 

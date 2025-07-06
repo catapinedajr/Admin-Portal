@@ -1,9 +1,12 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useLocation } from "wouter";
+import BottomNavigation from "@/components/BottomNavigation";
+import PWAInstallButton from "@/components/PWAInstallButton";
+import { useSubscription } from "@/contexts/SubscriptionContext";
+import { Crown, Gem } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import PWAInstallButton from "@/components/PWAInstallButton";
 import { 
   TrendingUp, 
   TrendingDown,
@@ -21,7 +24,6 @@ import {
 import { useAppContext } from "@/components/shared/AppContextProvider";
 import { useQuery } from "@tanstack/react-query";
 import { User } from "@shared/schema";
-import BottomNavigation from "@/components/BottomNavigation";
 import EmailCollectionModal from "@/components/EmailCollectionModal";
 
 export default function FinancePage() {

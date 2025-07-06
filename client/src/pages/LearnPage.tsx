@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
+import BottomNavigation from "@/components/BottomNavigation";
+import PWAInstallButton from "@/components/PWAInstallButton";
+import { useSubscription } from "@/contexts/SubscriptionContext";
+import { Crown, Gem } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
