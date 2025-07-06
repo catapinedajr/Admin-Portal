@@ -484,7 +484,21 @@ export default function SafetyTraining({
             
             <div className="flex justify-center pt-2">
               <Button
-                onClick={() => setSecurityTestStage(1)}
+                onClick={() => {
+                  setSecurityTestStage(1);
+                  // Scroll to ensure content is visible below header
+                  setTimeout(() => {
+                    const simulator = document.getElementById('safety-skills-test');
+                    if (simulator) {
+                      const rect = simulator.getBoundingClientRect();
+                      const headerHeight = 80;
+                      window.scrollTo({
+                        top: window.pageYOffset + rect.top - headerHeight,
+                        behavior: 'smooth'
+                      });
+                    }
+                  }, 100);
+                }}
                 className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
               >
                 Begin Simulation
