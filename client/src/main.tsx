@@ -1,10 +1,6 @@
 import { createRoot } from "react-dom/client";
 import App from "./App";
-import SimpleApp from "./App-backup";
 import "./index.css";
-
-// Test mode - render simple app first to isolate issue
-const TEST_MODE = false;
 
 // Register service worker for PWA functionality (Safari-compatible)
 if ('serviceWorker' in navigator && typeof navigator.serviceWorker !== 'undefined') {
@@ -23,4 +19,4 @@ if ('serviceWorker' in navigator && typeof navigator.serviceWorker !== 'undefine
   });
 }
 
-createRoot(document.getElementById("root")!).render(TEST_MODE ? <SimpleApp /> : <App />);
+createRoot(document.getElementById("root")!).render(<App />);
