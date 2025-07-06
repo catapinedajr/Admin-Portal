@@ -50,9 +50,12 @@ export default function SimulatorsPage({
     switch (simulationsSubTab) {
       case "wallet":
         return (
-          <Suspense fallback={<SimulatorLoading />}>
-            <WalletSimulator />
-          </Suspense>
+          <div>
+            <h3>Wallet Simulator Loading...</h3>
+            <Suspense fallback={<SimulatorLoading />}>
+              <WalletSimulator />
+            </Suspense>
+          </div>
         );
       case "safety":
         return (
@@ -105,16 +108,19 @@ export default function SimulatorsPage({
         );
       default:
         return (
-          <Suspense fallback={<SimulatorLoading />}>
-            <SafetyTraining 
-              securityStage={securityStage}
-              setSecurityStage={setSecurityStage}
-              securityScore={securityScore}
-              setSecurityScore={setSecurityScore}
-              userSecurityAnswers={userSecurityAnswers}
-              setUserSecurityAnswers={setUserSecurityAnswers}
-            />
-          </Suspense>
+          <div>
+            <h3>Safety Training Loading...</h3>
+            <Suspense fallback={<SimulatorLoading />}>
+              <SafetyTraining 
+                securityStage={securityStage}
+                setSecurityStage={setSecurityStage}
+                securityScore={securityScore}
+                setSecurityScore={setSecurityScore}
+                userSecurityAnswers={userSecurityAnswers}
+                setUserSecurityAnswers={setUserSecurityAnswers}
+              />
+            </Suspense>
+          </div>
         );
     }
   };
