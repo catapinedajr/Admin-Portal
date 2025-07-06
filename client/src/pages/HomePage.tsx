@@ -17,27 +17,35 @@ export default function HomePage() {
   // Day navigation for development testing
   const [testDayOverride, setTestDayOverride] = useState<number | null>(null);
   
-  // Get current day from API - only load when on home page
+  // Get current day from API with caching
   const { data: nextDayData } = useQuery({
     queryKey: ['/api/next-available-day', 1],
-    queryFn: () => fetch('/api/next-available-day/1').then(res => res.json())
+    queryFn: () => fetch('/api/next-available-day/1').then(res => res.json()),
+    staleTime: 30000, // 30 seconds
+    cacheTime: 60000 // 1 minute
   });
   
   const currentDayIndex = testDayOverride || nextDayData?.dayIndex || 1;
   
-  // Home-specific API calls
+  // Home-specific API calls with aggressive caching
   const { data: dayMetadata } = useQuery({
     queryKey: ['/api/day-metadata', currentDayIndex],
-    queryFn: () => fetch(`/api/day-metadata/${currentDayIndex}`).then(res => res.json())
+    queryFn: () => fetch(`/api/day-metadata/${currentDayIndex}`).then(res => res.json()),
+    staleTime: 300000, // 5 minutes
+    cacheTime: 600000 // 10 minutes
   });
 
   const { data: dailyFacts } = useQuery({
     queryKey: ['/api/daily-facts', currentDayIndex],
-    queryFn: () => fetch(`/api/daily-facts/${currentDayIndex}`).then(res => res.json())
+    queryFn: () => fetch(`/api/daily-facts/${currentDayIndex}`).then(res => res.json()),
+    staleTime: 300000, // 5 minutes  
+    cacheTime: 600000 // 10 minutes
   });
 
   const { data: user } = useQuery<User>({
-    queryKey: ['/api/user']
+    queryKey: ['/api/user'],
+    staleTime: 600000, // 10 minutes
+    cacheTime: 1800000 // 30 minutes
   });
 
   const setActiveSection = (section: "home" | "learn" | "money" | "simulations" | "more") => {

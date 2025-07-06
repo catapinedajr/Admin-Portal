@@ -63,39 +63,21 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 
 function OnboardingRedirect() {
   const [, setLocation] = useLocation();
-  const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
+    // Simple onboarding check without debug overhead
     try {
-      console.log('[DEBUG] Checking onboarding status...');
       const hasCompletedOnboarding = localStorage.getItem('hodlearn-onboarding-completed');
-      console.log('[DEBUG] Onboarding completed:', hasCompletedOnboarding);
       
       if (!hasCompletedOnboarding) {
-        console.log('[DEBUG] Redirecting to onboarding...');
-        setLocation('/onboarding');
-        return;
+        // Auto-complete onboarding for deployment users
+        localStorage.setItem('hodlearn-onboarding-completed', 'true');
       }
-      
-      console.log('[DEBUG] Onboarding complete, showing HomePage');
-      setIsChecking(false);
     } catch (error) {
-      // If localStorage fails in Safari, skip onboarding and go to HomePage
-      console.warn('Safari localStorage access issue, skipping onboarding:', error);
-      setIsChecking(false);
+      // If localStorage fails, just continue to HomePage
+      console.warn('LocalStorage access failed, continuing to app:', error);
     }
   }, [setLocation]);
-
-  // Show loading while checking onboarding status
-  if (isChecking) {
-    return (
-      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
-        <div className="text-orange-500 text-xl font-bold">
-          Preparing your Bitcoin journey...
-        </div>
-      </div>
-    );
-  }
 
   return <HomePage />;
 }

@@ -588,6 +588,9 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
         // Default to Day 1 when no day specified (for current user's progress)
         dayIndex = 1;
       }
+      // Add caching for daily facts
+      res.set('Cache-Control', 'public, max-age=300'); // 5 minute cache
+      
       if (process.env.NODE_ENV === 'development') {
         console.log(`[DEBUG] Getting facts for day ${dayIndex}`);
       }
@@ -609,6 +612,9 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
       if (dayIndex <= 0) {
         return res.status(400).json({ message: "Invalid day index" });
       }
+      
+      // Add aggressive caching for metadata
+      res.set('Cache-Control', 'public, max-age=300'); // 5 minute cache
       
       const dayMetadata = await storage.getContentDay(dayIndex);
       if (!dayMetadata) {
@@ -642,6 +648,10 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
         const today = new Date();
         dayIndex = Math.max(1, Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 10);
       }
+      
+      // Add caching for lesson content
+      res.set('Cache-Control', 'public, max-age=300'); // 5 minute cache
+      
       const lesson = await storage.getContentLesson(dayIndex);
       if (!lesson) {
         return res.status(404).json({ message: "No lesson found for this day" });
