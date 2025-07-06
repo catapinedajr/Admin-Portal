@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-import HomeSection from "@/components/sections/HomeSection";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import PWAInstallButton from "@/components/PWAInstallButton";
-import { Crown, Gem } from "lucide-react";
+import { Crown, Gem, Gamepad2, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import type { User } from "@shared/schema";
 
 export default function HomePage() {
@@ -98,61 +98,72 @@ export default function HomePage() {
 
       <main className="max-w-6xl mx-auto px-4 py-6 pb-24">
         <div className="space-y-8">
-          {/* Welcome Header */}
+          {/* Welcome Header - Time-based greeting */}
           <div className="text-center space-y-4">
             <h1 className="text-3xl font-bold text-white">
-              Welcome to HODLearn!
+              {(() => {
+                const hour = new Date().getHours();
+                let greeting = "Good morning";
+                if (hour >= 12 && hour < 17) greeting = "Good afternoon";
+                else if (hour >= 17 && hour < 21) greeting = "Good evening";
+                else if (hour >= 21) greeting = "Good night";
+                return greeting + (user?.firstName ? `, ${user.firstName}` : '') + '!';
+              })()}
             </h1>
-            <p className="text-zinc-400 text-lg">
-              Understanding Bitcoin takes time, Building conviction takes consistency
-            </p>
           </div>
 
-          {/* Quick Navigation Cards */}
-          <div className="grid grid-cols-2 gap-4">
-            <div 
-              onClick={() => setLocation('/learn')}
-              className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg p-6 cursor-pointer transition-colors"
-            >
-              <div className="text-center">
-                <div className="text-2xl mb-2">📚</div>
-                <h3 className="font-semibold text-white">Learn Today</h3>
-                <p className="text-sm text-zinc-400">Start your Bitcoin journey</p>
-              </div>
+          {/* Simple Streak Display */}
+          <div className="text-center space-y-2 mb-8">
+            <div className="text-orange-400 text-2xl font-bold">
+              {user?.currentStreak || 0} day streak
             </div>
-            
-            <div 
-              onClick={() => setLocation('/money')}
-              className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg p-6 cursor-pointer transition-colors"
-            >
-              <div className="text-center">
-                <div className="text-2xl mb-2">💰</div>
-                <h3 className="font-semibold text-white">Money & Finance</h3>
-                <p className="text-sm text-zinc-400">Understand traditional finance</p>
-              </div>
+            <div className="text-zinc-400 text-sm">
+              Keep the habit strong
             </div>
-            
-            <div 
+          </div>
+
+          {/* Main Learning Card */}
+          <Card className="bg-zinc-800 border-zinc-700">
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                    <span className="text-sm text-zinc-400">Day {currentDayIndex}</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">
+                    {dayMetadata?.title || 'Loading today\'s lesson...'}
+                  </h3>
+                  <p className="text-zinc-400 text-sm mb-4">
+                    Today's Bitcoin learning journey continues
+                  </p>
+                </div>
+              </div>
+              <Button 
+                onClick={() => setLocation('/learn')}
+                className="w-full bg-orange-600 hover:bg-orange-700 text-white"
+              >
+                Continue Learning
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Action Buttons */}
+          <div className="flex gap-4">
+            <Button 
               onClick={() => setLocation('/simulators')}
-              className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg p-6 cursor-pointer transition-colors"
+              className="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700"
             >
-              <div className="text-center">
-                <div className="text-2xl mb-2">🎮</div>
-                <h3 className="font-semibold text-white">Simulators</h3>
-                <p className="text-sm text-zinc-400">Interactive Bitcoin tools</p>
-              </div>
-            </div>
-            
-            <div 
+              <Gamepad2 className="w-4 h-4 mr-2" />
+              Simulators
+            </Button>
+            <Button 
               onClick={() => setLocation('/more')}
-              className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg p-6 cursor-pointer transition-colors"
+              className="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700"
             >
-              <div className="text-center">
-                <div className="text-2xl mb-2">🔗</div>
-                <h3 className="font-semibold text-white">More</h3>
-                <p className="text-sm text-zinc-400">Resources and tools</p>
-              </div>
-            </div>
+              <MoreHorizontal className="w-4 h-4 mr-2" />
+              More
+            </Button>
           </div>
         </div>
       </main>
