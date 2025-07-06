@@ -165,7 +165,7 @@ export function DCASimulator() {
   return (
     <div className="space-y-4">
       <div className="text-center space-y-1">
-        <h3 className="text-lg font-bold text-white">DCA Calculator</h3>
+        <h3 className="text-xl font-bold text-white">DCA Calculator</h3>
         <p className="text-zinc-400 text-sm">Configure your strategy and see real Bitcoin performance</p>
       </div>
 

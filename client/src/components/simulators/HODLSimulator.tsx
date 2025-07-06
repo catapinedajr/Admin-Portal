@@ -72,7 +72,7 @@ const HODLSimulator: React.FC = () => {
     <div className="space-y-6">
       {/* Main Page Title */}
       <div className="text-center space-y-2 mb-8">
-        <h1 className="text-3xl font-bold text-white">HODL Strategy Simulator</h1>
+        <h1 className="text-xl font-bold text-white">HODL Strategy Simulator</h1>
         <p className="text-zinc-400 text-lg">Discover the power of holding Bitcoin through market cycles</p>
       </div>
 
