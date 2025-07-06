@@ -47,6 +47,7 @@ export default function SimulatorsPage({
   );
 
   const renderActiveSimulator = () => {
+    console.log("SimulatorsPage render - simulationsSubTab:", simulationsSubTab);
     switch (simulationsSubTab) {
       case "wallet":
         return (

@@ -378,7 +378,9 @@ export default function SafetyTraining({
     setSecurityStage(1); // Start the security stage
   };
 
-  // Introduction screen
+  // Introduction screen - DEBUGGING
+  console.log("SafetyTraining render - hasStarted:", hasStarted, "securityStage:", securityStage);
+  
   if (!hasStarted) {
     return (
       <div className="space-y-6">
