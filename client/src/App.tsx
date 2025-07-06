@@ -135,39 +135,80 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 
 function OnboardingRedirect() {
   const [, setLocation] = useLocation();
+  const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
-    try {
-      // Safe localStorage check for production deployment
-      let hasCompletedOnboarding = false;
-      if (typeof localStorage !== 'undefined' && localStorage.getItem) {
-        hasCompletedOnboarding = localStorage.getItem('hodlearn-onboarding-completed') === 'true';
+    async function checkOnboarding() {
+      try {
+        // MOBILE SAFARI FIX: Skip onboarding for deployment
+        console.log('Checking onboarding status...');
+        
+        // MOBILE FIX: Always skip onboarding and go directly to learn page
+        let hasCompletedOnboarding = true;
+        
+        try {
+          if (typeof localStorage !== 'undefined' && localStorage.getItem) {
+            const onboardingStatus = localStorage.getItem('hodlearn-onboarding-completed');
+            hasCompletedOnboarding = onboardingStatus === 'true';
+            console.log('Onboarding status from localStorage:', hasCompletedOnboarding);
+          }
+        } catch (error) {
+          console.warn('Mobile localStorage check failed, skipping onboarding:', error);
+          hasCompletedOnboarding = true; // Skip onboarding on mobile errors
+        }
+        
+        if (!hasCompletedOnboarding) {
+          console.log('Redirecting to onboarding...');
+          setLocation('/onboarding');
+        } else {
+          console.log('Onboarding completed, loading home...');
+        }
+        
+        setIsChecking(false);
+      } catch (error) {
+        console.error('Onboarding check error:', error);
+        setIsChecking(false);
       }
-      
-      if (!hasCompletedOnboarding) {
-        setLocation('/onboarding');
-      }
-    } catch (error) {
-      console.warn('Onboarding localStorage error, skipping onboarding:', error);
-      // Skip onboarding if localStorage fails - go directly to home
     }
+    
+    checkOnboarding();
   }, [setLocation]);
 
+  if (isChecking) {
+    return (
+      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <div className="text-orange-500 text-xl font-bold">Loading HODLearn...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // MOBILE COMPATIBILITY: Use lighter component for home route
   try {
-    return <Home />;
+    // Redirect to Learn page for better mobile performance
+    setLocation('/learn');
+    return (
+      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <div className="text-orange-500 text-xl font-bold">Loading HODLearn...</div>
+        </div>
+      </div>
+    );
   } catch (error) {
     console.error('Home component error:', error);
-    // Fallback in case Home component fails to render
     return (
       <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
         <div className="text-center space-y-4">
           <h1 className="text-2xl font-bold text-white">HODLearn</h1>
-          <p className="text-zinc-400">Loading your Bitcoin education...</p>
+          <p className="text-zinc-400">Welcome to your Bitcoin education</p>
           <button 
-            onClick={() => window.location.reload()}
+            onClick={() => setLocation('/learn')}
             className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded"
           >
-            Reload App
+            Start Learning
           </button>
         </div>
       </div>
