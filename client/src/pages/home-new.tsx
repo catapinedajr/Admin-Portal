@@ -2153,7 +2153,6 @@ export default function Home() {
 
       {/* Bottom Navigation */}
       <BottomNavigation 
-        activeSection={activeSection}
         onSectionChange={(section) => {
           // Let the router handle all navigation
           if (section === 'home') setLocation('/');
