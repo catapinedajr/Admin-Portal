@@ -159,7 +159,7 @@ function Router() {
         <Route path="/simulators">
           <AuthGuard>
             <AppContextProvider>
-              <SimulatorsPage />
+              <Home />
             </AppContextProvider>
           </AuthGuard>
         </Route>
