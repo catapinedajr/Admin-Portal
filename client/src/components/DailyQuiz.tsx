@@ -67,21 +67,35 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
   });
 
   // Fetch user's previous answers for today
-  const { data: userAnswers = [] } = useQuery({
+  const { data: userAnswers = [], error: answersError } = useQuery({
     queryKey: ['/api/quiz/answers', userId, today],
-    queryFn: () => {
-      const sessionId = localStorage.getItem('hodlearn_session');
-      const headers: Record<string, string> = {};
-      
-      if (sessionId) {
-        headers['Authorization'] = `Bearer ${sessionId}`;
+    queryFn: async () => {
+      try {
+        const sessionId = localStorage.getItem('hodlearn_session');
+        const headers: Record<string, string> = {};
+        
+        if (sessionId) {
+          headers['Authorization'] = `Bearer ${sessionId}`;
+        }
+        
+        const response = await fetch(`/api/quiz/answers/${userId}/${today}`, { 
+          headers,
+          credentials: 'same-origin' 
+        });
+        
+        if (!response.ok) {
+          console.warn('Quiz answers API failed:', response.status);
+          return [];
+        }
+        
+        const data = await response.json();
+        return Array.isArray(data) ? data : [];
+      } catch (error) {
+        console.warn('Quiz answers fetch error:', error);
+        return [];
       }
-      
-      return fetch(`/api/quiz/answers/${userId}/${today}`, { 
-        headers,
-        credentials: 'same-origin' 
-      }).then(res => res.json()) as Promise<QuizAnswer[]>;
-    }
+    },
+    retry: false // Don't retry auth errors
   });
 
   // Fetch quiz score for today
@@ -100,7 +114,7 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
         credentials: 'same-origin' 
       }).then(res => res.json()) as Promise<QuizScore>;
     },
-    enabled: userAnswers.length > 0
+    enabled: Array.isArray(userAnswers) && userAnswers.length > 0
   });
 
   // Submit answer mutation
@@ -150,8 +164,8 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
   });
 
   const currentQuestion = questions[currentQuestionIndex];
-  const isAnswered = userAnswers.some(answer => answer.questionId === currentQuestion?.id);
-  const userAnswer = userAnswers.find(answer => answer.questionId === currentQuestion?.id);
+  const isAnswered = Array.isArray(userAnswers) && userAnswers.some(answer => answer.questionId === currentQuestion?.id);
+  const userAnswer = Array.isArray(userAnswers) ? userAnswers.find(answer => answer.questionId === currentQuestion?.id) : undefined;
 
   const handleAnswerSelect = (questionId: number, answer: string) => {
     setSelectedAnswers(prev => ({
@@ -177,7 +191,7 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       // Quiz is complete - check if all questions answered and trigger completion if needed
-      if (userAnswers.length === questions.length && onCompletion && !completionTriggeredRef.current) {
+      if (Array.isArray(userAnswers) && userAnswers.length === questions.length && onCompletion && !completionTriggeredRef.current) {
         completionTriggeredRef.current = true;
         onCompletion();
       }
@@ -192,12 +206,12 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
 
   // Check for quiz completion when all questions are answered
   useEffect(() => {
-    if (questions.length > 0 && userAnswers.length === questions.length && onCompletion && !completionTriggeredRef.current) {
+    if (questions.length > 0 && Array.isArray(userAnswers) && userAnswers.length === questions.length && onCompletion && !completionTriggeredRef.current) {
       // All questions answered, trigger completion callback
       completionTriggeredRef.current = true;
       onCompletion();
     }
-  }, [questions.length, userAnswers.length, onCompletion]);
+  }, [questions.length, Array.isArray(userAnswers) ? userAnswers.length : 0, onCompletion]);
 
   // Reset completion tracking when dayIndex changes
   useEffect(() => {
@@ -469,7 +483,7 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
       {/* Progress indicator */}
       <div className="flex gap-2 justify-center">
         {questions.map((_, index) => {
-          const isAnswered = userAnswers.some(answer => answer.questionId === questions[index].id);
+          const isAnswered = Array.isArray(userAnswers) && userAnswers.some(answer => answer.questionId === questions[index].id);
           const isCurrent = index === currentQuestionIndex;
           
           return (

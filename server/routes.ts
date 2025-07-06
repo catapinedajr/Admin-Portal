@@ -754,7 +754,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
       if (currentDay <= 0) currentDay = 1;
       
       // Get all Learn page data in parallel with error handling
-      const [dayMetadata, lesson, dailyFacts, diveDeeperContent, dayCompleted] = await Promise.all([
+      const [dayMetadata, lesson, dailyFacts, dayCompleted] = await Promise.all([
         storage.getContentDay(currentDay).catch(err => {
           console.error('Error getting day metadata:', err);
           return null;
@@ -767,22 +767,26 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
           console.error('Error getting facts:', err);
           return [];
         }),
-        storage.getContentDiveDeeper(currentDay).catch(err => {
-          console.error('Error getting dive deeper:', err);
-          return [];
-        }),
         storage.isDayCompleted(userId, currentDay).catch(err => {
           console.error('Error checking day completion:', err);
           return false;
         })
       ]);
       
+      // Debug logging
+      console.log(`Learn data for day ${currentDay}:`, {
+        dayMetadata: !!dayMetadata,
+        lesson: !!lesson,
+        dailyFactsCount: dailyFacts?.length || 0,
+        dayCompleted
+      });
+
       const response = {
         currentDayIndex: currentDay,
         dayMetadata: dayMetadata || { dayIndex: currentDay, title: `Day ${currentDay}`, theme: 'default' },
         lesson: lesson || { id: 0, title: 'Loading...', content: '', keyTakeaways: [] },
         dailyFacts: Array.isArray(dailyFacts) ? dailyFacts : [],
-        diveDeeperContent: Array.isArray(diveDeeperContent) ? diveDeeperContent : [],
+        diveDeeperContent: [], // Remove non-existent dive deeper content
         dayCompleted: Boolean(dayCompleted)
       };
       
