@@ -375,6 +375,7 @@ export default function SafetyTraining({
     setCurrentQuestionIndex(0);
     setSecurityScore(0);
     setUserSecurityAnswers({});
+    setSecurityStage(1); // Start the security stage
   };
 
   // Introduction screen
