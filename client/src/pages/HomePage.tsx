@@ -56,12 +56,12 @@ export default function HomePage() {
   // Get current day content for preview
   const { data: dayMetadata } = useQuery({
     queryKey: ['/api/day-metadata', currentDay],
-    enabled: !!currentDay,
+    enabled: !!currentDay && currentDay > 0,
   });
 
   const { data: dailyFacts } = useQuery({
     queryKey: ['/api/daily-facts', currentDay],
-    enabled: !!currentDay,
+    enabled: !!currentDay && currentDay > 0,
   });
 
   const getTimeBasedGreeting = () => {
@@ -83,11 +83,6 @@ export default function HomePage() {
   // Calculate streak
   const currentStreak = userProgress?.currentStreak || 0;
   const bestStreak = userProgress?.bestStreak || 0;
-
-  // Calculate weekly progress
-  const currentWeek = Math.ceil(currentDay / 7);
-  const dayInWeek = ((currentDay - 1) % 7) + 1;
-  const weeklyProgress = Math.round((dayInWeek / 7) * 100);
 
   const getStreakMessage = () => {
     if (currentStreak === 0) return "Start your learning journey today";
