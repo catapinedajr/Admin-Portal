@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import Home from "@/pages/home-new";
 import LearnPage from "@/pages/LearnPage";
 import FinancePage from "@/pages/FinancePage";
+import SimulatorsPage from "@/pages/SimulatorsPage";
 import { AppContextProvider } from "@/components/shared/AppContextProvider";
 import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
@@ -158,7 +159,7 @@ function Router() {
         <Route path="/simulators">
           <AuthGuard>
             <AppContextProvider>
-              <Home />
+              <SimulatorsPage />
             </AppContextProvider>
           </AuthGuard>
         </Route>

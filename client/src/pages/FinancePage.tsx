@@ -50,7 +50,7 @@ export default function FinancePage() {
     queryKey: ['/api/user'],
   });
 
-  const isPremiumTier = false; // Simplified for now since no subscription tier in schema
+  // Money/Finance page is free for all users
 
   // Money supply data helper functions
   const getMoneySupplyRaw = (year: number) => {
