@@ -86,11 +86,10 @@ import AchievementSystem from "@/components/AchievementSystem";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import LockedContent from "@/components/LockedContent";
 // Removed UpgradeModal import - now using inline upgrade cards
-
+import DevSubscriptionToggle from "@/components/DevSubscriptionToggle";
 import BottomNavigation from "@/components/BottomNavigation";
 import LearnPage from "@/pages/LearnPage";
 import FinancePage from "@/pages/FinancePage";
-import SimulatorsPage from "@/pages/SimulatorsPage";
 import SafetyTraining from "@/components/simulators/SafetyTrainingSustainable";
 import TransactionsSimulator from "@/components/simulators/TransactionsSimulator";
 import { TransferSimulator } from "@/components/simulators/TransferSimulator";
@@ -167,39 +166,44 @@ export default function Home() {
     }
   }, [location]);
   
-  // Single API call to get current day and basic info
+  // Day navigation for development testing
+  const [testDayOverride, setTestDayOverride] = useState<number | null>(null);
+  
+  // Get current day from API
   const { data: nextDayData } = useQuery({
     queryKey: ['/api/next-available-day', 1],
     queryFn: () => fetch('/api/next-available-day/1').then(res => res.json())
   });
   
-  const currentDayIndex = nextDayData?.dayIndex || 1;
-  const nextAvailableDay = currentDayIndex;
-
-  // Only load current day access data - conditional based on active section
+  const currentDayIndex = testDayOverride || nextDayData?.dayIndex || 1;
+  
+  // Day access control queries
   const { data: dayAccessible = false } = useQuery({
-    queryKey: ['/api/day-access', 1, currentDayIndex],
-    queryFn: () => fetch(`/api/day-access/1/${currentDayIndex}`).then(res => res.json()),
-    enabled: activeSection === "learn" // Only load when on Learn section
+    queryKey: ['/api/day-access', 1, currentDayIndex], // userId=1 (default user)
+    queryFn: () => fetch(`/api/day-access/1/${currentDayIndex}`).then(res => res.json())
   });
 
   // Check if day is locked by subscription tier (Days 1-7 free, 8+ premium)
   const isDayLockedBySubscription = currentDayIndex > 7 && !isPremiumTier;
   
-  // Only load day access info when on learn section
+  // Check day access info for waiting period restrictions
   const { data: dayAccessInfo } = useQuery({
     queryKey: ['/api/day-access-info', 1, currentDayIndex],
     queryFn: () => fetch(`/api/day-access-info/1/${currentDayIndex}`).then(res => res.json()),
-    refetchInterval: isDayLockedBySubscription ? false : 60000,
-    enabled: activeSection === "learn" // Only load when on Learn section
+    refetchInterval: isDayLockedBySubscription ? false : 60000, // Refresh every minute if not locked by subscription
   });
   
-  // Only check completion status when on learn section
   const { data: dayCompleted = false } = useQuery({
     queryKey: ['/api/day-completed', 1, currentDayIndex],
-    queryFn: () => fetch(`/api/day-completed/1/${currentDayIndex}`).then(res => res.json()),
-    enabled: activeSection === "learn" // Only load when on Learn section
+    queryFn: () => fetch(`/api/day-completed/1/${currentDayIndex}`).then(res => res.json())
   });
+  
+  const { data: nextAvailableDayResponse } = useQuery({
+    queryKey: ['/api/next-available-day', 1],
+    queryFn: () => fetch('/api/next-available-day/1').then(res => res.json())
+  });
+  
+  const nextAvailableDay = nextAvailableDayResponse?.dayIndex ?? 1;
 
   // Mark day as completed mutation
   const markDayCompletedMutation = useMutation({
@@ -1671,7 +1675,7 @@ export default function Home() {
     const simulation = safetySimulations[safetyStage];
     
     if (!simulation) {
-      // Invalid safety stage
+      console.error(`Invalid stage: ${safetyStage}`);
       return;
     }
     
@@ -1712,12 +1716,12 @@ export default function Home() {
           break;
           
         default:
-          // Unhandled safety stage
+          console.error(`Unhandled stage: ${safetyStage}`);
           break;
       }
       
     } catch (error) {
-      // Safety simulation validation error
+      console.error('Safety simulation validation error:', error, simulation);
       correct = false;
     }
     
@@ -1834,17 +1838,15 @@ export default function Home() {
     }
   ];
 
-  // Conditional API Queries - only load data for active sections
+  // API Queries - using currentDayIndex for testing
   const { data: dayMetadata } = useQuery({
     queryKey: ['/api/day-metadata', currentDayIndex],
     queryFn: () => fetch(`/api/day-metadata/${currentDayIndex}`).then(res => res.json()),
-    enabled: activeSection === "learn" // Only load when actually on Learn section
   });
 
   const { data: dailyFacts } = useQuery({
     queryKey: ['/api/daily-facts', currentDayIndex],
     queryFn: () => fetch(`/api/daily-facts/${currentDayIndex}`).then(res => res.json()),
-    enabled: activeSection === "learn" // Only load when actually on Learn section
   });
 
   const { data: lesson } = useQuery({
@@ -1856,7 +1858,6 @@ export default function Home() {
       }
       return response.json();
     },
-    enabled: activeSection === "learn" // Only load when actually on Learn section
   });
 
   const { data: user, isLoading: userLoading } = useQuery<User>({
@@ -1972,10 +1973,484 @@ export default function Home() {
         )}
 
         {/* Finance Section - Extracted to FinancePage.tsx */}
-        {activeSection === "money" && <FinancePage />}
+        {activeSection === "money" && (
+          <FinancePage />
+        )}
 
         {/* Practice Section */}
-        {activeSection === "simulations" && <SimulatorsPage />}
+        {activeSection === "simulations" && (
+          <div className="space-y-6">
+            {/* Simulators Preview for Free Users */}
+            {!isPremiumTier && (
+              <div className="space-y-6">
+                <Card className="bg-zinc-900/95 border-orange-500/20">
+                  <CardContent className="p-8 text-center">
+                    <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Calculator className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2">
+                      Premium Simulators
+                    </h3>
+                    <p className="text-zinc-400 mb-4">
+                      Interactive Bitcoin simulations available to premium users. See what you're missing below!
+                    </p>
+                    <Button 
+                      onClick={() => setShowEmailModal(true)}
+                      className="bg-orange-500 hover:bg-orange-600 text-white px-8"
+                    >
+                      Unlock All Simulators - FREE
+                    </Button>
+                    <p className="text-xs text-zinc-500 mt-3">
+                      Free for a limited time
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Preview Cards showing what simulators are available */}
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {/* Wallet Safety Preview */}
+                  <Card className="bg-zinc-900/50 border-zinc-700 opacity-60 relative">
+                    <div className="absolute top-2 right-2">
+                      <div className="bg-orange-500 text-white text-xs px-2 py-1 rounded">Premium</div>
+                    </div>
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <Shield className="w-6 h-6 text-orange-400" />
+                        <h4 className="font-semibold text-white">Wallet Safety</h4>
+                      </div>
+                      <p className="text-zinc-400 text-sm mb-3">
+                        Learn to identify phishing emails, secure seed phrases, and protect your Bitcoin from common scams.
+                      </p>
+                      <div className="text-xs text-zinc-500">
+                        • 7 Interactive Security Tests
+                        • Real Phishing Examples  
+                        • Best Practice Checklist
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Transaction Builder Preview */}
+                  <Card className="bg-zinc-900/50 border-zinc-700 opacity-60 relative">
+                    <div className="absolute top-2 right-2">
+                      <div className="bg-orange-500 text-white text-xs px-2 py-1 rounded">Premium</div>
+                    </div>
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <CreditCard className="w-6 h-6 text-orange-400" />
+                        <h4 className="font-semibold text-white">Transaction Builder</h4>
+                      </div>
+                      <p className="text-zinc-400 text-sm mb-3">
+                        Build, sign, and broadcast Bitcoin transactions with real-time confirmation tracking.
+                      </p>
+                      <div className="text-xs text-zinc-500">
+                        • Step-by-step Transaction Building
+                        • Fee Selection & Optimization
+                        • Hardware Wallet Simulation
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* HODL Strategy Preview */}
+                  <Card className="bg-zinc-900/50 border-zinc-700 opacity-60 relative">
+                    <div className="absolute top-2 right-2">
+                      <div className="bg-orange-500 text-white text-xs px-2 py-1 rounded">Premium</div>
+                    </div>
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <TrendingUp className="w-6 h-6 text-orange-400" />
+                        <h4 className="font-semibold text-white">HODL Challenge</h4>
+                      </div>
+                      <p className="text-zinc-400 text-sm mb-3">
+                        Compare Bitcoin holding strategies across real historical periods vs traditional assets.
+                      </p>
+                      <div className="text-xs text-zinc-500">
+                        • 3 Historical Scenarios
+                        • Real Market Data
+                        • Multi-Asset Comparisons
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* DCA Calculator Preview */}
+                  <Card className="bg-zinc-900/50 border-zinc-700 opacity-60 relative">
+                    <div className="absolute top-2 right-2">
+                      <div className="bg-orange-500 text-white text-xs px-2 py-1 rounded">Premium</div>
+                    </div>
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <BarChart3 className="w-6 h-6 text-orange-400" />
+                        <h4 className="font-semibold text-white">DCA Calculator</h4>
+                      </div>
+                      <p className="text-zinc-400 text-sm mb-3">
+                        Backtest Dollar-Cost Averaging strategies with authentic Bitcoin price history.
+                      </p>
+                      <div className="text-xs text-zinc-500">
+                        • 15+ Years Historical Data
+                        • Customizable Frequency
+                        • Visual Performance Charts
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Inflation Simulator Preview */}
+                  <Card className="bg-zinc-900/50 border-zinc-700 opacity-60 relative">
+                    <div className="absolute top-2 right-2">
+                      <div className="bg-orange-500 text-white text-xs px-2 py-1 rounded">Premium</div>
+                    </div>
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <TrendingDown className="w-6 h-6 text-orange-400" />
+                        <h4 className="font-semibold text-white">Inflation Destroyer</h4>
+                      </div>
+                      <p className="text-zinc-400 text-sm mb-3">
+                        Watch money lose value in real-time with interactive inflation visualization.
+                      </p>
+                      <div className="text-xs text-zinc-500">
+                        • Real-time Animations
+                        • 50+ Years Historical Data
+                        • Visual Money Destruction
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Settlement Simulator Preview */}
+                  <Card className="bg-zinc-900/50 border-zinc-700 opacity-60 relative">
+                    <div className="absolute top-2 right-2">
+                      <div className="bg-orange-500 text-white text-xs px-2 py-1 rounded">Premium</div>
+                    </div>
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <Clock className="w-6 h-6 text-orange-400" />
+                        <h4 className="font-semibold text-white">Settlement Race</h4>
+                      </div>
+                      <p className="text-zinc-400 text-sm mb-3">
+                        Compare traditional banking delays vs Bitcoin's 24/7 instant settlement.
+                      </p>
+                      <div className="text-xs text-zinc-500">
+                        • Weekend Banking Delays
+                        • Real Fee Calculations
+                        • Side-by-Side Comparison
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="text-center">
+                  <Button 
+                    onClick={() => setShowEmailModal(true)}
+                    className="bg-orange-500 hover:bg-orange-600 text-white px-8"
+                  >
+                    Unlock All 6 Simulators - FREE
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Practice Sub-navigation - Only show for premium users */}
+            {isPremiumTier && (
+              <div className="flex justify-center">
+                <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2">
+                <Button
+                  variant={simulationsSubTab === "safety" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("safety")}
+                  className="text-xs px-3 py-1"
+                >
+                  <Shield className="w-3 h-3 mr-1" />
+                  Safety
+                </Button>
+                <Button
+                  variant={simulationsSubTab === "wallet" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("wallet")}
+                  className="text-xs px-3 py-1"
+                >
+                  <Wallet className="w-3 h-3 mr-1" />
+                  Wallet
+                </Button>
+                <Button
+                  variant={simulationsSubTab === "transactions" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("transactions")}
+                  className="text-xs px-3 py-1"
+                >
+                  <CreditCard className="w-3 h-3 mr-1" />
+                  Transactions
+                </Button>
+                <Button
+                  variant={simulationsSubTab === "transfer" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("transfer")}
+                  className="text-xs px-3 py-1"
+                >
+                  <ArrowRight className="w-3 h-3 mr-1" />
+                  Transfer
+                </Button>
+                <Button
+                  variant={simulationsSubTab === "hodl" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("hodl")}
+                  className="text-xs px-3 py-1"
+                >
+                  <TrendingUp className="w-3 h-3 mr-1" />
+                  HODL
+                </Button>
+                <Button
+                  variant={simulationsSubTab === "dca" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("dca")}
+                  className="text-xs px-3 py-1"
+                >
+                  <BarChart3 className="w-3 h-3 mr-1" />
+                  DCA
+                </Button>
+                <Button
+                  variant={simulationsSubTab === "inflation" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("inflation")}
+                  className="text-xs px-3 py-1"
+                >
+                  <TrendingDown className="w-3 h-3 mr-1" />
+                  Inflation
+                </Button>
+                <Button
+                  variant={simulationsSubTab === "fees" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("fees")}
+                  className="text-xs px-3 py-1"
+                >
+                  <FileText className="w-3 h-3 mr-1" />
+                  Fees
+                </Button>
+              </div>
+            </div>
+            )}
+
+            {/* Safety Training - Extracted to SafetyTraining component */}
+            {simulationsSubTab === "safety" && (
+              <SafetyTraining 
+                securityStage={securityStage}
+                setSecurityStage={setSecurityStage}
+                securityScore={securityScore}
+                setSecurityScore={setSecurityScore}
+                userSecurityAnswers={userSecurityAnswers}
+                setUserSecurityAnswers={setUserSecurityAnswers}
+              />
+            )}
+
+            {/* Wallet Explorer - Extracted to WalletSimulator component */}
+            {simulationsSubTab === "wallet" && (
+              <WalletSimulator />
+            )}
+
+            {/* Transactions Simulator - Extracted to TransactionsSimulator component */}
+            {simulationsSubTab === "transactions" && (
+              <TransactionsSimulator isPremiumTier={isPremiumTier} />
+            )}
+
+            {/* Transfer Simulator - Extracted to TransferSimulator component */}
+            {simulationsSubTab === "transfer" && (
+              <TransferSimulator />
+            )}
+
+            {/* HODL Simulator - Extracted to HODLSimulator component */}
+            {simulationsSubTab === "hodl" && (
+              <HODLSimulator />
+            )}
+
+            {/* OLD HODL SECTION - TO BE REMOVED */}
+            {/* DCA Calculator - Extracted to DCASimulator component */}
+            {simulationsSubTab === "dca" && (
+              <DCASimulator />
+            )}
+
+            {/* DCA Calculator implementation moved to DCASimulator component */}
+
+            {/* Interactive Inflation Simulator - Redesigned */}
+            {isPremiumTier && simulationsSubTab === "inflation" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">Interactive Inflation Destroyer</h3>
+                  <p className="text-zinc-400">Watch your money vanish in real-time as you move through the years</p>
+                </div>
+
+                {/* Why Understanding Inflation Matters */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-orange-600/20 rounded-lg">
+                        <TrendingDown className="w-6 h-6 text-orange-400" />
+                      </div>
+                      <h4 className="text-xl font-bold text-white">The Silent Wealth Destroyer Working Against You</h4>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <p className="text-zinc-300 leading-relaxed">
+                        Inflation is the hidden tax that quietly steals your purchasing power every single day. While you sleep, 
+                        your savings lose value as governments print more money, diluting what you've worked hard to earn. 
+                        Most people don't realize how devastating this compound erosion becomes over time.
+                      </p>
+                      
+                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-orange-500">
+                        <p className="text-zinc-300 text-sm">
+                          <span className="font-semibold text-orange-300">Shocking Reality:</span> Since 1970, the US dollar has lost 
+                          87% of its purchasing power. What cost $100 in 1970 now costs $770. Your grandfather's dollar had 8 times 
+                          more buying power than yours today.
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <h5 className="font-semibold text-white">Interactive Features You'll Experience:</h5>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <DollarSign className="w-5 h-5 text-green-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Real-Time Erosion</p>
+                              <p className="text-zinc-400 text-xs">Watch money disappear as years pass</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <BarChart3 className="w-5 h-5 text-yellow-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Historical Chart</p>
+                              <p className="text-zinc-400 text-xs">50+ years of authentic data</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <Calendar className="w-5 h-5 text-blue-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Key Events</p>
+                              <p className="text-zinc-400 text-xs">Nixon Shock, financial crises</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <Target className="w-5 h-5 text-orange-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Fed Target</p>
+                              <p className="text-zinc-400 text-xs">2% annual theft by design</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-center pt-2">
+                        <Button
+                          onClick={() => {
+                            const simulator = document.querySelector('[data-inflation-simulator]');
+                            if (simulator) {
+                              const rect = simulator.getBoundingClientRect();
+                              const headerHeight = 80; // Account for header height
+                              window.scrollTo({
+                                top: window.pageYOffset + rect.top - headerHeight,
+                                behavior: 'smooth'
+                              });
+                            }
+                          }}
+                          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
+                        >
+                          <ChevronDown className="w-4 h-4 mr-2" />
+                          See Inflation's Damage
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <InflationSimulator />
+
+
+              </div>
+            )}
+
+            {/* Banking Fees vs Bitcoin Fees Simulator */}
+            {isPremiumTier && simulationsSubTab === "fees" && (
+              <FeesSimulator />
+            )}
+
+            {/* More section */}
+            {activeSection === "more" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">More Tools & Resources</h3>
+                  <p className="text-zinc-400">Additional Bitcoin tools and resources</p>
+                </div>
+
+                {/* Banking Fees Calculator Section */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h4 className="text-lg font-bold text-white mb-4">Banking Fees Calculator</h4>
+                    <div className="space-y-4">
+                      <p className="text-zinc-300">
+                        Average American pays $329 per year in banking fees. See how much banks are costing you compared to Bitcoin.
+                      </p>
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="bg-zinc-800 p-4 rounded-lg">
+                          <h5 className="font-semibold text-red-400 mb-2">Traditional Banking Fees</h5>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-zinc-300">Monthly maintenance:</span>
+                              <span className="text-red-400">$15/month</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-300">ATM fees:</span>
+                              <span className="text-red-400">$4.75/use</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-300">Wire transfer:</span>
+                              <span className="text-red-400">$25-50/wire</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-300">Overdraft:</span>
+                              <span className="text-red-400">$35/overdraft</span>
+                            </div>
+                            <div className="flex justify-between border-t border-zinc-700 pt-2">
+                              <span className="text-zinc-300 font-bold">Annual average:</span>
+                              <span className="text-red-400 font-bold">$329/year</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-zinc-800 p-4 rounded-lg">
+                          <h5 className="font-semibold text-orange-400 mb-2">Bitcoin Network Costs</h5>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-zinc-300">Account maintenance:</span>
+                              <span className="text-green-400">$0</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-300">Balance checks:</span>
+                              <span className="text-green-400">$0</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-300">Network fee:</span>
+                              <span className="text-orange-400">$1-5/transaction</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-300">Overdraft protection:</span>
+                              <span className="text-green-400">Impossible</span>
+                            </div>
+                            <div className="flex justify-between border-t border-zinc-700 pt-2">
+                              <span className="text-zinc-300 font-bold">Annual average:</span>
+                              <span className="text-green-400 font-bold">$20-50/year</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="text-center">
+                        <div className="bg-orange-600/20 p-4 rounded-lg border border-orange-600/30">
+                          <h5 className="text-orange-400 font-bold text-lg mb-1">You could save $280-310 per year</h5>
+                          <p className="text-orange-300 text-sm">That's enough for a hardware wallet and a nice dinner!</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+              </div>
+            )}
+          </div>
+        )}
 
         {/* More Section */}
         {activeSection === "more" && (
