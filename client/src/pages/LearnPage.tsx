@@ -446,7 +446,7 @@ function LearnPageWithLayout() {
       <BottomNavigation 
         activeSection="learn"
         onSectionChange={(section) => {
-          if (section === 'home') setLocation('/');
+          if (section === 'home') setLocation('/home');
           else if (section === 'money') setLocation('/money');
           else if (section === 'simulators') setLocation('/simulators');
           else if (section === 'more') setLocation('/more');

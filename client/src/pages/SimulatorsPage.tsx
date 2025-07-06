@@ -117,7 +117,14 @@ function SimulatorsPage(props: SimulatorsPageProps = {}) {
       default:
         return (
           <Suspense fallback={<SimulatorLoading />}>
-            <SafetyTraining />
+            <SafetyTraining 
+              securityStage={securityStage}
+              setSecurityStage={setSecurityStage}
+              securityScore={securityScore}
+              setSecurityScore={setSecurityScore}
+              userSecurityAnswers={userSecurityAnswers}
+              setUserSecurityAnswers={setUserSecurityAnswers}
+            />
           </Suspense>
         );
     }
@@ -278,8 +285,8 @@ function SimulatorsPageWithLayout() {
       <BottomNavigation 
         activeSection="simulators"
         onSectionChange={(section) => {
-          if (section === 'home') setLocation('/');
-          else if (section === 'learn') setLocation('/learn');
+          if (section === 'home') setLocation('/home');
+          else if (section === 'learn') setLocation('/');
           else if (section === 'money') setLocation('/money');
           else if (section === 'more') setLocation('/more');
         }}

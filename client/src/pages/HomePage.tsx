@@ -171,7 +171,7 @@ export default function HomePage() {
       <BottomNavigation 
         activeSection="home"
         onSectionChange={(section) => {
-          if (section === 'learn') setLocation('/learn');
+          if (section === 'learn') setLocation('/');
           else if (section === 'money') setLocation('/money');
           else if (section === 'simulators') setLocation('/simulators');
           else if (section === 'more') setLocation('/more');
