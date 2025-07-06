@@ -40,58 +40,26 @@ function LearnPage() {
   // Simplified state without heavy AppContext
   const [learnSubTab, setLearnSubTab] = useState<"today" | "reference">("today");
   const [showEmailModal, setShowEmailModal] = useState(false);
-  
-  // Get current day from API with caching
-  const { data: nextDayData } = useQuery({
-    queryKey: ['/api/next-available-day', 1],
-    queryFn: () => fetch('/api/next-available-day/1').then(res => res.json()),
-    staleTime: 30000, // 30 seconds
-    cacheTime: 60000 // 1 minute
-  });
-  
-  const currentDayIndex = nextDayData?.dayIndex || 1;
-  
-  // Simplified day access check
-  const { data: dayCompleted } = useQuery({
-    queryKey: ['/api/day-completed', 1, currentDayIndex],
-    queryFn: () => fetch(`/api/day-completed/1/${currentDayIndex}`).then(res => res.json()),
-    staleTime: 10000 // 10 seconds
-  });
-
-  // Local state for expandable content
   const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
 
-  // Get day metadata with aggressive caching
-  const { data: dayMetadata } = useQuery({
-    queryKey: ['/api/day-metadata', currentDayIndex],
-    queryFn: () => fetch(`/api/day-metadata/${currentDayIndex}`).then(res => res.json()),
-    staleTime: 300000, // 5 minutes
-    cacheTime: 600000 // 10 minutes
+  // Single optimized API call for all Learn page data
+  const { data: learnData, isLoading } = useQuery({
+    queryKey: ['/api/learn-data', 1],
+    queryFn: () => fetch('/api/learn-data/1').then(res => res.json()),
+    staleTime: 60000, // 1 minute
+    cacheTime: 300000, // 5 minutes
+    refetchOnWindowFocus: false // Prevent unnecessary refetches
   });
-
-  // Get lesson data with caching
-  const { data: lesson, isLoading: lessonLoading } = useQuery<LessonWithKeyTakeaways>({
-    queryKey: ['/api/lesson', currentDayIndex],
-    queryFn: () => fetch(`/api/lesson/${currentDayIndex}`).then(res => res.json()),
-    staleTime: 300000, // 5 minutes
-    cacheTime: 600000 // 10 minutes
-  });
-
-  // Get daily facts with caching
-  const { data: dailyFacts } = useQuery({
-    queryKey: ['/api/daily-facts', currentDayIndex],
-    queryFn: () => fetch(`/api/daily-facts/${currentDayIndex}`).then(res => res.json()),
-    staleTime: 300000, // 5 minutes
-    cacheTime: 600000 // 10 minutes
-  });
-
-  // Get dive deeper content with caching
-  const { data: diveDeeperContent = [] } = useQuery({
-    queryKey: ['/api/dive-deeper', currentDayIndex],
-    queryFn: () => fetch(`/api/dive-deeper/${currentDayIndex}`).then(res => res.json()),
-    staleTime: 300000, // 5 minutes
-    cacheTime: 600000 // 10 minutes
-  });
+  
+  // Extract data from combined response
+  const currentDayIndex = learnData?.currentDayIndex || 1;
+  const dayMetadata = learnData?.dayMetadata;
+  const lesson = learnData?.lesson;
+  const dailyFacts = learnData?.dailyFacts || [];
+  const diveDeeperContent = learnData?.diveDeeperContent || [];
+  const dayCompleted = learnData?.dayCompleted || false;
+  
+  const lessonLoading = isLoading;
 
   // Helper function to get time-based greeting
   const getTimeBasedGreeting = () => {

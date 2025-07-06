@@ -737,9 +737,48 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Day completion and access control routes
+  // Combined endpoint for Learn page performance optimization
+  app.get("/api/learn-data/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      
+      // Add aggressive caching for production performance
+      res.set('Cache-Control', 'public, max-age=60'); // 1 minute cache
+      
+      // Get current day
+      let currentDay = await storage.getNextAvailableDay(userId);
+      if (currentDay <= 0) currentDay = 1;
+      
+      // Get all Learn page data in parallel to reduce database queries
+      const [dayMetadata, lesson, dailyFacts, diveDeeperContent, dayCompleted] = await Promise.all([
+        storage.getContentDay(currentDay).catch(() => null),
+        storage.getContentLesson(currentDay).catch(() => null), 
+        storage.getContentSetUpQuestions(currentDay).catch(() => []),
+        storage.getContentDiveDeeper(currentDay).catch(() => []),
+        storage.isDayCompleted(userId, currentDay).catch(() => false)
+      ]);
+      
+      res.json({
+        currentDayIndex: currentDay,
+        dayMetadata,
+        lesson,
+        dailyFacts,
+        diveDeeperContent,
+        dayCompleted
+      });
+    } catch (error) {
+      console.error("Error getting combined learn data:", error);
+      res.status(500).json({ message: "Failed to get learn data" });
+    }
+  });
+
   app.get("/api/next-available-day/:userId", async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
+      
+      // Add cache headers for production performance
+      res.set('Cache-Control', 'public, max-age=30'); // 30 second cache
+      
       let nextDay = await storage.getNextAvailableDay(userId);
       // Ensure we never return Day 0 - minimum is Day 1
       if (nextDay <= 0) {
