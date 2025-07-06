@@ -432,6 +432,82 @@ export class DatabaseStorage implements IStorage {
     return 1;
   }
 
+  async getCompletedDaysCount(userId: number): Promise<number> {
+    try {
+      const completedDays = await this.getCompletedDays(userId);
+      return completedDays.length;
+    } catch (error) {
+      console.error('Error getting completed days count:', error);
+      return 0;
+    }
+  }
+
+  async getUserProgress(userId: number): Promise<{ currentStreak: number; bestStreak: number } | null> {
+    try {
+      const completedDays = await this.getCompletedDays(userId);
+      
+      if (completedDays.length === 0) {
+        return { currentStreak: 0, bestStreak: 0 };
+      }
+
+      // Sort by completion date
+      const sortedDays = completedDays.sort((a, b) => 
+        new Date(a.completedAt!).getTime() - new Date(b.completedAt!).getTime()
+      );
+
+      // Calculate current streak (consecutive days from most recent)
+      let currentStreak = 0;
+      const today = new Date();
+      const oneDayMs = 24 * 60 * 60 * 1000;
+
+      // Start from the most recent completion and work backwards
+      for (let i = sortedDays.length - 1; i >= 0; i--) {
+        const completionDate = new Date(sortedDays[i].completedAt!);
+        const daysSinceCompletion = Math.floor((today.getTime() - completionDate.getTime()) / oneDayMs);
+        
+        if (daysSinceCompletion <= 1) { // Within last day
+          currentStreak++;
+        } else if (i === sortedDays.length - 1) {
+          // Most recent completion is too old
+          break;
+        } else {
+          // Check if previous day was consecutive
+          const prevDate = new Date(sortedDays[i + 1].completedAt!);
+          const daysBetween = Math.floor((prevDate.getTime() - completionDate.getTime()) / oneDayMs);
+          
+          if (daysBetween <= 1) {
+            currentStreak++;
+          } else {
+            break;
+          }
+        }
+      }
+
+      // Calculate best streak
+      let bestStreak = 0;
+      let tempStreak = 1;
+
+      for (let i = 1; i < sortedDays.length; i++) {
+        const currentDate = new Date(sortedDays[i].completedAt!);
+        const prevDate = new Date(sortedDays[i - 1].completedAt!);
+        const daysBetween = Math.floor((currentDate.getTime() - prevDate.getTime()) / oneDayMs);
+        
+        if (daysBetween <= 1) {
+          tempStreak++;
+        } else {
+          bestStreak = Math.max(bestStreak, tempStreak);
+          tempStreak = 1;
+        }
+      }
+      bestStreak = Math.max(bestStreak, tempStreak, currentStreak);
+
+      return { currentStreak, bestStreak };
+    } catch (error) {
+      console.error('Error getting user progress:', error);
+      return { currentStreak: 0, bestStreak: 0 };
+    }
+  }
+
   async canAccessDay(userId: number, dayIndex: number): Promise<boolean> {
     // Must be positive day index
     if (dayIndex < 1) return false;
