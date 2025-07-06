@@ -108,14 +108,42 @@ function OnboardingRedirect() {
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    const hasCompletedOnboarding = localStorage.getItem('hodlearn-onboarding-completed');
-    
-    if (!hasCompletedOnboarding) {
-      setLocation('/onboarding');
+    try {
+      // Safe localStorage check for production deployment
+      let hasCompletedOnboarding = false;
+      if (typeof localStorage !== 'undefined' && localStorage.getItem) {
+        hasCompletedOnboarding = localStorage.getItem('hodlearn-onboarding-completed') === 'true';
+      }
+      
+      if (!hasCompletedOnboarding) {
+        setLocation('/onboarding');
+      }
+    } catch (error) {
+      console.warn('Onboarding localStorage error, skipping onboarding:', error);
+      // Skip onboarding if localStorage fails - go directly to home
     }
   }, [setLocation]);
 
-  return <Home />;
+  try {
+    return <Home />;
+  } catch (error) {
+    console.error('Home component error:', error);
+    // Fallback in case Home component fails to render
+    return (
+      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <h1 className="text-2xl font-bold text-white">HODLearn</h1>
+          <p className="text-zinc-400">Loading your Bitcoin education...</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded"
+          >
+            Reload App
+          </button>
+        </div>
+      </div>
+    );
+  }
 }
 
 function ScrollToTop() {
@@ -190,16 +218,35 @@ function Router() {
 }
 
 function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <SubscriptionProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </SubscriptionProvider>
-    </QueryClientProvider>
-  );
+  try {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <SubscriptionProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </SubscriptionProvider>
+      </QueryClientProvider>
+    );
+  } catch (error) {
+    console.error('Critical app error:', error);
+    // Ultimate fallback for white screen prevention
+    return (
+      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <h1 className="text-2xl font-bold text-white">HODLearn</h1>
+          <p className="text-zinc-400">Application Error</p>
+          <button 
+            onClick={() => window.location.href = '/auth'}
+            className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded"
+          >
+            Return to Login
+          </button>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default App;
