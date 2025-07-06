@@ -6,7 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { useEffect, useState } from "react";
 
-import HomePage from "@/pages/home-new";
+import HomePage from "@/pages/HomePage";
 import LearnPage from "@/pages/LearnPage";
 import FinancePage from "@/pages/FinancePage";
 import SimulatorsPage from "@/pages/SimulatorsPage";
@@ -18,37 +18,37 @@ import NotFound from "@/pages/not-found";
 import { AuthPage } from "@/pages/auth";
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
-  // Simplified auth guard - always allow access (demo mode restored)
-  // The /api/user endpoint handles fallback to default user (ID: 1)
-  return <>{children}</>;
-}
-
-function OnboardingRedirect() {
   const [, setLocation] = useLocation();
-  const [isReady, setIsReady] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
-    // Add a small delay to ensure DOM is ready
-    const timer = setTimeout(() => {
+    async function checkAuth() {
       try {
-        const hasCompletedOnboarding = localStorage.getItem('hodlearn-onboarding-completed');
+        // Simplified Safari-compatible authentication
+        const response = await fetch('/api/user', {
+          method: 'GET',
+          credentials: 'include',
+          cache: 'no-cache'
+        });
         
-        if (!hasCompletedOnboarding) {
-          // Auto-complete onboarding for deployment users
-          localStorage.setItem('hodlearn-onboarding-completed', 'true');
+        if (response.ok) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+          setLocation('/auth');
         }
-        setIsReady(true);
       } catch (error) {
-        // If localStorage fails, just continue to HomePage
-        console.warn('LocalStorage access failed, continuing to app:', error);
-        setIsReady(true);
+        console.error('Auth check failed:', error);
+        setIsAuthenticated(false);
+        setLocation('/auth');
       }
-    }, 100);
-
-    return () => clearTimeout(timer);
+    }
+    
+    checkAuth();
   }, [setLocation]);
 
-  if (!isReady) {
+  // Show loading while checking auth
+  if (isAuthenticated === null) {
     return (
       <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
         <div className="text-orange-500 text-xl font-bold">
@@ -57,6 +57,25 @@ function OnboardingRedirect() {
       </div>
     );
   }
+
+  return <>{children}</>;
+}
+
+function OnboardingRedirect() {
+  const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    try {
+      const hasCompletedOnboarding = localStorage.getItem('hodlearn-onboarding-completed');
+      
+      if (!hasCompletedOnboarding) {
+        setLocation('/onboarding');
+      }
+    } catch (error) {
+      // If localStorage fails in Safari, skip onboarding
+      console.warn('Safari localStorage access issue, skipping onboarding:', error);
+    }
+  }, [setLocation]);
 
   return <HomePage />;
 }
@@ -109,14 +128,10 @@ function Router() {
         </Route>
         <Route path="/">
           <AuthGuard>
-            <HomePage />
+            <OnboardingRedirect />
           </AuthGuard>
         </Route>
-        <Route path="*">
-          <AuthGuard>
-            <HomePage />
-          </AuthGuard>
-        </Route>
+        <Route component={NotFound} />
       </Switch>
     </AppContextProvider>
   );

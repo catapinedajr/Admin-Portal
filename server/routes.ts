@@ -588,9 +588,6 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
         // Default to Day 1 when no day specified (for current user's progress)
         dayIndex = 1;
       }
-      // Add caching for daily facts
-      res.set('Cache-Control', 'public, max-age=300'); // 5 minute cache
-      
       if (process.env.NODE_ENV === 'development') {
         console.log(`[DEBUG] Getting facts for day ${dayIndex}`);
       }
@@ -612,9 +609,6 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
       if (dayIndex <= 0) {
         return res.status(400).json({ message: "Invalid day index" });
       }
-      
-      // Add aggressive caching for metadata
-      res.set('Cache-Control', 'public, max-age=300'); // 5 minute cache
       
       const dayMetadata = await storage.getContentDay(dayIndex);
       if (!dayMetadata) {
@@ -648,10 +642,6 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
         const today = new Date();
         dayIndex = Math.max(1, Math.floor(today.getTime() / (1000 * 60 * 60 * 24)) % 10);
       }
-      
-      // Add caching for lesson content
-      res.set('Cache-Control', 'public, max-age=300'); // 5 minute cache
-      
       const lesson = await storage.getContentLesson(dayIndex);
       if (!lesson) {
         return res.status(404).json({ message: "No lesson found for this day" });
@@ -737,81 +727,9 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Day completion and access control routes
-  // Combined endpoint for Learn page performance optimization
-  app.get("/api/learn-data/:userId", async (req, res) => {
-    try {
-      const userId = parseInt(req.params.userId);
-      
-      // Safari-compatible headers
-      res.set({
-        'Cache-Control': 'public, max-age=60',
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      });
-      
-      // Get current day
-      let currentDay = await storage.getNextAvailableDay(userId);
-      if (currentDay <= 0) currentDay = 1;
-      
-      // Get all Learn page data in parallel with error handling
-      const [dayMetadata, lesson, dailyFacts, dayCompleted] = await Promise.all([
-        storage.getContentDay(currentDay).catch(err => {
-          console.error('Error getting day metadata:', err);
-          return null;
-        }),
-        storage.getContentLesson(currentDay).catch(err => {
-          console.error('Error getting lesson:', err);
-          return null;
-        }), 
-        storage.getContentSetUpQuestions(currentDay).catch(err => {
-          console.error('Error getting facts:', err);
-          return [];
-        }),
-        storage.isDayCompleted(userId, currentDay).catch(err => {
-          console.error('Error checking day completion:', err);
-          return false;
-        })
-      ]);
-      
-      // Debug logging
-      console.log(`Learn data for day ${currentDay}:`, {
-        dayMetadata: !!dayMetadata,
-        lesson: !!lesson,
-        dailyFactsCount: dailyFacts?.length || 0,
-        dayCompleted
-      });
-
-      const response = {
-        currentDayIndex: currentDay,
-        dayMetadata: dayMetadata || { dayIndex: currentDay, title: `Day ${currentDay}`, theme: 'default' },
-        lesson: lesson || { id: 0, title: 'Loading...', content: '', keyTakeaways: [] },
-        dailyFacts: Array.isArray(dailyFacts) ? dailyFacts : [],
-        diveDeeperContent: [], // Remove non-existent dive deeper content
-        dayCompleted: Boolean(dayCompleted)
-      };
-      
-      res.json(response);
-    } catch (error) {
-      console.error("Error getting combined learn data:", error);
-      // Return minimal valid response for Safari compatibility
-      res.status(200).json({
-        currentDayIndex: 1,
-        dayMetadata: { dayIndex: 1, title: 'Day 1', theme: 'default' },
-        lesson: { id: 0, title: 'Please refresh', content: 'Data temporarily unavailable', keyTakeaways: [] },
-        dailyFacts: [],
-        diveDeeperContent: [],
-        dayCompleted: false
-      });
-    }
-  });
-
   app.get("/api/next-available-day/:userId", async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
-      
-      // Add cache headers for production performance
-      res.set('Cache-Control', 'public, max-age=30'); // 30 second cache
-      
       let nextDay = await storage.getNextAvailableDay(userId);
       // Ensure we never return Day 0 - minimum is Day 1
       if (nextDay <= 0) {
