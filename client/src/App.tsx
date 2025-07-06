@@ -11,7 +11,26 @@ import HomePage from "@/pages/HomePage";
 import LearnPage from "@/pages/LearnPage";
 import FinancePage from "@/pages/FinancePage";
 import SimulatorsPage from "@/pages/SimulatorsPage";
-import { AppContextProvider } from "@/components/shared/AppContextProvider";
+import { AppContextProvider, useAppContext } from "@/components/shared/AppContextProvider";
+
+// Wrapper component to pass AppContext props to SimulatorsPage
+function SimulatorsPageWrapper() {
+  const context = useAppContext();
+  
+  return (
+    <SimulatorsPage
+      simulationsSubTab={context.simulationsSubTab}
+      setSimulationsSubTab={context.setSimulationsSubTab}
+      isPremiumTier={context.isPremiumTier}
+      securityStage={context.securityStage || 0}
+      setSecurityStage={context.setSecurityStage || (() => {})}
+      securityScore={context.securityScore || 0}
+      setSecurityScore={context.setSecurityScore || (() => {})}
+      userSecurityAnswers={context.userSecurityAnswers || []}
+      setUserSecurityAnswers={context.setUserSecurityAnswers || (() => {})}
+    />
+  );
+}
 import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
 import NotFound from "@/pages/not-found";
@@ -165,7 +184,7 @@ function Router() {
           <AuthGuard>
             <AppContextProvider>
               <Layout>
-                <SimulatorsPage />
+                <SimulatorsPageWrapper />
               </Layout>
             </AppContextProvider>
           </AuthGuard>
