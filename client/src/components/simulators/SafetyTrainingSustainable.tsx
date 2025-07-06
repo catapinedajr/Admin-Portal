@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -333,10 +333,19 @@ export default function SafetyTraining({
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
-  const [hasStarted, setHasStarted] = useState(false);
+  const [hasStarted, setHasStarted] = useState(securityStage > 0);
 
   const currentScenario = securityScenarios[currentQuestionIndex];
   const totalQuestions = securityScenarios.length;
+
+  // Sync internal state with prop state
+  useEffect(() => {
+    if (securityStage > 0 && securityStage < 999) {
+      setHasStarted(true);
+    } else if (securityStage === 0) {
+      setHasStarted(false);
+    }
+  }, [securityStage]);
 
   const handleAnswerSelect = (answerIndex: number) => {
     if (showFeedback) return;
@@ -373,10 +382,11 @@ export default function SafetyTraining({
     setCurrentQuestionIndex(0);
     setSecurityScore(0);
     setUserSecurityAnswers({});
+    setSecurityStage(1); // Start the quiz by setting stage to 1
   };
 
-  // Introduction screen
-  if (!hasStarted) {
+  // Introduction screen - show if not started or securityStage is 0
+  if (!hasStarted && securityStage === 0) {
     return (
       <div className="space-y-6">
         <div className="text-center space-y-4">
