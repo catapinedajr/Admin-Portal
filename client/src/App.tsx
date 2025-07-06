@@ -135,76 +135,9 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 }
 
 function OnboardingRedirect() {
-  const [, setLocation] = useLocation();
-  const [isChecking, setIsChecking] = useState(true);
-
-  useEffect(() => {
-    async function checkOnboarding() {
-      try {
-        // MOBILE SAFARI FIX: Skip onboarding for deployment
-        console.log('Checking onboarding status...');
-        
-        // MOBILE FIX: Always skip onboarding and go directly to learn page
-        let hasCompletedOnboarding = true;
-        
-        try {
-          if (typeof localStorage !== 'undefined' && localStorage.getItem) {
-            const onboardingStatus = localStorage.getItem('hodlearn-onboarding-completed');
-            hasCompletedOnboarding = onboardingStatus === 'true';
-            console.log('Onboarding status from localStorage:', hasCompletedOnboarding);
-          }
-        } catch (error) {
-          console.warn('Mobile localStorage check failed, skipping onboarding:', error);
-          hasCompletedOnboarding = true; // Skip onboarding on mobile errors
-        }
-        
-        if (!hasCompletedOnboarding) {
-          console.log('Redirecting to onboarding...');
-          setLocation('/onboarding');
-        } else {
-          console.log('Onboarding completed, loading home...');
-        }
-        
-        setIsChecking(false);
-      } catch (error) {
-        console.error('Onboarding check error:', error);
-        setIsChecking(false);
-      }
-    }
-    
-    checkOnboarding();
-  }, [setLocation]);
-
-  if (isChecking) {
-    return (
-      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-orange-500 mx-auto mb-4"></div>
-          <div className="text-orange-500 text-xl font-bold">Loading HODLearn...</div>
-        </div>
-      </div>
-    );
-  }
-
-  try {
-    return <MobileHome />;
-  } catch (error) {
-    console.error('Home component error:', error);
-    return (
-      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <h1 className="text-2xl font-bold text-white">HODLearn</h1>
-          <p className="text-zinc-400">Welcome to your Bitcoin education</p>
-          <button 
-            onClick={() => setLocation('/learn')}
-            className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded"
-          >
-            Start Learning
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // MOBILE FIX: Skip all React hooks and localStorage checks
+  // Just return the MobileHome component directly
+  return <MobileHome />;
 }
 
 function ScrollToTop() {
@@ -223,6 +156,13 @@ function Router() {
       <ScrollToTop />
       <Switch>
         <Route path="/auth" component={AuthPage} />
+        <Route path="/" exact>
+          <AuthGuard>
+            <AppContextProvider>
+              <MobileHome />
+            </AppContextProvider>
+          </AuthGuard>
+        </Route>
         <Route path="/onboarding">
           <AuthGuard>
             <AppContextProvider>
@@ -233,28 +173,28 @@ function Router() {
         <Route path="/learn">
           <AuthGuard>
             <AppContextProvider>
-              <Home />
+              <LearnPage />
             </AppContextProvider>
           </AuthGuard>
         </Route>
         <Route path="/money">
           <AuthGuard>
             <AppContextProvider>
-              <Home />
+              <FinancePage />
             </AppContextProvider>
           </AuthGuard>
         </Route>
         <Route path="/simulators">
           <AuthGuard>
             <AppContextProvider>
-              <Home />
+              <Simulators />
             </AppContextProvider>
           </AuthGuard>
         </Route>
         <Route path="/more">
           <AuthGuard>
             <AppContextProvider>
-              <Home />
+              <More />
             </AppContextProvider>
           </AuthGuard>
         </Route>
@@ -262,13 +202,6 @@ function Router() {
           <AuthGuard>
             <AppContextProvider>
               <About />
-            </AppContextProvider>
-          </AuthGuard>
-        </Route>
-        <Route path="/">
-          <AuthGuard>
-            <AppContextProvider>
-              <OnboardingRedirect />
             </AppContextProvider>
           </AuthGuard>
         </Route>
