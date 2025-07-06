@@ -7,6 +7,7 @@ import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { useEffect, useState } from "react";
 
 import Home from "@/pages/home-new";
+import MobileHome from "@/pages/home-mobile";
 import LearnPage from "@/pages/LearnPage";
 import FinancePage from "@/pages/FinancePage";
 import { AppContextProvider } from "@/components/shared/AppContextProvider";
@@ -185,18 +186,8 @@ function OnboardingRedirect() {
     );
   }
 
-  // MOBILE COMPATIBILITY: Use lighter component for home route
   try {
-    // Redirect to Learn page for better mobile performance
-    setLocation('/learn');
-    return (
-      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-orange-500 mx-auto mb-4"></div>
-          <div className="text-orange-500 text-xl font-bold">Loading HODLearn...</div>
-        </div>
-      </div>
-    );
+    return <MobileHome />;
   } catch (error) {
     console.error('Home component error:', error);
     return (
