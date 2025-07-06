@@ -63,7 +63,7 @@ export default function MorePage() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-6">
+      <main className="max-w-6xl mx-auto px-4 py-6 pb-24">
         <MoreSection 
           moreSubTab={moreSubTab}
           setMoreSubTab={setMoreSubTab}

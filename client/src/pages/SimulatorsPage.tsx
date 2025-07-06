@@ -124,7 +124,7 @@ function SimulatorsPage(props: SimulatorsPageProps = {}) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20">
       {/* Simulator Sub-navigation - Centered like Learn page */}
       <div className="flex justify-center">
         <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2">

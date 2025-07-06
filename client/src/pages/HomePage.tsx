@@ -96,7 +96,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-6">
+      <main className="max-w-6xl mx-auto px-4 py-6 pb-24">
         <HomeSection 
           user={user}
           currentDayIndex={currentDayIndex}
