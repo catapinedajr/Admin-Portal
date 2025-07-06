@@ -97,13 +97,64 @@ export default function HomePage() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 py-6 pb-24">
-        <HomeSection 
-          user={user}
-          currentDayIndex={currentDayIndex}
-          dayMetadata={dayMetadata}
-          dailyFacts={dailyFacts}
-          setActiveSection={setActiveSection}
-        />
+        <div className="space-y-8">
+          {/* Welcome Header */}
+          <div className="text-center space-y-4">
+            <h1 className="text-3xl font-bold text-white">
+              Welcome to HODLearn!
+            </h1>
+            <p className="text-zinc-400 text-lg">
+              Understanding Bitcoin takes time, Building conviction takes consistency
+            </p>
+          </div>
+
+          {/* Quick Navigation Cards */}
+          <div className="grid grid-cols-2 gap-4">
+            <div 
+              onClick={() => setLocation('/learn')}
+              className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg p-6 cursor-pointer transition-colors"
+            >
+              <div className="text-center">
+                <div className="text-2xl mb-2">📚</div>
+                <h3 className="font-semibold text-white">Learn Today</h3>
+                <p className="text-sm text-zinc-400">Start your Bitcoin journey</p>
+              </div>
+            </div>
+            
+            <div 
+              onClick={() => setLocation('/money')}
+              className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg p-6 cursor-pointer transition-colors"
+            >
+              <div className="text-center">
+                <div className="text-2xl mb-2">💰</div>
+                <h3 className="font-semibold text-white">Money & Finance</h3>
+                <p className="text-sm text-zinc-400">Understand traditional finance</p>
+              </div>
+            </div>
+            
+            <div 
+              onClick={() => setLocation('/simulators')}
+              className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg p-6 cursor-pointer transition-colors"
+            >
+              <div className="text-center">
+                <div className="text-2xl mb-2">🎮</div>
+                <h3 className="font-semibold text-white">Simulators</h3>
+                <p className="text-sm text-zinc-400">Interactive Bitcoin tools</p>
+              </div>
+            </div>
+            
+            <div 
+              onClick={() => setLocation('/more')}
+              className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg p-6 cursor-pointer transition-colors"
+            >
+              <div className="text-center">
+                <div className="text-2xl mb-2">🔗</div>
+                <h3 className="font-semibold text-white">More</h3>
+                <p className="text-sm text-zinc-400">Resources and tools</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
 
       <BottomNavigation 
