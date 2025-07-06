@@ -1,7 +1,7 @@
 import React, { useState, lazy, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Shield, Wallet, ArrowLeftRight, Coins, TrendingUp, DollarSign, TrendingDown, FileText } from "lucide-react";
+import { Shield, Wallet, ArrowLeftRight, CreditCard, TrendingUp, DollarSign, TrendingDown, FileText } from "lucide-react";
 
 // Lazy load all simulator components for performance
 const WalletSimulator = lazy(() => import("@/components/simulators/WalletSimulator"));
@@ -114,7 +114,87 @@ export default function SimulatorsPage({
 
   return (
     <div className="space-y-6">
-      {/* Active Simulator Content - Navigation handled by parent component */}
+      {/* Practice Sub-navigation - Only show for premium users */}
+      {isPremiumTier && (
+        <div className="flex justify-center">
+          <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2">
+          <Button
+            variant={simulationsSubTab === "safety" ? "secondary" : "ghost"}
+            size="sm"
+            onClick={() => setSimulationsSubTab("safety")}
+            className="text-xs px-3 py-1"
+          >
+            <Shield className="w-3 h-3 mr-1" />
+            Safety
+          </Button>
+          <Button
+            variant={simulationsSubTab === "wallet" ? "secondary" : "ghost"}
+            size="sm"
+            onClick={() => setSimulationsSubTab("wallet")}
+            className="text-xs px-3 py-1"
+          >
+            <Wallet className="w-3 h-3 mr-1" />
+            Wallet
+          </Button>
+          <Button
+            variant={simulationsSubTab === "transactions" ? "secondary" : "ghost"}
+            size="sm"
+            onClick={() => setSimulationsSubTab("transactions")}
+            className="text-xs px-3 py-1"
+          >
+            <CreditCard className="w-3 h-3 mr-1" />
+            Transaction
+          </Button>
+          <Button
+            variant={simulationsSubTab === "transfer" ? "secondary" : "ghost"}
+            size="sm"
+            onClick={() => setSimulationsSubTab("transfer")}
+            className="text-xs px-3 py-1"
+          >
+            <ArrowLeftRight className="w-3 h-3 mr-1" />
+            Settlement
+          </Button>
+          <Button
+            variant={simulationsSubTab === "hodl" ? "secondary" : "ghost"}
+            size="sm"
+            onClick={() => setSimulationsSubTab("hodl")}
+            className="text-xs px-3 py-1"
+          >
+            <TrendingUp className="w-3 h-3 mr-1" />
+            HODL
+          </Button>
+          <Button
+            variant={simulationsSubTab === "dca" ? "secondary" : "ghost"}
+            size="sm"
+            onClick={() => setSimulationsSubTab("dca")}
+            className="text-xs px-3 py-1"
+          >
+            <DollarSign className="w-3 h-3 mr-1" />
+            DCA
+          </Button>
+          <Button
+            variant={simulationsSubTab === "inflation" ? "secondary" : "ghost"}
+            size="sm"
+            onClick={() => setSimulationsSubTab("inflation")}
+            className="text-xs px-3 py-1"
+          >
+            <TrendingDown className="w-3 h-3 mr-1" />
+            Inflation
+          </Button>
+          <Button
+            variant={simulationsSubTab === "fees" ? "secondary" : "ghost"}
+            size="sm"
+            onClick={() => setSimulationsSubTab("fees")}
+            className="text-xs px-3 py-1"
+          >
+            <FileText className="w-3 h-3 mr-1" />
+            Fees
+          </Button>
+        </div>
+      </div>
+      )}
+
+      {/* Active Simulator Content */}
       {renderActiveSimulator()}
     </div>
   );
