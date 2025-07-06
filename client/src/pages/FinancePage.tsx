@@ -851,20 +851,7 @@ function FinancePage() {
       </main>
 
       {/* Bottom Navigation */}
-      <BottomNavigation 
-        activeSection={activeSection}
-        onSectionChange={(section) => {
-          let mappedSection: any;
-          if (section === 'simulators') mappedSection = 'simulations';
-          else mappedSection = section;
-          
-          setActiveSection(mappedSection);
-          if (section === 'learn') setLocation('/learn');
-          else if (section === 'money') setLocation('/money');
-          else if (section === 'simulators') setLocation('/simulators');
-          else if (section === 'more') setLocation('/more');
-        }}
-      />
+      <BottomNavigation />
 
       {/* Email Collection Modal */}
       <EmailCollectionModal

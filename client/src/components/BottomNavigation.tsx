@@ -11,10 +11,10 @@ export default function BottomNavigation({ activeSection, onSectionChange }: Bot
   const [location, setLocation] = useLocation();
 
   const handleNavigation = (section: string, path: string) => {
+    // Always use direct navigation for consistency
+    setLocation(path);
     if (onSectionChange) {
       onSectionChange(section);
-    } else {
-      setLocation(path);
     }
   };
 
