@@ -128,11 +128,11 @@ function Router() {
             <About />
           </AuthGuard>
         </Route>
-        <Route path="/">
+        <Route path="/" component={() => (
           <AuthGuard>
             <OnboardingRedirect />
           </AuthGuard>
-        </Route>
+        )} />
         <Route component={NotFound} />
       </Switch>
     </AppContextProvider>
