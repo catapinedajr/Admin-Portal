@@ -94,7 +94,7 @@ import SimulatorsPage from "@/pages/SimulatorsPage";
 import EmailCollectionModal from "@/components/EmailCollectionModal";
 import { ConsistencyCalendar } from "@/components/ConsistencyCalendar";
 
-import HomePage from "@/pages/HomePage";
+import HomeSection from "@/components/sections/HomeSection";
 import MoreSection from "@/components/sections/MoreSection";
 import { iconMap, bitcoinTerms } from "@/constants/appData";
 import WeeklyQuiz from "@/components/WeeklyQuiz";
@@ -1863,7 +1863,6 @@ export default function Home() {
 
   const { data: user, isLoading: userLoading } = useQuery<User>({
     queryKey: ['/api/user'],
-    enabled: activeSection === "home" || activeSection === "learn"
   });
 
   // Show splash screen during initial loading or when explicitly requested
@@ -1960,7 +1959,8 @@ export default function Home() {
       <main className="max-w-6xl mx-auto px-4 py-6">
         {/* Home Section */}
         {activeSection === "home" && (
-          <HomePage 
+          <HomeSection 
+            user={user}
             currentDayIndex={currentDayIndex}
             dayMetadata={dayMetadata}
             dailyFacts={dailyFacts}
