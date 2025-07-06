@@ -147,7 +147,7 @@ function Router() {
         </Route>
         <Route path="/">
           <AuthGuard>
-            <OnboardingRedirect />
+            <HomePage />
           </AuthGuard>
         </Route>
         <Route path="*">
