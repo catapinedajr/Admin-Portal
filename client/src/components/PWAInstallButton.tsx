@@ -32,7 +32,7 @@ export default function PWAInstallButton() {
     if (isSafari && isIOS) {
       // For Safari on iOS, we can't auto-trigger install but we can always show the button
       setIsInstallable(true);
-      console.log('HODLearn: Safari iOS detected - install button will show instructions');
+      // Safari iOS detected - install button will show instructions
     }
 
     // Listen for beforeinstallprompt event (Chrome/Android)
@@ -40,7 +40,7 @@ export default function PWAInstallButton() {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       setIsInstallable(true);
-      console.log('HODLearn: beforeinstallprompt event triggered');
+      // beforeinstallprompt event triggered
     };
 
     // Listen for appinstalled event
@@ -48,7 +48,7 @@ export default function PWAInstallButton() {
       setIsInstalled(true);
       setIsInstallable(false);
       setDeferredPrompt(null);
-      console.log('HODLearn: App installed successfully');
+      // App installed successfully
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -62,14 +62,10 @@ export default function PWAInstallButton() {
 
   const handleInstall = async () => {
     setIsClicked(true);
-    console.log('HODLearn: Install button clicked');
-    console.log('HODLearn: deferredPrompt available:', !!deferredPrompt);
-    console.log('HODLearn: isInstallable:', isInstallable);
-    console.log('HODLearn: isInstalled:', isInstalled);
-    console.log('HODLearn: User Agent:', navigator.userAgent);
+    // Install button clicked - checking availability
 
     if (!deferredPrompt) {
-      console.log('HODLearn: No install prompt available - checking browser install options');
+      // No install prompt available - checking browser install options
       
       // Reset click state after showing alert
       setTimeout(() => setIsClicked(false), 100);
@@ -110,7 +106,7 @@ export default function PWAInstallButton() {
     }
 
     try {
-      console.log('HODLearn: Attempting to show install prompt...');
+      // Attempting to show install prompt
       await deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
       
