@@ -21,12 +21,13 @@ export default function BottomNavigation({ activeSection, onSectionChange }: Bot
 
   const getActiveSection = () => {
     if (activeSection) return activeSection;
-    if (location === '/') return 'home';
+    if (location === '/') return 'learn';
+    if (location.startsWith('/home')) return 'home';
     if (location.startsWith('/learn')) return 'learn';
     if (location.startsWith('/money')) return 'money';
     if (location.startsWith('/simulators')) return 'simulators';
     if (location.startsWith('/more') || location.startsWith('/about')) return 'more';
-    return 'home';
+    return 'learn';
   };
 
   const currentSection = getActiveSection();
@@ -36,13 +37,13 @@ export default function BottomNavigation({ activeSection, onSectionChange }: Bot
       id: 'home',
       label: 'Home',
       icon: Home,
-      path: '/'
+      path: '/home'
     },
     {
       id: 'learn',
       label: 'Learn',
       icon: GraduationCap,
-      path: '/learn'
+      path: '/'
     },
     {
       id: 'money',

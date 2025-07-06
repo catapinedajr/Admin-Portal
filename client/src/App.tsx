@@ -62,12 +62,12 @@ function Router() {
             <Onboarding />
           </AuthGuard>
         </Route>
-        <Route path="/learn" component={LearnPage} />
+        <Route path="/home" component={HomePage} />
         <Route path="/money" component={FinancePage} />
         <Route path="/simulators" component={SimulatorsPage} />
         <Route path="/more" component={MorePage} />
         <Route path="/about" component={About} />
-        <Route path="/" component={HomePage} />
+        <Route path="/" component={LearnPage} />
         <Route component={NotFound} />
       </Switch>
     </AppContextProvider>
