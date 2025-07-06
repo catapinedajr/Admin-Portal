@@ -90,7 +90,7 @@ export default function SimulatorsPage() {
 
       {/* Transactions Simulator */}
       {isPremiumTier && simulationsSubTab === "transactions" && (
-        <TransactionsSimulator />
+        <TransactionsSimulator isPremiumTier={isPremiumTier} />
       )}
 
       {/* Transfer Speed Simulator */}
