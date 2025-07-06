@@ -1,17 +1,17 @@
-import React, { useState, lazy, Suspense } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, Wallet, ArrowLeftRight, CreditCard, TrendingUp, DollarSign, TrendingDown, FileText } from "lucide-react";
 
-// Lazy load all simulator components for performance
-const WalletSimulator = lazy(() => import("@/components/simulators/WalletSimulator"));
-const SafetyTraining = lazy(() => import("@/components/simulators/SafetyTrainingSustainable"));
-const TransactionsSimulator = lazy(() => import("@/components/simulators/TransactionsSimulator"));
-const TransferSimulator = lazy(() => import("@/components/simulators/TransferSimulator").then(module => ({ default: module.TransferSimulator })));
-const HODLSimulator = lazy(() => import("@/components/simulators/HODLSimulator"));
-const DCASimulator = lazy(() => import("@/components/simulators/DCASimulator").then(module => ({ default: module.DCASimulator })));
-const InflationSimulator = lazy(() => import("@/components/simulators/InflationSimulator"));
-const FeesSimulator = lazy(() => import("@/components/simulators/FeesSimulator"));
+// Direct imports to avoid HMR issues
+import WalletSimulator from "@/components/simulators/WalletSimulator";
+import SafetyTraining from "@/components/simulators/SafetyTrainingSustainable";
+import TransactionsSimulator from "@/components/simulators/TransactionsSimulator";
+import { TransferSimulator } from "@/components/simulators/TransferSimulator";
+import HODLSimulator from "@/components/simulators/HODLSimulator";
+import { DCASimulator } from "@/components/simulators/DCASimulator";
+import InflationSimulator from "@/components/simulators/InflationSimulator";
+import FeesSimulator from "@/components/simulators/FeesSimulator";
 
 type SimulationsSubTab = "wallet" | "safety" | "transactions" | "transfer" | "hodl" | "dca" | "inflation" | "fees";
 

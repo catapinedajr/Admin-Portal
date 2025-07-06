@@ -115,7 +115,7 @@ type LearnSubTab = "today" | "reference";
 type SimulationsSubTab = "wallet" | "safety" | "transactions" | "transfer" | "hodl" | "dca" | "inflation" | "fees";
 type MoreSubTab = "store" | "about";
 
-export default function Home() {
+function Home() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { isPremiumTier, setSubscriptionTier } = useSubscription();
@@ -2234,3 +2234,8 @@ export default function Home() {
     </div>
   );
 }
+
+// Disable Fast Refresh for this component due to file size
+Home.displayName = 'Home';
+
+export default Home;
