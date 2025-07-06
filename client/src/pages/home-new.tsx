@@ -86,7 +86,7 @@ import AchievementSystem from "@/components/AchievementSystem";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import LockedContent from "@/components/LockedContent";
 // Removed UpgradeModal import - now using inline upgrade cards
-import DevSubscriptionToggle from "@/components/DevSubscriptionToggle";
+
 import BottomNavigation from "@/components/BottomNavigation";
 import LearnPage from "@/pages/LearnPage";
 import FinancePage from "@/pages/FinancePage";
@@ -166,16 +166,13 @@ export default function Home() {
     }
   }, [location]);
   
-  // Day navigation for development testing
-  const [testDayOverride, setTestDayOverride] = useState<number | null>(null);
-  
   // Get current day from API
   const { data: nextDayData } = useQuery({
     queryKey: ['/api/next-available-day', 1],
     queryFn: () => fetch('/api/next-available-day/1').then(res => res.json())
   });
   
-  const currentDayIndex = testDayOverride || nextDayData?.dayIndex || 1;
+  const currentDayIndex = nextDayData?.dayIndex || 1;
   
   // Day access control queries
   const { data: dayAccessible = false } = useQuery({
@@ -1675,7 +1672,7 @@ export default function Home() {
     const simulation = safetySimulations[safetyStage];
     
     if (!simulation) {
-      console.error(`Invalid stage: ${safetyStage}`);
+      // Invalid safety stage
       return;
     }
     
@@ -1716,12 +1713,12 @@ export default function Home() {
           break;
           
         default:
-          console.error(`Unhandled stage: ${safetyStage}`);
+          // Unhandled safety stage
           break;
       }
       
     } catch (error) {
-      console.error('Safety simulation validation error:', error, simulation);
+      // Safety simulation validation error
       correct = false;
     }
     
