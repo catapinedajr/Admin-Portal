@@ -28,19 +28,7 @@ import type { User } from "@shared/schema";
 
 export default function HomePage() {
   const [, setLocation] = useLocation();
-  
-  // Safe context usage with fallbacks
-  let isPremiumTier = false;
-  let setShowEmailModal = () => {};
-  
-  try {
-    const context = useAppContext();
-    isPremiumTier = context.isPremiumTier;
-    setShowEmailModal = context.setShowEmailModal;
-  } catch (error) {
-    // AppContext not available, use defaults
-    console.warn('AppContext not available, using defaults');
-  }
+  const { isPremiumTier, setShowEmailModal } = useAppContext();
   
   // Get user data for personalized dashboard
   const { data: user } = useQuery<User>({
@@ -68,12 +56,12 @@ export default function HomePage() {
   // Get current day content for preview
   const { data: dayMetadata } = useQuery({
     queryKey: ['/api/day-metadata', currentDay],
-    enabled: !!currentDay && currentDay > 0,
+    enabled: !!currentDay,
   });
 
   const { data: dailyFacts } = useQuery({
     queryKey: ['/api/daily-facts', currentDay],
-    enabled: !!currentDay && currentDay > 0,
+    enabled: !!currentDay,
   });
 
   const getTimeBasedGreeting = () => {
@@ -95,6 +83,11 @@ export default function HomePage() {
   // Calculate streak
   const currentStreak = userProgress?.currentStreak || 0;
   const bestStreak = userProgress?.bestStreak || 0;
+
+  // Calculate weekly progress
+  const currentWeek = Math.ceil(currentDay / 7);
+  const dayInWeek = ((currentDay - 1) % 7) + 1;
+  const weeklyProgress = Math.round((dayInWeek / 7) * 100);
 
   const getStreakMessage = () => {
     if (currentStreak === 0) return "Start your learning journey today";
