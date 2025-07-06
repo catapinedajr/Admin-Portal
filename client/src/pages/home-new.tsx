@@ -330,12 +330,7 @@ export default function Home() {
   
 
 
-  const [transferCount, setTransferCount] = useState<string>("2");
-  const [transferAmount, setTransferAmount] = useState<string>("1000");
-  const [speedRaceActive, setSpeedRaceActive] = useState<boolean>(false);
-  const [animationActive, setAnimationActive] = useState(false);
-  const [inflationProgress, setInflationProgress] = useState(0); // 0-6 representing years 0,1,5,10,15,20,25
-  const [settlementProgress, setSettlementProgress] = useState<{traditional: number; bitcoin: number}>({ traditional: 0, bitcoin: 0 });
+
   
 
   
@@ -415,75 +410,13 @@ export default function Home() {
 
 
 
-  // Settlement Animation Logic
-  const startSettlementAnimation = () => {
-    setSpeedRaceActive(true);
-    setAnimationActive(true);
-    setSettlementProgress({ traditional: 0, bitcoin: 0 });
-
-    // Bitcoin animation: completes all 4 steps in 18 seconds (20% slower for better visibility)
-    const bitcoinSteps = [
-      { step: 1, delay: 2400 },   // Step 1 at 2.4 seconds (transaction creation)
-      { step: 2, delay: 6000 },   // Step 2 at 6 seconds (network broadcast)
-      { step: 3, delay: 14400 },  // Step 3 at 14.4 seconds (mining consensus)
-      { step: 4, delay: 18000 }   // Step 4 at 18 seconds (final settlement)
-    ];
-
-    // Traditional banking: takes much longer with realistic banking delays
-    const traditionalSteps = [
-      { step: 1, delay: 8000 },   // Step 1 at 8 seconds (bank visit takes longer)
-      { step: 2, delay: 20000 },  // Step 2 at 20 seconds (compliance review)
-      { step: 3, delay: 44000 },  // Step 3 at 44 seconds (SWIFT processing)
-      { step: 4, delay: 70000 },  // Step 4 at 70 seconds (intermediary banks)
-      { step: 5, delay: 86000 }   // Step 5 at 86 seconds (final settlement)
-    ];
-
-    // Animate Bitcoin steps
-    bitcoinSteps.forEach(({ step, delay }) => {
-      setTimeout(() => {
-        setSettlementProgress(prev => ({ ...prev, bitcoin: step }));
-      }, delay);
-    });
-
-    // Animate Traditional steps  
-    traditionalSteps.forEach(({ step, delay }) => {
-      setTimeout(() => {
-        setSettlementProgress(prev => ({ ...prev, traditional: step }));
-      }, delay);
-    });
-
-    // End animation after 90 seconds
-    setTimeout(() => {
-      setAnimationActive(false);
-    }, 90000);
-  };
-
-  const resetSettlementAnimation = () => {
-    setSpeedRaceActive(false);
-    setAnimationActive(false);
-    setSettlementProgress({ traditional: 0, bitcoin: 0 });
-  };
 
 
-  const [transactionInputs, setTransactionInputs] = useState({
-    fromAddress: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-    toAddress: "",
-    amount: "0.001",
-    feeRate: "standard"
-  });
-  const [transactionState, setTransactionState] = useState<"building" | "preview" | "signing" | "broadcasting" | "confirming" | "confirmed">("building");
-  const [showTransactionApproval, setShowTransactionApproval] = useState(false);
-  const [confirmationCount, setConfirmationCount] = useState(0);
-  const [timeRemaining, setTimeRemaining] = useState(45);
-  const [transactionJourney, setTransactionJourney] = useState<"broadcast" | "mempool" | "confirming" | "settled">("broadcast");
-  const [transactionId, setTransactionId] = useState("");
 
-  // Fee options with realistic data
-  const feeOptions = {
-    slow: { rate: "1-3", cost: "0.00001", time: "60+ min", priority: "Low Priority", satsPerByte: 2 },
-    standard: { rate: "4-8", cost: "0.00004", time: "10-30 min", priority: "Standard", satsPerByte: 6 },
-    fast: { rate: "9-15", cost: "0.00008", time: "1-10 min", priority: "High Priority", satsPerByte: 12 }
-  };
+
+
+
+
   
   // Enhanced HODL Calculator State
   const [hodlInputs, setHodlInputs] = useState<{
@@ -1156,138 +1089,23 @@ export default function Home() {
     setExpandedTopics(newExpanded);
   };
 
-  const updateTransactionInput = (field: string, value: string) => {
-    setTransactionInputs(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
 
-  const calculateTransactionFee = () => {
-    const currentFee = getCurrentFee();
-    return currentFee.cost;
-  };
 
-  const simulatePasteFromClipboard = () => {
-    const clipboardSources = [
-      { source: "Mobile Wallet", address: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh" },
-      { source: "Hardware Wallet", address: "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4" },
-      { source: "Exchange Withdrawal", address: "bc1qrp33g8q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3" },
-      { source: "Lightning Address", address: "3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy" },
-      { source: "Friend's Wallet", address: "1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2" }
-    ];
-    const randomClipboard = clipboardSources[Math.floor(Math.random() * clipboardSources.length)];
-    
-    // Simulate realistic paste behavior with brief delay
-    setTimeout(() => {
-      setTransactionInputs(prev => ({ ...prev, toAddress: randomClipboard.address }));
-      // Show a brief toast-like notification
-      const notification = document.createElement('div');
-      notification.className = 'fixed top-4 right-4 bg-orange-800 text-orange-100 px-4 py-2 rounded-lg text-sm z-50 transition-opacity';
-      notification.textContent = `Pasted from ${randomClipboard.source}`;
-      document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        notification.style.opacity = '0';
-        setTimeout(() => document.body.removeChild(notification), 300);
-      }, 2000);
-    }, 100);
-  };
 
-  const generateTransactionId = () => {
-    return Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('');
-  };
 
-  const proceedToPreview = () => {
-    setTransactionState("preview");
-  };
 
-  const startSigning = () => {
-    // Validate that To Address is filled before proceeding
-    if (!transactionInputs.toAddress || transactionInputs.toAddress.trim() === '') {
-      toast({
-        title: "Missing Required Information",
-        description: "Please enter a Bitcoin address in the 'To Address' field before signing the transaction.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    setTransactionState("signing");
-    setShowTransactionApproval(true);
-  };
 
-  const cancelTransaction = () => {
-    setTransactionState("building");
-    setShowTransactionApproval(false);
-    setConfirmationCount(0);
-    setTimeRemaining(120);
-    setTransactionId("");
-  };
 
-  const getCurrentFee = () => {
-    const fee = feeOptions[transactionInputs.feeRate as keyof typeof feeOptions];
-    return fee || feeOptions.standard;
-  };
 
-  const getTransactionTotal = () => {
-    const amount = parseFloat(transactionInputs.amount) || 0;
-    const fee = parseFloat(getCurrentFee().cost) || 0;
-    return (amount + fee).toFixed(8);
-  };
 
-  const getUSDValue = (btcAmount: string) => {
-    const amount = parseFloat(btcAmount) || 0;
-    return (amount * 95000).toFixed(2);
-  };
 
-  const approveTransaction = () => {
-    setShowTransactionApproval(false);
-    setTransactionState("broadcasting");
-    setTransactionId(generateTransactionId());
-    setTransactionJourney("broadcast");
-    
-    // Step 1: Broadcasting to network (3 seconds)
-    setTimeout(() => {
-      setTransactionJourney("mempool");
-      
-      // Step 2: Mempool queue (5 seconds)
-      setTimeout(() => {
-        setTransactionState("confirming");
-        setTransactionJourney("confirming");
-        setConfirmationCount(0);
-        setTimeRemaining(45);
-        
-        // Step 3: Confirmation progression (37 seconds total)
-        const confirmationInterval = setInterval(() => {
-          setConfirmationCount(prev => {
-            const newCount = prev + 1;
-            if (newCount >= 6) {
-              clearInterval(confirmationInterval);
-              // Step 4: Final settlement
-              setTimeout(() => {
-                setTransactionJourney("settled");
-                setTransactionState("confirmed");
-                
-                // Reset after showing final confirmation
-                setTimeout(() => {
-                  setTransactionState("building");
-                  setConfirmationCount(0);
-                  setTimeRemaining(45);
-                  setTransactionId("");
-                  setTransactionJourney("broadcast");
-                }, 5000);
-              }, 1000);
-            }
-            return newCount;
-          });
-          
-          setTimeRemaining(prev => Math.max(0, prev - 6));
-        }, 6000); // New confirmation every 6 seconds (6x6=36 seconds)
-        
-      }, 5000);
-    }, 3000);
-  };
+
+
+
+
+
+
+
 
   const calculateHodlStrategy = () => {
     const bitcoinAmount = hodlInputs.initialAmount / hodlInputs.startPrice;
