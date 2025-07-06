@@ -77,19 +77,25 @@ Comprehensive component library built on Radix UI primitives:
 
 ## Deployment Strategy
 
-### Replit Configuration
+### Development Environment (Replit)
 - **Modules**: nodejs-20, web, postgresql-16
-- **Build Command**: `npm run build` (Vite + esbuild)
-- **Start Command**: `npm run start` (production mode)
 - **Development**: `npm run dev` (development mode with hot reloading)
 - **Port Configuration**: Internal port 5000, external port 80
+- **Status**: Perfect for development and iteration
+
+### Production Deployment Considerations
+- **Replit Limitation**: Build system times out processing lucide-react icons (1,000+ modules)
+- **Current Issue**: Production builds fail during icon processing, preventing successful deployment
+- **Recommended Solution**: Deploy to Vercel/Netlify/Railway for production
+- **Development Strategy**: Continue using Replit for development, deploy elsewhere for production
 
 ### Database Management
 - **Migrations**: Drizzle Kit handles schema migrations
 - **Connection**: Environment variable `DATABASE_URL` for PostgreSQL connection
 - **Schema Location**: `./shared/schema.ts` for shared type definitions
+- **Export Strategy**: Database can be exported for deployment to other platforms
 
-### Build Process
+### Build Process (When Working)
 1. Frontend assets built with Vite to `dist/public`
 2. Backend bundled with esbuild to `dist/index.js`
 3. Static file serving configured for production deployment
