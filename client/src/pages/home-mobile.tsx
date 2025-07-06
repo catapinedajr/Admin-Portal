@@ -1,7 +1,15 @@
 import React from "react";
 
-// Ultra-minimal mobile home component to fix React dispatcher error
+// FORCE LOADED MOBILE HOME - TESTING
 export default function MobileHome() {
+  // Alert to force visibility
+  if (typeof window !== 'undefined') {
+    setTimeout(() => {
+      console.log("🔥 MobileHome IS ACTUALLY LOADING!");
+      alert("MobileHome component loaded successfully!");
+    }, 1000);
+  }
+  
   const navigateTo = (path) => {
     window.location.href = path;
   };
@@ -15,12 +23,12 @@ export default function MobileHome() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-900 text-white">
-      {/* Header */}
-      <div className="bg-zinc-800 border-b border-zinc-700 p-4">
+    <div className="min-h-screen bg-red-900 text-white">
+      {/* TESTING HEADER - RED BACKGROUND TO SEE */}
+      <div className="bg-red-800 border-b border-red-700 p-4">
         <div className="flex items-center justify-center space-x-3">
-          <div className="h-8 w-8 text-orange-500">₿</div>
-          <h1 className="text-2xl font-bold">HODLearn</h1>
+          <div className="h-8 w-8 text-orange-500">🔥</div>
+          <h1 className="text-3xl font-bold text-orange-500">MOBILE HOME LOADED!</h1>
         </div>
       </div>
 

@@ -156,12 +156,8 @@ function Router() {
       <ScrollToTop />
       <Switch>
         <Route path="/auth" component={AuthPage} />
-        <Route path="/" exact>
-          <AuthGuard>
-            <AppContextProvider>
-              <MobileHome />
-            </AppContextProvider>
-          </AuthGuard>
+        <Route path="/">
+          <MobileHome />
         </Route>
         <Route path="/onboarding">
           <AuthGuard>
@@ -173,7 +169,7 @@ function Router() {
         <Route path="/learn">
           <AuthGuard>
             <AppContextProvider>
-              <LearnPage />
+              <Home />
             </AppContextProvider>
           </AuthGuard>
         </Route>
