@@ -30,15 +30,31 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
             sessionId = localStorage.getItem('hodlearn_session');
           }
         } catch (error) {
-          console.warn('Safari localStorage access issue:', error);
-          // If localStorage is completely unavailable, redirect to auth
-          setIsAuthenticated(false);
-          setLocation('/auth');
-          return;
+          console.error('Safari auth check network error:', error);
+          // Continue with auth check via API instead of localStorage
+          sessionId = null;
         }
         
+        // MOBILE SAFARI FIX: If no session, try API check first
         if (!sessionId) {
-          // No session found, redirect to auth
+          console.log('No session found, trying API user check for mobile compatibility');
+          try {
+            const response = await fetch('/api/user', {
+              method: 'GET',
+              credentials: 'include',
+              cache: 'no-cache'
+            });
+            
+            if (response.ok) {
+              console.log('Mobile API auth successful without localStorage');
+              setIsAuthenticated(true);
+              return;
+            }
+          } catch (apiError) {
+            console.log('Mobile API auth failed:', apiError);
+          }
+          
+          // No session and no API auth, redirect to auth
           setIsAuthenticated(false);
           setLocation('/auth');
           return;
@@ -90,12 +106,25 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     return () => clearTimeout(timeoutId);
   }, [setLocation]);
 
-  // Show loading while checking auth
+  // Show loading while checking auth - MOBILE SAFARI COMPATIBLE
   if (isAuthenticated === null) {
     return (
-      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
-        <div className="text-orange-500 text-xl font-bold">
-          Loading HODLearn...
+      <div 
+        className="min-h-screen bg-zinc-900 flex items-center justify-center"
+        style={{ 
+          position: 'fixed', 
+          top: 0, 
+          left: 0, 
+          right: 0, 
+          bottom: 0, 
+          zIndex: 9999,
+          background: '#18181b'
+        }}
+      >
+        <div className="text-center px-4">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <div className="text-orange-500 text-xl font-bold mb-2">Loading HODLearn...</div>
+          <div className="text-gray-400 text-sm">Building your Bitcoin knowledge</div>
         </div>
       </div>
     );
