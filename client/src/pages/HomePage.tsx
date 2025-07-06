@@ -51,34 +51,47 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-zinc-900">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-zinc-900/95 backdrop-blur-sm border-b border-zinc-800">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-sm">₿</span>
-            </div>
-            <h1 className="text-xl font-bold text-white">HODLearn</h1>
-          </div>
-          
-          <div className="flex items-center space-x-2">
-            <PWAInstallButton />
-            
-            {isPremiumTier ? (
-              <div className="flex items-center space-x-1 text-orange-400 text-sm font-medium">
-                <Crown className="w-4 h-4" />
-                <span className="hidden sm:inline">Premium</span>
+      <header className="border-b border-zinc-800 bg-black/50 backdrop-blur-lg sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div 
+              className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => setLocation('/')}
+            >
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-sm">
+                  HL
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold">HODLearn</h1>
+                  <p className="text-xs text-zinc-400">How-to-learn BTC</p>
+                </div>
               </div>
-            ) : (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowEmailModal(true)}
-                className="text-orange-400 hover:text-orange-300 text-sm"
-              >
-                <Gem className="w-4 h-4 mr-1" />
-                <span className="hidden sm:inline">Upgrade</span>
-              </Button>
-            )}
+            </div>
+
+            {/* Header Actions */}
+            <div className="flex items-center gap-2">
+              {/* PWA Install Button */}
+              <PWAInstallButton />
+              
+              {/* Premium Status Indicator */}
+              {isPremiumTier ? (
+                <div className="bg-orange-500 hover:bg-orange-600 text-white border-orange-500 px-2.5 py-1.5 font-medium rounded flex items-center">
+                  <Gem className="w-4 h-4" />
+                  <span className="sr-only">Premium</span>
+                </div>
+              ) : (
+                <Button 
+                  onClick={() => setShowEmailModal(true)}
+                  size="sm"
+                  className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-2.5 py-1.5"
+                  title="Upgrade to Premium"
+                >
+                  <Crown className="w-4 h-4" />
+                  <span className="sr-only">Upgrade</span>
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </header>
