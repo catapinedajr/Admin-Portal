@@ -1864,16 +1864,10 @@ export default function Home() {
     queryKey: ['/api/user'],
   });
 
-  // Show splash screen during initial loading or when explicitly requested
+  // Remove splash screen for instant loading
   useEffect(() => {
-    if (userLoading) {
-      setShowSplash(true);
-    } else {
-      // Keep splash for minimum 1 second for branding, then hide
-      const timer = setTimeout(() => setShowSplash(false), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [userLoading]);
+    setShowSplash(false);
+  }, []);
 
 
 
