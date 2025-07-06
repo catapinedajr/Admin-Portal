@@ -179,7 +179,7 @@ export default function Home() {
   const { data: dayAccessible = false } = useQuery({
     queryKey: ['/api/day-access', 1, currentDayIndex],
     queryFn: () => fetch(`/api/day-access/1/${currentDayIndex}`).then(res => res.json()),
-    enabled: activeSection === "learn" || activeSection === "home" // Only load when needed
+    enabled: activeSection === "learn" // Only load when on Learn section
   });
 
   // Check if day is locked by subscription tier (Days 1-7 free, 8+ premium)
@@ -190,14 +190,14 @@ export default function Home() {
     queryKey: ['/api/day-access-info', 1, currentDayIndex],
     queryFn: () => fetch(`/api/day-access-info/1/${currentDayIndex}`).then(res => res.json()),
     refetchInterval: isDayLockedBySubscription ? false : 60000,
-    enabled: activeSection === "learn" || activeSection === "home"
+    enabled: activeSection === "learn" // Only load when on Learn section
   });
   
   // Only check completion status when on learn section
   const { data: dayCompleted = false } = useQuery({
     queryKey: ['/api/day-completed', 1, currentDayIndex],
     queryFn: () => fetch(`/api/day-completed/1/${currentDayIndex}`).then(res => res.json()),
-    enabled: activeSection === "learn" || activeSection === "home"
+    enabled: activeSection === "learn" // Only load when on Learn section
   });
 
   // Mark day as completed mutation
@@ -1837,13 +1837,13 @@ export default function Home() {
   const { data: dayMetadata } = useQuery({
     queryKey: ['/api/day-metadata', currentDayIndex],
     queryFn: () => fetch(`/api/day-metadata/${currentDayIndex}`).then(res => res.json()),
-    enabled: activeSection === "learn" || activeSection === "home"
+    enabled: activeSection === "learn" // Only load when actually on Learn section
   });
 
   const { data: dailyFacts } = useQuery({
     queryKey: ['/api/daily-facts', currentDayIndex],
     queryFn: () => fetch(`/api/daily-facts/${currentDayIndex}`).then(res => res.json()),
-    enabled: activeSection === "learn" || activeSection === "home"
+    enabled: activeSection === "learn" // Only load when actually on Learn section
   });
 
   const { data: lesson } = useQuery({
@@ -1855,7 +1855,7 @@ export default function Home() {
       }
       return response.json();
     },
-    enabled: activeSection === "learn"
+    enabled: activeSection === "learn" // Only load when actually on Learn section
   });
 
   const { data: user, isLoading: userLoading } = useQuery<User>({

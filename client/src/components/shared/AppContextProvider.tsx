@@ -173,7 +173,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const { data: dayAccessible = false } = useQuery({
     queryKey: ['/api/day-access', 1, currentDayIndex],
     queryFn: () => fetch(`/api/day-access/1/${currentDayIndex}`).then(res => res.json()),
-    enabled: activeSection === "learn" || activeSection === "home"
+    enabled: activeSection === "learn" // Only when on Learn section
   });
 
   const isDayLockedBySubscription = currentDayIndex > 7 && !isPremiumTier;
@@ -182,13 +182,13 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     queryKey: ['/api/day-access-info', 1, currentDayIndex],
     queryFn: () => fetch(`/api/day-access-info/1/${currentDayIndex}`).then(res => res.json()),
     refetchInterval: isDayLockedBySubscription ? false : 60000,
-    enabled: activeSection === "learn" || activeSection === "home"
+    enabled: activeSection === "learn" // Only when on Learn section
   });
   
   const { data: dayCompleted = false } = useQuery({
     queryKey: ['/api/day-completed', 1, currentDayIndex],
     queryFn: () => fetch(`/api/day-completed/1/${currentDayIndex}`).then(res => res.json()),
-    enabled: activeSection === "learn" || activeSection === "home"
+    enabled: activeSection === "learn" // Only when on Learn section
   });
   
   const nextAvailableDay = nextDayData?.dayIndex ?? 1;
