@@ -144,14 +144,14 @@ function Router() {
         <Route path="/learn">
           <AuthGuard>
             <AppContextProvider>
-              <Home />
+              <LearnPage />
             </AppContextProvider>
           </AuthGuard>
         </Route>
         <Route path="/money">
           <AuthGuard>
             <AppContextProvider>
-              <Home />
+              <FinancePage />
             </AppContextProvider>
           </AuthGuard>
         </Route>
