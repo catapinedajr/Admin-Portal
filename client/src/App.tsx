@@ -24,72 +24,27 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     async function checkAuth() {
       try {
-        // Check localStorage first (if available)
-        let sessionId = null;
-        try {
-          // Safari-specific localStorage check
-          if (typeof localStorage !== 'undefined' && localStorage.getItem) {
-            sessionId = localStorage.getItem('hodlearn_session');
-          }
-        } catch (error) {
-          console.warn('Safari localStorage access issue:', error);
-          // If localStorage is completely unavailable, redirect to auth
-          setIsAuthenticated(false);
-          setLocation('/auth');
-          return;
-        }
+        // Simplified Safari-compatible authentication
+        const response = await fetch('/api/user', {
+          method: 'GET',
+          credentials: 'include',
+          cache: 'no-cache'
+        });
         
-        if (!sessionId) {
-          // No session found, redirect to auth
-          setIsAuthenticated(false);
-          setLocation('/auth');
-          return;
-        }
-        
-        // Validate session with server with Safari-compatible fetch
-        try {
-          const response = await fetch('/api/user', {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${sessionId}`,
-              'Content-Type': 'application/json'
-            },
-            credentials: 'same-origin',
-            cache: 'no-cache'
-          });
-          
-          if (response.ok) {
-            // Session is valid
-            setIsAuthenticated(true);
-          } else {
-            // Session invalid, clear storage and redirect
-            console.warn('Session validation failed:', response.status);
-            try {
-              if (typeof localStorage !== 'undefined') {
-                localStorage.removeItem('hodlearn_session');
-                localStorage.removeItem('hodlearn_user');
-              }
-            } catch (error) {
-              console.warn('Error clearing Safari localStorage:', error);
-            }
-            setIsAuthenticated(false);
-            setLocation('/auth');
-          }
-        } catch (error) {
-          console.error('Safari auth check network error:', error);
+        if (response.ok) {
+          setIsAuthenticated(true);
+        } else {
           setIsAuthenticated(false);
           setLocation('/auth');
         }
       } catch (error) {
-        console.error('Safari auth guard error:', error);
+        console.error('Auth check failed:', error);
         setIsAuthenticated(false);
         setLocation('/auth');
       }
     }
     
-    // Add small delay for Safari to ensure DOM is ready
-    const timeoutId = setTimeout(checkAuth, 50);
-    return () => clearTimeout(timeoutId);
+    checkAuth();
   }, [setLocation]);
 
   // Show loading while checking auth
@@ -110,10 +65,15 @@ function OnboardingRedirect() {
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    const hasCompletedOnboarding = localStorage.getItem('hodlearn-onboarding-completed');
-    
-    if (!hasCompletedOnboarding) {
-      setLocation('/onboarding');
+    try {
+      const hasCompletedOnboarding = localStorage.getItem('hodlearn-onboarding-completed');
+      
+      if (!hasCompletedOnboarding) {
+        setLocation('/onboarding');
+      }
+    } catch (error) {
+      // If localStorage fails in Safari, skip onboarding
+      console.warn('Safari localStorage access issue, skipping onboarding:', error);
     }
   }, [setLocation]);
 
@@ -132,62 +92,48 @@ function ScrollToTop() {
 
 function Router() {
   return (
-    <>
+    <AppContextProvider>
       <ScrollToTop />
       <Switch>
         <Route path="/auth" component={AuthPage} />
         <Route path="/onboarding">
           <AuthGuard>
-            <AppContextProvider>
-              <Onboarding />
-            </AppContextProvider>
+            <Onboarding />
           </AuthGuard>
         </Route>
         <Route path="/learn">
           <AuthGuard>
-            <AppContextProvider>
-              <LearnPage />
-            </AppContextProvider>
+            <LearnPage />
           </AuthGuard>
         </Route>
         <Route path="/money">
           <AuthGuard>
-            <AppContextProvider>
-              <FinancePage />
-            </AppContextProvider>
+            <FinancePage />
           </AuthGuard>
         </Route>
         <Route path="/simulators">
           <AuthGuard>
-            <AppContextProvider>
-              <SimulatorsPage />
-            </AppContextProvider>
+            <SimulatorsPage />
           </AuthGuard>
         </Route>
         <Route path="/more">
           <AuthGuard>
-            <AppContextProvider>
-              <MorePage />
-            </AppContextProvider>
+            <MorePage />
           </AuthGuard>
         </Route>
         <Route path="/about">
           <AuthGuard>
-            <AppContextProvider>
-              <About />
-            </AppContextProvider>
+            <About />
           </AuthGuard>
         </Route>
         <Route path="/">
           <AuthGuard>
-            <AppContextProvider>
-              <OnboardingRedirect />
-            </AppContextProvider>
+            <OnboardingRedirect />
           </AuthGuard>
         </Route>
         <Route component={NotFound} />
       </Switch>
-    </>
+    </AppContextProvider>
   );
 }
 
