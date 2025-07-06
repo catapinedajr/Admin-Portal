@@ -17,6 +17,7 @@ interface SafetyTrainingProps {
   setSecurityScore: (score: number) => void;
   userSecurityAnswers: Record<number, boolean>;
   setUserSecurityAnswers: (answers: Record<number, boolean>) => void;
+  onCompletion?: () => void;
 }
 
 export default function SafetyTraining({
@@ -25,7 +26,8 @@ export default function SafetyTraining({
   securityScore,
   setSecurityScore,
   userSecurityAnswers,
-  setUserSecurityAnswers
+  setUserSecurityAnswers,
+  onCompletion
 }: SafetyTrainingProps) {
   const [securityTestStage, setSecurityTestStage] = useState(0);
   const [selectedSecurityAnswer, setSelectedSecurityAnswer] = useState<number | null>(null);

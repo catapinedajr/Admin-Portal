@@ -16,6 +16,7 @@ interface SafetyTrainingProps {
   setSecurityScore: (score: number) => void;
   userSecurityAnswers: Record<number, boolean>;
   setUserSecurityAnswers: (answers: Record<number, boolean>) => void;
+  onCompletion?: () => void;
 }
 
 // Sustainable Security Scenarios - Self-contained and maintainable
@@ -327,7 +328,8 @@ export default function SafetyTraining({
   securityScore,
   setSecurityScore,
   userSecurityAnswers,
-  setUserSecurityAnswers
+  setUserSecurityAnswers,
+  onCompletion
 }: SafetyTrainingProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -615,7 +617,17 @@ export default function SafetyTraining({
           </CardContent>
         </Card>
 
-        <div className="text-center">
+        <div className="text-center space-y-3">
+          <Button 
+            onClick={() => {
+              if (onCompletion) {
+                onCompletion();
+              }
+            }}
+            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 mr-3"
+          >
+            Complete Quiz
+          </Button>
           <Button 
             onClick={() => {
               setHasStarted(false);
@@ -624,6 +636,7 @@ export default function SafetyTraining({
               setSelectedAnswer(null);
               setShowFeedback(false);
             }}
+            variant="outline"
             className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
           >
             Retake Training

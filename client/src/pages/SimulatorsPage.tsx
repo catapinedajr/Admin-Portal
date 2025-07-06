@@ -64,6 +64,10 @@ export default function SimulatorsPage({
               setSecurityScore={setSecurityScore}
               userSecurityAnswers={userSecurityAnswers}
               setUserSecurityAnswers={setUserSecurityAnswers}
+              onCompletion={() => {
+                // Simple completion acknowledgment
+                alert("🎉 Safety Training Complete!\n\nYou've demonstrated strong Bitcoin security knowledge. These skills will help protect your Bitcoin in the real world.");
+              }}
             />
           </Suspense>
         );
@@ -113,6 +117,9 @@ export default function SimulatorsPage({
               setSecurityScore={setSecurityScore}
               userSecurityAnswers={userSecurityAnswers}
               setUserSecurityAnswers={setUserSecurityAnswers}
+              onCompletion={() => {
+                alert("🎉 Safety Training Complete!\n\nYou've demonstrated strong Bitcoin security knowledge. These skills will help protect your Bitcoin in the real world.");
+              }}
             />
           </Suspense>
         );
