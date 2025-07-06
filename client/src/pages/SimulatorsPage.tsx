@@ -106,7 +106,14 @@ export default function SimulatorsPage({
       default:
         return (
           <Suspense fallback={<SimulatorLoading />}>
-            <SafetyTraining />
+            <SafetyTraining 
+              securityStage={securityStage}
+              setSecurityStage={setSecurityStage}
+              securityScore={securityScore}
+              setSecurityScore={setSecurityScore}
+              userSecurityAnswers={userSecurityAnswers}
+              setUserSecurityAnswers={setUserSecurityAnswers}
+            />
           </Suspense>
         );
     }
