@@ -468,11 +468,7 @@ const HODLSimulator: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* HODL vs Market Timing Educational Section */}
-      <Card className="bg-zinc-900 border-zinc-800">
-        <CardContent className="p-6">
-        </CardContent>
-      </Card>
+
 
       {/* HODL vs Market Timing Educational Section */}
       <Card className="bg-zinc-900 border-zinc-800">
