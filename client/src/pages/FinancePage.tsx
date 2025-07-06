@@ -927,8 +927,8 @@ function FinancePageWithLayout() {
       <BottomNavigation 
         activeSection="money"
         onSectionChange={(section) => {
-          if (section === 'home') setLocation('/home');
-          else if (section === 'learn') setLocation('/');
+          if (section === 'home') setLocation('/');
+          else if (section === 'learn') setLocation('/learn');
           else if (section === 'simulators') setLocation('/simulators');
           else if (section === 'more') setLocation('/more');
         }}
