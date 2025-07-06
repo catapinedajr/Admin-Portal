@@ -53,18 +53,6 @@ export default function HomePage() {
     enabled: !!user?.id,
   });
 
-  // Get current day's lesson for preview
-  const { data: currentLesson } = useQuery({
-    queryKey: ['/api/lesson', currentDay],
-    enabled: !!currentDay,
-  });
-
-  // Get current day's facts for preview
-  const { data: currentFacts } = useQuery({
-    queryKey: ['/api/daily-facts', currentDay],
-    enabled: !!currentDay,
-  });
-
   const getTimeBasedGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return "Good morning";
@@ -80,6 +68,18 @@ export default function HomePage() {
   const completedDays = completedDaysData?.count || 0;
   const currentDay = nextDay?.dayIndex || 1;
   const progressPercentage = Math.round((completedDays / 180) * 100);
+
+  // Get current day's lesson for preview - only when currentDay is available
+  const { data: currentLesson } = useQuery({
+    queryKey: ['/api/lesson', currentDay],
+    enabled: !!nextDay && !!currentDay && currentDay > 0,
+  });
+
+  // Get current day's facts for preview - only when currentDay is available
+  const { data: currentFacts } = useQuery({
+    queryKey: ['/api/daily-facts', currentDay],
+    enabled: !!nextDay && !!currentDay && currentDay > 0,
+  });
   
   // Calculate streak
   const currentStreak = userProgress?.currentStreak || 0;
@@ -160,7 +160,7 @@ export default function HomePage() {
           {currentLesson && (
             <div className="mb-6 p-4 bg-zinc-800/50 rounded-lg">
               <h4 className="text-lg font-semibold text-white mb-2">{currentLesson.title}</h4>
-              <p className="text-zinc-300 text-sm leading-relaxed line-clamp-3">
+              <p className="text-zinc-300 text-sm leading-relaxed">
                 {currentLesson.content?.substring(0, 200)}...
               </p>
               <div className="flex items-center gap-4 mt-3 text-xs text-zinc-400">
