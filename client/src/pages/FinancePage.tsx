@@ -22,7 +22,7 @@ import { useAppContext } from "@/components/shared/AppContextProvider";
 import { useQuery } from "@tanstack/react-query";
 import { User } from "@shared/schema";
 import BottomNavigation from "@/components/BottomNavigation";
-import EmailCollectionModal from "@/components/EmailCollectionModal";
+
 
 export default function FinancePage() {
   const {
@@ -40,8 +40,7 @@ export default function FinancePage() {
     setAnimationActive,
     settlementProgress,
     setSettlementProgress,
-    showEmailModal,
-    setShowEmailModal,
+
     setLocation
   } = useAppContext();
 
@@ -864,13 +863,6 @@ export default function FinancePage() {
         }}
       />
 
-      {/* Email Collection Modal */}
-      <EmailCollectionModal
-        isOpen={showEmailModal}
-        onClose={() => setShowEmailModal(false)}
-        trigger="feature"
-        lockedFeature="Finance Analysis"
-      />
       
       {/* Bottom padding to accommodate navigation */}
       <div className="h-20"></div>
