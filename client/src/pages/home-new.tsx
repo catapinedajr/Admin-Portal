@@ -67,7 +67,7 @@ import {
 } from "lucide-react";
 import type { User, UserProgress, ConvictionContent } from "@shared/schema";
 
-// Temporary interface for database-driven lesson content
+
 interface LessonWithKeyTakeaways {
   id: number;
   dayId: number;
@@ -85,7 +85,7 @@ import { ProgressIndicator, AchievementBadge, LearningAnalytics } from "@/compon
 import AchievementSystem from "@/components/AchievementSystem";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import LockedContent from "@/components/LockedContent";
-// Removed UpgradeModal import - now using inline upgrade cards
+
 import DevSubscriptionToggle from "@/components/DevSubscriptionToggle";
 import BottomNavigation from "@/components/BottomNavigation";
 import LearnPage from "@/pages/LearnPage";
@@ -418,27 +418,7 @@ export default function Home() {
 
 
   
-  // Enhanced HODL Calculator State
-  const [hodlInputs, setHodlInputs] = useState<{
-    initialAmount: number;
-    years: number;
-    startPrice: number;
-    endPrice: number;
-    scenario?: string;
-    title?: string;
-    period?: string;
-    description?: string;
-  }>({
-    initialAmount: 10000,
-    years: 4,
-    startPrice: 30000,
-    endPrice: 95000,
-    scenario: '',
-    title: '',
-    period: '',
-    description: ''
-  });
-  const [hodlResults, setHodlResults] = useState<any>(null);
+
 
 
   
@@ -1107,39 +1087,7 @@ export default function Home() {
 
 
 
-  const calculateHodlStrategy = () => {
-    const bitcoinAmount = hodlInputs.initialAmount / hodlInputs.startPrice;
-    const currentValue = bitcoinAmount * hodlInputs.endPrice;
-    const totalGain = currentValue - hodlInputs.initialAmount;
-    const percentageReturn = (totalGain / hodlInputs.initialAmount) * 100;
-    const annualReturn = Math.pow(hodlInputs.endPrice / hodlInputs.startPrice, 1/hodlInputs.years) - 1;
 
-
-
-    // Validate percentage calculation for accuracy
-    const validatedPercentageReturn = Math.round(((hodlInputs.endPrice / hodlInputs.startPrice - 1) * 100) * 10) / 10;
-    
-
-    
-    setHodlResults({
-      initialInvestment: hodlInputs.initialAmount,
-      bitcoinAmount,
-      startPrice: hodlInputs.startPrice,
-      endPrice: hodlInputs.endPrice,
-      currentValue,
-      totalGain,
-      percentageReturn: validatedPercentageReturn, // Use validated calculation
-      annualReturn: annualReturn * 100
-    });
-  };
-
-
-  // Auto-calculate HODL results when inputs change
-  useEffect(() => {
-    if (hodlInputs.startPrice && hodlInputs.endPrice && hodlInputs.initialAmount) {
-      calculateHodlStrategy();
-    }
-  }, [hodlInputs.startPrice, hodlInputs.endPrice, hodlInputs.initialAmount, hodlInputs.years]);
 
   const [selectedWalletType, setSelectedWalletType] = useState<string | null>(null);
   
@@ -1437,7 +1385,6 @@ export default function Home() {
     const simulation = safetySimulations[safetyStage];
     
     if (!simulation) {
-      console.error(`Invalid stage: ${safetyStage}`);
       return;
     }
     
@@ -1478,12 +1425,12 @@ export default function Home() {
           break;
           
         default:
-          console.error(`Unhandled stage: ${safetyStage}`);
+
           break;
       }
       
     } catch (error) {
-      console.error('Safety simulation validation error:', error, simulation);
+
       correct = false;
     }
     
@@ -1909,7 +1856,7 @@ export default function Home() {
             )}
 
 
-            {/* All Simulators - Now handled by dedicated SimulatorsPage component */}
+
             <SimulatorsPage 
               simulationsSubTab={simulationsSubTab}
               setSimulationsSubTab={setSimulationsSubTab}
@@ -1922,39 +1869,13 @@ export default function Home() {
               setUserSecurityAnswers={setUserSecurityAnswers}
             />
 
-            {/* All simulators now handled by SimulatorsPage component above */}
+
           </div>
         )}
 
 
 
-        {/* Simulations Section */}
-        {activeSection === "simulations" && (
-          <div className="space-y-6">
-            {/* Simulators Preview for Free Users */}
-            {!isPremiumTier ? (
-              <LockedContent 
-                title="Premium Simulators"
-                description="Experience Bitcoin through hands-on learning with 8 interactive educational simulators. Perfect your knowledge with real-world scenarios."
-                features={[
-                  "HODLing vs Trading Strategy Analysis",
-                  "Dollar-Cost Averaging Calculator", 
-                  "Bitcoin Transaction Builder",
-                  "Wallet Types & Security Explorer",
-                  "Bitcoin vs Banking Settlement Race",
-                  "Advanced Security Training & Certification",
-                  "Inflation Impact Visualizer",
-                  "Transaction Fee Calculator"
-                ]}
-                ctaText="Unlock All Simulators - FREE"
-                onUpgrade={() => setShowEmailModal(true)}
-                lockedFeature="Premium Simulators"
-              />
-            ) : (
-              <SimulatorsPage />
-            )}
-          </div>
-        )}
+
 
         {/* More Section */}
         {activeSection === "more" && (
@@ -1965,9 +1886,7 @@ export default function Home() {
         )}
       </main>
       
-      {/* Development Tools - Hidden for deployment */}
-      
-      {/* Removed floating upgrade modal - now using inline upgrade cards */}
+
 
       {/* Bottom Navigation */}
       <BottomNavigation 
