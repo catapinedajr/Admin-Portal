@@ -145,11 +145,7 @@ function Router() {
             <About />
           </AuthGuard>
         </Route>
-        <Route path="/">
-          <AuthGuard>
-            <HomePage />
-          </AuthGuard>
-        </Route>
+        <Route path="/" component={HomePage} />
         <Route path="*">
           <AuthGuard>
             <HomePage />
