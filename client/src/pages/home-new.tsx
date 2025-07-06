@@ -161,7 +161,9 @@ export default function Home() {
   
   // Update active section and sub-tabs when URL changes
   useEffect(() => {
-    setActiveSection(getActiveSectionFromPath(location));
+    const newSection = getActiveSectionFromPath(location);
+    console.log('URL changed to:', location, 'Setting activeSection to:', newSection);
+    setActiveSection(newSection);
     if (location.includes('/simulators')) {
       setSimulationsSubTab(getSimulatorSubTabFromPath(location));
     }
@@ -1975,7 +1977,12 @@ export default function Home() {
         {activeSection === "money" && <FinancePage />}
 
         {/* Practice Section */}
-        {activeSection === "simulations" && <SimulatorsPage />}
+        {activeSection === "simulations" && (
+          <div>
+            <div style={{color: 'red', padding: '10px'}}>DEBUG: Rendering SimulatorsPage, activeSection = {activeSection}</div>
+            <SimulatorsPage />
+          </div>
+        )}
 
         {/* More Section */}
         {activeSection === "more" && (
