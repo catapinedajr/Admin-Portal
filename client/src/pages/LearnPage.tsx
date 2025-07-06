@@ -185,6 +185,17 @@ export default function LearnPage() {
               </span>
             </div>
             
+            {/* Progress guidance message */}
+            {!dayCompleted ? (
+              <p className="text-sm text-orange-400 max-w-md mx-auto">
+                Complete the quiz at the bottom to unlock tomorrow's lesson
+              </p>
+            ) : (
+              <p className="text-sm text-green-400 max-w-md mx-auto">
+                Day completed! Next lesson available tomorrow
+              </p>
+            )}
+            
             <p className="text-sm text-zinc-400 max-w-md mx-auto">
               {getMotivationalMessage()}
             </p>
