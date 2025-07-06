@@ -70,6 +70,12 @@ const HODLSimulator: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Main Page Title */}
+      <div className="text-center space-y-2 mb-8">
+        <h1 className="text-3xl font-bold text-white">HODL Strategy Simulator</h1>
+        <p className="text-zinc-400 text-lg">Discover the power of holding Bitcoin through market cycles</p>
+      </div>
+
       {/* Why HODL Strategy Matters */}
       <Card className="bg-zinc-900 border-zinc-800">
         <CardContent className="p-6">

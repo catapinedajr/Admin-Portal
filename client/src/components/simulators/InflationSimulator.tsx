@@ -9,6 +9,12 @@ export default function InflationSimulator() {
 
   return (
     <div className="space-y-6">
+      {/* Main Page Title */}
+      <div className="text-center space-y-2 mb-8">
+        <h1 className="text-3xl font-bold text-white">Inflation Impact Simulator</h1>
+        <p className="text-zinc-400 text-lg">Watch how inflation erodes your purchasing power over time</p>
+      </div>
+
       {/* Streamlined Control Center */}
       <Card className="bg-zinc-900 border-zinc-800" data-inflation-simulator>
         <CardContent className="p-6">
