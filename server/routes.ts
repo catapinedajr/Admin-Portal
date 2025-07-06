@@ -1463,6 +1463,8 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
       
       const userId = session.userId;
       
+      console.log('[DEBUG] Quiz submission:', { userId, questionId, selectedAnswer, date });
+      
       // Get the question from database directly - this returns the raw database format
       const allQuestions = await storage.getAllContentQuizzes();
       const question = allQuestions.find(q => q.id === questionId);
@@ -1789,6 +1791,25 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     } catch (error) {
       console.error("Error marking quiz completed:", error);
       res.status(500).json({ message: "Failed to mark quiz completed" });
+    }
+  });
+
+  // Day completion endpoint for quiz completion flow
+  app.post("/api/mark-day-completed", async (req, res) => {
+    try {
+      const { userId, dayIndex } = req.body;
+      
+      if (!userId || !dayIndex) {
+        return res.status(400).json({ message: "userId and dayIndex are required" });
+      }
+      
+      console.log('[DEBUG] Marking day completed:', { userId, dayIndex });
+      
+      await storage.markDayCompleted(userId, dayIndex);
+      res.json({ success: true, message: "Day marked as completed" });
+    } catch (error) {
+      console.error("Error marking day completed:", error);
+      res.status(500).json({ message: "Failed to mark day completed" });
     }
   });
 

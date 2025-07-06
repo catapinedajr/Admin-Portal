@@ -411,8 +411,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getNextAvailableDay(userId: number): Promise<number> {
-    // Find the first accessible day starting from 1
-    for (let day = 1; day <= 180; day++) {
+    // Get all completed days first
+    const completedDays = await this.getCompletedDays(userId);
+    const maxCompletedDay = completedDays.length > 0 ? Math.max(...completedDays) : 0;
+    
+    // Start from the next day after the highest completed day
+    const startDay = Math.max(1, maxCompletedDay + 1);
+    
+    // Check only a few days ahead instead of all 180 days
+    for (let day = startDay; day <= Math.min(startDay + 5, 180); day++) {
       const canAccess = await this.canAccessDay(userId, day);
       const isCompleted = await this.isDayCompleted(userId, day);
       
@@ -422,8 +429,7 @@ export class DatabaseStorage implements IStorage {
       }
     }
     
-    // If all accessible days are complete, return the last completed day
-    const completedDays = await this.getCompletedDays(userId);
+    // If no upcoming days are accessible, return the last completed day
     if (completedDays.length > 0) {
       return Math.max(...completedDays);
     }
