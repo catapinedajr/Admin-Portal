@@ -169,10 +169,11 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
   
   const currentDayIndex = testDayOverride || nextDayData?.dayIndex || 1;
   
-  // Day access control queries
+  // Day access control queries - only load when needed for learn section
   const { data: dayAccessible = false } = useQuery({
     queryKey: ['/api/day-access', 1, currentDayIndex],
-    queryFn: () => fetch(`/api/day-access/1/${currentDayIndex}`).then(res => res.json())
+    queryFn: () => fetch(`/api/day-access/1/${currentDayIndex}`).then(res => res.json()),
+    enabled: activeSection === "learn" || activeSection === "home"
   });
 
   const isDayLockedBySubscription = currentDayIndex > 7 && !isPremiumTier;
@@ -181,19 +182,16 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     queryKey: ['/api/day-access-info', 1, currentDayIndex],
     queryFn: () => fetch(`/api/day-access-info/1/${currentDayIndex}`).then(res => res.json()),
     refetchInterval: isDayLockedBySubscription ? false : 60000,
+    enabled: activeSection === "learn" || activeSection === "home"
   });
   
   const { data: dayCompleted = false } = useQuery({
     queryKey: ['/api/day-completed', 1, currentDayIndex],
-    queryFn: () => fetch(`/api/day-completed/1/${currentDayIndex}`).then(res => res.json())
+    queryFn: () => fetch(`/api/day-completed/1/${currentDayIndex}`).then(res => res.json()),
+    enabled: activeSection === "learn" || activeSection === "home"
   });
   
-  const { data: nextAvailableDayResponse } = useQuery({
-    queryKey: ['/api/next-available-day', 1],
-    queryFn: () => fetch('/api/next-available-day/1').then(res => res.json())
-  });
-  
-  const nextAvailableDay = nextAvailableDayResponse?.dayIndex ?? 1;
+  const nextAvailableDay = nextDayData?.dayIndex ?? 1;
 
   // Mark day as completed mutation
   const markDayCompletedMutation = useMutation({

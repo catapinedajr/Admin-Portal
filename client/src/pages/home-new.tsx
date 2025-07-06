@@ -166,41 +166,39 @@ export default function Home() {
     }
   }, [location]);
   
-  // Get current day from API
+  // Single API call to get current day and basic info
   const { data: nextDayData } = useQuery({
     queryKey: ['/api/next-available-day', 1],
     queryFn: () => fetch('/api/next-available-day/1').then(res => res.json())
   });
   
   const currentDayIndex = nextDayData?.dayIndex || 1;
-  
-  // Day access control queries
+  const nextAvailableDay = currentDayIndex;
+
+  // Only load current day access data - conditional based on active section
   const { data: dayAccessible = false } = useQuery({
-    queryKey: ['/api/day-access', 1, currentDayIndex], // userId=1 (default user)
-    queryFn: () => fetch(`/api/day-access/1/${currentDayIndex}`).then(res => res.json())
+    queryKey: ['/api/day-access', 1, currentDayIndex],
+    queryFn: () => fetch(`/api/day-access/1/${currentDayIndex}`).then(res => res.json()),
+    enabled: activeSection === "learn" || activeSection === "home" // Only load when needed
   });
 
   // Check if day is locked by subscription tier (Days 1-7 free, 8+ premium)
   const isDayLockedBySubscription = currentDayIndex > 7 && !isPremiumTier;
   
-  // Check day access info for waiting period restrictions
+  // Only load day access info when on learn section
   const { data: dayAccessInfo } = useQuery({
     queryKey: ['/api/day-access-info', 1, currentDayIndex],
     queryFn: () => fetch(`/api/day-access-info/1/${currentDayIndex}`).then(res => res.json()),
-    refetchInterval: isDayLockedBySubscription ? false : 60000, // Refresh every minute if not locked by subscription
+    refetchInterval: isDayLockedBySubscription ? false : 60000,
+    enabled: activeSection === "learn" || activeSection === "home"
   });
   
+  // Only check completion status when on learn section
   const { data: dayCompleted = false } = useQuery({
     queryKey: ['/api/day-completed', 1, currentDayIndex],
-    queryFn: () => fetch(`/api/day-completed/1/${currentDayIndex}`).then(res => res.json())
+    queryFn: () => fetch(`/api/day-completed/1/${currentDayIndex}`).then(res => res.json()),
+    enabled: activeSection === "learn" || activeSection === "home"
   });
-  
-  const { data: nextAvailableDayResponse } = useQuery({
-    queryKey: ['/api/next-available-day', 1],
-    queryFn: () => fetch('/api/next-available-day/1').then(res => res.json())
-  });
-  
-  const nextAvailableDay = nextAvailableDayResponse?.dayIndex ?? 1;
 
   // Mark day as completed mutation
   const markDayCompletedMutation = useMutation({
@@ -1835,15 +1833,17 @@ export default function Home() {
     }
   ];
 
-  // API Queries - using currentDayIndex for testing
+  // Conditional API Queries - only load data for active sections
   const { data: dayMetadata } = useQuery({
     queryKey: ['/api/day-metadata', currentDayIndex],
     queryFn: () => fetch(`/api/day-metadata/${currentDayIndex}`).then(res => res.json()),
+    enabled: activeSection === "learn" || activeSection === "home"
   });
 
   const { data: dailyFacts } = useQuery({
     queryKey: ['/api/daily-facts', currentDayIndex],
     queryFn: () => fetch(`/api/daily-facts/${currentDayIndex}`).then(res => res.json()),
+    enabled: activeSection === "learn" || activeSection === "home"
   });
 
   const { data: lesson } = useQuery({
@@ -1855,6 +1855,7 @@ export default function Home() {
       }
       return response.json();
     },
+    enabled: activeSection === "learn"
   });
 
   const { data: user, isLoading: userLoading } = useQuery<User>({
