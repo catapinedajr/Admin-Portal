@@ -5,6 +5,7 @@ import { setupVite, serveStatic, log } from "./vite";
 import { testConnection } from "./db";
 
 const app = express();
+app.set('env', process.env.NODE_ENV || 'development'); // Critical: Fix environment detection
 app.use(compression()); // Enable gzip compression for all responses
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -67,10 +68,10 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 5000
+  // ALWAYS serve the app on port 5000 (or PORT env var for flexibility)
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
-  const port = 5000;
+  const port = process.env.PORT ? parseInt(process.env.PORT) : 5000;
   server.listen({
     port,
     host: "0.0.0.0",
