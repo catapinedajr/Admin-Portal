@@ -99,81 +99,26 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Progress Dashboard */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Journey Progress */}
-        <Card className="bg-zinc-900/50 border-zinc-800">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-white">Learning Journey</h3>
-              <Calendar className="w-5 h-5 text-orange-500" />
+      {/* Learning Streak Widget */}
+      <Card className="bg-zinc-900/50 border-zinc-800 max-w-md mx-auto">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-white">Learning Streak</h3>
+            <Flame className="w-5 h-5 text-orange-500" />
+          </div>
+          <div className="space-y-2">
+            <div className="flex justify-between">
+              <span className="text-sm text-zinc-400">Current</span>
+              <span className="text-lg font-bold text-orange-500">{currentStreak} days</span>
             </div>
-            <div className="space-y-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-zinc-400">Day {currentDay}/180</span>
-                <span className="text-zinc-400">{progressPercentage}%</span>
-              </div>
-              <div className="w-full bg-zinc-800 rounded-full h-2">
-                <div 
-                  className="bg-orange-500 h-2 rounded-full transition-all duration-500"
-                  style={{ width: `${progressPercentage}%` }}
-                />
-              </div>
-              <div className="flex justify-between text-xs text-zinc-500">
-                <span>Start</span>
-                <span>30</span>
-                <span>60</span>
-                <span>120</span>
-                <span>180</span>
-              </div>
+            <div className="flex justify-between">
+              <span className="text-sm text-zinc-400">Best</span>
+              <span className="text-lg font-bold text-white">{bestStreak} days</span>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Weekly Progress */}
-        <Card className="bg-zinc-900/50 border-zinc-800">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-white">Week {currentWeek}</h3>
-              <Target className="w-5 h-5 text-orange-500" />
-            </div>
-            <div className="space-y-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-zinc-400">Day {dayInWeek}/7</span>
-                <span className="text-zinc-400">{weeklyProgress}%</span>
-              </div>
-              <div className="w-full bg-zinc-800 rounded-full h-2">
-                <div 
-                  className="bg-orange-500 h-2 rounded-full transition-all duration-500"
-                  style={{ width: `${weeklyProgress}%` }}
-                />
-              </div>
-              <p className="text-xs text-zinc-500">Weekly discipline builds lasting habits</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Streak Tracking */}
-        <Card className="bg-zinc-900/50 border-zinc-800">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-white">Learning Streak</h3>
-              <Flame className="w-5 h-5 text-orange-500" />
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-sm text-zinc-400">Current</span>
-                <span className="text-lg font-bold text-orange-500">{currentStreak} days</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-zinc-400">Best</span>
-                <span className="text-lg font-bold text-white">{bestStreak} days</span>
-              </div>
-              <p className="text-xs text-zinc-500 mt-2">{getStreakMessage()}</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            <p className="text-xs text-zinc-500 mt-2">{getStreakMessage()}</p>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Today's Learning Card */}
       <Card className="bg-gradient-to-r from-orange-900/20 to-zinc-900/50 border-orange-500/30">
