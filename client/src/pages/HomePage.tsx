@@ -53,6 +53,18 @@ export default function HomePage() {
     enabled: !!user?.id,
   });
 
+  // Get current day's lesson for preview
+  const { data: currentLesson } = useQuery({
+    queryKey: ['/api/lesson', currentDay],
+    enabled: !!currentDay,
+  });
+
+  // Get current day's facts for preview
+  const { data: currentFacts } = useQuery({
+    queryKey: ['/api/daily-facts', currentDay],
+    enabled: !!currentDay,
+  });
+
   const getTimeBasedGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return "Good morning";
@@ -123,14 +135,16 @@ export default function HomePage() {
       {/* Today's Learning Card */}
       <Card className="bg-gradient-to-r from-orange-900/20 to-zinc-900/50 border-orange-500/30">
         <CardContent className="p-6">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center">
                 <BookOpen className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h3 className="text-xl font-bold text-white">Day {currentDay} Learning</h3>
-                <p className="text-sm text-zinc-400">Continue your Bitcoin education</p>
+                <p className="text-sm text-zinc-400">
+                  {currentLesson?.title || "Continue your Bitcoin education"}
+                </p>
               </div>
             </div>
             <Button 
@@ -141,6 +155,54 @@ export default function HomePage() {
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
+
+          {/* Lesson Preview */}
+          {currentLesson && (
+            <div className="mb-6 p-4 bg-zinc-800/50 rounded-lg">
+              <h4 className="text-lg font-semibold text-white mb-2">{currentLesson.title}</h4>
+              <p className="text-zinc-300 text-sm leading-relaxed line-clamp-3">
+                {currentLesson.content?.substring(0, 200)}...
+              </p>
+              <div className="flex items-center gap-4 mt-3 text-xs text-zinc-400">
+                <div className="flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  <span>{currentLesson.estimatedReadTime || 5} min read</span>
+                </div>
+                {currentFacts && (
+                  <div className="flex items-center gap-1">
+                    <Brain className="w-3 h-3" />
+                    <span>{currentFacts.length} facts to explore</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Quick Facts Teaser */}
+          {currentFacts && currentFacts.length > 0 && (
+            <div className="mb-6">
+              <h4 className="text-sm font-semibold text-zinc-300 mb-3">Today's Key Facts:</h4>
+              <div className="space-y-2">
+                {currentFacts.slice(0, 2).map((fact: any, index: number) => (
+                  <div key={fact.id} className="flex items-start gap-2 text-sm">
+                    <div className="w-5 h-5 bg-orange-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-orange-400 text-xs font-bold">{index + 1}</span>
+                    </div>
+                    <span className="text-zinc-300">{fact.title}</span>
+                  </div>
+                ))}
+                {currentFacts.length > 2 && (
+                  <div className="flex items-center gap-2 text-sm text-zinc-400">
+                    <div className="w-5 h-5 bg-zinc-700 rounded-full flex items-center justify-center flex-shrink-0">
+                      <span className="text-zinc-400 text-xs">+</span>
+                    </div>
+                    <span>And {currentFacts.length - 2} more facts to discover</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div className="flex items-center gap-2">
               <Brain className="w-4 h-4 text-orange-500" />
