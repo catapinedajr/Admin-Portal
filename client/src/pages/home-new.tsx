@@ -2157,38 +2157,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* Money Section */}
-        {activeSection === "money" && (
-          <FinancePage />
-        )}
 
-        {/* Simulations Section */}
-        {activeSection === "simulations" && (
-          <div className="space-y-6">
-            {/* Simulators Preview for Free Users */}
-            {!isPremiumTier ? (
-              <LockedContent 
-                title="Premium Simulators"
-                description="Experience Bitcoin through hands-on learning with 8 interactive educational simulators. Perfect your knowledge with real-world scenarios."
-                features={[
-                  "HODLing vs Trading Strategy Analysis",
-                  "Dollar-Cost Averaging Calculator", 
-                  "Bitcoin Transaction Builder",
-                  "Wallet Types & Security Explorer",
-                  "Bitcoin vs Banking Settlement Race",
-                  "Advanced Security Training & Certification",
-                  "Inflation Impact Visualizer",
-                  "Transaction Fee Calculator"
-                ]}
-                ctaText="Unlock All Simulators - FREE"
-                onUpgrade={() => setShowEmailModal(true)}
-                lockedFeature="Premium Simulators"
-              />
-            ) : (
-              <SimulatorsPage />
-            )}
-          </div>
-        )}
 
         {/* More Section */}
         {activeSection === "more" && (
