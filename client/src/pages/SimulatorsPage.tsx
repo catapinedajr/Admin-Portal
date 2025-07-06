@@ -1,17 +1,17 @@
-import React, { useState, Suspense } from "react";
+import React, { useState, lazy, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Shield, Wallet, ArrowLeftRight, CreditCard, TrendingUp, DollarSign, TrendingDown, FileText } from "lucide-react";
+import { Shield, Wallet, ArrowLeftRight, Coins, TrendingUp, DollarSign, TrendingDown, FileText } from "lucide-react";
 
-// Direct imports to avoid HMR issues
-import WalletSimulator from "@/components/simulators/WalletSimulator";
-import SafetyTraining from "@/components/simulators/SafetyTrainingSustainable";
-import TransactionsSimulator from "@/components/simulators/TransactionsSimulator";
-import { TransferSimulator } from "@/components/simulators/TransferSimulator";
-import HODLSimulator from "@/components/simulators/HODLSimulator";
-import { DCASimulator } from "@/components/simulators/DCASimulator";
-import InflationSimulator from "@/components/simulators/InflationSimulator";
-import FeesSimulator from "@/components/simulators/FeesSimulator";
+// Lazy load all simulator components for performance
+const WalletSimulator = lazy(() => import("@/components/simulators/WalletSimulator"));
+const SafetyTraining = lazy(() => import("@/components/simulators/SafetyTrainingSustainable"));
+const TransactionsSimulator = lazy(() => import("@/components/simulators/TransactionsSimulator"));
+const TransferSimulator = lazy(() => import("@/components/simulators/TransferSimulator").then(module => ({ default: module.TransferSimulator })));
+const HODLSimulator = lazy(() => import("@/components/simulators/HODLSimulator"));
+const DCASimulator = lazy(() => import("@/components/simulators/DCASimulator").then(module => ({ default: module.DCASimulator })));
+const InflationSimulator = lazy(() => import("@/components/simulators/InflationSimulator"));
+const FeesSimulator = lazy(() => import("@/components/simulators/FeesSimulator"));
 
 type SimulationsSubTab = "wallet" | "safety" | "transactions" | "transfer" | "hodl" | "dca" | "inflation" | "fees";
 
@@ -64,10 +64,6 @@ export default function SimulatorsPage({
               setSecurityScore={setSecurityScore}
               userSecurityAnswers={userSecurityAnswers}
               setUserSecurityAnswers={setUserSecurityAnswers}
-              onCompletion={() => {
-                // Simple completion acknowledgment
-                alert("🎉 Safety Training Complete!\n\nYou've demonstrated strong Bitcoin security knowledge. These skills will help protect your Bitcoin in the real world.");
-              }}
             />
           </Suspense>
         );
@@ -110,28 +106,17 @@ export default function SimulatorsPage({
       default:
         return (
           <Suspense fallback={<SimulatorLoading />}>
-            <SafetyTraining 
-              securityStage={securityStage}
-              setSecurityStage={setSecurityStage}
-              securityScore={securityScore}
-              setSecurityScore={setSecurityScore}
-              userSecurityAnswers={userSecurityAnswers}
-              setUserSecurityAnswers={setUserSecurityAnswers}
-              onCompletion={() => {
-                alert("🎉 Safety Training Complete!\n\nYou've demonstrated strong Bitcoin security knowledge. These skills will help protect your Bitcoin in the real world.");
-              }}
-            />
+            <SafetyTraining />
           </Suspense>
         );
     }
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
-      {/* Practice Sub-navigation */}
-      {true && (
-        <div className="flex justify-center">
-          <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2">
+    <div className="space-y-6">
+      {/* Simulator Navigation Tabs */}
+      <div className="border-b border-zinc-800">
+        <div className="flex flex-wrap gap-2 p-4">
           <Button
             variant={simulationsSubTab === "safety" ? "secondary" : "ghost"}
             size="sm"
@@ -141,6 +126,7 @@ export default function SimulatorsPage({
             <Shield className="w-3 h-3 mr-1" />
             Safety
           </Button>
+          
           <Button
             variant={simulationsSubTab === "wallet" ? "secondary" : "ghost"}
             size="sm"
@@ -148,17 +134,19 @@ export default function SimulatorsPage({
             className="text-xs px-3 py-1"
           >
             <Wallet className="w-3 h-3 mr-1" />
-            Wallet
+            Wallets
           </Button>
+          
           <Button
             variant={simulationsSubTab === "transactions" ? "secondary" : "ghost"}
             size="sm"
             onClick={() => setSimulationsSubTab("transactions")}
             className="text-xs px-3 py-1"
           >
-            <CreditCard className="w-3 h-3 mr-1" />
+            <Coins className="w-3 h-3 mr-1" />
             Transaction
           </Button>
+          
           <Button
             variant={simulationsSubTab === "transfer" ? "secondary" : "ghost"}
             size="sm"
@@ -166,8 +154,9 @@ export default function SimulatorsPage({
             className="text-xs px-3 py-1"
           >
             <ArrowLeftRight className="w-3 h-3 mr-1" />
-            Transfer
+            Settlement
           </Button>
+          
           <Button
             variant={simulationsSubTab === "hodl" ? "secondary" : "ghost"}
             size="sm"
@@ -177,6 +166,7 @@ export default function SimulatorsPage({
             <TrendingUp className="w-3 h-3 mr-1" />
             HODL
           </Button>
+          
           <Button
             variant={simulationsSubTab === "dca" ? "secondary" : "ghost"}
             size="sm"
@@ -186,6 +176,7 @@ export default function SimulatorsPage({
             <DollarSign className="w-3 h-3 mr-1" />
             DCA
           </Button>
+          
           <Button
             variant={simulationsSubTab === "inflation" ? "secondary" : "ghost"}
             size="sm"
@@ -195,6 +186,7 @@ export default function SimulatorsPage({
             <TrendingDown className="w-3 h-3 mr-1" />
             Inflation
           </Button>
+          
           <Button
             variant={simulationsSubTab === "fees" ? "secondary" : "ghost"}
             size="sm"
@@ -206,10 +198,11 @@ export default function SimulatorsPage({
           </Button>
         </div>
       </div>
-      )}
 
       {/* Active Simulator Content */}
-      {renderActiveSimulator()}
+      <div className="px-4">
+        {renderActiveSimulator()}
+      </div>
     </div>
   );
 }

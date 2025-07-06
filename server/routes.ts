@@ -741,61 +741,6 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  // Get next available day without userId (uses default user 1)
-  app.get("/api/next-available-day", async (req, res) => {
-    try {
-      let nextDay = await storage.getNextAvailableDay(1);
-      if (nextDay <= 0) {
-        nextDay = 1;
-      }
-      res.json({ dayIndex: nextDay });
-    } catch (error) {
-      res.status(500).json({ message: "Failed to get next available day" });
-    }
-  });
-
-  // Get completed days count
-  app.get("/api/completed-days-count/:userId", async (req, res) => {
-    try {
-      const userId = parseInt(req.params.userId);
-      const count = await storage.getCompletedDaysCount(userId);
-      res.json({ count });
-    } catch (error) {
-      res.status(500).json({ message: "Failed to get completed days count" });
-    }
-  });
-
-  // Get completed days count without userId (uses default user 1)
-  app.get("/api/completed-days-count", async (req, res) => {
-    try {
-      const count = await storage.getCompletedDaysCount(1);
-      res.json({ count });
-    } catch (error) {
-      res.status(500).json({ message: "Failed to get completed days count" });
-    }
-  });
-
-  // Get user progress data
-  app.get("/api/user-progress/:userId", async (req, res) => {
-    try {
-      const userId = parseInt(req.params.userId);
-      const progress = await storage.getUserProgress(userId);
-      res.json(progress || { currentStreak: 0, bestStreak: 0 });
-    } catch (error) {
-      res.status(500).json({ message: "Failed to get user progress" });
-    }
-  });
-
-  // Get user progress without userId (uses default user 1)
-  app.get("/api/user-progress", async (req, res) => {
-    try {
-      const progress = await storage.getUserProgress(1);
-      res.json(progress || { currentStreak: 0, bestStreak: 0 });
-    } catch (error) {
-      res.status(500).json({ message: "Failed to get user progress" });
-    }
-  });
-
   app.get("/api/can-access-day/:userId/:dayIndex", async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);

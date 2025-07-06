@@ -5,32 +5,11 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { useEffect, useState } from "react";
-import Layout from "@/components/Layout";
 
-import HomePage from "@/pages/HomePage";
+import Home from "@/pages/home-new";
 import LearnPage from "@/pages/LearnPage";
 import FinancePage from "@/pages/FinancePage";
-import SimulatorsPage from "@/pages/SimulatorsPage";
-import { AppContextProvider, useAppContext } from "@/components/shared/AppContextProvider";
-
-// Wrapper component to pass AppContext props to SimulatorsPage
-function SimulatorsPageWrapper() {
-  const context = useAppContext();
-  
-  return (
-    <SimulatorsPage
-      simulationsSubTab={context.simulationsSubTab}
-      setSimulationsSubTab={context.setSimulationsSubTab}
-      isPremiumTier={context.isPremiumTier}
-      securityStage={context.securityStage || 0}
-      setSecurityStage={context.setSecurityStage || (() => {})}
-      securityScore={context.securityScore || 0}
-      setSecurityScore={context.setSecurityScore || (() => {})}
-      userSecurityAnswers={context.userSecurityAnswers || []}
-      setUserSecurityAnswers={context.setUserSecurityAnswers || (() => {})}
-    />
-  );
-}
+import { AppContextProvider } from "@/components/shared/AppContextProvider";
 import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
 import NotFound from "@/pages/not-found";
@@ -136,7 +115,7 @@ function OnboardingRedirect() {
     }
   }, [setLocation]);
 
-  return <HomePage />;
+  return <Home />;
 }
 
 function ScrollToTop() {
@@ -165,36 +144,28 @@ function Router() {
         <Route path="/learn">
           <AuthGuard>
             <AppContextProvider>
-              <Layout>
-                <LearnPage />
-              </Layout>
+              <Home />
             </AppContextProvider>
           </AuthGuard>
         </Route>
         <Route path="/money">
           <AuthGuard>
             <AppContextProvider>
-              <Layout>
-                <FinancePage />
-              </Layout>
+              <Home />
             </AppContextProvider>
           </AuthGuard>
         </Route>
         <Route path="/simulators">
           <AuthGuard>
             <AppContextProvider>
-              <Layout>
-                <SimulatorsPageWrapper />
-              </Layout>
+              <Home />
             </AppContextProvider>
           </AuthGuard>
         </Route>
         <Route path="/more">
           <AuthGuard>
             <AppContextProvider>
-              <Layout>
-                <HomePage />
-              </Layout>
+              <Home />
             </AppContextProvider>
           </AuthGuard>
         </Route>
@@ -208,9 +179,7 @@ function Router() {
         <Route path="/">
           <AuthGuard>
             <AppContextProvider>
-              <Layout>
-                <OnboardingRedirect />
-              </Layout>
+              <OnboardingRedirect />
             </AppContextProvider>
           </AuthGuard>
         </Route>

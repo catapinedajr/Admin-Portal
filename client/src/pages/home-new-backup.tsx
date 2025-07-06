@@ -2139,19 +2139,88 @@ export default function Home() {
               </div>
             )}
 
+            {/* Practice Sub-navigation - Only show for premium users */}
+            {isPremiumTier && (
+              <div className="flex justify-center">
+                <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2">
+                <Button
+                  variant={simulationsSubTab === "safety" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("safety")}
+                  className="text-xs px-3 py-1"
+                >
+                  <Shield className="w-3 h-3 mr-1" />
+                  Safety
+                </Button>
+                <Button
+                  variant={simulationsSubTab === "wallet" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("wallet")}
+                  className="text-xs px-3 py-1"
+                >
+                  <Wallet className="w-3 h-3 mr-1" />
+                  Wallet
+                </Button>
+                <Button
+                  variant={simulationsSubTab === "transactions" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("transactions")}
+                  className="text-xs px-3 py-1"
+                >
+                  <CreditCard className="w-3 h-3 mr-1" />
+                  Transactions
+                </Button>
+                <Button
+                  variant={simulationsSubTab === "transfer" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("transfer")}
+                  className="text-xs px-3 py-1"
+                >
+                  <ArrowRight className="w-3 h-3 mr-1" />
+                  Transfer
+                </Button>
+                <Button
+                  variant={simulationsSubTab === "hodl" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("hodl")}
+                  className="text-xs px-3 py-1"
+                >
+                  <TrendingUp className="w-3 h-3 mr-1" />
+                  HODL
+                </Button>
+                <Button
+                  variant={simulationsSubTab === "dca" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("dca")}
+                  className="text-xs px-3 py-1"
+                >
+                  <BarChart3 className="w-3 h-3 mr-1" />
+                  DCA
+                </Button>
+                <Button
+                  variant={simulationsSubTab === "inflation" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("inflation")}
+                  className="text-xs px-3 py-1"
+                >
+                  <TrendingDown className="w-3 h-3 mr-1" />
+                  Inflation
+                </Button>
+                <Button
+                  variant={simulationsSubTab === "fees" ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSimulationsSubTab("fees")}
+                  className="text-xs px-3 py-1"
+                >
+                  <FileText className="w-3 h-3 mr-1" />
+                  Fees
+                </Button>
+              </div>
+            </div>
+            )}
 
             {/* All Simulators - Now handled by dedicated SimulatorsPage component */}
-            <SimulatorsPage 
-              simulationsSubTab={simulationsSubTab}
-              setSimulationsSubTab={setSimulationsSubTab}
-              isPremiumTier={isPremiumTier}
-              securityStage={securityStage}
-              setSecurityStage={setSecurityStage}
-              securityScore={securityScore}
-              setSecurityScore={setSecurityScore}
-              userSecurityAnswers={userSecurityAnswers}
-              setUserSecurityAnswers={setUserSecurityAnswers}
-            />
+            <SimulatorsPage />
 
             {/* All simulators now handled by SimulatorsPage component above */}
           </div>
@@ -2186,6 +2255,185 @@ export default function Home() {
               />
             ) : (
               <SimulatorsPage />
+            )}
+          </div>
+        )}
+
+        {/* More Section */}
+        {activeSection === "more" && (
+          <MoreSection 
+            moreSubTab={moreSubTab}
+            setMoreSubTab={setMoreSubTab}
+          />
+        )}
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-orange-600/20 rounded-lg">
+                        <TrendingDown className="w-6 h-6 text-orange-400" />
+                      </div>
+                      <h4 className="text-xl font-bold text-white">The Silent Wealth Destroyer Working Against You</h4>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <p className="text-zinc-300 leading-relaxed">
+                        Inflation is the hidden tax that quietly steals your purchasing power every single day. While you sleep, 
+                        your savings lose value as governments print more money, diluting what you've worked hard to earn. 
+                        Most people don't realize how devastating this compound erosion becomes over time.
+                      </p>
+                      
+                      <div className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-orange-500">
+                        <p className="text-zinc-300 text-sm">
+                          <span className="font-semibold text-orange-300">Shocking Reality:</span> Since 1970, the US dollar has lost 
+                          87% of its purchasing power. What cost $100 in 1970 now costs $770. Your grandfather's dollar had 8 times 
+                          more buying power than yours today.
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <h5 className="font-semibold text-white">Interactive Features You'll Experience:</h5>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <DollarSign className="w-5 h-5 text-green-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Real-Time Erosion</p>
+                              <p className="text-zinc-400 text-xs">Watch money disappear as years pass</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <BarChart3 className="w-5 h-5 text-yellow-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Historical Chart</p>
+                              <p className="text-zinc-400 text-xs">50+ years of authentic data</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <Calendar className="w-5 h-5 text-blue-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Key Events</p>
+                              <p className="text-zinc-400 text-xs">Nixon Shock, financial crises</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                            <Target className="w-5 h-5 text-orange-400" />
+                            <div>
+                              <p className="font-medium text-white text-sm">Fed Target</p>
+                              <p className="text-zinc-400 text-xs">2% annual theft by design</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-center pt-2">
+                        <Button
+                          onClick={() => {
+                            const simulator = document.querySelector('[data-inflation-simulator]');
+                            if (simulator) {
+                              const rect = simulator.getBoundingClientRect();
+                              const headerHeight = 80; // Account for header height
+                              window.scrollTo({
+                                top: window.pageYOffset + rect.top - headerHeight,
+                                behavior: 'smooth'
+                              });
+                            }
+                          }}
+                          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
+                        >
+                          <ChevronDown className="w-4 h-4 mr-2" />
+                          See Inflation's Damage
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <InflationSimulator />
+
+
+              </div>
+            )}
+
+
+
+            {/* More section */}
+            {activeSection === "more" && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">More Tools & Resources</h3>
+                  <p className="text-zinc-400">Additional Bitcoin tools and resources</p>
+                </div>
+
+                {/* Banking Fees Calculator Section */}
+                <Card className="bg-zinc-900 border-zinc-800">
+                  <CardContent className="p-6">
+                    <h4 className="text-lg font-bold text-white mb-4">Banking Fees Calculator</h4>
+                    <div className="space-y-4">
+                      <p className="text-zinc-300">
+                        Average American pays $329 per year in banking fees. See how much banks are costing you compared to Bitcoin.
+                      </p>
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="bg-zinc-800 p-4 rounded-lg">
+                          <h5 className="font-semibold text-red-400 mb-2">Traditional Banking Fees</h5>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-zinc-300">Monthly maintenance:</span>
+                              <span className="text-red-400">$15/month</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-300">ATM fees:</span>
+                              <span className="text-red-400">$4.75/use</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-300">Wire transfer:</span>
+                              <span className="text-red-400">$25-50/wire</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-300">Overdraft:</span>
+                              <span className="text-red-400">$35/overdraft</span>
+                            </div>
+                            <div className="flex justify-between border-t border-zinc-700 pt-2">
+                              <span className="text-zinc-300 font-bold">Annual average:</span>
+                              <span className="text-red-400 font-bold">$329/year</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-zinc-800 p-4 rounded-lg">
+                          <h5 className="font-semibold text-orange-400 mb-2">Bitcoin Network Costs</h5>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-zinc-300">Account maintenance:</span>
+                              <span className="text-green-400">$0</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-300">Balance checks:</span>
+                              <span className="text-green-400">$0</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-300">Network fee:</span>
+                              <span className="text-orange-400">$1-5/transaction</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-zinc-300">Overdraft protection:</span>
+                              <span className="text-green-400">Impossible</span>
+                            </div>
+                            <div className="flex justify-between border-t border-zinc-700 pt-2">
+                              <span className="text-zinc-300 font-bold">Annual average:</span>
+                              <span className="text-green-400 font-bold">$20-50/year</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="text-center">
+                        <div className="bg-orange-600/20 p-4 rounded-lg border border-orange-600/30">
+                          <h5 className="text-orange-400 font-bold text-lg mb-1">You could save $280-310 per year</h5>
+                          <p className="text-orange-300 text-sm">That's enough for a hardware wallet and a nice dinner!</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+              </div>
             )}
           </div>
         )}
