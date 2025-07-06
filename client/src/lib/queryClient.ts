@@ -54,7 +54,12 @@ export const getQueryFn: <T>(options: {
     }
 
     const res = await fetch(queryKey[0] as string, {
-      headers,
+      headers: {
+        ...headers,
+        // Mobile Safari compatibility
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
+      },
       credentials: "include", // Better deployment compatibility
     });
 

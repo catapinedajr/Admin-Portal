@@ -95,6 +95,32 @@
   }
 }
 
+/* Mobile Safari compatibility fixes */
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  /* Fix iOS Safari viewport issues */
+  -webkit-overflow-scrolling: touch;
+  /* Prevent zoom on double tap */
+  touch-action: manipulation;
+}
+
+/* Fix mobile button interactions */
+button, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Fix mobile input focus */
+input, textarea, select {
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
 @layer components {
   .cyber-card {
     @apply bg-card border border-border rounded-lg;
