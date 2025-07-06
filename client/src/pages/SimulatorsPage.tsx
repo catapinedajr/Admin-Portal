@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, Wallet, ArrowLeftRight, CreditCard, TrendingUp, DollarSign, TrendingDown, FileText } from "lucide-react";
