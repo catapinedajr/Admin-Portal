@@ -10,7 +10,7 @@ import { Shield, Wallet, ArrowLeftRight, Coins, TrendingUp, DollarSign, Trending
 
 // Lazy load all simulator components for performance
 const WalletSimulator = lazy(() => import("@/components/simulators/WalletSimulator"));
-const SafetyTraining = lazy(() => import("@/components/simulators/SafetyTrainingSustainable"));
+const SafetyTraining = lazy(() => import("@/components/simulators/SafetyTraining"));
 const TransactionsSimulator = lazy(() => import("@/components/simulators/TransactionsSimulator"));
 const TransferSimulator = lazy(() => import("@/components/simulators/TransferSimulator").then(module => ({ default: module.TransferSimulator })));
 const HODLSimulator = lazy(() => import("@/components/simulators/HODLSimulator"));
