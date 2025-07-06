@@ -2157,8 +2157,6 @@ export default function Home() {
           </div>
         )}
 
-
-
         {/* More Section */}
         {activeSection === "more" && (
           <MoreSection 

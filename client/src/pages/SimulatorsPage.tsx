@@ -23,8 +23,8 @@ interface SimulatorsPageProps {
   setSecurityStage: (stage: number) => void;
   securityScore: number;
   setSecurityScore: (score: number) => void;
-  userSecurityAnswers: any[];
-  setUserSecurityAnswers: (answers: any[]) => void;
+  userSecurityAnswers: Record<number, boolean>;
+  setUserSecurityAnswers: (answers: Record<number, boolean>) => void;
 }
 
 export default function SimulatorsPage({
