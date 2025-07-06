@@ -232,7 +232,7 @@ export default function Home() {
   }, [markDayCompletedMutation, currentDayIndex]);
 
   const [convictionSubTab, setConvictionSubTab] = useState<"whitepaper" | "books" | "videos">("whitepaper");
-  // Splash screen removed for instant loading
+  const [showSplash, setShowSplash] = useState(false);
 
   const [expandedTopics, setExpandedTopics] = useState<Set<string>>(new Set());
   const [safetyQuizScore, setSafetyQuizScore] = useState<number>(0);
@@ -1864,7 +1864,45 @@ export default function Home() {
     queryKey: ['/api/user'],
   });
 
-  // Splash screen completely removed for instant loading
+  // Show splash screen during initial loading or when explicitly requested
+  useEffect(() => {
+    if (userLoading) {
+      setShowSplash(true);
+    } else {
+      // Keep splash for minimum 1 second for branding, then hide
+      const timer = setTimeout(() => setShowSplash(false), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [userLoading]);
+
+
+
+  // Splash Screen
+  if (showSplash) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center space-y-6">
+          <div className="relative">
+            <div className="w-24 h-24 mx-auto bg-gradient-to-r from-orange-400 to-orange-600 rounded-2xl flex items-center justify-center mb-6 transform rotate-3 animate-pulse">
+              <div className="flex items-center gap-1">
+                <span className="text-lg font-bold text-white">HL</span>
+              </div>
+            </div>
+            <div className="absolute -inset-6 bg-orange-400/15 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
+          </div>
+          <div className="space-y-3">
+            <h1 className="text-4xl font-bold text-white">HODLearn</h1>
+            <p className="text-zinc-400 text-lg">Loading your conviction</p>
+            <div className="flex justify-center">
+              <div className="text-xs text-zinc-500 bg-zinc-800/50 px-3 py-1 rounded-full">
+                Learn • HODL • Repeat
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black text-white">

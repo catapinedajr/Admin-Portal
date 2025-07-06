@@ -32,7 +32,7 @@ export default function PWAInstallButton() {
     if (isSafari && isIOS) {
       // For Safari on iOS, we can't auto-trigger install but we can always show the button
       setIsInstallable(true);
-      // Safari iOS detected - install button will show instructions
+      console.log('HODLearn: Safari iOS detected - install button will show instructions');
     }
 
     // Listen for beforeinstallprompt event (Chrome/Android)
@@ -40,7 +40,7 @@ export default function PWAInstallButton() {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       setIsInstallable(true);
-      // beforeinstallprompt event triggered
+      console.log('HODLearn: beforeinstallprompt event triggered');
     };
 
     // Listen for appinstalled event
@@ -48,7 +48,7 @@ export default function PWAInstallButton() {
       setIsInstalled(true);
       setIsInstallable(false);
       setDeferredPrompt(null);
-      // App installed successfully
+      console.log('HODLearn: App installed successfully');
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -62,10 +62,14 @@ export default function PWAInstallButton() {
 
   const handleInstall = async () => {
     setIsClicked(true);
-    // Install button clicked - checking availability
+    console.log('HODLearn: Install button clicked');
+    console.log('HODLearn: deferredPrompt available:', !!deferredPrompt);
+    console.log('HODLearn: isInstallable:', isInstallable);
+    console.log('HODLearn: isInstalled:', isInstalled);
+    console.log('HODLearn: User Agent:', navigator.userAgent);
 
     if (!deferredPrompt) {
-      // No install prompt available - checking browser install options
+      console.log('HODLearn: No install prompt available - checking browser install options');
       
       // Reset click state after showing alert
       setTimeout(() => setIsClicked(false), 100);
@@ -106,7 +110,7 @@ export default function PWAInstallButton() {
     }
 
     try {
-      // Attempting to show install prompt
+      console.log('HODLearn: Attempting to show install prompt...');
       await deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
       

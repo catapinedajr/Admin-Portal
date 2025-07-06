@@ -5,7 +5,6 @@ import { setupVite, serveStatic, log } from "./vite";
 import { testConnection } from "./db";
 
 const app = express();
-app.set('env', process.env.NODE_ENV || 'development'); // Critical: Fix environment detection
 app.use(compression()); // Enable gzip compression for all responses
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -62,19 +61,16 @@ app.use((req, res, next) => {
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
-  const isProduction = process.env.NODE_ENV === "production";
-  console.log(`Environment: NODE_ENV=${process.env.NODE_ENV}, app.env=${app.get("env")}, isProduction=${isProduction}`);
-  
-  if (!isProduction) {
+  if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 5000 (or PORT env var for flexibility)
+  // ALWAYS serve the app on port 5000
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
-  const port = process.env.PORT ? parseInt(process.env.PORT) : 5000;
+  const port = 5000;
   server.listen({
     port,
     host: "0.0.0.0",

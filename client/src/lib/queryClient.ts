@@ -21,14 +21,14 @@ export async function apiRequest(
       headers['Authorization'] = `Bearer ${sessionId}`;
     }
   } catch (error) {
-    // Silent fallback for deployment environments where localStorage might be restricted
+    console.warn('LocalStorage not available for auth headers:', error);
   }
 
   const res = await fetch(url, {
     method,
     headers,
     body: data ? JSON.stringify(data) : undefined,
-    credentials: "include", // Better deployment compatibility
+    credentials: "same-origin", // Better Safari compatibility
   });
 
   await throwIfResNotOk(res);
@@ -50,17 +50,12 @@ export const getQueryFn: <T>(options: {
         headers['Authorization'] = `Bearer ${sessionId}`;
       }
     } catch (error) {
-      // Silent fallback for deployment environments where localStorage might be restricted
+      console.warn('LocalStorage not available for query auth:', error);
     }
 
     const res = await fetch(queryKey[0] as string, {
-      headers: {
-        ...headers,
-        // Mobile Safari compatibility
-        'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache'
-      },
-      credentials: "include", // Better deployment compatibility
+      headers,
+      credentials: "same-origin", // Better Safari compatibility
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
