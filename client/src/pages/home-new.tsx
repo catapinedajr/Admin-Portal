@@ -83,7 +83,7 @@ import { BitcoinTerm, AutoGlossary } from "@/components/BitcoinGlossary";
 import { useToast } from "@/hooks/use-toast";
 import { ProgressIndicator, AchievementBadge, LearningAnalytics } from "@/components/ProgressIndicator";
 import AchievementSystem from "@/components/AchievementSystem";
-import { useSubscription } from "@/contexts/SubscriptionContext";
+import { useAppContext } from "@/components/shared/AppContextProvider";
 import LockedContent from "@/components/LockedContent";
 // Removed UpgradeModal import - now using inline upgrade cards
 import DevSubscriptionToggle from "@/components/DevSubscriptionToggle";
@@ -116,10 +116,24 @@ type SimulationsSubTab = "wallet" | "safety" | "transactions" | "transfer" | "ho
 type MoreSubTab = "store" | "about";
 
 function Home() {
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const { isPremiumTier, setSubscriptionTier } = useSubscription();
-  const [location, setLocation] = useLocation();
+  const { 
+    toast, 
+    queryClient, 
+    isPremiumTier, 
+    setSubscriptionTier, 
+    location, 
+    setLocation,
+    activeSection,
+    setActiveSection,
+    learnSubTab,
+    setLearnSubTab,
+    simulationsSubTab,
+    setSimulationsSubTab,
+    moreSubTab,
+    setMoreSubTab,
+    showEmailModal,
+    setShowEmailModal
+  } = useAppContext();
   
   // Determine active section from URL
   const getActiveSectionFromPath = (path: string): MainSection => {
@@ -144,11 +158,7 @@ function Home() {
     return 'safety'; // default
   };
   
-  const [activeSection, setActiveSection] = useState<MainSection>(getActiveSectionFromPath(location));
-  const [learnSubTab, setLearnSubTab] = useState<LearnSubTab>("today");
-  const [showEmailModal, setShowEmailModal] = useState(false);
-  const [simulationsSubTab, setSimulationsSubTab] = useState<SimulationsSubTab>(getSimulatorSubTabFromPath(location));
-  const [moreSubTab, setMoreSubTab] = useState<MoreSubTab>("about");
+  // State now comes from AppContext
   // Removed floating modal state - now using inline upgrade cards
   
   // Update active section and sub-tabs when URL changes
