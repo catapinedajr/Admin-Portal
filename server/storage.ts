@@ -472,26 +472,7 @@ export class DatabaseStorage implements IStorage {
       return false;
     }
     
-    // Check if it's the next calendar day since previous day completion
-    // Demo mode: skip time restrictions for easier deployment testing
-    const DEMO_MODE = process.env.NODE_ENV === 'development';
-    
-    if (!DEMO_MODE) {
-      const completedAt = previousDayProgress[0].completedAt;
-      if (completedAt) {
-        const completionDate = new Date(completedAt);
-        const now = new Date();
-        
-        // Check if we're on a different calendar day (ignoring time)
-        const completionDay = completionDate.toISOString().split('T')[0];
-        const currentDay = now.toISOString().split('T')[0];
-        
-        // Must be a different calendar day
-        if (completionDay === currentDay) {
-          return false;
-        }
-      }
-    }
+    // For deployment simplicity, remove calendar day restrictions
     
     // Check if content exists for this day
     const hasContent = await db.select({ id: contentDays.id })

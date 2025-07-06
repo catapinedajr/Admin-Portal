@@ -8,29 +8,23 @@ import { eq, sql } from "drizzle-orm";
 import { v4 as uuidv4 } from 'uuid';
 import { randomUUID } from 'crypto';
 
-// Demo mode - simplified authentication
-const DEMO_MODE = true; // Set to true for deployment simplicity
-
-function requireAuth(req: any, res: any, next: any) {
-  if (DEMO_MODE) {
-    // In demo mode, use default user
-    req.user = { id: 1 };
-    req.sessionId = 'demo_session';
-    return next();
-  }
-  
-  const sessionId = req.headers.authorization?.replace('Bearer ', '');
-  if (!sessionId) {
-    return res.status(401).json({ message: 'Authentication required' });
-  }
-  
-  // We'll check the session in the actual route handlers
-  req.sessionId = sessionId;
+// Simplified - no authentication needed
+function setDefaultUser(req: any, res: any, next: any) {
+  req.user = { id: 1 };
   next();
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Authentication routes
+  // User endpoint - simplified to return default user
+  app.get("/api/user", (req, res) => {
+    res.json({
+      id: 1,
+      username: "HODLearner",
+      email: "demo@hodlearn.com"
+    });
+  });
+
+  // Legacy authentication routes (removed functionality)
   app.post("/api/auth/register", async (req, res) => {
     try {
       const userData = registerSchema.parse(req.body);
@@ -102,35 +96,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/auth/logout", requireAuth, async (req, res) => {
-    try {
-      await storage.deleteSession(req.sessionId);
-      res.json({ message: "Logout successful" });
-    } catch (error) {
-      console.error("Logout error:", error);
-      res.status(500).json({ message: "Logout failed" });
-    }
+  app.post("/api/auth/logout", (req, res) => {
+    res.json({ message: "Logout successful" });
   });
 
-  app.get("/api/auth/me", requireAuth, async (req, res) => {
-    try {
-      const session = await storage.getSession(req.sessionId);
-      if (!session || new Date() > session.expiresAt) {
-        return res.status(401).json({ message: "Session expired" });
-      }
-
-      const user = await storage.getUser(session.userId);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      // Don't send password hash
-      const { passwordHash, ...userResponse } = user;
-      res.json(userResponse);
-    } catch (error) {
-      console.error("Auth me error:", error);
-      res.status(500).json({ message: "Failed to get user" });
-    }
+  app.get("/api/auth/me", (req, res) => {
+    res.json({
+      id: 1,
+      username: "HODLearner",
+      email: "demo@hodlearn.com"
+    });
   });
 
   // Password reset routes
@@ -1460,12 +1435,11 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.post('/api/quiz/submit', requireAuth, async (req, res) => {
+  app.post('/api/quiz/submit', setDefaultUser, async (req, res) => {
     try {
       const { questionId, selectedAnswer, date } = req.body;
       
-      // Demo mode - use default user
-      const userId = DEMO_MODE ? 1 : req.user.id;
+      const userId = req.user.id;
       
       console.log('[DEBUG] Quiz submission:', { userId, questionId, selectedAnswer, date });
       
@@ -1495,12 +1469,11 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.get('/api/quiz/score/:userId/:date', requireAuth, async (req, res) => {
+  app.get('/api/quiz/score/:userId/:date', setDefaultUser, async (req, res) => {
     try {
       const date = req.params.date;
       
-      // Demo mode - use default user
-      const userId = DEMO_MODE ? 1 : req.user.id;
+      const userId = req.user.id;
       
       // Get the current day index from query parameter or default to 1
       const dayIndex = parseInt(req.query.dayIndex as string) || 1;
@@ -1513,12 +1486,11 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.get('/api/quiz/answers/:userId/:date', requireAuth, async (req, res) => {
+  app.get('/api/quiz/answers/:userId/:date', setDefaultUser, async (req, res) => {
     try {
       const date = req.params.date;
       
-      // Demo mode - use default user  
-      const userId = DEMO_MODE ? 1 : req.user.id;
+      const userId = req.user.id;
       
       const answers = await storage.getUserQuizAnswers(userId, date);
       res.json(answers);
@@ -1749,7 +1721,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Daily Activities API for consistency tracking
-  app.get("/api/activities/:userId/calendar", requireAuth, async (req: any, res) => {
+  app.get("/api/activities/:userId/calendar", setDefaultUser, async (req: any, res) => {
     try {
       const userId = req.user.id;
       const weeks = parseInt(req.query.weeks as string) || 3; // Default to 3 weeks
@@ -1762,7 +1734,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.post("/api/activities/mark-lesson", requireAuth, async (req: any, res) => {
+  app.post("/api/activities/mark-lesson", setDefaultUser, async (req: any, res) => {
     try {
       const userId = req.user.id;
       const date = new Date().toISOString().split('T')[0];
@@ -1775,7 +1747,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.post("/api/activities/mark-quiz", requireAuth, async (req: any, res) => {
+  app.post("/api/activities/mark-quiz", setDefaultUser, async (req: any, res) => {
     try {
       const userId = req.user.id;
       const date = new Date().toISOString().split('T')[0];
@@ -1807,7 +1779,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.post("/api/activities/mark-practice", requireAuth, async (req: any, res) => {
+  app.post("/api/activities/mark-practice", setDefaultUser, async (req: any, res) => {
     try {
       const userId = req.user.id;
       const date = new Date().toISOString().split('T')[0];
