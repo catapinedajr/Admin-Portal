@@ -41,12 +41,6 @@ export default function HomePage() {
     enabled: !!user?.id,
   });
 
-  // Get next available day
-  const { data: nextDay } = useQuery({
-    queryKey: ['/api/next-available-day', user?.id],
-    enabled: !!user?.id,
-  });
-
   // Get completed days count
   const { data: completedDaysData } = useQuery({
     queryKey: ['/api/completed-days-count', user?.id],
@@ -66,19 +60,21 @@ export default function HomePage() {
     : getTimeBasedGreeting();
 
   const completedDays = completedDaysData?.count || 0;
-  const currentDay = nextDay?.dayIndex || 1;
+  
+  // Use the same currentDayIndex from AppContext as LearnPage for consistency
+  const currentDay = useAppContext().currentDayIndex;
   const progressPercentage = Math.round((completedDays / 180) * 100);
 
   // Get current day's lesson for preview - only when currentDay is available
   const { data: currentLesson } = useQuery({
     queryKey: ['/api/lesson', currentDay],
-    enabled: !!nextDay && !!currentDay && currentDay > 0,
+    enabled: !!currentDay && currentDay > 0,
   });
 
   // Get current day's facts for preview - only when currentDay is available
   const { data: currentFacts } = useQuery({
     queryKey: ['/api/daily-facts', currentDay],
-    enabled: !!nextDay && !!currentDay && currentDay > 0,
+    enabled: !!currentDay && currentDay > 0,
   });
   
   // Calculate streak
