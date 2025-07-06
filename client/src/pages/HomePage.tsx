@@ -1,20 +1,13 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
 import { 
-  Bitcoin, 
   Lightbulb, 
   BookOpen, 
   TrendingUp, 
-  User as UserIcon,
-  Crown,
-  Gem,
-  Plus
+  User as UserIcon
 } from "lucide-react";
-import PWAInstallButton from "@/components/PWAInstallButton";
 
 export default function HomePage() {
   const [, setLocation] = useLocation();
@@ -37,30 +30,7 @@ export default function HomePage() {
     : getTimeBasedGreeting();
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
-      {/* Header */}
-      <header className="bg-zinc-900/50 border-b border-zinc-800 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <Bitcoin className="w-8 h-8 text-orange-500" />
-            <div>
-              <h1 className="text-xl font-bold">HODLearn</h1>
-              <p className="text-xs text-zinc-400">Build Bitcoin conviction through daily learning</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center space-x-3">
-            <PWAInstallButton />
-            <Badge variant="outline" className="text-orange-500 border-orange-500/30">
-              <Crown className="w-3 h-3 mr-1" />
-              Premium
-            </Badge>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-4 py-8">
+    <div className="px-4 py-8">
         {/* Welcome Section */}
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">{greeting}</h2>
@@ -149,7 +119,6 @@ export default function HomePage() {
             </Card>
           </div>
         )}
-      </main>
     </div>
   );
 }

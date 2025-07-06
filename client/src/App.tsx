@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { useEffect, useState } from "react";
+import Layout from "@/components/Layout";
 
 import HomePage from "@/pages/HomePage";
 import LearnPage from "@/pages/LearnPage";
@@ -145,28 +146,36 @@ function Router() {
         <Route path="/learn">
           <AuthGuard>
             <AppContextProvider>
-              <LearnPage />
+              <Layout>
+                <LearnPage />
+              </Layout>
             </AppContextProvider>
           </AuthGuard>
         </Route>
         <Route path="/money">
           <AuthGuard>
             <AppContextProvider>
-              <FinancePage />
+              <Layout>
+                <FinancePage />
+              </Layout>
             </AppContextProvider>
           </AuthGuard>
         </Route>
         <Route path="/simulators">
           <AuthGuard>
             <AppContextProvider>
-              <SimulatorsPage />
+              <Layout>
+                <SimulatorsPage />
+              </Layout>
             </AppContextProvider>
           </AuthGuard>
         </Route>
         <Route path="/more">
           <AuthGuard>
             <AppContextProvider>
-              <HomePage />
+              <Layout>
+                <HomePage />
+              </Layout>
             </AppContextProvider>
           </AuthGuard>
         </Route>
@@ -180,7 +189,9 @@ function Router() {
         <Route path="/">
           <AuthGuard>
             <AppContextProvider>
-              <OnboardingRedirect />
+              <Layout>
+                <OnboardingRedirect />
+              </Layout>
             </AppContextProvider>
           </AuthGuard>
         </Route>
