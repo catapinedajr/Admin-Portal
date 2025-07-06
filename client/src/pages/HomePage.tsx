@@ -53,17 +53,6 @@ export default function HomePage() {
     enabled: !!user?.id,
   });
 
-  // Get current day content for preview
-  const { data: dayMetadata } = useQuery({
-    queryKey: ['/api/day-metadata', currentDay],
-    enabled: !!currentDay,
-  });
-
-  const { data: dailyFacts } = useQuery({
-    queryKey: ['/api/daily-facts', currentDay],
-    enabled: !!currentDay,
-  });
-
   const getTimeBasedGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return "Good morning";
@@ -140,12 +129,8 @@ export default function HomePage() {
                 <BookOpen className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white">
-                  Day {currentDay}: {dayMetadata?.title || "Bitcoin Learning"}
-                </h3>
-                <p className="text-sm text-zinc-400">
-                  {dailyFacts?.[0]?.title || "Continue your Bitcoin education"}
-                </p>
+                <h3 className="text-xl font-bold text-white">Day {currentDay} Learning</h3>
+                <p className="text-sm text-zinc-400">Continue your Bitcoin education</p>
               </div>
             </div>
             <Button 
