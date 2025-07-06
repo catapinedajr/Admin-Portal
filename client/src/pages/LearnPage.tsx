@@ -42,24 +42,73 @@ function LearnPage() {
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
 
-  // Single optimized API call for all Learn page data
-  const { data: learnData, isLoading } = useQuery({
+  // Single optimized API call with Safari compatibility
+  const { data: learnData, isLoading, error } = useQuery({
     queryKey: ['/api/learn-data', 1],
-    queryFn: () => fetch('/api/learn-data/1').then(res => res.json()),
+    queryFn: async () => {
+      try {
+        const response = await fetch('/api/learn-data/1', {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        
+        return await response.json();
+      } catch (err) {
+        console.error('Learn data fetch error:', err);
+        throw err;
+      }
+    },
     staleTime: 60000, // 1 minute
     cacheTime: 300000, // 5 minutes
-    refetchOnWindowFocus: false // Prevent unnecessary refetches
+    refetchOnWindowFocus: false, // Prevent unnecessary refetches
+    retry: 3, // Safari sometimes needs retries
+    retryDelay: 1000 // 1 second between retries
   });
   
-  // Extract data from combined response
+  // Safari-safe data extraction with fallbacks
   const currentDayIndex = learnData?.currentDayIndex || 1;
-  const dayMetadata = learnData?.dayMetadata;
-  const lesson = learnData?.lesson;
-  const dailyFacts = learnData?.dailyFacts || [];
-  const diveDeeperContent = learnData?.diveDeeperContent || [];
-  const dayCompleted = learnData?.dayCompleted || false;
+  const dayMetadata = learnData?.dayMetadata || null;
+  const lesson = learnData?.lesson || null;
+  const dailyFacts = Array.isArray(learnData?.dailyFacts) ? learnData.dailyFacts : [];
+  const diveDeeperContent = Array.isArray(learnData?.diveDeeperContent) ? learnData.diveDeeperContent : [];
+  const dayCompleted = Boolean(learnData?.dayCompleted);
   
   const lessonLoading = isLoading;
+  
+  // Fallback to individual API calls if combined endpoint fails
+  const { data: fallbackData } = useQuery({
+    queryKey: ['/api/next-available-day', 1],
+    queryFn: () => fetch('/api/next-available-day/1').then(res => res.json()),
+    enabled: !!error, // Only run if main query failed
+    staleTime: 30000
+  });
+  
+  // Safari error boundary with fallback
+  if (error && !fallbackData) {
+    return (
+      <div className="min-h-screen bg-zinc-900 flex items-center justify-center p-4">
+        <div className="text-center space-y-4">
+          <div className="text-orange-500 text-xl font-bold">Connection Issue</div>
+          <div className="text-zinc-400">Refreshing the page should fix this</div>
+          <Button 
+            onClick={() => window.location.href = window.location.href}
+            className="bg-orange-500 hover:bg-orange-600"
+          >
+            Refresh Page
+          </Button>
+        </div>
+      </div>
+    );
+  }
+  
+  // Use fallback data if main query failed
+  const finalCurrentDayIndex = currentDayIndex || fallbackData?.dayIndex || 1;
 
   // Helper function to get time-based greeting
   const getTimeBasedGreeting = () => {
@@ -325,15 +374,26 @@ function LearnPage() {
                 </CardHeader>
                 <CardContent>
                   <DailyQuiz
-                    dayIndex={currentDayIndex}
-                    onCompletion={() => {
-                      // Simplified quiz completion
-                      fetch(`/api/mark-day-completed/1/${currentDayIndex}`, { method: 'POST' })
-                        .then(() => {
-                          // Force refresh of completion status
-                          window.location.reload();
-                        })
-                        .catch(err => console.error('Quiz completion error:', err));
+                    dayIndex={finalCurrentDayIndex}
+                    onCompletion={async () => {
+                      try {
+                        // Safari-safe quiz completion
+                        const response = await fetch(`/api/mark-day-completed/1/${finalCurrentDayIndex}`, { 
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json'
+                          }
+                        });
+                        
+                        if (response.ok) {
+                          // Safari-safe reload with delay
+                          setTimeout(() => {
+                            window.location.href = window.location.href;
+                          }, 100);
+                        }
+                      } catch (err) {
+                        console.error('Quiz completion error:', err);
+                      }
                     }}
                   />
                 </CardContent>
