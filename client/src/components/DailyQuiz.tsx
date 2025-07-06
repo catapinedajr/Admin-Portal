@@ -79,7 +79,7 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
       
       return fetch(`/api/quiz/answers/${userId}/${today}`, { 
         headers,
-        credentials: 'same-origin' 
+        credentials: 'include' 
       }).then(res => res.json()) as Promise<QuizAnswer[]>;
     }
   });
@@ -97,7 +97,7 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
       
       return fetch(`/api/quiz/score/${userId}/${today}?dayIndex=${dayIndex}`, { 
         headers,
-        credentials: 'same-origin' 
+        credentials: 'include' 
       }).then(res => res.json()) as Promise<QuizScore>;
     },
     enabled: userAnswers.length > 0
@@ -118,7 +118,7 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
           method: 'POST',
           headers,
           body: JSON.stringify(answer),
-          credentials: 'same-origin'
+          credentials: 'include'
         });
         
         if (!response.ok) {

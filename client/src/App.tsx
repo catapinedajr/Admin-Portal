@@ -52,7 +52,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
               'Authorization': `Bearer ${sessionId}`,
               'Content-Type': 'application/json'
             },
-            credentials: 'same-origin',
+            credentials: 'include',
             cache: 'no-cache'
           });
           
