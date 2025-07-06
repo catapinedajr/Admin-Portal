@@ -4,7 +4,7 @@ import SimpleApp from "./App-backup";
 import "./index.css";
 
 // Test mode - render simple app first to isolate issue
-const TEST_MODE = true;
+const TEST_MODE = false;
 
 // Register service worker for PWA functionality (Safari-compatible)
 if ('serviceWorker' in navigator && typeof navigator.serviceWorker !== 'undefined') {
