@@ -28,7 +28,19 @@ import type { User } from "@shared/schema";
 
 export default function HomePage() {
   const [, setLocation] = useLocation();
-  const { isPremiumTier, setShowEmailModal } = useAppContext();
+  
+  // Safe context usage with fallbacks
+  let isPremiumTier = false;
+  let setShowEmailModal = () => {};
+  
+  try {
+    const context = useAppContext();
+    isPremiumTier = context.isPremiumTier;
+    setShowEmailModal = context.setShowEmailModal;
+  } catch (error) {
+    // AppContext not available, use defaults
+    console.warn('AppContext not available, using defaults');
+  }
   
   // Get user data for personalized dashboard
   const { data: user } = useQuery<User>({
