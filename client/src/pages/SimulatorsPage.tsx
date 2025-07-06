@@ -125,9 +125,9 @@ function SimulatorsPage(props: SimulatorsPageProps = {}) {
 
   return (
     <div className="space-y-6">
-      {/* Simulator Navigation Tabs */}
-      <div className="border-b border-zinc-800">
-        <div className="flex flex-wrap gap-2 p-4">
+      {/* Simulator Sub-navigation - Centered like Learn page */}
+      <div className="flex justify-center">
+        <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2">
           <Button
             variant={simulationsSubTab === "safety" ? "secondary" : "ghost"}
             size="sm"
