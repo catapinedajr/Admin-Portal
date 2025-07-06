@@ -152,7 +152,7 @@ export default function SimulatorsPage({
             className="text-xs px-3 py-1"
           >
             <ArrowLeftRight className="w-3 h-3 mr-1" />
-            Settlement
+            Transfer
           </Button>
           <Button
             variant={simulationsSubTab === "hodl" ? "secondary" : "ghost"}
