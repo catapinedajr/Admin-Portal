@@ -145,7 +145,13 @@ function Router() {
             <About />
           </AuthGuard>
         </Route>
-        <Route path="/" component={HomePage} />
+        <Route path="/" component={() => (
+          <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
+            <div className="text-orange-500 text-xl font-bold">
+              Root URL Test - Working!
+            </div>
+          </div>
+        )} />
         <Route path="*">
           <AuthGuard>
             <HomePage />
