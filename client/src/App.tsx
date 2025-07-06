@@ -63,21 +63,38 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 
 function OnboardingRedirect() {
   const [, setLocation] = useLocation();
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    // Simple onboarding check without debug overhead
-    try {
-      const hasCompletedOnboarding = localStorage.getItem('hodlearn-onboarding-completed');
-      
-      if (!hasCompletedOnboarding) {
-        // Auto-complete onboarding for deployment users
-        localStorage.setItem('hodlearn-onboarding-completed', 'true');
+    // Add a small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      try {
+        const hasCompletedOnboarding = localStorage.getItem('hodlearn-onboarding-completed');
+        
+        if (!hasCompletedOnboarding) {
+          // Auto-complete onboarding for deployment users
+          localStorage.setItem('hodlearn-onboarding-completed', 'true');
+        }
+        setIsReady(true);
+      } catch (error) {
+        // If localStorage fails, just continue to HomePage
+        console.warn('LocalStorage access failed, continuing to app:', error);
+        setIsReady(true);
       }
-    } catch (error) {
-      // If localStorage fails, just continue to HomePage
-      console.warn('LocalStorage access failed, continuing to app:', error);
-    }
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, [setLocation]);
+
+  if (!isReady) {
+    return (
+      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
+        <div className="text-orange-500 text-xl font-bold">
+          Loading HODLearn...
+        </div>
+      </div>
+    );
+  }
 
   return <HomePage />;
 }
@@ -128,12 +145,16 @@ function Router() {
             <About />
           </AuthGuard>
         </Route>
-        <Route path="/" component={() => (
+        <Route path="/">
           <AuthGuard>
             <OnboardingRedirect />
           </AuthGuard>
-        )} />
-        <Route component={NotFound} />
+        </Route>
+        <Route path="*">
+          <AuthGuard>
+            <HomePage />
+          </AuthGuard>
+        </Route>
       </Switch>
     </AppContextProvider>
   );
