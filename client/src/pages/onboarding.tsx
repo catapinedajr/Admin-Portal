@@ -34,67 +34,49 @@ export default function Onboarding() {
               </p>
             </div>
 
-            {/* Single-page onboarding content */}
-            <div className="space-y-8">
+            {/* Simplified single-section onboarding */}
+            <div className="space-y-6">
               
-              {/* Story section */}
-              <div className="bg-zinc-800/50 rounded-lg p-6 text-center">
+              {/* Main story */}
+              <div className="text-center space-y-4">
                 <div className="text-lg space-y-2">
                   <div className="text-zinc-300">Understanding Bitcoin takes time</div>
                   <div className="text-zinc-300">Building conviction takes consistency</div>
                   <div className="text-orange-400 font-semibold text-xl">This is HODLearn</div>
                 </div>
-                <p className="text-zinc-400 mt-4 text-sm">
-                  We learned Bitcoin by chipping away slowly, day by day. The same way you HODL through market storms, 
-                  you learn through daily persistence. No overwhelm, just steady progress.
+                <p className="text-zinc-400 text-base max-w-2xl mx-auto">
+                  We learned Bitcoin by chipping away slowly, day by day. Now you can too - with daily lessons, 
+                  safe practice simulators, community discussions, and curated videos from Bitcoin experts.
                 </p>
               </div>
               
-              {/* Features grid */}
-              <div>
-                <h2 className="text-xl font-semibold text-white text-center mb-6">What You'll Experience</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-zinc-800/30 rounded-lg p-5 border border-zinc-700">
-                    <BookOpen className="w-8 h-8 text-blue-400 mb-3" />
-                    <h3 className="text-lg font-semibold text-white mb-2">Daily Facts & Lessons</h3>
-                    <p className="text-zinc-300 text-sm">
-                      3 daily facts → deep dive lesson → knowledge quiz. Built for busy people, designed for retention.
-                    </p>
-                  </div>
-                  
-                  <div className="bg-zinc-800/30 rounded-lg p-5 border border-zinc-700">
-                    <Target className="w-8 h-8 text-green-400 mb-3" />
-                    <h3 className="text-lg font-semibold text-white mb-2">Safe Practice Environment</h3>
-                    <p className="text-zinc-300 text-sm">
-                      Interactive simulators with no real money. Practice wallets, transactions, and security - risk-free.
-                    </p>
-                  </div>
-                  
-                  <div className="bg-zinc-800/30 rounded-lg p-5 border border-zinc-700">
-                    <Brain className="w-8 h-8 text-purple-400 mb-3" />
-                    <h3 className="text-lg font-semibold text-white mb-2">9th Grade Language</h3>
-                    <p className="text-zinc-300 text-sm">
-                      No technical jargon. Everyday analogies. Maximum 15 words per sentence. Anyone can understand.
-                    </p>
-                  </div>
-                  
-                  <div className="bg-zinc-800/30 rounded-lg p-5 border border-zinc-700">
-                    <Clock className="w-8 h-8 text-orange-400 mb-3" />
-                    <h3 className="text-lg font-semibold text-white mb-2">Few Minutes Daily</h3>
-                    <p className="text-zinc-300 text-sm">
-                      No pressure, no deadlines. Learn at your own pace. Consistency beats intensity every time.
-                    </p>
-                  </div>
+              {/* Simple feature highlights */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div className="space-y-2">
+                  <BookOpen className="w-6 h-6 text-blue-400 mx-auto" />
+                  <p className="text-zinc-300 text-sm">Daily Lessons</p>
+                </div>
+                <div className="space-y-2">
+                  <Target className="w-6 h-6 text-green-400 mx-auto" />
+                  <p className="text-zinc-300 text-sm">Safe Practice</p>
+                </div>
+                <div className="space-y-2">
+                  <Users className="w-6 h-6 text-purple-400 mx-auto" />
+                  <p className="text-zinc-300 text-sm">Community</p>
+                </div>
+                <div className="space-y-2">
+                  <Brain className="w-6 h-6 text-orange-400 mx-auto" />
+                  <p className="text-zinc-300 text-sm">Expert Videos</p>
                 </div>
               </div>
               
               {/* Call to action */}
-              <div className="bg-gradient-to-r from-orange-600/20 to-yellow-600/20 rounded-lg p-6 border border-orange-500/30 text-center">
-                <h3 className="text-xl font-semibold text-white mb-2">First Stop: Why Bitcoin?</h3>
-                <p className="text-zinc-300 mb-6">
-                  We'll start by showing you the problems Bitcoin solves - from inflation to banking delays. 
-                  Understanding the "why" builds the foundation for everything else.
-                </p>
+              <div className="text-center space-y-4">
+                <div className="bg-gradient-to-r from-orange-600/20 to-yellow-600/20 rounded-lg p-4 border border-orange-500/30">
+                  <p className="text-zinc-300 text-sm">
+                    Start with the problems Bitcoin solves, then learn how it works.
+                  </p>
+                </div>
                 
                 <div className="space-y-3">
                   <Button
