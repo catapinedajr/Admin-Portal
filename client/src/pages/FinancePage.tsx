@@ -155,7 +155,7 @@ function FinancePage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="space-y-8 text-white">
       <main className="max-w-6xl mx-auto px-4 py-8 pb-24 space-y-8">
         {/* Hero Narrative */}
         <Card className="bg-gradient-to-br from-orange-950/30 via-zinc-900 to-red-950/30 border-orange-800/50">
