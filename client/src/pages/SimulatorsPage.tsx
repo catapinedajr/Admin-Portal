@@ -137,94 +137,66 @@ function SimulatorsPage(props: SimulatorsPageProps = {}) {
 
   return (
     <div className="space-y-6 pb-20">
-      {/* Floating Paywall Overlay - Show if trying to access premium simulator */}
+      {/* Floating Paywall Overlay - Mobile Optimized */}
       {isCurrentSimulatorLocked && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <Card className="bg-zinc-900/95 border-orange-500/30 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <CardContent className="p-8">
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Lock className="w-8 h-8 text-white" />
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-3">
+          <Card className="bg-zinc-900/95 border-orange-500/30 w-full max-w-sm mx-auto">
+            <CardContent className="p-5">
+              <div className="text-center mb-4">
+                <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Lock className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-2">
+                <h3 className="text-lg font-bold text-white mb-1">
                   Premium Simulators
                 </h3>
-                <p className="text-zinc-400">
-                  Experience hands-on Bitcoin education with our interactive simulators
+                <p className="text-sm text-zinc-400">
+                  Unlock 6 interactive Bitcoin tools
                 </p>
               </div>
 
-              {/* Simulator Teasers Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div className="bg-zinc-800/50 p-4 rounded-lg border border-zinc-700">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Wallet className="w-5 h-5 text-orange-500" />
-                    <h4 className="font-semibold text-white">Wallet Explorer</h4>
+              {/* Compact Simulator List */}
+              <div className="space-y-2 mb-5">
+                <div className="flex items-center gap-3 p-2 bg-zinc-800/30 rounded">
+                  <Wallet className="w-4 h-4 text-orange-500 flex-shrink-0" />
+                  <div>
+                    <div className="text-sm font-medium text-white">Wallet Explorer</div>
+                    <div className="text-xs text-zinc-400">Compare types & practice recovery</div>
                   </div>
-                  <p className="text-sm text-zinc-400">
-                    Compare wallet types and practice recovery scenarios safely
-                  </p>
                 </div>
 
-                <div className="bg-zinc-800/50 p-4 rounded-lg border border-zinc-700">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Coins className="w-5 h-5 text-orange-500" />
-                    <h4 className="font-semibold text-white">Transaction Builder</h4>
+                <div className="flex items-center gap-3 p-2 bg-zinc-800/30 rounded">
+                  <Coins className="w-4 h-4 text-orange-500 flex-shrink-0" />
+                  <div>
+                    <div className="text-sm font-medium text-white">Transaction Builder</div>
+                    <div className="text-xs text-zinc-400">Build & watch settlements</div>
                   </div>
-                  <p className="text-sm text-zinc-400">
-                    Build Bitcoin transactions and watch them settle on the network
-                  </p>
                 </div>
 
-                <div className="bg-zinc-800/50 p-4 rounded-lg border border-zinc-700">
-                  <div className="flex items-center gap-2 mb-2">
-                    <ArrowLeftRight className="w-5 h-5 text-orange-500" />
-                    <h4 className="font-semibold text-white">Transfer Race</h4>
+                <div className="flex items-center gap-3 p-2 bg-zinc-800/30 rounded">
+                  <TrendingUp className="w-4 h-4 text-orange-500 flex-shrink-0" />
+                  <div>
+                    <div className="text-sm font-medium text-white">HODL Strategy</div>
+                    <div className="text-xs text-zinc-400">Historical performance vs assets</div>
                   </div>
-                  <p className="text-sm text-zinc-400">
-                    See Bitcoin vs traditional banking settlement speeds side-by-side
-                  </p>
                 </div>
 
-                <div className="bg-zinc-800/50 p-4 rounded-lg border border-zinc-700">
-                  <div className="flex items-center gap-2 mb-2">
-                    <TrendingUp className="w-5 h-5 text-orange-500" />
-                    <h4 className="font-semibold text-white">HODL Strategy</h4>
+                <div className="flex items-center gap-3 p-2 bg-zinc-800/30 rounded">
+                  <DollarSign className="w-4 h-4 text-orange-500 flex-shrink-0" />
+                  <div>
+                    <div className="text-sm font-medium text-white">DCA Calculator + 2 More</div>
+                    <div className="text-xs text-zinc-400">Transfer Race & Fee Simulator</div>
                   </div>
-                  <p className="text-sm text-zinc-400">
-                    Compare Bitcoin's historical performance vs traditional assets
-                  </p>
-                </div>
-
-                <div className="bg-zinc-800/50 p-4 rounded-lg border border-zinc-700">
-                  <div className="flex items-center gap-2 mb-2">
-                    <DollarSign className="w-5 h-5 text-orange-500" />
-                    <h4 className="font-semibold text-white">DCA Calculator</h4>
-                  </div>
-                  <p className="text-sm text-zinc-400">
-                    Backtest dollar-cost averaging strategies with real Bitcoin data
-                  </p>
-                </div>
-
-                <div className="bg-zinc-800/50 p-4 rounded-lg border border-zinc-700">
-                  <div className="flex items-center gap-2 mb-2">
-                    <FileText className="w-5 h-5 text-orange-500" />
-                    <h4 className="font-semibold text-white">Fee Simulator</h4>
-                  </div>
-                  <p className="text-sm text-zinc-400">
-                    Learn how Bitcoin transaction fees work and optimize costs
-                  </p>
                 </div>
               </div>
 
               <div className="text-center">
                 <Button 
                   onClick={() => setSubscriptionTier('premium')}
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 text-lg font-semibold"
+                  className="bg-orange-500 hover:bg-orange-600 text-white w-full py-3 font-semibold"
                 >
                   Continue Free - Limited Time
                 </Button>
-                <p className="text-xs text-zinc-500 mt-3">
+                <p className="text-xs text-zinc-500 mt-2">
                   Free during beta testing
                 </p>
               </div>
