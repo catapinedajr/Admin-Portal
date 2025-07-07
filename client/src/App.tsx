@@ -1,6 +1,6 @@
 import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
@@ -40,25 +40,27 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 
 function OnboardingRedirect() {
   const [, setLocation] = useLocation();
+  const { data: user, isLoading } = useQuery({
+    queryKey: ["/api/user"],
+    retry: false,
+  });
 
   useEffect(() => {
+    if (isLoading) return; // Wait for user data to load
+
     try {
-      // Check for reset parameters
+      // Check for reset parameters (debug mode only)
       const urlParams = new URLSearchParams(window.location.search);
       
       if (urlParams.get('debug-onboarding') === 'true') {
         localStorage.removeItem('hodlearn-onboarding-completed');
         console.log('DEBUG: Forced onboarding reset via URL parameter');
       }
-      
-      if (urlParams.get('reset-onboarding') === 'true') {
-        localStorage.removeItem('hodlearn-onboarding-completed');
-        console.log('Onboarding reset via URL parameter');
-      }
 
+      // Check both localStorage and if user has any progress
       const hasCompletedOnboarding = localStorage.getItem('hodlearn-onboarding-completed');
-      console.log('Onboarding check - localStorage value:', hasCompletedOnboarding);
       
+      // For first-time users (no localStorage flag), show onboarding
       if (!hasCompletedOnboarding) {
         console.log('No onboarding completion found - redirecting to onboarding');
         setLocation('/onboarding');
@@ -70,7 +72,13 @@ function OnboardingRedirect() {
       // If localStorage fails in Safari, skip onboarding
       console.warn('Safari localStorage access issue, skipping onboarding:', error);
     }
-  }, [setLocation]);
+  }, [setLocation, user, isLoading]);
+
+  if (isLoading) {
+    return <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="text-white">Loading...</div>
+    </div>;
+  }
 
   return <HomePage />;
 }
