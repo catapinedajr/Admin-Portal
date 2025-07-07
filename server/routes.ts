@@ -39,7 +39,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   };
 
   // User endpoint - get authenticated user
-  app.get("/api/user", requireAuth, async (req: any, res) => {
+  app.get("/api/user", setDefaultUser, async (req: any, res) => {
     try {
       const user = await storage.getUser(req.user.id);
       if (!user) {
@@ -768,7 +768,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.get("/api/can-access-day/:userId/:dayIndex", requireAuth, async (req: any, res) => {
+  app.get("/api/can-access-day/:userId/:dayIndex", setDefaultUser, async (req: any, res) => {
     try {
       const userId = req.user.id;
       let dayIndex = parseInt(req.params.dayIndex);
@@ -784,7 +784,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Get day access info with wait time details
-  app.get("/api/day-access-info/:userId/:dayIndex", requireAuth, async (req: any, res) => {
+  app.get("/api/day-access-info/:userId/:dayIndex", setDefaultUser, async (req: any, res) => {
     try {
       const userId = req.user.id;
       let dayIndex = parseInt(req.params.dayIndex);
@@ -833,7 +833,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Add the day-access endpoint that the UI expects
-  app.get("/api/day-access/:userId/:dayIndex", requireAuth, async (req: any, res) => {
+  app.get("/api/day-access/:userId/:dayIndex", setDefaultUser, async (req: any, res) => {
     try {
       const userId = req.user.id;
       let dayIndex = parseInt(req.params.dayIndex);
@@ -1478,7 +1478,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.post('/api/quiz/submit', requireAuth, async (req, res) => {
+  app.post('/api/quiz/submit', setDefaultUser, async (req, res) => {
     try {
       const { questionId, selectedAnswer, date } = req.body;
       
@@ -1512,7 +1512,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.get('/api/quiz/score/:userId/:date', requireAuth, async (req, res) => {
+  app.get('/api/quiz/score/:userId/:date', setDefaultUser, async (req, res) => {
     try {
       const date = req.params.date;
       
@@ -1529,7 +1529,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.get('/api/quiz/answers/:userId/:date', requireAuth, async (req, res) => {
+  app.get('/api/quiz/answers/:userId/:date', setDefaultUser, async (req, res) => {
     try {
       const date = req.params.date;
       
@@ -1804,7 +1804,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Day completion endpoint for quiz completion flow
-  app.post("/api/mark-day-completed", requireAuth, async (req: any, res) => {
+  app.post("/api/mark-day-completed", setDefaultUser, async (req: any, res) => {
     try {
       const userId = req.user.id; // Use authenticated user ID
       const { dayIndex } = req.body;
@@ -1823,7 +1823,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.post("/api/activities/mark-practice", requireAuth, async (req: any, res) => {
+  app.post("/api/activities/mark-practice", setDefaultUser, async (req: any, res) => {
     try {
       const userId = req.user.id;
       const date = new Date().toISOString().split('T')[0];
@@ -1904,7 +1904,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Create forum post
-  app.post("/api/community/forum-posts", requireAuth, async (req, res) => {
+  app.post("/api/community/forum-posts", setDefaultUser, async (req, res) => {
     try {
       const { title, content, categoryId, dayIndex } = req.body;
       const userId = req.user.id;
@@ -1941,7 +1941,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Record video view
-  app.post("/api/community/video-view", requireAuth, async (req, res) => {
+  app.post("/api/community/video-view", setDefaultUser, async (req, res) => {
     try {
       const { videoId, progressPercent } = req.body;
       const userId = req.user.id;
@@ -1966,7 +1966,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Create success story
-  app.post("/api/community/success-stories", requireAuth, async (req, res) => {
+  app.post("/api/community/success-stories", setDefaultUser, async (req, res) => {
     try {
       const { title, content } = req.body;
       const userId = req.user.id;
@@ -1987,7 +1987,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Get user stats endpoint for account page (authenticated)
-  app.get('/api/user/stats', requireAuth, async (req: any, res) => {
+  app.get('/api/user/stats', setDefaultUser, async (req: any, res) => {
     try {
       const stats = await storage.getUserStats(req.user.id);
       res.json(stats);
@@ -1998,7 +1998,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Update user profile endpoint
-  app.patch('/api/user/profile', requireAuth, async (req: any, res) => {
+  app.patch('/api/user/profile', setDefaultUser, async (req: any, res) => {
     try {
       const { username, email } = req.body;
       

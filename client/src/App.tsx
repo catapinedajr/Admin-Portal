@@ -127,28 +127,14 @@ function Router() {
       <Switch>
         <Route path="/auth" component={AuthPage} />
         <Route path="/onboarding" component={Onboarding} />
-        <Route path="/learn">
-          <AuthGuard><LearnPage /></AuthGuard>
-        </Route>
-        <Route path="/money">
-          <AuthGuard><FinancePage /></AuthGuard>
-        </Route>
-        <Route path="/simulators">
-          <AuthGuard><SimulatorsPage /></AuthGuard>
-        </Route>
-        <Route path="/community">
-          <AuthGuard><CommunityPage /></AuthGuard>
-        </Route>
-        <Route path="/more">
-          <AuthGuard><MorePage /></AuthGuard>
-        </Route>
-        <Route path="/account">
-          <AuthGuard><AccountPage /></AuthGuard>
-        </Route>
+        <Route path="/learn" component={LearnPage} />
+        <Route path="/money" component={FinancePage} />
+        <Route path="/simulators" component={SimulatorsPage} />
+        <Route path="/community" component={CommunityPage} />
+        <Route path="/more" component={MorePage} />
+        <Route path="/account" component={AccountPage} />
         <Route path="/about" component={About} />
-        <Route path="/">
-          <AuthGuard><OnboardingRedirect /></AuthGuard>
-        </Route>
+        <Route path="/" component={OnboardingRedirect} />
         <Route component={NotFound} />
       </Switch>
     </AppContextProvider>
