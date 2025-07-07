@@ -455,7 +455,7 @@ function FinancePage() {
                   onClick={startInflationSimulation}
                   className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg font-medium"
                 >
-                  Watch Your Money Disappear
+                  Watch What Happens
                 </Button>
               </div>
             )}
