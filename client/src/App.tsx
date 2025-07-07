@@ -80,15 +80,7 @@ function OnboardingRedirect() {
         console.log('DEBUG: Forced onboarding reset via URL parameter');
       }
 
-      // PRODUCTION FIX: Clear onboarding for users who completed it before auth was added
-      const hasSession = localStorage.getItem('hodlearn_session');
-      const hasCompletedOnboarding = localStorage.getItem('hodlearn-onboarding-completed');
-      
-      // If user has onboarding flag but no session, they're from before auth was added
-      if (hasCompletedOnboarding && !hasSession) {
-        console.log('Clearing pre-auth onboarding flag for fresh experience');
-        localStorage.removeItem('hodlearn-onboarding-completed');
-      }
+      // Note: Removed production fix that was clearing onboarding flags in demo mode
 
       // Check localStorage for onboarding completion
       const currentOnboardingStatus = localStorage.getItem('hodlearn-onboarding-completed');
