@@ -24,13 +24,13 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   const [, setLocation] = useLocation();
   
   useEffect(() => {
-    const sessionId = localStorage.getItem('sessionId');
+    const sessionId = localStorage.getItem('hodlearn_session');
     if (!sessionId) {
       setLocation('/auth');
     }
   }, [setLocation]);
 
-  const sessionId = localStorage.getItem('sessionId');
+  const sessionId = localStorage.getItem('hodlearn_session');
   if (!sessionId) {
     return null; // Will redirect to auth
   }

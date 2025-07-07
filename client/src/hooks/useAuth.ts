@@ -10,7 +10,8 @@ export function useAuth() {
     meta: {
       onError: (error: any) => {
         if (error.message?.includes('401')) {
-          localStorage.removeItem('sessionId');
+          localStorage.removeItem('hodlearn_session');
+          localStorage.removeItem('hodlearn_user');
           setLocation('/auth');
         }
       }
