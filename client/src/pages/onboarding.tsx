@@ -26,9 +26,11 @@ export default function Onboarding() {
             {/* Header */}
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold text-white mb-4">Welcome to HODLearn</h1>
-              <p className="text-zinc-300 text-lg">
-                Building conviction takes community
-              </p>
+              <div className="text-lg space-y-2">
+                <div className="text-zinc-300">Understanding Bitcoin takes time</div>
+                <div className="text-zinc-300">Building conviction takes community</div>
+                <div className="text-orange-400 font-semibold text-xl">This is HODLearn</div>
+              </div>
             </div>
 
             {/* Ultra-simplified onboarding */}
