@@ -170,7 +170,7 @@ export default function HomePage() {
                 <Button 
                   onClick={() => setLocation('/money')}
                   size="sm"
-                  className="w-full bg-orange-600/20 hover:bg-orange-600/30 text-orange-400 border border-orange-600/30"
+                  className="w-full bg-orange-600 hover:bg-orange-700 text-white"
                 >
                   Explore
                 </Button>
@@ -190,7 +190,7 @@ export default function HomePage() {
                 <Button 
                   onClick={() => setLocation('/simulators')}
                   size="sm"
-                  className="w-full bg-zinc-700 hover:bg-zinc-600 text-zinc-300"
+                  className="w-full bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700"
                 >
                   Try Now
                 </Button>
