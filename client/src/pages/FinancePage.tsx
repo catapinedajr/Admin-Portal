@@ -2,24 +2,10 @@ import React, { useState } from "react";
 import { useLocation } from "wouter";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
-import { Crown, Gem, User as UserIcon } from "lucide-react";
+import { Crown, Gem, User as UserIcon, TrendingUp, TrendingDown, DollarSign, AlertTriangle, Shield, Clock, Calculator, Zap, Home, Coffee, Car, Building2 } from "@/lib/icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  TrendingUp, 
-  TrendingDown,
-  DollarSign, 
-  AlertTriangle, 
-  Shield, 
-  Clock, 
-  Calculator,
-  Zap,
-  Home,
-  Coffee,
-  Car,
-  Building2
-} from "lucide-react";
 import { useAppContext } from "@/components/shared/AppContextProvider";
 import { useQuery } from "@tanstack/react-query";
 import { User } from "@shared/schema";

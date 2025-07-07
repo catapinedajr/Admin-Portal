@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Bitcoin, BookOpen, Target, Clock, Users, Brain } from "lucide-react";
+import { ArrowRight, BookOpen, Target, Clock, Users, Brain, Bitcoin } from "@/lib/icons";
 import { useLocation } from "wouter";
 
 export default function Onboarding() {

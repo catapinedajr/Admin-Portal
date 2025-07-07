@@ -3,9 +3,8 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
-import { Crown, Gem, User as UserIcon, Lock } from "lucide-react";
+import { Crown, Gem, User as UserIcon, Lock, Shield, Wallet, ArrowLeftRight, Coins, TrendingUp, DollarSign, TrendingDown, FileText } from "@/lib/icons";
 import { Card, CardContent } from "@/components/ui/card";
-import { Shield, Wallet, ArrowLeftRight, Coins, TrendingUp, DollarSign, TrendingDown, FileText } from "lucide-react";
 
 // Lazy load all simulator components for performance
 const WalletSimulator = lazy(() => import("@/components/simulators/WalletSimulator"));

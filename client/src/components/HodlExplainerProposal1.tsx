@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { X, TrendingUp, Brain, Heart } from "lucide-react";
+import { X, TrendingUp, Brain, Heart } from "@/lib/icons";
 
 interface HodlExplainerProps {
   isOpen: boolean;

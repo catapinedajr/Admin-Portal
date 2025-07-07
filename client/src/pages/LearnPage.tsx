@@ -3,20 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
-import { Crown, Gem, User as UserIcon } from "lucide-react";
+import { Crown, Gem, User as UserIcon, ChevronDown, ChevronUp, Coins, Clock, CheckCircle, Key, GraduationCap, Brain } from "@/lib/icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  ChevronDown,
-  ChevronUp,
-  Coins,
-  Clock,
-  CheckCircle,
-  Key,
-  GraduationCap,
-  Brain
-} from "lucide-react";
 import DailyQuiz from "@/components/DailyQuiz";
 import { BitcoinTerm, AutoGlossary } from "@/components/BitcoinGlossary";
 import { useAppContext } from "@/components/shared/AppContextProvider";

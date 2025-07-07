@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { MessageSquare, Video, Users, BookOpen, Trophy, ArrowRight, Crown, Gem, User as UserIcon } from "lucide-react";
+import { MessageSquare, Video, Users, BookOpen, Trophy, ArrowRight, Crown, Gem, User as UserIcon } from "@/lib/icons";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, XCircle, Brain, Trophy, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { CheckCircle, XCircle, Brain, Trophy, ChevronLeft, ChevronRight, AlertCircle } from "@/lib/icons";
 import { apiRequest } from "@/lib/queryClient";
 
 interface QuizQuestion {

@@ -10,7 +10,7 @@ import {
   DollarSign,
   Building2,
   AlertTriangle
-} from "lucide-react";
+} from "@/lib/icons";
 
 export const iconMap = {
   coins: Coins,

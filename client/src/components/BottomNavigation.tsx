@@ -1,6 +1,6 @@
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Home, GraduationCap, Coins, Gamepad2, Users, MoreHorizontal } from "lucide-react";
+import { Home, GraduationCap, Coins, Gamepad2, Users, MoreHorizontal } from "@/lib/icons";
 
 interface BottomNavigationProps {
   activeSection?: string;

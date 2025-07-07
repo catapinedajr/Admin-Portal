@@ -2,7 +2,7 @@ import React from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Info, ShoppingCart, Clock, Heart, User, Settings, LogOut } from "lucide-react";
+import { Info, ShoppingCart, Clock, Heart, User, Settings, LogOut } from "@/lib/icons";
 
 interface MoreSectionProps {
   moreSubTab: string;
