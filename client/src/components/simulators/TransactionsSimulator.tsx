@@ -509,7 +509,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
             
             {/* Broadcasting/Mempool Phase */}
             {(transactionState === "broadcasting" || transactionJourney === "mempool") && (
-              <Card className="bg-blue-900 border-blue-800">
+              <Card className="bg-blue-900/80 border-blue-800">
                 <CardContent className="p-3">
                   <h5 className="font-bold text-blue-300 mb-3 text-center text-lg">Transaction Journey</h5>
                   
@@ -553,7 +553,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
 
             {/* Confirmation Phase */}
             {transactionState === "confirming" && (
-              <Card className="bg-yellow-900 border-yellow-800">
+              <Card className="bg-yellow-900/80 border-yellow-800">
                 <CardContent className="p-3">
                   <h5 className="font-bold text-yellow-300 mb-3 text-center text-lg">Transaction Journey - Block Confirmation</h5>
 
@@ -626,7 +626,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
                       </div>
                     </div>
                     
-                    <div className="text-xs text-yellow-300 bg-yellow-900 p-1 rounded">
+                    <div className="text-xs text-yellow-300 bg-yellow-900/30 p-1 rounded">
                       <AlertTriangle className="w-3 h-3 inline mr-1" />
                       Real Bitcoin transactions typically take 10-60 minutes. This simulation runs in 45 seconds for educational purposes.
                     </div>
@@ -637,7 +637,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
 
             {/* Completion Phase */}
             {transactionState === "confirmed" && (
-              <Card className="bg-green-900 border-green-800">
+              <Card className="bg-green-900/80 border-green-800">
                 <CardContent className="p-3">
                   <div className="text-center mb-3">
                     <CheckCircle className="w-10 h-10 text-green-400 mx-auto mb-2" />
@@ -678,7 +678,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
                       </div>
                     </div>
                     
-                    <div className="bg-green-900 p-1 rounded border border-green-800">
+                    <div className="bg-green-900/20 p-1 rounded border border-green-800/50">
                       <span className="text-green-300 text-xs">💡 </span>
                       <span className="text-green-200 text-xs">
                         In real Bitcoin transactions, this entire process would take 10-60 minutes depending on network congestion and fee priority.
