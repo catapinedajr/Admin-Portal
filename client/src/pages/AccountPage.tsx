@@ -52,10 +52,7 @@ function AccountPage() {
   // Update profile mutation
   const updateProfileMutation = useMutation({
     mutationFn: async (data: { username: string; email: string }) => {
-      return apiRequest('/api/user/profile', {
-        method: 'PATCH',
-        body: JSON.stringify(data),
-      });
+      return apiRequest('PATCH', '/api/user/profile', data);
     },
     onSuccess: () => {
       toast({
@@ -77,10 +74,7 @@ function AccountPage() {
   // Change password mutation
   const changePasswordMutation = useMutation({
     mutationFn: async (data: { currentPassword: string; newPassword: string }) => {
-      return apiRequest('/api/user/password', {
-        method: 'PATCH',
-        body: JSON.stringify(data),
-      });
+      return apiRequest('PATCH', '/api/user/password', data);
     },
     onSuccess: () => {
       toast({
@@ -101,17 +95,30 @@ function AccountPage() {
   // Logout mutation
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest('/api/auth/logout', { method: 'POST' });
+      return apiRequest('POST', '/api/auth/logout');
     },
     onSuccess: () => {
-      localStorage.removeItem('auth-token');
+      // Clear all session data
+      localStorage.removeItem('hodlearn_session');
+      localStorage.removeItem('hodlearn_user');
+      
+      toast({
+        title: "Logged out successfully",
+        description: "You have been logged out of your account.",
+      });
+      
+      // Navigate to auth page
       setLocation('/auth');
     },
     onError: (error: Error) => {
+      // Even if server logout fails, clear local session
+      localStorage.removeItem('hodlearn_session');
+      localStorage.removeItem('hodlearn_user');
+      setLocation('/auth');
+      
       toast({
-        title: "Logout Failed",
-        description: error.message,
-        variant: "destructive",
+        title: "Logged out",
+        description: "You have been logged out.",
       });
     },
   });

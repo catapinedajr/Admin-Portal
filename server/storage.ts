@@ -230,7 +230,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteSession(sessionId: string): Promise<void> {
-    await db.delete(sessions).where(eq(sessions.id, sessionId));
+    try {
+      await db.delete(sessions).where(eq(sessions.id, sessionId));
+      console.log(`Session ${sessionId} deleted successfully`);
+    } catch (error) {
+      console.error("Error deleting session:", error);
+      // Don't throw error - logout should always succeed
+    }
   }
 
   async cleanupExpiredSessions(): Promise<void> {

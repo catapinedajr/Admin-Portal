@@ -127,8 +127,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/auth/logout", (req, res) => {
-    res.json({ message: "Logout successful" });
+  app.post("/api/auth/logout", requireAuth, async (req: any, res) => {
+    try {
+      const sessionId = req.headers.authorization?.replace('Bearer ', '');
+      
+      if (sessionId) {
+        // Delete the session from database
+        await storage.deleteSession(sessionId);
+      }
+      
+      res.json({ message: "Logout successful" });
+    } catch (error) {
+      console.error("Logout error:", error);
+      res.json({ message: "Logout successful" }); // Always succeed for logout
+    }
   });
 
   app.get("/api/auth/me", (req, res) => {
