@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Gamepad2, MoreHorizontal } from "lucide-react";
+import { Gamepad2, MoreHorizontal, Zap, TrendingUp, Calendar } from "lucide-react";
 import type { User } from "@shared/schema";
 
 type MainSection = "home" | "learn" | "money" | "simulations" | "more";
@@ -30,50 +30,76 @@ export default function HomeSection({
 }: HomeProps) {
   return (
     <div className="space-y-8">
-      {/* Welcome Header */}
+      {/* Dynamic Welcome Header */}
       <div className="text-center space-y-4">
         <h1 className="text-3xl font-bold text-white">
           {getTimeBasedGreeting()}{user?.firstName ? `, ${user.firstName}` : ''}!
         </h1>
+        <p className="text-zinc-400">Ready to build your Bitcoin conviction?</p>
       </div>
 
-      {/* Simple Streak Display */}
-      <div className="text-center space-y-2 mb-8">
-        <div className="text-orange-400 text-2xl font-bold">
-          {user?.currentStreak || 0} day streak
-        </div>
-        <div className="text-zinc-400 text-sm">
-          Keep the habit strong
-        </div>
-      </div>
-
-      {/* Main Learning Card */}
-      <Card className="bg-zinc-900 border-zinc-800 hover:border-orange-500/50 transition-colors">
+      {/* Enhanced Main Learning Card */}
+      <Card className="bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800 border-zinc-800 hover:border-orange-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10">
         <CardContent className="p-8">
+          {/* Top Stats Row */}
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
+              <span className="text-orange-400 font-semibold">Day {currentDayIndex}</span>
+            </div>
+            <div className="flex items-center gap-2 bg-zinc-800/50 px-3 py-1 rounded-full">
+              <TrendingUp className="w-4 h-4 text-orange-400" />
+              <span className="text-orange-400 font-bold">{user?.currentStreak || 0}</span>
+              <span className="text-zinc-400 text-sm">streak</span>
+            </div>
+          </div>
+
           <div className="space-y-6 text-center">
-            {/* Day indicator at top */}
-            <div className="text-sm text-zinc-400">
-              Day {currentDayIndex} of your Bitcoin journey
+            {/* Main Title with Icon */}
+            <div className="space-y-3">
+              <div className="flex justify-center">
+                <div className="p-3 bg-orange-500/10 rounded-full border border-orange-500/20">
+                  <Zap className="w-8 h-8 text-orange-400" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-white leading-tight">
+                {dayMetadata?.title || 'Loading...'}
+              </h3>
             </div>
             
-            {/* Title */}
-            <h3 className="text-2xl font-bold text-white">
-              {dayMetadata?.title || 'Loading...'}
-            </h3>
-            
-            {/* Subtitle - first daily fact */}
+            {/* Today's Preview */}
             {dailyFacts && dailyFacts[0] && (
-              <p className="text-zinc-300">
-                {dailyFacts[0].title}
-              </p>
+              <div className="bg-zinc-800/30 rounded-lg p-4 border border-zinc-700/50">
+                <div className="flex items-center gap-2 justify-center mb-2">
+                  <Calendar className="w-4 h-4 text-orange-400" />
+                  <span className="text-orange-400 text-sm font-medium">Today's Focus</span>
+                </div>
+                <p className="text-zinc-300 text-lg">
+                  {dailyFacts[0].title}
+                </p>
+              </div>
             )}
             
-            {/* Continue button */}
+            {/* Progress Motivation */}
+            <div className="space-y-2">
+              <div className="text-zinc-400 text-sm">
+                {user?.currentStreak === 0 ? "Start your learning journey today" :
+                 user?.currentStreak === 1 ? "Great start! Keep the momentum going" :
+                 user?.currentStreak && user.currentStreak < 7 ? "Building a solid habit" :
+                 user?.currentStreak && user.currentStreak < 30 ? "You're on fire! 🔥" :
+                 "Bitcoin conviction master in the making"}
+              </div>
+            </div>
+            
+            {/* Enhanced Continue Button */}
             <button 
               onClick={() => setActiveSection("learn")}
-              className="bg-orange-500 hover:bg-orange-600 text-white px-12 py-4 rounded-lg font-medium transition-colors text-lg"
+              className="group bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-12 py-4 rounded-lg font-semibold transition-all duration-300 text-lg transform hover:scale-105 hover:shadow-lg hover:shadow-orange-500/25"
             >
-              Continue Learning
+              <div className="flex items-center gap-2 justify-center">
+                <span>Continue Learning</span>
+                <Zap className="w-5 h-5 group-hover:animate-pulse" />
+              </div>
             </button>
           </div>
         </CardContent>
