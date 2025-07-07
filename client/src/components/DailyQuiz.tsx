@@ -50,7 +50,14 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
   const completionTriggeredRef = useRef(false);
   
   const today = new Date().toISOString().split('T')[0];
-  const userId = 1; // Default user
+  
+  // Get authenticated user
+  const { data: user } = useQuery({
+    queryKey: ["/api/user"],
+    retry: false,
+  });
+  
+  const userId = user?.id;
 
   // Fetch quiz questions for today
   const { data: questions = [], isLoading: loadingQuestions, error: questionsError } = useQuery({
@@ -63,7 +70,8 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
       return res.json() as Promise<QuizQuestion[]>;
     },
     retry: 3,
-    retryDelay: 1000
+    retryDelay: 1000,
+    enabled: !!userId
   });
 
   // Fetch user's previous answers for today

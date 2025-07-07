@@ -1804,12 +1804,13 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Day completion endpoint for quiz completion flow
-  app.post("/api/mark-day-completed", async (req, res) => {
+  app.post("/api/mark-day-completed", requireAuth, async (req: any, res) => {
     try {
-      const { userId, dayIndex } = req.body;
+      const userId = req.user.id; // Use authenticated user ID
+      const { dayIndex } = req.body;
       
-      if (!userId || !dayIndex) {
-        return res.status(400).json({ message: "userId and dayIndex are required" });
+      if (!dayIndex) {
+        return res.status(400).json({ message: "dayIndex is required" });
       }
       
       console.log('[DEBUG] Marking day completed:', { userId, dayIndex });

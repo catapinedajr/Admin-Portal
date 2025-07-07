@@ -161,48 +161,89 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
   // Day navigation for development testing
   const [testDayOverride, setTestDayOverride] = useState<number | null>(null);
   
+  // Get authenticated user first
+  const { data: user, isLoading: userLoading } = useQuery({
+    queryKey: ["/api/user"],
+    retry: false,
+  });
+
   // Get current day from API
   const { data: nextDayData } = useQuery({
-    queryKey: ['/api/next-available-day', 1],
-    queryFn: () => fetch('/api/next-available-day/1').then(res => res.json())
+    queryKey: ['/api/next-available-day', user?.id],
+    queryFn: () => {
+      const sessionId = localStorage.getItem('hodlearn_session');
+      return fetch(`/api/next-available-day/${user?.id}`, {
+        headers: { 'Authorization': `Bearer ${sessionId}` }
+      }).then(res => res.json());
+    },
+    enabled: !!user?.id,
   });
   
   const currentDayIndex = testDayOverride || nextDayData?.dayIndex || 1;
   
+  const isDayLockedBySubscription = currentDayIndex > 7 && !isPremiumTier;
+
   // Day access control queries
   const { data: dayAccessible = false } = useQuery({
-    queryKey: ['/api/day-access', 1, currentDayIndex],
-    queryFn: () => fetch(`/api/day-access/1/${currentDayIndex}`).then(res => res.json())
+    queryKey: ['/api/day-access', user?.id, currentDayIndex],
+    queryFn: () => {
+      const sessionId = localStorage.getItem('hodlearn_session');
+      return fetch(`/api/day-access/${user?.id}/${currentDayIndex}`, {
+        headers: { 'Authorization': `Bearer ${sessionId}` }
+      }).then(res => res.json());
+    },
+    enabled: !!user?.id,
   });
-
-  const isDayLockedBySubscription = currentDayIndex > 7 && !isPremiumTier;
   
   const { data: dayAccessInfo } = useQuery({
-    queryKey: ['/api/day-access-info', 1, currentDayIndex],
-    queryFn: () => fetch(`/api/day-access-info/1/${currentDayIndex}`).then(res => res.json()),
+    queryKey: ['/api/day-access-info', user?.id, currentDayIndex],
+    queryFn: () => {
+      const sessionId = localStorage.getItem('hodlearn_session');
+      return fetch(`/api/day-access-info/${user?.id}/${currentDayIndex}`, {
+        headers: { 'Authorization': `Bearer ${sessionId}` }
+      }).then(res => res.json());
+    },
     refetchInterval: isDayLockedBySubscription ? false : 60000,
+    enabled: !!user?.id,
   });
   
   const { data: dayCompleted = false } = useQuery({
-    queryKey: ['/api/day-completed', 1, currentDayIndex],
-    queryFn: () => fetch(`/api/day-completed/1/${currentDayIndex}`).then(res => res.json())
+    queryKey: ['/api/day-completed', user?.id, currentDayIndex],
+    queryFn: () => {
+      const sessionId = localStorage.getItem('hodlearn_session');
+      return fetch(`/api/day-completed/${user?.id}/${currentDayIndex}`, {
+        headers: { 'Authorization': `Bearer ${sessionId}` }
+      }).then(res => res.json());
+    },
+    enabled: !!user?.id,
   });
   
   const { data: nextAvailableDayResponse } = useQuery({
-    queryKey: ['/api/next-available-day', 1],
-    queryFn: () => fetch('/api/next-available-day/1').then(res => res.json())
+    queryKey: ['/api/next-available-day', user?.id],
+    queryFn: () => {
+      const sessionId = localStorage.getItem('hodlearn_session');
+      return fetch(`/api/next-available-day/${user?.id}`, {
+        headers: { 'Authorization': `Bearer ${sessionId}` }
+      }).then(res => res.json());
+    },
+    enabled: !!user?.id,
   });
   
   const nextAvailableDay = nextAvailableDayResponse?.dayIndex ?? 1;
 
   // Mark day as completed mutation
   const markDayCompletedMutation = useMutation({
-    mutationFn: (dayIndex: number) => 
-      fetch('/api/mark-day-completed', {
+    mutationFn: (dayIndex: number) => {
+      const sessionId = localStorage.getItem('hodlearn_session');
+      return fetch('/api/mark-day-completed', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: 1, dayIndex })
-      }),
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionId}`
+        },
+        body: JSON.stringify({ userId: user?.id, dayIndex })
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/day-access'] });
       queryClient.invalidateQueries({ queryKey: ['/api/day-completed'] });
