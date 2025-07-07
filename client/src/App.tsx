@@ -12,6 +12,7 @@ import FinancePage from "@/pages/FinancePage";
 import SimulatorsPage from "@/pages/SimulatorsPage";
 import CommunityPage from "@/pages/CommunityPage";
 import MorePage from "@/pages/MorePage";
+import AccountPage from "@/pages/AccountPage";
 import { AppContextProvider } from "@/components/shared/AppContextProvider";
 import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
@@ -68,6 +69,7 @@ function Router() {
         <Route path="/simulators" component={SimulatorsPage} />
         <Route path="/community" component={CommunityPage} />
         <Route path="/more" component={MorePage} />
+        <Route path="/account" component={AccountPage} />
         <Route path="/about" component={About} />
         <Route path="/" component={HomePage} />
         <Route component={NotFound} />

@@ -773,6 +773,125 @@ export class DatabaseStorage implements IStorage {
     
     return completion;
   }
+  // Get user stats for account page
+  async getUserStats(userId: number): Promise<{
+    currentStreak: number;
+    bestStreak: number;
+    totalDaysCompleted: number;
+    totalQuizScore: number;
+    joinDate: string;
+  }> {
+    const user = await this.getUser(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Get current and best streak
+    const activities = await db
+      .select()
+      .from(dailyActivities)
+      .where(eq(dailyActivities.userId, userId))
+      .orderBy(desc(dailyActivities.date));
+
+    let currentStreak = 0;
+    let bestStreak = 0;
+    let tempStreak = 0;
+
+    // Calculate streaks
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    for (let i = 0; i < activities.length; i++) {
+      const activityDate = new Date(activities[i].date);
+      activityDate.setHours(0, 0, 0, 0);
+      
+      const expectedDate = new Date(today);
+      expectedDate.setDate(today.getDate() - i);
+      
+      if (activityDate.getTime() === expectedDate.getTime()) {
+        tempStreak++;
+        if (i === 0 || (i > 0 && currentStreak === 0)) {
+          currentStreak = tempStreak;
+        }
+      } else {
+        if (tempStreak > bestStreak) {
+          bestStreak = tempStreak;
+        }
+        tempStreak = 0;
+      }
+    }
+
+    if (tempStreak > bestStreak) {
+      bestStreak = tempStreak;
+    }
+
+    // Get total completed days
+    const totalDaysCompleted = activities.length;
+
+    // Get quiz average
+    const quizAnswers = await db
+      .select()
+      .from(userQuizAnswers)
+      .where(eq(userQuizAnswers.userId, userId));
+
+    let totalQuizScore = 0;
+    if (quizAnswers.length > 0) {
+      const correctAnswers = quizAnswers.filter(answer => answer.isCorrect).length;
+      totalQuizScore = Math.round((correctAnswers / quizAnswers.length) * 100);
+    }
+
+    return {
+      currentStreak,
+      bestStreak,
+      totalDaysCompleted,
+      totalQuizScore,
+      joinDate: user.createdAt || new Date().toISOString()
+    };
+  }
+
+  // Update user profile
+  async updateUserProfile(userId: number, data: { username: string; email: string }): Promise<User> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({
+        username: data.username,
+        email: data.email,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId))
+      .returning();
+
+    return updatedUser;
+  }
+
+  // Change user password
+  async changeUserPassword(userId: number, currentPassword: string, newPassword: string): Promise<boolean> {
+    const user = await this.getUser(userId);
+    if (!user || !user.passwordHash) {
+      return false;
+    }
+
+    // Verify current password
+    const bcrypt = await import('bcryptjs');
+    const isValidPassword = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!isValidPassword) {
+      return false;
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password
+    await db
+      .update(users)
+      .set({
+        passwordHash: hashedPassword,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId));
+
+    return true;
+  }
 }
 
 export const storage = new DatabaseStorage();

@@ -16,6 +16,28 @@ function setDefaultUser(req: any, res: any, next: any) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Authentication middleware
+  const requireAuth = async (req: any, res: any, next: any) => {
+    try {
+      const sessionId = req.headers.authorization?.replace('Bearer ', '');
+      
+      if (!sessionId) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      const session = await storage.getSession(sessionId);
+      if (!session || new Date() > session.expiresAt) {
+        return res.status(401).json({ message: "Session expired" });
+      }
+
+      req.user = { id: session.userId };
+      next();
+    } catch (error) {
+      console.error("Authentication error:", error);
+      res.status(401).json({ message: "Authentication failed" });
+    }
+  };
+
   // User endpoint - simplified to return default user
   app.get("/api/user", (req, res) => {
     res.json({
@@ -1940,6 +1962,59 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     } catch (error) {
       console.error("Error creating success story:", error);
       res.status(500).json({ message: "Failed to create success story" });
+    }
+  });
+
+  // Get user stats endpoint for account page (authenticated)
+  app.get('/api/user/stats', requireAuth, async (req: any, res) => {
+    try {
+      const stats = await storage.getUserStats(req.user.id);
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching user stats:", error);
+      res.status(500).json({ message: "Failed to fetch user stats" });
+    }
+  });
+
+  // Update user profile endpoint
+  app.patch('/api/user/profile', requireAuth, async (req: any, res) => {
+    try {
+      const { username, email } = req.body;
+      
+      if (!username || !email) {
+        return res.status(400).json({ message: "Username and email are required" });
+      }
+
+      const updatedUser = await storage.updateUserProfile(req.user.id, { username, email });
+      
+      // Return user without password hash
+      const { passwordHash, ...userWithoutPassword } = updatedUser;
+      res.json(userWithoutPassword);
+    } catch (error) {
+      console.error("Error updating user profile:", error);
+      res.status(500).json({ message: "Failed to update profile" });
+    }
+  });
+
+  // Change user password endpoint
+  app.patch('/api/user/password', requireAuth, async (req: any, res) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: "Current password and new password are required" });
+      }
+
+      const success = await storage.changeUserPassword(req.user.id, currentPassword, newPassword);
+      
+      if (!success) {
+        return res.status(400).json({ message: "Current password is incorrect" });
+      }
+
+      res.json({ message: "Password updated successfully" });
+    } catch (error) {
+      console.error("Error changing password:", error);
+      res.status(500).json({ message: "Failed to change password" });
     }
   });
 
