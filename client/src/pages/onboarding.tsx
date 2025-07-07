@@ -25,10 +25,7 @@ export default function Onboarding() {
             
             {/* Header */}
             <div className="text-center mb-8">
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <Bitcoin className="h-8 w-8 text-orange-500" />
-                <h1 className="text-3xl font-bold text-white">Welcome to HODLearn</h1>
-              </div>
+              <h1 className="text-3xl font-bold text-white mb-4">Welcome to HODLearn</h1>
               <p className="text-zinc-300 text-lg">
                 Learn • <span className="text-orange-500">HODL</span> • Repeat
               </p>
