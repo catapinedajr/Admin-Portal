@@ -4,6 +4,7 @@ import path from "path";
 import { storage } from "./storage";
 import { db } from "./db";
 import { communityStorage } from "./community";
+import { authService } from "./auth";
 import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentGenerationSteps, userQuizAnswers, registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema } from "@shared/schema";
 import { eq, sql } from "drizzle-orm";
 import { v4 as uuidv4 } from 'uuid';
@@ -16,7 +17,7 @@ function setDefaultUser(req: any, res: any, next: any) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Authentication middleware
+  // Clean authentication middleware
   const requireAuth = async (req: any, res: any, next: any) => {
     try {
       const sessionId = req.headers.authorization?.replace('Bearer ', '');
@@ -25,18 +26,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Authentication required" });
       }
 
-      const session = await storage.getSession(sessionId);
-      if (!session || new Date() > session.expiresAt) {
+      const user = await authService.getUserFromSession(sessionId);
+      if (!user) {
         return res.status(401).json({ message: "Session expired" });
       }
 
-      req.user = { id: session.userId };
+      req.user = user;
       next();
     } catch (error) {
       console.error("Authentication error:", error);
       res.status(401).json({ message: "Authentication failed" });
     }
   };
+
+  // Authentication routes
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const userData = registerSchema.parse(req.body);
+      
+      // Check if username or email exists
+      const existingUser = await authService.getUserByUsername(userData.username) || 
+                           await authService.getUserByEmail(userData.email);
+      
+      if (existingUser) {
+        return res.status(400).json({ 
+          message: existingUser.username === userData.username ? "Username already exists" : "Email already exists" 
+        });
+      }
+
+      const { user, sessionId } = await authService.register(userData);
+      const { passwordHash, ...userResponse } = user;
+      
+      res.json({
+        user: userResponse,
+        sessionId,
+        message: "Registration successful"
+      });
+    } catch (error) {
+      console.error("Registration error:", error);
+      res.status(400).json({ message: "Registration failed" });
+    }
+  });
+
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const credentials = loginSchema.parse(req.body);
+      const result = await authService.login(credentials);
+      
+      if (!result) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      const { user, sessionId } = result;
+      const { passwordHash, ...userResponse } = user;
+      
+      res.json({
+        user: userResponse,
+        sessionId,
+        message: "Login successful"
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(400).json({ message: "Login failed" });
+    }
+  });
+
+  app.post("/api/auth/logout", requireAuth, async (req: any, res) => {
+    try {
+      const sessionId = req.headers.authorization?.replace('Bearer ', '');
+      if (sessionId) {
+        await authService.logout(sessionId);
+      }
+      res.json({ message: "Logged out successfully" });
+    } catch (error) {
+      console.error("Logout error:", error);
+      res.status(500).json({ message: "Logout failed" });
+    }
+  });
 
   // User endpoint - get authenticated user
   app.get("/api/user", setDefaultUser, async (req: any, res) => {
@@ -754,7 +820,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Day completion and access control routes
-  app.get("/api/next-available-day/:userId", requireAuth, async (req: any, res) => {
+  app.get("/api/next-available-day/:userId", setDefaultUser, async (req: any, res) => {
     try {
       const userId = req.user.id;
       let nextDay = await storage.getNextAvailableDay(userId);

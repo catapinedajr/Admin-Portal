@@ -6,7 +6,7 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   passwordHash: text("password_hash").notNull(),
-  email: text("email").notNull().unique(), // Required for account recovery
+  email: text("email").notNull().unique(),
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
   currentStreak: integer("current_streak").notNull().default(0),
@@ -16,18 +16,19 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-// Session management table
-export const sessions = pgTable("sessions", {
-  id: text("id").primaryKey(),
-  userId: integer("user_id").notNull(),
+// Clean session management with automatic cleanup
+export const userSessions = pgTable("user_sessions", {
+  id: text("id").primaryKey(), // UUID
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   expiresAt: timestamp("expires_at").notNull(),
+  lastUsed: timestamp("last_used").notNull().defaultNow(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-// Password reset tokens table
+// Simple password reset tokens
 export const passwordResetTokens = pgTable("password_reset_tokens", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   token: text("token").notNull().unique(),
   expiresAt: timestamp("expires_at").notNull(),
   usedAt: timestamp("used_at"),
@@ -306,8 +307,9 @@ export const insertUserSchema = createInsertSchema(users).omit({
   createdAt: true,
 });
 
-export const insertSessionSchema = createInsertSchema(sessions).omit({
+export const insertUserSessionSchema = createInsertSchema(userSessions).omit({
   createdAt: true,
+  lastUsed: true,
 });
 
 // Authentication schemas
@@ -430,8 +432,8 @@ export type InsertEmailCollection = z.infer<typeof insertEmailCollectionSchema>;
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
-export type Session = typeof sessions.$inferSelect;
-export type InsertSession = z.infer<typeof insertSessionSchema>;
+export type UserSession = typeof userSessions.$inferSelect;
+export type InsertUserSession = z.infer<typeof insertUserSessionSchema>;
 export type LoginRequest = z.infer<typeof loginSchema>;
 export type RegisterRequest = z.infer<typeof registerSchema>;
 export type ForgotPasswordRequest = z.infer<typeof forgotPasswordSchema>;

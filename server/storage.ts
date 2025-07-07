@@ -15,7 +15,7 @@ import {
   contentQuizzes,
   contentMetadata,
   emailCollections,
-  sessions,
+  userSessions,
   passwordResetTokens,
   type User, 
   type InsertUser, 
@@ -51,8 +51,8 @@ import {
   type InsertUserQuizAnswer,
   type EmailCollection,
   type InsertEmailCollection,
-  type Session,
-  type InsertSession,
+  type UserSession,
+  type InsertUserSession,
   type PasswordResetToken,
   type InsertPasswordResetToken,
   type RegisterRequest,
@@ -72,8 +72,8 @@ export interface IStorage {
   // Authentication methods
   registerUser(userData: RegisterRequest): Promise<User>;
   loginUser(credentials: LoginRequest): Promise<User | null>;
-  createSession(sessionData: InsertSession): Promise<Session>;
-  getSession(sessionId: string): Promise<Session | undefined>;
+  createSession(sessionData: InsertUserSession): Promise<UserSession>;
+  getSession(sessionId: string): Promise<UserSession | undefined>;
   deleteSession(sessionId: string): Promise<void>;
   cleanupExpiredSessions(): Promise<void>;
 
@@ -213,19 +213,19 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async createSession(sessionData: InsertSession): Promise<Session> {
+  async createSession(sessionData: InsertUserSession): Promise<UserSession> {
     const [session] = await db
-      .insert(sessions)
+      .insert(userSessions)
       .values(sessionData)
       .returning();
     return session;
   }
 
-  async getSession(sessionId: string): Promise<Session | undefined> {
+  async getSession(sessionId: string): Promise<UserSession | undefined> {
     const [session] = await db
       .select()
-      .from(sessions)
-      .where(eq(sessions.id, sessionId));
+      .from(userSessions)
+      .where(eq(userSessions.id, sessionId));
     return session || undefined;
   }
 
