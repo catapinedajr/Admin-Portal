@@ -132,16 +132,11 @@ export default function HomePage() {
           {/* Enhanced Main Learning Card - Mobile Optimized */}
           <Card className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-800/50 border-zinc-700 hover:border-orange-500/30 transition-all duration-300">
             <CardContent className="p-5">
-              {/* Top Stats Row */}
-              <div className="flex justify-between items-center mb-4">
+              {/* Day Indicator Only */}
+              <div className="flex justify-center items-center mb-4">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
                   <span className="text-orange-400 font-semibold text-sm">Day {currentDayIndex}</span>
-                </div>
-                <div className="flex items-center gap-1 bg-zinc-800/50 px-2 py-1 rounded-full">
-                  <TrendingUp className="w-3 h-3 text-orange-400" />
-                  <span className="text-orange-400 font-bold text-sm">{user?.currentStreak || 0}</span>
-                  <span className="text-zinc-400 text-xs">streak</span>
                 </div>
               </div>
 
