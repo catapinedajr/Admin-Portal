@@ -48,15 +48,46 @@
     <div id="root"></div>
     <!-- Safari React Refresh compatibility - must load first -->
     <script>
-      // Immediate polyfill injection for Safari external access
-      if (window.parent === window || /safari/i.test(navigator.userAgent)) {
-        window.$RefreshSig$ = function() { return function(type) { return type; }; };
-        window.$RefreshReg$ = function() {};
+      // Enhanced Safari detection for desktop vs mobile
+      var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+      var isDesktopSafari = isSafari && !('ontouchstart' in window);
+      var isExternalWindow = window.parent === window;
+      
+      // More aggressive polyfills for desktop Safari
+      if (isSafari || isExternalWindow || isDesktopSafari) {
+        // Override all React refresh globals immediately
+        window.$RefreshSig$ = function() { 
+          return function(type) { return type; }; 
+        };
+        
+        window.$RefreshReg$ = function(type, id) {};
+        
         window.$RefreshRuntime$ = {
           register: function() {},
-          createSignatureFunctionForTransform: function() { return function() { return function(type) { return type; }; }; }
+          createSignatureFunctionForTransform: function() { 
+            return function() { 
+              return function(type) { return type; }; 
+            }; 
+          },
+          injectIntoGlobalHook: function() {},
+          scheduleUpdate: function() {},
+          performReactRefresh: function() {}
         };
-        console.log('HODLearn: Safari compatibility polyfills loaded');
+        
+        // Additional desktop Safari fixes
+        if (isDesktopSafari) {
+          // Disable React DevTools refresh integration
+          window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
+            isDisabled: true,
+            supportsFiber: true,
+            inject: function() {},
+            onCommitFiberRoot: function() {},
+            onCommitFiberUnmount: function() {}
+          };
+          console.log('HODLearn: Desktop Safari compatibility mode activated');
+        } else {
+          console.log('HODLearn: Safari compatibility polyfills loaded');
+        }
       }
     </script>
     <script type="module" src="/src/main.tsx"></script>
