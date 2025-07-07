@@ -89,8 +89,8 @@ export default function BottomNavigation({ activeSection, onSectionChange }: Bot
               }`}
               aria-label={item.label}
             >
-              <Icon className="w-7 h-7" />
-              <span className="text-xs font-medium leading-none">{item.label}</span>
+              <Icon className="w-6 h-6" />
+              <span className="text-[10px] font-medium leading-none">{item.label}</span>
             </button>
           );
         })}
