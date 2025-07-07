@@ -72,28 +72,26 @@ export default function BottomNavigation({ activeSection, onSectionChange }: Bot
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-zinc-800 safe-area-pb z-50">
-      <div className="grid grid-cols-6 gap-0 px-4 py-3">
+    <div className="fixed bottom-0 left-0 right-0 bg-zinc-900/98 backdrop-blur-md border-t border-zinc-700/50 z-50 pb-safe">
+      <div className="grid grid-cols-6 gap-1 px-3 py-4 pb-6">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = currentSection === item.id;
           
           return (
-            <Button
+            <button
               key={item.id}
-              variant="ghost"
-              size="sm"
               onClick={() => handleNavigation(item.id, item.path)}
-              title={item.label}
-              className={`flex items-center justify-center h-auto p-4 w-full ${
+              className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all duration-200 min-h-[72px] ${
                 isActive 
-                  ? 'text-orange-400 bg-orange-400/10' 
-                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
+                  ? 'text-orange-400 bg-orange-500/15 scale-105 shadow-lg shadow-orange-500/10' 
+                  : 'text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800/40 active:scale-95'
               }`}
+              aria-label={item.label}
             >
-              <Icon className="w-14 h-14" />
-              <span className="sr-only">{item.label}</span>
-            </Button>
+              <Icon className="w-7 h-7" />
+              <span className="text-xs font-medium leading-none">{item.label}</span>
+            </button>
           );
         })}
       </div>
