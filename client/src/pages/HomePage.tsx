@@ -50,7 +50,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-zinc-900">
       {/* Header */}
-      <header className="border-b border-zinc-800 bg-black/50 backdrop-blur-lg sticky top-0 z-50">
+      <header className="border-b border-zinc-800 bg-zinc-900/95 backdrop-blur-lg sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div 
@@ -155,77 +155,70 @@ export default function HomePage() {
             </CardContent>
           </Card>
 
-          {/* Community Activity Teaser */}
-          <Card className="bg-zinc-800/50 border-zinc-700">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-orange-400" />
-                  <span className="text-sm font-medium text-white">Community Activity</span>
+          {/* Quick Access Grid */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* Finance/Money Card */}
+            <Card className="bg-gradient-to-br from-orange-950/30 to-zinc-800 border-orange-800/30 hover:border-orange-700/50 transition-colors">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <TrendingUp className="w-4 h-4 text-orange-400" />
+                  <span className="text-sm font-medium text-white">Why Bitcoin?</span>
                 </div>
-                <div className="flex items-center gap-1 text-xs text-orange-400">
-                  <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse"></div>
-                  Live
-                </div>
-              </div>
-              
-              <div className="space-y-3">
-                {/* Latest Discussion */}
-                <div className="flex items-start gap-3">
-                  <MessageSquare className="w-3.5 h-3.5 text-zinc-400 mt-0.5 flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-zinc-300 truncate">
-                      "Just started my Bitcoin journey - any tips for beginners?"
-                    </p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs text-zinc-500">Posted 12 min ago</span>
-                      <span className="text-xs text-orange-400">5 replies</span>
-                    </div>
-                  </div>
-                </div>
+                <p className="text-xs text-zinc-400 mb-3">
+                  See how inflation affects your money
+                </p>
+                <Button 
+                  onClick={() => setLocation('/money')}
+                  size="sm"
+                  className="w-full bg-orange-600/20 hover:bg-orange-600/30 text-orange-400 border border-orange-600/30"
+                >
+                  Explore
+                </Button>
+              </CardContent>
+            </Card>
 
-                {/* Community Stats */}
-                <div className="flex items-center justify-between pt-2 border-t border-zinc-700">
-                  <div className="flex items-center gap-4 text-xs text-zinc-400">
-                    <span>24 active discussions</span>
-                    <span>156 videos watched this week</span>
-                  </div>
-                  <Button 
-                    onClick={() => setLocation('/community')}
-                    size="sm"
-                    className="bg-orange-600 hover:bg-orange-700 text-white text-xs px-3 py-1"
-                  >
-                    Join
-                  </Button>
+            {/* Simulators Card */}
+            <Card className="bg-gradient-to-br from-zinc-800 to-zinc-800/50 border-zinc-700 hover:border-zinc-600 transition-colors">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Gamepad2 className="w-4 h-4 text-zinc-300" />
+                  <span className="text-sm font-medium text-white">Practice</span>
                 </div>
+                <p className="text-xs text-zinc-400 mb-3">
+                  Safe hands-on Bitcoin experience
+                </p>
+                <Button 
+                  onClick={() => setLocation('/simulators')}
+                  size="sm"
+                  className="w-full bg-zinc-700 hover:bg-zinc-600 text-zinc-300"
+                >
+                  Try Now
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Community Quick Link */}
+          <Card className="bg-zinc-800/30 border-zinc-700/50">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Users className="w-5 h-5 text-orange-400" />
+                  <div>
+                    <h3 className="text-sm font-medium text-white">Join the Community</h3>
+                    <p className="text-xs text-zinc-400">Connect with other learners</p>
+                  </div>
+                </div>
+                <Button 
+                  onClick={() => setLocation('/community')}
+                  size="sm"
+                  className="bg-orange-600 hover:bg-orange-700 text-white px-4"
+                >
+                  Join
+                </Button>
               </div>
             </CardContent>
           </Card>
-
-          {/* Action Buttons - Updated with Community */}
-          <div className="grid grid-cols-3 gap-3">
-            <Button 
-              onClick={() => setLocation('/simulators')}
-              className="bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700 py-3 flex flex-col items-center gap-1"
-            >
-              <Gamepad2 className="w-4 h-4" />
-              <span className="text-xs">Simulators</span>
-            </Button>
-            <Button 
-              onClick={() => setLocation('/community')}
-              className="bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700 py-3 flex flex-col items-center gap-1"
-            >
-              <Users className="w-4 h-4" />
-              <span className="text-xs">Community</span>
-            </Button>
-            <Button 
-              onClick={() => setLocation('/more')}
-              className="bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700 py-3 flex flex-col items-center gap-1"
-            >
-              <MoreHorizontal className="w-4 h-4" />
-              <span className="text-xs">More</span>
-            </Button>
-          </div>
         </div>
       </main>
 
