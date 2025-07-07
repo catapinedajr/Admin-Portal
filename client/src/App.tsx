@@ -43,13 +43,14 @@ function OnboardingRedirect() {
 
   useEffect(() => {
     try {
-      // TEMPORARY: Force clear onboarding for Admin user testing
-      // Remove this after testing is complete
-      localStorage.removeItem('hodlearn-onboarding-completed');
-      console.log('TESTING: Forced onboarding reset for Admin user');
-
-      // Check for reset parameter
+      // Check for reset parameters
       const urlParams = new URLSearchParams(window.location.search);
+      
+      if (urlParams.get('debug-onboarding') === 'true') {
+        localStorage.removeItem('hodlearn-onboarding-completed');
+        console.log('DEBUG: Forced onboarding reset via URL parameter');
+      }
+      
       if (urlParams.get('reset-onboarding') === 'true') {
         localStorage.removeItem('hodlearn-onboarding-completed');
         console.log('Onboarding reset via URL parameter');
