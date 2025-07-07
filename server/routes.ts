@@ -38,16 +38,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   };
 
-  // User endpoint - simplified to return default user
-  app.get("/api/user", (req, res) => {
-    res.json({
-      id: 1,
-      username: "HODLearner",
-      email: "demo@hodlearn.com"
-    });
+  // User endpoint - get authenticated user
+  app.get("/api/user", requireAuth, async (req: any, res) => {
+    try {
+      const user = await storage.getUser(req.user.id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Don't send password hash
+      const { passwordHash, ...userResponse } = user;
+      res.json(userResponse);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
   });
 
-  // Legacy authentication routes (removed functionality)
+  // Authentication routes
   app.post("/api/auth/register", async (req, res) => {
     try {
       const userData = registerSchema.parse(req.body);
@@ -734,9 +742,9 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Day completion and access control routes
-  app.get("/api/next-available-day/:userId", async (req, res) => {
+  app.get("/api/next-available-day/:userId", requireAuth, async (req: any, res) => {
     try {
-      const userId = parseInt(req.params.userId);
+      const userId = req.user.id;
       let nextDay = await storage.getNextAvailableDay(userId);
       // Ensure we never return Day 0 - minimum is Day 1
       if (nextDay <= 0) {
@@ -748,9 +756,9 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.get("/api/can-access-day/:userId/:dayIndex", async (req, res) => {
+  app.get("/api/can-access-day/:userId/:dayIndex", requireAuth, async (req: any, res) => {
     try {
-      const userId = parseInt(req.params.userId);
+      const userId = req.user.id;
       let dayIndex = parseInt(req.params.dayIndex);
       // Redirect Day 0 requests to Day 1
       if (dayIndex <= 0) {
@@ -764,9 +772,9 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Get day access info with wait time details
-  app.get("/api/day-access-info/:userId/:dayIndex", async (req, res) => {
+  app.get("/api/day-access-info/:userId/:dayIndex", requireAuth, async (req: any, res) => {
     try {
-      const userId = parseInt(req.params.userId);
+      const userId = req.user.id;
       let dayIndex = parseInt(req.params.dayIndex);
       
       if (dayIndex <= 0) {
@@ -813,9 +821,9 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Add the day-access endpoint that the UI expects
-  app.get("/api/day-access/:userId/:dayIndex", async (req, res) => {
+  app.get("/api/day-access/:userId/:dayIndex", requireAuth, async (req: any, res) => {
     try {
-      const userId = parseInt(req.params.userId);
+      const userId = req.user.id;
       let dayIndex = parseInt(req.params.dayIndex);
       // Redirect Day 0 requests to Day 1
       if (dayIndex <= 0) {
@@ -829,9 +837,9 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Add the day-completed endpoint that the UI expects
-  app.get("/api/day-completed/:userId/:dayIndex", async (req, res) => {
+  app.get("/api/day-completed/:userId/:dayIndex", requireAuth, async (req: any, res) => {
     try {
-      const userId = parseInt(req.params.userId);
+      const userId = req.user.id;
       let dayIndex = parseInt(req.params.dayIndex);
       // Redirect Day 0 requests to Day 1
       if (dayIndex <= 0) {
@@ -854,9 +862,9 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.get("/api/completed-days/:userId", async (req, res) => {
+  app.get("/api/completed-days/:userId", requireAuth, async (req: any, res) => {
     try {
-      const userId = parseInt(req.params.userId);
+      const userId = req.user.id;
       const completedDays = await storage.getCompletedDays(userId);
       res.json({ completedDays });
     } catch (error) {
@@ -1458,7 +1466,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.post('/api/quiz/submit', setDefaultUser, async (req, res) => {
+  app.post('/api/quiz/submit', requireAuth, async (req, res) => {
     try {
       const { questionId, selectedAnswer, date } = req.body;
       
@@ -1492,7 +1500,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.get('/api/quiz/score/:userId/:date', setDefaultUser, async (req, res) => {
+  app.get('/api/quiz/score/:userId/:date', requireAuth, async (req, res) => {
     try {
       const date = req.params.date;
       
@@ -1509,7 +1517,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.get('/api/quiz/answers/:userId/:date', setDefaultUser, async (req, res) => {
+  app.get('/api/quiz/answers/:userId/:date', requireAuth, async (req, res) => {
     try {
       const date = req.params.date;
       
@@ -1744,7 +1752,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Daily Activities API for consistency tracking
-  app.get("/api/activities/:userId/calendar", setDefaultUser, async (req: any, res) => {
+  app.get("/api/activities/:userId/calendar", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.id;
       const weeks = parseInt(req.query.weeks as string) || 3; // Default to 3 weeks
@@ -1757,7 +1765,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.post("/api/activities/mark-lesson", setDefaultUser, async (req: any, res) => {
+  app.post("/api/activities/mark-lesson", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.id;
       const date = new Date().toISOString().split('T')[0];
@@ -1770,7 +1778,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.post("/api/activities/mark-quiz", setDefaultUser, async (req: any, res) => {
+  app.post("/api/activities/mark-quiz", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.id;
       const date = new Date().toISOString().split('T')[0];
@@ -1802,7 +1810,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.post("/api/activities/mark-practice", setDefaultUser, async (req: any, res) => {
+  app.post("/api/activities/mark-practice", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.id;
       const date = new Date().toISOString().split('T')[0];
@@ -1883,7 +1891,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Create forum post
-  app.post("/api/community/forum-posts", setDefaultUser, async (req, res) => {
+  app.post("/api/community/forum-posts", requireAuth, async (req, res) => {
     try {
       const { title, content, categoryId, dayIndex } = req.body;
       const userId = req.user.id;
@@ -1920,7 +1928,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Record video view
-  app.post("/api/community/video-view", setDefaultUser, async (req, res) => {
+  app.post("/api/community/video-view", requireAuth, async (req, res) => {
     try {
       const { videoId, progressPercent } = req.body;
       const userId = req.user.id;
@@ -1945,7 +1953,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Create success story
-  app.post("/api/community/success-stories", setDefaultUser, async (req, res) => {
+  app.post("/api/community/success-stories", requireAuth, async (req, res) => {
     try {
       const { title, content } = req.body;
       const userId = req.user.id;

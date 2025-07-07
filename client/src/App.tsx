@@ -19,8 +19,22 @@ import About from "@/pages/about";
 import NotFound from "@/pages/not-found";
 import { AuthPage } from "@/pages/auth";
 
-// Demo mode - simplified for deployment
+// Authentication guard
 function AuthGuard({ children }: { children: React.ReactNode }) {
+  const [, setLocation] = useLocation();
+  
+  useEffect(() => {
+    const sessionId = localStorage.getItem('sessionId');
+    if (!sessionId) {
+      setLocation('/auth');
+    }
+  }, [setLocation]);
+
+  const sessionId = localStorage.getItem('sessionId');
+  if (!sessionId) {
+    return null; // Will redirect to auth
+  }
+  
   return <>{children}</>;
 }
 
@@ -59,19 +73,29 @@ function Router() {
       <ScrollToTop />
       <Switch>
         <Route path="/auth" component={AuthPage} />
-        <Route path="/onboarding">
-          <AuthGuard>
-            <Onboarding />
-          </AuthGuard>
+        <Route path="/onboarding" component={Onboarding} />
+        <Route path="/learn">
+          <AuthGuard><LearnPage /></AuthGuard>
         </Route>
-        <Route path="/learn" component={LearnPage} />
-        <Route path="/money" component={FinancePage} />
-        <Route path="/simulators" component={SimulatorsPage} />
-        <Route path="/community" component={CommunityPage} />
-        <Route path="/more" component={MorePage} />
-        <Route path="/account" component={AccountPage} />
+        <Route path="/money">
+          <AuthGuard><FinancePage /></AuthGuard>
+        </Route>
+        <Route path="/simulators">
+          <AuthGuard><SimulatorsPage /></AuthGuard>
+        </Route>
+        <Route path="/community">
+          <AuthGuard><CommunityPage /></AuthGuard>
+        </Route>
+        <Route path="/more">
+          <AuthGuard><MorePage /></AuthGuard>
+        </Route>
+        <Route path="/account">
+          <AuthGuard><AccountPage /></AuthGuard>
+        </Route>
         <Route path="/about" component={About} />
-        <Route path="/" component={OnboardingRedirect} />
+        <Route path="/">
+          <AuthGuard><OnboardingRedirect /></AuthGuard>
+        </Route>
         <Route component={NotFound} />
       </Switch>
     </AppContextProvider>
