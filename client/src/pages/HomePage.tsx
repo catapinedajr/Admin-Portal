@@ -150,7 +150,7 @@ export default function HomePage() {
           )}
 
           {/* OPTION 2: Stats Dashboard Style */}
-          {false && (
+          {true && (
           <Card className="bg-gradient-to-r from-zinc-900/90 to-zinc-800/80 border border-zinc-700/40">
             <CardContent className="p-5">
               <div className="grid grid-cols-3 gap-4">
@@ -171,7 +171,8 @@ export default function HomePage() {
           </Card>
           )}
 
-          {/* OPTION 3: Minimalist Badge Style (ACTIVE) */}
+          {/* OPTION 3: Minimalist Badge Style */}
+          {false && (
           <Card className="bg-gradient-to-r from-zinc-900/90 to-zinc-800/80 border border-zinc-700/40">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -191,6 +192,7 @@ export default function HomePage() {
               </div>
             </CardContent>
           </Card>
+          )}
 
           {/* Main Learning Card - Streamlined */}
           <Card className="bg-gradient-to-br from-zinc-900/95 to-zinc-800/90 border border-zinc-700/50 hover:border-orange-500/30 transition-all duration-300">
