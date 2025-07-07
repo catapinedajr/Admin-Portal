@@ -22,32 +22,55 @@ import { AuthPage } from "@/pages/auth";
 // Authentication guard
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const [, setLocation] = useLocation();
+  const [hasRedirected, setHasRedirected] = useState(false);
+  
+  // Check session first before making API calls
+  const sessionId = localStorage.getItem('hodlearn_session');
+  
+  const { data: user, isLoading, error } = useQuery({
+    queryKey: ["/api/user"],
+    retry: false,
+    enabled: !!sessionId && !hasRedirected, // Only run query if we have a session
+  });
   
   useEffect(() => {
-    const sessionId = localStorage.getItem('hodlearn_session');
-    if (!sessionId) {
+    // If no session ID, redirect immediately
+    if (!sessionId && !hasRedirected) {
+      setHasRedirected(true);
+      setLocation('/auth');
+      return;
+    }
+    
+    // If we have session but API fails, also redirect
+    if (sessionId && !isLoading && (error || !user) && !hasRedirected) {
+      // Clear invalid session
+      localStorage.removeItem('hodlearn_session');
+      setHasRedirected(true);
       setLocation('/auth');
     }
-  }, [setLocation]);
+  }, [sessionId, error, user, isLoading, setLocation, hasRedirected]);
 
-  const sessionId = localStorage.getItem('hodlearn_session');
-  if (!sessionId) {
-    return null; // Will redirect to auth
+  // Show loading while checking auth
+  if (!sessionId || isLoading || hasRedirected) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    );
+  }
+
+  // If we have session and user data, render children
+  if (sessionId && user) {
+    return <>{children}</>;
   }
   
-  return <>{children}</>;
+  return null;
 }
 
 function OnboardingRedirect() {
   const [, setLocation] = useLocation();
-  const { data: user, isLoading } = useQuery({
-    queryKey: ["/api/user"],
-    retry: false,
-  });
 
   useEffect(() => {
-    if (isLoading) return; // Wait for user data to load
-
     try {
       // Check for reset parameters (debug mode only)
       const urlParams = new URLSearchParams(window.location.search);
@@ -57,11 +80,21 @@ function OnboardingRedirect() {
         console.log('DEBUG: Forced onboarding reset via URL parameter');
       }
 
-      // Check both localStorage and if user has any progress
+      // PRODUCTION FIX: Clear onboarding for users who completed it before auth was added
+      const hasSession = localStorage.getItem('hodlearn_session');
       const hasCompletedOnboarding = localStorage.getItem('hodlearn-onboarding-completed');
       
+      // If user has onboarding flag but no session, they're from before auth was added
+      if (hasCompletedOnboarding && !hasSession) {
+        console.log('Clearing pre-auth onboarding flag for fresh experience');
+        localStorage.removeItem('hodlearn-onboarding-completed');
+      }
+
+      // Check localStorage for onboarding completion
+      const currentOnboardingStatus = localStorage.getItem('hodlearn-onboarding-completed');
+      
       // For first-time users (no localStorage flag), show onboarding
-      if (!hasCompletedOnboarding) {
+      if (!currentOnboardingStatus) {
         console.log('No onboarding completion found - redirecting to onboarding');
         setLocation('/onboarding');
         return;
@@ -72,13 +105,7 @@ function OnboardingRedirect() {
       // If localStorage fails in Safari, skip onboarding
       console.warn('Safari localStorage access issue, skipping onboarding:', error);
     }
-  }, [setLocation, user, isLoading]);
-
-  if (isLoading) {
-    return <div className="min-h-screen bg-black flex items-center justify-center">
-      <div className="text-white">Loading...</div>
-    </div>;
-  }
+  }, [setLocation]);
 
   return <HomePage />;
 }
