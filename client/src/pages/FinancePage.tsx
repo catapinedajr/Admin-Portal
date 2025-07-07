@@ -874,7 +874,7 @@ function FinancePageWithLayout() {
   return (
     <div className="min-h-screen bg-zinc-900">
       {/* Header */}
-      <header className="border-b border-zinc-800 bg-black/50 backdrop-blur-lg sticky top-0 z-50">
+      <header className="border-b border-zinc-800 bg-zinc-900/95 backdrop-blur-lg sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div 
