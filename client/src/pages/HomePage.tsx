@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
-import { Crown, Gem, Gamepad2, MoreHorizontal, User as UserIcon } from "lucide-react";
+import { Crown, Gem, Gamepad2, MoreHorizontal, User as UserIcon, Users, MessageSquare, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { User } from "@shared/schema";
@@ -155,21 +155,75 @@ export default function HomePage() {
             </CardContent>
           </Card>
 
-          {/* Action Buttons */}
-          <div className="flex gap-4">
+          {/* Community Activity Teaser */}
+          <Card className="bg-zinc-800/50 border-zinc-700">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-orange-400" />
+                  <span className="text-sm font-medium text-white">Community Activity</span>
+                </div>
+                <div className="flex items-center gap-1 text-xs text-orange-400">
+                  <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse"></div>
+                  Live
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                {/* Latest Discussion */}
+                <div className="flex items-start gap-3">
+                  <MessageSquare className="w-3.5 h-3.5 text-zinc-400 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-zinc-300 truncate">
+                      "Just started my Bitcoin journey - any tips for beginners?"
+                    </p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-xs text-zinc-500">Posted 12 min ago</span>
+                      <span className="text-xs text-orange-400">5 replies</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Community Stats */}
+                <div className="flex items-center justify-between pt-2 border-t border-zinc-700">
+                  <div className="flex items-center gap-4 text-xs text-zinc-400">
+                    <span>24 active discussions</span>
+                    <span>156 videos watched this week</span>
+                  </div>
+                  <Button 
+                    onClick={() => setLocation('/community')}
+                    size="sm"
+                    className="bg-orange-600 hover:bg-orange-700 text-white text-xs px-3 py-1"
+                  >
+                    Join
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Action Buttons - Updated with Community */}
+          <div className="grid grid-cols-3 gap-3">
             <Button 
               onClick={() => setLocation('/simulators')}
-              className="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700"
+              className="bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700 py-3 flex flex-col items-center gap-1"
             >
-              <Gamepad2 className="w-4 h-4 mr-2" />
-              Simulators
+              <Gamepad2 className="w-4 h-4" />
+              <span className="text-xs">Simulators</span>
+            </Button>
+            <Button 
+              onClick={() => setLocation('/community')}
+              className="bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700 py-3 flex flex-col items-center gap-1"
+            >
+              <Users className="w-4 h-4" />
+              <span className="text-xs">Community</span>
             </Button>
             <Button 
               onClick={() => setLocation('/more')}
-              className="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700"
+              className="bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700 py-3 flex flex-col items-center gap-1"
             >
-              <MoreHorizontal className="w-4 h-4 mr-2" />
-              More
+              <MoreHorizontal className="w-4 h-4" />
+              <span className="text-xs">More</span>
             </Button>
           </div>
         </div>
@@ -181,6 +235,7 @@ export default function HomePage() {
           if (section === 'learn') setLocation('/learn');
           else if (section === 'money') setLocation('/money');
           else if (section === 'simulators') setLocation('/simulators');
+          else if (section === 'community') setLocation('/community');
           else if (section === 'more') setLocation('/more');
         }}
       />
