@@ -129,29 +129,67 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Main Learning Card */}
-          <Card className="bg-zinc-800 border-zinc-700">
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                    <span className="text-sm text-zinc-400">Day {currentDayIndex}</span>
-                  </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">
-                    {dayMetadata?.title || 'Loading today\'s lesson...'}
-                  </h3>
-                  <p className="text-zinc-400 text-sm mb-4">
-                    Today's Bitcoin learning journey continues
-                  </p>
+          {/* Enhanced Main Learning Card */}
+          <Card className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-800/50 border-zinc-700 hover:border-orange-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10">
+            <CardContent className="p-8">
+              {/* Top Stats Row */}
+              <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
+                  <span className="text-orange-400 font-semibold">Day {currentDayIndex}</span>
+                </div>
+                <div className="flex items-center gap-2 bg-zinc-800/50 px-3 py-1 rounded-full">
+                  <TrendingUp className="w-4 h-4 text-orange-400" />
+                  <span className="text-orange-400 font-bold">{user?.currentStreak || 0}</span>
+                  <span className="text-zinc-400 text-sm">streak</span>
                 </div>
               </div>
-              <Button 
-                onClick={() => setLocation('/learn')}
-                className="w-full bg-orange-600 hover:bg-orange-700 text-white"
-              >
-                Continue Learning
-              </Button>
+
+              <div className="space-y-6 text-center">
+                {/* Main Title with Icon */}
+                <div className="space-y-3">
+                  <div className="flex justify-center">
+                    <div className="p-3 bg-orange-500/10 rounded-full border border-orange-500/20">
+                      <MessageSquare className="w-8 h-8 text-orange-400" />
+                    </div>
+                  </div>
+                  <h3 className="text-2xl font-bold text-white leading-tight">
+                    {dayMetadata?.title || 'Loading today\'s lesson...'}
+                  </h3>
+                </div>
+                
+                {/* Today's Preview */}
+                {dailyFacts && dailyFacts[0] && (
+                  <div className="bg-zinc-800/30 rounded-lg p-4 border border-zinc-700/50">
+                    <div className="flex items-center gap-2 justify-center mb-2">
+                      <div className="w-1 h-1 bg-orange-400 rounded-full"></div>
+                      <span className="text-orange-400 text-sm font-medium">Today's Focus</span>
+                    </div>
+                    <p className="text-zinc-300 text-lg">
+                      {dailyFacts[0].title}
+                    </p>
+                  </div>
+                )}
+                
+                {/* Progress Motivation */}
+                <div className="space-y-2">
+                  <div className="text-zinc-400 text-sm">
+                    {user?.currentStreak === 0 ? "Start your learning journey today" :
+                     user?.currentStreak === 1 ? "Great start! Keep the momentum going" :
+                     user?.currentStreak && user.currentStreak < 7 ? "Building a solid habit" :
+                     user?.currentStreak && user.currentStreak < 30 ? "You're on fire! 🔥" :
+                     "Bitcoin conviction master in the making"}
+                  </div>
+                </div>
+                
+                {/* Enhanced Continue Button */}
+                <Button 
+                  onClick={() => setLocation('/learn')}
+                  className="w-full bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white text-lg py-6 rounded-lg shadow-lg hover:shadow-orange-500/20 transition-all duration-300 transform hover:scale-105 font-semibold"
+                >
+                  Continue Learning →
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
