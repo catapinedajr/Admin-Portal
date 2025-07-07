@@ -509,7 +509,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
             
             {/* Broadcasting/Mempool Phase */}
             {(transactionState === "broadcasting" || transactionJourney === "mempool") && (
-              <Card className="bg-blue-900/80 border-blue-800">
+              <Card className="bg-blue-900/90 border-blue-800">
                 <CardContent className="p-3">
                   <h5 className="font-bold text-blue-300 mb-3 text-center text-lg">Transaction Journey</h5>
                   
@@ -553,7 +553,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
 
             {/* Confirmation Phase */}
             {transactionState === "confirming" && (
-              <Card className="bg-yellow-900/80 border-yellow-800">
+              <Card className="bg-yellow-900/90 border-yellow-800">
                 <CardContent className="p-3">
                   <h5 className="font-bold text-yellow-300 mb-3 text-center text-lg">Transaction Journey - Block Confirmation</h5>
 
@@ -637,7 +637,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
 
             {/* Completion Phase */}
             {transactionState === "confirmed" && (
-              <Card className="bg-green-900/80 border-green-800">
+              <Card className="bg-green-900/90 border-green-800">
                 <CardContent className="p-3">
                   <div className="text-center mb-3">
                     <CheckCircle className="w-10 h-10 text-green-400 mx-auto mb-2" />
