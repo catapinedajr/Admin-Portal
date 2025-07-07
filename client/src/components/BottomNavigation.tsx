@@ -84,14 +84,15 @@ export default function BottomNavigation({ activeSection, onSectionChange }: Bot
               variant="ghost"
               size="sm"
               onClick={() => handleNavigation(item.id, item.path)}
-              className={`flex flex-col items-center gap-1 h-auto py-2 px-3 min-w-0 ${
+              title={item.label}
+              className={`flex items-center justify-center h-auto p-3 min-w-0 ${
                 isActive 
                   ? 'text-orange-400 bg-orange-400/10' 
                   : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
               }`}
             >
-              <Icon className="w-5 h-5" />
-              <span className="text-xs font-medium">{item.label}</span>
+              <Icon className="w-6 h-6" />
+              <span className="sr-only">{item.label}</span>
             </Button>
           );
         })}
