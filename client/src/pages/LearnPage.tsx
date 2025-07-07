@@ -318,7 +318,7 @@ function LearnPage() {
               )}
 
               {/* Daily Quiz */}
-              <Card className="bg-zinc-900/50 border-zinc-700">
+              <Card className="bg-zinc-800/50 border-zinc-700">
                 <CardHeader>
                   <CardTitle className="text-xl text-white flex items-center gap-2">
                     <GraduationCap className="w-5 h-5 text-orange-500" />
