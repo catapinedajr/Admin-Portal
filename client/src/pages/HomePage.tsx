@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
-import { Crown, Gem, Gamepad2, MoreHorizontal, User as UserIcon, Users, MessageSquare, TrendingUp } from "lucide-react";
+import { Crown, Gem, Gamepad2, MoreHorizontal, User as UserIcon, Users, MessageSquare, TrendingUp, ArrowRight, Shield, TrendingDown, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { User } from "@shared/schema";
@@ -119,271 +119,253 @@ export default function HomePage() {
             </h1>
           </div>
 
-          {/* Activity Progress Tracking - Apple Watch Style */}
-          <div className="relative">
-            <Card className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-800/50 border-zinc-700">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  {/* Progress Rings */}
-                  <div className="flex items-center gap-6">
-                    <div className="relative w-16 h-16">
-                      {/* Daily Ring */}
-                      <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 64 64">
-                        <circle cx="32" cy="32" r="26" fill="none" stroke="#27272a" strokeWidth="4"/>
-                        <circle 
-                          cx="32" cy="32" r="26" fill="none" 
-                          stroke="#f97316" strokeWidth="4"
-                          strokeDasharray={`${(user?.currentStreak || 0) > 0 ? 163 : 0} 163`}
-                          strokeLinecap="round"
-                          className="transition-all duration-1000 ease-out"
-                        />
-                      </svg>
-                      {/* Weekly Ring */}
-                      <svg className="absolute inset-0 w-16 h-16 transform -rotate-90" viewBox="0 0 64 64">
-                        <circle 
-                          cx="32" cy="32" r="22" fill="none" 
-                          stroke="#22c55e" strokeWidth="3"
-                          strokeDasharray={`${Math.min(((user?.currentStreak || 0) % 7) / 7, 1) * 138} 138`}
-                          strokeLinecap="round"
-                          className="transition-all duration-1000 ease-out"
-                        />
-                      </svg>
-                      {/* Monthly Ring */}
-                      <svg className="absolute inset-0 w-16 h-16 transform -rotate-90" viewBox="0 0 64 64">
-                        <circle 
-                          cx="32" cy="32" r="18" fill="none" 
-                          stroke="#06b6d4" strokeWidth="2"
-                          strokeDasharray={`${Math.min(((user?.currentStreak || 0) % 30) / 30, 1) * 113} 113`}
-                          strokeLinecap="round"
-                          className="transition-all duration-1000 ease-out"
-                        />
-                      </svg>
-                      {/* Center streak number */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-orange-400 font-bold text-lg">{user?.currentStreak || 0}</span>
+          {/* Activity Dashboard - Professional */}
+          <Card className="bg-gradient-to-r from-zinc-900/90 via-zinc-800 to-zinc-900/90 border border-zinc-700/50 backdrop-blur-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-8">
+                  {/* Minimalist Progress Indicator */}
+                  <div className="relative">
+                    <div className="w-14 h-14 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="text-orange-400 font-bold text-lg leading-none">{user?.currentStreak || 0}</div>
+                        <div className="text-zinc-500 text-xs uppercase tracking-wider">Days</div>
                       </div>
                     </div>
-                    
-                    {/* Stats */}
-                    <div className="space-y-1">
-                      <div className="text-white font-semibold">Activity Rings</div>
-                      <div className="space-y-0.5 text-sm">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                          <span className="text-zinc-300">Daily: {user?.currentStreak || 0} day streak</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          <span className="text-zinc-300">Weekly: {Math.ceil((user?.currentStreak || 0) / 7)} weeks</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-cyan-500 rounded-full"></div>
-                          <span className="text-zinc-300">Monthly: {Math.ceil((user?.currentStreak || 0) / 30)} months</span>
-                        </div>
-                      </div>
+                    <div className="absolute -inset-1">
+                      <div 
+                        className="w-16 h-16 rounded-full border-2 border-transparent bg-gradient-to-r from-orange-500 to-orange-600"
+                        style={{
+                          background: `conic-gradient(from 0deg, #f97316 0deg, #f97316 ${Math.min((user?.currentStreak || 0) * 12, 360)}deg, #27272a ${Math.min((user?.currentStreak || 0) * 12, 360)}deg)`
+                        }}
+                      />
                     </div>
                   </div>
                   
-                  {/* Achievement Badge */}
-                  <div className="text-right">
-                    {(user?.currentStreak || 0) >= 7 && (
-                      <div className="inline-flex items-center gap-1 bg-orange-500/10 border border-orange-500/20 rounded-full px-3 py-1 animate-pulse">
-                        <Crown className="w-3 h-3 text-orange-400" />
-                        <span className="text-orange-400 text-xs font-medium">
-                          {(user?.currentStreak || 0) >= 30 ? "Master" : 
-                           (user?.currentStreak || 0) >= 14 ? "Expert" : "Committed"}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Today's Learning Focus */}
-          <Card className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-800/50 border-zinc-700 hover:border-orange-500/30 transition-all duration-300 overflow-hidden">
-            <CardContent className="p-0">
-              {/* Floating Background Elements */}
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-4 -right-4 w-24 h-24 bg-orange-500/5 rounded-full blur-xl animate-pulse"></div>
-                <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-orange-500/3 rounded-full blur-2xl"></div>
-              </div>
-              
-              <div className="relative p-6">
-                {/* Day Indicator */}
-                <div className="flex justify-center items-center mb-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
-                    <span className="text-orange-400 font-semibold text-sm">Day {currentDayIndex}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-4 text-center">
-                  {/* Main Title with Icon */}
+                  {/* Clean Stats */}
                   <div className="space-y-3">
-                    <div className="flex justify-center">
-                      <div className="p-3 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-full border border-orange-500/30 shadow-lg shadow-orange-500/10">
-                        <MessageSquare className="w-6 h-6 text-orange-400" />
+                    <div>
+                      <div className="text-white font-semibold text-lg">Learning Streak</div>
+                      <div className="text-zinc-400 text-sm">Building conviction takes consistency</div>
+                    </div>
+                    <div className="flex items-center gap-6 text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="w-1 h-4 bg-orange-500 rounded-full"></div>
+                        <span className="text-zinc-300">{user?.currentStreak || 0} consecutive days</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-1 h-4 bg-zinc-600 rounded-full"></div>
+                        <span className="text-zinc-400">{Math.ceil((user?.currentStreak || 0) / 7)} weeks active</span>
                       </div>
                     </div>
-                    <h3 className="text-xl font-bold text-white leading-tight">
-                      {dayMetadata?.title || 'Loading today\'s lesson...'}
-                    </h3>
                   </div>
-                  
-                  {/* Today's Preview - Enhanced */}
-                  {dailyFacts && dailyFacts[0] && (
-                    <div className="bg-gradient-to-r from-zinc-800/40 to-zinc-700/20 rounded-lg p-4 border border-zinc-700/50 backdrop-blur-sm">
-                      <div className="flex items-center gap-2 justify-center mb-2">
-                        <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse"></div>
-                        <span className="text-orange-400 text-sm font-medium">Today's Focus</span>
-                      </div>
-                      <p className="text-zinc-200 text-sm font-medium">
-                        {dailyFacts[0].title}
-                      </p>
-                    </div>
-                  )}
-                  
-                  {/* Progress Motivation - Enhanced */}
-                  <div className="text-zinc-400 text-sm">
-                    {user?.currentStreak === 0 ? "🚀 Start your Bitcoin journey today" :
-                     user?.currentStreak === 1 ? "✨ Great start! Keep going" :
-                     user?.currentStreak && user.currentStreak < 7 ? "💪 Building a solid habit" :
-                     user?.currentStreak && user.currentStreak < 30 ? "🔥 You're on fire!" :
-                     "🏆 Bitcoin conviction master in the making"}
+                </div>
+                
+                {/* Status Badge */}
+                <div className="text-right">
+                  <div className="inline-flex items-center gap-2 bg-zinc-800/80 border border-zinc-700 rounded-lg px-3 py-2">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                    <span className="text-zinc-300 text-sm font-medium">Active Learner</span>
                   </div>
-                  
-                  {/* Enhanced Continue Button */}
-                  <Button 
-                    onClick={() => setLocation('/learn')}
-                    className="w-full bg-gradient-to-r from-orange-600 via-orange-500 to-orange-600 hover:from-orange-700 hover:via-orange-600 hover:to-orange-700 text-white font-semibold py-4 rounded-xl transition-all duration-300 shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-[1.02] active:scale-[0.98]"
-                  >
-                    Continue Learning →
-                  </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Simulator of the Day */}
-          <Card className="bg-gradient-to-br from-emerald-900/20 via-zinc-800 to-zinc-800/50 border-emerald-700/30 hover:border-emerald-500/50 transition-all duration-300">
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <Gamepad2 className="w-4 h-4 text-emerald-400" />
-                  <span className="text-emerald-400 font-semibold text-sm">Simulator of the Day</span>
+          {/* Today's Focus - Clean Professional */}
+          <Card className="bg-gradient-to-br from-zinc-900/95 to-zinc-800/80 border border-zinc-700/50 hover:border-orange-500/40 transition-all duration-500 backdrop-blur-sm">
+            <CardContent className="p-8">
+              {/* Clean Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500/20 to-orange-600/10 border border-orange-500/20 flex items-center justify-center">
+                    <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                  </div>
+                  <div>
+                    <h3 className="text-white font-semibold">Today's Learning</h3>
+                    <p className="text-zinc-400 text-sm">Day {currentDayIndex} of your Bitcoin education</p>
+                  </div>
                 </div>
-                <div className="text-xs text-zinc-400">Interactive</div>
+                <div className="text-right">
+                  <div className="text-orange-400 text-sm font-medium">Active</div>
+                  <div className="text-zinc-500 text-xs">In Progress</div>
+                </div>
               </div>
-              
-              <div className="space-y-3">
-                <h4 className="text-white font-semibold">Safety Training Center</h4>
-                <p className="text-zinc-300 text-sm">
-                  Test your Bitcoin security knowledge with 12 real-world scenarios. Master the skills to protect your digital assets.
-                </p>
+
+              {/* Content Preview */}
+              <div className="space-y-4">
+                <h4 className="text-xl font-bold text-white leading-tight">
+                  {dayMetadata?.title || 'Loading today\'s lesson...'}
+                </h4>
                 
-                <div className="flex items-center gap-2">
-                  <div className="flex -space-x-1">
-                    <div className="w-6 h-6 bg-orange-500 rounded-full border-2 border-zinc-800 flex items-center justify-center">
-                      <span className="text-xs text-white font-bold">1</span>
-                    </div>
-                    <div className="w-6 h-6 bg-emerald-500 rounded-full border-2 border-zinc-800 flex items-center justify-center">
-                      <span className="text-xs text-white font-bold">2</span>
-                    </div>
-                    <div className="w-6 h-6 bg-cyan-500 rounded-full border-2 border-zinc-800 flex items-center justify-center">
-                      <span className="text-xs text-white font-bold">3</span>
-                    </div>
-                    <div className="w-6 h-6 bg-zinc-600 rounded-full border-2 border-zinc-800 flex items-center justify-center">
-                      <span className="text-xs text-white">+9</span>
+                {dailyFacts && dailyFacts[0] && (
+                  <div className="bg-zinc-800/40 rounded-xl p-4 border border-zinc-700/30">
+                    <div className="flex items-start gap-3">
+                      <div className="w-1 h-12 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full mt-1"></div>
+                      <div>
+                        <div className="text-orange-400 text-xs font-medium uppercase tracking-wider mb-1">Key Focus</div>
+                        <p className="text-zinc-200 font-medium">
+                          {dailyFacts[0].title}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  <span className="text-zinc-400 text-xs">12 scenarios</span>
+                )}
+                
+                {/* Professional Motivation */}
+                <div className="flex items-center justify-between py-4 border-t border-zinc-700/30">
+                  <div className="text-zinc-400">
+                    {user?.currentStreak === 0 ? "Begin your Bitcoin education journey" :
+                     user?.currentStreak === 1 ? "Building momentum with consistent learning" :
+                     user?.currentStreak && user.currentStreak < 7 ? "Developing strong learning habits" :
+                     user?.currentStreak && user.currentStreak < 30 ? "Exceptional commitment to Bitcoin education" :
+                     "Advanced Bitcoin knowledge development"}
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-orange-400" />
+                </div>
+                
+                {/* Sleek Continue Button */}
+                <Button 
+                  onClick={() => setLocation('/learn')}
+                  className="w-full bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white font-semibold py-4 rounded-xl transition-all duration-300 shadow-lg shadow-orange-500/10 hover:shadow-orange-500/20 hover:translate-y-[-1px]"
+                >
+                  Continue Learning
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Featured Simulator - Professional */}
+          <Card className="bg-gradient-to-br from-zinc-900/90 to-zinc-800/80 border border-zinc-700/50 hover:border-zinc-600/70 transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center">
+                    <Shield className="w-4 h-4 text-zinc-400" />
+                  </div>
+                  <div>
+                    <h4 className="text-white font-semibold">Featured Practice</h4>
+                    <p className="text-zinc-400 text-sm">Interactive security training</p>
+                  </div>
+                </div>
+                <div className="text-xs text-zinc-500 bg-zinc-800/50 px-2 py-1 rounded-md">
+                  Recommended
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <h5 className="text-white font-medium mb-2">Bitcoin Security Assessment</h5>
+                  <p className="text-zinc-400 text-sm leading-relaxed">
+                    Master essential security practices through 12 real-world scenarios. Build the knowledge to protect your digital assets with confidence.
+                  </p>
+                </div>
+                
+                <div className="flex items-center justify-between py-3 border-t border-zinc-700/30">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                      <span className="text-zinc-400 text-sm">12 scenarios</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-zinc-600 rounded-full"></div>
+                      <span className="text-zinc-400 text-sm">5-10 minutes</span>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-zinc-500" />
                 </div>
                 
                 <Button 
                   onClick={() => setLocation('/simulators')}
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 rounded-lg transition-all duration-300"
+                  className="w-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 hover:border-zinc-500 text-white font-medium py-3 rounded-lg transition-all duration-300"
                 >
-                  Start Security Training
+                  Begin Security Training
                 </Button>
               </div>
             </CardContent>
           </Card>
 
-          {/* Enhanced Quick Access Grid */}
+          {/* Quick Access Grid - Sleek */}
           <div className="grid grid-cols-2 gap-4">
-            {/* Finance/Money Card - Enhanced */}
-            <Card className="bg-gradient-to-br from-zinc-800 to-zinc-800/50 border-zinc-700 hover:border-orange-500/50 transition-all duration-300 group">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="p-1.5 bg-orange-500/10 rounded-lg group-hover:bg-orange-500/20 transition-colors">
-                    <TrendingUp className="w-4 h-4 text-orange-400" />
+            {/* Finance Analysis */}
+            <Card className="bg-gradient-to-br from-zinc-900/80 to-zinc-800/60 border border-zinc-700/50 hover:border-orange-500/30 transition-all duration-300 group backdrop-blur-sm">
+              <CardContent className="p-5">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center group-hover:border-orange-500/30 transition-colors">
+                      <TrendingDown className="w-4 h-4 text-zinc-400 group-hover:text-orange-400 transition-colors" />
+                    </div>
+                    <div>
+                      <h5 className="text-white font-medium">Inflation Impact</h5>
+                      <p className="text-zinc-500 text-xs">Financial analysis</p>
+                    </div>
                   </div>
-                  <span className="text-sm font-medium text-white">Why Bitcoin?</span>
+                  <p className="text-zinc-400 text-sm">
+                    Explore how monetary policy affects your purchasing power
+                  </p>
+                  <Button 
+                    onClick={() => setLocation('/money')}
+                    variant="outline"
+                    className="w-full border-zinc-600 hover:border-orange-500/50 text-zinc-300 hover:text-white bg-transparent hover:bg-orange-500/5 transition-all duration-300"
+                  >
+                    Analyze Impact
+                  </Button>
                 </div>
-                <p className="text-xs text-zinc-400 mb-3">
-                  Watch inflation destroy your money
-                </p>
-                <Button 
-                  onClick={() => setLocation('/money')}
-                  className="w-full bg-orange-600/80 hover:bg-orange-600 text-white text-xs font-medium py-2 rounded-lg transition-all duration-300"
-                >
-                  Explore Impact →
-                </Button>
               </CardContent>
             </Card>
 
-            {/* Community Card - Enhanced */}
-            <Card className="bg-gradient-to-br from-zinc-800 to-zinc-800/50 border-zinc-700 hover:border-blue-500/50 transition-all duration-300 group">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="p-1.5 bg-blue-500/10 rounded-lg group-hover:bg-blue-500/20 transition-colors">
-                    <Users className="w-4 h-4 text-blue-400" />
+            {/* Community Hub */}
+            <Card className="bg-gradient-to-br from-zinc-900/80 to-zinc-800/60 border border-zinc-700/50 hover:border-zinc-600/70 transition-all duration-300 group backdrop-blur-sm">
+              <CardContent className="p-5">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center group-hover:border-zinc-600 transition-colors">
+                      <Users className="w-4 h-4 text-zinc-400 transition-colors" />
+                    </div>
+                    <div>
+                      <h5 className="text-white font-medium">Community</h5>
+                      <p className="text-zinc-500 text-xs">Discussion hub</p>
+                    </div>
                   </div>
-                  <span className="text-sm font-medium text-white">Community</span>
+                  <p className="text-zinc-400 text-sm">
+                    Connect with fellow Bitcoin learners and share insights
+                  </p>
+                  <Button 
+                    onClick={() => setLocation('/community')}
+                    variant="outline"
+                    className="w-full border-zinc-600 hover:border-zinc-500 text-zinc-300 hover:text-white bg-transparent hover:bg-zinc-700/50 transition-all duration-300"
+                  >
+                    Join Discussion
+                  </Button>
                 </div>
-                <p className="text-xs text-zinc-400 mb-3">
-                  Connect with fellow learners
-                </p>
-                <Button 
-                  onClick={() => setLocation('/community')}
-                  className="w-full bg-blue-600/80 hover:bg-blue-600 text-white text-xs font-medium py-2 rounded-lg transition-all duration-300"
-                >
-                  Join Discussion →
-                </Button>
               </CardContent>
             </Card>
           </div>
 
-          {/* Achievement Showcase */}
-          {(user?.currentStreak || 0) >= 3 && (
-            <Card className="bg-gradient-to-br from-purple-900/20 via-zinc-800 to-zinc-800/50 border-purple-700/30 animate-pulse">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <Crown className="w-5 h-5 text-purple-400" />
-                    <span className="text-purple-400 font-semibold">Recent Achievement</span>
+          {/* Achievement Display - Clean */}
+          {(user?.currentStreak || 0) >= 7 && (
+            <Card className="bg-gradient-to-r from-zinc-900/90 to-zinc-800/80 border border-zinc-700/40 backdrop-blur-sm">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500/20 to-orange-600/10 border border-orange-500/20 flex items-center justify-center">
+                      <Award className="w-6 h-6 text-orange-400" />
+                    </div>
+                    <div>
+                      <h5 className="text-white font-semibold">
+                        {(user?.currentStreak || 0) >= 30 ? "Bitcoin Expert" :
+                         (user?.currentStreak || 0) >= 14 ? "Dedicated Learner" : "Consistent Student"}
+                      </h5>
+                      <p className="text-zinc-400 text-sm">
+                        {(user?.currentStreak || 0) >= 30 ? "Exceptional commitment to Bitcoin education" :
+                         (user?.currentStreak || 0) >= 14 ? "Building strong Bitcoin knowledge foundation" : 
+                         "Developing consistent learning habits"}
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-xs text-zinc-400">Unlocked!</div>
-                </div>
-                
-                <div className="space-y-3">
-                  <h4 className="text-white font-semibold">
-                    {(user?.currentStreak || 0) >= 30 ? "🏆 Bitcoin Master" :
-                     (user?.currentStreak || 0) >= 14 ? "🥇 Dedicated Learner" :
-                     (user?.currentStreak || 0) >= 7 ? "⭐ Week Warrior" : "🎯 Consistent Student"}
-                  </h4>
-                  <p className="text-zinc-300 text-sm">
-                    {(user?.currentStreak || 0) >= 30 ? "You've maintained learning for a full month! Your Bitcoin knowledge is truly exceptional." :
-                     (user?.currentStreak || 0) >= 14 ? "Two weeks of consistent learning! You're building serious Bitcoin conviction." :
-                     (user?.currentStreak || 0) >= 7 ? "A full week of Bitcoin education! Your commitment is paying off." : 
-                     "Keep up the momentum! Consistency builds conviction."}
-                  </p>
-                  
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-zinc-400">Progress</span>
-                    <span className="text-purple-400 font-medium">{user?.currentStreak || 0} days strong</span>
+                  <div className="text-right">
+                    <div className="text-orange-400 font-semibold">{user?.currentStreak || 0}</div>
+                    <div className="text-zinc-500 text-xs">Day streak</div>
                   </div>
                 </div>
               </CardContent>
