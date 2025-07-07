@@ -129,63 +129,61 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Enhanced Main Learning Card */}
-          <Card className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-800/50 border-zinc-700 hover:border-orange-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10">
-            <CardContent className="p-8">
+          {/* Enhanced Main Learning Card - Mobile Optimized */}
+          <Card className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-800/50 border-zinc-700 hover:border-orange-500/30 transition-all duration-300">
+            <CardContent className="p-5">
               {/* Top Stats Row */}
-              <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
-                  <span className="text-orange-400 font-semibold">Day {currentDayIndex}</span>
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                  <span className="text-orange-400 font-semibold text-sm">Day {currentDayIndex}</span>
                 </div>
-                <div className="flex items-center gap-2 bg-zinc-800/50 px-3 py-1 rounded-full">
-                  <TrendingUp className="w-4 h-4 text-orange-400" />
-                  <span className="text-orange-400 font-bold">{user?.currentStreak || 0}</span>
-                  <span className="text-zinc-400 text-sm">streak</span>
+                <div className="flex items-center gap-1 bg-zinc-800/50 px-2 py-1 rounded-full">
+                  <TrendingUp className="w-3 h-3 text-orange-400" />
+                  <span className="text-orange-400 font-bold text-sm">{user?.currentStreak || 0}</span>
+                  <span className="text-zinc-400 text-xs">streak</span>
                 </div>
               </div>
 
-              <div className="space-y-6 text-center">
+              <div className="space-y-4 text-center">
                 {/* Main Title with Icon */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <div className="flex justify-center">
-                    <div className="p-3 bg-orange-500/10 rounded-full border border-orange-500/20">
-                      <MessageSquare className="w-8 h-8 text-orange-400" />
+                    <div className="p-2 bg-orange-500/10 rounded-full border border-orange-500/20">
+                      <MessageSquare className="w-5 h-5 text-orange-400" />
                     </div>
                   </div>
-                  <h3 className="text-2xl font-bold text-white leading-tight">
+                  <h3 className="text-lg font-bold text-white leading-tight">
                     {dayMetadata?.title || 'Loading today\'s lesson...'}
                   </h3>
                 </div>
                 
-                {/* Today's Preview */}
+                {/* Today's Preview - Compact */}
                 {dailyFacts && dailyFacts[0] && (
-                  <div className="bg-zinc-800/30 rounded-lg p-4 border border-zinc-700/50">
-                    <div className="flex items-center gap-2 justify-center mb-2">
+                  <div className="bg-zinc-800/30 rounded-lg p-3 border border-zinc-700/50">
+                    <div className="flex items-center gap-1 justify-center mb-1">
                       <div className="w-1 h-1 bg-orange-400 rounded-full"></div>
-                      <span className="text-orange-400 text-sm font-medium">Today's Focus</span>
+                      <span className="text-orange-400 text-xs font-medium">Today's Focus</span>
                     </div>
-                    <p className="text-zinc-300 text-lg">
+                    <p className="text-zinc-300 text-sm">
                       {dailyFacts[0].title}
                     </p>
                   </div>
                 )}
                 
-                {/* Progress Motivation */}
-                <div className="space-y-2">
-                  <div className="text-zinc-400 text-sm">
-                    {user?.currentStreak === 0 ? "Start your learning journey today" :
-                     user?.currentStreak === 1 ? "Great start! Keep the momentum going" :
-                     user?.currentStreak && user.currentStreak < 7 ? "Building a solid habit" :
-                     user?.currentStreak && user.currentStreak < 30 ? "You're on fire! 🔥" :
-                     "Bitcoin conviction master in the making"}
-                  </div>
+                {/* Progress Motivation - Compact */}
+                <div className="text-zinc-400 text-xs">
+                  {user?.currentStreak === 0 ? "Start your learning journey today" :
+                   user?.currentStreak === 1 ? "Great start! Keep going" :
+                   user?.currentStreak && user.currentStreak < 7 ? "Building a solid habit" :
+                   user?.currentStreak && user.currentStreak < 30 ? "You're on fire! 🔥" :
+                   "Bitcoin conviction master in the making"}
                 </div>
                 
-                {/* Enhanced Continue Button */}
+                {/* Enhanced Continue Button - Compact */}
                 <Button 
                   onClick={() => setLocation('/learn')}
-                  className="w-full bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white text-lg py-6 rounded-lg shadow-lg hover:shadow-orange-500/20 transition-all duration-300 transform hover:scale-105 font-semibold"
+                  className="w-full bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white font-semibold py-3 rounded-lg transition-all duration-300"
                 >
                   Continue Learning →
                 </Button>
