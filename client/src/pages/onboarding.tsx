@@ -41,7 +41,7 @@ export default function Onboarding() {
               <div className="text-center space-y-4">
                 <div className="text-lg space-y-2">
                   <div className="text-zinc-300">Understanding Bitcoin takes time</div>
-                  <div className="text-zinc-300">Building conviction takes consistency</div>
+                  <div className="text-zinc-300">Building conviction takes community</div>
                   <div className="text-orange-400 font-semibold text-xl">This is HODLearn</div>
                 </div>
                 <p className="text-zinc-400 text-base max-w-2xl mx-auto">
