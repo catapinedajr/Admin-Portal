@@ -27,7 +27,7 @@ export default function Onboarding() {
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold text-white mb-4">Welcome to HODLearn</h1>
               <p className="text-zinc-300 text-lg">
-                Learn • <span className="text-orange-500">HODL</span> • Repeat
+                Building conviction takes community
               </p>
             </div>
 
@@ -36,7 +36,6 @@ export default function Onboarding() {
               
               {/* Core message */}
               <div className="space-y-3">
-                <Bitcoin className="w-16 h-16 text-orange-500 mx-auto" />
                 <p className="text-zinc-300 text-lg leading-relaxed max-w-lg mx-auto">
                   Learn Bitcoin step by step with daily lessons and safe practice tools
                 </p>
