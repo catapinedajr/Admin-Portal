@@ -43,11 +43,23 @@ function OnboardingRedirect() {
 
   useEffect(() => {
     try {
+      // Check for reset parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('reset-onboarding') === 'true') {
+        localStorage.removeItem('hodlearn-onboarding-completed');
+        console.log('Onboarding reset via URL parameter');
+      }
+
       const hasCompletedOnboarding = localStorage.getItem('hodlearn-onboarding-completed');
+      console.log('Onboarding check - localStorage value:', hasCompletedOnboarding);
       
       if (!hasCompletedOnboarding) {
+        console.log('No onboarding completion found - redirecting to onboarding');
         setLocation('/onboarding');
+        return;
       }
+      
+      console.log('Onboarding already completed - staying on home');
     } catch (error) {
       // If localStorage fails in Safari, skip onboarding
       console.warn('Safari localStorage access issue, skipping onboarding:', error);
