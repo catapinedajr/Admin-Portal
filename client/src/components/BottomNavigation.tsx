@@ -73,29 +73,31 @@ export default function BottomNavigation({ activeSection, onSectionChange }: Bot
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-zinc-800 safe-area-pb z-50">
-      <div className="flex items-center justify-around px-2 py-3">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = currentSection === item.id;
-          
-          return (
-            <Button
-              key={item.id}
-              variant="ghost"
-              size="sm"
-              onClick={() => handleNavigation(item.id, item.path)}
-              title={item.label}
-              className={`flex items-center justify-center h-auto p-4 min-w-0 ${
-                isActive 
-                  ? 'text-orange-400 bg-orange-400/10' 
-                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
-              }`}
-            >
-              <Icon className="w-10 h-10" />
-              <span className="sr-only">{item.label}</span>
-            </Button>
-          );
-        })}
+      <div className="flex items-center px-2 py-3 max-w-sm mx-auto">
+        <div className="flex items-center justify-between w-full">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = currentSection === item.id;
+            
+            return (
+              <Button
+                key={item.id}
+                variant="ghost"
+                size="sm"
+                onClick={() => handleNavigation(item.id, item.path)}
+                title={item.label}
+                className={`flex items-center justify-center h-auto p-4 flex-1 ${
+                  isActive 
+                    ? 'text-orange-400 bg-orange-400/10' 
+                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
+                }`}
+              >
+                <Icon className="w-10 h-10" />
+                <span className="sr-only">{item.label}</span>
+              </Button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
