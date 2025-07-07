@@ -231,7 +231,7 @@ function SimulatorsPage(props: SimulatorsPageProps = {}) {
 
       {/* Floating Paywall Overlay - Appears over the cards */}
       {isCurrentSimulatorLocked && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="fixed top-16 left-0 right-0 bottom-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <Card className="bg-zinc-900/95 border-orange-500/30 max-w-lg w-full">
             <CardContent className="p-8 text-center">
               <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -240,9 +240,37 @@ function SimulatorsPage(props: SimulatorsPageProps = {}) {
               <h3 className="text-xl font-bold text-white mb-2">
                 Premium Simulators
               </h3>
-              <p className="text-zinc-400 mb-6">
+              <p className="text-zinc-400 mb-4">
                 Unlock all 6 interactive Bitcoin education tools. Perfect your Bitcoin knowledge with hands-on practice.
               </p>
+              
+              {/* Premium Features List */}
+              <div className="text-left mb-6 space-y-2">
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
+                  <span className="text-zinc-300">Wallet Explorer & Recovery Practice</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
+                  <span className="text-zinc-300">Transaction Builder & Fee Optimization</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
+                  <span className="text-zinc-300">HODL vs Traditional Assets Comparison</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
+                  <span className="text-zinc-300">DCA Strategy Backtesting</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
+                  <span className="text-zinc-300">Transfer Speed Race Simulation</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
+                  <span className="text-zinc-300">Safe Practice Environment (No Real Money)</span>
+                </div>
+              </div>
               <Button 
                 onClick={() => setSubscriptionTier('premium')}
                 className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 text-lg font-semibold w-full"
