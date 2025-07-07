@@ -119,30 +119,75 @@ export default function HomePage() {
             </h1>
           </div>
 
-          {/* Streamlined Progress Header */}
+          {/* OPTION 1: Linear Progress Bar Style */}
+          {false && (
           <Card className="bg-gradient-to-r from-zinc-900/90 to-zinc-800/80 border border-zinc-700/40">
             <CardContent className="p-5">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-white font-semibold">Learning Progress</h3>
+                    <p className="text-zinc-400 text-sm">Day {user?.currentStreak || 0} of your Bitcoin journey</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-orange-400 font-bold text-lg">{user?.currentStreak || 0}</div>
+                    <div className="text-zinc-500 text-xs">Days</div>
+                  </div>
+                </div>
+                <div className="w-full bg-zinc-800 rounded-full h-2">
+                  <div 
+                    className="bg-gradient-to-r from-orange-500 to-orange-400 h-2 rounded-full transition-all duration-500"
+                    style={{ width: `${Math.min((user?.currentStreak || 0) * 3.33, 100)}%` }}
+                  />
+                </div>
+                <div className="flex justify-between text-xs text-zinc-500">
+                  <span>Start</span>
+                  <span>30 Days</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          )}
+
+          {/* OPTION 2: Stats Dashboard Style */}
+          {false && (
+          <Card className="bg-gradient-to-r from-zinc-900/90 to-zinc-800/80 border border-zinc-700/40">
+            <CardContent className="p-5">
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center">
+                  <div className="text-orange-400 font-bold text-2xl">{user?.currentStreak || 0}</div>
+                  <div className="text-zinc-400 text-xs uppercase tracking-wider">Current Streak</div>
+                </div>
+                <div className="text-center border-l border-r border-zinc-700/50">
+                  <div className="text-white font-bold text-2xl">{Math.ceil((user?.currentStreak || 0) / 7)}</div>
+                  <div className="text-zinc-400 text-xs uppercase tracking-wider">Weeks Active</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-white font-bold text-2xl">{currentDayIndex}</div>
+                  <div className="text-zinc-400 text-xs uppercase tracking-wider">Current Day</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          )}
+
+          {/* OPTION 3: Minimalist Badge Style (ACTIVE) */}
+          <Card className="bg-gradient-to-r from-zinc-900/90 to-zinc-800/80 border border-zinc-700/40">
+            <CardContent className="p-4">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-6">
-                  <div className="relative">
-                    <div className="w-12 h-12 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center">
-                      <span className="text-orange-400 font-bold text-lg">{user?.currentStreak || 0}</span>
-                    </div>
-                    <div className="absolute -inset-0.5">
-                      <div 
-                        className="w-13 h-13 rounded-full border-2"
-                        style={{
-                          background: `conic-gradient(from 0deg, #f97316 0deg, #f97316 ${Math.min((user?.currentStreak || 0) * 12, 360)}deg, transparent ${Math.min((user?.currentStreak || 0) * 12, 360)}deg)`
-                        }}
-                      />
-                    </div>
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500/20 to-orange-600/10 border border-orange-500/30 flex items-center justify-center">
+                    <span className="text-orange-400 font-bold">{user?.currentStreak || 0}</span>
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold">Day {user?.currentStreak || 0} Streak</h3>
+                    <h3 className="text-white font-medium">Day {user?.currentStreak || 0} Streak</h3>
                     <p className="text-zinc-400 text-sm">Building conviction takes consistency</p>
                   </div>
                 </div>
-                <div className="text-orange-400 text-sm font-medium">Active</div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                  <span className="text-orange-400 text-sm font-medium">Active</span>
+                </div>
               </div>
             </CardContent>
           </Card>
