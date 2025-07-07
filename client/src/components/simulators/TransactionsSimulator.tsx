@@ -509,7 +509,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
             
             {/* Broadcasting/Mempool Phase */}
             {(transactionState === "broadcasting" || transactionJourney === "mempool") && (
-              <Card className="bg-blue-900/20 border-blue-800">
+              <Card className="bg-blue-900/60 border-blue-600">
                 <CardContent className="p-3">
                   <h5 className="font-bold text-blue-300 mb-3 text-center text-lg">Transaction Journey</h5>
                   
@@ -541,10 +541,12 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
                     </div>
                   </div>
 
-                  <div className="text-center text-blue-200 bg-blue-900/30 p-2 rounded">
-                    <p className="text-xs">
-                      {transactionJourney === "broadcast" && "Broadcasting transaction to Bitcoin network nodes..."}
-                      {transactionJourney === "mempool" && "Transaction queued in mempool, awaiting miner selection..."}
+                  {/* What's Happening Now */}
+                  <div className="text-center text-blue-100 bg-blue-800/60 p-3 rounded-lg border border-blue-600">
+                    <div className="font-semibold text-sm mb-1">What's Happening Now:</div>
+                    <p className="text-xs leading-relaxed">
+                      {transactionJourney === "broadcast" && "Your transaction is being broadcast to thousands of Bitcoin nodes worldwide. Each node validates the transaction signature and checks that you have sufficient funds."}
+                      {transactionJourney === "mempool" && "Your transaction is now in the mempool (memory pool) where it waits with other pending transactions. Miners are examining it to potentially include in the next block."}
                     </p>
                   </div>
                 </CardContent>
@@ -553,7 +555,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
 
             {/* Confirmation Phase */}
             {transactionState === "confirming" && (
-              <Card className="bg-yellow-900/20 border-yellow-800">
+              <Card className="bg-yellow-900/60 border-yellow-600">
                 <CardContent className="p-3">
                   <h5 className="font-bold text-yellow-300 mb-3 text-center text-lg">Transaction Journey - Block Confirmation</h5>
 
@@ -613,9 +615,9 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
                     )}
                     
                     {/* Educational Content Based on Confirmation Count */}
-                    <div className="bg-blue-900/30 p-2 rounded border border-blue-800/50">
-                      <div className="font-medium text-blue-300 mb-1 text-xs">🎓 What's happening now:</div>
-                      <div className="text-blue-200 text-xs leading-tight">
+                    <div className="bg-blue-800/60 p-3 rounded-lg border border-blue-600">
+                      <div className="font-semibold text-blue-100 mb-1 text-sm">What's Happening Now:</div>
+                      <div className="text-blue-100 text-xs leading-relaxed">
                         {confirmationCount === 0 && "Your transaction is waiting in the mempool - a pool of unconfirmed transactions that miners are selecting from."}
                         {confirmationCount === 1 && "First confirmation! A miner has included your transaction in a block. This provides basic security against double-spending."}
                         {confirmationCount === 2 && "Second confirmation means another block was added on top. Your transaction is becoming more secure with each block."}
@@ -637,7 +639,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
 
             {/* Completion Phase */}
             {transactionState === "confirmed" && (
-              <Card className="bg-green-900/20 border-green-800">
+              <Card className="bg-green-900/60 border-green-600">
                 <CardContent className="p-3">
                   <div className="text-center mb-3">
                     <CheckCircle className="w-10 h-10 text-green-400 mx-auto mb-2" />
@@ -670,17 +672,18 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
                   </div>
                   
                   <div className="space-y-2 mb-3">
-                    <div className="bg-green-900/30 p-2 rounded">
-                      <div className="font-medium text-green-300 mb-1 text-xs">🎓 Transaction Complete:</div>
-                      <div className="text-green-200 text-xs leading-tight">
+                    <div className="bg-green-800/60 p-3 rounded-lg border border-green-600">
+                      <div className="font-semibold text-green-100 mb-1 text-sm">What's Happening Now:</div>
+                      <div className="text-green-100 text-xs leading-relaxed">
                         Your Bitcoin transaction has achieved 6 confirmations and is now permanently settled on the blockchain. 
-                        This transaction is irreversible and the recipient now has full control of the {transactionInputs.amount} BTC.
+                        This transaction is irreversible and the recipient now has full control of the {transactionInputs.amount} BTC. 
+                        The transaction is now part of Bitcoin's permanent ledger, secured by the computational power of the entire network.
                       </div>
                     </div>
                     
-                    <div className="bg-green-900/20 p-1 rounded border border-green-800/50">
+                    <div className="bg-green-900/40 p-2 rounded border border-green-700">
                       <span className="text-green-300 text-xs">💡 </span>
-                      <span className="text-green-200 text-xs">
+                      <span className="text-green-100 text-xs">
                         In real Bitcoin transactions, this entire process would take 10-60 minutes depending on network congestion and fee priority.
                       </span>
                     </div>
