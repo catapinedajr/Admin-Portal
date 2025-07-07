@@ -91,7 +91,7 @@ export default function BottomNavigation({ activeSection, onSectionChange }: Bot
                   : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
               }`}
             >
-              <Icon className="w-10 h-10" />
+              <Icon className="w-12 h-12" />
               <span className="sr-only">{item.label}</span>
             </Button>
           );
