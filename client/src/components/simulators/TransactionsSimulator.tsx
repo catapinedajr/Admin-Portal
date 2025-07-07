@@ -614,17 +614,11 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
                       </div>
                     )}
                     
-                    {/* Educational Content Based on Confirmation Count */}
+                    {/* Educational Content for Confirmation Phase */}
                     <div className="bg-blue-800/90 p-3 rounded-lg border border-blue-500">
                       <div className="font-semibold text-blue-100 mb-1 text-sm">What's Happening Now:</div>
                       <div className="text-blue-100 text-xs leading-relaxed">
-                        {confirmationCount === 0 && "Your transaction is waiting in the mempool - a pool of unconfirmed transactions that miners are selecting from."}
-                        {confirmationCount === 1 && "First confirmation! A miner has included your transaction in a block. This provides basic security against double-spending."}
-                        {confirmationCount === 2 && "Second confirmation means another block was added on top. Your transaction is becoming more secure with each block."}
-                        {confirmationCount === 3 && "Three confirmations! Most merchants accept payments at this point as the chance of reversal is extremely low."}
-                        {confirmationCount === 4 && "Four confirmations provide institutional-grade security. Large exchanges often require this many confirmations."}
-                        {confirmationCount === 5 && "Five confirmations! Your transaction is now extremely secure. The computational cost to reverse it would be enormous."}
-                        {confirmationCount === 6 && "Six confirmations is considered fully settled! Your Bitcoin is now permanently and irreversibly transferred."}
+                        Miners are adding new blocks on top of your transaction. Each confirmation makes your transaction exponentially more secure by requiring more computational power to reverse. After 6 confirmations, your transaction is considered permanently settled.
                       </div>
                     </div>
                     
