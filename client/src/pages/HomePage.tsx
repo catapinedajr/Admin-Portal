@@ -186,22 +186,22 @@ export default function HomePage() {
             </CardContent>
           </Card>
 
-          {/* Quick Access Grid */}
-          <div className="grid grid-cols-2 gap-4">
+          {/* Quick Access Grid - Compact */}
+          <div className="grid grid-cols-2 gap-3">
             {/* Finance/Money Card */}
             <Card className="bg-gradient-to-br from-zinc-800 to-zinc-800/50 border-zinc-700 hover:border-zinc-600 transition-colors">
-              <CardContent className="p-4">
+              <CardContent className="p-3">
                 <div className="flex items-center gap-2 mb-2">
-                  <TrendingUp className="w-4 h-4 text-orange-400" />
-                  <span className="text-sm font-medium text-white">Why Bitcoin?</span>
+                  <TrendingUp className="w-3 h-3 text-orange-400" />
+                  <span className="text-xs font-medium text-white">Why Bitcoin?</span>
                 </div>
-                <p className="text-xs text-zinc-400 mb-3">
-                  See how inflation affects your money
+                <p className="text-xs text-zinc-400 mb-2">
+                  See inflation's impact
                 </p>
                 <Button 
                   onClick={() => setLocation('/money')}
                   size="sm"
-                  className="w-full bg-orange-600 hover:bg-orange-700 text-white"
+                  className="w-full bg-orange-600 hover:bg-orange-700 text-white text-xs py-1.5"
                 >
                   Explore
                 </Button>
@@ -210,18 +210,18 @@ export default function HomePage() {
 
             {/* Simulators Card */}
             <Card className="bg-gradient-to-br from-zinc-800 to-zinc-800/50 border-zinc-700 hover:border-zinc-600 transition-colors">
-              <CardContent className="p-4">
+              <CardContent className="p-3">
                 <div className="flex items-center gap-2 mb-2">
-                  <Gamepad2 className="w-4 h-4 text-zinc-300" />
-                  <span className="text-sm font-medium text-white">Practice</span>
+                  <Gamepad2 className="w-3 h-3 text-zinc-300" />
+                  <span className="text-xs font-medium text-white">Practice</span>
                 </div>
-                <p className="text-xs text-zinc-400 mb-3">
-                  Safe hands-on Bitcoin experience
+                <p className="text-xs text-zinc-400 mb-2">
+                  Safe Bitcoin experience
                 </p>
                 <Button 
                   onClick={() => setLocation('/simulators')}
                   size="sm"
-                  className="w-full bg-orange-600 hover:bg-orange-700 text-white"
+                  className="w-full bg-orange-600 hover:bg-orange-700 text-white text-xs py-1.5"
                 >
                   Try Now
                 </Button>
@@ -229,21 +229,21 @@ export default function HomePage() {
             </Card>
           </div>
 
-          {/* Community Quick Link */}
+          {/* Community Quick Link - Compact */}
           <Card className="bg-zinc-800/30 border-zinc-700/50">
-            <CardContent className="p-4">
+            <CardContent className="p-3">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Users className="w-5 h-5 text-orange-400" />
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-orange-400" />
                   <div>
-                    <h3 className="text-sm font-medium text-white">Join the Community</h3>
-                    <p className="text-xs text-zinc-400">Connect with other learners</p>
+                    <h3 className="text-xs font-medium text-white">Join the Community</h3>
+                    <p className="text-xs text-zinc-400">Connect with learners</p>
                   </div>
                 </div>
                 <Button 
                   onClick={() => setLocation('/community')}
                   size="sm"
-                  className="bg-orange-600 hover:bg-orange-700 text-white px-4"
+                  className="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1.5 text-xs"
                 >
                   Join
                 </Button>
