@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import BottomNavigation from "@/components/BottomNavigation";
-import DevSubscriptionToggle from "@/components/DevSubscriptionToggle";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { Crown, Gem, Gamepad2, MoreHorizontal, User as UserIcon, Users, MessageSquare, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -240,9 +239,6 @@ export default function HomePage() {
           else if (section === 'more') setLocation('/more');
         }}
       />
-      
-      {/* Development subscription toggle */}
-      <DevSubscriptionToggle />
     </div>
   );
 }

@@ -2,7 +2,6 @@ import React, { useState, lazy, Suspense } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import BottomNavigation from "@/components/BottomNavigation";
-import DevSubscriptionToggle from "@/components/DevSubscriptionToggle";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { Crown, Gem, User as UserIcon, Lock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -137,69 +136,122 @@ function SimulatorsPage(props: SimulatorsPageProps = {}) {
 
   return (
     <div className="space-y-6 pb-20">
-      {/* Floating Paywall Overlay - Mobile Optimized */}
+      {/* Simulator Overview Cards - Always visible */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        <Card className="bg-zinc-800/50 border-zinc-700/50 hover:border-orange-500/40 transition-all duration-300">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                <Wallet className="w-5 h-5 text-orange-500" />
+              </div>
+              <h4 className="font-semibold text-white">Wallet Explorer</h4>
+            </div>
+            <p className="text-sm text-zinc-400 mb-3">
+              Compare wallet types, understand security trade-offs, and practice emergency recovery scenarios safely.
+            </p>
+            <div className="text-xs text-orange-400 font-medium">Interactive • Safe Practice</div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-zinc-800/50 border-zinc-700/50 hover:border-orange-500/40 transition-all duration-300">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                <Coins className="w-5 h-5 text-orange-500" />
+              </div>
+              <h4 className="font-semibold text-white">Transaction Builder</h4>
+            </div>
+            <p className="text-sm text-zinc-400 mb-3">
+              Build Bitcoin transactions, understand fees, and watch confirmations happen in real-time.
+            </p>
+            <div className="text-xs text-orange-400 font-medium">Real-time • Educational</div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-zinc-800/50 border-zinc-700/50 hover:border-orange-500/40 transition-all duration-300">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                <ArrowLeftRight className="w-5 h-5 text-orange-500" />
+              </div>
+              <h4 className="font-semibold text-white">Transfer Race</h4>
+            </div>
+            <p className="text-sm text-zinc-400 mb-3">
+              Watch Bitcoin vs traditional banking settlement speeds side-by-side in an exciting race.
+            </p>
+            <div className="text-xs text-orange-400 font-medium">Race Simulation • Eye-opening</div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-zinc-800/50 border-zinc-700/50 hover:border-orange-500/40 transition-all duration-300">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-orange-500" />
+              </div>
+              <h4 className="font-semibold text-white">HODL Strategy</h4>
+            </div>
+            <p className="text-sm text-zinc-400 mb-3">
+              See how Bitcoin performed vs stocks, gold, and real estate across different time periods.
+            </p>
+            <div className="text-xs text-orange-400 font-medium">Historical Data • Comparison</div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-zinc-800/50 border-zinc-700/50 hover:border-orange-500/40 transition-all duration-300">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                <DollarSign className="w-5 h-5 text-orange-500" />
+              </div>
+              <h4 className="font-semibold text-white">DCA Calculator</h4>
+            </div>
+            <p className="text-sm text-zinc-400 mb-3">
+              Backtest dollar-cost averaging strategies with authentic Bitcoin price history.
+            </p>
+            <div className="text-xs text-orange-400 font-medium">Backtesting • Strategy Planning</div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-zinc-800/50 border-zinc-700/50 hover:border-orange-500/40 transition-all duration-300">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                <FileText className="w-5 h-5 text-orange-500" />
+              </div>
+              <h4 className="font-semibold text-white">Fee Simulator</h4>
+            </div>
+            <p className="text-sm text-zinc-400 mb-3">
+              Learn how Bitcoin transaction fees work and discover optimization strategies.
+            </p>
+            <div className="text-xs text-orange-400 font-medium">Cost Optimization • Practical</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Floating Paywall Overlay - Appears over the cards */}
       {isCurrentSimulatorLocked && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-3">
-          <Card className="bg-zinc-900/95 border-orange-500/30 w-full max-w-sm mx-auto">
-            <CardContent className="p-5">
-              <div className="text-center mb-4">
-                <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Lock className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-lg font-bold text-white mb-1">
-                  Premium Simulators
-                </h3>
-                <p className="text-sm text-zinc-400">
-                  Unlock 6 interactive Bitcoin tools
-                </p>
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <Card className="bg-zinc-900/95 border-orange-500/30 max-w-lg w-full">
+            <CardContent className="p-8 text-center">
+              <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Lock className="w-8 h-8 text-white" />
               </div>
-
-              {/* Compact Simulator List */}
-              <div className="space-y-2 mb-5">
-                <div className="flex items-center gap-3 p-2 bg-zinc-800/30 rounded">
-                  <Wallet className="w-4 h-4 text-orange-500 flex-shrink-0" />
-                  <div>
-                    <div className="text-sm font-medium text-white">Wallet Explorer</div>
-                    <div className="text-xs text-zinc-400">Compare types & practice recovery</div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 p-2 bg-zinc-800/30 rounded">
-                  <Coins className="w-4 h-4 text-orange-500 flex-shrink-0" />
-                  <div>
-                    <div className="text-sm font-medium text-white">Transaction Builder</div>
-                    <div className="text-xs text-zinc-400">Build & watch settlements</div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 p-2 bg-zinc-800/30 rounded">
-                  <TrendingUp className="w-4 h-4 text-orange-500 flex-shrink-0" />
-                  <div>
-                    <div className="text-sm font-medium text-white">HODL Strategy</div>
-                    <div className="text-xs text-zinc-400">Historical performance vs assets</div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 p-2 bg-zinc-800/30 rounded">
-                  <DollarSign className="w-4 h-4 text-orange-500 flex-shrink-0" />
-                  <div>
-                    <div className="text-sm font-medium text-white">DCA Calculator + 2 More</div>
-                    <div className="text-xs text-zinc-400">Transfer Race & Fee Simulator</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="text-center">
-                <Button 
-                  onClick={() => setSubscriptionTier('premium')}
-                  className="bg-orange-500 hover:bg-orange-600 text-white w-full py-3 font-semibold"
-                >
-                  Continue Free - Limited Time
-                </Button>
-                <p className="text-xs text-zinc-500 mt-2">
-                  Free during beta testing
-                </p>
-              </div>
+              <h3 className="text-xl font-bold text-white mb-2">
+                Premium Simulators
+              </h3>
+              <p className="text-zinc-400 mb-6">
+                Unlock all 6 interactive Bitcoin education tools. Perfect your Bitcoin knowledge with hands-on practice.
+              </p>
+              <Button 
+                onClick={() => setSubscriptionTier('premium')}
+                className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 text-lg font-semibold w-full"
+              >
+                Continue Free - Limited Time
+              </Button>
+              <p className="text-xs text-zinc-500 mt-3">
+                Free during beta testing
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -374,9 +426,6 @@ function SimulatorsPageWithLayout() {
           else if (section === 'more') setLocation('/more');
         }}
       />
-      
-      {/* Development subscription toggle */}
-      <DevSubscriptionToggle />
     </div>
   );
 }
