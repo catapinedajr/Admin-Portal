@@ -106,7 +106,7 @@ export default function HomePage() {
       <main className="max-w-6xl mx-auto px-4 py-6 pb-24">
         <div className="space-y-8">
           {/* Welcome Header - Time-based greeting */}
-          <div className="text-center space-y-4">
+          <div className="text-center space-y-6">
             <h1 className="text-3xl font-bold text-white">
               {(() => {
                 const hour = new Date().getHours();
@@ -117,6 +117,13 @@ export default function HomePage() {
                 return greeting + (user?.firstName ? `, ${user.firstName}` : '') + '!';
               })()}
             </h1>
+            
+            {/* Brand Tagline */}
+            <div className="space-y-2">
+              <p className="text-lg text-zinc-300">Understanding Bitcoin takes time</p>
+              <p className="text-lg text-zinc-300">Building conviction takes community</p>
+              <p className="text-lg font-semibold text-orange-400">This is HODLearn</p>
+            </div>
           </div>
 
           {/* OPTION 1: Linear Progress Bar Style */}
