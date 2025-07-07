@@ -109,3 +109,6 @@ export { default as Wallet } from "lucide-react/dist/esm/icons/wallet";
 export { default as ArrowLeftRight } from "lucide-react/dist/esm/icons/arrow-left-right";
 export { default as AlertCircle } from "lucide-react/dist/esm/icons/alert-circle";
 export { default as Bitcoin } from "lucide-react/dist/esm/icons/bitcoin";
+export { default as Package } from "lucide-react/dist/esm/icons/package";
+export { default as ExternalLink } from "lucide-react/dist/esm/icons/external-link";
+export { default as Gift } from "lucide-react/dist/esm/icons/gift";

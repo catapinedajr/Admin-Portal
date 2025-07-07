@@ -15,7 +15,7 @@ import {
   Shield,
   TrendingUp,
   Wallet,
-  Shirt,
+  Package,
   Star,
   ExternalLink,
   Gift
@@ -77,7 +77,7 @@ export default function MoreSection({ moreSubTab, setMoreSubTab }: MoreSectionPr
               { id: "hardware", label: "Hardware", icon: Shield },
               { id: "exchanges", label: "Exchanges", icon: TrendingUp },
               { id: "ira", label: "Bitcoin IRA", icon: Wallet },
-              { id: "merch", label: "Merch", icon: Shirt }
+              { id: "merch", label: "Merch", icon: Package }
             ].map((category) => {
               const Icon = category.icon;
               return (
