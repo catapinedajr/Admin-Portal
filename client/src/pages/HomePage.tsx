@@ -158,7 +158,7 @@ export default function HomePage() {
           {/* Quick Access Grid */}
           <div className="grid grid-cols-2 gap-4">
             {/* Finance/Money Card */}
-            <Card className="bg-gradient-to-br from-orange-950/30 to-zinc-800 border-orange-800/30 hover:border-orange-700/50 transition-colors">
+            <Card className="bg-gradient-to-br from-zinc-800 to-zinc-800/50 border-zinc-700 hover:border-zinc-600 transition-colors">
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <TrendingUp className="w-4 h-4 text-orange-400" />
