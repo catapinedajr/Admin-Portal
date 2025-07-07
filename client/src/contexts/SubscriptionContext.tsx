@@ -37,9 +37,12 @@ export function SubscriptionProvider({ children }: SubscriptionProviderProps) {
 
   // Load subscription state from localStorage on mount
   useEffect(() => {
-    // Clear any existing premium access for testing
-    localStorage.removeItem('hodlearn_subscription_tier');
-    setSubscriptionTierState('free');
+    const savedTier = localStorage.getItem('hodlearn_subscription_tier') as SubscriptionTier;
+    if (savedTier && (savedTier === 'free' || savedTier === 'premium')) {
+      setSubscriptionTierState(savedTier);
+    } else {
+      setSubscriptionTierState('free');
+    }
   }, []);
 
   // Save subscription state to localStorage when it changes

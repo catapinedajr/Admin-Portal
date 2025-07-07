@@ -2,8 +2,9 @@ import React, { useState, lazy, Suspense } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import BottomNavigation from "@/components/BottomNavigation";
+import DevSubscriptionToggle from "@/components/DevSubscriptionToggle";
 import { useSubscription } from "@/contexts/SubscriptionContext";
-import { Crown, Gem, User as UserIcon } from "lucide-react";
+import { Crown, Gem, User as UserIcon, Lock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, Wallet, ArrowLeftRight, Coins, TrendingUp, DollarSign, TrendingDown, FileText } from "lucide-react";
 
@@ -38,10 +39,12 @@ function SimulatorsPage(props: SimulatorsPageProps = {}) {
   const [internalSecurityScore, setInternalSecurityScore] = useState(0);
   const [internalUserSecurityAnswers, setInternalUserSecurityAnswers] = useState<Record<number, boolean>>({});
   
+  // Use subscription context for paywall
+  const { isPremiumTier, canAccessSimulator, setSubscriptionTier } = useSubscription();
+  
   // Use props if provided, otherwise use internal state
   const simulationsSubTab = props.simulationsSubTab ?? internalSimulationsSubTab;
   const setSimulationsSubTab = props.setSimulationsSubTab ?? setInternalSimulationsSubTab;
-  const isPremiumTier = props.isPremiumTier ?? true; // Default to premium for standalone
   const securityStage = props.securityStage ?? internalSecurityStage;
   const setSecurityStage = props.setSecurityStage ?? setInternalSecurityStage;
   const securityScore = props.securityScore ?? internalSecurityScore;
@@ -129,8 +132,37 @@ function SimulatorsPage(props: SimulatorsPageProps = {}) {
     }
   };
 
+  // Check if current simulator is locked for free users
+  const isCurrentSimulatorLocked = !isPremiumTier && !canAccessSimulator(simulationsSubTab);
+
   return (
     <div className="space-y-6 pb-20">
+      {/* Paywall Check - Show if trying to access premium simulator */}
+      {isCurrentSimulatorLocked && (
+        <Card className="bg-zinc-900/95 border-orange-500/20">
+          <CardContent className="p-8 text-center">
+            <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Lock className="w-8 h-8 text-white" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">
+              Premium Simulator
+            </h3>
+            <p className="text-zinc-400 mb-4">
+              Advanced simulators are available with premium access. Free users can access Safety Training and Inflation Calculator.
+            </p>
+            <Button 
+              onClick={() => setSubscriptionTier('premium')}
+              className="bg-orange-500 hover:bg-orange-600 text-white px-8"
+            >
+              Continue Free - Limited Time
+            </Button>
+            <p className="text-xs text-zinc-500 mt-3">
+              Free during beta testing
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Simulator Sub-navigation - Centered like Learn page */}
       <div className="flex justify-center">
         <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2">
@@ -216,10 +248,12 @@ function SimulatorsPage(props: SimulatorsPageProps = {}) {
         </div>
       </div>
 
-      {/* Active Simulator Content */}
-      <div className="px-4">
-        {renderActiveSimulator()}
-      </div>
+      {/* Active Simulator Content - only if not locked */}
+      {!isCurrentSimulatorLocked && (
+        <div className="px-4">
+          {renderActiveSimulator()}
+        </div>
+      )}
     </div>
   );
 }
@@ -298,6 +332,9 @@ function SimulatorsPageWithLayout() {
           else if (section === 'more') setLocation('/more');
         }}
       />
+      
+      {/* Development subscription toggle */}
+      <DevSubscriptionToggle />
     </div>
   );
 }
