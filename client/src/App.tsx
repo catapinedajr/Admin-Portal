@@ -71,7 +71,7 @@ function Router() {
         <Route path="/more" component={MorePage} />
         <Route path="/account" component={AccountPage} />
         <Route path="/about" component={About} />
-        <Route path="/" component={HomePage} />
+        <Route path="/" component={OnboardingRedirect} />
         <Route component={NotFound} />
       </Switch>
     </AppContextProvider>
