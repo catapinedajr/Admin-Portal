@@ -73,7 +73,7 @@ export default function BottomNavigation({ activeSection, onSectionChange }: Bot
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-zinc-800 safe-area-pb z-50">
-      <div className="grid grid-cols-5 gap-0 px-4 py-3">
+      <div className="grid grid-cols-6 gap-0 px-4 py-3">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = currentSection === item.id;
