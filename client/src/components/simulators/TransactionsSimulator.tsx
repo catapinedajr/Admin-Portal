@@ -509,7 +509,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
             
             {/* Broadcasting/Mempool Phase */}
             {(transactionState === "broadcasting" || transactionJourney === "mempool") && (
-              <Card className="bg-blue-900/60 border-blue-600">
+              <Card className="bg-blue-900/90 border-blue-500">
                 <CardContent className="p-3">
                   <h5 className="font-bold text-blue-300 mb-3 text-center text-lg">Transaction Journey</h5>
                   
@@ -542,7 +542,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
                   </div>
 
                   {/* What's Happening Now */}
-                  <div className="text-center text-blue-100 bg-blue-800/60 p-3 rounded-lg border border-blue-600">
+                  <div className="text-center text-blue-100 bg-blue-800/90 p-3 rounded-lg border border-blue-500">
                     <div className="font-semibold text-sm mb-1">What's Happening Now:</div>
                     <p className="text-xs leading-relaxed">
                       {transactionJourney === "broadcast" && "Your transaction is being broadcast to thousands of Bitcoin nodes worldwide. Each node validates the transaction signature and checks that you have sufficient funds."}
@@ -555,7 +555,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
 
             {/* Confirmation Phase */}
             {transactionState === "confirming" && (
-              <Card className="bg-yellow-900/60 border-yellow-600">
+              <Card className="bg-yellow-900/90 border-yellow-500">
                 <CardContent className="p-3">
                   <h5 className="font-bold text-yellow-300 mb-3 text-center text-lg">Transaction Journey - Block Confirmation</h5>
 
@@ -615,7 +615,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
                     )}
                     
                     {/* Educational Content Based on Confirmation Count */}
-                    <div className="bg-blue-800/60 p-3 rounded-lg border border-blue-600">
+                    <div className="bg-blue-800/90 p-3 rounded-lg border border-blue-500">
                       <div className="font-semibold text-blue-100 mb-1 text-sm">What's Happening Now:</div>
                       <div className="text-blue-100 text-xs leading-relaxed">
                         {confirmationCount === 0 && "Your transaction is waiting in the mempool - a pool of unconfirmed transactions that miners are selecting from."}
@@ -639,7 +639,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
 
             {/* Completion Phase */}
             {transactionState === "confirmed" && (
-              <Card className="bg-green-900/60 border-green-600">
+              <Card className="bg-green-900/90 border-green-500">
                 <CardContent className="p-3">
                   <div className="text-center mb-3">
                     <CheckCircle className="w-10 h-10 text-green-400 mx-auto mb-2" />
@@ -672,7 +672,7 @@ export default function TransactionsSimulator({ isPremiumTier }: TransactionsSim
                   </div>
                   
                   <div className="space-y-2 mb-3">
-                    <div className="bg-green-800/60 p-3 rounded-lg border border-green-600">
+                    <div className="bg-green-800/90 p-3 rounded-lg border border-green-500">
                       <div className="font-semibold text-green-100 mb-1 text-sm">What's Happening Now:</div>
                       <div className="text-green-100 text-xs leading-relaxed">
                         Your Bitcoin transaction has achieved 6 confirmations and is now permanently settled on the blockchain. 
