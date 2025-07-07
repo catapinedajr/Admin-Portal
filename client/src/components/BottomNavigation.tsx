@@ -53,13 +53,13 @@ export default function BottomNavigation({ activeSection, onSectionChange }: Bot
     },
     {
       id: 'simulators',
-      label: 'Simulators',
+      label: 'Practice',
       icon: Gamepad2,
       path: '/simulators'
     },
     {
       id: 'community',
-      label: 'Community',
+      label: 'Connect',
       icon: Users,
       path: '/community'
     },
