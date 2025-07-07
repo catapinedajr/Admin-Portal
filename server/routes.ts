@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import path from "path";
 import { storage } from "./storage";
 import { db } from "./db";
+import { communityStorage } from "./community";
 import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentGenerationSteps, userQuizAnswers, registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema } from "@shared/schema";
 import { eq, sql } from "drizzle-orm";
 import { v4 as uuidv4 } from 'uuid';
@@ -1831,6 +1832,114 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     } catch (error) {
       console.error("Error collecting email:", error);
       res.status(500).json({ message: "Failed to collect email" });
+    }
+  });
+
+  // Community API endpoints
+  
+  // Forum categories
+  app.get("/api/community/forum-categories", async (req, res) => {
+    try {
+      const categories = await communityStorage.getForumCategories();
+      res.json(categories);
+    } catch (error) {
+      console.error("Error fetching forum categories:", error);
+      res.status(500).json({ message: "Failed to fetch forum categories" });
+    }
+  });
+
+  // Forum posts by category
+  app.get("/api/community/forum-posts/:categoryId?", async (req, res) => {
+    try {
+      const categoryId = req.params.categoryId ? parseInt(req.params.categoryId) : undefined;
+      const posts = await communityStorage.getForumPosts(categoryId);
+      res.json(posts);
+    } catch (error) {
+      console.error("Error fetching forum posts:", error);
+      res.status(500).json({ message: "Failed to fetch forum posts" });
+    }
+  });
+
+  // Create forum post
+  app.post("/api/community/forum-posts", setDefaultUser, async (req, res) => {
+    try {
+      const { title, content, categoryId, dayIndex } = req.body;
+      const userId = req.user.id;
+      
+      const postData = {
+        title,
+        content,
+        categoryId,
+        userId,
+        dayIndex: dayIndex || null
+      };
+
+      const newPost = await communityStorage.createForumPost(postData);
+      res.json(newPost);
+    } catch (error) {
+      console.error("Error creating forum post:", error);
+      res.status(500).json({ message: "Failed to create forum post" });
+    }
+  });
+
+  // Curated videos
+  app.get("/api/community/videos", async (req, res) => {
+    try {
+      const { difficulty, category } = req.query;
+      const videos = await communityStorage.getCuratedVideos(
+        difficulty as string, 
+        category as string
+      );
+      res.json(videos);
+    } catch (error) {
+      console.error("Error fetching curated videos:", error);
+      res.status(500).json({ message: "Failed to fetch curated videos" });
+    }
+  });
+
+  // Record video view
+  app.post("/api/community/video-view", setDefaultUser, async (req, res) => {
+    try {
+      const { videoId, progressPercent } = req.body;
+      const userId = req.user.id;
+      
+      await communityStorage.recordVideoView(userId, videoId, progressPercent);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error recording video view:", error);
+      res.status(500).json({ message: "Failed to record video view" });
+    }
+  });
+
+  // Success stories
+  app.get("/api/community/success-stories", async (req, res) => {
+    try {
+      const stories = await communityStorage.getSuccessStories();
+      res.json(stories);
+    } catch (error) {
+      console.error("Error fetching success stories:", error);
+      res.status(500).json({ message: "Failed to fetch success stories" });
+    }
+  });
+
+  // Create success story
+  app.post("/api/community/success-stories", setDefaultUser, async (req, res) => {
+    try {
+      const { title, content } = req.body;
+      const userId = req.user.id;
+      
+      const storyData = {
+        title,
+        content,
+        userId,
+        isApproved: false // Requires approval
+      };
+
+      const newStory = await communityStorage.createSuccessStory(storyData);
+      res.json(newStory);
+    } catch (error) {
+      console.error("Error creating success story:", error);
+      res.status(500).json({ message: "Failed to create success story" });
     }
   });
 

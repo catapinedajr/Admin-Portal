@@ -34,6 +34,85 @@ export const passwordResetTokens = pgTable("password_reset_tokens", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+// Community forum categories
+export const forumCategories = pgTable("forum_categories", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+  slug: text("slug").notNull().unique(),
+  postCount: integer("post_count").notNull().default(0),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Forum posts
+export const forumPosts = pgTable("forum_posts", {
+  id: serial("id").primaryKey(),
+  categoryId: integer("category_id").notNull(),
+  userId: integer("user_id").notNull(),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  dayIndex: integer("day_index"), // Link to specific curriculum day if applicable
+  isSticky: boolean("is_sticky").notNull().default(false),
+  isLocked: boolean("is_locked").notNull().default(false),
+  replyCount: integer("reply_count").notNull().default(0),
+  lastReplyAt: timestamp("last_reply_at"),
+  lastReplyUserId: integer("last_reply_user_id"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Forum post replies
+export const forumReplies = pgTable("forum_replies", {
+  id: serial("id").primaryKey(),
+  postId: integer("post_id").notNull(),
+  userId: integer("user_id").notNull(),
+  content: text("content").notNull(),
+  isDeleted: boolean("is_deleted").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Curated video content
+export const curatedVideos = pgTable("curated_videos", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  youtubeId: text("youtube_id").notNull().unique(),
+  channelName: text("channel_name").notNull(),
+  duration: integer("duration"), // in seconds
+  difficulty: text("difficulty").notNull(), // beginner, intermediate, advanced
+  category: text("category").notNull(), // economics, technical, stories, news
+  tags: text("tags").array(), // searchable tags
+  isPopular: boolean("is_popular").notNull().default(false),
+  isTrending: boolean("is_trending").notNull().default(false),
+  viewCount: integer("view_count").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// User video engagement
+export const userVideoEngagement = pgTable("user_video_engagement", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  videoId: integer("video_id").notNull(),
+  watchedAt: timestamp("watched_at").notNull().defaultNow(),
+  progressPercent: integer("progress_percent").notNull().default(0), // 0-100
+});
+
+// Success stories
+export const successStories = pgTable("success_stories", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  isApproved: boolean("is_approved").notNull().default(false),
+  isFeature: boolean("is_featured").notNull().default(false),
+  likeCount: integer("like_count").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 
 
 export const userProgress = pgTable("user_progress", {

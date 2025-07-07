@@ -1,6 +1,6 @@
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Home, GraduationCap, Coins, Gamepad2, MoreHorizontal } from "lucide-react";
+import { Home, GraduationCap, Coins, Gamepad2, Users, MoreHorizontal } from "lucide-react";
 
 interface BottomNavigationProps {
   activeSection?: string;
@@ -25,6 +25,7 @@ export default function BottomNavigation({ activeSection, onSectionChange }: Bot
     if (location.startsWith('/learn')) return 'learn';
     if (location.startsWith('/money')) return 'money';
     if (location.startsWith('/simulators')) return 'simulators';
+    if (location.startsWith('/community')) return 'community';
     if (location.startsWith('/more') || location.startsWith('/about')) return 'more';
     return 'home';
   };
@@ -55,6 +56,12 @@ export default function BottomNavigation({ activeSection, onSectionChange }: Bot
       label: 'Simulators',
       icon: Gamepad2,
       path: '/simulators'
+    },
+    {
+      id: 'community',
+      label: 'Community',
+      icon: Users,
+      path: '/community'
     },
     {
       id: 'more',
