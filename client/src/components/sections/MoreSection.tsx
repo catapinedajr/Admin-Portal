@@ -14,33 +14,7 @@ export default function MoreSection({ moreSubTab, setMoreSubTab }: MoreSectionPr
   
   return (
     <div className="space-y-6">
-      {/* Account Section */}
-      <Card className="bg-zinc-800/50 border-zinc-700">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <User className="w-5 h-5 text-orange-400" />
-            <h3 className="text-lg font-semibold">Account</h3>
-          </div>
-          <div className="space-y-3">
-            <Button 
-              variant="ghost" 
-              className="w-full justify-start text-zinc-300 hover:text-white hover:bg-zinc-700"
-              onClick={() => setLocation('/account')}
-            >
-              <Settings className="w-4 h-4 mr-3" />
-              Manage Account
-            </Button>
-            <Button 
-              variant="ghost" 
-              className="w-full justify-start text-zinc-300 hover:text-white hover:bg-zinc-700"
-              onClick={() => window.location.href = '/api/logout'}
-            >
-              <LogOut className="w-4 h-4 mr-3" />
-              Log Out
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+
 
       {/* More Sub-navigation */}
       <div className="flex justify-center">

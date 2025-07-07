@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { useLocation } from "wouter";
 import MoreSection from "@/components/sections/MoreSection";
 import BottomNavigation from "@/components/BottomNavigation";
-import PWAInstallButton from "@/components/PWAInstallButton";
 import { useSubscription } from "@/contexts/SubscriptionContext";
-import { Crown, Gem } from "lucide-react";
+import { Crown, Gem, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type MoreSubTab = "store" | "conviction";
@@ -38,8 +37,16 @@ export default function MorePage() {
 
             {/* Header Actions */}
             <div className="flex items-center gap-2">
-              {/* PWA Install Button */}
-              <PWAInstallButton />
+              {/* Account Button */}
+              <Button 
+                onClick={() => setLocation('/account')}
+                size="sm"
+                className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-2.5 py-1.5"
+                title="Account Settings"
+              >
+                <User className="w-4 h-4" />
+                <span className="sr-only">Account</span>
+              </Button>
               
               {/* Premium Status Indicator */}
               {isPremiumTier ? (
