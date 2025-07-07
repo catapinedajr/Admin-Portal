@@ -46,6 +46,19 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- Safari React Refresh compatibility - must load first -->
+    <script>
+      // Immediate polyfill injection for Safari external access
+      if (window.parent === window || /safari/i.test(navigator.userAgent)) {
+        window.$RefreshSig$ = function() { return function(type) { return type; }; };
+        window.$RefreshReg$ = function() {};
+        window.$RefreshRuntime$ = {
+          register: function() {},
+          createSignatureFunctionForTransform: function() { return function() { return function(type) { return type; }; }; }
+        };
+        console.log('HODLearn: Safari compatibility polyfills loaded');
+      }
+    </script>
     <script type="module" src="/src/main.tsx"></script>
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
     <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>

@@ -1,23 +1,10 @@
+// Safari compatibility MUST be first import
+import "./utils/safariCompat";
+
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import ErrorBoundary from "./components/ErrorBoundary";
 import "./index.css";
-
-// Safari React Refresh fix - prevent $RefreshSig$ errors
-if (typeof window !== 'undefined') {
-  if (!window.$RefreshSig$) {
-    window.$RefreshSig$ = function() { return function() {}; };
-  }
-  if (!window.$RefreshReg$) {
-    window.$RefreshReg$ = function() {};
-  }
-  if (!window.$RefreshRuntime$) {
-    window.$RefreshRuntime$ = {
-      register: function() {},
-      createSignatureFunctionForTransform: function() { return function() {}; }
-    };
-  }
-}
 
 // Clear service worker cache in development to prevent conflicts
 if ('serviceWorker' in navigator && typeof navigator.serviceWorker !== 'undefined' && import.meta.env.DEV) {
