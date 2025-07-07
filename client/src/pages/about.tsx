@@ -24,7 +24,7 @@ export default function About() {
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-8">
+      <div className="max-w-2xl mx-auto px-4 py-8 pb-24">
         <Card className="bg-zinc-900 border-zinc-800">
           <CardContent className="p-8 text-center space-y-6">
             <div className="w-16 h-16 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-2xl mx-auto">
@@ -57,11 +57,7 @@ export default function About() {
         </Card>
       </div>
 
-      {/* Bottom Navigation */}
       <BottomNavigation />
-      
-      {/* Bottom padding to accommodate navigation */}
-      <div className="h-20"></div>
     </div>
   );
 }
