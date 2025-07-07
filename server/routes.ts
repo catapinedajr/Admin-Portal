@@ -789,7 +789,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Update user progress
-  app.post("/api/progress", async (req, res) => {
+  app.post("/api/progress", setDefaultUser, async (req: any, res) => {
     try {
       const { factsViewed, lessonCompleted, dayIndex } = req.body;
       const today = new Date().toISOString().split('T')[0];
@@ -797,7 +797,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
       const progressPercentage = Math.min(100, (factsViewed * 25) + (lessonCompleted ? 50 : 0));
       
       const progress = await storage.createOrUpdateUserProgress({
-        userId: 1,
+        userId: req.user.id,
         date: today,
         dayIndex: dayIndex || 0,
         factsViewed: factsViewed || 0,
@@ -807,9 +807,9 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
 
       // Update user's completed lessons if lesson was completed
       if (lessonCompleted) {
-        const user = await storage.getUser(1);
+        const user = await storage.getUser(req.user.id);
         if (user) {
-          await storage.updateUserProgress(1, user.completedLessons + 1, today);
+          await storage.updateUserProgress(req.user.id, user.completedLessons + 1, today);
         }
       }
 
@@ -915,7 +915,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Add the day-completed endpoint that the UI expects
-  app.get("/api/day-completed/:userId/:dayIndex", requireAuth, async (req: any, res) => {
+  app.get("/api/day-completed/:userId/:dayIndex", setDefaultUser, async (req: any, res) => {
     try {
       const userId = req.user.id;
       let dayIndex = parseInt(req.params.dayIndex);
@@ -930,17 +930,17 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.post("/api/complete-day", async (req, res) => {
+  app.post("/api/complete-day", setDefaultUser, async (req: any, res) => {
     try {
-      const { userId, dayIndex } = req.body;
-      await storage.markDayCompleted(userId, dayIndex);
+      const { dayIndex } = req.body;
+      await storage.markDayCompleted(req.user.id, dayIndex);
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ message: "Failed to mark day completed" });
     }
   });
 
-  app.get("/api/completed-days/:userId", requireAuth, async (req: any, res) => {
+  app.get("/api/completed-days/:userId", setDefaultUser, async (req: any, res) => {
     try {
       const userId = req.user.id;
       const completedDays = await storage.getCompletedDays(userId);
