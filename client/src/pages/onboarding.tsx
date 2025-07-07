@@ -37,10 +37,30 @@ export default function Onboarding() {
             <div className="space-y-8 text-center">
               
               {/* Core message */}
-              <div className="space-y-3">
+              <div className="space-y-6">
                 <p className="text-zinc-300 text-lg leading-relaxed max-w-lg mx-auto">
                   Learn Bitcoin step by step with daily lessons, safe practice tools, and community forums where you can discuss and grow together
                 </p>
+                
+                {/* Feature icons */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                  <div className="space-y-2">
+                    <BookOpen className="w-6 h-6 text-blue-400 mx-auto" />
+                    <p className="text-zinc-300 text-sm">Daily Lessons</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Target className="w-6 h-6 text-green-400 mx-auto" />
+                    <p className="text-zinc-300 text-sm">Safe Practice</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Users className="w-6 h-6 text-purple-400 mx-auto" />
+                    <p className="text-zinc-300 text-sm">Community</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Brain className="w-6 h-6 text-orange-400 mx-auto" />
+                    <p className="text-zinc-300 text-sm">Expert Videos</p>
+                  </div>
+                </div>
               </div>
               
               {/* Simple action */}
