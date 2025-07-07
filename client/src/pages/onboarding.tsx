@@ -39,7 +39,7 @@ export default function Onboarding() {
               {/* Core message */}
               <div className="space-y-3">
                 <p className="text-zinc-300 text-lg leading-relaxed max-w-lg mx-auto">
-                  Learn Bitcoin step by step with daily lessons and safe practice tools
+                  Learn Bitcoin step by step with daily lessons, safe practice tools, and community forums where you can discuss and grow together
                 </p>
               </div>
               
