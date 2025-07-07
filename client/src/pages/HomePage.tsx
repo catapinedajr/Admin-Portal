@@ -190,7 +190,7 @@ export default function HomePage() {
                 <Button 
                   onClick={() => setLocation('/simulators')}
                   size="sm"
-                  className="w-full bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700"
+                  className="w-full bg-orange-600 hover:bg-orange-700 text-white"
                 >
                   Try Now
                 </Button>
