@@ -66,16 +66,16 @@ export default function SafetyTraining({
     {
       id: 3,
       title: "Address Verification",
-      description: "Ensuring payment accuracy",
-      question: "Before sending Bitcoin, you should:",
+      description: "Checking Bitcoin addresses carefully",
+      question: "You're sending $500 worth of Bitcoin to pay for something. The seller gives you this address: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa. When you copy-paste it, your wallet shows: 1AlzP1eP5QGefi2DMPTfTL5SLmv7DivfNa. What do you do?",
       options: [
-        "Send a small test amount first",
-        "Verify every character of the receiving address",
-        "Only check the first and last 4 characters",
-        "Trust the address if it looks similar"
+        "Send the Bitcoin - they look the same to me",
+        "Stop and check every character carefully first",
+        "Send a small test amount first to see if it works", 
+        "Ask the seller to send a new address"
       ],
       correctIndex: 1,
-      explanation: "Bitcoin transactions are irreversible. Every single character must match exactly - one wrong character sends funds to the wrong address forever."
+      explanation: "Critical catch! The addresses are different - character 3 changed from '1' (number one) to 'l' (lowercase L). This single character difference would send your $500 to a completely different wallet, likely losing it forever. Always verify every single character in Bitcoin addresses."
     },
     {
       id: 4,
