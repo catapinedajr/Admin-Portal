@@ -105,7 +105,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // User endpoint - get authenticated user
-  app.get("/api/user", setDefaultUser, async (req: any, res) => {
+  app.get("/api/user", requireAuth, async (req: any, res) => {
     try {
       const user = await storage.getUser(req.user.id);
       if (!user) {
@@ -636,36 +636,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  // Get current user (supports both authenticated and default user for backwards compatibility)
-  app.get("/api/user", async (req, res) => {
-    try {
-      const sessionId = req.headers.authorization?.replace('Bearer ', '');
-      let userId = 1; // Default user ID for backwards compatibility
-      
-      // If session provided, use authenticated user
-      if (sessionId) {
-        const session = await storage.getSession(sessionId);
-        if (session && new Date() <= session.expiresAt) {
-          userId = session.userId;
-        } else if (session) {
-          // Session expired
-          return res.status(401).json({ message: "Session expired" });
-        }
-      }
-      
-      const user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-      
-      // Don't send password hash if it exists
-      const { passwordHash, ...userResponse } = user as any;
-      res.json(userResponse);
-    } catch (error) {
-      console.error("Get user error:", error);
-      res.status(500).json({ message: "Failed to get user" });
-    }
-  });
+
 
   // Get daily facts for today or specific day
   app.get("/api/daily-facts/:dayIndex?", async (req, res) => {
@@ -789,7 +760,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Update user progress
-  app.post("/api/progress", setDefaultUser, async (req: any, res) => {
+  app.post("/api/progress", requireAuth, async (req: any, res) => {
     try {
       const { factsViewed, lessonCompleted, dayIndex } = req.body;
       const today = new Date().toISOString().split('T')[0];
@@ -944,7 +915,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.post("/api/complete-day", setDefaultUser, async (req: any, res) => {
+  app.post("/api/complete-day", requireAuth, async (req: any, res) => {
     try {
       const { dayIndex } = req.body;
       await storage.markDayCompleted(req.user.id, dayIndex);
@@ -1558,7 +1529,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.post('/api/quiz/submit', setDefaultUser, async (req, res) => {
+  app.post('/api/quiz/submit', requireAuth, async (req, res) => {
     try {
       const { questionId, selectedAnswer, date } = req.body;
       
@@ -1592,7 +1563,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.get('/api/quiz/score/:userId/:date', setDefaultUser, async (req, res) => {
+  app.get('/api/quiz/score/:userId/:date', requireAuth, async (req, res) => {
     try {
       const date = req.params.date;
       
@@ -1884,7 +1855,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Day completion endpoint for quiz completion flow
-  app.post("/api/mark-day-completed", setDefaultUser, async (req: any, res) => {
+  app.post("/api/mark-day-completed", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.id; // Use authenticated user ID
       const { dayIndex } = req.body;
