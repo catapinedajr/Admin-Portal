@@ -448,6 +448,22 @@ export class DatabaseStorage implements IStorage {
     // Must be positive day index
     if (dayIndex < 1) return false;
     
+    // First, check if user has already completed this day - if so, always allow access for review
+    const currentDayProgress = await db.select({ 
+      dayCompleted: userProgress.dayCompleted
+    })
+      .from(userProgress)
+      .where(and(
+        eq(userProgress.userId, userId),
+        eq(userProgress.dayIndex, dayIndex)
+      ))
+      .limit(1);
+    
+    // If day is already completed, user can always review it
+    if (currentDayProgress.length > 0 && currentDayProgress[0].dayCompleted) {
+      return true;
+    }
+    
     // Day 1 is always accessible (starting point)
     if (dayIndex === 1) {
       // Check if content exists for day 1
@@ -478,7 +494,20 @@ export class DatabaseStorage implements IStorage {
       return false;
     }
     
-    // For deployment simplicity, remove calendar day restrictions
+    // Check calendar day restriction: user must wait until next calendar day after completing previous day
+    if (previousDayProgress[0].completedAt) {
+      const completionDate = new Date(previousDayProgress[0].completedAt);
+      const now = new Date();
+      
+      // Check if we're on a different calendar day
+      const completionDay = completionDate.toISOString().split('T')[0];
+      const currentDay = now.toISOString().split('T')[0];
+      
+      // If it's the same calendar day as completion, block access
+      if (completionDay === currentDay) {
+        return false;
+      }
+    }
     
     // Check if content exists for this day
     const hasContent = await db.select({ id: contentDays.id })
