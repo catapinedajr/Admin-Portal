@@ -831,6 +831,13 @@ function FinancePage() {
                 >
                   Practice with Simulators
                 </Button>
+                <Button 
+                  onClick={() => setLocation("/community")}
+                  variant="outline"
+                  className="border-zinc-600 text-zinc-300 hover:bg-zinc-600/20 px-8 py-4 text-lg font-medium h-auto"
+                >
+                  Join the Community
+                </Button>
               </div>
             </div>
           </CardContent>
