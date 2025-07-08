@@ -258,6 +258,62 @@ export default function SafetyTraining({
       ],
       correctIndex: 2,
       explanation: "Official app stores have security screening. Fake Bitcoin wallet apps from other sources have stolen millions."
+    },
+    {
+      id: 17,
+      title: "FOMO Trading Manipulation",
+      description: "Recognizing psychological trading traps",
+      question: "Bitcoin pumps 15% in one hour. Your crypto chat group is going crazy: 'Buy now or miss out forever!' 'This is the rocket to $200K!' What do you do?",
+      options: [
+        "Buy immediately - don't want to miss the pump",
+        "Stick to your dollar-cost averaging plan",
+        "FOMO buy with money meant for rent",
+        "Borrow money to buy more Bitcoin"
+      ],
+      correctIndex: 1,
+      explanation: "FOMO (Fear of Missing Out) leads to buying at peaks. Disciplined investors stick to consistent strategies regardless of short-term price movements."
+    },
+    {
+      id: 18,
+      title: "Tax Compliance",
+      description: "Understanding Bitcoin tax obligations",
+      question: "You sold some Bitcoin this year for a $3,000 profit to buy a car. Tax season arrives. What do you do?",
+      options: [
+        "Don't report it - Bitcoin is anonymous",
+        "Report the $3,000 as capital gains",
+        "Only report if the IRS asks",
+        "Claim it was a gift to avoid taxes"
+      ],
+      correctIndex: 1,
+      explanation: "Bitcoin transactions are taxable events in most countries. Exchanges report to tax authorities. Always report capital gains to avoid penalties and legal issues."
+    },
+    {
+      id: 19,
+      title: "Lightning Network Security",
+      description: "Understanding Lightning payment risks",
+      question: "You're using Lightning Network for the first time. A coffee shop asks for payment. Your Lightning wallet shows two options: 'Channel Funding: $50' or 'Pay from existing channel: $4.50'. What do you choose for a $4.50 coffee?",
+      options: [
+        "Channel Funding $50 - more is better",
+        "Pay from existing channel $4.50",
+        "Use regular Bitcoin instead",
+        "Ask them to lower the price"
+      ],
+      correctIndex: 1,
+      explanation: "Lightning channels require upfront funding but enable instant small payments. For a $4.50 purchase, use existing channel funds rather than locking up $50 unnecessarily."
+    },
+    {
+      id: 20,
+      title: "Estate Planning",
+      description: "Bitcoin inheritance preparation",
+      question: "You have $50,000 in Bitcoin. You want your family to inherit it if something happens to you. What's the best approach?",
+      options: [
+        "Write seed phrase in your will",
+        "Give seed phrase to spouse immediately",
+        "Use a secure inheritance service",
+        "Hide seed phrase and leave treasure map"
+      ],
+      correctIndex: 2,
+      explanation: "Wills become public records. Sharing seed phrases creates immediate risk. Professional inheritance services or multisig solutions provide secure family access without exposing keys."
     }
   ];
 
@@ -576,41 +632,41 @@ export default function SafetyTraining({
     );
   }
 
-  // Results screen (stage 17)
-  if (securityTestStage === 17) {
-    const percentage = Math.round((securityScore / 16) * 100);
+  // Results screen (stage 21)
+  if (securityTestStage === 21) {
+    const percentage = Math.round((securityScore / 20) * 100);
     
     return (
       <div className="text-center space-y-6">
         <div className="p-6 rounded-lg border border-zinc-700 bg-zinc-800/50">
-          {securityScore >= 14 ? (
+          {securityScore >= 18 ? (
             <div>
               <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-4" />
               <h4 className="text-xl font-bold text-white mb-2">Security Master</h4>
               <p className="text-zinc-300 mb-3">
-                Safe Decisions: {securityScore}/16 ({percentage}%)
+                Safe Decisions: {securityScore}/20 ({percentage}%)
               </p>
               <p className="text-zinc-300 text-sm">
                 Outstanding! You navigated dangerous situations like a pro. Your Bitcoin would be safe in the real world.
               </p>
             </div>
-          ) : securityScore >= 11 ? (
+          ) : securityScore >= 14 ? (
             <div>
               <Shield className="w-12 h-12 text-orange-400 mx-auto mb-4" />
               <h4 className="text-xl font-bold text-white mb-2">Security Conscious</h4>
               <p className="text-zinc-300 mb-3">
-                Safe Decisions: {securityScore}/16 ({percentage}%)
+                Safe Decisions: {securityScore}/20 ({percentage}%)
               </p>
               <p className="text-zinc-300 text-sm">
                 Good security awareness! You avoided most threats but review the scenarios you missed.
               </p>
             </div>
-          ) : securityScore >= 8 ? (
+          ) : securityScore >= 10 ? (
             <div>
               <AlertTriangle className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
               <h4 className="text-xl font-bold text-white mb-2">Security Student</h4>
               <p className="text-zinc-300 mb-3">
-                Safe Decisions: {securityScore}/16 ({percentage}%)
+                Safe Decisions: {securityScore}/20 ({percentage}%)
               </p>
               <p className="text-zinc-300 text-sm">
                 Basic security knowledge present. Study the failed scenarios before using Bitcoin with real money.
@@ -621,10 +677,10 @@ export default function SafetyTraining({
               <XCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
               <h4 className="text-xl font-bold text-white mb-2">Security Risk</h4>
               <p className="text-zinc-300 mb-3">
-                Safe Decisions: {securityScore}/16 ({percentage}%)
+                Safe Decisions: {securityScore}/20 ({percentage}%)
               </p>
               <p className="text-zinc-300 text-sm">
-                Important security gaps detected. Study Bitcoin security fundamentals before using Bitcoin with real money.
+                Critical security gaps detected. Study Bitcoin security fundamentals before using Bitcoin with real money.
               </p>
             </div>
           )}
@@ -648,14 +704,14 @@ export default function SafetyTraining({
     );
   }
 
-  // Simulation scenarios (stages 1-16)
-  if (securityTestStage > 0 && securityTestStage <= 16) {
+  // Simulation scenarios (stages 1-20)
+  if (securityTestStage > 0 && securityTestStage <= 20) {
     return (
       <div className="space-y-4">
         {/* Progress Header */}
         <div className="flex justify-between items-center">
           <h4 className="text-lg font-semibold text-white">
-            Scenario {securityTestStage} of 16
+            Scenario {securityTestStage} of 20
           </h4>
           <div className="text-sm text-zinc-400">
             Safe Choices: {securityScore}/{securityTestStage - 1}
@@ -666,7 +722,7 @@ export default function SafetyTraining({
         <div className="w-full bg-zinc-700 rounded-full h-2">
           <div 
             className="bg-orange-500 h-2 rounded-full transition-all duration-300"
-            style={{ width: `${(securityTestStage / 16) * 100}%` }}
+            style={{ width: `${(securityTestStage / 20) * 100}%` }}
           />
         </div>
 
@@ -934,8 +990,8 @@ export default function SafetyTraining({
               </div>
             )}
 
-            {/* Scenarios 5-16: Using unified securityScenarios array */}
-            {securityTestStage >= 5 && securityTestStage <= 16 && (
+            {/* Scenarios 5-20: Using unified securityScenarios array */}
+            {securityTestStage >= 5 && securityTestStage <= 20 && (
               <div className="space-y-4">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
@@ -951,6 +1007,58 @@ export default function SafetyTraining({
                   <p className="text-zinc-300 mb-3">
                     {securityScenarios[securityTestStage - 1].question}
                   </p>
+                  
+                  {/* Visual simulations for specific scenarios */}
+                  {securityTestStage === 17 && (
+                    <div className="mt-4 p-3 bg-zinc-800 rounded border border-orange-500/30">
+                      <div className="text-center mb-3">
+                        <div className="text-2xl font-bold text-green-400 animate-pulse">
+                          ₿ $45,000 → $51,750 (+15%)
+                        </div>
+                        <div className="text-xs text-green-400">🚀 PUMPING HARD!</div>
+                      </div>
+                      <div className="space-y-1 text-xs text-zinc-300 bg-zinc-900 p-2 rounded">
+                        <div><span className="text-orange-400">CryptoMoon123:</span> THIS IS IT GUYS! 🚀🚀🚀</div>
+                        <div><span className="text-green-400">HODLer4Life:</span> BUY NOW OR CRY LATER!</div>
+                        <div><span className="text-yellow-400">BitcoinBull:</span> $200K BY CHRISTMAS! ALL IN!</div>
+                        <div><span className="text-blue-400">You:</span> <span className="animate-pulse">💭 Should I buy?</span></div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {securityTestStage === 19 && (
+                    <div className="mt-4 p-3 bg-zinc-800 rounded border border-blue-500/30">
+                      <div className="text-center text-sm text-zinc-300 mb-3">
+                        ⚡ Lightning Wallet Interface
+                      </div>
+                      <div className="space-y-2">
+                        <div className="p-2 bg-yellow-500/20 rounded border border-yellow-500/50">
+                          <div className="text-yellow-400 font-semibold">Channel Funding: $50.00</div>
+                          <div className="text-xs text-yellow-300">Lock funds to create new payment channel</div>
+                        </div>
+                        <div className="p-2 bg-green-500/20 rounded border border-green-500/50">
+                          <div className="text-green-400 font-semibold">Existing Channel: $4.50</div>
+                          <div className="text-xs text-green-300">Pay from already funded channel</div>
+                        </div>
+                        <div className="text-center text-xs text-zinc-400">
+                          Coffee: $4.50 • Choose payment method
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {securityTestStage === 20 && (
+                    <div className="mt-4 p-3 bg-zinc-800 rounded border border-purple-500/30">
+                      <div className="text-center text-sm text-zinc-300 mb-3">
+                        💼 Your Bitcoin Portfolio
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-orange-400">₿ 1.25 BTC</div>
+                        <div className="text-lg text-zinc-300">~$50,000</div>
+                        <div className="text-xs text-zinc-400 mt-2">🎯 What happens to your family if something happens to you?</div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -1002,18 +1110,18 @@ export default function SafetyTraining({
           <div className="flex justify-center">
             <Button
               onClick={() => {
-                if (securityTestStage < 16) {
+                if (securityTestStage < 20) {
                   setSecurityTestStage(securityTestStage + 1);
                   setSelectedSecurityAnswer(null);
                   setShowSecurityFeedback(false);
                   setSecurityAnswerSubmitted(false);
                 } else {
-                  setSecurityTestStage(17); // Show results
+                  setSecurityTestStage(21); // Show results
                 }
               }}
               className="bg-orange-600 hover:bg-orange-700 text-white"
             >
-              {securityTestStage < 16 ? 'Next Question' : 'View Results'}
+              {securityTestStage < 20 ? 'Next Question' : 'View Results'}
             </Button>
           </div>
         )}
