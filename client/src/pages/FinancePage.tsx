@@ -788,23 +788,27 @@ function FinancePage() {
 
         {/* Conclusion & Call to Action */}
         <div className="bg-zinc-900/50 rounded-lg p-8 border border-zinc-800/50">
-          <h3 className="text-2xl font-bold mb-6 text-orange-400 text-center">The Choice Is Yours</h3>
+          <h3 className="text-2xl font-bold mb-6 text-orange-400 text-center">The Path Forward Is Clear</h3>
           <div className="space-y-6 text-zinc-300 leading-relaxed max-w-4xl mx-auto">
             <p className="text-lg">
-              You've seen the math. Every day you hold dollars, you lose purchasing power to inflation. Every international 
-              transfer bleeds money to banking fees. Every "business day" delay costs you opportunity and freedom.
+              You've seen how the current system works against you. Every day, inflation quietly erodes your purchasing power. 
+              International transfers drain your money through fees. "Business days" create unnecessary delays.
             </p>
             <p>
-              Bitcoin isn't just an investment—it's a complete financial system upgrade. Fixed supply instead of endless printing. 
-              Direct peer-to-peer transfers instead of middleman extraction. Mathematical certainty instead of central bank promises.
+              But now you understand there's an alternative. Bitcoin offers a different path—one where you control your money directly, 
+              where no one can print away your wealth, and where transfers happen instantly without middlemen.
             </p>
             <p>
-              The wealthy already know this. Major corporations hold Bitcoin on their balance sheets. Entire nations have made 
-              it legal tender. Smart money is moving first, as it always does.
+              The smartest money is already moving. Companies like MicroStrategy and Tesla hold Bitcoin. Countries like El Salvador 
+              have made it legal tender. Early adopters are positioning themselves for what's coming next.
+            </p>
+            <p>
+              You don't need to become an expert overnight. You just need to start learning. Take it one day at a time. 
+              Understand the basics. Practice in a safe environment. Build your knowledge steadily.
             </p>
             <p className="text-orange-300 font-medium text-lg text-center">
-              Your financial future depends on understanding this technology. The question isn't whether Bitcoin will succeed—
-              it's whether you'll learn about it before it's too late to matter.
+              Your financial future is in your hands. The tools are here. The education is available. The question isn't whether 
+              you're "too late"—it's whether you're ready to take the first step.
             </p>
           </div>
         </div>
