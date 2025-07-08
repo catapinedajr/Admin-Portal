@@ -35,7 +35,8 @@ function LearnPage() {
     handleQuizCompletion,
     setShowEmailModal,
     dayAccessible,
-    dayAccessInfo
+    dayAccessInfo,
+    setTestDayOverride
   } = useAppContext();
 
   // Local state for expandable content
@@ -199,7 +200,32 @@ function LearnPage() {
               </span>
             </div>
             
-            {/* Progress guidance message */}
+            {/* Dev Day Toggle - Hidden in normal use */}
+            {process.env.NODE_ENV === 'development' && (
+              <div className="flex justify-center">
+                <div className="flex items-center gap-1 px-2 py-1 bg-zinc-900/50 rounded text-xs">
+                  <span className="text-zinc-500">Dev:</span>
+                  {[1, 2, 3, 4, 5, 6, 7].map((day) => (
+                    <Button
+                      key={day}
+                      variant={currentDayIndex === day ? "secondary" : "ghost"}
+                      size="sm"
+                      onClick={() => {
+                        // Update the day index using the context
+                        setTestDayOverride(day);
+                      }}
+                      className="h-6 w-6 p-0 text-[10px] hover:bg-orange-500/20"
+                    >
+                      {day}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+            
+          {/* Progress guidance message */}
+          <div className="text-center space-y-2">
             {!isQuizCompleted ? (
               <p className="text-sm text-orange-400 max-w-md mx-auto">
                 Complete the quiz at the bottom to unlock tomorrow's lesson
