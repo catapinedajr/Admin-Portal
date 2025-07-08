@@ -148,26 +148,28 @@ function FinancePage() {
           <CardContent className="p-8">
             <div className="max-w-4xl mx-auto text-center space-y-6">
               <h2 className="text-4xl font-bold text-white mb-4">
-                Your Money Is Being <span className="text-red-400">Silently Stolen</span>
+                Why Your Money Buys <span className="text-red-400">Less Every Year</span>
               </h2>
               
               <div className="text-lg text-zinc-300 leading-relaxed space-y-4">
                 <p>
-                  Every day you wait, your savings lose value. It's not your fault—the system is rigged. 
-                  The government prints money endlessly, making each dollar worth less while the wealthy protect 
-                  themselves with assets that can't be printed.
+                  Notice groceries getting more expensive? Gas costing more? Coffee jumping from $2 to $5? 
+                  Rent going up every year? Concert tickets that used to be $30 now costing $150? It's not your imagination.
                 </p>
                 
                 <p>
-                  <span className="text-orange-400 font-semibold">What cost $1 in 1920 now costs $15.50.</span> Your 
-                  great-grandparents could buy a house with one income and still save money. Today, two incomes barely 
-                  cover rent. This isn't progress—it's systematic wealth transfer from savers to money printers.
+                  Here's what's happening: The government prints new money constantly. More money chasing the same stuff = higher prices. 
+                  <span className="text-orange-400 font-semibold"> What cost $1 in 1920 now costs $15.50.</span>
                 </p>
                 
                 <p>
-                  But there's an escape route. For the first time in human history, we have <span className="text-orange-400 font-semibold">
-                  mathematically perfect money</span> that can't be inflated away. Bitcoin isn't just digital gold—it's 
-                  the solution to making each dollar worth less.
+                  Your grandparents bought houses on one salary. Today, two jobs barely cover rent. The difference? 
+                  Their money was backed by gold (limited). Ours can be printed endlessly.
+                </p>
+                
+                <p>
+                  <span className="text-orange-400 font-semibold">Bitcoin is different.</span> Only 21 million will ever exist—written 
+                  in code that can't be changed. It's like digital gold that nobody can print more of.
                 </p>
               </div>
               
