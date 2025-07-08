@@ -67,7 +67,7 @@ export default function SafetyTraining({
       id: 3,
       title: "Address Verification",
       description: "Checking Bitcoin addresses carefully",
-      question: "You're buying a laptop for $500 in Bitcoin. The seller texts you: 'Send to: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa'. You copy-paste into your wallet and it shows: 1AlzP1eP5QGefi2DMPTfTL5SLmv7DivfNa. The addresses look identical to you. What do you do?",
+      question: "You're buying a laptop for $500 in Bitcoin. The seller texts you this address:",
       options: [
         "Send it - address looks correct",
         "Double-check each character before sending",
@@ -826,14 +826,34 @@ export default function SafetyTraining({
                     <span className="text-orange-400 text-sm">🎯</span>
                   </div>
                   <div>
-                    <h5 className="text-lg font-semibold text-white">{securityScenarios[2].title}</h5>
-                    <p className="text-zinc-400 text-sm">{securityScenarios[2].description}</p>
+                    <h5 className="text-lg font-semibold text-white">Address Verification</h5>
+                    <p className="text-zinc-400 text-sm">Checking Bitcoin addresses carefully</p>
                   </div>
                 </div>
                 
                 <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
-                  <p className="text-zinc-300 mb-3">
-                    {securityScenarios[2].question}
+                  <p className="text-zinc-300 mb-4">
+                    You're buying a laptop for $500 in Bitcoin. The seller texts you this address:
+                  </p>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <p className="text-zinc-400 text-xs mb-2">SELLER SENT YOU:</p>
+                      <div className="p-3 bg-green-900/20 rounded border border-green-700">
+                        <code className="text-green-400 text-sm font-mono break-all">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</code>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <p className="text-zinc-400 text-xs mb-2">YOUR WALLET SHOWS:</p>
+                      <div className="p-3 bg-blue-900/20 rounded border border-blue-700">
+                        <code className="text-blue-400 text-sm font-mono break-all">1AlzP1eP5QGefi2DMPTfTL5SLmv7DivfNa</code>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <p className="text-zinc-300 text-sm mt-4">
+                    The addresses look identical to you. What do you do?
                   </p>
                 </div>
 
