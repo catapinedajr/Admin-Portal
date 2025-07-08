@@ -107,17 +107,17 @@ export default function SafetyTraining({
     },
     {
       id: 6,
-      title: "Hardware Wallet Safety",
-      description: "Secure hardware wallet practices",
-      question: "When buying a hardware wallet, you should:",
+      title: "Clipboard Malware Detection",
+      description: "Recognizing address manipulation attacks",
+      question: "You copy a Bitcoin address: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa' but when you paste it shows: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNb'. What happened?",
       options: [
-        "Buy from any online marketplace for best price",
-        "Purchase directly from manufacturer or authorized dealer",
-        "Buy a used one to save money",
-        "Get one that comes pre-configured"
+        "You copied wrong - just use the pasted address",
+        "Clipboard malware changed your address - don't send",
+        "Minor typo - addresses are close enough",
+        "Paste again and it will be correct"
       ],
       correctIndex: 1,
-      explanation: "Only buy from official sources to avoid tampered devices. Used or pre-configured wallets may have compromised security."
+      explanation: "Clipboard malware is real and common. It secretly changes Bitcoin addresses when you copy/paste. Always double-check addresses character by character before sending."
     },
     {
       id: 7,
@@ -149,118 +149,48 @@ export default function SafetyTraining({
     },
     {
       id: 9,
-      title: "Hardware Wallet Purchase",
-      description: "Buying secure hardware wallets",
-      question: "When buying a hardware wallet, you should:",
+      title: "Dusting Attack Recognition",
+      description: "Identifying blockchain tracking attempts",
+      question: "You receive tiny amounts of Bitcoin (0.00000546 BTC) from unknown addresses in your wallet. What should you do?",
       options: [
-        "Buy from any online marketplace for best price",
-        "Purchase used one to save money",
-        "Get one that comes pre-configured",
-        "Buy directly from manufacturer or authorized dealer"
+        "Ignore them - free Bitcoin is good",
+        "Consolidate them with your main balance",
+        "Don't spend them - likely a dusting attack for tracking",
+        "Send them back to the sender"
       ],
-      correctIndex: 3,
-      explanation: "Only buy from official sources to avoid tampered devices. Used or pre-configured wallets may have compromised security."
+      correctIndex: 2,
+      explanation: "Dusting attacks send tiny amounts to track your wallet activity and link your addresses. Don't spend dust outputs to protect your privacy."
     },
     {
       id: 10,
-      title: "Backup Testing",
-      description: "Verifying recovery phrase works",
-      question: "You've written down your seed phrase. How do you verify it's correct?",
+      title: "Multisig Security Setup",
+      description: "Understanding multi-signature wallet security",
+      question: "You have $100,000 in Bitcoin. Your friend suggests a 2-of-3 multisig wallet where you hold 2 keys and he holds 1. What's the issue?",
       options: [
-        "Trust that you wrote it correctly",
-        "Test recovery with small amount first",
-        "Ask someone else to check your writing",
-        "Wait until you need to use it"
+        "Perfect setup - you have majority control",
+        "Friend could steal funds with just his key",
+        "You could lose funds if friend disappears",
+        "No issues - multisig is always secure"
       ],
-      correctIndex: 1,
-      explanation: "Testing recovery with small amounts ensures your backup works. Many people lose Bitcoin with untested backup phrases."
+      correctIndex: 2,
+      explanation: "In 2-of-3 multisig, losing any key can lock funds forever. Better to have geographically distributed keys you control or use professional custody services."
     },
     {
       id: 11,
-      title: "Fee Manipulation Detection",
-      description: "Recognizing malicious wallet behavior",
-      question: "Your wallet suggests a $200 fee for sending $50 worth of Bitcoin. Normal fees are around $2. What's your response?",
+      title: "Physical Security Threat",
+      description: "Handling real-world security risks",
+      question: "Someone approaches you at a Bitcoin conference saying 'I know you have Bitcoin, let's discuss business privately'. What do you do?",
       options: [
-        "Pay the fee - wallet knows best",
-        "Try different wallet immediately",
-        "Ignore warning and send anyway",
-        "Use different wallet app"
+        "Follow them to discuss the opportunity",
+        "Ignore them and walk to a public area",
+        "Tell them how much Bitcoin you have",
+        "Exchange contact information"
       ],
       correctIndex: 1,
-      explanation: "Excessive fees indicate wallet malware. Legitimate wallets suggest normal fees - this wallet is trying to steal through fees."
+      explanation: "Physical attacks on Bitcoin holders are real. Never discuss holdings publicly and avoid isolated areas with strangers who know you have Bitcoin."
     },
     {
       id: 12,
-      title: "Recovery Scam Recognition",
-      description: "Identifying fraudulent recovery services",
-      question: "You lost access to your Bitcoin wallet. Someone offers to recover it for 50% of the funds. What do you do?",
-      options: [
-        "Pay them - 50% is better than nothing",
-        "Negotiate for lower percentage",
-        "Avoid - likely a scam",
-        "Ask for references first"
-      ],
-      correctIndex: 2,
-      explanation: "Most recovery services are scams promising impossible results. Legitimate recovery is extremely rare and expensive."
-    },
-    {
-      id: 13,
-      title: "Privacy Protection",
-      description: "Protecting financial privacy",
-      question: "A friend asks for your Bitcoin wallet address to 'see how much you have'. Do you share it?",
-      options: [
-        "Sure - friends should trust each other",
-        "Share but ask them not to check balance",
-        "No - wallet addresses reveal balance",
-        "Only share one address, not all"
-      ],
-      correctIndex: 2,
-      explanation: "Sharing wallet addresses lets anyone see your Bitcoin balance and transaction history on the blockchain."
-    },
-    {
-      id: 14,
-      title: "Market Volatility Response",
-      description: "Handling Bitcoin price crashes",
-      question: "Bitcoin crashes 30% in one day. You're down $2,000. What's your move?",
-      options: [
-        "Panic sell to prevent more losses",
-        "Hold and ignore short-term volatility",
-        "Sell half to reduce risk",
-        "Buy more while price is lower"
-      ],
-      correctIndex: 1,
-      explanation: "Bitcoin historically recovers from crashes and reaches new highs. Patient holders typically see better long-term returns."
-    },
-    {
-      id: 15,
-      title: "Investment Research",
-      description: "Evaluating cryptocurrency investments",
-      question: "A YouTube influencer promotes a 'guaranteed 100x' cryptocurrency. Should you invest?",
-      options: [
-        "Invest immediately - 100x sounds amazing",
-        "Research independently first",
-        "Invest small amount to test",
-        "Follow the influencer's advice"
-      ],
-      correctIndex: 1,
-      explanation: "Independent research protects you from paid promotions and biased advice that could lose you money on bad investments."
-    },
-    {
-      id: 16,
-      title: "App Store Safety",
-      description: "Downloading legitimate wallet apps",
-      question: "You want to download a Bitcoin wallet app on your phone. Where's the safest place?",
-      options: [
-        "Download from first Google result",
-        "Use Bitcoin forum link",
-        "Official app store only",
-        "Download from crypto news website"
-      ],
-      correctIndex: 2,
-      explanation: "Official app stores have security screening. Fake Bitcoin wallet apps from other sources have stolen millions."
-    },
-    {
-      id: 17,
       title: "FOMO Trading Manipulation",
       description: "Recognizing psychological trading traps",
       question: "Bitcoin pumps 15% in one hour. Your crypto chat group is going crazy: 'Buy now or miss out forever!' 'This is the rocket to $200K!' What do you do?",
@@ -274,7 +204,7 @@ export default function SafetyTraining({
       explanation: "FOMO (Fear of Missing Out) leads to buying at peaks. Disciplined investors stick to consistent strategies regardless of short-term price movements."
     },
     {
-      id: 18,
+      id: 13,
       title: "Tax Compliance",
       description: "Understanding Bitcoin tax obligations",
       question: "You sold some Bitcoin this year for a $3,000 profit to buy a car. Tax season arrives. What do you do?",
@@ -288,7 +218,7 @@ export default function SafetyTraining({
       explanation: "Bitcoin transactions are taxable events in most countries. Exchanges report to tax authorities. Always report capital gains to avoid penalties and legal issues."
     },
     {
-      id: 19,
+      id: 14,
       title: "Lightning Network Security",
       description: "Understanding Lightning payment risks",
       question: "You're using Lightning Network for the first time. A coffee shop asks for payment. Your Lightning wallet shows two options: 'Channel Funding: $50' or 'Pay from existing channel: $4.50'. What do you choose for a $4.50 coffee?",
@@ -302,7 +232,7 @@ export default function SafetyTraining({
       explanation: "Lightning channels require upfront funding but enable instant small payments. For a $4.50 purchase, use existing channel funds rather than locking up $50 unnecessarily."
     },
     {
-      id: 20,
+      id: 15,
       title: "Estate Planning",
       description: "Bitcoin inheritance preparation",
       question: "You have $50,000 in Bitcoin. You want your family to inherit it if something happens to you. What's the best approach?",
@@ -632,41 +562,41 @@ export default function SafetyTraining({
     );
   }
 
-  // Results screen (stage 21)
-  if (securityTestStage === 21) {
-    const percentage = Math.round((securityScore / 20) * 100);
+  // Results screen (stage 16)
+  if (securityTestStage === 16) {
+    const percentage = Math.round((securityScore / 15) * 100);
     
     return (
       <div className="text-center space-y-6">
         <div className="p-6 rounded-lg border border-zinc-700 bg-zinc-800/50">
-          {securityScore >= 18 ? (
+          {securityScore >= 13 ? (
             <div>
               <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-4" />
               <h4 className="text-xl font-bold text-white mb-2">Security Master</h4>
               <p className="text-zinc-300 mb-3">
-                Safe Decisions: {securityScore}/20 ({percentage}%)
+                Safe Decisions: {securityScore}/15 ({percentage}%)
               </p>
               <p className="text-zinc-300 text-sm">
                 Outstanding! You navigated dangerous situations like a pro. Your Bitcoin would be safe in the real world.
               </p>
             </div>
-          ) : securityScore >= 14 ? (
+          ) : securityScore >= 11 ? (
             <div>
               <Shield className="w-12 h-12 text-orange-400 mx-auto mb-4" />
               <h4 className="text-xl font-bold text-white mb-2">Security Conscious</h4>
               <p className="text-zinc-300 mb-3">
-                Safe Decisions: {securityScore}/20 ({percentage}%)
+                Safe Decisions: {securityScore}/15 ({percentage}%)
               </p>
               <p className="text-zinc-300 text-sm">
                 Good security awareness! You avoided most threats but review the scenarios you missed.
               </p>
             </div>
-          ) : securityScore >= 10 ? (
+          ) : securityScore >= 8 ? (
             <div>
               <AlertTriangle className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
               <h4 className="text-xl font-bold text-white mb-2">Security Student</h4>
               <p className="text-zinc-300 mb-3">
-                Safe Decisions: {securityScore}/20 ({percentage}%)
+                Safe Decisions: {securityScore}/15 ({percentage}%)
               </p>
               <p className="text-zinc-300 text-sm">
                 Basic security knowledge present. Study the failed scenarios before using Bitcoin with real money.
@@ -677,7 +607,7 @@ export default function SafetyTraining({
               <XCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
               <h4 className="text-xl font-bold text-white mb-2">Security Risk</h4>
               <p className="text-zinc-300 mb-3">
-                Safe Decisions: {securityScore}/20 ({percentage}%)
+                Safe Decisions: {securityScore}/15 ({percentage}%)
               </p>
               <p className="text-zinc-300 text-sm">
                 Critical security gaps detected. Study Bitcoin security fundamentals before using Bitcoin with real money.
@@ -704,14 +634,14 @@ export default function SafetyTraining({
     );
   }
 
-  // Simulation scenarios (stages 1-20)
-  if (securityTestStage > 0 && securityTestStage <= 20) {
+  // Simulation scenarios (stages 1-15)
+  if (securityTestStage > 0 && securityTestStage <= 15) {
     return (
       <div className="space-y-4">
         {/* Progress Header */}
         <div className="flex justify-between items-center">
           <h4 className="text-lg font-semibold text-white">
-            Scenario {securityTestStage} of 20
+            Scenario {securityTestStage} of 15
           </h4>
           <div className="text-sm text-zinc-400">
             Safe Choices: {securityScore}/{securityTestStage - 1}
@@ -722,7 +652,7 @@ export default function SafetyTraining({
         <div className="w-full bg-zinc-700 rounded-full h-2">
           <div 
             className="bg-orange-500 h-2 rounded-full transition-all duration-300"
-            style={{ width: `${(securityTestStage / 20) * 100}%` }}
+            style={{ width: `${(securityTestStage / 15) * 100}%` }}
           />
         </div>
 
@@ -990,8 +920,8 @@ export default function SafetyTraining({
               </div>
             )}
 
-            {/* Scenarios 5-20: Using unified securityScenarios array */}
-            {securityTestStage >= 5 && securityTestStage <= 20 && (
+            {/* Scenarios 5-15: Using unified securityScenarios array */}
+            {securityTestStage >= 5 && securityTestStage <= 15 && (
               <div className="space-y-4">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
@@ -1009,7 +939,52 @@ export default function SafetyTraining({
                   </p>
                   
                   {/* Visual simulations for specific scenarios */}
-                  {securityTestStage === 17 && (
+                  {securityTestStage === 6 && (
+                    <div className="mt-4 p-3 bg-zinc-800 rounded border border-red-500/30">
+                      <div className="text-center text-sm text-zinc-300 mb-3">
+                        🖥️ Clipboard Contents
+                      </div>
+                      <div className="space-y-2">
+                        <div className="p-2 bg-green-500/20 rounded border border-green-500/50">
+                          <div className="text-green-400 text-xs font-mono">COPIED:</div>
+                          <div className="text-green-300 text-xs font-mono break-all">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</div>
+                        </div>
+                        <div className="text-center text-xs text-zinc-400">↓ Clipboard Malware Active ↓</div>
+                        <div className="p-2 bg-red-500/20 rounded border border-red-500/50">
+                          <div className="text-red-400 text-xs font-mono">PASTED:</div>
+                          <div className="text-red-300 text-xs font-mono break-all">1A1zP1eP5QGefi2DMPTfTL5SLmv7Divf<span className="bg-red-500 text-white">N</span>b</div>
+                        </div>
+                        <div className="text-center text-xs text-red-400">⚠️ Last character changed: 'a' → 'b'</div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {securityTestStage === 9 && (
+                    <div className="mt-4 p-3 bg-zinc-800 rounded border border-purple-500/30">
+                      <div className="text-center text-sm text-zinc-300 mb-3">
+                        📱 Your Wallet Transactions
+                      </div>
+                      <div className="space-y-1 text-xs">
+                        <div className="p-2 bg-zinc-900 rounded">
+                          <div className="text-green-400">+ 0.00000546 BTC</div>
+                          <div className="text-zinc-400">From: bc1qxy2kgdygjr...unknown</div>
+                        </div>
+                        <div className="p-2 bg-zinc-900 rounded">
+                          <div className="text-green-400">+ 0.00000546 BTC</div>
+                          <div className="text-zinc-400">From: 1A1zP1eP5QGef...unknown</div>
+                        </div>
+                        <div className="p-2 bg-zinc-900 rounded">
+                          <div className="text-green-400">+ 0.00000546 BTC</div>
+                          <div className="text-zinc-400">From: 3J98t1WpEZ73C...unknown</div>
+                        </div>
+                        <div className="text-center text-xs text-purple-400 mt-2">
+                          🔍 Multiple tiny amounts = Dusting Attack
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {securityTestStage === 12 && (
                     <div className="mt-4 p-3 bg-zinc-800 rounded border border-orange-500/30">
                       <div className="text-center mb-3">
                         <div className="text-2xl font-bold text-green-400 animate-pulse">
@@ -1026,7 +1001,7 @@ export default function SafetyTraining({
                     </div>
                   )}
                   
-                  {securityTestStage === 19 && (
+                  {securityTestStage === 14 && (
                     <div className="mt-4 p-3 bg-zinc-800 rounded border border-blue-500/30">
                       <div className="text-center text-sm text-zinc-300 mb-3">
                         ⚡ Lightning Wallet Interface
@@ -1047,7 +1022,7 @@ export default function SafetyTraining({
                     </div>
                   )}
                   
-                  {securityTestStage === 20 && (
+                  {securityTestStage === 15 && (
                     <div className="mt-4 p-3 bg-zinc-800 rounded border border-purple-500/30">
                       <div className="text-center text-sm text-zinc-300 mb-3">
                         💼 Your Bitcoin Portfolio
@@ -1110,18 +1085,18 @@ export default function SafetyTraining({
           <div className="flex justify-center">
             <Button
               onClick={() => {
-                if (securityTestStage < 20) {
+                if (securityTestStage < 15) {
                   setSecurityTestStage(securityTestStage + 1);
                   setSelectedSecurityAnswer(null);
                   setShowSecurityFeedback(false);
                   setSecurityAnswerSubmitted(false);
                 } else {
-                  setSecurityTestStage(21); // Show results
+                  setSecurityTestStage(16); // Show results
                 }
               }}
               className="bg-orange-600 hover:bg-orange-700 text-white"
             >
-              {securityTestStage < 20 ? 'Next Question' : 'View Results'}
+              {securityTestStage < 15 ? 'Next Question' : 'View Results'}
             </Button>
           </div>
         )}
