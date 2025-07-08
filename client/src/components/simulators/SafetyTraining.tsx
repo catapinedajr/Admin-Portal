@@ -67,15 +67,15 @@ export default function SafetyTraining({
       id: 3,
       title: "Address Verification",
       description: "Checking Bitcoin addresses carefully",
-      question: "You're sending $500 worth of Bitcoin to pay for something. The seller gives you this address: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa. When you copy-paste it, your wallet shows: 1AlzP1eP5QGefi2DMPTfTL5SLmv7DivfNa. What do you do?",
+      question: "You're buying a laptop for $500 in Bitcoin. The seller texts you: 'Send to: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa'. You copy-paste into your wallet and it shows: 1AlzP1eP5QGefi2DMPTfTL5SLmv7DivfNa. The addresses look identical to you. What do you do?",
       options: [
-        "Send the Bitcoin - they look the same to me",
-        "Stop and check every character carefully first",
-        "Send a small test amount first to see if it works", 
-        "Ask the seller to send a new address"
+        "Send it - address looks correct",
+        "Double-check each character before sending",
+        "Trust copy-paste - technology doesn't make mistakes",
+        "Send quickly before Bitcoin price changes"
       ],
       correctIndex: 1,
-      explanation: "Critical catch! The addresses are different - character 3 changed from '1' (number one) to 'l' (lowercase L). This single character difference would send your $500 to a completely different wallet, likely losing it forever. Always verify every single character in Bitcoin addresses."
+      explanation: "DANGER! The addresses are completely different - the 3rd character changed from '1' (number one) to 'l' (lowercase L). They look identical at first glance, which is exactly how people lose Bitcoin. Your $500 would go to a random wallet forever. This is why you must verify every single character, even when addresses 'look the same'."
     },
     {
       id: 4,
