@@ -203,22 +203,35 @@ function LearnPage() {
             {/* Dev Day Toggle - Hidden in normal use */}
             {process.env.NODE_ENV === 'development' && (
               <div className="flex justify-center">
-                <div className="flex items-center gap-1 px-2 py-1 bg-zinc-900/50 rounded text-xs">
+                <div className="flex items-center gap-2 px-3 py-1 bg-zinc-900/50 rounded text-xs">
                   <span className="text-zinc-500">Dev:</span>
-                  {[1, 2, 3, 4, 5, 6, 7].map((day) => (
-                    <Button
-                      key={day}
-                      variant={currentDayIndex === day ? "secondary" : "ghost"}
-                      size="sm"
-                      onClick={() => {
-                        // Update the day index using the context
-                        setTestDayOverride(day);
-                      }}
-                      className="h-6 w-6 p-0 text-[10px] hover:bg-orange-500/20"
-                    >
-                      {day}
-                    </Button>
-                  ))}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      const newDay = Math.max(1, currentDayIndex - 1);
+                      setTestDayOverride(newDay);
+                    }}
+                    className="h-6 w-6 p-0 text-[10px] hover:bg-orange-500/20"
+                    disabled={currentDayIndex <= 1}
+                  >
+                    ←
+                  </Button>
+                  <span className="text-orange-400 font-medium min-w-[2rem] text-center">
+                    Day {currentDayIndex}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      const newDay = Math.min(30, currentDayIndex + 1);
+                      setTestDayOverride(newDay);
+                    }}
+                    className="h-6 w-6 p-0 text-[10px] hover:bg-orange-500/20"
+                    disabled={currentDayIndex >= 30}
+                  >
+                    →
+                  </Button>
                 </div>
               </div>
             )}
