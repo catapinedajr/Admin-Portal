@@ -1529,7 +1529,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.post('/api/quiz/submit', requireAuth, async (req, res) => {
+  app.post('/api/quiz/submit', setDefaultUser, async (req, res) => {
     try {
       const { questionId, selectedAnswer, date } = req.body;
       
@@ -1841,7 +1841,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.post("/api/activities/mark-quiz", requireAuth, async (req: any, res) => {
+  app.post("/api/activities/mark-quiz", setDefaultUser, async (req: any, res) => {
     try {
       const userId = req.user.id;
       const date = new Date().toISOString().split('T')[0];
@@ -1855,7 +1855,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Day completion endpoint for quiz completion flow
-  app.post("/api/mark-day-completed", requireAuth, async (req: any, res) => {
+  app.post("/api/mark-day-completed", setDefaultUser, async (req: any, res) => {
     try {
       const userId = req.user.id; // Use authenticated user ID
       const { dayIndex } = req.body;
