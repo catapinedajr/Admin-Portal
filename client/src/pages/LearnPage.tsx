@@ -80,6 +80,26 @@ function LearnPage() {
     queryFn: () => fetch('/api/user').then(res => res.json())
   });
 
+  // Get quiz score for today to determine completion status
+  const today = new Date().toISOString().split('T')[0];
+  const userId = user?.id || 1; // Fallback to user ID 1 for testing
+  const { data: quizScore } = useQuery({
+    queryKey: ['/api/quiz/score', userId, today],
+    queryFn: () => {
+      const sessionId = localStorage.getItem('hodlearn_session');
+      return fetch(`/api/quiz/score/${userId}/${today}?dayIndex=${currentDayIndex}`, {
+        headers: sessionId ? { 'Authorization': `Bearer ${sessionId}` } : {}
+      }).then(res => {
+        if (!res.ok) return null;
+        return res.json();
+      });
+    },
+    retry: false
+  });
+
+  // Check if quiz is completed (based on actual quiz score data)
+  const isQuizCompleted = quizScore && quizScore.total > 0;
+
   const getPersonalizedGreeting = () => {
     const timeGreeting = getTimeBasedGreeting();
     if (user?.firstName) {
@@ -90,7 +110,7 @@ function LearnPage() {
 
   // Helper function to get motivational message based on streak
   const getMotivationalMessage = () => {
-    if (dayCompleted) {
+    if (isQuizCompleted) {
       return "Excellent work today! Come back tomorrow to continue your Bitcoin journey.";
     }
     
@@ -180,7 +200,7 @@ function LearnPage() {
             </div>
             
             {/* Progress guidance message */}
-            {!dayCompleted ? (
+            {!isQuizCompleted ? (
               <p className="text-sm text-orange-400 max-w-md mx-auto">
                 Complete the quiz at the bottom to unlock tomorrow's lesson
               </p>

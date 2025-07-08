@@ -1563,7 +1563,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.get('/api/quiz/score/:userId/:date', requireAuth, async (req, res) => {
+  app.get('/api/quiz/score/:userId/:date', setDefaultUser, async (req, res) => {
     try {
       const date = req.params.date;
       
