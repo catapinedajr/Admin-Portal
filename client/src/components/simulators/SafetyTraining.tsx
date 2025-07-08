@@ -146,6 +146,118 @@ export default function SafetyTraining({
       ],
       correctIndex: 2,
       explanation: "Exchanges can be hacked or go offline. Enable 2FA for security and withdraw to your personal wallet for long-term storage."
+    },
+    {
+      id: 9,
+      title: "Hardware Wallet Purchase",
+      description: "Buying secure hardware wallets",
+      question: "When buying a hardware wallet, you should:",
+      options: [
+        "Buy from any online marketplace for best price",
+        "Purchase used one to save money",
+        "Get one that comes pre-configured",
+        "Buy directly from manufacturer or authorized dealer"
+      ],
+      correctIndex: 3,
+      explanation: "Only buy from official sources to avoid tampered devices. Used or pre-configured wallets may have compromised security."
+    },
+    {
+      id: 10,
+      title: "Backup Testing",
+      description: "Verifying recovery phrase works",
+      question: "You've written down your seed phrase. How do you verify it's correct?",
+      options: [
+        "Trust that you wrote it correctly",
+        "Test recovery with small amount first",
+        "Ask someone else to check your writing",
+        "Wait until you need to use it"
+      ],
+      correctIndex: 1,
+      explanation: "Testing recovery with small amounts ensures your backup works. Many people lose Bitcoin with untested backup phrases."
+    },
+    {
+      id: 11,
+      title: "Fee Manipulation Detection",
+      description: "Recognizing malicious wallet behavior",
+      question: "Your wallet suggests a $200 fee for sending $50 worth of Bitcoin. Normal fees are around $2. What's your response?",
+      options: [
+        "Pay the fee - wallet knows best",
+        "Try different wallet immediately",
+        "Ignore warning and send anyway",
+        "Use different wallet app"
+      ],
+      correctIndex: 1,
+      explanation: "Excessive fees indicate wallet malware. Legitimate wallets suggest normal fees - this wallet is trying to steal through fees."
+    },
+    {
+      id: 12,
+      title: "Recovery Scam Recognition",
+      description: "Identifying fraudulent recovery services",
+      question: "You lost access to your Bitcoin wallet. Someone offers to recover it for 50% of the funds. What do you do?",
+      options: [
+        "Pay them - 50% is better than nothing",
+        "Negotiate for lower percentage",
+        "Avoid - likely a scam",
+        "Ask for references first"
+      ],
+      correctIndex: 2,
+      explanation: "Most recovery services are scams promising impossible results. Legitimate recovery is extremely rare and expensive."
+    },
+    {
+      id: 13,
+      title: "Privacy Protection",
+      description: "Protecting financial privacy",
+      question: "A friend asks for your Bitcoin wallet address to 'see how much you have'. Do you share it?",
+      options: [
+        "Sure - friends should trust each other",
+        "Share but ask them not to check balance",
+        "No - wallet addresses reveal balance",
+        "Only share one address, not all"
+      ],
+      correctIndex: 2,
+      explanation: "Sharing wallet addresses lets anyone see your Bitcoin balance and transaction history on the blockchain."
+    },
+    {
+      id: 14,
+      title: "Market Volatility Response",
+      description: "Handling Bitcoin price crashes",
+      question: "Bitcoin crashes 30% in one day. You're down $2,000. What's your move?",
+      options: [
+        "Panic sell to prevent more losses",
+        "Hold and ignore short-term volatility",
+        "Sell half to reduce risk",
+        "Buy more while price is lower"
+      ],
+      correctIndex: 1,
+      explanation: "Bitcoin historically recovers from crashes and reaches new highs. Patient holders typically see better long-term returns."
+    },
+    {
+      id: 15,
+      title: "Investment Research",
+      description: "Evaluating cryptocurrency investments",
+      question: "A YouTube influencer promotes a 'guaranteed 100x' cryptocurrency. Should you invest?",
+      options: [
+        "Invest immediately - 100x sounds amazing",
+        "Research independently first",
+        "Invest small amount to test",
+        "Follow the influencer's advice"
+      ],
+      correctIndex: 1,
+      explanation: "Independent research protects you from paid promotions and biased advice that could lose you money on bad investments."
+    },
+    {
+      id: 16,
+      title: "App Store Safety",
+      description: "Downloading legitimate wallet apps",
+      question: "You want to download a Bitcoin wallet app on your phone. Where's the safest place?",
+      options: [
+        "Download from first Google result",
+        "Use Bitcoin forum link",
+        "Official app store only",
+        "Download from crypto news website"
+      ],
+      correctIndex: 2,
+      explanation: "Official app stores have security screening. Fake Bitcoin wallet apps from other sources have stolen millions."
     }
   ];
 
@@ -169,57 +281,11 @@ export default function SafetyTraining({
   };
 
   const getSecurityExplanation = (stage: number, isCorrect: boolean): string => {
-    const explanations = {
-      1: isCorrect 
-        ? "Smart move! You recognized the scam. Bitcoin has no central authority or customer support - anyone claiming to represent 'Bitcoin' is lying. Your 0.5 BTC stays safe."
-        : "Ouch! You clicked the phishing link. Your credentials would be stolen and your 0.5 BTC drained within minutes. Bitcoin has no customer support - this was a scam.",
-      2: isCorrect
-        ? "Excellent choice! Writing on paper and storing securely protects your Bitcoin. This seed phrase controls your funds forever - physical storage is safest."
-        : "Risky move! Digital storage of seed phrases is dangerous. Screenshots can be stolen by malware or leaked in cloud backups. Your Bitcoin could be gone.",
-      3: isCorrect
-        ? "Good eye! The addresses are different in the last character (lowercase 'L' vs number '1'). This address switch could steal your entire Bitcoin payment."
-        : "Dangerous mistake! The addresses are different - you would have sent Bitcoin to a scammer's wallet. Always verify every character in Bitcoin addresses.",
-      4: isCorrect
-        ? "Perfect! You avoided the giveaway scam. No legitimate person gives away Bitcoin for free - these are always scams designed to steal your money."
-        : "You fell for the scam! You would have sent Bitcoin expecting returns but received nothing. Never send Bitcoin to get 'free' Bitcoin back.",
-      5: isCorrect
-        ? "Wise choice! Established exchanges have security measures and regulatory oversight. New exchanges often disappear with user funds."
-        : "Risky decision! New exchanges offering bonuses are often exit scams. Many users have lost funds to too-good-to-be-true exchange offers.",
-      6: isCorrect
-        ? "Security-conscious! Public WiFi can be monitored by attackers. Using mobile data protects your Bitcoin wallet access from network eavesdropping."
-        : "Security risk! Public WiFi can be monitored. Attackers could intercept your wallet login and steal your Bitcoin through network attacks.",
-      7: isCorrect
-        ? "Smart download! Official sources ensure you get legitimate software. Fake wallet apps have stolen millions in Bitcoin by mimicking real wallets."
-        : "Dangerous download! Fake wallet apps in search results and forums have stolen millions. Always download from official sources only.",
-      8: isCorrect
-        ? "Perfect response! Real exchanges never ask for 2FA codes by phone. You avoided giving scammers access to your account and Bitcoin."
-        : "You were socially engineered! Real support never asks for 2FA codes. You would have given scammers full access to drain your Bitcoin.",
-      9: isCorrect
-        ? "Excellent security! Buying from manufacturers ensures no tampering. Used or third-party hardware wallets could be pre-compromised with malware."
-        : "Security compromise! Used or third-party hardware wallets could be pre-loaded with malware to steal your Bitcoin when you use them.",
-      10: isCorrect
-        ? "Smart verification! Testing recovery with small amounts ensures your backup works. Many people lose Bitcoin with untested backup phrases."
-        : "Backup risk! Untested backups often fail when needed most. You could lose access to your Bitcoin if your backup doesn't actually work.",
-      11: isCorrect
-        ? "Suspicious detected! $200 fees for $50 transactions indicate wallet malware. You correctly identified a malicious wallet trying to steal through fees."
-        : "Fee manipulation missed! You would pay 400% fees to scammers. This wallet is stealing through excessive fees - legitimate wallets suggest normal fees.",
-      12: isCorrect
-        ? "Self-reliance wins! Recovery services are usually scams promising impossible results. Most lost Bitcoin can't be recovered by anyone."
-        : "Recovery scam! You would pay scammers 50% for nothing. Most 'recovery services' are fraudsters who can't actually recover Bitcoin.",
-      13: isCorrect
-        ? "Privacy protected! Sharing wallet addresses can reveal your Bitcoin balance and transaction history to strangers monitoring the blockchain."
-        : "Privacy compromised! Sharing wallet addresses lets anyone see your Bitcoin balance and transactions. Your financial privacy is now gone.",
-      14: isCorrect
-        ? "Smart hodling! You avoided panic selling during temporary crashes. Bitcoin historically recovers and reaches new highs over time."
-        : "Panic selling! You would have sold at a loss during temporary volatility. Patient hodlers typically see better long-term Bitcoin returns.",
-      15: isCorrect
-        ? "Professional approach! Independent research protects you from paid promotions and biased advice that could lose you money on bad investments."
-        : "Influenced decision! Following paid promoters often leads to buying overpriced or scam projects. Your own research protects your Bitcoin.",
-      16: isCorrect
-        ? "Authentic app! Official app stores have more security screening than random downloads. Fake Bitcoin wallet apps have stolen millions."
-        : "Fake app risk! Unverified downloads often contain malware. Stick to official app stores where Bitcoin wallet apps are screened for authenticity."
-    };
-    return explanations[stage as keyof typeof explanations] || "Good choice!";
+    const currentScenario = securityScenarios[stage - 1];
+    if (currentScenario) {
+      return currentScenario.explanation;
+    }
+    return "Good choice!";
   };
 
   // Introduction screen (stage 0)
@@ -760,44 +826,19 @@ export default function SafetyTraining({
                     <span className="text-orange-400 text-sm">🎯</span>
                   </div>
                   <div>
-                    <h5 className="text-lg font-semibold text-white">Verify Bitcoin Address</h5>
-                    <p className="text-zinc-400 text-sm">Compare these two addresses carefully before sending</p>
+                    <h5 className="text-lg font-semibold text-white">{securityScenarios[2].title}</h5>
+                    <p className="text-zinc-400 text-sm">{securityScenarios[2].description}</p>
                   </div>
                 </div>
                 
                 <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
                   <p className="text-zinc-300 mb-3">
-                    Compare these two addresses carefully before sending:
+                    {securityScenarios[2].question}
                   </p>
-                  
-                  <div className="space-y-3">
-                    <div>
-                      <p className="text-zinc-400 text-xs mb-1">Copied:</p>
-                      <div className="p-3 bg-green-950/30 rounded border border-green-800/50">
-                        <p className="text-green-400 font-mono text-sm break-all">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</p>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <p className="text-zinc-400 text-xs mb-1">Displayed:</p>
-                      <div className="p-3 bg-red-950/30 rounded border border-red-800/50">
-                        <p className="text-red-400 font-mono text-sm break-all">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0w1h</p>
-                      </div>
-                    </div>
-                  </div>
                 </div>
 
-                <p className="text-zinc-300 text-sm">
-                  Are these Bitcoin addresses identical?
-                </p>
-
                 <div className="space-y-2">
-                  {[
-                    'Addresses match exactly',
-                    'Addresses are different',
-                    'Close enough',
-                    'First 10 characters match'
-                  ].map((option, index) => (
+                  {securityScenarios[2].options.map((option, index) => (
                     <button
                       key={index}
                       onClick={() => handleSecurityAnswer(index)}
@@ -823,14 +864,14 @@ export default function SafetyTraining({
                     <span className="text-orange-400 text-sm">🚨</span>
                   </div>
                   <div>
-                    <h5 className="text-lg font-semibold text-white">Spot the Bitcoin Scam</h5>
-                    <p className="text-zinc-400 text-sm">Click on the legitimate (safe) message</p>
+                    <h5 className="text-lg font-semibold text-white">{securityScenarios[3].title}</h5>
+                    <p className="text-zinc-400 text-sm">{securityScenarios[3].description}</p>
                   </div>
                 </div>
                 
                 <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
                   <p className="text-zinc-300 mb-3">
-                    You see these three messages online. Click on the legitimate (safe) message - avoid the scams!
+                    {securityScenarios[3].question}
                   </p>
                   
                   <div className="space-y-3">
@@ -854,17 +895,8 @@ export default function SafetyTraining({
                   </div>
                 </div>
 
-                <p className="text-zinc-300 text-sm">
-                  Which message is legitimate and safe to trust?
-                </p>
-
                 <div className="space-y-2">
-                  {[
-                    'The Elon Musk Bitcoin giveaway',
-                    'The prince\'s Bitcoin fortune offer',
-                    'The local Bitcoin meetup invitation',
-                    'None of them are safe'
-                  ].map((option, index) => (
+                  {securityScenarios[3].options.map((option, index) => (
                     <button
                       key={index}
                       onClick={() => handleSecurityAnswer(index)}
@@ -882,303 +914,27 @@ export default function SafetyTraining({
               </div>
             )}
 
-            {/* Scenario 5: Exchange Selection */}
-            {securityTestStage === 5 && (
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
-                    <span className="text-orange-400 text-sm">🏪</span>
-                  </div>
-                  <div>
-                    <h5 className="text-lg font-semibold text-white">Choose Your Exchange</h5>
-                    <p className="text-zinc-400 text-sm">First Bitcoin purchase decision</p>
-                  </div>
-                </div>
-                
-                <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
-                  <p className="text-zinc-300 mb-3">
-                    You're ready to buy your first Bitcoin. You see these options online:
-                  </p>
-                  <div className="space-y-2 text-sm">
-                    <div className="p-2 bg-zinc-800/50 rounded">
-                      <span className="text-yellow-400">🎉 CryptoBonus.com:</span> <span className="text-zinc-300">"50% signup bonus! New exchange!"</span>
-                    </div>
-                    <div className="p-2 bg-zinc-800/50 rounded">
-                      <span className="text-blue-400">📱 Coinbase:</span> <span className="text-zinc-300">"Regulated, established since 2012"</span>
-                    </div>
-                    <div className="p-2 bg-zinc-800/50 rounded">
-                      <span className="text-green-400">💰 BitcoinFast.net:</span> <span className="text-zinc-300">"Google Ad: Buy Bitcoin instantly!"</span>
-                    </div>
-                    <div className="p-2 bg-zinc-800/50 rounded">
-                      <span className="text-purple-400">💬 CryptoKing Exchange:</span> <span className="text-zinc-300">"Recommended in Telegram group"</span>
-                    </div>
-                  </div>
-                </div>
-
-                <p className="text-zinc-300 text-sm">
-                  Which exchange should you choose for your first Bitcoin purchase?
-                </p>
-
-                <div className="space-y-2">
-                  {[
-                    'CryptoBonus.com - 50% bonus sounds amazing!',
-                    'Coinbase - established and regulated',
-                    'BitcoinFast.net - Google ads are trustworthy',
-                    'CryptoKing - Telegram group recommended it'
-                  ].map((option, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSecurityAnswer(index)}
-                      disabled={securityAnswerSubmitted}
-                      className={`w-full p-3 text-left rounded border transition-colors ${
-                        selectedSecurityAnswer === index 
-                          ? 'border-orange-500 bg-orange-500/10' 
-                          : 'border-zinc-600 hover:border-zinc-500'
-                      }`}
-                    >
-                      <span className="text-white text-sm">{option}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Continue with remaining scenarios 6-16... */}
-            {securityTestStage >= 6 && securityTestStage <= 16 && (
+            {/* Scenarios 5-16: Using unified securityScenarios array */}
+            {securityTestStage >= 5 && securityTestStage <= 16 && (
               <div className="space-y-4">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
                     <span className="text-orange-400 text-sm">⚠️</span>
                   </div>
                   <div>
-                    <h5 className="text-lg font-semibold text-white">Security Scenario {securityTestStage}</h5>
-                    <p className="text-zinc-400 text-sm">Testing security knowledge</p>
+                    <h5 className="text-lg font-semibold text-white">{securityScenarios[securityTestStage - 1].title}</h5>
+                    <p className="text-zinc-400 text-sm">{securityScenarios[securityTestStage - 1].description}</p>
                   </div>
                 </div>
                 
                 <div className="p-4 bg-zinc-900/50 rounded border border-zinc-600">
                   <p className="text-zinc-300 mb-3">
-                    {securityTestStage === 6 && "You're at a coffee shop and want to check your Bitcoin wallet balance. The free WiFi is available. What's your move?"}
-                    {securityTestStage === 7 && "You need to download a Bitcoin wallet app. Where do you get it from?"}
-                    {securityTestStage === 8 && "Someone calls claiming to be from your exchange, asking for your 2FA authentication code to 'verify your account'. What do you do?"}
-                    {securityTestStage === 9 && "You want to buy a hardware wallet for long-term Bitcoin storage. What's the safest approach?"}
-                    {securityTestStage === 10 && "You've written down your seed phrase on paper. How do you verify it's correct?"}
-                    {securityTestStage === 11 && "Your wallet suggests a $200 fee for sending $50 worth of Bitcoin. Normal fees are around $2. What's your response?"}
-                    {securityTestStage === 12 && "You lost access to your Bitcoin wallet. Someone offers to recover it for 50% of the funds. What do you do?"}
-                    {securityTestStage === 13 && "A friend asks for your Bitcoin wallet address to 'see how much you have'. Do you share it?"}
-                    {securityTestStage === 14 && "Bitcoin crashes 30% in one day. You're down $2,000. What's your move?"}
-                    {securityTestStage === 15 && "A YouTube influencer promotes a 'guaranteed 100x' cryptocurrency. Should you invest?"}
-                    {securityTestStage === 16 && "You want to download a Bitcoin wallet app on your phone. Where's the safest place?"}
+                    {securityScenarios[securityTestStage - 1].question}
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  {securityTestStage === 6 && [
-                    'Connect to free WiFi and check normally',
-                    'Use mobile data instead of public WiFi',
-                    'Use WiFi but only check prices, not wallet',
-                    'Connect through VPN on public WiFi'
-                  ].map((option, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSecurityAnswer(index)}
-                      disabled={securityAnswerSubmitted}
-                      className={`w-full p-3 text-left rounded border transition-colors ${
-                        selectedSecurityAnswer === index 
-                          ? 'border-orange-500 bg-orange-500/10' 
-                          : 'border-zinc-600 hover:border-zinc-500'
-                      }`}
-                    >
-                      <span className="text-white text-sm">{option}</span>
-                    </button>
-                  ))}
-
-                  {securityTestStage === 7 && [
-                    'Google search and click first result',
-                    'Official website (electrum.org, bitcoin.org)',
-                    'Bitcoin forum recommendation',
-                    'Official app store (iOS/Google Play)'
-                  ].map((option, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSecurityAnswer(index)}
-                      disabled={securityAnswerSubmitted}
-                      className={`w-full p-3 text-left rounded border transition-colors ${
-                        selectedSecurityAnswer === index 
-                          ? 'border-orange-500 bg-orange-500/10' 
-                          : 'border-zinc-600 hover:border-zinc-500'
-                      }`}
-                    >
-                      <span className="text-white text-sm">{option}</span>
-                    </button>
-                  ))}
-
-                  {securityTestStage === 8 && [
-                    'Give them the code - they knew my email',
-                    'Hang up and call exchange directly',
-                    'Ask them to verify my details first',
-                    'Tell them to email me instead'
-                  ].map((option, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSecurityAnswer(index)}
-                      disabled={securityAnswerSubmitted}
-                      className={`w-full p-3 text-left rounded border transition-colors ${
-                        selectedSecurityAnswer === index 
-                          ? 'border-orange-500 bg-orange-500/10' 
-                          : 'border-zinc-600 hover:border-zinc-500'
-                      }`}
-                    >
-                      <span className="text-white text-sm">{option}</span>
-                    </button>
-                  ))}
-
-                  {securityTestStage === 9 && [
-                    'Buy used on eBay to save money',
-                    'Buy from Amazon third-party seller',
-                    'Buy from local computer store',
-                    'Buy new from official manufacturer'
-                  ].map((option, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSecurityAnswer(index)}
-                      disabled={securityAnswerSubmitted}
-                      className={`w-full p-3 text-left rounded border transition-colors ${
-                        selectedSecurityAnswer === index 
-                          ? 'border-orange-500 bg-orange-500/10' 
-                          : 'border-zinc-600 hover:border-zinc-500'
-                      }`}
-                    >
-                      <span className="text-white text-sm">{option}</span>
-                    </button>
-                  ))}
-
-                  {securityTestStage === 10 && [
-                    'Wait until I need to restore the wallet',
-                    'Take a photo as backup verification',
-                    'Test restore on separate device',
-                    'Share with trusted family to verify'
-                  ].map((option, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSecurityAnswer(index)}
-                      disabled={securityAnswerSubmitted}
-                      className={`w-full p-3 text-left rounded border transition-colors ${
-                        selectedSecurityAnswer === index 
-                          ? 'border-orange-500 bg-orange-500/10' 
-                          : 'border-zinc-600 hover:border-zinc-500'
-                      }`}
-                    >
-                      <span className="text-white text-sm">{option}</span>
-                    </button>
-                  ))}
-
-                  {securityTestStage === 11 && [
-                    'Pay the $200 - wallet knows best',
-                    'Try a different wallet immediately',
-                    'Never use this wallet again',
-                    'Ignore warning and send anyway'
-                  ].map((option, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSecurityAnswer(index)}
-                      disabled={securityAnswerSubmitted}
-                      className={`w-full p-3 text-left rounded border transition-colors ${
-                        selectedSecurityAnswer === index 
-                          ? 'border-orange-500 bg-orange-500/10' 
-                          : 'border-zinc-600 hover:border-zinc-500'
-                      }`}
-                    >
-                      <span className="text-white text-sm">{option}</span>
-                    </button>
-                  ))}
-
-                  {securityTestStage === 12 && [
-                    'Agree - 50% better than 0%',
-                    'Research the company first',
-                    'Decline and try yourself',
-                    'Negotiate for lower percentage'
-                  ].map((option, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSecurityAnswer(index)}
-                      disabled={securityAnswerSubmitted}
-                      className={`w-full p-3 text-left rounded border transition-colors ${
-                        selectedSecurityAnswer === index 
-                          ? 'border-orange-500 bg-orange-500/10' 
-                          : 'border-zinc-600 hover:border-zinc-500'
-                      }`}
-                    >
-                      <span className="text-white text-sm">{option}</span>
-                    </button>
-                  ))}
-
-                  {securityTestStage === 13 && [
-                    'Sure - friends should trust each other',
-                    'Only share one address, not all',
-                    'No - wallet addresses reveal balance',
-                    'Share but ask them not to check balance'
-                  ].map((option, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSecurityAnswer(index)}
-                      disabled={securityAnswerSubmitted}
-                      className={`w-full p-3 text-left rounded border transition-colors ${
-                        selectedSecurityAnswer === index 
-                          ? 'border-orange-500 bg-orange-500/10' 
-                          : 'border-zinc-600 hover:border-zinc-500'
-                      }`}
-                    >
-                      <span className="text-white text-sm">{option}</span>
-                    </button>
-                  ))}
-
-                  {securityTestStage === 14 && [
-                    'Panic sell to prevent more losses',
-                    'Hold and ignore short-term volatility',
-                    'Sell half to reduce risk',
-                    'Buy more while price is lower'
-                  ].map((option, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSecurityAnswer(index)}
-                      disabled={securityAnswerSubmitted}
-                      className={`w-full p-3 text-left rounded border transition-colors ${
-                        selectedSecurityAnswer === index 
-                          ? 'border-orange-500 bg-orange-500/10' 
-                          : 'border-zinc-600 hover:border-zinc-500'
-                      }`}
-                    >
-                      <span className="text-white text-sm">{option}</span>
-                    </button>
-                  ))}
-
-                  {securityTestStage === 15 && [
-                    'Invest immediately - 100x sounds amazing',
-                    'Research independently first',
-                    'Invest small amount to test',
-                    'Follow the influencer\'s advice'
-                  ].map((option, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSecurityAnswer(index)}
-                      disabled={securityAnswerSubmitted}
-                      className={`w-full p-3 text-left rounded border transition-colors ${
-                        selectedSecurityAnswer === index 
-                          ? 'border-orange-500 bg-orange-500/10' 
-                          : 'border-zinc-600 hover:border-zinc-500'
-                      }`}
-                    >
-                      <span className="text-white text-sm">{option}</span>
-                    </button>
-                  ))}
-
-                  {securityTestStage === 16 && [
-                    'Download from first Google result',
-                    'Use a Bitcoin forum link',
-                    'Official app store only',
-                    'Download from crypto news website'
-                  ].map((option, index) => (
+                  {securityScenarios[securityTestStage - 1].options.map((option, index) => (
                     <button
                       key={index}
                       onClick={() => handleSecurityAnswer(index)}
@@ -1195,6 +951,8 @@ export default function SafetyTraining({
                 </div>
               </div>
             )}
+
+
 
             {/* Answer Feedback */}
             {showSecurityFeedback && (
