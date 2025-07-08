@@ -103,7 +103,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-6 pb-24">
+      <main className="max-w-6xl mx-auto px-4 py-6 pb-32">
         <div className="space-y-8">
           {/* Welcome Header - Time-based greeting */}
           <div className="text-center space-y-6">
