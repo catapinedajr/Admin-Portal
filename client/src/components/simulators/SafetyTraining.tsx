@@ -407,19 +407,19 @@ export default function SafetyTraining({
                 <h5 className="font-semibold text-white text-lg">Hardware Wallet Best Practices</h5>
                 <div className="bg-zinc-800/50 rounded-lg p-4 space-y-2">
                   <div className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
                     <span className="text-zinc-300 text-sm">Use hardware wallets for storing larger Bitcoin amounts long-term</span>
                   </div>
                   <div className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
                     <span className="text-zinc-300 text-sm">Buy hardware wallets directly from manufacturers or authorized dealers</span>
                   </div>
                   <div className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
                     <span className="text-zinc-300 text-sm">Initialize with fresh seed phrase - never use pre-generated seeds</span>
                   </div>
                   <div className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
                     <span className="text-zinc-300 text-sm">Test recovery process with small amounts before storing large funds</span>
                   </div>
                 </div>
