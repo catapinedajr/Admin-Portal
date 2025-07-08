@@ -416,32 +416,35 @@ export class DatabaseStorage implements IStorage {
     });
   }
 
-  async getNextAvailableDay(userId: number): Promise<number> {
-    // Get all completed days first
-    const completedDays = await this.getCompletedDays(userId);
-    const maxCompletedDay = completedDays.length > 0 ? Math.max(...completedDays) : 0;
+  async getCurrentLearningDay(userId: number): Promise<number> {
+    // Start with day 1 if no progress exists
+    if (!(await this.isDayCompleted(userId, 1))) {
+      return 1;
+    }
     
-    // Start from the next day after the highest completed day
-    const startDay = Math.max(1, maxCompletedDay + 1);
-    
-    // Check only a few days ahead instead of all 180 days
-    for (let day = startDay; day <= Math.min(startDay + 5, 180); day++) {
-      const canAccess = await this.canAccessDay(userId, day);
+    // Find the first incomplete day starting from day 1
+    for (let day = 1; day <= 180; day++) {
       const isCompleted = await this.isDayCompleted(userId, day);
-      
-      // Return the first day that is accessible but not completed
-      if (canAccess && !isCompleted) {
-        return day;
+      if (!isCompleted) {
+        // Check if this day is accessible (calendar restrictions)
+        const canAccess = await this.canAccessDay(userId, day);
+        if (canAccess) {
+          return day; // Return first accessible incomplete day
+        } else {
+          // Day is not accessible yet (waiting for calendar day), return previous completed day for review
+          return Math.max(1, day - 1);
+        }
       }
     }
     
-    // If no upcoming days are accessible, return the last completed day
-    if (completedDays.length > 0) {
-      return Math.max(...completedDays);
-    }
-    
-    // Fallback to day 1
-    return 1;
+    // All days completed, return the highest day
+    const completedDays = await this.getCompletedDays(userId);
+    return completedDays.length > 0 ? Math.max(...completedDays) : 1;
+  }
+
+  async getNextAvailableDay(userId: number): Promise<number> {
+    // This method now returns the current learning day (what user should work on)
+    return this.getCurrentLearningDay(userId);
   }
 
   async canAccessDay(userId: number, dayIndex: number): Promise<boolean> {
