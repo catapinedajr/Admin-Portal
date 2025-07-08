@@ -145,7 +145,7 @@ function LearnPage() {
   };
 
   return (
-    <div className="space-y-6 pb-20">
+    <div className="space-y-6 pb-24">
       {/* Learn Sub-navigation */}
       <div className="flex justify-center">
         <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2">

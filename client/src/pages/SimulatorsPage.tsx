@@ -134,7 +134,7 @@ function SimulatorsPage(props: SimulatorsPageProps = {}) {
   const isCurrentSimulatorLocked = !isPremiumTier && !canAccessSimulator(simulationsSubTab);
 
   return (
-    <div className="space-y-6 pb-20">
+    <div className="space-y-6 pb-24">
 
 
       {/* Floating Paywall Overlay - Appears over the cards */}
@@ -349,7 +349,7 @@ function SimulatorsPageWithLayout() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-6 pb-20">
+      <main className="max-w-6xl mx-auto px-4 py-6 pb-24">
         <SimulatorsPage />
       </main>
 
