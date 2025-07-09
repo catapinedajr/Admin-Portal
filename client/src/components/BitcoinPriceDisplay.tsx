@@ -48,42 +48,61 @@ export default function BitcoinPriceDisplay() {
   const isPositive = priceData.change24h > 0;
 
   return (
-    <div className="space-y-1">
+    <div className="text-center space-y-3">
       {/* First Row: BTC Price and Satoshi Value */}
-      <div className="flex items-center gap-4 text-sm">
+      <div className="flex items-center justify-center gap-6">
         {/* Current Price */}
-        <div className="flex items-center gap-2">
-          <span className="text-orange-500 font-semibold">₿</span>
-          <span className="text-white font-bold">
-            ${priceData.price.toLocaleString()}
-          </span>
-          <span className={`text-xs ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
-            {isPositive ? '+' : ''}{priceData.change24h.toFixed(1)}%
-          </span>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
+            <span className="text-white font-bold text-lg">₿</span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-white font-bold text-xl">
+              ${priceData.price.toLocaleString()}
+            </span>
+            <span className={`text-sm font-medium ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
+              {isPositive ? '+' : ''}{priceData.change24h.toFixed(1)}% today
+            </span>
+          </div>
         </div>
 
         {/* Satoshi Value */}
-        <div className="text-zinc-400">
-          <span className="text-xs">1 sat = </span>
-          <span className="text-white font-mono">${satoshiValue}</span>
+        <div className="flex flex-col items-center bg-zinc-800/50 rounded-lg px-4 py-2 border border-zinc-700">
+          <span className="text-zinc-400 text-xs uppercase tracking-wide">1 Satoshi</span>
+          <span className="text-white font-mono font-bold text-lg">${satoshiValue}</span>
         </div>
       </div>
 
-      {/* Second Row: Historical Performance */}
-      <div className="flex items-center gap-3 text-xs">
-        <div className="flex items-center gap-1">
-          <TrendingUp className="w-3 h-3 text-green-400" />
-          <span className="text-green-400 font-medium">
-            +{priceData.performance.oneYear}% 1yr
-          </span>
+      {/* Second Row: Historical Performance with Animations */}
+      <div className="flex items-center justify-center gap-4">
+        <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/30 rounded-lg px-4 py-2 hover:bg-green-500/30 transition-all duration-300 cursor-pointer">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-green-400 animate-pulse" />
+            <div className="text-center">
+              <div className="text-green-400 font-bold text-lg">+{priceData.performance.oneYear}%</div>
+              <div className="text-zinc-400 text-xs">1 year</div>
+            </div>
+          </div>
         </div>
-        <div className="text-zinc-500">|</div>
-        <div className="text-green-400 font-medium">
-          +{priceData.performance.fourYear}% 4yr
+        
+        <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/30 rounded-lg px-4 py-2 hover:bg-green-500/30 transition-all duration-300 cursor-pointer">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-green-400 animate-pulse" />
+            <div className="text-center">
+              <div className="text-green-400 font-bold text-lg">+{priceData.performance.fourYear}%</div>
+              <div className="text-zinc-400 text-xs">4 years</div>
+            </div>
+          </div>
         </div>
-        <div className="text-zinc-500">|</div>
-        <div className="text-green-400 font-medium">
-          +{priceData.performance.tenYear}% 10yr
+        
+        <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/30 rounded-lg px-4 py-2 hover:bg-green-500/30 transition-all duration-300 cursor-pointer">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-green-400 animate-pulse" />
+            <div className="text-center">
+              <div className="text-green-400 font-bold text-xl">+{priceData.performance.tenYear}%</div>
+              <div className="text-zinc-400 text-xs">10 years</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
