@@ -7,6 +7,7 @@ import { Crown, Gem, Gamepad2, MoreHorizontal, User as UserIcon, Users, MessageS
 import BitcoinPriceDisplay from "@/components/BitcoinPriceDisplay";
 import WalletDisplay from "@/components/WalletDisplay";
 import WalletSummaryCard from "@/components/WalletSummaryCard";
+import StreakCounter from "@/components/StreakCounter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { User } from "@shared/schema";
@@ -154,6 +155,9 @@ export default function HomePage() {
 
           {/* Bitcoin Learning Wallet Summary */}
           <WalletSummaryCard />
+
+          {/* Streak Counter */}
+          <StreakCounter />
 
           {/* Main Learning Card - Streamlined */}
           <Card className="bg-gradient-to-br from-zinc-900/95 to-zinc-800/90 border border-zinc-700/50 hover:border-orange-500/30 transition-all duration-300">

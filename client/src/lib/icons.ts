@@ -71,6 +71,7 @@ export { default as Monitor } from "lucide-react/dist/esm/icons/monitor";
 export { default as Wifi } from "lucide-react/dist/esm/icons/wifi";
 export { default as Globe } from "lucide-react/dist/esm/icons/globe";
 export { default as Zap } from "lucide-react/dist/esm/icons/zap";
+export { default as Flame } from "lucide-react/dist/esm/icons/flame";
 
 // Content & Media
 export { default as BookOpen } from "lucide-react/dist/esm/icons/book-open";
@@ -101,12 +102,12 @@ export { default as Car } from "lucide-react/dist/esm/icons/car";
 // Additional icons needed by components
 export { default as Trophy } from "lucide-react/dist/esm/icons/trophy";
 export { default as Award } from "lucide-react/dist/esm/icons/award";
-export { default as Sparkles } from "lucide-react/dist/esm/icons/sparkles";
 export { default as Star } from "lucide-react/dist/esm/icons/star";
+export { default as Wallet } from "lucide-react/dist/esm/icons/wallet";
+export { default as Sparkles } from "lucide-react/dist/esm/icons/sparkles";
 export { default as ShoppingCart } from "lucide-react/dist/esm/icons/shopping-cart";
 export { default as Heart } from "lucide-react/dist/esm/icons/heart";
 export { default as LogOut } from "lucide-react/dist/esm/icons/log-out";
-export { default as Wallet } from "lucide-react/dist/esm/icons/wallet";
 export { default as ArrowLeftRight } from "lucide-react/dist/esm/icons/arrow-left-right";
 export { default as AlertCircle } from "lucide-react/dist/esm/icons/alert-circle";
 export { default as Bitcoin } from "lucide-react/dist/esm/icons/bitcoin";

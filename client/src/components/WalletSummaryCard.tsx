@@ -154,13 +154,24 @@ export default function WalletSummaryCard() {
           </div>
 
           {/* Motivation and progress indicator */}
-          <div className="flex items-center justify-between pt-2 border-t border-zinc-700/50">
-            <div className="text-xs text-gray-400">
-              Keep learning to stack more sats
+          <div className="space-y-2 pt-2 border-t border-zinc-700/50">
+            <div className="flex items-center justify-between">
+              <div className="text-xs text-gray-400">
+                Keep learning to stack more sats
+              </div>
+              <div className="flex items-center gap-1 text-xs text-orange-400">
+                <span>View Details</span>
+                <ChevronRight className="w-3 h-3" />
+              </div>
             </div>
-            <div className="flex items-center gap-1 text-xs text-orange-400">
-              <span>View Details</span>
-              <ChevronRight className="w-3 h-3" />
+            <div 
+              className="text-xs text-orange-400 hover:text-orange-300 cursor-pointer transition-colors underline"
+              onClick={(e) => {
+                e.stopPropagation();
+                setLocation('/wallet/rewards');
+              }}
+            >
+              Click here to learn how to stack sats
             </div>
           </div>
         </div>
