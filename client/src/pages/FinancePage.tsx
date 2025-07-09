@@ -252,18 +252,32 @@ function FinancePage() {
                 </div>
               </div>
 
-              {/* You're Not Too Late Message */}
-              <div className="bg-gradient-to-r from-green-950/30 to-emerald-800/20 p-4 rounded-xl border border-green-600/40 mb-6">
-                <div className="flex items-center justify-center gap-3 mb-2">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                  <h3 className="text-xl font-bold text-green-300 text-center">
-                    You're Not Too Late
-                  </h3>
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              {/* You're Not Too Late Message - ENHANCED ATTENTION GRABBING */}
+              <div className="relative bg-gradient-to-r from-green-900/50 to-emerald-900/40 p-6 rounded-2xl border-2 border-green-400/60 mb-6 shadow-2xl shadow-green-400/20 animate-pulse">
+                {/* Glowing border effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-green-400/30 to-emerald-400/30 rounded-2xl blur-lg animate-pulse" />
+                
+                <div className="relative z-10">
+                  <div className="flex items-center justify-center gap-4 mb-3">
+                    <div className="w-3 h-3 bg-green-300 rounded-full animate-bounce"></div>
+                    <h3 className="text-3xl font-black text-green-300 text-center tracking-wide animate-bounce">
+                      🚨 YOU'RE NOT TOO LATE 🚨
+                    </h3>
+                    <div className="w-3 h-3 bg-green-300 rounded-full animate-bounce"></div>
+                  </div>
+                  
+                  <div className="text-center space-y-2">
+                    <p className="text-xl font-bold text-zinc-100">
+                      Despite 105 years of money printing...
+                    </p>
+                    <p className="text-2xl font-black text-orange-400 animate-pulse">
+                      Less than 5% of people own Bitcoin
+                    </p>
+                    <p className="text-lg font-semibold text-green-300 animate-pulse">
+                      You're still EARLY
+                    </p>
+                  </div>
                 </div>
-                <p className="text-green-200 text-center text-sm">
-                  Bitcoin is still in its early adoption phase. Most institutions are just starting to understand this.
-                </p>
               </div>
 
               {/* The Revelation */}
@@ -339,10 +353,6 @@ function FinancePage() {
             
             {/* Animation Controls */}
             <div className="space-y-4">
-              <div className="text-center">
-                <span className="text-orange-400 font-bold text-3xl">{moneySupplyYear}</span>
-              </div>
-              
               {/* Watch Money Get Printed Button */}
               <div className="text-center">
                 <Button
@@ -410,6 +420,11 @@ function FinancePage() {
                 >
                   {isAnimating ? 'Printing Money...' : 'Watch Money Get Printed'}
                 </Button>
+              </div>
+              
+              {/* Year Display - Now below button */}
+              <div className="text-center">
+                <span className="text-orange-400 font-bold text-3xl">{moneySupplyYear}</span>
               </div>
               
               {/* Visual timeline indicators */}
