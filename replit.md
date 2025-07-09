@@ -46,7 +46,7 @@ The application uses a well-structured PostgreSQL schema with the following core
 4. **Community Features**: Forums, videos, and success stories for engagement
 
 ### Daily Content Build Process
-Complete workflow established for building full day content:
+Complete workflow established for building full day content documented in CONTENT_CREATION_FRAMEWORK.md:
 
 1. **Title Creation**: Urgent, curiosity-driven headlines focusing on immediate financial relevance
 2. **Setup Questions**: 3 questions building financial urgency and Bitcoin curiosity
@@ -54,9 +54,8 @@ Complete workflow established for building full day content:
 4. **Quiz Questions**: 4 questions testing lesson comprehension with proper optionA/B/C/D structure (optimized for daily habit formation)
 5. **Key Takeaways**: 3 simplified points using everyday language instead of technical jargon
 6. **Why It Matters**: Financial self-defense importance explanation
-7. **Dive Deeper**: Expandable detailed content for each setup question
 
-Each component ensures Bitcoin conviction building through immediate relevance rather than academic learning approach. Quiz reduced from 6 to 4 questions for better user experience and daily habit sustainability.
+Each component ensures Bitcoin conviction building through immediate relevance rather than academic learning approach. Framework includes 180-day themed progression and quality assurance checklists for sustainable content creation targeting working professionals.
 
 ### API Structure
 RESTful API endpoints provide:
