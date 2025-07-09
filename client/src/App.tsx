@@ -69,35 +69,26 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   return null;
 }
 
-function OnboardingRedirect() {
+function NewUserRedirect() {
   const [, setLocation] = useLocation();
 
   useEffect(() => {
     try {
-      // Check for reset parameters (debug mode only)
-      const urlParams = new URLSearchParams(window.location.search);
+      // Check localStorage for first-time user status
+      const hasVisited = localStorage.getItem('hodlearn-has-visited');
       
-      if (urlParams.get('debug-onboarding') === 'true') {
-        localStorage.removeItem('hodlearn-onboarding-completed');
-        console.log('DEBUG: Forced onboarding reset via URL parameter');
-      }
-
-      // Note: Removed production fix that was clearing onboarding flags in demo mode
-
-      // Check localStorage for onboarding completion
-      const currentOnboardingStatus = localStorage.getItem('hodlearn-onboarding-completed');
-      
-      // For first-time users (no localStorage flag), show onboarding
-      if (!currentOnboardingStatus) {
-        console.log('No onboarding completion found - redirecting to onboarding');
-        setLocation('/onboarding');
+      // For first-time users, send them to the money page to see the value immediately
+      if (!hasVisited) {
+        localStorage.setItem('hodlearn-has-visited', 'true');
+        console.log('First-time user - redirecting to money page');
+        setLocation('/money');
         return;
       }
       
-      console.log('Onboarding already completed - staying on home');
+      console.log('Returning user - staying on home');
     } catch (error) {
-      // If localStorage fails in Safari, skip onboarding
-      console.warn('Safari localStorage access issue, skipping onboarding:', error);
+      // If localStorage fails in Safari, just show home page
+      console.warn('Safari localStorage access issue, showing home page:', error);
     }
   }, [setLocation]);
 
@@ -130,7 +121,7 @@ function Router() {
         <Route path="/wallet" component={WalletPage} />
 
         <Route path="/about" component={About} />
-        <Route path="/" component={OnboardingRedirect} />
+        <Route path="/" component={NewUserRedirect} />
         <Route component={NotFound} />
       </Switch>
     </AppContextProvider>
