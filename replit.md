@@ -420,13 +420,15 @@ FUTURE: HomePage.tsx (<100 lines) + LearnPage.tsx + FinancePage.tsx + Simulators
 
 ### New Streamlined Content Creation Process
 
-**Step 1: Write the Lesson First**
+**Step 1: Write the Lesson First (Optimized for Young Professionals $40K-$80K)**
 Start with the daily title (from content_days table):
 - Create comprehensive 5-paragraph lesson content (~400 words, 3-minute read)
 - Use storytelling format with familiar analogies
-- Apply appropriate reading level (8th grade for Week 1)
-- Focus on making content digestible and building confidence
-- Emphasize personal journey and pace-based learning
+- Apply 9th grade reading level for accessibility 
+- Focus on salary protection and career-timeline urgency
+- Use specific financial examples: "$60K salary," "40 years until retirement," "your 401k"
+- Include peer-focused messaging: "smart professionals," "join millions learning Bitcoin"
+- Mobile-optimized: short paragraphs, scannable format for commute reading
 - Include educational disclaimer: Content is for educational and entertainment purposes only, not financial advice
 
 **Step 2: Generate Key Points and Why It Matters**
