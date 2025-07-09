@@ -90,6 +90,8 @@ function FinancePage() {
 
   const [isAnimating, setIsAnimating] = useState(false);
   const [flashingYear, setFlashingYear] = useState<number | null>(null);
+  const [investmentRaceActive, setInvestmentRaceActive] = useState(false);
+  const [investmentYear, setInvestmentYear] = useState(2014);
 
   // User data query
   const { data: user } = useQuery<User>({
@@ -639,6 +641,201 @@ function FinancePage() {
                 </div>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Investment Race Animation */}
+        <Card className="bg-zinc-900 border-zinc-800">
+          <CardHeader className="pb-4">
+            <div className="text-center mb-6">
+              <h2 className="text-3xl md:text-4xl font-black text-white mb-2">
+                The Investment Race
+              </h2>
+              <div className="text-xl md:text-2xl font-bold text-center mb-4">
+                <span className="text-zinc-300">$10,000 invested in 2014 → </span>
+                <span className="text-orange-400">What it's worth today</span>
+              </div>
+              <p className="text-lg text-zinc-300">
+                Watch what happened if you invested $10,000 in different assets 11 years ago
+              </p>
+            </div>
+          </CardHeader>
+          
+          <CardContent className="space-y-6">
+            {/* Animation Controls */}
+            <div className="text-center space-y-4">
+              <Button
+                onClick={() => {
+                  if (investmentRaceActive) return;
+                  
+                  setInvestmentRaceActive(true);
+                  setInvestmentYear(2014);
+                  
+                  // Animate year by year from 2014 to 2025 (11 years)
+                  const years = [];
+                  for (let year = 2014; year <= 2025; year++) {
+                    years.push(year);
+                  }
+                  
+                  let yearIndex = 0;
+                  const yearInterval = setInterval(() => {
+                    if (yearIndex < years.length) {
+                      setInvestmentYear(years[yearIndex]);
+                      yearIndex++;
+                    } else {
+                      clearInterval(yearInterval);
+                      // Show final results for 3 seconds then reset
+                      setTimeout(() => {
+                        setInvestmentRaceActive(false);
+                        setInvestmentYear(2014);
+                      }, 3000);
+                    }
+                  }, 500); // 500ms per year = 5.5 second total animation
+                }}
+                disabled={investmentRaceActive}
+                className={`px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-300 ${
+                  investmentRaceActive 
+                    ? 'bg-gray-600 text-gray-300 cursor-not-allowed' 
+                    : 'bg-green-600 hover:bg-green-700 text-white'
+                }`}
+              >
+                {investmentRaceActive ? 'Racing Through Time...' : 'Start the Investment Race'}
+              </Button>
+              
+              {/* Year Display */}
+              <div className="text-center">
+                <span className="text-orange-400 font-bold text-3xl">{investmentYear}</span>
+              </div>
+            </div>
+
+            {/* Investment Race Bars */}
+            <div className="investment-race-bars space-y-4 bg-zinc-800/50 rounded-xl p-6">
+              {(() => {
+                // Calculate values based on current year
+                const getInvestmentValue = (asset: string, year: number) => {
+                  const yearsSince2014 = year - 2014;
+                  const baseAmount = 10000;
+                  
+                  switch (asset) {
+                    case 'cash':
+                      // Loses ~3% annually to inflation
+                      return baseAmount * Math.pow(0.97, yearsSince2014);
+                    case 'stocks':
+                      // S&P 500 average ~10% annually
+                      return baseAmount * Math.pow(1.10, yearsSince2014);
+                    case 'gold':
+                      // Gold average ~5% annually
+                      return baseAmount * Math.pow(1.05, yearsSince2014);
+                    case 'bitcoin':
+                      // Bitcoin explosive growth (realistic historical data)
+                      if (year <= 2014) return baseAmount;
+                      if (year === 2015) return baseAmount * 1.4;
+                      if (year === 2016) return baseAmount * 1.8;
+                      if (year === 2017) return baseAmount * 20;
+                      if (year === 2018) return baseAmount * 8;
+                      if (year === 2019) return baseAmount * 10;
+                      if (year === 2020) return baseAmount * 20;
+                      if (year === 2021) return baseAmount * 65;
+                      if (year === 2022) return baseAmount * 30;
+                      if (year === 2023) return baseAmount * 45;
+                      if (year === 2024) return baseAmount * 90;
+                      return baseAmount * 120; // 2025 current estimate
+                    default:
+                      return baseAmount;
+                  }
+                };
+
+                const investments = [
+                  { 
+                    name: 'Cash Savings', 
+                    value: getInvestmentValue('cash', investmentYear),
+                    color: 'red',
+                    icon: '💵'
+                  },
+                  { 
+                    name: 'S&P 500 Stocks', 
+                    value: getInvestmentValue('stocks', investmentYear),
+                    color: 'blue',
+                    icon: '📈'
+                  },
+                  { 
+                    name: 'Gold', 
+                    value: getInvestmentValue('gold', investmentYear),
+                    color: 'yellow',
+                    icon: '🥇'
+                  },
+                  { 
+                    name: 'Bitcoin', 
+                    value: getInvestmentValue('bitcoin', investmentYear),
+                    color: 'orange',
+                    icon: '₿'
+                  }
+                ];
+
+                const maxValue = Math.max(...investments.map(inv => inv.value));
+
+                return investments.map((investment, index) => (
+                  <div key={investment.name} className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl">{investment.icon}</span>
+                        <span className="text-white font-semibold">{investment.name}</span>
+                      </div>
+                      <div className={`font-bold text-lg ${
+                        investment.color === 'red' ? 'text-red-400' :
+                        investment.color === 'blue' ? 'text-blue-400' :
+                        investment.color === 'yellow' ? 'text-yellow-400' :
+                        'text-orange-400'
+                      }`}>
+                        ${investment.value.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+                      </div>
+                    </div>
+                    
+                    {/* Animated Progress Bar */}
+                    <div className="w-full bg-zinc-700 rounded-full h-6 relative overflow-hidden">
+                      <div 
+                        className={`h-full rounded-full transition-all duration-500 ease-out ${
+                          investment.color === 'red' ? 'bg-red-500' :
+                          investment.color === 'blue' ? 'bg-blue-500' :
+                          investment.color === 'yellow' ? 'bg-yellow-500' :
+                          'bg-orange-500'
+                        }`}
+                        style={{ width: `${(investment.value / maxValue) * 100}%` }}
+                      />
+                      
+                      {/* Multiplier Label */}
+                      <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                        <span className="text-white text-sm font-bold">
+                          {(investment.value / 10000).toFixed(1)}x
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ));
+              })()}
+            </div>
+
+            {/* Results Summary - Shows after animation */}
+            {!investmentRaceActive && investmentYear === 2025 && (
+              <div className="text-center mt-6 p-6 bg-gradient-to-r from-orange-900/40 to-green-900/40 rounded-xl border border-orange-400/30">
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  The Results Are In
+                </h3>
+                <div className="grid grid-cols-2 gap-4 text-center">
+                  <div className="bg-red-900/30 p-3 rounded-lg">
+                    <div className="text-red-400 font-bold">Cash Lost</div>
+                    <div className="text-red-300">-25%</div>
+                  </div>
+                  <div className="bg-orange-900/30 p-3 rounded-lg">
+                    <div className="text-orange-400 font-bold">Bitcoin Won</div>
+                    <div className="text-orange-300">+1,100%</div>
+                  </div>
+                </div>
+                <p className="text-zinc-300 mt-4">
+                  Bitcoin didn't just beat inflation—it crushed every traditional investment.
+                </p>
+              </div>
+            )}
           </CardContent>
         </Card>
 
