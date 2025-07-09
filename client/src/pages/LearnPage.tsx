@@ -42,6 +42,8 @@ function LearnPage() {
 
   // Local state for expandable content
   const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
+  const [keyPointsRevealed, setKeyPointsRevealed] = useState(false);
+  const [whyMattersRevealed, setWhyMattersRevealed] = useState(false);
   
   // Animation state for earning satoshis
   const [showEarningAnimation, setShowEarningAnimation] = useState(false);
@@ -452,30 +454,54 @@ function LearnPage() {
                           </div>
                         </div>
                         
-                        {/* Database-driven Key Takeaways - Simple and Clean */}
+                        {/* Database-driven Key Takeaways - Reveal Function */}
                         {lesson.keyTakeaways && Array.isArray(lesson.keyTakeaways) && lesson.keyTakeaways.length > 0 && (
                           <div className="my-6">
-                            <h5 className="font-medium text-orange-300 mb-3">Key Points</h5>
-                            <div className="grid gap-2">
-                              {lesson.keyTakeaways.map((point, pointIdx) => (
-                                <div key={pointIdx} className="flex items-start gap-2 p-2 bg-orange-600/10 rounded-lg border border-orange-600/20">
-                                  <CheckCircle className="w-4 h-4 text-orange-400 flex-shrink-0 mt-0.5" />
-                                  <span className="text-orange-100 text-sm leading-relaxed">{point}</span>
-                                </div>
-                              ))}
+                            <div className="flex items-center justify-between mb-3">
+                              <h5 className="font-medium text-orange-300">Key Points</h5>
+                              <Button
+                                onClick={() => setKeyPointsRevealed(!keyPointsRevealed)}
+                                variant="outline"
+                                size="sm"
+                                className="text-orange-400 border-orange-400/30 hover:bg-orange-400/10"
+                              >
+                                {keyPointsRevealed ? 'Hide' : 'Reveal'} ({Math.min(lesson.keyTakeaways.length, 3)})
+                              </Button>
                             </div>
+                            {keyPointsRevealed && (
+                              <div className="grid gap-2 animate-fade-in">
+                                {lesson.keyTakeaways.slice(0, 3).map((point, pointIdx) => (
+                                  <div key={pointIdx} className="flex items-start gap-2 p-2 bg-orange-600/10 rounded-lg border border-orange-600/20">
+                                    <CheckCircle className="w-4 h-4 text-orange-400 flex-shrink-0 mt-0.5" />
+                                    <span className="text-orange-100 text-sm leading-relaxed">{point}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
 
-                      {/* Why This Matters - Database-driven */}
+                      {/* Why This Matters - Reveal Function */}
                       <div className="bg-zinc-800/50 rounded-lg p-6 border border-zinc-700 mt-8">
-                        <h4 className="text-white font-semibold mb-6 text-lg">Why This Matters</h4>
-                        <div className="text-zinc-300 text-base leading-[1.7]">
-                          <div>
-                            {cleanText(lesson.whyItMatters || "Understanding these fundamentals helps you make informed decisions about Bitcoin and see why it represents a significant advancement in monetary technology.")}
-                          </div>
+                        <div className="flex items-center justify-between mb-6">
+                          <h4 className="text-white font-semibold text-lg">Why This Matters</h4>
+                          <Button
+                            onClick={() => setWhyMattersRevealed(!whyMattersRevealed)}
+                            variant="outline"
+                            size="sm"
+                            className="text-orange-400 border-orange-400/30 hover:bg-orange-400/10"
+                          >
+                            {whyMattersRevealed ? 'Hide' : 'Reveal'}
+                          </Button>
                         </div>
+                        {whyMattersRevealed && (
+                          <div className="text-zinc-300 text-base leading-[1.7] animate-fade-in">
+                            <div>
+                              {cleanText(lesson.whyItMatters || "Understanding these fundamentals helps you make informed decisions about Bitcoin and see why it represents a significant advancement in monetary technology.")}
+                            </div>
+                          </div>
+                        )}
                       </div>
 
                     </div>
