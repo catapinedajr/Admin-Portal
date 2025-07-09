@@ -305,16 +305,14 @@ function FinancePage() {
             
             <CardTitle className="text-white flex items-center gap-3 text-xl">
               <TrendingDown className="w-5 h-5 text-orange-400" />
-              How Much Money Has Been Printed Over Time
+              The Money Printing Machine
             </CardTitle>
-            <p className="text-zinc-400 text-sm">See how the government has created more and more dollars since 1920, making each dollar worth less</p>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Animation Controls */}
             <div className="space-y-4">
               <div className="text-center">
-                <span className="text-orange-400 font-bold text-2xl">{moneySupplyYear}</span>
-                <p className="text-zinc-400 text-sm mt-1">Watch the money printing timeline</p>
+                <span className="text-orange-400 font-bold text-3xl">{moneySupplyYear}</span>
               </div>
               
               {/* Watch Money Get Printed Button */}
@@ -324,19 +322,19 @@ function FinancePage() {
                     if (isAnimating) return; // Prevent multiple animations
                     
                     const timeline = [
-                      { year: 1920, duration: 500, flash: true },
-                      { year: 1930, duration: 400, flash: false },
-                      { year: 1940, duration: 400, flash: false },
-                      { year: 1950, duration: 400, flash: false },
-                      { year: 1960, duration: 400, flash: false },
-                      { year: 1971, duration: 600, flash: true }, // Nixon Shock - pause longer
-                      { year: 1980, duration: 300, flash: false },
-                      { year: 1990, duration: 300, flash: false },
-                      { year: 2000, duration: 500, flash: true }, // Dot-com - pause
-                      { year: 2008, duration: 600, flash: true }, // Crisis - pause longer
-                      { year: 2015, duration: 300, flash: false },
-                      { year: 2020, duration: 400, flash: false },
-                      { year: 2025, duration: 800, flash: true }  // Today - longest pause
+                      { year: 1920, duration: 800, flash: true },
+                      { year: 1930, duration: 700, flash: false },
+                      { year: 1940, duration: 700, flash: false },
+                      { year: 1950, duration: 700, flash: false },
+                      { year: 1960, duration: 700, flash: false },
+                      { year: 1971, duration: 1000, flash: true }, // Nixon Shock - pause longer
+                      { year: 1980, duration: 600, flash: false },
+                      { year: 1990, duration: 600, flash: false },
+                      { year: 2000, duration: 800, flash: true }, // Dot-com - pause
+                      { year: 2008, duration: 1000, flash: true }, // Crisis - pause longer
+                      { year: 2015, duration: 600, flash: false },
+                      { year: 2020, duration: 700, flash: false },
+                      { year: 2025, duration: 1200, flash: true }  // Today - longest pause
                     ];
                     
                     let index = 0;
