@@ -312,10 +312,10 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
                   {/* Price labels - mobile optimized */}
                   {priceData.length > 0 && (
                     <>
-                      <text x="30" y="40" fill="rgb(161 161 170)" fontSize="12" textAnchor="start">
+                      <text x="30" y="40" fill="rgb(161 161 170)" fontSize="14" textAnchor="start">
                         {formatPrice(Math.max(...priceData.map(p => p.price)))}
                       </text>
-                      <text x="30" y="570" fill="rgb(161 161 170)" fontSize="12" textAnchor="start">
+                      <text x="30" y="570" fill="rgb(161 161 170)" fontSize="14" textAnchor="start">
                         {formatPrice(Math.min(...priceData.map(p => p.price)))}
                       </text>
                     </>
@@ -362,7 +362,7 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
                 </div>
               </div>
             </div>
-            <div className="text-center pt-1 border-t border-zinc-800/30">
+            <div className="text-center pt-1 pb-3 border-t border-zinc-800/30">
               <p className="text-zinc-400 text-sm font-medium">
                 "When in doubt, zoom out"
               </p>
