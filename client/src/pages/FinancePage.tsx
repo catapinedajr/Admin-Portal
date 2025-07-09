@@ -820,205 +820,135 @@ function FinancePage() {
           </CardContent>
         </Card>
 
-        {/* Bitcoin vs Internet Adoption Curve */}
+        {/* Bitcoin vs Internet Adoption - Mobile Optimized */}
         <Card className="bg-zinc-900 border-zinc-800">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-white flex items-center gap-3 text-xl">
-              <TrendingUp className="w-5 h-5 text-orange-400" />
+          <CardHeader className="pb-3">
+            <CardTitle className="text-white flex items-center gap-2 text-lg">
+              <TrendingUp className="w-4 h-4 text-orange-400" />
               Wait... Am I Too Late?
             </CardTitle>
-            <p className="text-zinc-400 text-sm">Compare Bitcoin's adoption to the Internet's growth - you might be surprised</p>
+            <p className="text-zinc-400 text-xs">Here's the surprising truth about Bitcoin adoption</p>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-4">
             {!adoptionAnimationActive && (
-              <div className="text-center space-y-4">
-                <div className="p-6 bg-zinc-800 rounded-lg border border-zinc-700">
-                  <h3 className="text-lg font-medium text-white mb-3">The "Too Late" Question</h3>
-                  <p className="text-zinc-300 mb-4">
-                    Everyone who learns about Bitcoin asks the same question: <span className="text-orange-400 font-bold">"Am I too late?"</span>
+              <div className="text-center space-y-3">
+                <div className="p-4 bg-zinc-800 rounded-lg border border-zinc-700">
+                  <p className="text-zinc-300 text-sm mb-2">
+                    Everyone asks: <span className="text-orange-400 font-bold">"Am I too late for Bitcoin?"</span>
                   </p>
-                  <p className="text-zinc-400 text-sm">
-                    Let's compare Bitcoin's current adoption to another revolutionary technology you know well.
+                  <p className="text-zinc-400 text-xs">
+                    Let's see where Bitcoin is compared to the Internet in the year 2000...
                   </p>
                 </div>
                 <Button 
                   onClick={startAdoptionAnimation}
-                  className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg font-medium"
+                  className="w-full bg-orange-600 hover:bg-orange-700 h-10 text-base font-medium"
                 >
-                  Show Me the Adoption Timeline
+                  Show Me The Truth
                 </Button>
               </div>
             )}
 
             {adoptionAnimationActive && (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <div className="text-center">
                   <Button 
                     onClick={resetAdoptionAnimation}
-                    className="bg-orange-600 hover:bg-orange-700"
+                    className="bg-orange-600 hover:bg-orange-700 text-sm"
                     disabled={adoptionAnimationRunning}
+                    size="sm"
                   >
-                    {adoptionAnimationRunning ? "Animation Running..." : "Reset Timeline"}
+                    {adoptionAnimationRunning ? "Loading..." : "Reset"}
                   </Button>
                 </div>
                 
-                {/* Adoption Curve Visualization */}
-                <div className="space-y-4">
-                  <div className="text-center mb-6">
-                    <h3 className="text-lg font-bold text-white mb-2">Technology Adoption Curves</h3>
-                    <p className="text-zinc-400 text-sm">
-                      How quickly did people adopt these revolutionary technologies?
-                    </p>
-                  </div>
-
-                  {/* Chart Container */}
-                  <div className="bg-zinc-800 rounded-lg p-6 border border-zinc-700">
-                    <svg 
-                      viewBox="0 0 400 250" 
-                      className="w-full h-64"
-                      style={{ background: 'transparent' }}
-                    >
-                      {/* Grid lines */}
-                      <defs>
-                        <pattern id="grid" width="40" height="25" patternUnits="userSpaceOnUse">
-                          <path d="M 40 0 L 0 0 0 25" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.3"/>
-                        </pattern>
-                      </defs>
-                      <rect width="400" height="250" fill="url(#grid)" />
-                      
-                      {/* Y-axis labels */}
-                      <text x="15" y="25" fill="#9CA3AF" fontSize="10" textAnchor="middle">100%</text>
-                      <text x="15" y="87.5" fill="#9CA3AF" fontSize="10" textAnchor="middle">50%</text>
-                      <text x="15" y="150" fill="#9CA3AF" fontSize="10" textAnchor="middle">25%</text>
-                      <text x="15" y="212.5" fill="#9CA3AF" fontSize="10" textAnchor="middle">10%</text>
-                      <text x="15" y="235" fill="#9CA3AF" fontSize="10" textAnchor="middle">0%</text>
-                      
-                      {/* Timeline markers */}
-                      <text x="50" y="245" fill="#9CA3AF" fontSize="9" textAnchor="middle">Start</text>
-                      <text x="130" y="245" fill="#9CA3AF" fontSize="9" textAnchor="middle">5 years</text>
-                      <text x="210" y="245" fill="#9CA3AF" fontSize="9" textAnchor="middle">10 years</text>
-                      <text x="290" y="245" fill="#9CA3AF" fontSize="9" textAnchor="middle">15 years</text>
-                      <text x="370" y="245" fill="#9CA3AF" fontSize="9" textAnchor="middle">20 years</text>
-
-                      {/* Internet Adoption Curve (1995-2015) */}
-                      <path
-                        d="M 50,235 Q 130,200 210,100 Q 290,40 370,25"
-                        stroke="#3B82F6"
-                        strokeWidth="3"
-                        fill="none"
-                        strokeDasharray={adoptionProgress >= 1 ? "none" : "0,1000"}
-                        style={{
-                          strokeDasharray: adoptionProgress >= 1 ? "none" : `${adoptionProgress * 320},1000`,
-                          transition: 'stroke-dasharray 2s ease-in-out'
-                        }}
-                      />
-                      
-                      {/* Bitcoin Adoption Curve (2009-2024) - positioned at current 7% */}
-                      <path
-                        d="M 50,235 Q 90,220 130,210 Q 170,195 210,190 Q 250,185 290,180 L 350,175"
-                        stroke="#F97316"
-                        strokeWidth="3"
-                        fill="none"
-                        strokeDasharray={adoptionProgress >= 2 ? "none" : "0,1000"}
-                        style={{
-                          strokeDasharray: adoptionProgress >= 2 ? "none" : `${(adoptionProgress - 1) * 300},1000`,
-                          transition: 'stroke-dasharray 2s ease-in-out 2s'
-                        }}
-                      />
-
-                      {/* Current position markers */}
-                      {adoptionProgress >= 3 && (
-                        <>
-                          {/* Internet 2005 marker (66% adoption) */}
-                          <circle cx="210" cy="100" r="4" fill="#3B82F6" opacity="0.8">
-                            <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
-                          </circle>
-                          <text x="210" y="85" fill="#3B82F6" fontSize="8" textAnchor="middle" fontWeight="bold">
-                            Internet 2005: 66%
-                          </text>
-                          
-                          {/* Bitcoin 2024 marker (7% adoption) */}
-                          <circle cx="350" cy="175" r="4" fill="#F97316" opacity="0.8">
-                            <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
-                          </circle>
-                          <text x="350" y="190" fill="#F97316" fontSize="8" textAnchor="middle" fontWeight="bold">
-                            Bitcoin 2024: 7%
-                          </text>
-                        </>
-                      )}
-
-                      {/* Legend */}
-                      <g transform="translate(50, 30)">
-                        <rect x="0" y="0" width="130" height="35" fill="#1F2937" stroke="#374151" rx="4"/>
-                        <line x1="10" y1="15" x2="25" y2="15" stroke="#3B82F6" strokeWidth="2"/>
-                        <text x="30" y="18" fill="#E5E7EB" fontSize="9">Internet (1995-2015)</text>
-                        <line x1="10" y1="28" x2="25" y2="28" stroke="#F97316" strokeWidth="2"/>
-                        <text x="30" y="31" fill="#E5E7EB" fontSize="9">Bitcoin (2009-2024)</text>
-                      </g>
-                    </svg>
-                  </div>
-
-                  {/* Progress Steps */}
-                  <div className="space-y-3">
-                    {[
-                      { step: 1, text: "The Internet took 20+ years to reach mainstream adoption", highlight: "Internet Journey" },
-                      { step: 2, text: "Bitcoin has followed a similar but faster growth pattern", highlight: "Bitcoin Journey" },
-                      { step: 3, text: "Bitcoin today (7% adoption) = Internet in early 2000s", highlight: "Still Early" }
-                    ].map(({ step, text, highlight }) => (
-                      <div key={step} className={`p-4 rounded-lg border transition-all duration-700 ${
-                        adoptionProgress >= step 
-                          ? 'bg-orange-800/30 border-orange-600/50' 
-                          : 'bg-zinc-800 border-zinc-700'
+                {/* Simple Comparison Cards */}
+                <div className="space-y-3">
+                  {/* Internet 2000 Card */}
+                  <div className={`p-4 rounded-lg border transition-all duration-1000 ${
+                    adoptionProgress >= 1 
+                      ? 'bg-blue-900/30 border-blue-600/50' 
+                      : 'bg-zinc-800 border-zinc-700'
+                  }`}>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className={`font-bold text-base transition-colors duration-500 ${
+                          adoptionProgress >= 1 ? 'text-blue-300' : 'text-zinc-400'
+                        }`}>
+                          Internet in Year 2000
+                        </div>
+                        <div className={`text-xs transition-colors duration-500 ${
+                          adoptionProgress >= 1 ? 'text-blue-200' : 'text-zinc-500'
+                        }`}>
+                          "This internet thing is confusing..."
+                        </div>
+                      </div>
+                      <div className={`text-right transition-colors duration-500 ${
+                        adoptionProgress >= 1 ? 'text-blue-200' : 'text-zinc-500'
                       }`}>
-                        <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold transition-all duration-500 ${
-                            adoptionProgress >= step ? 'bg-orange-500' : 'bg-zinc-600'
-                          }`}>
-                            {adoptionProgress >= step ? '✓' : step}
-                          </div>
-                          <div>
-                            <div className={`font-medium transition-colors duration-500 ${
-                              adoptionProgress >= step ? 'text-orange-200' : 'text-zinc-400'
-                            }`}>
-                              <span className="text-orange-400 font-bold">{highlight}:</span> {text}
-                            </div>
-                          </div>
+                        <div className="text-2xl font-bold">
+                          {adoptionProgress >= 1 ? '6%' : '?%'}
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                
-                {/* Final Revelation */}
-                {adoptionProgress >= 3 && (
-                  <div className="p-6 bg-gradient-to-r from-orange-950/30 to-green-950/30 rounded-xl border border-orange-800/30">
-                    <div className="text-center space-y-4">
-                      <div className="text-orange-300 font-bold text-xl">The Timing Reveals Everything</div>
-                      
-                      <div className="grid gap-4 md:grid-cols-2 text-center">
-                        <div className="p-4 bg-zinc-800 rounded-lg">
-                          <div className="text-blue-400 font-bold text-lg">Internet in 2000</div>
-                          <div className="text-zinc-300 text-sm">~6% global adoption</div>
-                          <div className="text-zinc-500 text-xs">Early adopter phase</div>
-                        </div>
-                        <div className="p-4 bg-zinc-800 rounded-lg">
-                          <div className="text-orange-400 font-bold text-lg">Bitcoin in 2024</div>
-                          <div className="text-zinc-300 text-sm">~7% global adoption</div>
-                          <div className="text-zinc-500 text-xs">Same early adopter phase</div>
-                        </div>
-                      </div>
-                      
-                      <div className="text-zinc-300 leading-relaxed max-w-2xl mx-auto">
-                        Remember dial-up internet? How "weird" online shopping seemed? That's where Bitcoin is today. 
-                        You're not late - <span className="text-orange-400 font-bold">you're exactly where the Internet early adopters were in 2000.</span>
-                      </div>
-                      
-                      <div className="text-green-400 font-bold text-lg pt-2">
-                        The question isn't "Am I too late?" It's "What happens next?"
+                        <div className="text-xs">adoption</div>
                       </div>
                     </div>
                   </div>
-                )}
+
+                  {/* Bitcoin 2024 Card */}
+                  <div className={`p-4 rounded-lg border transition-all duration-1000 delay-1000 ${
+                    adoptionProgress >= 2 
+                      ? 'bg-orange-900/30 border-orange-600/50' 
+                      : 'bg-zinc-800 border-zinc-700'
+                  }`}>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className={`font-bold text-base transition-colors duration-500 ${
+                          adoptionProgress >= 2 ? 'text-orange-300' : 'text-zinc-400'
+                        }`}>
+                          Bitcoin in Year 2024
+                        </div>
+                        <div className={`text-xs transition-colors duration-500 ${
+                          adoptionProgress >= 2 ? 'text-orange-200' : 'text-zinc-500'
+                        }`}>
+                          "This Bitcoin thing is confusing..."
+                        </div>
+                      </div>
+                      <div className={`text-right transition-colors duration-500 ${
+                        adoptionProgress >= 2 ? 'text-orange-200' : 'text-zinc-500'
+                      }`}>
+                        <div className="text-2xl font-bold">
+                          {adoptionProgress >= 2 ? '7%' : '?%'}
+                        </div>
+                        <div className="text-xs">adoption</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Revelation Card */}
+                  {adoptionProgress >= 3 && (
+                    <div className="p-4 bg-gradient-to-r from-green-900/40 to-orange-900/40 rounded-lg border border-green-600/50 animate-fade-in">
+                      <div className="text-center space-y-2">
+                        <div className="text-green-400 font-bold text-lg">
+                          You're Not Too Late!
+                        </div>
+                        <p className="text-zinc-300 text-sm leading-relaxed">
+                          Bitcoin today is exactly where the Internet was in 2000. 
+                          <span className="text-orange-400 font-medium"> You're still early.</span>
+                        </p>
+                        <div className="bg-zinc-800/50 rounded p-3 mt-3">
+                          <div className="text-zinc-300 text-xs">
+                            <span className="text-blue-300 font-medium">Internet 2000:</span> "Will this really work?" → 
+                            <span className="text-green-300 font-medium"> Changed everything</span>
+                          </div>
+                          <div className="text-zinc-300 text-xs mt-1">
+                            <span className="text-orange-300 font-medium">Bitcoin 2024:</span> "Will this really work?" → 
+                            <span className="text-orange-400 font-medium"> You decide</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </CardContent>
