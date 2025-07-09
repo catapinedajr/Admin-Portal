@@ -304,7 +304,7 @@ function FinancePage() {
 
         {/* Money Supply Erosion Visualization */}
         <Card id="money-supply-section" className={`bg-zinc-900 border-zinc-800 transition-all duration-500 ease-out ${
-          isAnimating && flashingYear && [1971, 2008, 2020].includes(flashingYear) 
+          isAnimating && flashingYear && [1971, 2000, 2008, 2020].includes(flashingYear) 
             ? 'shadow-[0_0_40px_rgba(239,68,68,0.8)] border-red-400 border-2 scale-[1.01]' 
             : ''
         }`}>
@@ -330,7 +330,7 @@ function FinancePage() {
           </CardHeader>
           <CardContent className="space-y-6 relative">
             {/* Crisis Warning Overlay - Dramatic effects */}
-            {isAnimating && flashingYear && [1971, 2008, 2020].includes(flashingYear) && (
+            {isAnimating && flashingYear && [1971, 2000, 2008, 2020].includes(flashingYear) && (
               <>
                 <div className="absolute inset-0 bg-red-500/15 rounded-lg pointer-events-none animate-pulse" />
                 <div className="absolute inset-0 bg-gradient-to-r from-red-600/20 to-red-400/10 rounded-lg pointer-events-none animate-pulse" />
@@ -367,7 +367,7 @@ function FinancePage() {
                     
                     const timeline = [];
                     for (let year = 1920; year <= 2025; year++) {
-                      const isFlashYear = [1971, 2008, 2020].includes(year);
+                      const isFlashYear = [1971, 2000, 2008, 2020].includes(year);
                       timeline.push({
                         year: year,
                         duration: isFlashYear ? baseInterval * 8 : baseInterval, // Crisis years pause 8x longer for maximum drama
