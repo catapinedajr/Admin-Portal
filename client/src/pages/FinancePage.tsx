@@ -368,7 +368,7 @@ function FinancePage() {
                       : 'bg-red-600 hover:bg-red-700 text-white'
                   }`}
                 >
-                  {isAnimating ? '🎬 Printing Money...' : '💸 Watch Money Get Printed'}
+                  {isAnimating ? 'Printing Money...' : 'Watch Money Get Printed'}
                 </Button>
               </div>
               
