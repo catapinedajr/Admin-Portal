@@ -394,18 +394,35 @@ function LearnPage() {
                   <h3 className="text-lg font-bold text-white mb-6">Today's Learning Preview</h3>
                   <div className="space-y-4">
                     {dailyFacts && dailyFacts.length > 0 ? (
-                      dailyFacts.map((fact: any) => (
-                        <div key={fact.id} className="bg-zinc-800/50 rounded-lg overflow-hidden border border-orange-500/20 shadow-lg shadow-orange-500/10">
-                          <div className="flex items-center gap-4 p-4">
-                            <div className="p-2 bg-orange-600/20 rounded-lg flex-shrink-0">
-                              <Coins className="w-5 h-5 text-orange-400" />
-                            </div>
-                            <div className="flex-1">
-                              <h4 className="font-semibold text-white">{fact.title}</h4>
+                      dailyFacts.map((fact: any, index: number) => {
+                        // Check if this section is completed based on user progress
+                        const isCompleted = quizScore && quizScore.total > 0; // Facts are viewed when quiz is taken
+                        const glowClass = isCompleted 
+                          ? "border-orange-400/40 shadow-lg shadow-orange-400/25 bg-zinc-800/70" 
+                          : "border-orange-500/20 shadow-lg shadow-orange-500/10 bg-zinc-800/50";
+                        
+                        return (
+                          <div key={fact.id} className={`rounded-lg overflow-hidden transition-all duration-500 ${glowClass}`}>
+                            <div className="flex items-center gap-4 p-4">
+                              <div className={`p-2 rounded-lg flex-shrink-0 transition-all duration-500 ${
+                                isCompleted ? "bg-orange-500/30" : "bg-orange-600/20"
+                              }`}>
+                                <Coins className={`w-5 h-5 transition-all duration-500 ${
+                                  isCompleted ? "text-orange-300" : "text-orange-400"
+                                }`} />
+                              </div>
+                              <div className="flex-1 flex items-center justify-between">
+                                <h4 className={`font-semibold transition-all duration-500 ${
+                                  isCompleted ? "text-orange-100" : "text-white"
+                                }`}>{fact.title}</h4>
+                                {isCompleted && (
+                                  <CheckCircle className="w-5 h-5 text-green-400 animate-pulse" />
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))
+                        );
+                      })
                     ) : (
                       <p className="text-zinc-400 text-center py-4">Loading today's preview...</p>
                     )}
@@ -415,7 +432,11 @@ function LearnPage() {
 
               {/* Today's Lesson - Clean and Focused */}
               {lesson && (
-                <Card className="bg-zinc-900 border-zinc-800">
+                <Card className={`bg-zinc-900 transition-all duration-500 ${
+                  quizScore && quizScore.total > 0 
+                    ? "border-orange-400/40 shadow-lg shadow-orange-400/20" 
+                    : "border-zinc-800"
+                }`}>
                   <CardContent className="p-6">
                     <div className="space-y-6">
                       {/* Lesson Header */}
