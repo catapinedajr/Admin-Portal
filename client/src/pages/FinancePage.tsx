@@ -300,9 +300,9 @@ function FinancePage() {
         </Card>
 
         {/* Money Supply Erosion Visualization */}
-        <Card id="money-supply-section" className={`bg-zinc-900 border-zinc-800 transition-all duration-300 ease-out ${
+        <Card id="money-supply-section" className={`bg-zinc-900 border-zinc-800 transition-all duration-500 ease-out ${
           isAnimating && flashingYear && [1971, 2008, 2020].includes(flashingYear) 
-            ? 'shadow-[0_0_20px_rgba(239,68,68,0.4)] border-red-500/40' 
+            ? 'shadow-[0_0_40px_rgba(239,68,68,0.8)] border-red-400 border-2 scale-[1.01]' 
             : ''
         }`}>
           <CardHeader className="pb-4">
@@ -327,9 +327,14 @@ function FinancePage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6 relative">
-            {/* Crisis Warning Overlay - Pure overlay, no layout impact */}
+            {/* Crisis Warning Overlay - Dramatic effects */}
             {isAnimating && flashingYear && [1971, 2008, 2020].includes(flashingYear) && (
-              <div className="absolute inset-0 bg-red-500/8 rounded-lg pointer-events-none transition-opacity duration-200" />
+              <>
+                <div className="absolute inset-0 bg-red-500/15 rounded-lg pointer-events-none animate-pulse" />
+                <div className="absolute inset-0 bg-gradient-to-r from-red-600/20 to-red-400/10 rounded-lg pointer-events-none animate-pulse" />
+                <div className="absolute top-2 left-2 right-2 bg-red-500/20 h-1 rounded-full animate-pulse" />
+                <div className="absolute bottom-2 left-2 right-2 bg-red-500/20 h-1 rounded-full animate-pulse" />
+              </>
             )}
             
             {/* Animation Controls */}
@@ -354,7 +359,7 @@ function FinancePage() {
                       const isFlashYear = [1971, 2008, 2020].includes(year);
                       timeline.push({
                         year: year,
-                        duration: isFlashYear ? baseInterval * 5 : baseInterval, // Crisis years pause 5x longer for dopamine hit
+                        duration: isFlashYear ? baseInterval * 8 : baseInterval, // Crisis years pause 8x longer for maximum drama
                         flash: isFlashYear
                       });
                     }
