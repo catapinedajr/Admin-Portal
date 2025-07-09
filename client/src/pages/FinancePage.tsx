@@ -255,12 +255,9 @@ function FinancePage() {
               {/* You're Not Too Late Message - Balanced Enhancement */}
               <div className="bg-gradient-to-r from-green-900/40 to-emerald-900/30 p-5 rounded-xl border border-green-400/50 mb-6 shadow-lg">
                 <div className="text-center space-y-3">
-                  <h3 className="text-2xl font-bold text-green-300">
+                  <h3 className="text-2xl font-bold text-green-300 animate-pulse">
                     You're Not Too Late
                   </h3>
-                  <p className="text-lg font-semibold text-zinc-200">
-                    Despite 105 years of money printing...
-                  </p>
                   <div className="bg-zinc-800/50 rounded-lg p-3 border border-orange-400/30">
                     <p className="text-xl font-bold text-orange-400">
                       Less than 5% of people own Bitcoin
