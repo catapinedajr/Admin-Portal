@@ -135,24 +135,6 @@ export default function HomePage() {
 
       <main className="max-w-6xl mx-auto px-4 py-6 pb-32">
         <div className="space-y-8">
-          {/* Welcome Header - Time-based greeting */}
-          <div className="text-center space-y-6">
-            <h1 className="text-3xl font-bold text-white">
-              {(() => {
-                const hour = new Date().getHours();
-                let greeting = "Good morning";
-                if (hour >= 12 && hour < 17) greeting = "Good afternoon";
-                else if (hour >= 17 && hour < 21) greeting = "Good evening";
-                else if (hour >= 21) greeting = "Good night";
-                return greeting + (user?.firstName ? `, ${user.firstName}` : '') + '!';
-              })()}
-            </h1>
-            
-            {/* Brand Tagline */}
-            <div className="space-y-2">
-              <p className="text-lg font-semibold text-orange-400">This is HODLearn</p>
-            </div>
-          </div>
 
           {/* Bitcoin Learning Wallet Summary */}
           <WalletSummaryCard />
