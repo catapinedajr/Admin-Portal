@@ -1505,17 +1505,17 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
           options = typeof q.options === 'string' ? JSON.parse(q.options) : q.options;
         } catch (error) {
           console.error('Error parsing options:', error, 'Raw options:', q.options);
-          options = ['Option A', 'Option B', 'Option C', 'Option D']; // Fallback
+          options = {optionA: 'Option A', optionB: 'Option B', optionC: 'Option C', optionD: 'Option D'}; // Fallback
         }
         
         return {
           id: q.id,
           dayIndex: dayIndex,
           question: q.question,
-          optionA: options[0] || '',
-          optionB: options[1] || '',
-          optionC: options[2] || '',
-          optionD: options[3] || '',
+          optionA: options.optionA || '',
+          optionB: options.optionB || '',
+          optionC: options.optionC || '',
+          optionD: options.optionD || '',
           correctAnswer: ['A', 'B', 'C', 'D'][q.correctAnswer] || 'A',
           explanation: q.explanation,
           category: 'Fundamentals', // Default category since not in new schema
