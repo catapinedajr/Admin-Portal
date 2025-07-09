@@ -79,7 +79,7 @@ export default function BitcoinPriceDisplay() {
           <div className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-green-400 animate-pulse" />
             <div className="text-center">
-              <div className="text-green-400 font-bold text-lg">+{priceData.performance.oneYear}%</div>
+              <div className="text-green-400 font-bold text-lg">+{priceData.performance.oneYear.toLocaleString()}%</div>
               <div className="text-zinc-400 text-xs">1 year</div>
             </div>
           </div>
@@ -89,7 +89,7 @@ export default function BitcoinPriceDisplay() {
           <div className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-green-400 animate-pulse" />
             <div className="text-center">
-              <div className="text-green-400 font-bold text-lg">+{priceData.performance.fourYear}%</div>
+              <div className="text-green-400 font-bold text-lg">+{priceData.performance.fourYear.toLocaleString()}%</div>
               <div className="text-zinc-400 text-xs">4 years</div>
             </div>
           </div>
@@ -99,7 +99,7 @@ export default function BitcoinPriceDisplay() {
           <div className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-green-400 animate-pulse" />
             <div className="text-center">
-              <div className="text-green-400 font-bold text-xl">+{priceData.performance.tenYear}%</div>
+              <div className="text-green-400 font-bold text-xl">+{priceData.performance.tenYear.toLocaleString()}%</div>
               <div className="text-zinc-400 text-xs">10 years</div>
             </div>
           </div>
