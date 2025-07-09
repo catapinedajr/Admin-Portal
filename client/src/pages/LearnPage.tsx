@@ -411,13 +411,10 @@ function LearnPage() {
                                   isCompleted ? "text-orange-300" : "text-orange-400"
                                 }`} />
                               </div>
-                              <div className="flex-1 flex items-center justify-between">
+                              <div className="flex-1">
                                 <h4 className={`font-semibold transition-all duration-500 ${
                                   isCompleted ? "text-orange-100" : "text-white"
                                 }`}>{fact.title}</h4>
-                                {isCompleted && (
-                                  <CheckCircle className="w-5 h-5 text-green-400 animate-pulse" />
-                                )}
                               </div>
                             </div>
                           </div>
