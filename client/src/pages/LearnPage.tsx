@@ -454,51 +454,99 @@ function LearnPage() {
                           </div>
                         </div>
                         
-                        {/* Database-driven Key Takeaways - Reveal Function */}
+                        {/* Database-driven Key Takeaways - Exciting Reveal Function */}
                         {lesson.keyTakeaways && Array.isArray(lesson.keyTakeaways) && lesson.keyTakeaways.length > 0 && (
                           <div className="my-6">
-                            <div className="flex items-center justify-between mb-3">
-                              <h5 className="font-medium text-orange-300">Key Points</h5>
-                              <Button
-                                onClick={() => setKeyPointsRevealed(!keyPointsRevealed)}
-                                variant="outline"
-                                size="sm"
-                                className="text-orange-400 border-orange-400/30 hover:bg-orange-400/10"
-                              >
-                                {keyPointsRevealed ? 'Hide' : 'Reveal'} ({Math.min(lesson.keyTakeaways.length, 3)})
-                              </Button>
-                            </div>
-                            {keyPointsRevealed && (
-                              <div className="grid gap-2 animate-fade-in">
-                                {lesson.keyTakeaways.slice(0, 3).map((point, pointIdx) => (
-                                  <div key={pointIdx} className="flex items-start gap-2 p-2 bg-orange-600/10 rounded-lg border border-orange-600/20">
-                                    <CheckCircle className="w-4 h-4 text-orange-400 flex-shrink-0 mt-0.5" />
-                                    <span className="text-orange-100 text-sm leading-relaxed">{point}</span>
-                                  </div>
-                                ))}
+                            <div className="bg-gradient-to-r from-orange-950/30 to-yellow-950/20 p-4 rounded-lg border border-orange-500/30">
+                              <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-2">
+                                  <Trophy className="w-5 h-5 text-orange-400" />
+                                  <h5 className="font-medium text-orange-300">Key Points</h5>
+                                </div>
+                                <Button
+                                  onClick={() => setKeyPointsRevealed(!keyPointsRevealed)}
+                                  className={`relative overflow-hidden transition-all duration-300 ${
+                                    keyPointsRevealed 
+                                      ? 'bg-green-600/20 text-green-400 border-green-400/30 hover:bg-green-600/30' 
+                                      : 'bg-gradient-to-r from-orange-600/20 to-yellow-600/20 text-orange-400 border-orange-400/30 hover:bg-orange-600/30 hover:scale-105'
+                                  }`}
+                                  variant="outline"
+                                  size="sm"
+                                >
+                                  {keyPointsRevealed ? (
+                                    <span className="flex items-center gap-1">
+                                      <CheckCircle className="w-4 h-4" />
+                                      Hide Points
+                                    </span>
+                                  ) : (
+                                    <span className="flex items-center gap-1">
+                                      <Sparkles className="w-4 h-4" />
+                                      Unlock ({Math.min(lesson.keyTakeaways.length, 3)})
+                                    </span>
+                                  )}
+                                </Button>
                               </div>
-                            )}
+                              {keyPointsRevealed && (
+                                <div className="space-y-3">
+                                  {lesson.keyTakeaways.slice(0, 3).map((point, pointIdx) => (
+                                    <div 
+                                      key={pointIdx} 
+                                      className="flex items-start gap-3 p-3 bg-orange-600/10 rounded-lg border border-orange-600/20 animate-fade-in hover:bg-orange-600/15 transition-all duration-300"
+                                      style={{ animationDelay: `${pointIdx * 150}ms` }}
+                                    >
+                                      <div className="flex items-center justify-center w-6 h-6 bg-orange-500/20 rounded-full flex-shrink-0 mt-0.5">
+                                        <span className="text-orange-400 font-bold text-sm">{pointIdx + 1}</span>
+                                      </div>
+                                      <span className="text-orange-100 text-sm leading-relaxed">{point}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
                           </div>
                         )}
                       </div>
 
-                      {/* Why This Matters - Reveal Function */}
-                      <div className="bg-zinc-800/50 rounded-lg p-6 border border-zinc-700 mt-8">
+                      {/* Why This Matters - Exciting Reveal Function */}
+                      <div className="bg-gradient-to-br from-blue-950/30 via-zinc-800/50 to-purple-950/30 rounded-lg p-6 border border-blue-500/30 mt-8">
                         <div className="flex items-center justify-between mb-6">
-                          <h4 className="text-white font-semibold text-lg">Why This Matters</h4>
+                          <div className="flex items-center gap-2">
+                            <Zap className="w-5 h-5 text-blue-400" />
+                            <h4 className="text-white font-semibold text-lg">Why This Matters</h4>
+                          </div>
                           <Button
                             onClick={() => setWhyMattersRevealed(!whyMattersRevealed)}
+                            className={`relative overflow-hidden transition-all duration-300 ${
+                              whyMattersRevealed 
+                                ? 'bg-green-600/20 text-green-400 border-green-400/30 hover:bg-green-600/30' 
+                                : 'bg-gradient-to-r from-blue-600/20 to-purple-600/20 text-blue-400 border-blue-400/30 hover:bg-blue-600/30 hover:scale-105'
+                            }`}
                             variant="outline"
                             size="sm"
-                            className="text-orange-400 border-orange-400/30 hover:bg-orange-400/10"
                           >
-                            {whyMattersRevealed ? 'Hide' : 'Reveal'}
+                            {whyMattersRevealed ? (
+                              <span className="flex items-center gap-1">
+                                <CheckCircle className="w-4 h-4" />
+                                Hide Insight
+                              </span>
+                            ) : (
+                              <span className="flex items-center gap-1">
+                                <Brain className="w-4 h-4" />
+                                Unlock Insight
+                              </span>
+                            )}
                           </Button>
                         </div>
                         {whyMattersRevealed && (
-                          <div className="text-zinc-300 text-base leading-[1.7] animate-fade-in">
-                            <div>
-                              {cleanText(lesson.whyItMatters || "Understanding these fundamentals helps you make informed decisions about Bitcoin and see why it represents a significant advancement in monetary technology.")}
+                          <div className="relative">
+                            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 rounded-lg"></div>
+                            <div className="relative text-zinc-300 text-base leading-[1.7] animate-fade-in p-4 bg-blue-950/20 rounded-lg border border-blue-500/20">
+                              <div className="flex items-start gap-3">
+                                <TrendingUp className="w-5 h-5 text-blue-400 flex-shrink-0 mt-1" />
+                                <div>
+                                  {cleanText(lesson.whyItMatters || "Understanding these fundamentals helps you make informed decisions about Bitcoin and see why it represents a significant advancement in monetary technology.")}
+                                </div>
+                              </div>
                             </div>
                           </div>
                         )}
