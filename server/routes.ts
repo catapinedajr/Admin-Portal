@@ -2246,6 +2246,24 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
+  // Test endpoint without auth for framework validation
+  app.post("/api/content/test-validate", async (req: any, res) => {
+    try {
+      const validation = validateContent(req.body);
+      const frameworkCheck = performFrameworkChecks(req.body);
+      
+      res.json({
+        isValid: validation.isValid,
+        errors: validation.errors,
+        frameworkPassed: frameworkCheck.passed,
+        warnings: frameworkCheck.warnings
+      });
+    } catch (error) {
+      console.error("Validation error:", error);
+      res.status(500).json({ message: "Validation failed", error: error.message });
+    }
+  });
+
   // Block direct database content insertion
   app.post("/api/content/direct-insert", requireAuth, async (req: any, res) => {
     res.status(403).json({ 

@@ -4,6 +4,11 @@ import { validateContent } from "./content-validation";
 export function protectContentDatabase(req: any, res: any, next: any) {
   const { method, path, body } = req;
   
+  // Allow test validation endpoint
+  if (path.includes('/test-validate')) {
+    return next();
+  }
+  
   // Block any direct DELETE operations on content tables
   if (method === 'DELETE' && path.includes('/content')) {
     return res.status(403).json({
