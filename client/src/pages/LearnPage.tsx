@@ -389,7 +389,7 @@ function LearnPage() {
           ) : (
             <div className="space-y-6">
               {/* Today's Learning Preview */}
-              <Card className="bg-zinc-900 border-zinc-800 relative overflow-hidden shimmer-border">
+              <Card className="bg-zinc-900 border-orange-400/40 shadow-lg shadow-orange-400/20">
                 <CardContent className="p-6">
                   <h3 className="text-lg font-bold text-white mb-6">Today's Learning Preview</h3>
                   <div className="space-y-4">
@@ -429,11 +429,7 @@ function LearnPage() {
 
               {/* Today's Lesson - Clean and Focused */}
               {lesson && (
-                <Card className={`bg-zinc-900 transition-all duration-500 relative overflow-hidden shimmer-border ${
-                  quizScore && quizScore.total > 0 
-                    ? "border-orange-400/40 shadow-lg shadow-orange-400/20" 
-                    : "border-zinc-800"
-                }`}>
+                <Card className="bg-zinc-900 border-orange-400/40 shadow-lg shadow-orange-400/20">
                   <CardContent className="p-6">
                     <div className="space-y-6">
                       {/* Lesson Header */}
