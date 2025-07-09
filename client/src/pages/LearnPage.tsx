@@ -391,87 +391,23 @@ function LearnPage() {
               {/* Today's Learning Preview */}
               <Card className="bg-zinc-900 border-zinc-800">
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-lg font-bold text-white">Today's Learning Preview</h3>
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
-                      <span className="text-xs text-orange-400 font-medium">ACTIVE</span>
-                    </div>
-                  </div>
-                  <div className="space-y-3">
+                  <h3 className="text-lg font-bold text-white mb-6">Today's Learning Preview</h3>
+                  <div className="space-y-4">
                     {dailyFacts && dailyFacts.length > 0 ? (
-                      dailyFacts.map((fact: any, index: number) => {
-                        const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Wallet;
-                        const isExpanded = expandedFacts.has(fact.id);
-                        const diveDeeperData = getDiveDeeperForFact(fact.title);
-                        
-                        return (
-                          <div key={fact.id} className="group">
-                            <div 
-                              className="bg-zinc-800/50 hover:bg-zinc-800/80 rounded-lg overflow-hidden transition-all duration-300 cursor-pointer border border-transparent hover:border-orange-500/20"
-                              onClick={() => toggleFactExpansion(fact.id)}
-                            >
-                              <div className="flex items-center gap-4 p-4">
-                                <div className="relative">
-                                  <div className="p-2 bg-orange-600/20 group-hover:bg-orange-600/30 rounded-lg flex-shrink-0 transition-all duration-300">
-                                    <IconComponent className="w-5 h-5 text-orange-400 group-hover:text-orange-300 transition-colors duration-300" />
-                                  </div>
-                                </div>
-                                <div className="flex-1">
-                                  <h4 className="font-semibold text-white group-hover:text-orange-100 transition-colors duration-300">{fact.title}</h4>
-                                  <div className="flex items-center gap-2 mt-1">
-                                    <Badge variant="outline" className="text-xs border-orange-500/30 text-orange-400">
-                                      Fact {index + 1}
-                                    </Badge>
-                                    {diveDeeperData && (
-                                      <span className="text-xs text-zinc-400 group-hover:text-zinc-300">Click to explore</span>
-                                    )}
-                                  </div>
-                                </div>
-                                <div className="flex-shrink-0">
-                                  <ChevronDown className={`w-4 h-4 text-zinc-400 group-hover:text-orange-400 transition-all duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
-                                </div>
-                              </div>
-                              
-                              {/* Expandable Content */}
-                              {isExpanded && diveDeeperData && (
-                                <div className="border-t border-zinc-700/50 bg-gradient-to-r from-orange-950/10 to-transparent">
-                                  <div className="p-4 space-y-4">
-                                    <div className="text-sm text-zinc-300 leading-relaxed">
-                                      {cleanText(diveDeeperData.content)}
-                                    </div>
-                                    {diveDeeperData.examples && (
-                                      <div className="space-y-2">
-                                        <h5 className="text-sm font-medium text-orange-300">Examples:</h5>
-                                        <div className="text-sm text-zinc-400 leading-relaxed">
-                                          {cleanText(diveDeeperData.examples)}
-                                        </div>
-                                      </div>
-                                    )}
-                                    {diveDeeperData.keyTakeaway && (
-                                      <div className="bg-orange-500/10 rounded-lg p-3 border border-orange-500/20">
-                                        <div className="flex items-start gap-2">
-                                          <TrendingUp className="w-4 h-4 text-orange-400 flex-shrink-0 mt-0.5" />
-                                          <div className="text-sm text-orange-100 leading-relaxed">
-                                            {cleanText(diveDeeperData.keyTakeaway)}
-                                          </div>
-                                        </div>
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                              )}
+                      dailyFacts.map((fact: any) => (
+                        <div key={fact.id} className="bg-zinc-800/50 rounded-lg overflow-hidden">
+                          <div className="flex items-center gap-4 p-4">
+                            <div className="p-2 bg-orange-600/20 rounded-lg flex-shrink-0">
+                              <Coins className="w-5 h-5 text-orange-400" />
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-white">{fact.title}</h4>
                             </div>
                           </div>
-                        );
-                      })
-                    ) : (
-                      <div className="text-center py-8">
-                        <div className="animate-pulse space-y-4">
-                          <div className="w-8 h-8 bg-orange-500/20 rounded-full mx-auto"></div>
-                          <p className="text-zinc-400">Loading today's insights...</p>
                         </div>
-                      </div>
+                      ))
+                    ) : (
+                      <p className="text-zinc-400 text-center py-4">Loading today's preview...</p>
                     )}
                   </div>
                 </CardContent>
