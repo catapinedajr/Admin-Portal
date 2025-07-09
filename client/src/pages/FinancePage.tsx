@@ -285,6 +285,21 @@ function FinancePage() {
         {/* Money Supply Erosion Visualization */}
         <Card id="money-supply-section" className="bg-zinc-900 border-zinc-800">
           <CardHeader className="pb-4">
+            {/* Dopamine-Driven Hook */}
+            <div className="text-center mb-6">
+              <h2 className="text-4xl font-black text-white mb-2">
+                Money Supply Explosion: $27B → $<AnimatedCounter target={21} suffix="T" className="text-red-400" />
+              </h2>
+              <p className="text-xl text-zinc-300 mb-4">
+                That's a <AnimatedCounter target={777} suffix="x" className="text-red-400" /> increase since 1924
+              </p>
+              <div className="bg-red-900/20 border border-red-600/30 rounded-lg p-4 inline-block">
+                <div className="text-red-300 font-bold text-lg">
+                  Shocking fact: <AnimatedCounter target={40} suffix="%" className="text-red-400" /> of all dollars were printed in just 4 years (2020-2024)
+                </div>
+              </div>
+            </div>
+            
             <CardTitle className="text-white flex items-center gap-3 text-xl">
               <TrendingDown className="w-5 h-5 text-orange-400" />
               How Much Money Has Been Printed Over Time
