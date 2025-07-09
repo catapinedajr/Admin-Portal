@@ -323,28 +323,20 @@ function FinancePage() {
                   onClick={() => {
                     if (isAnimating) return; // Prevent multiple animations
                     
-                    const milestones = [
-                      { year: 1920, flash: true },
-                      { year: 1929, flash: false },
-                      { year: 1933, flash: false },
-                      { year: 1940, flash: false },
-                      { year: 1945, flash: false },
-                      { year: 1950, flash: false },
-                      { year: 1960, flash: false },
-                      { year: 1971, flash: true }, // Nixon Shock
-                      { year: 1975, flash: false },
-                      { year: 1980, flash: false },
-                      { year: 1985, flash: false },
-                      { year: 1990, flash: false },
-                      { year: 1995, flash: false },
-                      { year: 2000, flash: true }, // Dot-com
-                      { year: 2005, flash: false },
-                      { year: 2008, flash: true }, // Crisis
-                      { year: 2010, flash: false },
-                      { year: 2015, flash: false },
-                      { year: 2020, flash: false },
-                      { year: 2021, flash: false },
-                      { year: 2025, flash: true }  // Today
+                    const timeline = [
+                      { year: 1920, duration: 500, flash: true },
+                      { year: 1930, duration: 400, flash: false },
+                      { year: 1940, duration: 400, flash: false },
+                      { year: 1950, duration: 400, flash: false },
+                      { year: 1960, duration: 400, flash: false },
+                      { year: 1971, duration: 600, flash: true }, // Nixon Shock - pause longer
+                      { year: 1980, duration: 300, flash: false },
+                      { year: 1990, duration: 300, flash: false },
+                      { year: 2000, duration: 500, flash: true }, // Dot-com - pause
+                      { year: 2008, duration: 600, flash: true }, // Crisis - pause longer
+                      { year: 2015, duration: 300, flash: false },
+                      { year: 2020, duration: 400, flash: false },
+                      { year: 2025, duration: 800, flash: true }  // Today - longest pause
                     ];
                     
                     let index = 0;
@@ -352,24 +344,24 @@ function FinancePage() {
                     setMoneySupplyYear(1920);
                     
                     const smoothAnimate = () => {
-                      if (index < milestones.length) {
-                        const milestone = milestones[index];
-                        setMoneySupplyYear(milestone.year);
+                      if (index < timeline.length) {
+                        const step = timeline[index];
+                        setMoneySupplyYear(step.year);
                         
-                        // Flash milestone button if it's a key year
-                        if (milestone.flash) {
-                          setFlashingYear(milestone.year);
-                          setTimeout(() => setFlashingYear(null), 600);
+                        // Flash milestone button at key moments
+                        if (step.flash) {
+                          setFlashingYear(step.year);
+                          setTimeout(() => setFlashingYear(null), Math.min(step.duration - 100, 500));
                         }
                         
                         index++;
-                        setTimeout(smoothAnimate, 400); // Faster, smoother progression
+                        setTimeout(smoothAnimate, step.duration);
                       } else {
                         setIsAnimating(false);
                       }
                     };
                     
-                    setTimeout(smoothAnimate, 300);
+                    setTimeout(smoothAnimate, 200);
                   }}
                   disabled={isAnimating}
                   className={`font-bold px-8 py-3 rounded-lg text-lg transition-all ${
@@ -417,7 +409,7 @@ function FinancePage() {
                   <div className={`text-xl font-bold transition-all duration-500 ${
                     isAnimating ? 'text-red-400 scale-110' : 'text-orange-400'
                   }`}>
-                    ${getMoneySupplyRaw(moneySupplyYear)}T
+                    ${getMoneySupplyRaw(moneySupplyYear).toFixed(1)}T
                   </div>
                   <div className="text-zinc-400 text-xs">Total Dollars in Circulation</div>
                 </div>
