@@ -147,13 +147,18 @@ function FinancePage() {
         <Card className="bg-gradient-to-br from-orange-950/20 via-zinc-900 to-zinc-800 border-orange-800/30">
           <CardContent className="p-8">
             <div className="max-w-4xl mx-auto text-center space-y-6">
-              {/* Clear Value Proposition */}
+              {/* Clear Value Proposition with Urgency */}
               <div className="mb-8">
-                <h1 className="text-4xl font-bold text-white mb-4">
-                  Why Bitcoin Exists
-                </h1>
+                <div className="mb-4">
+                  <h1 className="text-4xl font-bold text-white mb-2">
+                    Your Money Is Being <span className="text-orange-400">Silently Stolen</span>
+                  </h1>
+                  <p className="text-lg text-zinc-400 italic">
+                    (And nobody talks about it)
+                  </p>
+                </div>
                 <p className="text-xl text-zinc-300 leading-relaxed">
-                  Understanding money helps you understand why Bitcoin matters for your financial future.
+                  Every dollar you save loses value while you sleep. Here's what they don't teach you about money—and why Bitcoin exists.
                 </p>
               </div>
 
