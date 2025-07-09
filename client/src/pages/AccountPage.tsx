@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import BottomNavigation from '@/components/BottomNavigation';
-import { User, Shield, Calendar, Trophy, Settings, LogOut, Edit, Save, X, Wallet } from 'lucide-react';
+import { User, Shield, Calendar, Trophy, Settings, LogOut, Edit, Save, X } from 'lucide-react';
 
 interface User {
   id: number;
@@ -211,19 +211,6 @@ function AccountPage() {
                   <p className="text-xs text-zinc-400">How-to-learn BTC</p>
                 </div>
               </div>
-            </div>
-            
-            {/* Header Actions */}
-            <div className="flex items-center gap-2">
-              {/* Wallet Button */}
-              <button 
-                onClick={() => setLocation('/wallet')}
-                className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-2.5 py-1.5 rounded text-sm"
-                title="Wallet"
-              >
-                <Wallet className="w-4 h-4" />
-                <span className="sr-only">Wallet</span>
-              </button>
             </div>
           </div>
         </div>
