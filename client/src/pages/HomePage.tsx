@@ -147,8 +147,6 @@ export default function HomePage() {
             
             {/* Brand Tagline */}
             <div className="space-y-2">
-              <p className="text-lg text-zinc-300">Understanding Bitcoin takes time</p>
-              <p className="text-lg text-zinc-300">Building conviction takes community</p>
               <p className="text-lg font-semibold text-orange-400">This is HODLearn</p>
             </div>
           </div>
