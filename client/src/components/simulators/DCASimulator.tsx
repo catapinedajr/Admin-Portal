@@ -383,27 +383,27 @@ export function DCASimulator() {
                         const chartWidth = 360;
                         const chartHeight = 160;
                         
-                        // Find price range for proper scaling
+                        // Find price range for proper scaling with safety checks
                         const minPrice = Math.min(...purchases.map(p => p.price));
                         const maxPrice = Math.max(...purchases.map(p => p.price));
-                        const priceRange = maxPrice - minPrice;
+                        const priceRange = Math.max(1, maxPrice - minPrice); // Prevent division by zero
                         
                         // Find average cost range
-                        const minAvg = Math.min(...purchases.map(p => p.runningAvgCost));
-                        const maxAvg = Math.max(...purchases.map(p => p.runningAvgCost));
+                        const minAvg = Math.min(...purchases.map(p => p.runningAvgCost || 0));
+                        const maxAvg = Math.max(...purchases.map(p => p.runningAvgCost || 0));
                         
-                        // Calculate positions for each data point
+                        // Calculate positions for each data point with safety checks
                         const dataPoints = purchases.map((purchase, index) => {
-                          const x = 20 + (index / (purchases.length - 1)) * chartWidth;
-                          const priceY = 180 - ((purchase.price - minPrice) / priceRange) * chartHeight;
-                          const avgY = 180 - ((purchase.runningAvgCost - minPrice) / priceRange) * chartHeight;
+                          const x = 20 + (purchases.length > 1 ? (index / (purchases.length - 1)) * chartWidth : 0);
+                          const priceY = Math.max(20, Math.min(180, 180 - ((purchase.price - minPrice) / priceRange) * chartHeight));
+                          const avgY = Math.max(20, Math.min(180, 180 - (((purchase.runningAvgCost || 0) - minPrice) / priceRange) * chartHeight));
                           
                           return {
-                            x,
-                            priceY,
-                            avgY,
-                            price: purchase.price,
-                            avgCost: purchase.runningAvgCost
+                            x: isNaN(x) ? 20 : x,
+                            priceY: isNaN(priceY) ? 100 : priceY,
+                            avgY: isNaN(avgY) ? 100 : avgY,
+                            price: purchase.price || 0,
+                            avgCost: purchase.runningAvgCost || 0
                           };
                         });
                         
@@ -539,15 +539,15 @@ export function DCASimulator() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-zinc-400">Bitcoin Accumulated</span>
-                      <span className="text-white">{(dcaResults.totalInvested / dcaResults.purchases[0].price).toFixed(4)} BTC</span>
+                      <span className="text-white">{dcaResults.purchases && dcaResults.purchases[0] ? (dcaResults.totalInvested / dcaResults.purchases[0].price).toFixed(4) : '0.0000'} BTC</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-zinc-400">Current Value</span>
-                      <span className="text-orange-400 font-bold">${Math.round((dcaResults.totalInvested / dcaResults.purchases[0].price) * 65000).toLocaleString()}</span>
+                      <span className="text-orange-400 font-bold">${dcaResults.purchases && dcaResults.purchases[0] ? Math.round((dcaResults.totalInvested / dcaResults.purchases[0].price) * currentBitcoinPrice).toLocaleString() : '0'}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-zinc-400">Total Return</span>
-                      <span className="text-orange-400 font-bold">+{Math.round(((((dcaResults.totalInvested / dcaResults.purchases[0].price) * 65000) / dcaResults.totalInvested - 1) * 100)).toLocaleString()}%</span>
+                      <span className="text-orange-400 font-bold">+{dcaResults.purchases && dcaResults.purchases[0] ? Math.round(((((dcaResults.totalInvested / dcaResults.purchases[0].price) * currentBitcoinPrice) / dcaResults.totalInvested - 1) * 100)).toLocaleString() : '0'}%</span>
                     </div>
                   </div>
                 </div>
