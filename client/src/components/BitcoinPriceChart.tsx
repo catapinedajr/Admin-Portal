@@ -261,7 +261,7 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
                 ${currentPrice.toLocaleString()}
               </div>
               <div className={`text-lg font-semibold ${percentage >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                {percentage >= 0 ? '+' : ''}{percentage.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
+                {percentage >= 0 ? '+' : ''}{Math.round(percentage).toLocaleString()}%
               </div>
             </div>
             <div className="text-sm text-zinc-400">
@@ -312,7 +312,7 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
                   />
                   
                   {/* Chart title overlay */}
-                  <text x="400" y="50" fill="rgb(161 161 170)" fontSize="20" textAnchor="middle" fontWeight="500" fontStyle="italic">
+                  <text x="400" y="50" fill="rgb(161 161 170)" fontSize="20" textAnchor="middle" fontWeight="500">
                     "When in doubt, zoom out"
                   </text>
                   
