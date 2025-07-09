@@ -311,9 +311,12 @@ function FinancePage() {
           <CardHeader className="pb-4">
             {/* Dopamine-Driven Hook */}
             <div className="text-center mb-6">
-              <h2 className="text-4xl font-black text-white mb-2">
-                <span className="whitespace-nowrap">Money Supply Explosion: $23B → $<AnimatedCounter target={21} suffix="T" className="text-red-400" /></span>
+              <h2 className="text-3xl md:text-4xl font-black text-white mb-2 text-center">
+                Money Supply Explosion:
               </h2>
+              <div className="text-4xl md:text-5xl font-black text-center">
+                <span className="text-white">$23B → $</span><AnimatedCounter target={21} suffix="T" className="text-red-400" />
+              </div>
               <p className="text-xl text-zinc-300 mb-4">
                 That's a <AnimatedCounter target={922} suffix="x" className="text-red-400" /> increase since 1920
               </p>
@@ -323,11 +326,7 @@ function FinancePage() {
                 </div>
               </div>
             </div>
-            
-            <CardTitle className="text-white flex items-center gap-3 text-xl">
-              <TrendingDown className="w-5 h-5 text-orange-400" />
-              The Money Printing Machine
-            </CardTitle>
+
           </CardHeader>
           <CardContent className="space-y-6 relative">
             {/* Crisis Warning Overlay - Dramatic effects */}
