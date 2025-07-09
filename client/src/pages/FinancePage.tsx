@@ -235,7 +235,7 @@ function FinancePage() {
                   <div className="text-yellow-400 font-bold text-lg">Gold</div>
                   <div className="text-zinc-300 text-sm">10-year return</div>
                   <div className="text-yellow-300 text-xl font-bold">
-                    <AnimatedCounter target={65} suffix="%" className="text-yellow-300" />
+                    <AnimatedCounter target={65} suffix="%" className="text-zinc-300" />
                   </div>
                   <div className="text-zinc-400 text-xs">Store of value</div>
                 </div>
