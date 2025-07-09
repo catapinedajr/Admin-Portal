@@ -67,21 +67,30 @@ export default function BitcoinPriceDisplay() {
       {/* Compact Performance Indicators - Using full space */}
       <div className="flex items-center gap-1.5">
         <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/30 rounded-lg px-2.5 py-1">
-          <div className="text-center">
-            <div className="text-green-400 font-bold text-[10px]">+{priceData.performance.oneYear.toLocaleString()}%</div>
-            <div className="text-zinc-500 text-[8px]">1yr</div>
+          <div className="flex items-center gap-1">
+            <TrendingUp className="w-3 h-3 text-green-400 animate-pulse" />
+            <div className="text-center">
+              <div className="text-green-400 font-bold text-[11px]">+{priceData.performance.oneYear.toLocaleString()}%</div>
+              <div className="text-zinc-400 text-[9px]">1yr</div>
+            </div>
           </div>
         </div>
         <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/30 rounded-lg px-2.5 py-1">
-          <div className="text-center">
-            <div className="text-green-400 font-bold text-[10px]">+{priceData.performance.fourYear.toLocaleString()}%</div>
-            <div className="text-zinc-500 text-[8px]">4yr</div>
+          <div className="flex items-center gap-1">
+            <TrendingUp className="w-3 h-3 text-green-400 animate-pulse" />
+            <div className="text-center">
+              <div className="text-green-400 font-bold text-[11px]">+{priceData.performance.fourYear.toLocaleString()}%</div>
+              <div className="text-zinc-400 text-[9px]">4yr</div>
+            </div>
           </div>
         </div>
         <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/30 rounded-lg px-2.5 py-1">
-          <div className="text-center">
-            <div className="text-green-400 font-bold text-[10px]">+{priceData.performance.tenYear.toLocaleString()}%</div>
-            <div className="text-zinc-500 text-[8px]">10yr</div>
+          <div className="flex items-center gap-1">
+            <TrendingUp className="w-3 h-3 text-green-400 animate-pulse" />
+            <div className="text-center">
+              <div className="text-green-400 font-bold text-[11px]">+{priceData.performance.tenYear.toLocaleString()}%</div>
+              <div className="text-zinc-400 text-[9px]">10yr</div>
+            </div>
           </div>
         </div>
       </div>
