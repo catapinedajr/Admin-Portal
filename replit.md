@@ -4,6 +4,8 @@
 
 This is a full-stack web application built for daily learning and knowledge acquisition. The app provides users with daily facts, lessons, and progress tracking to encourage consistent learning habits. It features a modern React frontend with a Node.js/Express backend, using PostgreSQL for data persistence.
 
+**CRITICAL: Database Protection Protocol** - See DATABASE_PROTECTION_PROTOCOL.md for strict rules protecting content databases. Content deletion requires explicit user permission.
+
 ## System Architecture
 
 ### Frontend Architecture
