@@ -204,8 +204,8 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
     if (priceData.length < 2) return '';
     
     const width = 800;
-    const height = 500;
-    const padding = 30;
+    const height = 600;
+    const padding = 20;
     
     const minPrice = Math.min(...priceData.map(p => p.price));
     const maxPrice = Math.max(...priceData.map(p => p.price));
@@ -267,8 +267,8 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
             </div>
           </div>
 
-          {/* Chart - Extended height for mobile */}
-          <div className="flex-1 bg-black px-2 py-1">
+          {/* Chart - Maximized height for mobile */}
+          <div className="flex-1 bg-black px-1 py-0">
             {isLoading ? (
               <div className="h-full flex items-center justify-center">
                 <div className="text-zinc-400">Loading...</div>
@@ -278,24 +278,24 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
                 <svg
                   width="100%"
                   height="100%"
-                  viewBox="0 0 800 500"
+                  viewBox="0 0 800 600"
                   className="overflow-visible"
                 >
                   {/* Minimal grid for mobile */}
                   <defs>
-                    <pattern id="mobileGrid" width="100" height="50" patternUnits="userSpaceOnUse">
-                      <path d="M 100 0 L 0 0 0 50" fill="none" stroke="rgb(63 63 70)" strokeWidth="0.3" opacity="0.15"/>
+                    <pattern id="mobileGrid" width="100" height="60" patternUnits="userSpaceOnUse">
+                      <path d="M 100 0 L 0 0 0 60" fill="none" stroke="rgb(63 63 70)" strokeWidth="0.3" opacity="0.15"/>
                     </pattern>
                     <linearGradient id="mobilePriceGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                       <stop offset="0%" style={{ stopColor: 'rgb(249 115 22)', stopOpacity: 0.4 }} />
                       <stop offset="100%" style={{ stopColor: 'rgb(249 115 22)', stopOpacity: 0.02 }} />
                     </linearGradient>
                   </defs>
-                  <rect width="800" height="500" fill="url(#mobileGrid)" />
+                  <rect width="800" height="600" fill="url(#mobileGrid)" />
                   
                   {/* Area under the curve */}
                   <path
-                    d={createMobilePath() + ' L 770,480 L 30,480 Z'}
+                    d={createMobilePath() + ' L 780,580 L 20,580 Z'}
                     fill="url(#mobilePriceGradient)"
                   />
                   
@@ -312,10 +312,10 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
                   {/* Price labels - mobile optimized */}
                   {priceData.length > 0 && (
                     <>
-                      <text x="35" y="50" fill="rgb(161 161 170)" fontSize="12" textAnchor="start">
+                      <text x="30" y="40" fill="rgb(161 161 170)" fontSize="12" textAnchor="start">
                         {formatPrice(Math.max(...priceData.map(p => p.price)))}
                       </text>
-                      <text x="35" y="460" fill="rgb(161 161 170)" fontSize="12" textAnchor="start">
+                      <text x="30" y="570" fill="rgb(161 161 170)" fontSize="12" textAnchor="start">
                         {formatPrice(Math.min(...priceData.map(p => p.price)))}
                       </text>
                     </>
