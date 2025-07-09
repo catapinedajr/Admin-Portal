@@ -1,6 +1,9 @@
 import React from "react";
 
-export function cleanText(text: string): React.ReactNode {
+export function cleanText(text: string | undefined | null): React.ReactNode {
+  // Handle undefined/null text gracefully
+  if (!text) return null;
+  
   // First split by paragraphs (double line breaks), then handle bold formatting within each paragraph
   const paragraphs = text.split(/\n\s*\n/);
   
@@ -83,6 +86,13 @@ export function getExpandedLessonContent(title: string, content: string): Array<
 
     default:
       // For any lesson not specifically handled, provide a basic structure
+      if (!content) {
+        return [{
+          title: "Content Loading...",
+          paragraphs: ["Content is being loaded. Please try again in a moment."]
+        }];
+      }
+      
       const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 10);
       const midpoint = Math.ceil(sentences.length / 2);
       
