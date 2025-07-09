@@ -20,7 +20,11 @@ import {
   Zap,
   Crown,
   Gem,
-  User as UserIcon
+  User as UserIcon,
+  BookOpen,
+  Users,
+  Brain,
+  Flame
 } from "@/lib/icons";
 import { useLocation } from "wouter";
 import BottomNavigation from "@/components/BottomNavigation";
@@ -41,6 +45,7 @@ interface WalletData {
 export default function WalletPage() {
   const [, setLocation] = useLocation();
   const [showSatsEducation, setShowSatsEducation] = useState(false);
+  const [activeTab, setActiveTab] = useState<'wallet' | 'rewards'>('wallet');
   const { isPremiumTier, setShowEmailModal } = useSubscription();
 
   // Get wallet data (demo mode)
@@ -384,7 +389,36 @@ export default function WalletPage() {
             <h1 className="text-xl font-semibold">Bitcoin Learning Wallet</h1>
           </div>
 
-      {/* Balance Overview */}
+          {/* Sub-Navigation Tabs */}
+          <div className="flex space-x-1 bg-zinc-800/50 p-1 rounded-lg">
+            <button
+              onClick={() => setActiveTab('wallet')}
+              className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'wallet'
+                  ? 'bg-orange-500 text-white'
+                  : 'text-zinc-400 hover:text-white hover:bg-zinc-700/50'
+              }`}
+            >
+              <Wallet className="w-4 h-4" />
+              Wallet
+            </button>
+            <button
+              onClick={() => setActiveTab('rewards')}
+              className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'rewards'
+                  ? 'bg-orange-500 text-white'
+                  : 'text-zinc-400 hover:text-white hover:bg-zinc-700/50'
+              }`}
+            >
+              <BookOpen className="w-4 h-4" />
+              Rewards
+            </button>
+          </div>
+
+          {/* Conditional Content Based on Active Tab */}
+          {activeTab === 'wallet' ? (
+            <>
+              {/* Balance Overview */}
       <Card>
         <CardContent className="p-6">
           <div className="text-center space-y-4">
@@ -560,18 +594,164 @@ export default function WalletPage() {
         </CardContent>
       </Card>
 
-          {/* Call to Action */}
-          <Card>
-            <CardContent className="p-6 text-center">
-              <h3 className="font-semibold mb-2">Keep Learning, Keep Earning</h3>
-              <p className="text-gray-400 mb-4 text-sm">
-                Complete daily lessons and quizzes to earn more satoshis and build your Bitcoin knowledge.
-              </p>
-              <Button onClick={() => setLocation('/learn')} className="bg-orange-500 hover:bg-orange-600">
-                Continue Learning
-              </Button>
-            </CardContent>
-          </Card>
+              {/* Call to Action */}
+              <Card>
+                <CardContent className="p-6 text-center">
+                  <h3 className="font-semibold mb-2">Keep Learning, Keep Earning</h3>
+                  <p className="text-gray-400 mb-4 text-sm">
+                    Complete daily lessons and quizzes to earn more satoshis and build your Bitcoin knowledge.
+                  </p>
+                  <Button onClick={() => setLocation('/learn')} className="bg-orange-500 hover:bg-orange-600">
+                    Continue Learning
+                  </Button>
+                </CardContent>
+              </Card>
+            </>
+          ) : (
+            /* Rewards Tab Content */
+            <div className="space-y-6">
+              {/* How to Earn Sats */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Star className="w-5 h-5 text-orange-500" />
+                    How to Stack Sats
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-4">
+                    {/* Quiz Questions */}
+                    <div className="flex items-start gap-3 p-4 bg-zinc-800/50 rounded-lg">
+                      <div className="p-2 bg-blue-500/20 rounded-lg shrink-0">
+                        <Brain className="w-5 h-5 text-blue-500" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-sm mb-1">Answer Quiz Questions</div>
+                        <div className="text-xs text-gray-400 mb-2">Test your Bitcoin knowledge</div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="secondary" className="text-xs">100 sats per correct answer</Badge>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Quiz Completion */}
+                    <div className="flex items-start gap-3 p-4 bg-zinc-800/50 rounded-lg">
+                      <div className="p-2 bg-green-500/20 rounded-lg shrink-0">
+                        <CheckCircle className="w-5 h-5 text-green-500" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-sm mb-1">Complete Daily Quiz</div>
+                        <div className="text-xs text-gray-400 mb-2">Finish all questions in a day</div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="secondary" className="text-xs">500 sats completion bonus</Badge>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Streak Bonuses */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Flame className="w-5 h-5 text-orange-500" />
+                    Streak Bonuses
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-4">
+                    {/* 7 Day Streak */}
+                    <div className="flex items-center justify-between p-4 bg-zinc-800/50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-orange-500/20 rounded-lg">
+                          <Calendar className="w-5 h-5 text-orange-500" />
+                        </div>
+                        <div>
+                          <div className="font-semibold text-sm">7-Day Streak</div>
+                          <div className="text-xs text-gray-400">Complete 7 days in a row</div>
+                        </div>
+                      </div>
+                      <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/20">
+                        2,000 sats
+                      </Badge>
+                    </div>
+
+                    {/* 30 Day Streak */}
+                    <div className="flex items-center justify-between p-4 bg-zinc-800/50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-blue-500/20 rounded-lg">
+                          <Trophy className="w-5 h-5 text-blue-500" />
+                        </div>
+                        <div>
+                          <div className="font-semibold text-sm">30-Day Streak</div>
+                          <div className="text-xs text-gray-400">Complete a full month</div>
+                        </div>
+                      </div>
+                      <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/20">
+                        10,000 sats
+                      </Badge>
+                    </div>
+
+                    {/* 365 Day Streak */}
+                    <div className="flex items-center justify-between p-4 bg-zinc-800/50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-purple-500/20 rounded-lg">
+                          <Crown className="w-5 h-5 text-purple-500" />
+                        </div>
+                        <div>
+                          <div className="font-semibold text-sm">365-Day Streak</div>
+                          <div className="text-xs text-gray-400">Master level achievement</div>
+                        </div>
+                      </div>
+                      <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/20">
+                        100,000 sats
+                      </Badge>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Why Think in Sats */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Info className="w-5 h-5 text-orange-500" />
+                    Why Think in Sats?
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-3 text-sm text-gray-300">
+                    <p>• <strong>Future-focused:</strong> As Bitcoin grows, sats become the standard unit</p>
+                    <p>• <strong>Psychological advantage:</strong> Earning thousands feels better than earning 0.00001</p>
+                    <p>• <strong>Global standard:</strong> Lightning Network and apps use sats</p>
+                    <p>• <strong>Precision:</strong> No decimal confusion - whole numbers only</p>
+                  </div>
+                  
+                  <div className="p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
+                    <div className="text-center">
+                      <div className="text-sm text-gray-400 mb-1">Remember</div>
+                      <div className="font-semibold">1 Bitcoin = 100,000,000 satoshis</div>
+                      <div className="text-xs text-gray-400 mt-1">Just like 1 dollar = 100 cents</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Call to Action */}
+              <Card>
+                <CardContent className="p-6 text-center">
+                  <h3 className="font-semibold mb-2">Ready to Start Earning?</h3>
+                  <p className="text-gray-400 mb-4 text-sm">
+                    Complete your first lesson and quiz to earn your first satoshis.
+                  </p>
+                  <Button onClick={() => setLocation('/learn')} className="bg-orange-500 hover:bg-orange-600">
+                    Start Learning Today
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
       </main>
 
