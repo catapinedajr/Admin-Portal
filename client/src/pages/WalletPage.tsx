@@ -16,9 +16,14 @@ import {
   Star,
   CheckCircle,
   Trophy,
-  Zap
+  Zap,
+  Crown,
+  Gem
 } from "@/lib/icons";
 import { useLocation } from "wouter";
+import BottomNavigation from "@/components/BottomNavigation";
+import BitcoinPriceDisplay from "@/components/BitcoinPriceDisplay";
+import { useSubscription } from "@/contexts/SubscriptionContext";
 
 interface WalletData {
   totalSatoshisEarned: number;
@@ -35,6 +40,7 @@ interface WalletData {
 export default function WalletPage() {
   const [, setLocation] = useLocation();
   const [showSatsEducation, setShowSatsEducation] = useState(false);
+  const { isPremiumTier, setShowEmailModal } = useSubscription();
 
   // Get wallet data (demo mode)
   const { data: walletData, isLoading } = useQuery<WalletData>({
@@ -91,81 +97,313 @@ export default function WalletPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6 pb-24">
-        <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setLocation('/')}
-            className="p-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </Button>
-          <h1 className="text-xl font-semibold">Bitcoin Learning Wallet</h1>
-        </div>
-        
-        <div className="space-y-4">
-          <Card>
-            <CardContent className="p-6">
-              <div className="space-y-3">
-                <div className="h-8 bg-gray-600 rounded animate-pulse"></div>
-                <div className="h-4 bg-gray-700 rounded animate-pulse w-1/2"></div>
-                <div className="h-4 bg-gray-700 rounded animate-pulse w-1/3"></div>
+      <div className="min-h-screen bg-zinc-900">
+        {/* Header */}
+        <header className="border-b border-zinc-800 bg-zinc-900/95 backdrop-blur-lg sticky top-0 z-50">
+          <div className="max-w-6xl mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div 
+                className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={() => setLocation('/')}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-sm">
+                    HL
+                  </div>
+                  <div>
+                    <h1 className="text-xl font-bold">HODLearn</h1>
+                    <p className="text-xs text-zinc-400">How-to-learn BTC</p>
+                  </div>
+                </div>
               </div>
-            </CardContent>
-          </Card>
+
+              {/* Bitcoin Price Display */}
+              <div className="hidden md:block">
+                <BitcoinPriceDisplay />
+              </div>
+
+              {/* Header Actions */}
+              <div className="flex items-center gap-2">
+                {/* Wallet Button */}
+                <Button 
+                  onClick={() => setLocation('/wallet')}
+                  size="sm"
+                  className="bg-orange-500 hover:bg-orange-600 text-white border border-orange-500 hover:border-orange-600 px-2.5 py-1.5"
+                  title="Bitcoin Learning Wallet"
+                >
+                  <Coins className="w-4 h-4" />
+                  <span className="sr-only">Wallet</span>
+                </Button>
+
+                {/* Premium Status Indicator */}
+                {isPremiumTier ? (
+                  <div className="bg-orange-500 hover:bg-orange-600 text-white border-orange-500 px-2.5 py-1.5 font-medium rounded flex items-center">
+                    <Gem className="w-4 h-4" />
+                    <span className="sr-only">Premium</span>
+                  </div>
+                ) : (
+                  <Button 
+                    onClick={() => setShowEmailModal(true)}
+                    size="sm"
+                    className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-2.5 py-1.5"
+                    title="Upgrade to Premium"
+                  >
+                    <Crown className="w-4 h-4" />
+                    <span className="sr-only">Upgrade</span>
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Mobile Bitcoin Price Display */}
+        <div className="md:hidden bg-zinc-800/50 border-b border-zinc-700/50">
+          <div className="max-w-6xl mx-auto px-4 py-3">
+            <BitcoinPriceDisplay />
+          </div>
         </div>
+
+        <main className="max-w-6xl mx-auto px-4 py-6 pb-24">
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setLocation('/')}
+                className="p-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </Button>
+              <h1 className="text-xl font-semibold">Bitcoin Learning Wallet</h1>
+            </div>
+            
+            <div className="space-y-4">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="space-y-3">
+                    <div className="h-8 bg-gray-600 rounded animate-pulse"></div>
+                    <div className="h-4 bg-gray-700 rounded animate-pulse w-1/2"></div>
+                    <div className="h-4 bg-gray-700 rounded animate-pulse w-1/3"></div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </main>
+
+        <BottomNavigation 
+          activeSection="home"
+          onSectionChange={(section) => {
+            if (section === 'home') setLocation('/');
+            else if (section === 'learn') setLocation('/learn');
+            else if (section === 'money') setLocation('/money');
+            else if (section === 'simulators') setLocation('/simulators');
+            else if (section === 'community') setLocation('/community');
+            else if (section === 'more') setLocation('/more');
+          }}
+        />
       </div>
     );
   }
 
   if (!walletData) {
     return (
-      <div className="space-y-6 pb-24">
-        <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setLocation('/')}
-            className="p-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </Button>
-          <h1 className="text-xl font-semibold">Bitcoin Learning Wallet</h1>
-        </div>
-        
-        <Card>
-          <CardContent className="p-6 text-center">
-            <div className="p-4 bg-orange-500/20 rounded-lg w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-              <Coins className="w-8 h-8 text-orange-500" />
+      <div className="min-h-screen bg-zinc-900">
+        {/* Header */}
+        <header className="border-b border-zinc-800 bg-zinc-900/95 backdrop-blur-lg sticky top-0 z-50">
+          <div className="max-w-6xl mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div 
+                className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={() => setLocation('/')}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-sm">
+                    HL
+                  </div>
+                  <div>
+                    <h1 className="text-xl font-bold">HODLearn</h1>
+                    <p className="text-xs text-zinc-400">How-to-learn BTC</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bitcoin Price Display */}
+              <div className="hidden md:block">
+                <BitcoinPriceDisplay />
+              </div>
+
+              {/* Header Actions */}
+              <div className="flex items-center gap-2">
+                {/* Wallet Button */}
+                <Button 
+                  onClick={() => setLocation('/wallet')}
+                  size="sm"
+                  className="bg-orange-500 hover:bg-orange-600 text-white border border-orange-500 hover:border-orange-600 px-2.5 py-1.5"
+                  title="Bitcoin Learning Wallet"
+                >
+                  <Coins className="w-4 h-4" />
+                  <span className="sr-only">Wallet</span>
+                </Button>
+
+                {/* Premium Status Indicator */}
+                {isPremiumTier ? (
+                  <div className="bg-orange-500 hover:bg-orange-600 text-white border-orange-500 px-2.5 py-1.5 font-medium rounded flex items-center">
+                    <Gem className="w-4 h-4" />
+                    <span className="sr-only">Premium</span>
+                  </div>
+                ) : (
+                  <Button 
+                    onClick={() => setShowEmailModal(true)}
+                    size="sm"
+                    className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-2.5 py-1.5"
+                    title="Upgrade to Premium"
+                  >
+                    <Crown className="w-4 h-4" />
+                    <span className="sr-only">Upgrade</span>
+                  </Button>
+                )}
+              </div>
             </div>
-            <h2 className="text-lg font-semibold mb-2">Start Your Bitcoin Journey</h2>
-            <p className="text-gray-400 mb-4">
-              Complete lessons and answer quiz questions to earn satoshis and track your progress.
-            </p>
-            <Button onClick={() => setLocation('/learn')} className="bg-orange-500 hover:bg-orange-600">
-              Start Learning
-            </Button>
-          </CardContent>
-        </Card>
+          </div>
+        </header>
+
+        {/* Mobile Bitcoin Price Display */}
+        <div className="md:hidden bg-zinc-800/50 border-b border-zinc-700/50">
+          <div className="max-w-6xl mx-auto px-4 py-3">
+            <BitcoinPriceDisplay />
+          </div>
+        </div>
+
+        <main className="max-w-6xl mx-auto px-4 py-6 pb-24">
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setLocation('/')}
+                className="p-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </Button>
+              <h1 className="text-xl font-semibold">Bitcoin Learning Wallet</h1>
+            </div>
+            
+            <Card>
+              <CardContent className="p-6 text-center">
+                <div className="p-4 bg-orange-500/20 rounded-lg w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                  <Coins className="w-8 h-8 text-orange-500" />
+                </div>
+                <h2 className="text-lg font-semibold mb-2">Start Your Bitcoin Journey</h2>
+                <p className="text-gray-400 mb-4">
+                  Complete lessons and answer quiz questions to earn satoshis and track your progress.
+                </p>
+                <Button onClick={() => setLocation('/learn')} className="bg-orange-500 hover:bg-orange-600">
+                  Start Learning
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+
+        <BottomNavigation 
+          activeSection="home"
+          onSectionChange={(section) => {
+            if (section === 'home') setLocation('/');
+            else if (section === 'learn') setLocation('/learn');
+            else if (section === 'money') setLocation('/money');
+            else if (section === 'simulators') setLocation('/simulators');
+            else if (section === 'community') setLocation('/community');
+            else if (section === 'more') setLocation('/more');
+          }}
+        />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 pb-24">
+    <div className="min-h-screen bg-zinc-900">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setLocation('/')}
-          className="p-2"
-        >
-          <ArrowLeft className="w-4 h-4" />
-        </Button>
-        <h1 className="text-xl font-semibold">Bitcoin Learning Wallet</h1>
+      <header className="border-b border-zinc-800 bg-zinc-900/95 backdrop-blur-lg sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div 
+              className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => setLocation('/')}
+            >
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-sm">
+                  HL
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold">HODLearn</h1>
+                  <p className="text-xs text-zinc-400">How-to-learn BTC</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Bitcoin Price Display */}
+            <div className="hidden md:block">
+              <BitcoinPriceDisplay />
+            </div>
+
+            {/* Header Actions */}
+            <div className="flex items-center gap-2">
+              {/* Wallet Button */}
+              <Button 
+                onClick={() => setLocation('/wallet')}
+                size="sm"
+                className="bg-orange-500 hover:bg-orange-600 text-white border border-orange-500 hover:border-orange-600 px-2.5 py-1.5"
+                title="Bitcoin Learning Wallet"
+              >
+                <Coins className="w-4 h-4" />
+                <span className="sr-only">Wallet</span>
+              </Button>
+
+              {/* Premium Status Indicator */}
+              {isPremiumTier ? (
+                <div className="bg-orange-500 hover:bg-orange-600 text-white border-orange-500 px-2.5 py-1.5 font-medium rounded flex items-center">
+                  <Gem className="w-4 h-4" />
+                  <span className="sr-only">Premium</span>
+                </div>
+              ) : (
+                <Button 
+                  onClick={() => setShowEmailModal(true)}
+                  size="sm"
+                  className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-2.5 py-1.5"
+                  title="Upgrade to Premium"
+                >
+                  <Crown className="w-4 h-4" />
+                  <span className="sr-only">Upgrade</span>
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Bitcoin Price Display */}
+      <div className="md:hidden bg-zinc-800/50 border-b border-zinc-700/50">
+        <div className="max-w-6xl mx-auto px-4 py-3">
+          <BitcoinPriceDisplay />
+        </div>
       </div>
+
+      <main className="max-w-6xl mx-auto px-4 py-6 pb-24">
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setLocation('/')}
+              className="p-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </Button>
+            <h1 className="text-xl font-semibold">Bitcoin Learning Wallet</h1>
+          </div>
 
       {/* Balance Overview */}
       <Card>
@@ -343,18 +581,32 @@ export default function WalletPage() {
         </CardContent>
       </Card>
 
-      {/* Call to Action */}
-      <Card>
-        <CardContent className="p-6 text-center">
-          <h3 className="font-semibold mb-2">Keep Learning, Keep Earning</h3>
-          <p className="text-gray-400 mb-4 text-sm">
-            Complete daily lessons and quizzes to earn more satoshis and build your Bitcoin knowledge.
-          </p>
-          <Button onClick={() => setLocation('/learn')} className="bg-orange-500 hover:bg-orange-600">
-            Continue Learning
-          </Button>
-        </CardContent>
-      </Card>
+          {/* Call to Action */}
+          <Card>
+            <CardContent className="p-6 text-center">
+              <h3 className="font-semibold mb-2">Keep Learning, Keep Earning</h3>
+              <p className="text-gray-400 mb-4 text-sm">
+                Complete daily lessons and quizzes to earn more satoshis and build your Bitcoin knowledge.
+              </p>
+              <Button onClick={() => setLocation('/learn')} className="bg-orange-500 hover:bg-orange-600">
+                Continue Learning
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+
+      <BottomNavigation 
+        activeSection="home"
+        onSectionChange={(section) => {
+          if (section === 'home') setLocation('/');
+          else if (section === 'learn') setLocation('/learn');
+          else if (section === 'money') setLocation('/money');
+          else if (section === 'simulators') setLocation('/simulators');
+          else if (section === 'community') setLocation('/community');
+          else if (section === 'more') setLocation('/more');
+        }}
+      />
     </div>
   );
 }
