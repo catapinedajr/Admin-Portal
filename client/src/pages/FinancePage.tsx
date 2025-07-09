@@ -150,16 +150,22 @@ function FinancePage() {
         setInflationProgress(step);
         
         // Add haptic feedback for key inflation milestones on iPhone
-        if ('vibrate' in navigator && step >= 3) {
-          // Escalating vibration intensity as inflation damage accumulates
-          const vibrationIntensity = {
-            3: [50],           // 10 years - gentle warning
-            4: [75, 25, 75],   // 15 years - moderate concern
-            5: [100, 50, 100], // 20 years - serious impact
-            6: [150, 25, 100, 25, 150] // 25 years - dramatic revelation
-          };
-          
-          navigator.vibrate(vibrationIntensity[step as keyof typeof vibrationIntensity] || [50]);
+        if ('vibrate' in navigator && navigator.vibrate && step >= 3) {
+          try {
+            // Escalating vibration intensity as inflation damage accumulates
+            const vibrationIntensity = {
+              3: [50],           // 10 years - gentle warning
+              4: [75, 25, 75],   // 15 years - moderate concern
+              5: [100, 50, 100], // 20 years - serious impact
+              6: [150, 25, 100, 25, 150] // 25 years - dramatic revelation
+            };
+            
+            const pattern = vibrationIntensity[step as keyof typeof vibrationIntensity] || [50];
+            console.log(`Triggering inflation vibration for step ${step}:`, pattern);
+            navigator.vibrate(pattern);
+          } catch (error) {
+            console.log('Inflation vibration not supported or failed:', error);
+          }
         }
       }, delay);
     });
@@ -437,16 +443,24 @@ function FinancePage() {
                           setFlashingYear(step.year);
                           
                           // Add haptic feedback for iPhone users on crisis years
-                          if ('vibrate' in navigator) {
-                            // Different vibration patterns for different crisis years
-                            const vibrationPattern = {
-                              1971: [100, 50, 100], // Nixon Shock - medium intensity
-                              2000: [150, 75, 150], // Dot-com crash - stronger
-                              2008: [200, 100, 200, 100, 200], // Financial crisis - intense pattern
-                              2020: [250, 50, 100, 50, 250] // COVID money printing - most dramatic
-                            };
-                            
-                            navigator.vibrate(vibrationPattern[step.year as keyof typeof vibrationPattern] || [100]);
+                          if ('vibrate' in navigator && navigator.vibrate) {
+                            try {
+                              // Different vibration patterns for different crisis years
+                              const vibrationPattern = {
+                                1971: [100, 50, 100], // Nixon Shock - medium intensity
+                                2000: [150, 75, 150], // Dot-com crash - stronger
+                                2008: [200, 100, 200, 100, 200], // Financial crisis - intense pattern
+                                2020: [250, 50, 100, 50, 250] // COVID money printing - most dramatic
+                              };
+                              
+                              const pattern = vibrationPattern[step.year as keyof typeof vibrationPattern] || [100];
+                              console.log(`Triggering vibration for year ${step.year}:`, pattern);
+                              navigator.vibrate(pattern);
+                            } catch (error) {
+                              console.log('Vibration not supported or failed:', error);
+                            }
+                          } else {
+                            console.log('Vibration API not available');
                           }
                           
                           setTimeout(() => setFlashingYear(null), Math.min(step.duration - 50, 800)); // Longer flash for crisis moments
