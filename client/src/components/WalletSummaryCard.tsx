@@ -164,15 +164,7 @@ export default function WalletSummaryCard() {
                 <ChevronRight className="w-3 h-3" />
               </div>
             </div>
-            <div 
-              className="text-xs text-orange-400 hover:text-orange-300 cursor-pointer transition-colors underline"
-              onClick={(e) => {
-                e.stopPropagation();
-                setLocation('/wallet/rewards');
-              }}
-            >
-              Click here to learn how to stack sats
-            </div>
+
           </div>
         </div>
       </CardContent>
