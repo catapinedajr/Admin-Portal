@@ -105,10 +105,9 @@ function LearnPage() {
   // Check if quiz is completed (based on actual quiz score data)
   const isQuizCompleted = quizScore && quizScore.total > 0;
 
-  // Get wallet data for learning progress
+  // Get wallet data for learning progress (demo mode)
   const { data: walletData } = useQuery({
-    queryKey: ['/api/wallet/dashboard'],
-    enabled: !!localStorage.getItem('sessionId'),
+    queryKey: ['/api/wallet/progress'],
     retry: false,
     refetchOnWindowFocus: false,
   });
@@ -161,20 +160,13 @@ function LearnPage() {
     setEarnedSats(sats);
     setShowEarningAnimation(true);
     
-    // Make API call to record earning
+    // Make API call to record earning (demo mode - no auth needed)
     try {
-      const sessionId = localStorage.getItem('hodlearn_session');
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-      
-      if (sessionId) {
-        headers['Authorization'] = `Bearer ${sessionId}`;
-      }
-      
       const today = new Date().toISOString().split('T')[0];
       
       await fetch('/api/wallet/earn', {
         method: 'POST',
-        headers,
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           dayIndex: currentDayIndex,
           earningType: 'quiz_correct',

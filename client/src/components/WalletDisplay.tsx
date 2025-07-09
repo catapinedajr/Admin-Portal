@@ -40,12 +40,9 @@ export default function WalletDisplay() {
   const queryClient = useQueryClient();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Check if user is authenticated
-  const sessionId = localStorage.getItem('sessionId');
-
+  // Use wallet dashboard endpoint directly (demo mode)
   const { data: walletData, isLoading, error } = useQuery<WalletData>({
     queryKey: ['/api/wallet/dashboard'],
-    enabled: !!sessionId,
     retry: false,
     refetchOnWindowFocus: false,
   });
@@ -77,23 +74,7 @@ export default function WalletDisplay() {
     });
   };
 
-  if (!sessionId) {
-    return (
-      <Card className="w-full max-w-md mx-auto">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Coins className="w-5 h-5 text-orange-500" />
-            Bitcoin Learning Wallet
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-center text-muted-foreground">
-            Please log in to view your wallet
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
+
 
   if (isLoading) {
     return (
