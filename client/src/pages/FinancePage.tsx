@@ -148,6 +148,19 @@ function FinancePage() {
     timePoints.forEach(({ step, delay }) => {
       setTimeout(() => {
         setInflationProgress(step);
+        
+        // Add haptic feedback for key inflation milestones on iPhone
+        if ('vibrate' in navigator && step >= 3) {
+          // Escalating vibration intensity as inflation damage accumulates
+          const vibrationIntensity = {
+            3: [50],           // 10 years - gentle warning
+            4: [75, 25, 75],   // 15 years - moderate concern
+            5: [100, 50, 100], // 20 years - serious impact
+            6: [150, 25, 100, 25, 150] // 25 years - dramatic revelation
+          };
+          
+          navigator.vibrate(vibrationIntensity[step as keyof typeof vibrationIntensity] || [50]);
+        }
       }, delay);
     });
 
@@ -422,6 +435,20 @@ function FinancePage() {
                         // Flash milestone button at key moments with longer duration for dopamine impact
                         if (step.flash) {
                           setFlashingYear(step.year);
+                          
+                          // Add haptic feedback for iPhone users on crisis years
+                          if ('vibrate' in navigator) {
+                            // Different vibration patterns for different crisis years
+                            const vibrationPattern = {
+                              1971: [100, 50, 100], // Nixon Shock - medium intensity
+                              2000: [150, 75, 150], // Dot-com crash - stronger
+                              2008: [200, 100, 200, 100, 200], // Financial crisis - intense pattern
+                              2020: [250, 50, 100, 50, 250] // COVID money printing - most dramatic
+                            };
+                            
+                            navigator.vibrate(vibrationPattern[step.year as keyof typeof vibrationPattern] || [100]);
+                          }
+                          
                           setTimeout(() => setFlashingYear(null), Math.min(step.duration - 50, 800)); // Longer flash for crisis moments
                         }
                         
