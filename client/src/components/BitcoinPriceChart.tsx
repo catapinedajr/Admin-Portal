@@ -204,7 +204,7 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
     if (priceData.length < 2) return '';
     
     const width = 800;
-    const height = 400;
+    const height = 500;
     const padding = 30;
     
     const minPrice = Math.min(...priceData.map(p => p.price));
@@ -229,7 +229,7 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-none w-full h-full bg-black border-none p-0 m-0 rounded-none">
+      <DialogContent className="max-w-none w-full h-full bg-black border-none p-0 m-0 rounded-none [&>button]:hidden">
         <div className="flex flex-col h-full">
           {/* Header - Robinhood style */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800/50">
@@ -253,13 +253,13 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
           </div>
 
           {/* Price Display - Robinhood style */}
-          <div className="px-4 py-4 bg-zinc-900/50">
-            <div className="flex items-baseline justify-between mb-2">
+          <div className="px-4 py-3 bg-zinc-900/50">
+            <div className="flex items-baseline justify-between mb-1">
               <div className="text-3xl font-bold text-white">
                 ${currentPrice.toLocaleString()}
               </div>
               <div className={`text-lg font-semibold ${percentage >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                {percentage >= 0 ? '+' : ''}{percentage.toFixed(1)}%
+                {percentage >= 0 ? '+' : ''}{percentage.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
               </div>
             </div>
             <div className="text-sm text-zinc-400">
@@ -267,8 +267,8 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
             </div>
           </div>
 
-          {/* Chart - Full height on mobile */}
-          <div className="flex-1 bg-black px-4 py-2">
+          {/* Chart - Extended height for mobile */}
+          <div className="flex-1 bg-black px-2 py-1">
             {isLoading ? (
               <div className="h-full flex items-center justify-center">
                 <div className="text-zinc-400">Loading...</div>
@@ -278,7 +278,7 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
                 <svg
                   width="100%"
                   height="100%"
-                  viewBox="0 0 800 400"
+                  viewBox="0 0 800 500"
                   className="overflow-visible"
                 >
                   {/* Minimal grid for mobile */}
@@ -291,11 +291,11 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
                       <stop offset="100%" style={{ stopColor: 'rgb(249 115 22)', stopOpacity: 0.02 }} />
                     </linearGradient>
                   </defs>
-                  <rect width="800" height="400" fill="url(#mobileGrid)" />
+                  <rect width="800" height="500" fill="url(#mobileGrid)" />
                   
                   {/* Area under the curve */}
                   <path
-                    d={createMobilePath() + ' L 770,380 L 30,380 Z'}
+                    d={createMobilePath() + ' L 770,480 L 30,480 Z'}
                     fill="url(#mobilePriceGradient)"
                   />
                   
@@ -315,7 +315,7 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
                       <text x="35" y="50" fill="rgb(161 161 170)" fontSize="12" textAnchor="start">
                         {formatPrice(Math.max(...priceData.map(p => p.price)))}
                       </text>
-                      <text x="35" y="360" fill="rgb(161 161 170)" fontSize="12" textAnchor="start">
+                      <text x="35" y="460" fill="rgb(161 161 170)" fontSize="12" textAnchor="start">
                         {formatPrice(Math.min(...priceData.map(p => p.price)))}
                       </text>
                     </>
@@ -326,7 +326,7 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
           </div>
 
           {/* Timeframe Selection - Robinhood style */}
-          <div className="px-4 py-3 border-t border-zinc-800/50">
+          <div className="px-4 py-2 border-t border-zinc-800/50">
             <div className="flex justify-center space-x-1">
               {timeframes.map((timeframe) => (
                 <Button
@@ -346,9 +346,9 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
             </div>
           </div>
 
-          {/* Stats - Mobile optimized */}
-          <div className="px-4 py-3 border-t border-zinc-800/50 bg-zinc-900/30">
-            <div className="grid grid-cols-2 gap-3">
+          {/* Stats and Footer - Combined */}
+          <div className="px-4 py-2 border-t border-zinc-800/50 bg-zinc-900/30">
+            <div className="grid grid-cols-2 gap-3 mb-2">
               <div className="text-center">
                 <div className="text-xs text-zinc-400 mb-1">Period Start</div>
                 <div className="text-sm font-semibold text-white">
@@ -362,12 +362,8 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Footer - Mobile optimized */}
-          <div className="px-4 py-3 border-t border-zinc-800/50 bg-zinc-900/50">
-            <div className="text-center">
-              <p className="text-zinc-500 text-xs font-medium italic">
+            <div className="text-center pt-1 border-t border-zinc-800/30">
+              <p className="text-zinc-400 text-sm font-medium">
                 "When in doubt, zoom out"
               </p>
             </div>
