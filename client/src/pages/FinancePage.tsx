@@ -143,56 +143,62 @@ function FinancePage() {
   return (
     <div className="space-y-8 text-white">
       <main className="space-y-8">
-        {/* Hero Narrative - Dopamine-Driven Hook */}
-        <Card className="bg-gradient-to-br from-red-950/40 via-zinc-900 to-orange-950/30 border-red-500/30 animate-pulse">
+        {/* Hero Narrative - Professional but Engaging */}
+        <Card className="bg-gradient-to-br from-orange-950/20 via-zinc-900 to-zinc-800 border-orange-800/30">
           <CardContent className="p-8">
             <div className="max-w-4xl mx-auto text-center space-y-6">
-              {/* Shocking Hook */}
+              {/* Clear Value Proposition */}
               <div className="mb-8">
-                <h1 className="text-6xl font-black text-red-400 mb-2 tracking-tight">
-                  $50,000
+                <h1 className="text-4xl font-bold text-white mb-4">
+                  Why Bitcoin Exists
                 </h1>
-                <h2 className="text-2xl font-bold text-white mb-4">
-                  Your salary 10 years ago could buy <span className="text-red-400">$75,000</span> worth of stuff today
-                </h2>
-                <p className="text-xl text-zinc-300 font-medium">
-                  You're getting <span className="text-red-400 font-bold">poorer every year</span> — and you don't even realize it
+                <p className="text-xl text-zinc-300 leading-relaxed">
+                  Understanding money helps you understand why Bitcoin matters for your financial future.
                 </p>
               </div>
 
-              {/* Quick Reality Check */}
+              {/* Engaging Price Reality */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <div className="bg-red-900/30 p-4 rounded-xl border border-red-600/50">
-                  <div className="text-red-400 font-bold text-2xl">$3.50</div>
-                  <div className="text-white text-sm">Coffee in 2010</div>
-                  <div className="text-red-300 text-xs">Now $6.50</div>
+                <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700 hover:border-orange-500/50 transition-colors">
+                  <div className="text-orange-400 font-bold text-lg">Coffee</div>
+                  <div className="text-zinc-300 text-sm">2010: $3.50</div>
+                  <div className="text-white text-sm font-medium">2024: $6.50</div>
                 </div>
-                <div className="bg-red-900/30 p-4 rounded-xl border border-red-600/50">
-                  <div className="text-red-400 font-bold text-2xl">$1,200</div>
-                  <div className="text-white text-sm">Rent in 2010</div>
-                  <div className="text-red-300 text-xs">Now $2,400</div>
+                <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700 hover:border-orange-500/50 transition-colors">
+                  <div className="text-orange-400 font-bold text-lg">Rent</div>
+                  <div className="text-zinc-300 text-sm">2010: $1,200</div>
+                  <div className="text-white text-sm font-medium">2024: $2,400</div>
                 </div>
-                <div className="bg-red-900/30 p-4 rounded-xl border border-red-600/50">
-                  <div className="text-red-400 font-bold text-2xl">$250K</div>
-                  <div className="text-white text-sm">House in 2010</div>
-                  <div className="text-red-300 text-xs">Now $500K</div>
+                <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700 hover:border-orange-500/50 transition-colors">
+                  <div className="text-orange-400 font-bold text-lg">House</div>
+                  <div className="text-zinc-300 text-sm">2010: $250K</div>
+                  <div className="text-white text-sm font-medium">2024: $500K</div>
                 </div>
-                <div className="bg-red-900/30 p-4 rounded-xl border border-red-600/50">
-                  <div className="text-red-400 font-bold text-2xl">$3.00</div>
-                  <div className="text-white text-sm">Gas in 2010</div>
-                  <div className="text-red-300 text-xs">Now $4.50</div>
+                <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700 hover:border-orange-500/50 transition-colors">
+                  <div className="text-orange-400 font-bold text-lg">Gas</div>
+                  <div className="text-zinc-300 text-sm">2010: $3.00</div>
+                  <div className="text-white text-sm font-medium">2024: $4.50</div>
                 </div>
               </div>
 
-              {/* The Solution Hook */}
-              <div className="bg-gradient-to-r from-orange-950/50 to-green-950/50 p-6 rounded-2xl border border-orange-500/30">
-                <h3 className="text-2xl font-bold text-white mb-3">
-                  While your money loses value, <span className="text-green-400">Bitcoin holders made +2,090%</span> in 10 years
+              {/* Professional Explanation */}
+              <div className="bg-gradient-to-r from-orange-950/30 to-zinc-800/50 p-6 rounded-xl border border-orange-600/30">
+                <h3 className="text-xl font-bold text-white mb-3">
+                  The pattern is clear: everything costs more, but your paycheck buys less.
                 </h3>
-                <p className="text-lg text-zinc-300">
-                  <span className="text-orange-400 font-bold">Bitcoin can't be printed.</span> Only 21 million will ever exist. 
-                  That's why smart money is moving to Bitcoin.
+                <p className="text-lg text-zinc-300 mb-4">
+                  This happens because governments can print unlimited money. Bitcoin was designed to solve this with a fixed supply of 21 million coins.
                 </p>
+                <div className="flex items-center justify-center gap-8 text-sm">
+                  <div className="text-center">
+                    <div className="text-green-400 font-bold text-lg">+2,090%</div>
+                    <div className="text-zinc-400">Bitcoin 10-year return</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-orange-400 font-bold text-lg">21M</div>
+                    <div className="text-zinc-400">Maximum supply ever</div>
+                  </div>
+                </div>
               </div>
               
               <div className="grid gap-4 md:grid-cols-3 mt-8">
