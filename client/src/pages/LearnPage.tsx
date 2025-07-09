@@ -40,9 +40,6 @@ function LearnPage() {
     setTestDayOverride
   } = useAppContext();
 
-  // Local state for expandable content
-  const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
-  
   // Animation state for earning satoshis
   const [showEarningAnimation, setShowEarningAnimation] = useState(false);
   const [earnedSats, setEarnedSats] = useState(0);
@@ -65,11 +62,7 @@ function LearnPage() {
     queryFn: () => fetch(`/api/daily-facts/${currentDayIndex}`).then(res => res.json())
   });
 
-  // Get dive deeper content for facts
-  const { data: diveDeeperContent = [] } = useQuery({
-    queryKey: ['/api/dive-deeper', currentDayIndex],
-    queryFn: () => fetch(`/api/dive-deeper/${currentDayIndex}`).then(res => res.json())
-  });
+
 
   // Helper function to get time-based greeting
   const getTimeBasedGreeting = () => {
@@ -140,21 +133,7 @@ function LearnPage() {
     }
   };
 
-  const toggleFactExpansion = (factId: number) => {
-    const newExpanded = new Set(expandedFacts);
-    if (newExpanded.has(factId)) {
-      newExpanded.delete(factId);
-    } else {
-      newExpanded.add(factId);
-    }
-    setExpandedFacts(newExpanded);
-  };
 
-  const getDiveDeeperForFact = (factTitle: string) => {
-    return diveDeeperContent.find((content: any) => 
-      content.factTitle === factTitle
-    );
-  };
 
   // Animation function to trigger earning satoshis
   const triggerEarningAnimation = async (sats: number) => {
