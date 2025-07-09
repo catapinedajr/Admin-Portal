@@ -466,12 +466,13 @@ function FinancePage() {
               </div>
               
               {/* Visual timeline indicators */}
-              <div className="grid grid-cols-5 gap-1.5">
+              <div className="grid grid-cols-6 gap-1.5">
                 {[
                   { year: 1920, label: "'20", desc: "Gold Era" },
                   { year: 1971, label: "'71", desc: "Nixon" },
                   { year: 2000, label: "'00", desc: "Dot-com" },
                   { year: 2008, label: "'08", desc: "Crisis" },
+                  { year: 2020, label: "'20", desc: "COVID" },
                   { year: 2025, label: "'25", desc: "Today" }
                 ].map((milestone) => (
                   <button
