@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
@@ -10,6 +10,62 @@ import { useAppContext } from "@/components/shared/AppContextProvider";
 import { useQuery } from "@tanstack/react-query";
 import { User } from "@shared/schema";
 import EmailCollectionModal from "@/components/EmailCollectionModal";
+
+// Counter animation component
+function AnimatedCounter({ target, duration = 2000, suffix = "" }: { target: number; duration?: number; suffix?: string }) {
+  const [count, setCount] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const counterRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isVisible) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    if (counterRef.current) {
+      observer.observe(counterRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [isVisible]);
+
+  useEffect(() => {
+    if (!isVisible) return;
+
+    let startTime: number;
+    const startValue = 0;
+    const endValue = target;
+
+    const animate = (currentTime: number) => {
+      if (!startTime) startTime = currentTime;
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Easing function for smooth animation
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      const currentValue = Math.floor(startValue + (endValue - startValue) * easeOut);
+      
+      setCount(currentValue);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }, [isVisible, target, duration]);
+
+  return (
+    <span ref={counterRef} className="text-green-400">
+      +{count.toLocaleString()}{suffix}
+    </span>
+  );
+}
 
 function FinancePage() {
   const {
@@ -150,7 +206,7 @@ function FinancePage() {
               {/* Dopamine-Driven Hook */}
               <div className="mb-8">
                 <h1 className="text-5xl font-black text-white mb-4 tracking-tight">
-                  While You Lost Money, <span className="text-green-400">Bitcoin Made +2,090%</span>
+                  While You Lost Money, Bitcoin Made <AnimatedCounter target={2090} suffix="%" />
                 </h1>
                 <p className="text-xl text-zinc-300 leading-relaxed">
                   Bitcoin is the new hurdle rate—it doesn't just beat inflation, it crushes every traditional investment.
