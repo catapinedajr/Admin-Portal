@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
-import { Crown, Gem, User as UserIcon, ChevronDown, ChevronUp, Coins, Clock, CheckCircle, Key, GraduationCap, Brain, TrendingUp, Zap, Award, Sparkles } from "@/lib/icons";
+import { Crown, Gem, User as UserIcon, ChevronDown, ChevronUp, Wallet, Clock, CheckCircle, Key, GraduationCap, Brain, TrendingUp, Zap, Award, Sparkles } from "@/lib/icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -309,7 +309,7 @@ function LearnPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                        <Coins className="w-5 h-5 text-orange-400" />
+                        <Wallet className="w-5 h-5 text-orange-400" />
                       </div>
                       <div>
                         <div className="text-lg font-bold text-orange-400">
@@ -556,6 +556,17 @@ function LearnPageWithLayout() {
 
             {/* Header Actions */}
             <div className="flex items-center gap-2">
+              {/* Wallet Button */}
+              <Button 
+                onClick={() => setLocation('/wallet')}
+                size="sm"
+                className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-2.5 py-1.5"
+                title="Learning Wallet"
+              >
+                <Wallet className="w-4 h-4" />
+                <span className="sr-only">Wallet</span>
+              </Button>
+              
               {/* Account Button */}
               <Button 
                 onClick={() => setLocation('/account')}

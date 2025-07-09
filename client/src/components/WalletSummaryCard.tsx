@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Coins, TrendingUp, Award, ChevronRight, Zap, Star } from "@/lib/icons";
+import { Wallet, TrendingUp, Award, ChevronRight, Zap, Star } from "@/lib/icons";
 import { useLocation } from "wouter";
 
 interface WalletData {
@@ -59,7 +59,7 @@ export default function WalletSummaryCard() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-orange-500/20 rounded-lg">
-                <Coins className="w-5 h-5 text-orange-500" />
+                <Wallet className="w-5 h-5 text-orange-500" />
               </div>
               <div className="space-y-1">
                 <div className="h-4 bg-gray-600 rounded animate-pulse w-24"></div>
@@ -80,7 +80,7 @@ export default function WalletSummaryCard() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-orange-500/20 rounded-lg">
-                <Coins className="w-5 h-5 text-orange-500" />
+                <Wallet className="w-5 h-5 text-orange-500" />
               </div>
               <div>
                 <div className="text-sm font-medium text-gray-300">Bitcoin Learning Wallet</div>
@@ -104,7 +104,7 @@ export default function WalletSummaryCard() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-3 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300">
-                <Coins className="w-6 h-6 text-orange-500 group-hover:animate-pulse" />
+                <Wallet className="w-6 h-6 text-orange-500 group-hover:animate-pulse" />
               </div>
               <div>
                 <div className="text-sm font-medium text-orange-400 mb-1">Bitcoin Learning Wallet</div>
