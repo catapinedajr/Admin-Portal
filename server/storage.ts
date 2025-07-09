@@ -20,6 +20,8 @@ import {
   userWalletProgress,
   walletEarnings,
   walletAchievements,
+  streakRewards,
+  streakInsurance,
   type User, 
   type InsertUser, 
   type UserProgress,
@@ -65,7 +67,11 @@ import {
   type WalletEarning,
   type InsertWalletEarning,
   type WalletAchievement,
-  type InsertWalletAchievement
+  type InsertWalletAchievement,
+  type StreakReward,
+  type InsertStreakReward,
+  type StreakInsurance,
+  type InsertStreakInsurance
 } from "@shared/schema";
 
 import { db } from "./db";
@@ -1045,6 +1051,223 @@ export class DatabaseStorage implements IStorage {
       totalUsdValue
     };
   }
+
+  // Streak reward system methods
+  async checkAndAwardStreakBonuses(userId: number, dayIndex: number, currentBitcoinPrice: number): Promise<WalletEarning[]> {
+    const user = await this.getUser(userId);
+    if (!user) return [];
+
+    const currentStreak = user.currentStreak;
+    const today = new Date().toISOString().split('T')[0];
+    const awardedBonuses: WalletEarning[] = [];
+
+    // Check for 7-day streak bonus (recurring)
+    if (currentStreak > 0 && currentStreak % 7 === 0) {
+      const streakBonus = await this.addWalletEarning({
+        userId,
+        dayIndex,
+        earningType: 'streak_7',
+        satoshisEarned: 2000,
+        streakMultiplier: "1.00",
+        bitcoinPriceUsd: currentBitcoinPrice.toString(),
+        usdValueAtEarning: ((2000 / 100000000) * currentBitcoinPrice).toString(),
+        description: `7-day streak bonus (#${Math.floor(currentStreak / 7)})`,
+        date: today
+      });
+      awardedBonuses.push(streakBonus);
+
+      // Record streak reward
+      await db.insert(streakRewards).values({
+        userId,
+        streakType: '7_day',
+        streakLength: currentStreak,
+        satoshisEarned: 2000,
+        streakNumber: Math.floor(currentStreak / 7),
+        date: today
+      });
+    }
+
+    // Check for 30-day streak bonus (recurring)
+    if (currentStreak > 0 && currentStreak % 30 === 0) {
+      const streakBonus = await this.addWalletEarning({
+        userId,
+        dayIndex,
+        earningType: 'streak_30',
+        satoshisEarned: 10000,
+        streakMultiplier: "1.00",
+        bitcoinPriceUsd: currentBitcoinPrice.toString(),
+        usdValueAtEarning: ((10000 / 100000000) * currentBitcoinPrice).toString(),
+        description: `30-day streak bonus (#${Math.floor(currentStreak / 30)})`,
+        date: today
+      });
+      awardedBonuses.push(streakBonus);
+
+      await db.insert(streakRewards).values({
+        userId,
+        streakType: '30_day',
+        streakLength: currentStreak,
+        satoshisEarned: 10000,
+        streakNumber: Math.floor(currentStreak / 30),
+        date: today
+      });
+    }
+
+    // Check for 365-day streak bonus (recurring)
+    if (currentStreak > 0 && currentStreak % 365 === 0) {
+      const streakBonus = await this.addWalletEarning({
+        userId,
+        dayIndex,
+        earningType: 'streak_365',
+        satoshisEarned: 100000,
+        streakMultiplier: "1.00",
+        bitcoinPriceUsd: currentBitcoinPrice.toString(),
+        usdValueAtEarning: ((100000 / 100000000) * currentBitcoinPrice).toString(),
+        description: `365-day streak bonus (#${Math.floor(currentStreak / 365)})`,
+        date: today
+      });
+      awardedBonuses.push(streakBonus);
+
+      await db.insert(streakRewards).values({
+        userId,
+        streakType: '365_day',
+        streakLength: currentStreak,
+        satoshisEarned: 100000,
+        streakNumber: Math.floor(currentStreak / 365),
+        date: today
+      });
+    }
+
+    return awardedBonuses;
+  }
+
+  async getStreakRewards(userId: number): Promise<StreakReward[]> {
+    return await db
+      .select()
+      .from(streakRewards)
+      .where(eq(streakRewards.userId, userId))
+      .orderBy(desc(streakRewards.earnedAt));
+  }
+
+  async purchaseStreakInsurance(userId: number, currentBitcoinPrice: number): Promise<StreakInsurance | null> {
+    const user = await this.getUser(userId);
+    const wallet = await this.getUserWalletProgress(userId);
+    
+    if (!user || !wallet || wallet.totalSatoshisEarned < 1000) {
+      return null; // Not enough sats
+    }
+
+    // Check if user already has active insurance
+    const today = new Date();
+    const existingInsurance = await db
+      .select()
+      .from(streakInsurance)
+      .where(and(
+        eq(streakInsurance.userId, userId),
+        sql`${streakInsurance.expiresAt} > NOW()`
+      ));
+
+    if (existingInsurance.length > 0) {
+      return null; // Already has active insurance
+    }
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    // Deduct 1000 sats from wallet
+    await this.createOrUpdateUserWalletProgress({
+      userId,
+      totalSatoshisEarned: wallet.totalSatoshisEarned - 1000,
+      currentStreakMultiplier: wallet.currentStreakMultiplier,
+      lastEarningDate: wallet.lastEarningDate
+    });
+
+    // Create insurance record
+    const [insurance] = await db.insert(streakInsurance).values({
+      userId,
+      streakLength: user.currentStreak,
+      satoshisCost: 1000,
+      expiresAt: tomorrow,
+      date: today.toISOString().split('T')[0]
+    }).returning();
+
+    return insurance;
+  }
+
+  async useStreakInsurance(userId: number): Promise<boolean> {
+    const insurance = await db
+      .select()
+      .from(streakInsurance)
+      .where(and(
+        eq(streakInsurance.userId, userId),
+        eq(streakInsurance.isUsed, false),
+        sql`${streakInsurance.expiresAt} > NOW()`
+      ));
+
+    if (insurance.length === 0) {
+      return false; // No valid insurance
+    }
+
+    // Mark insurance as used
+    await db.update(streakInsurance)
+      .set({
+        isUsed: true,
+        usedAt: new Date()
+      })
+      .where(eq(streakInsurance.id, insurance[0].id));
+
+    return true;
+  }
+
+  async updateUserStreak(userId: number, dayIndex: number): Promise<void> {
+    const user = await this.getUser(userId);
+    if (!user) return;
+
+    const today = new Date().toISOString().split('T')[0];
+    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+    let newStreak = 1;
+    let newBestStreak = user.longestStreak;
+
+    // Check if user completed yesterday to continue streak
+    if (user.lastActivityDate === yesterday) {
+      newStreak = user.currentStreak + 1;
+    }
+
+    // Update best streak if current streak is higher
+    if (newStreak > newBestStreak) {
+      newBestStreak = newStreak;
+    }
+
+    // Update user record
+    await db.update(users)
+      .set({
+        currentStreak: newStreak,
+        longestStreak: newBestStreak,
+        lastActivityDate: today,
+        completedLessons: user.completedLessons + 1
+      })
+      .where(eq(users.id, userId));
+  }
+
+  async updateWalletTotals(userId: number): Promise<void> {
+    // Calculate total earnings from all wallet earnings
+    const earnings = await db
+      .select()
+      .from(walletEarnings)
+      .where(eq(walletEarnings.userId, userId));
+
+    const totalSats = earnings.reduce((sum, earning) => sum + earning.satoshisEarned, 0);
+
+    // Update or create wallet progress record
+    await this.createOrUpdateUserWalletProgress({
+      userId,
+      totalSatoshisEarned: totalSats,
+      currentStreakMultiplier: "1.00",
+      lastEarningDate: new Date().toISOString().split('T')[0]
+    });
+  }
+
+
 }
 
 export const storage = new DatabaseStorage();

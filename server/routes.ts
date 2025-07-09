@@ -1553,10 +1553,88 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
       
       const answer = await storage.submitQuizAnswer(userId, questionId, selectedAnswer, isCorrect);
 
+      // Enhanced reward system implementation - Phase 2
+      const rewards = {
+        questionReward: 0,
+        quizCompletionReward: 0,
+        streakBonuses: [],
+        totalEarned: 0,
+        quizCompleted: false
+      };
+
+      if (isCorrect) {
+        // Get current Bitcoin price for USD calculations
+        const priceResponse = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+        const priceData = await priceResponse.json();
+        const currentBitcoinPrice = priceData.bitcoin?.usd || 100000; // Fallback price
+
+        // Find the day index for this question
+        const dayIndex = question.dayId || 1;
+
+        // Award 100 sats per correct answer
+        const questionReward = await storage.addWalletEarning({
+          userId,
+          dayIndex,
+          earningType: 'question_correct',
+          satoshisEarned: 100,
+          streakMultiplier: "1.00",
+          bitcoinPriceUsd: currentBitcoinPrice.toString(),
+          usdValueAtEarning: ((100 / 100000000) * currentBitcoinPrice).toString(),
+          description: "Correct quiz answer",
+          date: date
+        });
+
+        rewards.questionReward = 100;
+        rewards.totalEarned += 100;
+
+        // Check if this completes the quiz for the day
+        const dayQuestions = await storage.getContentQuizzes(dayIndex);
+        const userAnswers = await storage.getUserQuizAnswers(userId, date);
+        const correctAnswers = userAnswers.filter(ans => ans.isCorrect).length;
+        
+        // If this is the last question in the quiz, award completion bonus
+        if (userAnswers.length === dayQuestions.length) {
+          rewards.quizCompleted = true;
+          
+          // Award 500 sats for quiz completion
+          const completionReward = await storage.addWalletEarning({
+            userId,
+            dayIndex,
+            earningType: 'quiz_complete',
+            satoshisEarned: 500,
+            streakMultiplier: "1.00",
+            bitcoinPriceUsd: currentBitcoinPrice.toString(),
+            usdValueAtEarning: ((500 / 100000000) * currentBitcoinPrice).toString(),
+            description: "Quiz completion bonus",
+            date: date
+          });
+
+          rewards.quizCompletionReward = 500;
+          rewards.totalEarned += 500;
+
+          // Update user streak and check for streak bonuses
+          await storage.updateUserStreak(userId, dayIndex);
+          const streakBonuses = await storage.checkAndAwardStreakBonuses(userId, dayIndex, currentBitcoinPrice);
+          
+          if (streakBonuses.length > 0) {
+            rewards.streakBonuses = streakBonuses.map(bonus => ({
+              type: bonus.earningType,
+              amount: bonus.satoshisEarned,
+              description: bonus.description
+            }));
+            rewards.totalEarned += streakBonuses.reduce((sum, bonus) => sum + bonus.satoshisEarned, 0);
+          }
+        }
+
+        // Update wallet totals
+        await storage.updateWalletTotals(userId);
+      }
+
       res.json({
         ...answer,
         isCorrect,
-        explanation: question.explanation
+        explanation: question.explanation,
+        rewards: rewards
       });
     } catch (error) {
       console.error('Error submitting quiz answer:', error);

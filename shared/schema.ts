@@ -442,12 +442,12 @@ export const walletEarnings = pgTable("wallet_earnings", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   dayIndex: integer("day_index").notNull(), // Which day of curriculum
-  earningType: text("earning_type").notNull(), // 'quiz_correct', 'quiz_perfect', 'lesson_complete', 'streak_bonus'
+  earningType: text("earning_type").notNull(), // 'quiz_question', 'quiz_completion', 'streak_7', 'streak_30', 'streak_365', 'simulator', 'community'
   satoshisEarned: integer("satoshis_earned").notNull(),
   streakMultiplier: decimal("streak_multiplier", { precision: 3, scale: 2 }).notNull().default("1.00"),
   bitcoinPriceUsd: decimal("bitcoin_price_usd", { precision: 10, scale: 2 }).notNull(), // Price at time of earning
   usdValueAtEarning: decimal("usd_value_at_earning", { precision: 10, scale: 8 }).notNull(),
-  description: text("description"), // "Correct answer: Question 3", "Perfect daily quiz", etc.
+  description: text("description"), // "Correct answer: Question 3", "Quiz completed perfectly", "7-day streak bonus", etc.
   earnedAt: timestamp("earned_at").notNull().defaultNow(),
   date: text("date").notNull(), // YYYY-MM-DD format
 });
@@ -463,6 +463,31 @@ export const walletAchievements = pgTable("wallet_achievements", {
   usdValueThreshold: decimal("usd_value_threshold", { precision: 10, scale: 2 }), // Required USD value
   unlockedAt: timestamp("unlocked_at").notNull().defaultNow(),
   isNotified: boolean("is_notified").notNull().default(false),
+});
+
+// Streak rewards tracking for recurring bonuses
+export const streakRewards = pgTable("streak_rewards", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  streakType: text("streak_type").notNull(), // '7_day', '30_day', '365_day'
+  streakLength: integer("streak_length").notNull(), // Current streak length when earned
+  satoshisEarned: integer("satoshis_earned").notNull(),
+  streakNumber: integer("streak_number").notNull().default(1), // 1st 7-day streak, 2nd 7-day streak, etc.
+  earnedAt: timestamp("earned_at").notNull().defaultNow(),
+  date: text("date").notNull(), // YYYY-MM-DD format
+});
+
+// Streak insurance system - spend sats to protect streaks
+export const streakInsurance = pgTable("streak_insurance", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  streakLength: integer("streak_length").notNull(), // Streak length when insurance purchased
+  satoshisCost: integer("satoshis_cost").notNull().default(1000), // Cost to purchase insurance
+  isUsed: boolean("is_used").notNull().default(false), // Whether insurance was claimed
+  usedAt: timestamp("used_at"), // When insurance was used
+  expiresAt: timestamp("expires_at").notNull(), // 24-hour expiration
+  purchasedAt: timestamp("purchased_at").notNull().defaultNow(),
+  date: text("date").notNull(), // YYYY-MM-DD format
 });
 
 export const insertUserWalletProgressSchema = createInsertSchema(userWalletProgress).omit({
@@ -481,6 +506,16 @@ export const insertWalletAchievementSchema = createInsertSchema(walletAchievemen
   unlockedAt: true,
 });
 
+export const insertStreakRewardSchema = createInsertSchema(streakRewards).omit({
+  id: true,
+  earnedAt: true,
+});
+
+export const insertStreakInsuranceSchema = createInsertSchema(streakInsurance).omit({
+  id: true,
+  purchasedAt: true,
+});
+
 export type EmailCollection = typeof emailCollections.$inferSelect;
 export type InsertEmailCollection = z.infer<typeof insertEmailCollectionSchema>;
 export type UserWalletProgress = typeof userWalletProgress.$inferSelect;
@@ -489,6 +524,10 @@ export type WalletEarning = typeof walletEarnings.$inferSelect;
 export type InsertWalletEarning = z.infer<typeof insertWalletEarningSchema>;
 export type WalletAchievement = typeof walletAchievements.$inferSelect;
 export type InsertWalletAchievement = z.infer<typeof insertWalletAchievementSchema>;
+export type StreakReward = typeof streakRewards.$inferSelect;
+export type InsertStreakReward = z.infer<typeof insertStreakRewardSchema>;
+export type StreakInsurance = typeof streakInsurance.$inferSelect;
+export type InsertStreakInsurance = z.infer<typeof insertStreakInsuranceSchema>;
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
