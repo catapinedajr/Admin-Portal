@@ -2,6 +2,7 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import { 
   Flame, 
@@ -10,7 +11,9 @@ import {
   Zap, 
   Crown,
   ChevronRight,
-  Star 
+  Star,
+  ArrowRight,
+  BookOpen
 } from "@/lib/icons";
 
 interface WalletData {
@@ -27,7 +30,19 @@ interface WalletData {
   bestStreak?: number;
 }
 
-export default function StreakAchievementCard() {
+interface StreakAchievementCardProps {
+  currentDayIndex?: number;
+  dayMetadata?: { title: string };
+  dailyFacts?: Array<{ title: string }>;
+  includeLearningSection?: boolean;
+}
+
+export default function StreakAchievementCard({ 
+  currentDayIndex, 
+  dayMetadata, 
+  dailyFacts, 
+  includeLearningSection = false 
+}: StreakAchievementCardProps) {
   const [, setLocation] = useLocation();
 
   // Get wallet data for streak information
@@ -182,6 +197,48 @@ export default function StreakAchievementCard() {
               )}
             </div>
           </div>
+
+          {/* Learning Section - Added at bottom when includeLearningSection is true */}
+          {includeLearningSection && (
+            <div className="mt-6 pt-4 border-t border-zinc-700/50">
+              <div className="space-y-4">
+                {/* Today's Learning Header */}
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-gradient-to-br from-blue-500/20 to-blue-600/10 rounded-lg border border-blue-500/20">
+                    <BookOpen className="w-4 h-4 text-blue-400" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium text-blue-400">Today's Learning</div>
+                    <div className="text-xs text-gray-500">Day {currentDayIndex} • Bitcoin Education</div>
+                  </div>
+                </div>
+
+                {/* Learning Content */}
+                <div className="space-y-3">
+                  <h4 className="text-white font-semibold text-sm">
+                    {dayMetadata?.title || 'Loading today\'s lesson...'}
+                  </h4>
+                  
+                  {dailyFacts && dailyFacts[0] && (
+                    <div className="bg-zinc-800/30 rounded-lg p-3 border-l-2 border-blue-500">
+                      <p className="text-zinc-300 text-xs font-medium">
+                        {dailyFacts[0].title}
+                      </p>
+                    </div>
+                  )}
+                  
+                  <Button 
+                    onClick={() => setLocation('/learn')}
+                    size="sm"
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-medium py-2 text-sm transition-all duration-300 flex items-center justify-center gap-2"
+                  >
+                    Continue Learning
+                    <ArrowRight className="w-3 h-3" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
