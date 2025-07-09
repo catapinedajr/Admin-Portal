@@ -30,14 +30,6 @@ export default function HomeSection({
 }: HomeProps) {
   return (
     <div className="space-y-8">
-      {/* Dynamic Welcome Header */}
-      <div className="text-center space-y-4">
-        <h1 className="text-3xl font-bold text-white">
-          {getTimeBasedGreeting()}{user?.firstName ? `, ${user.firstName}` : ''}!
-        </h1>
-        <p className="text-zinc-400">Ready to build your Bitcoin conviction?</p>
-      </div>
-
       {/* Enhanced Main Learning Card */}
       <Card className="bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800 border-zinc-800 hover:border-orange-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10">
         <CardContent className="p-8">
