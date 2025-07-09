@@ -458,6 +458,18 @@ function FinancePage() {
                     <text x="320" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">2010</text>
                     <text x="370" y="205" fill="#9ca3af" fontSize="10" textAnchor="middle">2025</text>
                     
+                    <defs>
+                      <clipPath id="progressClip">
+                        <rect 
+                          x="0" 
+                          y="0" 
+                          width={50 + ((moneySupplyYear - 1920) / 105) * 320} 
+                          height="220"
+                          className="transition-all duration-700 ease-out"
+                        />
+                      </clipPath>
+                    </defs>
+
                     <path
                       d={(() => {
                         // Real M2 data points matching original implementation
@@ -492,6 +504,7 @@ function FinancePage() {
                       fill="none"
                       stroke="#f97316"
                       strokeWidth="3"
+                      clipPath="url(#progressClip)"
                     />
                     
                     <defs>
@@ -537,6 +550,7 @@ function FinancePage() {
                       })()}
                       fill="url(#orangeGradient)"
                       opacity="0.3"
+                      clipPath="url(#progressClip)"
                     />
                     
                     <line 
