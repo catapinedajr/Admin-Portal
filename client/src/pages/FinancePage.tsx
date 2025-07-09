@@ -724,136 +724,197 @@ function FinancePage() {
               </Button>
             </div>
 
-            {/* Investment Performance Dashboard */}
+            {/* Investment Performance Chart */}
             <div className="bg-zinc-800/30 rounded-2xl p-6 border border-zinc-700/50">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {(() => {
-                  // Calculate values based on current year
-                  const getInvestmentValue = (asset: string, year: number) => {
-                    const yearsSince2014 = year - 2014;
-                    const baseAmount = 10000;
-                    
-                    switch (asset) {
-                      case 'cash':
-                        return baseAmount * Math.pow(0.97, yearsSince2014);
-                      case 'stocks':
-                        return baseAmount * Math.pow(1.10, yearsSince2014);
-                      case 'gold':
-                        return baseAmount * Math.pow(1.05, yearsSince2014);
-                      case 'bitcoin':
-                        if (year <= 2014) return baseAmount;
-                        if (year === 2015) return baseAmount * 1.4;
-                        if (year === 2016) return baseAmount * 1.8;
-                        if (year === 2017) return baseAmount * 20;
-                        if (year === 2018) return baseAmount * 8;
-                        if (year === 2019) return baseAmount * 10;
-                        if (year === 2020) return baseAmount * 20;
-                        if (year === 2021) return baseAmount * 65;
-                        if (year === 2022) return baseAmount * 30;
-                        if (year === 2023) return baseAmount * 45;
-                        if (year === 2024) return baseAmount * 90;
-                        return baseAmount * 120;
-                      default:
-                        return baseAmount;
-                    }
-                  };
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-white mb-2">Portfolio Growth Comparison</h3>
+                <p className="text-sm text-zinc-400">$10,000 initial investment performance over time</p>
+              </div>
+              
+              <div className="relative">
+                <svg viewBox="0 0 400 200" className="w-full h-64 bg-zinc-900/50 rounded-xl border border-zinc-700/30">
+                  {/* Grid lines */}
+                  <defs>
+                    <pattern id="grid" width="40" height="20" patternUnits="userSpaceOnUse">
+                      <path d="M 40 0 L 0 0 0 20" fill="none" stroke="#3f3f46" strokeWidth="0.5" opacity="0.3"/>
+                    </pattern>
+                  </defs>
+                  <rect width="100%" height="100%" fill="url(#grid)" />
+                  
+                  {/* Y-axis labels */}
+                  <text x="20" y="15" fill="#a1a1aa" fontSize="8" textAnchor="middle">$1.2M</text>
+                  <text x="20" y="55" fill="#a1a1aa" fontSize="8" textAnchor="middle">$300K</text>
+                  <text x="20" y="95" fill="#a1a1aa" fontSize="8" textAnchor="middle">$50K</text>
+                  <text x="20" y="135" fill="#a1a1aa" fontSize="8" textAnchor="middle">$25K</text>
+                  <text x="20" y="175" fill="#a1a1aa" fontSize="8" textAnchor="middle">$10K</text>
+                  
+                  {/* X-axis */}
+                  <line x1="40" y1="180" x2="380" y2="180" stroke="#52525b" strokeWidth="1"/>
+                  
+                  {/* X-axis labels */}
+                  <text x="40" y="195" fill="#a1a1aa" fontSize="8" textAnchor="middle">2014</text>
+                  <text x="150" y="195" fill="#a1a1aa" fontSize="8" textAnchor="middle">2018</text>
+                  <text x="260" y="195" fill="#a1a1aa" fontSize="8" textAnchor="middle">2021</text>
+                  <text x="380" y="195" fill="#a1a1aa" fontSize="8" textAnchor="middle">2025</text>
+                  
+                  {(() => {
+                    const getInvestmentValue = (asset: string, year: number) => {
+                      const yearsSince2014 = year - 2014;
+                      const baseAmount = 10000;
+                      
+                      switch (asset) {
+                        case 'cash':
+                          return baseAmount * Math.pow(0.97, yearsSince2014);
+                        case 'stocks':
+                          return baseAmount * Math.pow(1.10, yearsSince2014);
+                        case 'gold':
+                          return baseAmount * Math.pow(1.05, yearsSince2014);
+                        case 'bitcoin':
+                          if (year <= 2014) return baseAmount;
+                          if (year === 2015) return baseAmount * 1.4;
+                          if (year === 2016) return baseAmount * 1.8;
+                          if (year === 2017) return baseAmount * 20;
+                          if (year === 2018) return baseAmount * 8;
+                          if (year === 2019) return baseAmount * 10;
+                          if (year === 2020) return baseAmount * 20;
+                          if (year === 2021) return baseAmount * 65;
+                          if (year === 2022) return baseAmount * 30;
+                          if (year === 2023) return baseAmount * 45;
+                          if (year === 2024) return baseAmount * 90;
+                          return baseAmount * 120;
+                        default:
+                          return baseAmount;
+                      }
+                    };
 
-                  const investments = [
-                    { 
-                      name: 'Cash Savings', 
-                      value: getInvestmentValue('cash', investmentYear),
-                      initialValue: 10000,
-                      description: 'Traditional savings account',
-                      bgColor: 'bg-red-500/10',
-                      borderColor: 'border-red-500/30',
-                      textColor: 'text-red-400',
-                      icon: DollarSign
-                    },
-                    { 
-                      name: 'S&P 500', 
-                      value: getInvestmentValue('stocks', investmentYear),
-                      initialValue: 10000,
-                      description: 'Stock market index',
-                      bgColor: 'bg-blue-500/10',
-                      borderColor: 'border-blue-500/30',
-                      textColor: 'text-blue-400',
-                      icon: TrendingUp
-                    },
-                    { 
-                      name: 'Gold', 
-                      value: getInvestmentValue('gold', investmentYear),
-                      initialValue: 10000,
-                      description: 'Precious metals',
-                      bgColor: 'bg-yellow-500/10',
-                      borderColor: 'border-yellow-500/30',
-                      textColor: 'text-yellow-400',
-                      icon: Shield
-                    },
-                    { 
-                      name: 'Bitcoin', 
-                      value: getInvestmentValue('bitcoin', investmentYear),
-                      initialValue: 10000,
-                      description: 'Digital currency',
-                      bgColor: 'bg-orange-500/10',
-                      borderColor: 'border-orange-500/30',
-                      textColor: 'text-orange-400',
-                      icon: Zap
-                    }
-                  ];
+                    const getYPosition = (value: number) => {
+                      // Log scale for better visualization
+                      const logValue = Math.log(value);
+                      const logMin = Math.log(5000);
+                      const logMax = Math.log(1200000);
+                      return 180 - ((logValue - logMin) / (logMax - logMin)) * 160;
+                    };
 
-                  return investments.map((investment, index) => {
-                    const Icon = investment.icon;
-                    const returnPercent = ((investment.value - investment.initialValue) / investment.initialValue) * 100;
-                    const isPositive = returnPercent >= 0;
-                    
-                    return (
-                      <div key={investment.name} className={`p-5 rounded-xl border transition-all duration-700 ${investment.bgColor} ${investment.borderColor} ${
-                        investmentRaceActive ? 'transform scale-105' : ''
-                      }`}>
-                        <div className="flex items-start justify-between mb-4">
-                          <div className="flex items-center space-x-3">
-                            <div className={`p-2 rounded-lg ${investment.bgColor}`}>
-                              <Icon className={`w-5 h-5 ${investment.textColor}`} />
-                            </div>
-                            <div>
-                              <h3 className="font-semibold text-white">{investment.name}</h3>
-                              <p className="text-xs text-zinc-400">{investment.description}</p>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <div className="flex justify-between items-baseline">
-                            <span className="text-sm text-zinc-400">Portfolio Value</span>
-                            <span className="text-2xl font-bold text-white font-mono">
-                              ${investment.value.toLocaleString('en-US', { maximumFractionDigits: 0 })}
-                            </span>
-                          </div>
+                    const getXPosition = (year: number) => {
+                      return 40 + ((year - 2014) / (2025 - 2014)) * 340;
+                    };
+
+                    const assets = [
+                      { name: 'cash', color: '#ef4444', width: '2' },
+                      { name: 'gold', color: '#eab308', width: '2' },
+                      { name: 'stocks', color: '#3b82f6', width: '2' },
+                      { name: 'bitcoin', color: '#f97316', width: '3' }
+                    ];
+
+                    return assets.map(asset => {
+                      const points = [];
+                      for (let year = 2014; year <= Math.min(investmentYear, 2025); year++) {
+                        const value = getInvestmentValue(asset.name, year);
+                        const x = getXPosition(year);
+                        const y = getYPosition(value);
+                        points.push(`${x},${y}`);
+                      }
+                      
+                      return (
+                        <g key={asset.name}>
+                          <polyline
+                            points={points.join(' ')}
+                            fill="none"
+                            stroke={asset.color}
+                            strokeWidth={asset.width}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="transition-all duration-300"
+                          />
                           
-                          <div className="flex justify-between items-baseline">
-                            <span className="text-sm text-zinc-400">Return</span>
-                            <span className={`text-lg font-semibold ${
-                              isPositive ? 'text-green-400' : 'text-red-400'
-                            }`}>
-                              {isPositive ? '+' : ''}{returnPercent.toFixed(0)}%
-                            </span>
-                          </div>
-                          
-                          {/* Simple progress indicator */}
-                          <div className="w-full bg-zinc-700/50 rounded-full h-2 mt-3">
-                            <div 
-                              className={`h-full rounded-full transition-all duration-1000 ease-out`}
-                              style={{ 
-                                width: `${Math.min((Math.abs(returnPercent) / 1200) * 100, 100)}%`,
-                                backgroundColor: isPositive ? '#10b981' : '#ef4444'
-                              }}
+                          {/* Current year indicator */}
+                          {investmentYear > 2014 && (
+                            <circle
+                              cx={getXPosition(investmentYear)}
+                              cy={getYPosition(getInvestmentValue(asset.name, investmentYear))}
+                              r="4"
+                              fill={asset.color}
+                              stroke="#ffffff"
+                              strokeWidth="2"
                             />
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  });
-                })()}
+                          )}
+                        </g>
+                      );
+                    });
+                  })()}
+                  
+                  {/* Current year line */}
+                  {investmentYear > 2014 && (
+                    <line
+                      x1={40 + ((investmentYear - 2014) / (2025 - 2014)) * 340}
+                      y1="10"
+                      x2={40 + ((investmentYear - 2014) / (2025 - 2014)) * 340}
+                      y2="180"
+                      stroke="#f97316"
+                      strokeWidth="1"
+                      strokeDasharray="4,4"
+                      opacity="0.6"
+                    />
+                  )}
+                </svg>
+              </div>
+              
+              {/* Chart Legend */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-0.5 bg-red-500 rounded"></div>
+                  <span className="text-sm text-zinc-300">Cash</span>
+                  <span className="text-xs text-red-400 font-mono">
+                    ${(() => {
+                      const value = 10000 * Math.pow(0.97, investmentYear - 2014);
+                      return value >= 1000 ? `${(value/1000).toFixed(0)}K` : value.toFixed(0);
+                    })()}
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-0.5 bg-yellow-500 rounded"></div>
+                  <span className="text-sm text-zinc-300">Gold</span>
+                  <span className="text-xs text-yellow-400 font-mono">
+                    ${(() => {
+                      const value = 10000 * Math.pow(1.05, investmentYear - 2014);
+                      return value >= 1000 ? `${(value/1000).toFixed(0)}K` : value.toFixed(0);
+                    })()}
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-0.5 bg-blue-500 rounded"></div>
+                  <span className="text-sm text-zinc-300">S&P 500</span>
+                  <span className="text-xs text-blue-400 font-mono">
+                    ${(() => {
+                      const value = 10000 * Math.pow(1.10, investmentYear - 2014);
+                      return value >= 1000 ? `${(value/1000).toFixed(0)}K` : value.toFixed(0);
+                    })()}
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-0.5 bg-orange-500 rounded"></div>
+                  <span className="text-sm text-zinc-300">Bitcoin</span>
+                  <span className="text-xs text-orange-400 font-mono">
+                    ${(() => {
+                      let value = 10000;
+                      if (investmentYear > 2014) {
+                        if (investmentYear === 2015) value = 10000 * 1.4;
+                        else if (investmentYear === 2016) value = 10000 * 1.8;
+                        else if (investmentYear === 2017) value = 10000 * 20;
+                        else if (investmentYear === 2018) value = 10000 * 8;
+                        else if (investmentYear === 2019) value = 10000 * 10;
+                        else if (investmentYear === 2020) value = 10000 * 20;
+                        else if (investmentYear === 2021) value = 10000 * 65;
+                        else if (investmentYear === 2022) value = 10000 * 30;
+                        else if (investmentYear === 2023) value = 10000 * 45;
+                        else if (investmentYear === 2024) value = 10000 * 90;
+                        else value = 10000 * 120;
+                      }
+                      return value >= 1000000 ? `${(value/1000000).toFixed(1)}M` : 
+                             value >= 1000 ? `${(value/1000).toFixed(0)}K` : value.toFixed(0);
+                    })()}
+                  </span>
+                </div>
               </div>
             </div>
 
