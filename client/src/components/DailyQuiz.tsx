@@ -238,7 +238,7 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning }: DailyQu
     if (showCompletionAnimation) {
       const timer = setTimeout(() => {
         setShowCompletionAnimation(false);
-      }, 3000);
+      }, 1500);
       return () => clearTimeout(timer);
     }
   }, [showCompletionAnimation]);
@@ -534,23 +534,39 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning }: DailyQu
         onComplete={() => setShowSatsAnimation(false)}
       />
 
-      {/* Quiz Completion Animation */}
+      {/* Quiz Completion Animation - Coin Shower */}
       {showCompletionAnimation && (
         <div className="fixed inset-0 pointer-events-none z-50">
           <div className="absolute inset-0 bg-black/50 animate-fade-in" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="relative">
-              {/* Dramatic pulse */}
-              <div className="absolute inset-0 bg-green-500/40 rounded-full w-40 h-40 animate-ping" />
-              <div className="absolute inset-0 bg-green-400/30 rounded-full w-32 h-32 animate-pulse" />
-              
-              {/* Completion message */}
-              <div className="relative bg-gradient-to-r from-green-600 to-green-500 text-white px-8 py-6 rounded-xl shadow-2xl animate-scale-in">
-                <div className="text-center space-y-3">
-                  <Trophy className="w-12 h-12 mx-auto text-yellow-300" />
-                  <h3 className="text-2xl font-bold">Quiz Complete!</h3>
-                  <p className="text-green-100">Great job building your Bitcoin conviction!</p>
+          
+          {/* Falling coins shower */}
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute top-0 animate-coin-fall"
+              style={{
+                left: `${20 + i * 15}%`,
+                animationDelay: `${i * 200}ms`,
+              }}
+            >
+              <div className="bg-gradient-to-br from-orange-400 to-orange-600 rounded-full p-2 shadow-lg">
+                <div className="text-white text-xs font-bold text-center w-6 h-6 flex items-center justify-center">
+                  100
                 </div>
+              </div>
+            </div>
+          ))}
+          
+          {/* Main completion message */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="bg-gradient-to-br from-green-900 to-green-800 p-8 rounded-xl border border-green-700 text-center max-w-sm mx-4 animate-scale-in">
+              <Trophy className="w-16 h-16 mx-auto mb-4 text-yellow-500" />
+              <h3 className="text-2xl font-bold text-white mb-2">Quiz Complete!</h3>
+              <p className="text-green-200 mb-4">
+                Well done! You've earned {questions.length * 100} sats total.
+              </p>
+              <div className="text-green-300 text-sm">
+                Your Bitcoin conviction is growing!
               </div>
             </div>
           </div>
