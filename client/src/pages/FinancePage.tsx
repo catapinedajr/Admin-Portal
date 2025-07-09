@@ -151,12 +151,7 @@ function FinancePage() {
       setTimeout(() => {
         setInflationProgress(step);
         
-        // Add tactile feedback for iPhone users on ALL inflation milestones - visual shake effect  
-        if (step >= 1) {
-          console.log(`Inflation milestone step ${step} - triggering shake effect`);
-          setShakingInflation(true);
-          setTimeout(() => setShakingInflation(false), 250); // Quick shake duration
-        }
+        // Remove shake effects from inflation animation per user request
       }, delay);
     });
 
@@ -299,7 +294,7 @@ function FinancePage() {
               {/* You're Not Too Late Message - Balanced Enhancement */}
               <div className="bg-gradient-to-r from-green-900/40 to-emerald-900/30 p-5 rounded-xl border border-green-400/50 mb-6 shadow-lg">
                 <div className="text-center space-y-3">
-                  <h3 className="text-2xl font-bold text-green-300 animate-pulse">
+                  <h3 className="text-2xl font-bold text-green-300">
                     You're Not Too Late
                   </h3>
                   <div className="bg-zinc-800/50 rounded-lg p-3 border border-orange-400/30">
@@ -694,7 +689,7 @@ function FinancePage() {
         </Card>
 
         {/* Purchasing Power Erosion Simulator */}
-        <Card className={`bg-zinc-900 border-zinc-800 ${shakingInflation ? 'animate-crisis-shake' : ''}`}>
+        <Card className="bg-zinc-900 border-zinc-800">
           <CardHeader className="pb-4">
             <CardTitle className="text-white flex items-center gap-3 text-xl">
               <TrendingDown className="w-5 h-5 text-orange-400" />
