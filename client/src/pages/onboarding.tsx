@@ -12,44 +12,7 @@ export default function Onboarding() {
   const [showFeatures, setShowFeatures] = useState(false);
   const [inflationAmount, setInflationAmount] = useState(1000);
 
-  // Auto-cycle through problems
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentProblem((prev) => (prev + 1) % 3);
-    }, 2500);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Auto-cycle through features
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentFeature((prev) => (prev + 1) % 4);
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Show solution after 4 seconds
-  useEffect(() => {
-    const timer = setTimeout(() => setShowSolution(true), 4000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Show features after 6 seconds
-  useEffect(() => {
-    const timer = setTimeout(() => setShowFeatures(true), 6000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Animate inflation impact
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const interval = setInterval(() => {
-        setInflationAmount(prev => Math.max(prev - 25, 850));
-      }, 150);
-      setTimeout(() => clearInterval(interval), 2000);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
+  // Professional static display - no distracting animations
 
   const handleComplete = () => {
     localStorage.setItem('hodlearn-onboarding-completed', 'true');
@@ -106,67 +69,58 @@ export default function Onboarding() {
           <CardContent className="p-6">
             <div className="text-center space-y-6">
               
-              {/* Animated logo with Bitcoin icon */}
+              {/* Clean logo */}
               <div className="flex items-center justify-center space-x-3 mb-6">
-                <div className="relative">
-                  <Bitcoin className="w-12 h-12 text-orange-500 animate-pulse" />
-                  <div className="absolute inset-0 w-12 h-12 bg-orange-500/20 rounded-full animate-ping"></div>
-                </div>
-                <div className="text-3xl font-bold bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">
+                <Bitcoin className="w-10 h-10 text-orange-500" />
+                <div className="text-3xl font-bold text-white">
                   HODLearn
                 </div>
               </div>
               
-              {/* Problem headline */}
+              {/* Professional headline */}
               <div className="space-y-3">
-                <h1 className="text-3xl font-bold text-white bg-gradient-to-r from-red-400 to-orange-500 bg-clip-text text-transparent">
-                  Your Money is Disappearing
+                <h1 className="text-3xl font-bold text-white">
+                  Understanding Bitcoin
                 </h1>
                 <p className="text-lg text-zinc-300">
-                  While you work hard and save responsibly...
+                  Building conviction takes time and community
                 </p>
               </div>
               
-              {/* Live inflation demonstration */}
-              <div className="bg-gradient-to-r from-red-900/30 to-red-800/30 rounded-xl p-4 border border-red-700/50">
-                <div className="flex items-center justify-center space-x-3">
-                  <TrendingDown className="w-6 h-6 text-red-400" />
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-red-400">
-                      ${inflationAmount.toLocaleString()}
-                    </div>
-                    <div className="text-xs text-zinc-400">
-                      What $1,000 buys vs. 5 years ago
-                    </div>
+              {/* Value proposition */}
+              <div className="bg-gradient-to-r from-zinc-800/50 to-zinc-700/50 rounded-xl p-4 border border-zinc-600/50">
+                <div className="text-center space-y-2">
+                  <div className="text-xl font-semibold text-white">
+                    Master Bitcoin in 5 minutes daily
                   </div>
-                  <AlertTriangle className="w-6 h-6 text-red-400 animate-pulse" />
+                  <div className="text-sm text-zinc-400">
+                    Professional education for serious learners
+                  </div>
                 </div>
               </div>
               
-              {/* Condensed cycling problem */}
+              {/* Clean feature benefits */}
               <div className="space-y-3">
                 <div className="space-y-2">
-                  {problems.map((problem, index) => {
-                    const Icon = problem.icon;
-                    const isActive = currentProblem === index;
+                  {[
+                    { icon: BookOpen, text: "Daily structured lessons", detail: "Progressive curriculum designed by experts" },
+                    { icon: Shield, text: "Security best practices", detail: "Learn to protect your Bitcoin safely" },
+                    { icon: Target, text: "Hands-on practice", detail: "Risk-free simulators and exercises" }
+                  ].map((benefit, index) => {
+                    const Icon = benefit.icon;
                     return (
                       <div
                         key={index}
-                        className={`p-3 rounded-lg border transition-all duration-500 ${
-                          isActive 
-                            ? `${problem.bg} scale-105` 
-                            : 'bg-zinc-800/30 border-zinc-700/50 opacity-60'
-                        }`}
+                        className="p-3 rounded-lg border bg-zinc-800/30 border-zinc-700/50 hover:border-zinc-600/50 transition-colors duration-300"
                       >
-                        <div className="flex items-center space-x-3">
-                          <Icon className={`w-5 h-5 transition-all duration-500 ${
-                            isActive ? problem.color : 'text-zinc-500'
-                          }`} />
+                        <div className="flex items-start space-x-3">
+                          <Icon className="w-5 h-5 text-orange-400 mt-0.5" />
                           <div className="flex-1 text-left">
-                            <p className={`text-sm font-medium transition-colors duration-500 ${
-                              isActive ? 'text-white' : 'text-zinc-400'
-                            }`}>
-                              {problem.text}
+                            <p className="text-sm font-medium text-white">
+                              {benefit.text}
+                            </p>
+                            <p className="text-xs text-zinc-400 mt-1">
+                              {benefit.detail}
                             </p>
                           </div>
                         </div>
@@ -176,74 +130,36 @@ export default function Onboarding() {
                 </div>
               </div>
               
-              {/* Solution reveal */}
-              <div className={`transition-all duration-1000 ${showSolution ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                <div className="bg-gradient-to-r from-orange-900/30 to-orange-800/30 rounded-xl p-4 border border-orange-700/50">
-                  <div className="flex items-center justify-center space-x-3 mb-2">
-                    <Bitcoin className="w-8 h-8 text-orange-400" />
-                    <div className="text-xl font-bold text-orange-400">
-                      Bitcoin: Your Escape Plan
+              {/* Professional value statement */}
+              <div className="bg-gradient-to-r from-orange-900/20 to-orange-800/20 rounded-xl p-4 border border-orange-700/30">
+                <div className="text-center space-y-2">
+                  <div className="flex items-center justify-center space-x-2 mb-2">
+                    <Bitcoin className="w-6 h-6 text-orange-400" />
+                    <div className="text-lg font-semibold text-orange-300">
+                      Join thousands building Bitcoin knowledge
                     </div>
                   </div>
                   <p className="text-zinc-300 text-sm">
-                    Fixed supply. No printing. Digital gold.
+                    Structured learning path designed by industry experts
                   </p>
                 </div>
               </div>
               
-              {/* Compact features showcase */}
-              <div className={`transition-all duration-1000 delay-500 ${showFeatures ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                <div className="space-y-3">
-                  <h3 className="text-lg font-semibold text-zinc-200">Learn Bitcoin the Right Way:</h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    {features.map((feature, index) => {
-                      const Icon = feature.icon;
-                      const isActive = currentFeature === index;
-                      return (
-                        <div
-                          key={index}
-                          className={`p-3 rounded-lg border transition-all duration-300 ${
-                            isActive 
-                              ? 'bg-orange-500/20 border-orange-500/50 scale-105' 
-                              : 'bg-zinc-800/50 border-zinc-700/50'
-                          }`}
-                        >
-                          <div className="text-center">
-                            <Icon className={`w-6 h-6 mx-auto mb-2 transition-colors duration-300 ${
-                              isActive ? 'text-orange-400' : 'text-zinc-400'
-                            }`} />
-                            <p className={`text-xs font-medium transition-colors duration-300 ${
-                              isActive ? 'text-orange-300' : 'text-white'
-                            }`}>
-                              {feature.text}
-                            </p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-              
-              {/* Enhanced action buttons */}
+              {/* Professional action buttons */}
               <div className="space-y-4 pt-4">
-                {/* Primary CTA with animation */}
-                <div className="relative">
-                  <Button
-                    onClick={handleComplete}
-                    className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-4 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-                  >
-                    <Shield className="w-5 h-5 mr-3" />
-                    Protect Your Money Now
-                    <ArrowRight className="w-5 h-5 ml-3" />
-                  </Button>
-                  
-                  {/* Pulse effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl opacity-20 animate-ping"></div>
-                </div>
+                {/* Primary CTA */}
+                <Button
+                  onClick={handleComplete}
+                  className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  <BookOpen className="w-5 h-5 mr-3" />
+                  Start Learning Bitcoin
+                  <ArrowRight className="w-5 h-5 ml-3" />
+                </Button>
                 
-                <div className="text-xs text-zinc-400 text-center">
-                  <p>✓ Free to start • ✓ 5 min daily • ✓ No credit card</p>
+                <div className="text-xs text-zinc-400 text-center space-y-1">
+                  <p>✓ Free to start • ✓ 5 minutes daily • ✓ No commitment</p>
+                  <p className="text-zinc-500">Join professionals building Bitcoin knowledge</p>
                 </div>
                 
                 {/* Subtle secondary action */}
@@ -251,7 +167,7 @@ export default function Onboarding() {
                   onClick={handleSkip}
                   className="text-zinc-500 hover:text-zinc-400 text-xs transition-colors duration-200 block mx-auto"
                 >
-                  Maybe later (your money keeps losing value)
+                  Continue browsing
                 </button>
               </div>
               
