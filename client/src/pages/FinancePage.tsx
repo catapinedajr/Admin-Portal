@@ -291,7 +291,7 @@ function FinancePage() {
                 Money Supply Explosion: $23B → $<AnimatedCounter target={21} suffix="T" className="text-red-400" />
               </h2>
               <p className="text-xl text-zinc-300 mb-4">
-                That's a <AnimatedCounter target={913} suffix="x" className="text-red-400" /> increase since 1920
+                That's a <AnimatedCounter target={922} suffix="x" className="text-red-400" /> increase since 1920
               </p>
               <div className="bg-red-900/20 border border-red-600/30 rounded-lg p-4 inline-block">
                 <div className="text-red-300 font-bold text-lg">
