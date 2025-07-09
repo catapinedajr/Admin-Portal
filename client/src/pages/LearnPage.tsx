@@ -482,6 +482,7 @@ function LearnPage() {
                     dayIndex={currentDayIndex}
                     onCompletion={handleQuizCompletion}
                     onEarning={triggerEarningAnimation}
+                    dayCompleted={dayCompleted}
                   />
                 </CardContent>
               </Card>

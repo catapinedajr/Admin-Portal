@@ -42,9 +42,10 @@ interface DailyQuizProps {
   dayIndex: number;
   onCompletion?: () => void; // Callback when quiz is completed successfully
   onEarning?: (sats: number) => void; // Callback when user earns satoshis
+  dayCompleted?: boolean; // Whether the day is already completed
 }
 
-export default function DailyQuiz({ dayIndex, onCompletion, onEarning }: DailyQuizProps) {
+export default function DailyQuiz({ dayIndex, onCompletion, onEarning, dayCompleted = false }: DailyQuizProps) {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const [submittedAnswers, setSubmittedAnswers] = useState<Record<number, QuizAnswer>>({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -202,7 +203,7 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning }: DailyQu
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       // Quiz is complete - check if all questions answered and trigger completion if needed
-      if (userAnswers.length === questions.length && onCompletion && !completionTriggeredRef.current) {
+      if (userAnswers.length === questions.length && onCompletion && !completionTriggeredRef.current && !dayCompleted) {
         completionTriggeredRef.current = true;
         onCompletion();
       }
@@ -217,8 +218,8 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning }: DailyQu
 
   // Check for quiz completion when all questions are answered
   useEffect(() => {
-    if (questions.length > 0 && userAnswers.length === questions.length && onCompletion && !completionTriggeredRef.current) {
-      // All questions answered, trigger completion callback
+    if (questions.length > 0 && userAnswers.length === questions.length && onCompletion && !completionTriggeredRef.current && !dayCompleted) {
+      // All questions answered, trigger completion callback only if day is not already completed
       completionTriggeredRef.current = true;
       
       // Show dramatic completion animation
@@ -226,7 +227,7 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning }: DailyQu
       
       onCompletion();
     }
-  }, [questions.length, userAnswers.length, onCompletion]);
+  }, [questions.length, userAnswers.length, onCompletion, dayCompleted]);
 
   // Reset completion tracking when dayIndex changes
   useEffect(() => {

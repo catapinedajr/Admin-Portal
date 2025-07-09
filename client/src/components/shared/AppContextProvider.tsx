@@ -252,8 +252,11 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
   });
 
   const handleQuizCompletion = useCallback(() => {
-    markDayCompletedMutation.mutate(currentDayIndex);
-  }, [markDayCompletedMutation, currentDayIndex]);
+    // Only mark day as completed if it's not already completed
+    if (!dayCompleted) {
+      markDayCompletedMutation.mutate(currentDayIndex);
+    }
+  }, [markDayCompletedMutation, currentDayIndex, dayCompleted]);
 
   // Finance/inflation state
   const [inflationAmount, setInflationAmount] = useState<number>(10000);
