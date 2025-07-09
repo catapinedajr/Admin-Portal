@@ -300,9 +300,9 @@ function FinancePage() {
         </Card>
 
         {/* Money Supply Erosion Visualization */}
-        <Card id="money-supply-section" className={`bg-zinc-900 border-zinc-800 transition-all duration-500 ${
+        <Card id="money-supply-section" className={`bg-zinc-900 border-zinc-800 transition-all duration-300 ease-out ${
           isAnimating && flashingYear && [1971, 2008, 2020].includes(flashingYear) 
-            ? 'shadow-[0_0_30px_rgba(239,68,68,0.5)] border-red-500/50' 
+            ? 'shadow-[0_0_20px_rgba(239,68,68,0.4)] border-red-500/40' 
             : ''
         }`}>
           <CardHeader className="pb-4">
@@ -326,14 +326,10 @@ function FinancePage() {
               The Money Printing Machine
             </CardTitle>
           </CardHeader>
-          <CardContent className={`space-y-6 relative transition-all duration-700 ${
-            isAnimating && flashingYear && [1971, 2008, 2020].includes(flashingYear)
-              ? 'bg-red-950/20' 
-              : ''
-          }`}>
-            {/* Crisis Warning Overlay */}
+          <CardContent className="space-y-6 relative">
+            {/* Crisis Warning Overlay - Pure overlay, no layout impact */}
             {isAnimating && flashingYear && [1971, 2008, 2020].includes(flashingYear) && (
-              <div className="absolute inset-0 bg-red-500/10 rounded-lg pointer-events-none animate-pulse" />
+              <div className="absolute inset-0 bg-red-500/8 rounded-lg pointer-events-none transition-opacity duration-200" />
             )}
             
             {/* Animation Controls */}
@@ -348,21 +344,20 @@ function FinancePage() {
                   onClick={() => {
                     if (isAnimating) return; // Prevent multiple animations
                     
-                    const timeline = [
-                      { year: 1920, duration: 800, flash: true },
-                      { year: 1930, duration: 700, flash: false },
-                      { year: 1940, duration: 700, flash: false },
-                      { year: 1950, duration: 700, flash: false },
-                      { year: 1960, duration: 700, flash: false },
-                      { year: 1971, duration: 1000, flash: true }, // Nixon Shock - pause longer
-                      { year: 1980, duration: 600, flash: false },
-                      { year: 1990, duration: 600, flash: false },
-                      { year: 2000, duration: 800, flash: true }, // Dot-com - pause
-                      { year: 2008, duration: 1000, flash: true }, // Crisis - pause longer
-                      { year: 2015, duration: 600, flash: false },
-                      { year: 2020, duration: 700, flash: false },
-                      { year: 2025, duration: 1200, flash: true }  // Today - longest pause
-                    ];
+                    // Create smooth year-by-year animation over 4 seconds
+                    const totalYears = 2025 - 1920; // 105 years
+                    const totalDuration = 4000; // 4 seconds
+                    const baseInterval = totalDuration / totalYears; // ~38ms per year
+                    
+                    const timeline = [];
+                    for (let year = 1920; year <= 2025; year++) {
+                      const isFlashYear = [1971, 2008, 2020].includes(year);
+                      timeline.push({
+                        year: year,
+                        duration: isFlashYear ? baseInterval * 3 : baseInterval, // Crisis years pause 3x longer
+                        flash: isFlashYear
+                      });
+                    }
                     
                     let index = 0;
                     setIsAnimating(true);
