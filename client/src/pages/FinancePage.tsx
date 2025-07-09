@@ -210,11 +210,11 @@ function FinancePage() {
     setAdoptionAnimationRunning(true);
     setAdoptionProgress(0);
 
-    // Step-by-step adoption curve animation
+    // Step-by-step story animation with engaging timing
     const adoptionSteps = [
-      { step: 1, delay: 1000 },   // Show Internet curve at 1 second
-      { step: 2, delay: 3000 },   // Show Bitcoin curve at 3 seconds  
-      { step: 3, delay: 6000 }    // Show comparison markers at 6 seconds
+      { step: 1, delay: 1500 },   // Internet 2000 "too late" moment at 1.5 seconds
+      { step: 2, delay: 4000 },   // What actually happened next at 4 seconds  
+      { step: 3, delay: 7000 }    // Bitcoin today parallel at 7 seconds
     ];
 
     adoptionSteps.forEach(({ step, delay }) => {
@@ -223,10 +223,10 @@ function FinancePage() {
       }, delay);
     });
 
-    // Stop animation running indicator after 8 seconds
+    // Stop animation running indicator after 9 seconds
     setTimeout(() => {
       setAdoptionAnimationRunning(false);
-    }, 8000);
+    }, 9000);
   };
 
   const resetAdoptionAnimation = () => {
@@ -820,31 +820,33 @@ function FinancePage() {
           </CardContent>
         </Card>
 
-        {/* Bitcoin vs Internet Adoption - Mobile Optimized */}
+        {/* "Too Late" Story - Engaging Narrative */}
         <Card className="bg-zinc-900 border-zinc-800">
           <CardHeader className="pb-3">
             <CardTitle className="text-white flex items-center gap-2 text-lg">
-              <TrendingUp className="w-4 h-4 text-orange-400" />
-              Wait... Am I Too Late?
+              <Clock className="w-4 h-4 text-orange-400" />
+              "But I'm Too Late, Right?"
             </CardTitle>
-            <p className="text-zinc-400 text-xs">Here's the surprising truth about Bitcoin adoption</p>
+            <p className="text-zinc-400 text-xs">Here's what everyone thinks about new technologies</p>
           </CardHeader>
           <CardContent className="space-y-4">
             {!adoptionAnimationActive && (
               <div className="text-center space-y-3">
                 <div className="p-4 bg-zinc-800 rounded-lg border border-zinc-700">
                   <p className="text-zinc-300 text-sm mb-2">
-                    Everyone asks: <span className="text-orange-400 font-bold">"Am I too late for Bitcoin?"</span>
+                    <span className="text-red-400 font-bold">"I missed the Internet boom"</span><br/>
+                    <span className="text-red-400 font-bold">"I missed Apple stock"</span><br/>
+                    <span className="text-orange-400 font-bold">"Am I missing Bitcoin?"</span>
                   </p>
                   <p className="text-zinc-400 text-xs">
-                    Let's see where Bitcoin is compared to the Internet in the year 2000...
+                    Let's check when people actually said "too late" for past technologies...
                   </p>
                 </div>
                 <Button 
                   onClick={startAdoptionAnimation}
                   className="w-full bg-orange-600 hover:bg-orange-700 h-10 text-base font-medium"
                 >
-                  Show Me The Truth
+                  Show Me The Timeline
                 </Button>
               </div>
             )}
@@ -862,89 +864,111 @@ function FinancePage() {
                   </Button>
                 </div>
                 
-                {/* Simple Comparison Cards */}
+                {/* Timeline Story */}
                 <div className="space-y-3">
-                  {/* Internet 2000 Card */}
+                  {/* Internet "Too Late" Moment */}
                   <div className={`p-4 rounded-lg border transition-all duration-1000 ${
                     adoptionProgress >= 1 
+                      ? 'bg-red-900/30 border-red-600/50' 
+                      : 'bg-zinc-800 border-zinc-700'
+                  }`}>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className={`font-bold text-base transition-colors duration-500 ${
+                          adoptionProgress >= 1 ? 'text-red-300' : 'text-zinc-400'
+                        }`}>
+                          Internet • Year 2000
+                        </div>
+                        <div className={`transition-colors duration-500 ${
+                          adoptionProgress >= 1 ? 'text-red-200' : 'text-zinc-500'
+                        }`}>
+                          <div className="text-lg font-bold">~400M users</div>
+                        </div>
+                      </div>
+                      {adoptionProgress >= 1 && (
+                        <div className="text-red-200 text-xs animate-fade-in">
+                          💭 "The Internet is everywhere now. I missed it. Too late to start an online business."
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* What Actually Happened */}
+                  <div className={`p-4 rounded-lg border transition-all duration-1000 delay-1000 ${
+                    adoptionProgress >= 2 
                       ? 'bg-blue-900/30 border-blue-600/50' 
                       : 'bg-zinc-800 border-zinc-700'
                   }`}>
-                    <div className="flex items-center justify-between">
-                      <div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
                         <div className={`font-bold text-base transition-colors duration-500 ${
-                          adoptionProgress >= 1 ? 'text-blue-300' : 'text-zinc-400'
+                          adoptionProgress >= 2 ? 'text-blue-300' : 'text-zinc-400'
                         }`}>
-                          Internet in Year 2000
+                          Internet • Year 2024
                         </div>
-                        <div className={`text-xs transition-colors duration-500 ${
-                          adoptionProgress >= 1 ? 'text-blue-200' : 'text-zinc-500'
+                        <div className={`transition-colors duration-500 ${
+                          adoptionProgress >= 2 ? 'text-blue-200' : 'text-zinc-500'
                         }`}>
-                          "This internet thing is confusing..."
+                          <div className="text-lg font-bold">5.2B users</div>
                         </div>
                       </div>
-                      <div className={`text-right transition-colors duration-500 ${
-                        adoptionProgress >= 1 ? 'text-blue-200' : 'text-zinc-500'
-                      }`}>
-                        <div className="text-2xl font-bold">
-                          {adoptionProgress >= 1 ? '6%' : '?%'}
+                      {adoptionProgress >= 2 && (
+                        <div className="text-blue-200 text-xs animate-fade-in">
+                          🚀 Google (1998), Facebook (2004), iPhone (2007), Uber (2009), TikTok (2016) - all came AFTER 2000
                         </div>
-                        <div className="text-xs">adoption</div>
-                      </div>
+                      )}
                     </div>
                   </div>
 
-                  {/* Bitcoin 2024 Card */}
-                  <div className={`p-4 rounded-lg border transition-all duration-1000 delay-1000 ${
-                    adoptionProgress >= 2 
+                  {/* Bitcoin Today */}
+                  <div className={`p-4 rounded-lg border transition-all duration-1000 delay-2000 ${
+                    adoptionProgress >= 3 
                       ? 'bg-orange-900/30 border-orange-600/50' 
                       : 'bg-zinc-800 border-zinc-700'
                   }`}>
-                    <div className="flex items-center justify-between">
-                      <div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
                         <div className={`font-bold text-base transition-colors duration-500 ${
-                          adoptionProgress >= 2 ? 'text-orange-300' : 'text-zinc-400'
+                          adoptionProgress >= 3 ? 'text-orange-300' : 'text-zinc-400'
                         }`}>
-                          Bitcoin in Year 2024
+                          Bitcoin • Year 2024
                         </div>
-                        <div className={`text-xs transition-colors duration-500 ${
-                          adoptionProgress >= 2 ? 'text-orange-200' : 'text-zinc-500'
+                        <div className={`transition-colors duration-500 ${
+                          adoptionProgress >= 3 ? 'text-orange-200' : 'text-zinc-500'
                         }`}>
-                          "This Bitcoin thing is confusing..."
+                          <div className="text-lg font-bold">~200M users</div>
                         </div>
                       </div>
-                      <div className={`text-right transition-colors duration-500 ${
-                        adoptionProgress >= 2 ? 'text-orange-200' : 'text-zinc-500'
-                      }`}>
-                        <div className="text-2xl font-bold">
-                          {adoptionProgress >= 2 ? '7%' : '?%'}
+                      {adoptionProgress >= 3 && (
+                        <div className="text-orange-200 text-xs animate-fade-in">
+                          💭 "Bitcoin is everywhere now. I missed it. Too late to start investing."
                         </div>
-                        <div className="text-xs">adoption</div>
-                      </div>
+                      )}
                     </div>
                   </div>
 
-                  {/* Revelation Card */}
+                  {/* The Revelation */}
                   {adoptionProgress >= 3 && (
                     <div className="p-4 bg-gradient-to-r from-green-900/40 to-orange-900/40 rounded-lg border border-green-600/50 animate-fade-in">
-                      <div className="text-center space-y-2">
+                      <div className="text-center space-y-3">
                         <div className="text-green-400 font-bold text-lg">
-                          You're Not Too Late!
+                          Same Pattern, Different Decade
                         </div>
-                        <p className="text-zinc-300 text-sm leading-relaxed">
-                          Bitcoin today is exactly where the Internet was in 2000. 
-                          <span className="text-orange-400 font-medium"> You're still early.</span>
+                        <div className="grid grid-cols-2 gap-3 text-xs">
+                          <div className="bg-zinc-800/50 rounded p-2">
+                            <div className="text-blue-300 font-medium">Internet 2000</div>
+                            <div className="text-zinc-300">400M users → 5.2B users</div>
+                            <div className="text-green-400">1,200% growth left</div>
+                          </div>
+                          <div className="bg-zinc-800/50 rounded p-2">
+                            <div className="text-orange-300 font-medium">Bitcoin 2024</div>
+                            <div className="text-zinc-300">200M users → ??? users</div>
+                            <div className="text-orange-400">Your choice</div>
+                          </div>
+                        </div>
+                        <p className="text-zinc-300 text-sm">
+                          The biggest winners came <span className="text-orange-400 font-bold">after</span> people said "too late."
                         </p>
-                        <div className="bg-zinc-800/50 rounded p-3 mt-3">
-                          <div className="text-zinc-300 text-xs">
-                            <span className="text-blue-300 font-medium">Internet 2000:</span> "Will this really work?" → 
-                            <span className="text-green-300 font-medium"> Changed everything</span>
-                          </div>
-                          <div className="text-zinc-300 text-xs mt-1">
-                            <span className="text-orange-300 font-medium">Bitcoin 2024:</span> "Will this really work?" → 
-                            <span className="text-orange-400 font-medium"> You decide</span>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   )}
