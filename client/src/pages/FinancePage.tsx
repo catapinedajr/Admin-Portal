@@ -642,14 +642,14 @@ function FinancePage() {
           </CardContent>
         </Card>
 
-        {/* Purchasing Power Erosion Simulator */}
+        {/* Investment Strategy Comparison Simulator */}
         <Card className="bg-zinc-900 border-zinc-800">
           <CardHeader className="pb-4">
             <CardTitle className="text-white flex items-center gap-3 text-xl">
               <TrendingDown className="w-5 h-5 text-orange-400" />
               Let's See What This Is Doing to Your Money
             </CardTitle>
-            <p className="text-zinc-400 text-sm">See how $25,000 loses buying power over time</p>
+            <p className="text-zinc-400 text-sm">Compare how $25,000 performs across different strategies over 25 years</p>
           </CardHeader>
           <CardContent className="space-y-6">
             {!inflationSimActive && inflationProgress === 0 && (
@@ -657,48 +657,48 @@ function FinancePage() {
                 <div className="p-4 bg-zinc-800 rounded-lg border border-zinc-700">
                   <p className="text-zinc-300 mb-3">
                     You saved <span className="text-orange-400 font-bold">$25,000</span>. 
-                    Watch what happens to your money's buying power over 25 years.
+                    Watch what happens across three different approaches over 25 years.
                   </p>
                   <p className="text-zinc-400 text-sm">
-                    This is what inflation does to your savings.
+                    Cash savings, traditional investments, and Bitcoin - see the difference.
                   </p>
                 </div>
                 <Button 
                   onClick={startInflationSimulation}
                   className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg font-medium"
                 >
-                  Watch What Happens
+                  Compare All Three Strategies
                 </Button>
               </div>
             )}
 
-            {/* Conservative Savings vs Bitcoin Comparison */}
+            {/* Three-Strategy Racing Animation */}
             {(inflationSimActive || inflationProgress > 0) && (
               <div className="space-y-4">
                 {/* Narrative Introduction */}
                 <div className="text-center space-y-2">
                   <p className="text-zinc-300 text-sm font-medium">
-                    The Tale of Two Strategies
+                    The Tale of Three Strategies
                   </p>
                   <p className="text-zinc-400 text-xs leading-relaxed">
-                    Your $25,000 faces two very different futures. Traditional savings slowly loses buying power to inflation, 
-                    while Bitcoin has historically averaged over 100% annual growth. We're using a very conservative 25% growth rate below:
+                    Your $25,000 faces three very different futures. Cash loses to inflation, traditional investments provide modest returns, 
+                    while Bitcoin offers exponential growth potential. Watch the race unfold:
                   </p>
                 </div>
                 
-                {/* Compact Racing Animation */}
-                <div className="space-y-2">
+                {/* Three-Column Racing Animation */}
+                <div className="space-y-3">
                   {[
-                    { step: 0, year: "Today", savings: 25000, btc: 25000, narrative: "Both start equal" },
-                    { step: 1, year: "5 years", savings: 21562, btc: 76294, narrative: "Conservative 25% growth" },
-                    { step: 2, year: "10 years", savings: 18584, btc: 232831, narrative: "Compound growth builds" },
-                    { step: 3, year: "20 years", savings: 15342, btc: 2183468, narrative: "Two decades of growth" },
-                    { step: 4, year: "25 years", savings: 13670, btc: 6781371, narrative: "Long-term holder rewards" }
-                  ].map(({ step, year, savings, btc, narrative }) => {
+                    { step: 0, year: "Today", cash: 25000, traditional: 25000, btc: 25000, narrative: "All start equal" },
+                    { step: 1, year: "5 years", cash: 21562, traditional: 35051, btc: 76294, narrative: "Early divergence" },
+                    { step: 2, year: "10 years", cash: 18584, traditional: 49099, btc: 232831, narrative: "Compound growth builds" },
+                    { step: 3, year: "20 years", cash: 15342, traditional: 96590, btc: 2183468, narrative: "Two decades of growth" },
+                    { step: 4, year: "25 years", cash: 13670, traditional: 135263, btc: 6781371, narrative: "Long-term holder rewards" }
+                  ].map(({ step, year, cash, traditional, btc, narrative }) => {
                     const isActive = inflationProgress >= step;
                     
                     return (
-                      <div key={step} className={`grid grid-cols-3 gap-2 p-2 rounded transition-all duration-700 ${
+                      <div key={step} className={`grid grid-cols-4 gap-2 p-3 rounded transition-all duration-700 ${
                         isActive ? 'bg-zinc-800/50' : 'bg-zinc-900/30'
                       }`}>
                         {/* Year Label */}
@@ -708,20 +708,38 @@ function FinancePage() {
                           {year}
                         </div>
                         
-                        {/* Savings Bar */}
+                        {/* Cash Savings Bar */}
                         <div className="space-y-1">
                           <div className="flex justify-between text-xs">
-                            <span className={isActive ? 'text-red-300' : 'text-zinc-500'}>Savings</span>
+                            <span className={isActive ? 'text-red-300' : 'text-zinc-500'}>Cash</span>
                             <span className={isActive ? 'text-red-200 font-bold' : 'text-zinc-500'}>
-                              ${savings.toLocaleString()}
+                              ${cash.toLocaleString()}
                             </span>
                           </div>
-                          <div className="bg-zinc-700 rounded-full h-1.5 overflow-hidden">
+                          <div className="bg-zinc-700 rounded-full h-2 overflow-hidden">
                             <div 
                               className={`h-full transition-all duration-1000 ${
                                 isActive ? 'bg-red-500' : 'bg-zinc-600'
                               }`}
-                              style={{ width: isActive ? `${(savings/25000)*100}%` : '100%' }}
+                              style={{ width: isActive ? `${(cash/25000)*100}%` : '100%' }}
+                            ></div>
+                          </div>
+                        </div>
+                        
+                        {/* Traditional Investments Bar */}
+                        <div className="space-y-1">
+                          <div className="flex justify-between text-xs">
+                            <span className={isActive ? 'text-blue-300' : 'text-zinc-500'}>S&P 500</span>
+                            <span className={isActive ? 'text-blue-200 font-bold' : 'text-zinc-500'}>
+                              ${traditional >= 100000 ? `${(traditional/1000).toFixed(0)}K` : traditional.toLocaleString()}
+                            </span>
+                          </div>
+                          <div className="bg-zinc-700 rounded-full h-2 overflow-hidden">
+                            <div 
+                              className={`h-full transition-all duration-1000 ${
+                                isActive ? 'bg-blue-500' : 'bg-zinc-600'
+                              }`}
+                              style={{ width: isActive ? `${Math.min((traditional/250000)*100, 100)}%` : '0%' }}
                             ></div>
                           </div>
                         </div>
@@ -734,7 +752,7 @@ function FinancePage() {
                               ${btc >= 1000000 ? `${(btc/1000000).toFixed(1)}M` : btc.toLocaleString()}
                             </span>
                           </div>
-                          <div className="bg-zinc-700 rounded-full h-1.5 overflow-hidden">
+                          <div className="bg-zinc-700 rounded-full h-2 overflow-hidden">
                             <div 
                               className={`h-full transition-all duration-1000 ${
                                 isActive ? 'bg-orange-500' : 'bg-zinc-600'
@@ -752,12 +770,17 @@ function FinancePage() {
                 {inflationProgress >= 5 && (
                   <div className="space-y-3 p-4 bg-zinc-800/30 rounded-lg border border-orange-400/20">
                     <div className="text-center">
-                      <div className="text-white font-bold text-sm mb-2">Two Different Approaches to Money</div>
-                      <div className="grid grid-cols-2 gap-4 text-xs">
+                      <div className="text-white font-bold text-sm mb-2">Three Different Approaches to Money</div>
+                      <div className="grid grid-cols-3 gap-3 text-xs">
                         <div className="text-center">
-                          <div className="text-red-400 font-medium">Traditional Savings</div>
+                          <div className="text-red-400 font-medium">Cash Savings</div>
                           <div className="text-red-300 text-lg font-bold">$13,670</div>
                           <div className="text-red-400">Lost 45% to inflation</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-blue-400 font-medium">S&P 500</div>
+                          <div className="text-blue-300 text-lg font-bold">$135K</div>
+                          <div className="text-blue-400">5.4x growth (7% annual)</div>
                         </div>
                         <div className="text-center">
                           <div className="text-orange-400 font-medium">Conservative Bitcoin</div>
@@ -769,12 +792,12 @@ function FinancePage() {
                     
                     <div className="text-center pt-2 border-t border-zinc-700/50">
                       <p className="text-zinc-400 text-xs leading-relaxed">
-                        <span className="text-white font-medium">The Traditional Story:</span> For decades, saving money in banks was considered safe and responsible. 
-                        But inflation quietly erodes purchasing power - what costs $1 today will cost more tomorrow.
+                        <span className="text-white font-medium">The Traditional Story:</span> Cash loses to inflation while stocks provide modest real returns. 
+                        The S&P 500 has averaged ~10% annually but after inflation, taxes, and fees, real returns are closer to 6-7%.
                       </p>
                       <p className="text-zinc-400 text-xs leading-relaxed mt-2">
-                        <span className="text-orange-400 font-medium">The Alternative Story:</span> Bitcoin offers a different approach with mathematically limited supply. 
-                        While volatile and speculative, some see it as a hedge against currency debasement. 
+                        <span className="text-orange-400 font-medium">The Alternative Story:</span> Bitcoin offers exponential growth potential with mathematically limited supply. 
+                        While volatile and speculative, it has historically outperformed all traditional assets. 
                         Past performance doesn't guarantee future results.
                       </p>
                     </div>
