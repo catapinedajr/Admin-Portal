@@ -90,6 +90,8 @@ function FinancePage() {
 
   const [isAnimating, setIsAnimating] = useState(false);
   const [flashingYear, setFlashingYear] = useState<number | null>(null);
+  const [shakingContainer, setShakingContainer] = useState(false);
+  const [shakingInflation, setShakingInflation] = useState(false);
   
   // Adoption animation state
   const [adoptionAnimationActive, setAdoptionAnimationActive] = useState(false);
@@ -149,23 +151,11 @@ function FinancePage() {
       setTimeout(() => {
         setInflationProgress(step);
         
-        // Add haptic feedback for key inflation milestones on iPhone
-        if ('vibrate' in navigator && navigator.vibrate && step >= 3) {
-          try {
-            // Escalating vibration intensity as inflation damage accumulates
-            const vibrationIntensity = {
-              3: [50],           // 10 years - gentle warning
-              4: [75, 25, 75],   // 15 years - moderate concern
-              5: [100, 50, 100], // 20 years - serious impact
-              6: [150, 25, 100, 25, 150] // 25 years - dramatic revelation
-            };
-            
-            const pattern = vibrationIntensity[step as keyof typeof vibrationIntensity] || [50];
-            console.log(`Triggering inflation vibration for step ${step}:`, pattern);
-            navigator.vibrate(pattern);
-          } catch (error) {
-            console.log('Inflation vibration not supported or failed:', error);
-          }
+        // Add tactile feedback for iPhone users on inflation milestones - visual shake effect  
+        if (step >= 3) {
+          console.log(`Inflation milestone step ${step} - triggering shake effect`);
+          setShakingInflation(true);
+          setTimeout(() => setShakingInflation(false), 250); // Quick shake duration
         }
       }, delay);
     });
@@ -361,7 +351,7 @@ function FinancePage() {
           isAnimating && flashingYear && [1971, 2000, 2008, 2020].includes(flashingYear) 
             ? 'shadow-[0_0_40px_rgba(239,68,68,0.8)] border-red-400 border-2 scale-[1.01]' 
             : ''
-        }`}>
+        } ${shakingContainer ? 'animate-crisis-shake' : ''}`}>
           <CardHeader className="pb-4">
             {/* Dopamine-Driven Hook */}
             <div className="text-center mb-6">
@@ -442,26 +432,10 @@ function FinancePage() {
                         if (step.flash) {
                           setFlashingYear(step.year);
                           
-                          // Add haptic feedback for iPhone users on crisis years
-                          if ('vibrate' in navigator && navigator.vibrate) {
-                            try {
-                              // Different vibration patterns for different crisis years
-                              const vibrationPattern = {
-                                1971: [100, 50, 100], // Nixon Shock - medium intensity
-                                2000: [150, 75, 150], // Dot-com crash - stronger
-                                2008: [200, 100, 200, 100, 200], // Financial crisis - intense pattern
-                                2020: [250, 50, 100, 50, 250] // COVID money printing - most dramatic
-                              };
-                              
-                              const pattern = vibrationPattern[step.year as keyof typeof vibrationPattern] || [100];
-                              console.log(`Triggering vibration for year ${step.year}:`, pattern);
-                              navigator.vibrate(pattern);
-                            } catch (error) {
-                              console.log('Vibration not supported or failed:', error);
-                            }
-                          } else {
-                            console.log('Vibration API not available');
-                          }
+                          // Add tactile feedback for iPhone users on crisis years - visual shake effect
+                          console.log(`Crisis year ${step.year} - triggering shake effect`);
+                          setShakingContainer(true);
+                          setTimeout(() => setShakingContainer(false), 300); // Quick shake duration
                           
                           setTimeout(() => setFlashingYear(null), Math.min(step.duration - 50, 800)); // Longer flash for crisis moments
                         }
@@ -719,7 +693,7 @@ function FinancePage() {
         </Card>
 
         {/* Purchasing Power Erosion Simulator */}
-        <Card className="bg-zinc-900 border-zinc-800">
+        <Card className={`bg-zinc-900 border-zinc-800 ${shakingInflation ? 'animate-crisis-shake' : ''}`}>
           <CardHeader className="pb-4">
             <CardTitle className="text-white flex items-center gap-3 text-xl">
               <TrendingDown className="w-5 h-5 text-orange-400" />
