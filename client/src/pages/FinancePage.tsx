@@ -252,29 +252,21 @@ function FinancePage() {
                 </div>
               </div>
 
-              {/* You're Not Too Late Message - ENHANCED ATTENTION GRABBING */}
-              <div className="relative bg-gradient-to-r from-green-900/50 to-emerald-900/40 p-6 rounded-2xl border-2 border-green-400/60 mb-6 shadow-2xl shadow-green-400/20 animate-pulse">
-                {/* Glowing border effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-green-400/30 to-emerald-400/30 rounded-2xl blur-lg animate-pulse" />
-                
-                <div className="relative z-10">
-                  <div className="flex items-center justify-center gap-4 mb-3">
-                    <div className="w-3 h-3 bg-green-300 rounded-full animate-bounce"></div>
-                    <h3 className="text-3xl font-black text-green-300 text-center tracking-wide animate-bounce">
-                      🚨 YOU'RE NOT TOO LATE 🚨
-                    </h3>
-                    <div className="w-3 h-3 bg-green-300 rounded-full animate-bounce"></div>
-                  </div>
-                  
-                  <div className="text-center space-y-2">
-                    <p className="text-xl font-bold text-zinc-100">
-                      Despite 105 years of money printing...
-                    </p>
-                    <p className="text-2xl font-black text-orange-400 animate-pulse">
+              {/* You're Not Too Late Message - Balanced Enhancement */}
+              <div className="bg-gradient-to-r from-green-900/40 to-emerald-900/30 p-5 rounded-xl border border-green-400/50 mb-6 shadow-lg">
+                <div className="text-center space-y-3">
+                  <h3 className="text-2xl font-bold text-green-300">
+                    You're Not Too Late
+                  </h3>
+                  <p className="text-lg font-semibold text-zinc-200">
+                    Despite 105 years of money printing...
+                  </p>
+                  <div className="bg-zinc-800/50 rounded-lg p-3 border border-orange-400/30">
+                    <p className="text-xl font-bold text-orange-400">
                       Less than 5% of people own Bitcoin
                     </p>
-                    <p className="text-lg font-semibold text-green-300 animate-pulse">
-                      You're still EARLY
+                    <p className="text-sm text-green-300 mt-1">
+                      You're still in the early adoption phase
                     </p>
                   </div>
                 </div>
