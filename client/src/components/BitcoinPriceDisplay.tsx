@@ -48,7 +48,7 @@ export default function BitcoinPriceDisplay() {
   const isPositive = priceData.change24h > 0;
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center justify-between w-full max-w-md">
       {/* Bitcoin Icon and Price */}
       <div className="flex items-center gap-2">
         <div className="w-6 h-6 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
@@ -64,21 +64,21 @@ export default function BitcoinPriceDisplay() {
         </div>
       </div>
 
-      {/* Compact Performance Indicators */}
-      <div className="flex items-center gap-2">
-        <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/30 rounded-lg px-2 py-1">
+      {/* Compact Performance Indicators - Using full space */}
+      <div className="flex items-center gap-1.5">
+        <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/30 rounded-lg px-2.5 py-1">
           <div className="text-center">
             <div className="text-green-400 font-bold text-[10px]">+{priceData.performance.oneYear.toLocaleString()}%</div>
             <div className="text-zinc-500 text-[8px]">1yr</div>
           </div>
         </div>
-        <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/30 rounded-lg px-2 py-1">
+        <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/30 rounded-lg px-2.5 py-1">
           <div className="text-center">
             <div className="text-green-400 font-bold text-[10px]">+{priceData.performance.fourYear.toLocaleString()}%</div>
             <div className="text-zinc-500 text-[8px]">4yr</div>
           </div>
         </div>
-        <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/30 rounded-lg px-2 py-1">
+        <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/30 rounded-lg px-2.5 py-1">
           <div className="text-center">
             <div className="text-green-400 font-bold text-[10px]">+{priceData.performance.tenYear.toLocaleString()}%</div>
             <div className="text-zinc-500 text-[8px]">10yr</div>

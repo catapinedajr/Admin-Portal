@@ -662,7 +662,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
       }
       res.json(facts);
     } catch (error) {
-      console.error(`[ERROR] Failed to get daily facts for day ${dayIndex}:`, error);
+      console.error(`[ERROR] Failed to get daily facts:`, error);
       res.status(500).json({ message: "Failed to get daily facts" });
     }
   });

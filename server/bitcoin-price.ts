@@ -58,14 +58,14 @@ router.get('/api/bitcoin-price', async (req, res) => {
   } catch (error) {
     console.error('Bitcoin price fetch error:', error);
     
-    // Return fallback data if API fails
+    // Return fallback data if API fails - using current realistic Bitcoin prices
     const fallbackData: BitcoinPriceResponse = {
-      price: 67234,
-      change24h: 2.3,
+      price: 109000,
+      change24h: 0.8,
       performance: {
-        oneYear: 156,
-        fourYear: 287,
-        tenYear: 1247
+        oneYear: 160,
+        fourYear: 374,
+        tenYear: 2080
       }
     };
     
@@ -80,8 +80,8 @@ function calculateOneYearPerformance(currentPrice: number): number {
 }
 
 function calculateFourYearPerformance(currentPrice: number): number {
-  // Bitcoin price approximately 4 years ago (Jan 2021): ~$23,000
-  const fourYearAgoPrice = 23000;
+  // Bitcoin price approximately 4 years ago (Jan 2021): ~$29,000
+  const fourYearAgoPrice = 29000;
   return Math.round(((currentPrice - fourYearAgoPrice) / fourYearAgoPrice) * 100);
 }
 
