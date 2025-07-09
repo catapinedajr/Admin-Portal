@@ -149,14 +149,9 @@ function FinancePage() {
             <div className="max-w-4xl mx-auto text-center space-y-6">
               {/* Clear Value Proposition with Urgency */}
               <div className="mb-8">
-                <div className="mb-4">
-                  <h1 className="text-4xl font-bold text-white mb-2">
-                    Your Money Is Being <span className="text-orange-400">Silently Stolen</span>
-                  </h1>
-                  <p className="text-lg text-zinc-400 italic">
-                    (And nobody talks about it)
-                  </p>
-                </div>
+                <h1 className="text-4xl font-bold text-white mb-4">
+                  Your Money Is Being <span className="text-orange-400">Silently Stolen</span>
+                </h1>
                 <p className="text-xl text-zinc-300 leading-relaxed">
                   Every dollar you save loses value while you sleep. Here's what they don't teach you about money—and why Bitcoin exists.
                 </p>
