@@ -53,7 +53,7 @@ export default function StreakAchievementCard({
   });
 
   const handleCardClick = () => {
-    setLocation('/wallet/rewards');
+    setLocation('/wallet?tab=rewards');
   };
 
   // Calculate current streak (demo data for now)

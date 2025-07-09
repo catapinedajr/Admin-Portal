@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -47,6 +47,15 @@ export default function WalletPage() {
   const [showSatsEducation, setShowSatsEducation] = useState(false);
   const [activeTab, setActiveTab] = useState<'wallet' | 'rewards'>('wallet');
   const { isPremiumTier, setShowEmailModal } = useSubscription();
+
+  // Check URL parameters for tab selection
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    if (tabParam === 'rewards') {
+      setActiveTab('rewards');
+    }
+  }, []);
 
   // Get wallet data (demo mode)
   const { data: walletData, isLoading } = useQuery<WalletData>({
