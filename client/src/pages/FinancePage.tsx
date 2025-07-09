@@ -286,7 +286,11 @@ function FinancePage() {
         </Card>
 
         {/* Money Supply Erosion Visualization */}
-        <Card id="money-supply-section" className="bg-zinc-900 border-zinc-800">
+        <Card id="money-supply-section" className={`bg-zinc-900 border-zinc-800 transition-all duration-500 ${
+          isAnimating && flashingYear && [1971, 2008, 2020].includes(flashingYear) 
+            ? 'shadow-[0_0_30px_rgba(239,68,68,0.5)] border-red-500/50' 
+            : ''
+        }`}>
           <CardHeader className="pb-4">
             {/* Dopamine-Driven Hook */}
             <div className="text-center mb-6">
@@ -308,7 +312,16 @@ function FinancePage() {
               The Money Printing Machine
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className={`space-y-6 relative transition-all duration-700 ${
+            isAnimating && flashingYear && [1971, 2008, 2020].includes(flashingYear)
+              ? 'bg-red-950/20' 
+              : ''
+          }`}>
+            {/* Crisis Warning Overlay */}
+            {isAnimating && flashingYear && [1971, 2008, 2020].includes(flashingYear) && (
+              <div className="absolute inset-0 bg-red-500/10 rounded-lg pointer-events-none animate-pulse" />
+            )}
+            
             {/* Animation Controls */}
             <div className="space-y-4">
               <div className="text-center">
