@@ -283,34 +283,42 @@ function LearnPage() {
             )}
           </div>
 
-          {/* Compact Learning Wallet Display */}
+          {/* Learning Progress Wallet Display */}
           {walletData && (
             <div className="relative">
               {/* Main Wallet Card */}
               <Card className="bg-gradient-to-r from-orange-500/10 to-orange-600/10 border-orange-500/20 mx-auto max-w-md">
                 <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                        <Wallet className="w-5 h-5 text-orange-400" />
-                      </div>
-                      <div>
-                        <div className="text-lg font-bold text-orange-400">
-                          {walletData.totalSatoshisEarned?.toLocaleString() || 0} sats
-                        </div>
-                        <div className="text-xs text-zinc-400">
-                          ≈ ${(walletData.totalUsdValue || 0).toFixed(2)} USD
-                        </div>
-                      </div>
-                    </div>
+                  <div className="space-y-3">
+                    {/* Title */}
                     <div className="text-center">
-                      <div className="flex items-center gap-1 text-orange-400">
-                        <Zap className="w-4 h-4" />
-                        <span className="text-sm font-medium">
-                          {walletData.currentStreakMultiplier || 1}x
-                        </span>
+                      <h3 className="text-sm font-medium text-orange-400">Your Learning Progress</h3>
+                      <p className="text-xs text-zinc-500">Satoshis earned from daily lessons</p>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                          <Wallet className="w-5 h-5 text-orange-400" />
+                        </div>
+                        <div>
+                          <div className="text-lg font-bold text-orange-400">
+                            {walletData.totalSatoshisEarned?.toLocaleString() || 0} sats
+                          </div>
+                          <div className="text-xs text-zinc-400">
+                            ≈ ${(walletData.totalUsdValue || 0).toFixed(2)} USD
+                          </div>
+                        </div>
                       </div>
-                      <div className="text-xs text-zinc-500">multiplier</div>
+                      <div className="text-center">
+                        <div className="flex items-center gap-1 text-orange-400">
+                          <Zap className="w-4 h-4" />
+                          <span className="text-sm font-medium">
+                            {walletData.currentStreakMultiplier || 1}x
+                          </span>
+                        </div>
+                        <div className="text-xs text-zinc-500">multiplier</div>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
