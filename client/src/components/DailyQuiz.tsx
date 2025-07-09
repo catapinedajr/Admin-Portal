@@ -300,25 +300,57 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning, dayComple
     );
   }
 
-  return (
-    <div className="space-y-3">
-      {/* Compact Quiz Score */}
-      {score && score.total > 0 && (
-        <div className="flex items-center justify-between p-3 bg-green-900/20 border border-green-800/50 rounded-lg">
-          <div className="flex items-center gap-2">
-            <Trophy className="w-4 h-4 text-yellow-500" />
-            <span className="text-white text-sm font-medium">
-              {score.correct}/{score.total} correct ({score.percentage}%)
-            </span>
-          </div>
-          <Badge variant={score.percentage >= 70 ? "default" : "secondary"} className="bg-green-900 text-green-100 text-xs">
-            {score.percentage >= 70 ? "Great!" : "Keep Learning"}
-          </Badge>
-        </div>
-      )}
+  const allQuestionsAnswered = userAnswers.length === questions.length;
 
-      {/* Compact Quiz Question */}
-      <Card className="bg-zinc-900 border-zinc-800">
+  return (
+    <Card className="bg-zinc-800/50 border-zinc-700">
+      {/* Quiz Header with Progress */}
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-xl text-white flex items-center gap-2">
+            <Brain className="w-5 h-5 text-orange-500" />
+            Knowledge Check
+          </CardTitle>
+          {allQuestionsAnswered && (
+            <div className="flex items-center gap-1 bg-green-500/20 text-green-400 px-2 py-1 rounded-full text-xs font-medium">
+              <Trophy className="w-3 h-3" />
+              COMPLETED
+            </div>
+          )}
+        </div>
+        
+        <div className="mt-3">
+          <div className="flex items-center justify-between text-sm text-zinc-400 mb-2">
+            <span>Daily Challenge</span>
+            <span>100 sats per correct answer</span>
+          </div>
+          <div className="w-full bg-zinc-700 rounded-full h-1">
+            <div 
+              className="h-full bg-orange-500 rounded-full transition-all duration-300" 
+              style={{ width: allQuestionsAnswered ? '100%' : `${(userAnswers.length / questions.length) * 100}%` }}
+            ></div>
+          </div>
+        </div>
+      </CardHeader>
+
+      <CardContent className="space-y-3">
+        {/* Compact Quiz Score */}
+        {score && score.total > 0 && (
+          <div className="flex items-center justify-between p-3 bg-green-900/20 border border-green-800/50 rounded-lg">
+            <div className="flex items-center gap-2">
+              <Trophy className="w-4 h-4 text-yellow-500" />
+              <span className="text-white text-sm font-medium">
+                {score.correct}/{score.total} correct ({score.percentage}%)
+              </span>
+            </div>
+            <Badge variant={score.percentage >= 70 ? "default" : "secondary"} className="bg-green-900 text-green-100 text-xs">
+              {score.percentage >= 70 ? "Great!" : "Keep Learning"}
+            </Badge>
+          </div>
+        )}
+
+        {/* Quiz Question */}
+        <Card className="bg-zinc-900 border-zinc-800">
         <CardContent className="p-4 space-y-4">
           {/* Quiz Header - Compact */}
           <div className="flex items-center justify-between pb-2 border-b border-zinc-700">

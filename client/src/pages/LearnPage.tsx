@@ -483,45 +483,13 @@ function LearnPage() {
                 </Card>
               )}
 
-              {/* Daily Quiz - Clean with Subtle Progress */}
-              <Card className="bg-zinc-800/50 border-zinc-700">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-xl text-white flex items-center gap-2">
-                      <GraduationCap className="w-5 h-5 text-orange-500" />
-                      Knowledge Check
-                    </CardTitle>
-                    {isQuizCompleted && (
-                      <div className="flex items-center gap-1 bg-green-500/20 text-green-400 px-2 py-1 rounded-full text-xs font-medium">
-                        <Trophy className="w-3 h-3" />
-                        COMPLETED
-                      </div>
-                    )}
-                  </div>
-                  
-                  {/* Simple Progress Bar */}
-                  <div className="mt-3">
-                    <div className="flex items-center justify-between text-sm text-zinc-400 mb-2">
-                      <span>Daily Challenge</span>
-                      <span>100 sats per correct answer</span>
-                    </div>
-                    <div className="w-full bg-zinc-700 rounded-full h-1">
-                      <div 
-                        className="h-full bg-orange-500 rounded-full transition-all duration-300" 
-                        style={{ width: isQuizCompleted ? '100%' : '25%' }}
-                      ></div>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <DailyQuiz
-                    dayIndex={currentDayIndex}
-                    onCompletion={handleQuizCompletion}
-                    onEarning={triggerEarningAnimation}
-                    dayCompleted={dayCompleted}
-                  />
-                </CardContent>
-              </Card>
+              {/* Daily Quiz - Simplified */}
+              <DailyQuiz
+                dayIndex={currentDayIndex}
+                onCompletion={handleQuizCompletion}
+                onEarning={triggerEarningAnimation}
+                dayCompleted={dayCompleted}
+              />
             </div>
           )}
         </div>
