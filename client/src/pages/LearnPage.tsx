@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
-import { Crown, Gem, User as UserIcon, ChevronDown, ChevronUp, Wallet, Clock, CheckCircle, Key, GraduationCap, Brain, TrendingUp, Zap, Award, Sparkles } from "@/lib/icons";
+import { Crown, Gem, User as UserIcon, ChevronDown, ChevronUp, Wallet, Clock, CheckCircle, Key, GraduationCap, Brain, TrendingUp, Zap, Award, Sparkles, Trophy } from "@/lib/icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +12,7 @@ import { BitcoinTerm, AutoGlossary } from "@/components/BitcoinGlossary";
 import { useAppContext } from "@/components/shared/AppContextProvider";
 import { cleanText } from "@/utils/textUtils";
 import { iconMap, bitcoinTerms } from "@/constants/appData";
+import { queryClient } from "@/lib/queryClient";
 
 // Temporary interface for database-driven lesson content
 interface LessonWithKeyTakeaways {
@@ -218,19 +219,49 @@ function LearnPage() {
       {/* Today's Learning */}
       {learnSubTab === "today" && (
         <div className="space-y-6">
-          <div className="text-center space-y-3">
+          <div className="text-center space-y-4 relative">
+            {/* Floating Achievement Particles */}
+            {isQuizCompleted && (
+              <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                {[...Array(5)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute animate-particle"
+                    style={{
+                      left: `${20 + i * 15}%`,
+                      animationDelay: `${i * 0.8}s`,
+                    }}
+                  >
+                    <Sparkles className="w-3 h-3 text-orange-400" />
+                  </div>
+                ))}
+              </div>
+            )}
+            
             {/* Streamlined Header with Better Hierarchy */}
             {dayMetadata && (
-              <div className="space-y-3">
-                {/* Monthly Theme - Subtle Badge */}
-                <div className="inline-flex items-center px-3 py-1 bg-orange-500/10 border border-orange-500/20 rounded-full">
-                  <span className="text-orange-400 text-lg font-semibold uppercase tracking-wide">
-                    {dayMetadata.theme}
+              <div className="space-y-4">
+                {/* Monthly Theme - Enhanced with Achievement Status */}
+                <div className={`inline-flex items-center gap-2 px-4 py-2 border rounded-full transition-all duration-500 ${
+                  isQuizCompleted 
+                    ? 'bg-green-500/10 border-green-500/30 animate-celebrate' 
+                    : 'bg-orange-500/10 border-orange-500/20'
+                }`}>
+                  {isQuizCompleted && <Trophy className="w-4 h-4 text-green-400" />}
+                  <span className={`text-lg font-semibold uppercase tracking-wide ${
+                    isQuizCompleted ? 'text-green-400' : 'text-orange-400'
+                  }`}>
+                    {isQuizCompleted ? 'DAY COMPLETED' : dayMetadata.theme}
                   </span>
+                  {isQuizCompleted && <Sparkles className="w-4 h-4 text-green-400 animate-bounce" />}
                 </div>
                 
-                {/* Daily Topic - Main Title */}
-                <h2 className="text-2xl font-bold text-white leading-tight">
+                {/* Daily Topic - Main Title with Progress Glow */}
+                <h2 className={`text-2xl font-bold leading-tight transition-all duration-500 ${
+                  isQuizCompleted 
+                    ? 'text-green-100 animate-glow' 
+                    : 'text-white'
+                }`}>
                   {dayMetadata.title}
                 </h2>
               </div>
@@ -384,49 +415,135 @@ function LearnPage() {
             </Card>
           ) : (
             <div className="space-y-6">
-              {/* Today's Learning Preview */}
-              <Card className="bg-zinc-900 border-zinc-800">
+              {/* Today's Learning Preview - Enhanced with Interactive Elements */}
+              <Card className="bg-gradient-to-br from-zinc-900 via-zinc-900 to-orange-950/20 border-zinc-800 border-2 hover:border-orange-500/30 transition-all duration-300">
                 <CardContent className="p-6">
-                  <h3 className="text-lg font-bold text-white border-b border-zinc-700 pb-3 mb-6">Today's Learning Preview</h3>
-                  <div className="space-y-4">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-lg font-bold text-white">Today's Learning Preview</h3>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                      <span className="text-xs text-orange-400 font-medium">ACTIVE</span>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
                     {dailyFacts && dailyFacts.length > 0 ? (
-                      dailyFacts.map((fact: any) => {
+                      dailyFacts.map((fact: any, index: number) => {
                         const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Wallet;
+                        const isExpanded = expandedFacts.has(fact.id);
+                        const diveDeeperData = getDiveDeeperForFact(fact.title);
                         
                         return (
-                          <div key={fact.id} className="bg-zinc-800/50 rounded-lg overflow-hidden">
-                            <div className="flex items-center gap-4 p-4">
-                              <div className="p-2 bg-orange-600/20 rounded-lg flex-shrink-0">
-                                <IconComponent className="w-5 h-5 text-orange-400" />
+                          <div key={fact.id} className="group">
+                            <div 
+                              className="bg-zinc-800/50 hover:bg-zinc-800/80 rounded-lg overflow-hidden transition-all duration-300 cursor-pointer border border-transparent hover:border-orange-500/20"
+                              onClick={() => toggleFactExpansion(fact.id)}
+                            >
+                              <div className="flex items-center gap-4 p-4">
+                                <div className="relative">
+                                  <div className="p-2 bg-orange-600/20 group-hover:bg-orange-600/30 rounded-lg flex-shrink-0 transition-all duration-300">
+                                    <IconComponent className="w-5 h-5 text-orange-400 group-hover:text-orange-300 transition-colors duration-300" />
+                                  </div>
+                                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                </div>
+                                <div className="flex-1">
+                                  <h4 className="font-semibold text-white group-hover:text-orange-100 transition-colors duration-300">{fact.title}</h4>
+                                  <div className="flex items-center gap-2 mt-1">
+                                    <Badge variant="outline" className="text-xs border-orange-500/30 text-orange-400">
+                                      Fact {index + 1}
+                                    </Badge>
+                                    {diveDeeperData && (
+                                      <span className="text-xs text-zinc-400 group-hover:text-zinc-300">Click to explore</span>
+                                    )}
+                                  </div>
+                                </div>
+                                <div className="flex-shrink-0">
+                                  <ChevronDown className={`w-4 h-4 text-zinc-400 group-hover:text-orange-400 transition-all duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
+                                </div>
                               </div>
-                              <div className="flex-1">
-                                <h4 className="font-semibold text-white">{fact.title}</h4>
-                              </div>
+                              
+                              {/* Expandable Content with Animation */}
+                              {isExpanded && diveDeeperData && (
+                                <div className="border-t border-zinc-700/50 bg-gradient-to-r from-orange-950/10 to-transparent">
+                                  <div className="p-4 space-y-4 animate-fadeIn">
+                                    <div className="text-sm text-zinc-300 leading-relaxed">
+                                      {cleanText(diveDeeperData.content)}
+                                    </div>
+                                    {diveDeeperData.examples && (
+                                      <div className="space-y-2">
+                                        <h5 className="text-sm font-medium text-orange-300">Examples:</h5>
+                                        <div className="text-sm text-zinc-400 leading-relaxed">
+                                          {cleanText(diveDeeperData.examples)}
+                                        </div>
+                                      </div>
+                                    )}
+                                    {diveDeeperData.keyTakeaway && (
+                                      <div className="bg-orange-500/10 rounded-lg p-3 border border-orange-500/20">
+                                        <div className="flex items-start gap-2">
+                                          <TrendingUp className="w-4 h-4 text-orange-400 flex-shrink-0 mt-0.5" />
+                                          <div className="text-sm text-orange-100 leading-relaxed">
+                                            {cleanText(diveDeeperData.keyTakeaway)}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </div>
                         );
                       })
                     ) : (
-                      <p className="text-zinc-400 text-center py-4">Loading today's preview...</p>
+                      <div className="text-center py-8">
+                        <div className="animate-pulse space-y-4">
+                          <div className="w-8 h-8 bg-orange-500/20 rounded-full mx-auto"></div>
+                          <p className="text-zinc-400">Loading today's insights...</p>
+                        </div>
+                      </div>
                     )}
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Today's Lesson */}
+              {/* Today's Lesson - Enhanced with Gamification */}
               {lesson && (
-                <Card className="bg-zinc-900 border-zinc-800">
+                <Card className="bg-gradient-to-br from-zinc-900 via-zinc-900 to-orange-950/10 border-zinc-800 border-2 hover:border-orange-500/40 transition-all duration-500 animate-glow">
                   <CardContent className="p-6">
                     <div className="space-y-6">
-                      {/* Lesson Header */}
+                      {/* Lesson Header with Progress Visualization */}
                       <div className="space-y-4">
-                        <h3 className="text-lg font-bold text-white border-b border-zinc-700 pb-3">Today's Lesson</h3>
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-lg font-bold text-white flex items-center gap-3">
+                            <div className="p-2 bg-orange-500/20 rounded-lg animate-bounce-subtle">
+                              <Brain className="w-5 h-5 text-orange-400" />
+                            </div>
+                            Today's Lesson
+                          </h3>
+                          <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1">
+                              <Award className="w-4 h-4 text-orange-400" />
+                              <span className="text-xs text-orange-400 font-medium">KNOWLEDGE</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Progress Bar for Lesson Completion */}
+                        <div className="w-full bg-zinc-800 rounded-full h-2 overflow-hidden">
+                          <div className="h-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-full animate-progress" style={{ width: '85%' }}></div>
+                        </div>
+                        
                         <div className="flex items-start justify-between gap-4">
-                          <h4 className="text-xl font-bold text-white leading-tight flex-1">{lesson.title}</h4>
-                          <Badge variant="outline" className="border-zinc-700 text-zinc-400 flex-shrink-0">
-                            <Clock className="w-3 h-3 mr-1" />
-                            {lesson.estimatedReadTime || 3} min read
-                          </Badge>
+                          <h4 className="text-xl font-bold text-white leading-tight flex-1 group-hover:text-orange-100 transition-colors duration-300">{lesson.title}</h4>
+                          <div className="flex flex-col items-end gap-2">
+                            <Badge variant="outline" className="border-orange-500/30 text-orange-400 bg-orange-500/10 flex-shrink-0">
+                              <Clock className="w-3 h-3 mr-1" />
+                              {lesson.estimatedReadTime || 3} min read
+                            </Badge>
+                            <div className="flex items-center gap-1">
+                              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                              <span className="text-xs text-green-400 font-medium">85% COMPLETE</span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       
@@ -438,15 +555,39 @@ function LearnPage() {
                           </div>
                         </div>
                         
-                        {/* Database-driven Key Takeaways */}
+                        {/* Database-driven Key Takeaways - Enhanced with Completion Tracking */}
                         {lesson.keyTakeaways && Array.isArray(lesson.keyTakeaways) && lesson.keyTakeaways.length > 0 && (
                           <div className="my-6">
-                            <h5 className="font-medium text-orange-300 mb-3">Key Points</h5>
-                            <div className="grid gap-2">
+                            <div className="flex items-center justify-between mb-4">
+                              <h5 className="font-medium text-orange-300 flex items-center gap-2">
+                                <Trophy className="w-4 h-4 text-orange-400" />
+                                Key Insights
+                              </h5>
+                              <div className="flex items-center gap-1">
+                                <span className="text-xs text-orange-400 font-medium">{lesson.keyTakeaways.length}/4 MASTERED</span>
+                                <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                              </div>
+                            </div>
+                            <div className="grid gap-3">
                               {lesson.keyTakeaways.map((point, pointIdx) => (
-                                <div key={pointIdx} className="flex items-start gap-2 p-2 bg-orange-600/10 rounded-lg border border-orange-600/20">
-                                  <CheckCircle className="w-4 h-4 text-orange-400 flex-shrink-0 mt-0.5" />
-                                  <span className="text-orange-100 text-sm leading-relaxed">{point}</span>
+                                <div key={pointIdx} className="group hover:scale-[1.02] transition-all duration-300">
+                                  <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-orange-600/10 to-orange-500/5 rounded-lg border border-orange-600/20 hover:border-orange-500/40 hover:bg-orange-600/15 transition-all duration-300">
+                                    <div className="relative">
+                                      <CheckCircle className="w-5 h-5 text-orange-400 group-hover:text-orange-300 flex-shrink-0 mt-0.5 transition-colors duration-300" />
+                                      <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    </div>
+                                    <div className="flex-1">
+                                      <span className="text-orange-100 text-sm leading-relaxed group-hover:text-white transition-colors duration-300">{point}</span>
+                                      <div className="mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        <div className="flex items-center gap-2">
+                                          <div className="w-full bg-zinc-700 rounded-full h-1">
+                                            <div className="h-1 bg-orange-500 rounded-full transition-all duration-500" style={{ width: '100%' }}></div>
+                                          </div>
+                                          <span className="text-xs text-green-400 font-medium">UNDERSTOOD</span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
                               ))}
                             </div>
@@ -469,21 +610,58 @@ function LearnPage() {
                 </Card>
               )}
 
-              {/* Daily Quiz */}
-              <Card className="bg-zinc-800/50 border-zinc-700">
+              {/* Daily Quiz - Enhanced with Achievement Elements */}
+              <Card className="bg-gradient-to-br from-zinc-800/50 via-zinc-800/70 to-green-950/20 border-zinc-700 border-2 hover:border-green-500/30 transition-all duration-500">
                 <CardHeader>
-                  <CardTitle className="text-xl text-white flex items-center gap-2">
-                    <GraduationCap className="w-5 h-5 text-orange-500" />
-                    Knowledge Check
-                  </CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-xl text-white flex items-center gap-3">
+                      <div className="relative">
+                        <div className="p-2 bg-green-500/20 rounded-lg animate-bounce-subtle">
+                          <GraduationCap className="w-6 h-6 text-green-400" />
+                        </div>
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
+                      </div>
+                      Knowledge Check
+                    </CardTitle>
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1">
+                        <Zap className="w-4 h-4 text-yellow-400" />
+                        <span className="text-xs text-yellow-400 font-medium">EARN SATS</span>
+                      </div>
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    </div>
+                  </div>
+                  
+                  {/* Quiz Progress Indicator */}
+                  <div className="mt-4">
+                    <div className="flex items-center justify-between text-sm text-zinc-400 mb-2">
+                      <span>Daily Challenge</span>
+                      <span>100 sats per correct answer</span>
+                    </div>
+                    <div className="w-full bg-zinc-700 rounded-full h-2 overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-green-500 to-green-400 rounded-full animate-progress" style={{ width: isQuizCompleted ? '100%' : '25%' }}></div>
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <DailyQuiz
-                    dayIndex={currentDayIndex}
-                    onCompletion={handleQuizCompletion}
-                    onEarning={triggerEarningAnimation}
-                    dayCompleted={dayCompleted}
-                  />
+                  <div className="relative">
+                    <DailyQuiz
+                      dayIndex={currentDayIndex}
+                      onCompletion={handleQuizCompletion}
+                      onEarning={triggerEarningAnimation}
+                      dayCompleted={dayCompleted}
+                    />
+                    
+                    {/* Completion Badge Overlay */}
+                    {isQuizCompleted && (
+                      <div className="absolute top-0 right-0 -mt-2 -mr-2">
+                        <div className="flex items-center gap-1 bg-green-500/90 text-white px-2 py-1 rounded-full text-xs font-medium animate-bounce-subtle">
+                          <Trophy className="w-3 h-3" />
+                          COMPLETED
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </div>
