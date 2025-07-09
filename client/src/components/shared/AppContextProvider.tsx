@@ -248,11 +248,6 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
       queryClient.invalidateQueries({ queryKey: ['/api/day-access'] });
       queryClient.invalidateQueries({ queryKey: ['/api/day-completed'] });
       queryClient.invalidateQueries({ queryKey: ['/api/next-available-day'] });
-      toast({
-        title: "Day Complete!",
-        description: "Great progress! Come back tomorrow for the next lesson.",
-        duration: 2500,
-      });
     }
   });
 
