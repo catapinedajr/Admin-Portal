@@ -90,6 +90,11 @@ function FinancePage() {
 
   const [isAnimating, setIsAnimating] = useState(false);
   const [flashingYear, setFlashingYear] = useState<number | null>(null);
+  
+  // Adoption animation state
+  const [adoptionAnimationActive, setAdoptionAnimationActive] = useState(false);
+  const [adoptionAnimationRunning, setAdoptionAnimationRunning] = useState(false);
+  const [adoptionProgress, setAdoptionProgress] = useState(0);
 
   // User data query
   const { data: user } = useQuery<User>({
@@ -197,6 +202,36 @@ function FinancePage() {
   const resetSettlementAnimation = () => {
     setAnimationActive(false);
     setSettlementProgress({ traditional: 0, bitcoin: 0 });
+  };
+
+  // Adoption animation functions
+  const startAdoptionAnimation = () => {
+    setAdoptionAnimationActive(true);
+    setAdoptionAnimationRunning(true);
+    setAdoptionProgress(0);
+
+    // Step-by-step adoption curve animation
+    const adoptionSteps = [
+      { step: 1, delay: 1000 },   // Show Internet curve at 1 second
+      { step: 2, delay: 3000 },   // Show Bitcoin curve at 3 seconds  
+      { step: 3, delay: 6000 }    // Show comparison markers at 6 seconds
+    ];
+
+    adoptionSteps.forEach(({ step, delay }) => {
+      setTimeout(() => {
+        setAdoptionProgress(step);
+      }, delay);
+    });
+
+    // Stop animation running indicator after 8 seconds
+    setTimeout(() => {
+      setAdoptionAnimationRunning(false);
+    }, 8000);
+  };
+
+  const resetAdoptionAnimation = () => {
+    setAdoptionAnimationRunning(false);
+    setAdoptionProgress(0);
   };
 
   return (
@@ -785,226 +820,205 @@ function FinancePage() {
           </CardContent>
         </Card>
 
-        {/* Settlement Workflow Visualization */}
+        {/* Bitcoin vs Internet Adoption Curve */}
         <Card className="bg-zinc-900 border-zinc-800">
           <CardHeader className="pb-4">
             <CardTitle className="text-white flex items-center gap-3 text-xl">
-              <Clock className="w-5 h-5 text-orange-400" />
-              Plus, it's faster and you stay in control
+              <TrendingUp className="w-5 h-5 text-orange-400" />
+              Wait... Am I Too Late?
             </CardTitle>
-            <p className="text-zinc-400 text-sm">Watch $50,000 travel from New York to London - see the complexity difference</p>
+            <p className="text-zinc-400 text-sm">Compare Bitcoin's adoption to the Internet's growth - you might be surprised</p>
           </CardHeader>
           <CardContent className="space-y-6">
-            {!speedRaceActive && (
+            {!adoptionAnimationActive && (
               <div className="text-center space-y-4">
                 <div className="p-6 bg-zinc-800 rounded-lg border border-zinc-700">
-                  <h3 className="text-lg font-medium text-white mb-3">Transfer Scenario</h3>
+                  <h3 className="text-lg font-medium text-white mb-3">The "Too Late" Question</h3>
                   <p className="text-zinc-300 mb-4">
-                    Your business needs to send <span className="text-orange-400 font-bold">$50,000</span> from 
-                    Chase Bank (New York) to Wells Fargo (London) for an urgent deal.
+                    Everyone who learns about Bitcoin asks the same question: <span className="text-orange-400 font-bold">"Am I too late?"</span>
                   </p>
                   <p className="text-zinc-400 text-sm">
-                    Compare how traditional banking vs Bitcoin handles this international transfer.
+                    Let's compare Bitcoin's current adoption to another revolutionary technology you know well.
                   </p>
                 </div>
                 <Button 
-                  onClick={startSettlementAnimation}
+                  onClick={startAdoptionAnimation}
                   className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg font-medium"
                 >
-                  Initiate Transfer Race
+                  Show Me the Adoption Timeline
                 </Button>
               </div>
             )}
 
-            {speedRaceActive && (
+            {adoptionAnimationActive && (
               <div className="space-y-6">
                 <div className="text-center">
                   <Button 
-                    onClick={resetSettlementAnimation}
+                    onClick={resetAdoptionAnimation}
                     className="bg-orange-600 hover:bg-orange-700"
-                    disabled={animationActive}
+                    disabled={adoptionAnimationRunning}
                   >
-                    {animationActive ? "Animation Running..." : "Reset Journey"}
+                    {adoptionAnimationRunning ? "Animation Running..." : "Reset Timeline"}
                   </Button>
-                  {animationActive && (
-                    <p className="text-zinc-400 text-sm mt-2">
-                      Watch Bitcoin complete while traditional banking gets stuck...
-                    </p>
-                  )}
                 </div>
                 
-                {/* Compact Side-by-Side Settlement Race */}
+                {/* Adoption Curve Visualization */}
                 <div className="space-y-4">
-                  
-                  {/* Headers */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex items-center gap-3 p-3 bg-red-950/30 rounded-lg border border-red-800/30">
-                      <Building2 className="w-5 h-5 text-red-400" />
-                      <div>
-                        <div className="text-red-300 font-bold text-sm">Traditional Banking</div>
-                        <div className="text-zinc-400 text-xs">Complex, slow, expensive</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3 p-3 bg-green-950/30 rounded-lg border border-green-800/30">
-                      <Zap className="w-5 h-5 text-green-400" />
-                      <div>
-                        <div className="text-green-300 font-bold text-sm">Bitcoin Network</div>
-                        <div className="text-zinc-400 text-xs">Simple, fast, global</div>
-                      </div>
-                    </div>
+                  <div className="text-center mb-6">
+                    <h3 className="text-lg font-bold text-white mb-2">Technology Adoption Curves</h3>
+                    <p className="text-zinc-400 text-sm">
+                      How quickly did people adopt these revolutionary technologies?
+                    </p>
                   </div>
 
-                  {/* Processing Steps - Side by Side */}
+                  {/* Chart Container */}
+                  <div className="bg-zinc-800 rounded-lg p-6 border border-zinc-700">
+                    <svg 
+                      viewBox="0 0 400 250" 
+                      className="w-full h-64"
+                      style={{ background: 'transparent' }}
+                    >
+                      {/* Grid lines */}
+                      <defs>
+                        <pattern id="grid" width="40" height="25" patternUnits="userSpaceOnUse">
+                          <path d="M 40 0 L 0 0 0 25" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.3"/>
+                        </pattern>
+                      </defs>
+                      <rect width="400" height="250" fill="url(#grid)" />
+                      
+                      {/* Y-axis labels */}
+                      <text x="15" y="25" fill="#9CA3AF" fontSize="10" textAnchor="middle">100%</text>
+                      <text x="15" y="87.5" fill="#9CA3AF" fontSize="10" textAnchor="middle">50%</text>
+                      <text x="15" y="150" fill="#9CA3AF" fontSize="10" textAnchor="middle">25%</text>
+                      <text x="15" y="212.5" fill="#9CA3AF" fontSize="10" textAnchor="middle">10%</text>
+                      <text x="15" y="235" fill="#9CA3AF" fontSize="10" textAnchor="middle">0%</text>
+                      
+                      {/* Timeline markers */}
+                      <text x="50" y="245" fill="#9CA3AF" fontSize="9" textAnchor="middle">Start</text>
+                      <text x="130" y="245" fill="#9CA3AF" fontSize="9" textAnchor="middle">5 years</text>
+                      <text x="210" y="245" fill="#9CA3AF" fontSize="9" textAnchor="middle">10 years</text>
+                      <text x="290" y="245" fill="#9CA3AF" fontSize="9" textAnchor="middle">15 years</text>
+                      <text x="370" y="245" fill="#9CA3AF" fontSize="9" textAnchor="middle">20 years</text>
+
+                      {/* Internet Adoption Curve (1995-2015) */}
+                      <path
+                        d="M 50,235 Q 130,200 210,100 Q 290,40 370,25"
+                        stroke="#3B82F6"
+                        strokeWidth="3"
+                        fill="none"
+                        strokeDasharray={adoptionProgress >= 1 ? "none" : "0,1000"}
+                        style={{
+                          strokeDasharray: adoptionProgress >= 1 ? "none" : `${adoptionProgress * 320},1000`,
+                          transition: 'stroke-dasharray 2s ease-in-out'
+                        }}
+                      />
+                      
+                      {/* Bitcoin Adoption Curve (2009-2024) - positioned at current 7% */}
+                      <path
+                        d="M 50,235 Q 90,220 130,210 Q 170,195 210,190 Q 250,185 290,180 L 350,175"
+                        stroke="#F97316"
+                        strokeWidth="3"
+                        fill="none"
+                        strokeDasharray={adoptionProgress >= 2 ? "none" : "0,1000"}
+                        style={{
+                          strokeDasharray: adoptionProgress >= 2 ? "none" : `${(adoptionProgress - 1) * 300},1000`,
+                          transition: 'stroke-dasharray 2s ease-in-out 2s'
+                        }}
+                      />
+
+                      {/* Current position markers */}
+                      {adoptionProgress >= 3 && (
+                        <>
+                          {/* Internet 2005 marker (66% adoption) */}
+                          <circle cx="210" cy="100" r="4" fill="#3B82F6" opacity="0.8">
+                            <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
+                          </circle>
+                          <text x="210" y="85" fill="#3B82F6" fontSize="8" textAnchor="middle" fontWeight="bold">
+                            Internet 2005: 66%
+                          </text>
+                          
+                          {/* Bitcoin 2024 marker (7% adoption) */}
+                          <circle cx="350" cy="175" r="4" fill="#F97316" opacity="0.8">
+                            <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
+                          </circle>
+                          <text x="350" y="190" fill="#F97316" fontSize="8" textAnchor="middle" fontWeight="bold">
+                            Bitcoin 2024: 7%
+                          </text>
+                        </>
+                      )}
+
+                      {/* Legend */}
+                      <g transform="translate(50, 30)">
+                        <rect x="0" y="0" width="130" height="35" fill="#1F2937" stroke="#374151" rx="4"/>
+                        <line x1="10" y1="15" x2="25" y2="15" stroke="#3B82F6" strokeWidth="2"/>
+                        <text x="30" y="18" fill="#E5E7EB" fontSize="9">Internet (1995-2015)</text>
+                        <line x1="10" y1="28" x2="25" y2="28" stroke="#F97316" strokeWidth="2"/>
+                        <text x="30" y="31" fill="#E5E7EB" fontSize="9">Bitcoin (2009-2024)</text>
+                      </g>
+                    </svg>
+                  </div>
+
+                  {/* Progress Steps */}
                   <div className="space-y-3">
-                    
-                    {/* Steps 1-5 comparison */}
-                    {[1, 2, 3, 4, 5].map((stepNum) => (
-                      <div key={stepNum} className="grid grid-cols-2 gap-4">
-                        {/* Traditional Step */}
-                        <div className={`p-3 rounded-lg border transition-all duration-500 ${
-                          settlementProgress.traditional >= stepNum 
-                            ? 'bg-red-800/30 border-red-600/50' 
-                            : 'bg-zinc-800 border-zinc-700'
-                        }`}>
-                          <div className="flex items-center gap-2 mb-2">
-                            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold transition-all duration-500 ${
-                              settlementProgress.traditional >= stepNum ? 'bg-red-500' : 'bg-zinc-600'
-                            }`}>
-                              {settlementProgress.traditional >= stepNum ? '✓' : stepNum}
-                            </div>
-                            <span className={`font-medium text-sm transition-colors duration-500 ${
-                              settlementProgress.traditional >= stepNum ? 'text-red-200' : 'text-zinc-400'
-                            }`}>
-                              {stepNum === 1 && "Bank processes"}
-                              {stepNum === 2 && "Correspondent Bank"}
-                              {stepNum === 3 && "SWIFT Network"}
-                              {stepNum === 4 && "Compliance Review"}
-                              {stepNum === 5 && "Final Bank Approval"}
-                            </span>
-                          </div>
-                          <div className={`text-xs transition-colors duration-500 ${
-                            settlementProgress.traditional >= stepNum ? 'text-red-300' : 'text-zinc-500'
+                    {[
+                      { step: 1, text: "The Internet took 20+ years to reach mainstream adoption", highlight: "Internet Journey" },
+                      { step: 2, text: "Bitcoin has followed a similar but faster growth pattern", highlight: "Bitcoin Journey" },
+                      { step: 3, text: "Bitcoin today (7% adoption) = Internet in early 2000s", highlight: "Still Early" }
+                    ].map(({ step, text, highlight }) => (
+                      <div key={step} className={`p-4 rounded-lg border transition-all duration-700 ${
+                        adoptionProgress >= step 
+                          ? 'bg-orange-800/30 border-orange-600/50' 
+                          : 'bg-zinc-800 border-zinc-700'
+                      }`}>
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold transition-all duration-500 ${
+                            adoptionProgress >= step ? 'bg-orange-500' : 'bg-zinc-600'
                           }`}>
-                            {stepNum === 1 && "Submitting paperwork and security checks"}
-                            {stepNum === 2 && "Finding intermediary bank for routing"}
-                            {stepNum === 3 && "Routing through SWIFT messaging"}
-                            {stepNum === 4 && "Anti-money laundering verification"}
-                            {stepNum === 5 && "Receiving bank review • Add money to account"}
+                            {adoptionProgress >= step ? '✓' : step}
+                          </div>
+                          <div>
+                            <div className={`font-medium transition-colors duration-500 ${
+                              adoptionProgress >= step ? 'text-orange-200' : 'text-zinc-400'
+                            }`}>
+                              <span className="text-orange-400 font-bold">{highlight}:</span> {text}
+                            </div>
                           </div>
                         </div>
-
-                        {/* Bitcoin Step (only show for steps 1-4) */}
-                        {stepNum <= 4 ? (
-                          <div className={`p-4 rounded-lg border transition-all duration-500 min-h-[120px] ${
-                            settlementProgress.bitcoin >= stepNum 
-                              ? 'bg-green-800/30 border-green-600/50' 
-                              : 'bg-zinc-800 border-zinc-700'
-                          }`}>
-                            <div className="flex items-center gap-2 mb-3">
-                              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold transition-all duration-500 ${
-                                settlementProgress.bitcoin >= stepNum ? 'bg-green-500' : 'bg-zinc-600'
-                              }`}>
-                                {settlementProgress.bitcoin >= stepNum ? '✓' : stepNum}
-                              </div>
-                              <span className={`font-medium text-sm transition-colors duration-500 ${
-                                settlementProgress.bitcoin >= stepNum ? 'text-green-200' : 'text-zinc-400'
-                              }`}>
-                                {stepNum === 1 && "Broadcast to Network"}
-                                {stepNum === 2 && "Mempool Inclusion"}
-                                {stepNum === 3 && "Block Mining"}
-                                {stepNum === 4 && "Confirmation"}
-                              </span>
-                            </div>
-                            <div className={`text-xs mb-3 transition-colors duration-500 ${
-                              settlementProgress.bitcoin >= stepNum ? 'text-green-300' : 'text-zinc-500'
-                            }`}>
-                              {stepNum === 1 && "Instantly broadcast to global network"}
-                              {stepNum === 2 && "Transaction picked up by miners"}
-                              {stepNum === 3 && "Miners compete to include transaction"}
-                              {stepNum === 4 && "Transaction confirmed in block"}
-                            </div>
-                          </div>
-                        ) : (
-                          <div></div>
-                        )}
                       </div>
                     ))}
                   </div>
-
-                  {/* Status Summary */}
-                  <div className="grid grid-cols-2 gap-4 mt-6">
-                    <div className="p-4 bg-red-950/40 rounded-lg border border-red-800/50">
-                      <div className="text-center">
-                        <div className="text-red-400 font-bold text-lg">
-                          {settlementProgress.traditional === 0 && "Waiting..."}
-                          {settlementProgress.traditional === 1 && "At Bank Branch"}
-                          {settlementProgress.traditional === 2 && "Stuck in Compliance"}
-                          {settlementProgress.traditional >= 3 && settlementProgress.traditional < 5 && "Still Processing..."}
-                          {settlementProgress.traditional === 5 && "Finally Complete"}
-                        </div>
-                        <div className="text-zinc-400 text-xs mt-1">
-                          Step {settlementProgress.traditional}/5 • Traditional Banking
-                        </div>
-                        <div className="text-red-300 text-xs mt-2 font-medium">
-                          {settlementProgress.traditional === 2 && "Estimated: 3-5 business days"}
-                          {settlementProgress.traditional === 5 && "Total time: 3-5 business days"}
-                          {settlementProgress.traditional > 0 && settlementProgress.traditional < 2 && "Estimated: 3-5 business days"}
-                          {settlementProgress.traditional > 2 && settlementProgress.traditional < 5 && "Estimated: 3-5 business days"}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="p-4 bg-green-950/40 rounded-lg border border-green-800/50">
-                      <div className="text-center">
-                        <div className="text-green-400 font-bold text-lg">
-                          {settlementProgress.bitcoin === 0 && "Ready"}
-                          {settlementProgress.bitcoin === 1 && "Creating..."}
-                          {settlementProgress.bitcoin === 2 && "Broadcasting..."}
-                          {settlementProgress.bitcoin === 3 && "Mining..."}
-                          {settlementProgress.bitcoin === 4 && "✅ COMPLETE!"}
-                        </div>
-                        <div className="text-zinc-400 text-xs mt-1">
-                          Step {settlementProgress.bitcoin}/4 • Bitcoin Network
-                        </div>
-                        <div className="text-green-300 text-xs mt-2 font-medium">
-                          {settlementProgress.bitcoin === 4 && "Total time: ~10 minutes"}
-                          {settlementProgress.bitcoin > 0 && settlementProgress.bitcoin < 4 && "Estimated: ~10 minutes"}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
                 
-                {/* Final Comparison */}
-                <div className="p-6 bg-gradient-to-r from-green-950/30 to-orange-950/30 rounded-xl border border-green-800/30">
-                  <div className="text-center space-y-4">
-                    <div className="text-orange-300 font-bold text-xl">The Difference is Clear</div>
-                    
-                    <div className="grid gap-4 md:grid-cols-3 text-center">
-                      <div className="p-4 bg-zinc-800 rounded-lg">
-                        <div className="text-green-400 font-bold text-2xl">432x</div>
-                        <div className="text-zinc-300 text-sm">Faster Settlement</div>
-                        <div className="text-zinc-500 text-xs">Days vs Minutes</div>
+                {/* Final Revelation */}
+                {adoptionProgress >= 3 && (
+                  <div className="p-6 bg-gradient-to-r from-orange-950/30 to-green-950/30 rounded-xl border border-orange-800/30">
+                    <div className="text-center space-y-4">
+                      <div className="text-orange-300 font-bold text-xl">The Timing Reveals Everything</div>
+                      
+                      <div className="grid gap-4 md:grid-cols-2 text-center">
+                        <div className="p-4 bg-zinc-800 rounded-lg">
+                          <div className="text-blue-400 font-bold text-lg">Internet in 2000</div>
+                          <div className="text-zinc-300 text-sm">~6% global adoption</div>
+                          <div className="text-zinc-500 text-xs">Early adopter phase</div>
+                        </div>
+                        <div className="p-4 bg-zinc-800 rounded-lg">
+                          <div className="text-orange-400 font-bold text-lg">Bitcoin in 2024</div>
+                          <div className="text-zinc-300 text-sm">~7% global adoption</div>
+                          <div className="text-zinc-500 text-xs">Same early adopter phase</div>
+                        </div>
                       </div>
-                      <div className="p-4 bg-zinc-800 rounded-lg">
-                        <div className="text-green-400 font-bold text-2xl">93%</div>
-                        <div className="text-zinc-300 text-sm">Lower Fees</div>
-                        <div className="text-zinc-500 text-xs">$2-5 vs $45-75</div>
+                      
+                      <div className="text-zinc-300 leading-relaxed max-w-2xl mx-auto">
+                        Remember dial-up internet? How "weird" online shopping seemed? That's where Bitcoin is today. 
+                        You're not late - <span className="text-orange-400 font-bold">you're exactly where the Internet early adopters were in 2000.</span>
                       </div>
-                      <div className="p-4 bg-zinc-800 rounded-lg">
-                        <div className="text-green-400 font-bold text-2xl">0</div>
-                        <div className="text-zinc-300 text-sm">Intermediaries</div>
-                        <div className="text-zinc-500 text-xs">Direct vs 5+ Banks</div>
+                      
+                      <div className="text-green-400 font-bold text-lg pt-2">
+                        The question isn't "Am I too late?" It's "What happens next?"
                       </div>
-                    </div>
-                    
-                    <div className="text-zinc-300 leading-relaxed max-w-2xl mx-auto">
-                      Traditional banking turns a simple transfer into a 5-institution relay race spanning days. 
-                      Bitcoin eliminates all intermediaries with direct, cryptographic settlement in minutes. 
-                      <span className="text-orange-400 font-medium">This is another reason why Bitcoin is the future of money.</span>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             )}
           </CardContent>
