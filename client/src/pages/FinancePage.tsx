@@ -820,33 +820,31 @@ function FinancePage() {
           </CardContent>
         </Card>
 
-        {/* "Too Late" Story - Engaging Narrative */}
+        {/* Visual "Too Late" Growth Chart */}
         <Card className="bg-zinc-900 border-zinc-800">
           <CardHeader className="pb-3">
             <CardTitle className="text-white flex items-center gap-2 text-lg">
-              <Clock className="w-4 h-4 text-orange-400" />
-              "But I'm Too Late, Right?"
+              <TrendingUp className="w-4 h-4 text-orange-400" />
+              "Too Late" Moments That Made Millionaires
             </CardTitle>
-            <p className="text-zinc-400 text-xs">Here's what everyone thinks about new technologies</p>
+            <p className="text-zinc-400 text-xs">When people said "I missed it" but the biggest gains were still ahead</p>
           </CardHeader>
           <CardContent className="space-y-4">
             {!adoptionAnimationActive && (
               <div className="text-center space-y-3">
                 <div className="p-4 bg-zinc-800 rounded-lg border border-zinc-700">
                   <p className="text-zinc-300 text-sm mb-2">
-                    <span className="text-red-400 font-bold">"I missed the Internet boom"</span><br/>
-                    <span className="text-red-400 font-bold">"I missed Apple stock"</span><br/>
-                    <span className="text-orange-400 font-bold">"Am I missing Bitcoin?"</span>
+                    <span className="text-orange-400 font-bold">"Am I too late for Bitcoin?"</span>
                   </p>
                   <p className="text-zinc-400 text-xs">
-                    Let's check when people actually said "too late" for past technologies...
+                    Let's see what happened when people asked this same question about past technologies...
                   </p>
                 </div>
                 <Button 
                   onClick={startAdoptionAnimation}
                   className="w-full bg-orange-600 hover:bg-orange-700 h-10 text-base font-medium"
                 >
-                  Show Me The Timeline
+                  Show The Growth Chart
                 </Button>
               </div>
             )}
@@ -864,115 +862,127 @@ function FinancePage() {
                   </Button>
                 </div>
                 
-                {/* Timeline Story */}
-                <div className="space-y-3">
-                  {/* Internet "Too Late" Moment */}
-                  <div className={`p-4 rounded-lg border transition-all duration-1000 ${
-                    adoptionProgress >= 1 
-                      ? 'bg-red-900/30 border-red-600/50' 
-                      : 'bg-zinc-800 border-zinc-700'
-                  }`}>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <div className={`font-bold text-base transition-colors duration-500 ${
-                          adoptionProgress >= 1 ? 'text-red-300' : 'text-zinc-400'
-                        }`}>
-                          Internet • Year 2000
-                        </div>
-                        <div className={`transition-colors duration-500 ${
-                          adoptionProgress >= 1 ? 'text-red-200' : 'text-zinc-500'
-                        }`}>
-                          <div className="text-lg font-bold">~400M users</div>
-                        </div>
-                      </div>
-                      {adoptionProgress >= 1 && (
-                        <div className="text-red-200 text-xs animate-fade-in">
-                          💭 "The Internet is everywhere now. I missed it. Too late to start an online business."
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                {/* Visual Growth Chart */}
+                <div className="bg-zinc-800 rounded-lg p-4 border border-zinc-700">
+                  <svg 
+                    viewBox="0 0 320 200" 
+                    className="w-full h-48"
+                  >
+                    {/* Grid background */}
+                    <defs>
+                      <pattern id="gridPattern" width="32" height="20" patternUnits="userSpaceOnUse">
+                        <path d="M 32 0 L 0 0 0 20" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.3"/>
+                      </pattern>
+                    </defs>
+                    <rect width="320" height="200" fill="url(#gridPattern)" />
+                    
+                    {/* Y-axis labels */}
+                    <text x="20" y="25" fill="#9CA3AF" fontSize="9" textAnchor="middle">6B</text>
+                    <text x="20" y="65" fill="#9CA3AF" fontSize="9" textAnchor="middle">4B</text>
+                    <text x="20" y="105" fill="#9CA3AF" fontSize="9" textAnchor="middle">2B</text>
+                    <text x="20" y="145" fill="#9CA3AF" fontSize="9" textAnchor="middle">1B</text>
+                    <text x="20" y="185" fill="#9CA3AF" fontSize="9" textAnchor="middle">0</text>
 
-                  {/* What Actually Happened */}
-                  <div className={`p-4 rounded-lg border transition-all duration-1000 delay-1000 ${
-                    adoptionProgress >= 2 
-                      ? 'bg-blue-900/30 border-blue-600/50' 
-                      : 'bg-zinc-800 border-zinc-700'
-                  }`}>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <div className={`font-bold text-base transition-colors duration-500 ${
-                          adoptionProgress >= 2 ? 'text-blue-300' : 'text-zinc-400'
-                        }`}>
-                          Internet • Year 2024
-                        </div>
-                        <div className={`transition-colors duration-500 ${
-                          adoptionProgress >= 2 ? 'text-blue-200' : 'text-zinc-500'
-                        }`}>
-                          <div className="text-lg font-bold">5.2B users</div>
-                        </div>
-                      </div>
-                      {adoptionProgress >= 2 && (
-                        <div className="text-blue-200 text-xs animate-fade-in">
-                          🚀 Google (1998), Facebook (2004), iPhone (2007), Uber (2009), TikTok (2016) - all came AFTER 2000
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                    {/* Internet Growth Line */}
+                    <path
+                      d="M 40,185 Q 80,175 120,145 Q 160,105 200,65 Q 240,35 280,25"
+                      stroke="#3B82F6"
+                      strokeWidth="3"
+                      fill="none"
+                      strokeDasharray={adoptionProgress >= 1 ? "none" : "0,1000"}
+                      style={{
+                        strokeDasharray: adoptionProgress >= 1 ? "none" : `${adoptionProgress * 240},1000`,
+                        transition: 'stroke-dasharray 2s ease-in-out'
+                      }}
+                    />
 
-                  {/* Bitcoin Today */}
-                  <div className={`p-4 rounded-lg border transition-all duration-1000 delay-2000 ${
-                    adoptionProgress >= 3 
-                      ? 'bg-orange-900/30 border-orange-600/50' 
-                      : 'bg-zinc-800 border-zinc-700'
-                  }`}>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <div className={`font-bold text-base transition-colors duration-500 ${
-                          adoptionProgress >= 3 ? 'text-orange-300' : 'text-zinc-400'
-                        }`}>
-                          Bitcoin • Year 2024
-                        </div>
-                        <div className={`transition-colors duration-500 ${
-                          adoptionProgress >= 3 ? 'text-orange-200' : 'text-zinc-500'
-                        }`}>
-                          <div className="text-lg font-bold">~200M users</div>
-                        </div>
-                      </div>
-                      {adoptionProgress >= 3 && (
-                        <div className="text-orange-200 text-xs animate-fade-in">
-                          💭 "Bitcoin is everywhere now. I missed it. Too late to start investing."
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                    {/* "Too Late" marker 2000 */}
+                    {adoptionProgress >= 1 && (
+                      <g>
+                        <circle cx="120" cy="145" r="3" fill="#EF4444" opacity="0.8">
+                          <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
+                        </circle>
+                        <rect x="85" y="155" width="70" height="25" fill="#1F2937" stroke="#EF4444" strokeWidth="1" rx="4"/>
+                        <text x="120" y="167" fill="#EF4444" fontSize="7" textAnchor="middle" fontWeight="bold">
+                          "TOO LATE" 2000
+                        </text>
+                        <text x="120" y="175" fill="#EF4444" fontSize="6" textAnchor="middle">
+                          400M users
+                        </text>
+                      </g>
+                    )}
 
-                  {/* The Revelation */}
-                  {adoptionProgress >= 3 && (
-                    <div className="p-4 bg-gradient-to-r from-green-900/40 to-orange-900/40 rounded-lg border border-green-600/50 animate-fade-in">
-                      <div className="text-center space-y-3">
-                        <div className="text-green-400 font-bold text-lg">
-                          Same Pattern, Different Decade
-                        </div>
-                        <div className="grid grid-cols-2 gap-3 text-xs">
-                          <div className="bg-zinc-800/50 rounded p-2">
-                            <div className="text-blue-300 font-medium">Internet 2000</div>
-                            <div className="text-zinc-300">400M users → 5.2B users</div>
-                            <div className="text-green-400">1,200% growth left</div>
-                          </div>
-                          <div className="bg-zinc-800/50 rounded p-2">
-                            <div className="text-orange-300 font-medium">Bitcoin 2024</div>
-                            <div className="text-zinc-300">200M users → ??? users</div>
-                            <div className="text-orange-400">Your choice</div>
-                          </div>
-                        </div>
-                        <p className="text-zinc-300 text-sm">
-                          The biggest winners came <span className="text-orange-400 font-bold">after</span> people said "too late."
-                        </p>
-                      </div>
-                    </div>
-                  )}
+                    {/* What happened after */}
+                    {adoptionProgress >= 2 && (
+                      <g className="animate-fade-in">
+                        <rect x="200" y="35" width="60" height="20" fill="#059669" rx="3"/>
+                        <text x="230" y="47" fill="#FFF" fontSize="7" textAnchor="middle" fontWeight="bold">
+                          +1,200% MORE
+                        </text>
+                        
+                        {/* Major companies that came after */}
+                        <rect x="125" y="100" width="120" height="35" fill="#1F2937" stroke="#10B981" strokeWidth="1" rx="4"/>
+                        <text x="185" y="112" fill="#10B981" fontSize="8" textAnchor="middle" fontWeight="bold">
+                          Born AFTER 2000:
+                        </text>
+                        <text x="145" y="122" fill="#E5E7EB" fontSize="6">Google</text>
+                        <text x="170" y="122" fill="#E5E7EB" fontSize="6">Facebook</text>
+                        <text x="205" y="122" fill="#E5E7EB" fontSize="6">iPhone</text>
+                        <text x="145" y="130" fill="#E5E7EB" fontSize="6">YouTube</text>
+                        <text x="170" y="130" fill="#E5E7EB" fontSize="6">Uber</text>
+                        <text x="195" y="130" fill="#E5E7EB" fontSize="6">TikTok</text>
+                      </g>
+                    )}
+
+                    {/* Bitcoin line starting */}
+                    {adoptionProgress >= 3 && (
+                      <g>
+                        <path
+                          d="M 40,185 Q 70,180 100,175 Q 130,170 160,165 Q 190,160 220,155"
+                          stroke="#F97316"
+                          strokeWidth="3"
+                          fill="none"
+                          className="animate-fade-in"
+                        />
+                        
+                        <circle cx="220" cy="155" r="3" fill="#F97316" opacity="0.8">
+                          <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
+                        </circle>
+                        
+                        <rect x="185" y="135" width="70" height="15" fill="#1F2937" stroke="#F97316" strokeWidth="1" rx="3"/>
+                        <text x="220" y="145" fill="#F97316" fontSize="7" textAnchor="middle" fontWeight="bold">
+                          Bitcoin 2024: 200M
+                        </text>
+                        
+                        <rect x="260" y="125" width="50" height="20" fill="#F97316" rx="3"/>
+                        <text x="285" y="137" fill="#000" fontSize="7" textAnchor="middle" fontWeight="bold">
+                          SAME SPOT
+                        </text>
+                      </g>
+                    )}
+
+                    {/* Timeline */}
+                    <text x="40" y="195" fill="#9CA3AF" fontSize="8" textAnchor="middle">1995</text>
+                    <text x="120" y="195" fill="#9CA3AF" fontSize="8" textAnchor="middle">2000</text>
+                    <text x="200" y="195" fill="#9CA3AF" fontSize="8" textAnchor="middle">2010</text>
+                    <text x="280" y="195" fill="#9CA3AF" fontSize="8" textAnchor="middle">2024</text>
+                  </svg>
                 </div>
+
+                {/* Key Insight */}
+                {adoptionProgress >= 3 && (
+                  <div className="p-4 bg-gradient-to-r from-green-900/40 to-orange-900/40 rounded-lg border border-green-600/50 animate-fade-in">
+                    <div className="text-center space-y-2">
+                      <div className="text-green-400 font-bold text-lg">
+                        You're Right Where You Want To Be
+                      </div>
+                      <p className="text-zinc-300 text-sm">
+                        Bitcoin today = Internet in 2000 when people said "too late"<br/>
+                        <span className="text-orange-400 font-bold">The biggest gains came after that moment.</span>
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </CardContent>
