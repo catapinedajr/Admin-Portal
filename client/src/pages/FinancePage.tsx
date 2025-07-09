@@ -344,17 +344,17 @@ function FinancePage() {
                   onClick={() => {
                     if (isAnimating) return; // Prevent multiple animations
                     
-                    // Create smooth year-by-year animation over 4 seconds
+                    // Create smooth year-by-year animation over 6 seconds
                     const totalYears = 2025 - 1920; // 105 years
-                    const totalDuration = 4000; // 4 seconds
-                    const baseInterval = totalDuration / totalYears; // ~38ms per year
+                    const totalDuration = 6000; // 6 seconds
+                    const baseInterval = totalDuration / totalYears; // ~57ms per year
                     
                     const timeline = [];
                     for (let year = 1920; year <= 2025; year++) {
                       const isFlashYear = [1971, 2008, 2020].includes(year);
                       timeline.push({
                         year: year,
-                        duration: isFlashYear ? baseInterval * 3 : baseInterval, // Crisis years pause 3x longer
+                        duration: isFlashYear ? baseInterval * 5 : baseInterval, // Crisis years pause 5x longer for dopamine hit
                         flash: isFlashYear
                       });
                     }
@@ -368,10 +368,10 @@ function FinancePage() {
                         const step = timeline[index];
                         setMoneySupplyYear(step.year);
                         
-                        // Flash milestone button at key moments
+                        // Flash milestone button at key moments with longer duration for dopamine impact
                         if (step.flash) {
                           setFlashingYear(step.year);
-                          setTimeout(() => setFlashingYear(null), Math.min(step.duration - 100, 500));
+                          setTimeout(() => setFlashingYear(null), Math.min(step.duration - 50, 800)); // Longer flash for crisis moments
                         }
                         
                         index++;
