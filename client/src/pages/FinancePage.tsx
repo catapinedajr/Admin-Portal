@@ -147,13 +147,13 @@ function FinancePage() {
         <Card className="bg-gradient-to-br from-orange-950/20 via-zinc-900 to-zinc-800 border-orange-800/30">
           <CardContent className="p-8">
             <div className="max-w-4xl mx-auto text-center space-y-6">
-              {/* Bitcoin as the Hurdle Rate */}
+              {/* Dopamine-Driven Hook */}
               <div className="mb-8">
-                <h1 className="text-4xl font-bold text-white mb-4">
-                  Bitcoin Is The New <span className="text-orange-400">Hurdle Rate</span>
+                <h1 className="text-5xl font-black text-white mb-4 tracking-tight">
+                  While You Lost Money, <span className="text-green-400">Bitcoin Made +2,090%</span>
                 </h1>
                 <p className="text-xl text-zinc-300 leading-relaxed">
-                  It doesn't just beat inflation—it crushes every traditional investment while your savings lose value.
+                  Bitcoin is the new hurdle rate—it doesn't just beat inflation, it crushes every traditional investment.
                 </p>
               </div>
 
@@ -203,7 +203,7 @@ function FinancePage() {
                     }}
                     className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-8 py-3 rounded-lg text-lg"
                   >
-                    This Is What They're Not Telling You
+                    What They Aren't Telling You
                   </Button>
                 </div>
               </div>
