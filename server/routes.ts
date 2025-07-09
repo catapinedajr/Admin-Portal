@@ -1504,23 +1504,33 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
       
       // Transform database format to UI format
       const transformedQuestions = questions.map(q => {
-        let options;
+        let optionsArray;
         try {
-          // Handle both JSON string and JSON object
-          options = typeof q.options === 'string' ? JSON.parse(q.options) : q.options;
+          // Drizzle ORM already parses JSON fields, so q.options should be an array
+          optionsArray = q.options;
+          
+          // Fallback: if for some reason it's still a string, parse it
+          if (typeof optionsArray === 'string') {
+            optionsArray = JSON.parse(optionsArray);
+          }
+          
+          // Ensure it's an array (database format: ["Option A", "Option B", "Option C", "Option D"])
+          if (!Array.isArray(optionsArray) || optionsArray.length < 4) {
+            throw new Error(`Options must be an array with 4 elements, got: ${typeof optionsArray} ${JSON.stringify(optionsArray)}`);
+          }
         } catch (error) {
-          console.error('Error parsing options:', error, 'Raw options:', q.options);
-          options = {optionA: 'Option A', optionB: 'Option B', optionC: 'Option C', optionD: 'Option D'}; // Fallback
+          console.error('Error parsing options for question', q.id, ':', error, 'Raw options:', q.options);
+          optionsArray = ['Option A', 'Option B', 'Option C', 'Option D']; // Fallback array
         }
         
         return {
           id: q.id,
           dayIndex: dayIndex,
           question: q.question,
-          optionA: options.optionA || '',
-          optionB: options.optionB || '',
-          optionC: options.optionC || '',
-          optionD: options.optionD || '',
+          optionA: optionsArray[0] || '',
+          optionB: optionsArray[1] || '',
+          optionC: optionsArray[2] || '',
+          optionD: optionsArray[3] || '',
           correctAnswer: ['A', 'B', 'C', 'D'][q.correctAnswer] || 'A',
           explanation: q.explanation,
           category: 'Fundamentals', // Default category since not in new schema
