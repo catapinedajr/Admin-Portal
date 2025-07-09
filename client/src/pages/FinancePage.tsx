@@ -181,49 +181,35 @@ function FinancePage() {
                 </div>
               </div>
 
-              {/* Professional Explanation */}
-              <div className="bg-gradient-to-r from-orange-950/30 to-zinc-800/50 p-6 rounded-xl border border-orange-600/30">
-                <h3 className="text-xl font-bold text-white mb-3">
-                  The pattern is clear: everything costs more, but your paycheck buys less.
+              {/* The Solution */}
+              <div className="bg-gradient-to-r from-green-950/30 to-orange-950/30 p-6 rounded-xl border border-green-600/30">
+                <h3 className="text-2xl font-bold text-white mb-3">
+                  Bitcoin was created to solve this exact problem.
                 </h3>
-                <p className="text-lg text-zinc-300 mb-4">
-                  This happens because governments can print unlimited money. Bitcoin was designed to solve this with a fixed supply of 21 million coins.
-                </p>
-                <div className="flex items-center justify-center gap-8 text-sm">
+                <div className="grid grid-cols-2 gap-6 mb-4">
                   <div className="text-center">
-                    <div className="text-green-400 font-bold text-lg">+2,090%</div>
-                    <div className="text-zinc-400">Bitcoin 10-year return</div>
+                    <div className="text-green-400 font-bold text-2xl">+2,090%</div>
+                    <div className="text-zinc-300">10-year performance</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-orange-400 font-bold text-lg">21M</div>
-                    <div className="text-zinc-400">Maximum supply ever</div>
+                    <div className="text-orange-400 font-bold text-2xl">21M</div>
+                    <div className="text-zinc-300">Fixed supply forever</div>
                   </div>
                 </div>
-              </div>
-              
-              <div className="grid gap-4 md:grid-cols-3 mt-8">
-                <div className="p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50">
-                  <div className="text-orange-300 font-bold text-xl">21 Million</div>
-                  <div className="text-zinc-300 text-sm">Bitcoin's Maximum Supply</div>
-                  <div className="text-zinc-400 text-xs mt-1">No central bank can print more</div>
-                </div>
-                
-                <div className="p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50">
-                  <div className="text-orange-300 font-bold text-xl">0%</div>
-                  <div className="text-zinc-300 text-sm">Bitcoin Inflation Rate</div>
-                  <div className="text-zinc-400 text-xs mt-1">After all 21M are mined</div>
-                </div>
-                
-                <div className="p-4 bg-orange-950/50 rounded-xl border border-orange-800/50">
-                  <div className="text-orange-300 font-bold text-xl">100%</div>
-                  <div className="text-orange-400/80 text-sm">You Own Your Bitcoin</div>
-                  <div className="text-zinc-400 text-xs mt-1">No bank can freeze it</div>
-                </div>
-              </div>
-              
-              <div className="mt-8 p-4 bg-orange-950/20 rounded-xl border border-orange-800/30">
-                <div className="text-orange-300 font-semibold mb-2">
-                  Choose: watch your money lose value, or learn about money that can't be printed.
+                <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                  <Button 
+                    onClick={() => setLocation('/learn')}
+                    className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-6 py-3 rounded-lg flex-1"
+                  >
+                    Start Learning Bitcoin
+                  </Button>
+                  <Button 
+                    onClick={() => setLocation('/simulators')}
+                    variant="outline" 
+                    className="border-zinc-600 text-zinc-300 hover:bg-zinc-800 px-6 py-3 rounded-lg flex-1"
+                  >
+                    Try Simulators
+                  </Button>
                 </div>
               </div>
             </div>
