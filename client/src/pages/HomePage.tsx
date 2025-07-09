@@ -7,7 +7,7 @@ import { Crown, Gem, Gamepad2, MoreHorizontal, User as UserIcon, Users, MessageS
 import BitcoinPriceDisplay from "@/components/BitcoinPriceDisplay";
 import WalletDisplay from "@/components/WalletDisplay";
 import WalletSummaryCard from "@/components/WalletSummaryCard";
-import StreakAchievementCard from "@/components/StreakAchievementCard";
+import CombinedLearningStreakCard from "@/components/CombinedLearningStreakCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { User } from "@shared/schema";
@@ -157,40 +157,12 @@ export default function HomePage() {
           {/* Bitcoin Learning Wallet Summary */}
           <WalletSummaryCard />
 
-          {/* Streak Achievement Card */}
-          <StreakAchievementCard />
-
-          {/* Main Learning Card - Streamlined */}
-          <Card className="bg-gradient-to-br from-zinc-900/95 to-zinc-800/90 border border-zinc-700/50 hover:border-orange-500/30 transition-all duration-300">
-            <CardContent className="p-6">
-              <div className="space-y-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-xl font-bold text-white mb-1">
-                      {dayMetadata?.title || 'Loading today\'s lesson...'}
-                    </h3>
-                    <p className="text-zinc-400 text-sm">Day {currentDayIndex} • Bitcoin Education</p>
-                  </div>
-                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                </div>
-                
-                {dailyFacts && dailyFacts[0] && (
-                  <div className="bg-zinc-800/50 rounded-lg p-4 border-l-2 border-orange-500">
-                    <p className="text-zinc-200 font-medium">
-                      {dailyFacts[0].title}
-                    </p>
-                  </div>
-                )}
-                
-                <Button 
-                  onClick={() => setLocation('/learn')}
-                  className="w-full bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white font-semibold py-3 rounded-lg transition-all duration-300"
-                >
-                  Continue Learning
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Combined Learning and Streak Card */}
+          <CombinedLearningStreakCard 
+            currentDayIndex={currentDayIndex}
+            dayMetadata={dayMetadata}
+            dailyFacts={dailyFacts}
+          />
 
           {/* Quick Actions Grid - Streamlined */}
           <div className="grid grid-cols-3 gap-3">
