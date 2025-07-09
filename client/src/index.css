@@ -453,33 +453,34 @@ button, a, .cyber-card, .cyber-button {
 /* Orange Shimmer Border Effect */
 @keyframes shimmer {
   0% {
-    transform: translateX(-100%);
+    left: -100%;
   }
   100% {
-    transform: translateX(100%);
+    left: 100%;
   }
 }
 
 .shimmer-border::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: inherit;
-  padding: 1px;
+  top: -2px;
+  left: -100%;
+  width: 50%;
+  height: calc(100% + 4px);
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(251, 146, 60, 0.4),
+    rgba(251, 146, 60, 0.6),
     transparent
   );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: exclude;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
+  border-radius: inherit;
   animation: shimmer 3s ease-in-out infinite;
   pointer-events: none;
+  z-index: 1;
+}
+
+.shimmer-border {
+  position: relative;
+  overflow: hidden;
 }
 
