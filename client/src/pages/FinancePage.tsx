@@ -88,6 +88,9 @@ function FinancePage() {
     setLocation
   } = useAppContext();
 
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [flashingYear, setFlashingYear] = useState<number | null>(null);
+
   // User data query
   const { data: user } = useQuery<User>({
     queryKey: ['/api/user'],
@@ -318,27 +321,68 @@ function FinancePage() {
               <div className="text-center">
                 <Button
                   onClick={() => {
-                    const years = [1920, 1929, 1933, 1940, 1945, 1950, 1960, 1971, 1980, 1990, 2000, 2008, 2010, 2015, 2020, 2021, 2025];
-                    let index = 0;
+                    if (isAnimating) return; // Prevent multiple animations
                     
-                    const animateTimeline = () => {
-                      if (index < years.length) {
-                        setMoneySupplyYear(years[index]);
+                    const milestones = [
+                      { year: 1920, flash: true },
+                      { year: 1929, flash: false },
+                      { year: 1933, flash: false },
+                      { year: 1940, flash: false },
+                      { year: 1945, flash: false },
+                      { year: 1950, flash: false },
+                      { year: 1960, flash: false },
+                      { year: 1971, flash: true }, // Nixon Shock
+                      { year: 1975, flash: false },
+                      { year: 1980, flash: false },
+                      { year: 1985, flash: false },
+                      { year: 1990, flash: false },
+                      { year: 1995, flash: false },
+                      { year: 2000, flash: true }, // Dot-com
+                      { year: 2005, flash: false },
+                      { year: 2008, flash: true }, // Crisis
+                      { year: 2010, flash: false },
+                      { year: 2015, flash: false },
+                      { year: 2020, flash: false },
+                      { year: 2021, flash: false },
+                      { year: 2025, flash: true }  // Today
+                    ];
+                    
+                    let index = 0;
+                    setIsAnimating(true);
+                    setMoneySupplyYear(1920);
+                    
+                    const smoothAnimate = () => {
+                      if (index < milestones.length) {
+                        const milestone = milestones[index];
+                        setMoneySupplyYear(milestone.year);
+                        
+                        // Flash milestone button if it's a key year
+                        if (milestone.flash) {
+                          setFlashingYear(milestone.year);
+                          setTimeout(() => setFlashingYear(null), 600);
+                        }
+                        
                         index++;
-                        setTimeout(animateTimeline, 800); // 800ms between each year
+                        setTimeout(smoothAnimate, 400); // Faster, smoother progression
+                      } else {
+                        setIsAnimating(false);
                       }
                     };
                     
-                    setMoneySupplyYear(1920); // Start at 1920
-                    setTimeout(animateTimeline, 500); // Brief delay before starting
+                    setTimeout(smoothAnimate, 300);
                   }}
-                  className="bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-3 rounded-lg text-lg"
+                  disabled={isAnimating}
+                  className={`font-bold px-8 py-3 rounded-lg text-lg transition-all ${
+                    isAnimating 
+                      ? 'bg-gray-600 text-gray-300 cursor-not-allowed' 
+                      : 'bg-red-600 hover:bg-red-700 text-white'
+                  }`}
                 >
-                  💸 Watch Money Get Printed
+                  {isAnimating ? '🎬 Printing Money...' : '💸 Watch Money Get Printed'}
                 </Button>
               </div>
               
-              {/* Manual milestone buttons (smaller) */}
+              {/* Visual timeline indicators */}
               <div className="grid grid-cols-5 gap-1.5">
                 {[
                   { year: 1920, label: "'20", desc: "Gold Era" },
@@ -349,11 +393,16 @@ function FinancePage() {
                 ].map((milestone) => (
                   <button
                     key={milestone.year}
-                    onClick={() => setMoneySupplyYear(milestone.year)}
-                    className={`p-2 rounded-md border transition-all duration-200 text-xs ${
-                      moneySupplyYear === milestone.year
+                    onClick={() => !isAnimating && setMoneySupplyYear(milestone.year)}
+                    disabled={isAnimating}
+                    className={`p-2 rounded-md border transition-all duration-300 text-xs ${
+                      flashingYear === milestone.year
+                        ? 'bg-red-600/40 border-red-400 text-red-200 animate-pulse scale-110'
+                        : moneySupplyYear === milestone.year
                         ? 'bg-orange-600/20 border-orange-500 text-orange-300'
-                        : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-300'
+                        : isAnimating
+                        ? 'bg-zinc-800/30 border-zinc-700/50 text-zinc-500 cursor-not-allowed'
+                        : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-300 cursor-pointer'
                     }`}
                   >
                     <div className="font-semibold">{milestone.label}</div>
@@ -364,14 +413,18 @@ function FinancePage() {
 
               {/* Key Statistics Display */}
               <div className="grid grid-cols-2 gap-3 mt-4">
-                <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
-                  <div className="text-xl font-bold text-orange-400 transition-all duration-700">
+                <div className="bg-zinc-800/50 rounded-lg p-3 text-center border border-zinc-700">
+                  <div className={`text-xl font-bold transition-all duration-500 ${
+                    isAnimating ? 'text-red-400 scale-110' : 'text-orange-400'
+                  }`}>
                     ${getMoneySupplyRaw(moneySupplyYear)}T
                   </div>
                   <div className="text-zinc-400 text-xs">Total Dollars in Circulation</div>
                 </div>
-                <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
-                  <div className="text-xl font-bold text-orange-400 transition-all duration-700">
+                <div className="bg-zinc-800/50 rounded-lg p-3 text-center border border-zinc-700">
+                  <div className={`text-xl font-bold transition-all duration-500 ${
+                    isAnimating ? 'text-red-400 scale-110' : 'text-orange-400'
+                  }`}>
                     {Math.round(getMoneySupplyRaw(moneySupplyYear) / getMoneySupplyRaw(1920))}x
                   </div>
                   <div className="text-zinc-400 text-xs">More Money Since 1920</div>
