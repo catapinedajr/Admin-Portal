@@ -147,68 +147,63 @@ function FinancePage() {
         <Card className="bg-gradient-to-br from-orange-950/20 via-zinc-900 to-zinc-800 border-orange-800/30">
           <CardContent className="p-8">
             <div className="max-w-4xl mx-auto text-center space-y-6">
-              {/* Clear Value Proposition with Urgency */}
+              {/* Bitcoin as the Hurdle Rate */}
               <div className="mb-8">
                 <h1 className="text-4xl font-bold text-white mb-4">
-                  Your Money Is Being <span className="text-orange-400">Silently Stolen</span>
+                  Bitcoin Is The New <span className="text-orange-400">Hurdle Rate</span>
                 </h1>
                 <p className="text-xl text-zinc-300 leading-relaxed">
-                  Every dollar you save loses value while you sleep. Here's what they don't teach you about money—and why Bitcoin exists.
+                  It doesn't just beat inflation—it crushes every traditional investment while your savings lose value.
                 </p>
               </div>
 
-              {/* Engaging Price Reality */}
+              {/* Performance Comparison */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700 hover:border-orange-500/50 transition-colors">
-                  <div className="text-orange-400 font-bold text-lg">Coffee</div>
-                  <div className="text-zinc-300 text-sm">2010: $3.50</div>
-                  <div className="text-white text-sm font-medium">2024: $6.50</div>
+                <div className="bg-red-900/20 p-4 rounded-xl border border-red-600/30">
+                  <div className="text-red-400 font-bold text-lg">Cash Savings</div>
+                  <div className="text-zinc-300 text-sm">10-year return</div>
+                  <div className="text-red-300 text-xl font-bold">-25%</div>
+                  <div className="text-zinc-400 text-xs">Lost to inflation</div>
                 </div>
-                <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700 hover:border-orange-500/50 transition-colors">
-                  <div className="text-orange-400 font-bold text-lg">Rent</div>
-                  <div className="text-zinc-300 text-sm">2010: $1,200</div>
-                  <div className="text-white text-sm font-medium">2024: $2,400</div>
+                <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700">
+                  <div className="text-zinc-400 font-bold text-lg">S&P 500</div>
+                  <div className="text-zinc-300 text-sm">10-year return</div>
+                  <div className="text-zinc-300 text-xl font-bold">+180%</div>
+                  <div className="text-zinc-400 text-xs">Traditional best</div>
                 </div>
-                <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700 hover:border-orange-500/50 transition-colors">
-                  <div className="text-orange-400 font-bold text-lg">House</div>
-                  <div className="text-zinc-300 text-sm">2010: $250K</div>
-                  <div className="text-white text-sm font-medium">2024: $500K</div>
+                <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700">
+                  <div className="text-yellow-400 font-bold text-lg">Gold</div>
+                  <div className="text-zinc-300 text-sm">10-year return</div>
+                  <div className="text-yellow-300 text-xl font-bold">+65%</div>
+                  <div className="text-zinc-400 text-xs">Store of value</div>
                 </div>
-                <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700 hover:border-orange-500/50 transition-colors">
-                  <div className="text-orange-400 font-bold text-lg">Gas</div>
-                  <div className="text-zinc-300 text-sm">2010: $3.00</div>
-                  <div className="text-white text-sm font-medium">2024: $4.50</div>
+                <div className="bg-gradient-to-br from-orange-600/20 to-green-600/20 p-4 rounded-xl border border-orange-500/50">
+                  <div className="text-orange-400 font-bold text-lg">Bitcoin</div>
+                  <div className="text-zinc-300 text-sm">10-year return</div>
+                  <div className="text-green-400 text-xl font-bold">+2,090%</div>
+                  <div className="text-orange-300 text-xs">New standard</div>
                 </div>
               </div>
 
-              {/* The Solution */}
-              <div className="bg-gradient-to-r from-green-950/30 to-orange-950/30 p-6 rounded-xl border border-green-600/30">
+              {/* The Revelation */}
+              <div className="bg-gradient-to-r from-orange-950/30 to-zinc-800/50 p-6 rounded-xl border border-orange-600/30">
                 <h3 className="text-2xl font-bold text-white mb-3">
-                  Bitcoin was created to solve this exact problem.
+                  Why does Bitcoin outperform everything by 10x?
                 </h3>
-                <div className="grid grid-cols-2 gap-6 mb-4">
-                  <div className="text-center">
-                    <div className="text-green-400 font-bold text-2xl">+2,090%</div>
-                    <div className="text-zinc-300">10-year performance</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-orange-400 font-bold text-2xl">21M</div>
-                    <div className="text-zinc-300">Fixed supply forever</div>
-                  </div>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                <p className="text-lg text-zinc-300 mb-6">
+                  The answer lies in understanding what governments have been doing to money for decades.
+                </p>
+                <div className="flex justify-center">
                   <Button 
-                    onClick={() => setLocation('/learn')}
-                    className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-6 py-3 rounded-lg flex-1"
+                    onClick={() => {
+                      document.getElementById('money-supply-section')?.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                      });
+                    }}
+                    className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-8 py-3 rounded-lg text-lg"
                   >
-                    Start Learning Bitcoin
-                  </Button>
-                  <Button 
-                    onClick={() => setLocation('/simulators')}
-                    variant="outline" 
-                    className="border-zinc-600 text-zinc-300 hover:bg-zinc-800 px-6 py-3 rounded-lg flex-1"
-                  >
-                    Try Simulators
+                    This Is What They're Not Telling You
                   </Button>
                 </div>
               </div>
@@ -217,7 +212,7 @@ function FinancePage() {
         </Card>
 
         {/* Money Supply Erosion Visualization */}
-        <Card className="bg-zinc-900 border-zinc-800">
+        <Card id="money-supply-section" className="bg-zinc-900 border-zinc-800">
           <CardHeader className="pb-4">
             <CardTitle className="text-white flex items-center gap-3 text-xl">
               <TrendingDown className="w-5 h-5 text-orange-400" />
