@@ -260,10 +260,17 @@ function FinancePage() {
                 <div className="flex justify-center">
                   <Button 
                     onClick={() => {
-                      document.getElementById('money-supply-section')?.scrollIntoView({ 
-                        behavior: 'smooth',
-                        block: 'start'
-                      });
+                      const element = document.getElementById('money-supply-section');
+                      if (element) {
+                        const headerOffset = 80; // Account for fixed header
+                        const elementPosition = element.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                        
+                        window.scrollTo({
+                          top: offsetPosition,
+                          behavior: 'smooth'
+                        });
+                      }
                     }}
                     className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-8 py-3 rounded-lg text-lg"
                   >
