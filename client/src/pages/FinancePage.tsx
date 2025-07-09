@@ -151,8 +151,8 @@ function FinancePage() {
       setTimeout(() => {
         setInflationProgress(step);
         
-        // Add tactile feedback for iPhone users on inflation milestones - visual shake effect  
-        if (step >= 3) {
+        // Add tactile feedback for iPhone users on ALL inflation milestones - visual shake effect  
+        if (step >= 1) {
           console.log(`Inflation milestone step ${step} - triggering shake effect`);
           setShakingInflation(true);
           setTimeout(() => setShakingInflation(false), 250); // Quick shake duration
