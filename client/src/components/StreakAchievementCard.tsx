@@ -204,11 +204,11 @@ export default function StreakAchievementCard({
               <div className="space-y-4">
                 {/* Today's Learning Header */}
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-br from-blue-500/20 to-blue-600/10 rounded-lg border border-blue-500/20">
-                    <BookOpen className="w-4 h-4 text-blue-400" />
+                  <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-lg border border-orange-500/20">
+                    <BookOpen className="w-4 h-4 text-orange-400" />
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-blue-400">Today's Learning</div>
+                    <div className="text-sm font-medium text-orange-400">Today's Learning</div>
                     <div className="text-xs text-gray-500">Day {currentDayIndex} • Bitcoin Education</div>
                   </div>
                 </div>
@@ -220,7 +220,7 @@ export default function StreakAchievementCard({
                   </h4>
                   
                   {dailyFacts && dailyFacts[0] && (
-                    <div className="bg-zinc-800/30 rounded-lg p-3 border-l-2 border-blue-500">
+                    <div className="bg-zinc-800/30 rounded-lg p-3 border-l-2 border-orange-500">
                       <p className="text-zinc-300 text-xs font-medium">
                         {dailyFacts[0].title}
                       </p>
@@ -230,7 +230,7 @@ export default function StreakAchievementCard({
                   <Button 
                     onClick={() => setLocation('/learn')}
                     size="sm"
-                    className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-medium py-2 text-sm transition-all duration-300 flex items-center justify-center gap-2"
+                    className="w-full bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white font-medium py-2 text-sm transition-all duration-300 flex items-center justify-center gap-2"
                   >
                     Continue Learning
                     <ArrowRight className="w-3 h-3" />

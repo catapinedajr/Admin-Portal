@@ -120,6 +120,7 @@ Comprehensive component library built on Radix UI primitives:
 
 ## Changelog
 
+- July 9, 2025. **STREAMLINED HOME PAGE CARD COMBINATION**: Successfully combined streak achievement and daily learning cards into single streamlined component: preserved original StreakAchievementCard functionality completely with all milestone progress and achievement tracking, added simplified learning section at bottom with orange theme consistency, includes day title, daily fact preview, and Continue Learning button, clean separation with divider line between sections, reduces visual clutter while maintaining all features for optimal home page layout.
 - July 9, 2025. **REMOVED DAY COMPLETION NOTIFICATION**: Eliminated "Day Complete!" toast notification from user interface to reduce interruptions while maintaining all necessary data updates and state refreshes, creating cleaner user experience without popup distractions after quiz completion.
 - July 9, 2025. **CENTERED BITCOIN PRICE DISPLAY**: Successfully centered Bitcoin live price and historical performance indicators in home page header using flex-1 and justify-center for perfect positioning, added balanced spacing with right spacer for optimal layout symmetry.
 - July 9, 2025. **FIXED STREAK ACHIEVEMENT NAVIGATION**: Corrected StreakAchievementCard navigation to route directly to /wallet/rewards instead of /wallet?tab=rewards, ensuring consistent navigation path to dedicated rewards page without confusion.
