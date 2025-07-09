@@ -427,8 +427,68 @@ export const insertEmailCollectionSchema = createInsertSchema(emailCollections).
   createdAt: true,
 });
 
+// Bitcoin Learning Wallet System
+export const userWalletProgress = pgTable("user_wallet_progress", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  totalSatoshisEarned: integer("total_satoshis_earned").notNull().default(0),
+  currentStreakMultiplier: decimal("current_streak_multiplier", { precision: 3, scale: 2 }).notNull().default("1.00"),
+  lastEarningDate: text("last_earning_date"), // YYYY-MM-DD format
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const walletEarnings = pgTable("wallet_earnings", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  dayIndex: integer("day_index").notNull(), // Which day of curriculum
+  earningType: text("earning_type").notNull(), // 'quiz_correct', 'quiz_perfect', 'lesson_complete', 'streak_bonus'
+  satoshisEarned: integer("satoshis_earned").notNull(),
+  streakMultiplier: decimal("streak_multiplier", { precision: 3, scale: 2 }).notNull().default("1.00"),
+  bitcoinPriceUsd: decimal("bitcoin_price_usd", { precision: 10, scale: 2 }).notNull(), // Price at time of earning
+  usdValueAtEarning: decimal("usd_value_at_earning", { precision: 10, scale: 8 }).notNull(),
+  description: text("description"), // "Correct answer: Question 3", "Perfect daily quiz", etc.
+  earnedAt: timestamp("earned_at").notNull().defaultNow(),
+  date: text("date").notNull(), // YYYY-MM-DD format
+});
+
+export const walletAchievements = pgTable("wallet_achievements", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  achievementType: text("achievement_type").notNull(), // 'first_1000_sats', 'perfect_week', 'coffee_money', etc.
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  iconName: text("icon_name").notNull(), // Lucide icon name
+  satoshisThreshold: integer("satoshis_threshold"), // Required sats for achievement
+  usdValueThreshold: decimal("usd_value_threshold", { precision: 10, scale: 2 }), // Required USD value
+  unlockedAt: timestamp("unlocked_at").notNull().defaultNow(),
+  isNotified: boolean("is_notified").notNull().default(false),
+});
+
+export const insertUserWalletProgressSchema = createInsertSchema(userWalletProgress).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertWalletEarningSchema = createInsertSchema(walletEarnings).omit({
+  id: true,
+  earnedAt: true,
+});
+
+export const insertWalletAchievementSchema = createInsertSchema(walletAchievements).omit({
+  id: true,
+  unlockedAt: true,
+});
+
 export type EmailCollection = typeof emailCollections.$inferSelect;
 export type InsertEmailCollection = z.infer<typeof insertEmailCollectionSchema>;
+export type UserWalletProgress = typeof userWalletProgress.$inferSelect;
+export type InsertUserWalletProgress = z.infer<typeof insertUserWalletProgressSchema>;
+export type WalletEarning = typeof walletEarnings.$inferSelect;
+export type InsertWalletEarning = z.infer<typeof insertWalletEarningSchema>;
+export type WalletAchievement = typeof walletAchievements.$inferSelect;
+export type InsertWalletAchievement = z.infer<typeof insertWalletAchievementSchema>;
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;

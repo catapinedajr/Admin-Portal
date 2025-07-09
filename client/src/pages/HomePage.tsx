@@ -5,6 +5,7 @@ import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { Crown, Gem, Gamepad2, MoreHorizontal, User as UserIcon, Users, MessageSquare, TrendingUp, ArrowRight, Shield, TrendingDown, Award } from "@/lib/icons";
 import BitcoinPriceDisplay from "@/components/BitcoinPriceDisplay";
+import WalletDisplay from "@/components/WalletDisplay";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { User } from "@shared/schema";
@@ -293,6 +294,9 @@ export default function HomePage() {
               </CardContent>
             </Card>
           </div>
+
+          {/* Bitcoin Learning Wallet */}
+          <WalletDisplay />
 
           {/* Achievement Badge - Compact */}
           {(user?.currentStreak || 0) >= 7 && (

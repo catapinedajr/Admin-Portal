@@ -17,6 +17,9 @@ import {
   emailCollections,
   userSessions,
   passwordResetTokens,
+  userWalletProgress,
+  walletEarnings,
+  walletAchievements,
   type User, 
   type InsertUser, 
   type UserProgress,
@@ -56,7 +59,13 @@ import {
   type PasswordResetToken,
   type InsertPasswordResetToken,
   type RegisterRequest,
-  type LoginRequest
+  type LoginRequest,
+  type UserWalletProgress,
+  type InsertUserWalletProgress,
+  type WalletEarning,
+  type InsertWalletEarning,
+  type WalletAchievement,
+  type InsertWalletAchievement
 } from "@shared/schema";
 
 import { db } from "./db";
@@ -159,6 +168,16 @@ export interface IStorage {
 
   // Email collection methods
   saveEmailCollection(emailData: InsertEmailCollection): Promise<EmailCollection>;
+
+  // Bitcoin Learning Wallet methods
+  getUserWalletProgress(userId: number): Promise<UserWalletProgress | undefined>;
+  createOrUpdateUserWalletProgress(walletData: InsertUserWalletProgress): Promise<UserWalletProgress>;
+  addWalletEarning(earning: InsertWalletEarning): Promise<WalletEarning>;
+  getUserWalletEarnings(userId: number): Promise<WalletEarning[]>;
+  getUserWalletEarningsByDay(userId: number, dayIndex: number): Promise<WalletEarning[]>;
+  getUserWalletAchievements(userId: number): Promise<WalletAchievement[]>;
+  unlockWalletAchievement(achievement: InsertWalletAchievement): Promise<WalletAchievement>;
+  getTotalEarningsValue(userId: number, currentBitcoinPrice: number): Promise<{ totalSats: number; totalUsdValue: number }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -929,6 +948,102 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, userId));
 
     return true;
+  }
+
+  // Bitcoin Learning Wallet methods
+  async getUserWalletProgress(userId: number): Promise<UserWalletProgress | undefined> {
+    const [wallet] = await db.select().from(userWalletProgress).where(eq(userWalletProgress.userId, userId));
+    return wallet || undefined;
+  }
+
+  async createOrUpdateUserWalletProgress(walletData: InsertUserWalletProgress): Promise<UserWalletProgress> {
+    const existing = await this.getUserWalletProgress(walletData.userId);
+    
+    if (existing) {
+      const [updated] = await db
+        .update(userWalletProgress)
+        .set({
+          totalSatoshisEarned: walletData.totalSatoshisEarned,
+          currentStreakMultiplier: walletData.currentStreakMultiplier,
+          lastEarningDate: walletData.lastEarningDate,
+          updatedAt: new Date()
+        })
+        .where(eq(userWalletProgress.userId, walletData.userId))
+        .returning();
+      return updated;
+    } else {
+      const [created] = await db
+        .insert(userWalletProgress)
+        .values(walletData)
+        .returning();
+      return created;
+    }
+  }
+
+  async addWalletEarning(earning: InsertWalletEarning): Promise<WalletEarning> {
+    const [newEarning] = await db
+      .insert(walletEarnings)
+      .values(earning)
+      .returning();
+    
+    // Update user's total satoshis
+    const currentWallet = await this.getUserWalletProgress(earning.userId);
+    const newTotal = (currentWallet?.totalSatoshisEarned || 0) + earning.satoshisEarned;
+    
+    await this.createOrUpdateUserWalletProgress({
+      userId: earning.userId,
+      totalSatoshisEarned: newTotal,
+      currentStreakMultiplier: earning.streakMultiplier,
+      lastEarningDate: earning.date
+    });
+    
+    return newEarning;
+  }
+
+  async getUserWalletEarnings(userId: number): Promise<WalletEarning[]> {
+    return await db
+      .select()
+      .from(walletEarnings)
+      .where(eq(walletEarnings.userId, userId))
+      .orderBy(desc(walletEarnings.earnedAt));
+  }
+
+  async getUserWalletEarningsByDay(userId: number, dayIndex: number): Promise<WalletEarning[]> {
+    return await db
+      .select()
+      .from(walletEarnings)
+      .where(and(
+        eq(walletEarnings.userId, userId),
+        eq(walletEarnings.dayIndex, dayIndex)
+      ))
+      .orderBy(desc(walletEarnings.earnedAt));
+  }
+
+  async getUserWalletAchievements(userId: number): Promise<WalletAchievement[]> {
+    return await db
+      .select()
+      .from(walletAchievements)
+      .where(eq(walletAchievements.userId, userId))
+      .orderBy(desc(walletAchievements.unlockedAt));
+  }
+
+  async unlockWalletAchievement(achievement: InsertWalletAchievement): Promise<WalletAchievement> {
+    const [newAchievement] = await db
+      .insert(walletAchievements)
+      .values(achievement)
+      .returning();
+    return newAchievement;
+  }
+
+  async getTotalEarningsValue(userId: number, currentBitcoinPrice: number): Promise<{ totalSats: number; totalUsdValue: number }> {
+    const wallet = await this.getUserWalletProgress(userId);
+    const totalSats = wallet?.totalSatoshisEarned || 0;
+    const totalUsdValue = (totalSats / 100000000) * currentBitcoinPrice; // Convert sats to BTC, then to USD
+    
+    return {
+      totalSats,
+      totalUsdValue
+    };
   }
 }
 

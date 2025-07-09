@@ -5,6 +5,7 @@ import { storage } from "./storage";
 import { db } from "./db";
 import { communityStorage } from "./community";
 import { authService } from "./auth";
+import { registerWalletRoutes } from "./wallet-routes";
 import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentGenerationSteps, userQuizAnswers, registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema } from "@shared/schema";
 import { eq, sql } from "drizzle-orm";
 import { v4 as uuidv4 } from 'uuid';
@@ -2089,6 +2090,9 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
       res.status(500).json({ message: "Failed to change password" });
     }
   });
+
+  // Register wallet routes
+  registerWalletRoutes(app, requireAuth);
 
   const httpServer = createServer(app);
   return httpServer;
