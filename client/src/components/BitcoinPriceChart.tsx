@@ -312,7 +312,7 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
                   />
                   
                   {/* Chart title overlay */}
-                  <text x="400" y="50" fill="rgb(161 161 170)" fontSize="16" textAnchor="middle" fontWeight="500">
+                  <text x="400" y="50" fill="rgb(161 161 170)" fontSize="20" textAnchor="middle" fontWeight="500" fontStyle="italic">
                     "When in doubt, zoom out"
                   </text>
                   
