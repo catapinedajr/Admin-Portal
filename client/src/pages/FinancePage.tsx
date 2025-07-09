@@ -12,7 +12,7 @@ import { User } from "@shared/schema";
 import EmailCollectionModal from "@/components/EmailCollectionModal";
 
 // Counter animation component
-function AnimatedCounter({ target, duration = 2000, suffix = "" }: { target: number; duration?: number; suffix?: string }) {
+function AnimatedCounter({ target, duration = 2000, suffix = "", className = "" }: { target: number; duration?: number; suffix?: string; className?: string }) {
   const [count, setCount] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const counterRef = useRef<HTMLSpanElement>(null);
@@ -61,8 +61,8 @@ function AnimatedCounter({ target, duration = 2000, suffix = "" }: { target: num
   }, [isVisible, target, duration]);
 
   return (
-    <span ref={counterRef} className="text-green-400">
-      +{count.toLocaleString()}{suffix}
+    <span ref={counterRef} className={className || "text-green-400"}>
+      {target >= 0 ? '+' : ''}{count.toLocaleString()}{suffix}
     </span>
   );
 }
@@ -218,25 +218,33 @@ function FinancePage() {
                 <div className="bg-red-900/20 p-4 rounded-xl border border-red-600/30">
                   <div className="text-red-400 font-bold text-lg">Cash Savings</div>
                   <div className="text-zinc-300 text-sm">10-year return</div>
-                  <div className="text-red-300 text-xl font-bold">-25%</div>
+                  <div className="text-red-300 text-xl font-bold">
+                    <AnimatedCounter target={-25} suffix="%" className="text-red-300" />
+                  </div>
                   <div className="text-zinc-400 text-xs">Lost to inflation</div>
                 </div>
                 <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700">
                   <div className="text-zinc-400 font-bold text-lg">S&P 500</div>
                   <div className="text-zinc-300 text-sm">10-year return</div>
-                  <div className="text-zinc-300 text-xl font-bold">+180%</div>
+                  <div className="text-zinc-300 text-xl font-bold">
+                    <AnimatedCounter target={180} suffix="%" className="text-zinc-300" />
+                  </div>
                   <div className="text-zinc-400 text-xs">Traditional best</div>
                 </div>
                 <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700">
                   <div className="text-yellow-400 font-bold text-lg">Gold</div>
                   <div className="text-zinc-300 text-sm">10-year return</div>
-                  <div className="text-yellow-300 text-xl font-bold">+65%</div>
+                  <div className="text-yellow-300 text-xl font-bold">
+                    <AnimatedCounter target={65} suffix="%" className="text-yellow-300" />
+                  </div>
                   <div className="text-zinc-400 text-xs">Store of value</div>
                 </div>
                 <div className="bg-gradient-to-br from-orange-600/20 to-green-600/20 p-4 rounded-xl border border-orange-500/50">
                   <div className="text-orange-400 font-bold text-lg">Bitcoin</div>
                   <div className="text-zinc-300 text-sm">10-year return</div>
-                  <div className="text-green-400 text-xl font-bold">+2,090%</div>
+                  <div className="text-green-400 text-xl font-bold">
+                    <AnimatedCounter target={2090} suffix="%" className="text-green-400" />
+                  </div>
                   <div className="text-orange-300 text-xs">New standard</div>
                 </div>
               </div>
