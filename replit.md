@@ -50,7 +50,7 @@ Complete workflow established for building full day content:
 2. **Setup Questions**: 3 questions building financial urgency and Bitcoin curiosity
 3. **Lesson Content**: "Conviction Through Curiosity" narrative at 9th grade reading level with concrete examples
 4. **Quiz Questions**: 4 questions testing lesson comprehension with proper optionA/B/C/D structure (optimized for daily habit formation)
-5. **Key Takeaways**: 4 simplified points using everyday language instead of technical jargon
+5. **Key Takeaways**: 3 simplified points using everyday language instead of technical jargon
 6. **Why It Matters**: Financial self-defense importance explanation
 7. **Dive Deeper**: Expandable detailed content for each setup question
 
