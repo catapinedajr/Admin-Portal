@@ -240,7 +240,7 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
                 <span className="text-white font-bold text-sm">₿</span>
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-white">When in doubt, zoom out</h2>
+                <h2 className="text-lg font-semibold text-white">Bitcoin</h2>
                 <p className="text-xs text-zinc-400">BTC Price History</p>
               </div>
             </div>
@@ -311,10 +311,15 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
                     strokeLinejoin="round"
                   />
                   
+                  {/* Chart title overlay */}
+                  <text x="400" y="50" fill="rgb(161 161 170)" fontSize="16" textAnchor="middle" fontWeight="500">
+                    "When in doubt, zoom out"
+                  </text>
+                  
                   {/* Price labels - mobile optimized */}
                   {priceData.length > 0 && (
                     <>
-                      <text x="30" y="40" fill="rgb(161 161 170)" fontSize="14" textAnchor="start">
+                      <text x="30" y="80" fill="rgb(161 161 170)" fontSize="14" textAnchor="start">
                         {formatPrice(Math.max(...priceData.map(p => p.price)))}
                       </text>
                       <text x="30" y="570" fill="rgb(161 161 170)" fontSize="14" textAnchor="start">
