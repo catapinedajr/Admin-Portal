@@ -22,7 +22,6 @@ import {
 } from "@/lib/icons";
 import { useLocation } from "wouter";
 import BottomNavigation from "@/components/BottomNavigation";
-import BitcoinPriceDisplay from "@/components/BitcoinPriceDisplay";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 
 interface WalletData {
@@ -117,10 +116,6 @@ export default function WalletPage() {
                 </div>
               </div>
 
-              {/* Bitcoin Price Display */}
-              <div className="hidden md:block">
-                <BitcoinPriceDisplay />
-              </div>
 
               {/* Header Actions */}
               <div className="flex items-center gap-2">
@@ -157,12 +152,6 @@ export default function WalletPage() {
           </div>
         </header>
 
-        {/* Mobile Bitcoin Price Display */}
-        <div className="md:hidden bg-zinc-800/50 border-b border-zinc-700/50">
-          <div className="max-w-6xl mx-auto px-4 py-3">
-            <BitcoinPriceDisplay />
-          </div>
-        </div>
 
         <main className="max-w-6xl mx-auto px-4 py-6 pb-24">
           <div className="space-y-6">
@@ -229,10 +218,6 @@ export default function WalletPage() {
                 </div>
               </div>
 
-              {/* Bitcoin Price Display */}
-              <div className="hidden md:block">
-                <BitcoinPriceDisplay />
-              </div>
 
               {/* Header Actions */}
               <div className="flex items-center gap-2">
@@ -268,13 +253,6 @@ export default function WalletPage() {
             </div>
           </div>
         </header>
-
-        {/* Mobile Bitcoin Price Display */}
-        <div className="md:hidden bg-zinc-800/50 border-b border-zinc-700/50">
-          <div className="max-w-6xl mx-auto px-4 py-3">
-            <BitcoinPriceDisplay />
-          </div>
-        </div>
 
         <main className="max-w-6xl mx-auto px-4 py-6 pb-24">
           <div className="space-y-6">
@@ -343,11 +321,6 @@ export default function WalletPage() {
               </div>
             </div>
 
-            {/* Bitcoin Price Display */}
-            <div className="hidden md:block">
-              <BitcoinPriceDisplay />
-            </div>
-
             {/* Header Actions */}
             <div className="flex items-center gap-2">
               {/* Wallet Button */}
@@ -382,13 +355,6 @@ export default function WalletPage() {
           </div>
         </div>
       </header>
-
-      {/* Mobile Bitcoin Price Display */}
-      <div className="md:hidden bg-zinc-800/50 border-b border-zinc-700/50">
-        <div className="max-w-6xl mx-auto px-4 py-3">
-          <BitcoinPriceDisplay />
-        </div>
-      </div>
 
       <main className="max-w-6xl mx-auto px-4 py-6 pb-24">
         <div className="space-y-6">
