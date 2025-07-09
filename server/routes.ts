@@ -10,6 +10,8 @@ import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, con
 import { eq, sql } from "drizzle-orm";
 import { v4 as uuidv4 } from 'uuid';
 import { randomUUID } from 'crypto';
+import { validateContentMiddleware, validateContent, performFrameworkChecks } from "./content-validation";
+import { protectContentDatabase, ensureFrameworkCompliance, approvalTracker, logContentOperation } from "./database-protection";
 
 // Simplified - no authentication needed
 function setDefaultUser(req: any, res: any, next: any) {
@@ -18,6 +20,9 @@ function setDefaultUser(req: any, res: any, next: any) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Apply database protection middleware globally
+  app.use(protectContentDatabase);
+  
   // Clean authentication middleware
   const requireAuth = async (req: any, res: any, next: any) => {
     try {
@@ -2171,6 +2176,84 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
 
   // Register wallet routes
   registerWalletRoutes(app, requireAuth);
+
+  // CONTENT VALIDATION PROTECTION ROUTES
+  // Add new day content (with framework validation)
+  app.post("/api/content/create-day", requireAuth, validateContentMiddleware, async (req: any, res) => {
+    try {
+      const { dayIndex, title, setupQuestions, lessonContent, quizQuestions, keyTakeaways, whyItMatters } = req.body;
+      
+      // Create day record
+      const [day] = await db.insert(contentDays).values({
+        dayIndex,
+        title,
+        theme: "Framework Approved",
+        isApproved: true // Only approved content can be inserted
+      }).returning();
+      
+      // Insert setup questions
+      await db.insert(contentSetUpQuestions).values(
+        setupQuestions.map((question: string) => ({
+          dayId: day.id,
+          question
+        }))
+      );
+      
+      // Insert lesson content
+      await db.insert(contentLessons).values({
+        dayId: day.id,
+        content: lessonContent,
+        keyTakeaways: JSON.stringify(keyTakeaways),
+        whyItMatters
+      });
+      
+      // Insert quiz questions
+      await db.insert(contentQuizzes).values(
+        quizQuestions.map((quiz: any) => ({
+          dayId: day.id,
+          question: quiz.question,
+          options: [quiz.optionA, quiz.optionB, quiz.optionC, quiz.optionD],
+          correctAnswer: quiz.correctAnswer,
+          explanation: quiz.explanation
+        }))
+      );
+      
+      res.json({ 
+        success: true, 
+        message: "Content created successfully - Framework validation passed",
+        dayId: day.id 
+      });
+    } catch (error) {
+      console.error("Content creation failed:", error);
+      res.status(500).json({ message: "Failed to create content" });
+    }
+  });
+
+  // Validate content without saving (for testing)
+  app.post("/api/content/validate", requireAuth, async (req: any, res) => {
+    try {
+      const validation = validateContent(req.body);
+      const frameworkCheck = performFrameworkChecks(req.body);
+      
+      res.json({
+        isValid: validation.isValid,
+        errors: validation.errors,
+        frameworkPassed: frameworkCheck.passed,
+        warnings: frameworkCheck.warnings
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Validation failed" });
+    }
+  });
+
+  // Block direct database content insertion
+  app.post("/api/content/direct-insert", requireAuth, async (req: any, res) => {
+    res.status(403).json({ 
+      error: "Direct content insertion forbidden",
+      message: "All content must pass framework validation through /api/content/create-day",
+      framework: "CONTENT_CREATION_FRAMEWORK.md"
+    });
+  });
 
   const httpServer = createServer(app);
   return httpServer;
