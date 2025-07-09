@@ -391,7 +391,7 @@ function LearnPage() {
                   <div className="space-y-4">
                     {dailyFacts && dailyFacts.length > 0 ? (
                       dailyFacts.map((fact: any) => {
-                        const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Coins;
+                        const IconComponent = iconMap[fact.icon as keyof typeof iconMap] || Wallet;
                         
                         return (
                           <div key={fact.id} className="bg-zinc-800/50 rounded-lg overflow-hidden">
