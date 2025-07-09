@@ -143,33 +143,55 @@ function FinancePage() {
   return (
     <div className="space-y-8 text-white">
       <main className="space-y-8">
-        {/* Hero Narrative */}
-        <Card className="bg-gradient-to-br from-orange-950/30 via-zinc-900 to-red-950/30 border-orange-800/50">
+        {/* Hero Narrative - Dopamine-Driven Hook */}
+        <Card className="bg-gradient-to-br from-red-950/40 via-zinc-900 to-orange-950/30 border-red-500/30 animate-pulse">
           <CardContent className="p-8">
             <div className="max-w-4xl mx-auto text-center space-y-6">
-              <h2 className="text-4xl font-bold text-white mb-4">
-                Why Your Money Buys <span className="text-red-400">Less Every Year</span>
-              </h2>
-              
-              <div className="text-lg text-zinc-300 leading-relaxed space-y-4">
-                <p>
-                  Notice groceries getting more expensive? Gas costing more? Coffee jumping from $2 to $5? 
-                  Rent going up every year? Concert tickets that used to be $30 now costing $150? It's not your imagination.
+              {/* Shocking Hook */}
+              <div className="mb-8">
+                <h1 className="text-6xl font-black text-red-400 mb-2 tracking-tight">
+                  $50,000
+                </h1>
+                <h2 className="text-2xl font-bold text-white mb-4">
+                  Your salary 10 years ago could buy <span className="text-red-400">$75,000</span> worth of stuff today
+                </h2>
+                <p className="text-xl text-zinc-300 font-medium">
+                  You're getting <span className="text-red-400 font-bold">poorer every year</span> — and you don't even realize it
                 </p>
-                
-                <p>
-                  Here's what's happening: The government prints new money constantly. More money chasing the same stuff = higher prices. 
-                  <span className="text-orange-400 font-semibold"> What cost $1 in 1920 now costs $15.50.</span>
-                </p>
-                
-                <p>
-                  Your grandparents bought houses on one salary. Today, two jobs barely cover rent. The difference? 
-                  Their money was backed by gold (limited). Ours can be printed endlessly.
-                </p>
-                
-                <p>
-                  <span className="text-orange-400 font-semibold">Bitcoin is different.</span> Only 21 million will ever exist—written 
-                  in code that can't be changed. It's like digital gold that nobody can print more of.
+              </div>
+
+              {/* Quick Reality Check */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div className="bg-red-900/30 p-4 rounded-xl border border-red-600/50">
+                  <div className="text-red-400 font-bold text-2xl">$3.50</div>
+                  <div className="text-white text-sm">Coffee in 2010</div>
+                  <div className="text-red-300 text-xs">Now $6.50</div>
+                </div>
+                <div className="bg-red-900/30 p-4 rounded-xl border border-red-600/50">
+                  <div className="text-red-400 font-bold text-2xl">$1,200</div>
+                  <div className="text-white text-sm">Rent in 2010</div>
+                  <div className="text-red-300 text-xs">Now $2,400</div>
+                </div>
+                <div className="bg-red-900/30 p-4 rounded-xl border border-red-600/50">
+                  <div className="text-red-400 font-bold text-2xl">$250K</div>
+                  <div className="text-white text-sm">House in 2010</div>
+                  <div className="text-red-300 text-xs">Now $500K</div>
+                </div>
+                <div className="bg-red-900/30 p-4 rounded-xl border border-red-600/50">
+                  <div className="text-red-400 font-bold text-2xl">$3.00</div>
+                  <div className="text-white text-sm">Gas in 2010</div>
+                  <div className="text-red-300 text-xs">Now $4.50</div>
+                </div>
+              </div>
+
+              {/* The Solution Hook */}
+              <div className="bg-gradient-to-r from-orange-950/50 to-green-950/50 p-6 rounded-2xl border border-orange-500/30">
+                <h3 className="text-2xl font-bold text-white mb-3">
+                  While your money loses value, <span className="text-green-400">Bitcoin holders made +2,090%</span> in 10 years
+                </h3>
+                <p className="text-lg text-zinc-300">
+                  <span className="text-orange-400 font-bold">Bitcoin can't be printed.</span> Only 21 million will ever exist. 
+                  That's why smart money is moving to Bitcoin.
                 </p>
               </div>
               
