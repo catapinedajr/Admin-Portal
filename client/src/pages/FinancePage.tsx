@@ -307,14 +307,38 @@ function FinancePage() {
             <p className="text-zinc-400 text-sm">See how the government has created more and more dollars since 1920, making each dollar worth less</p>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Year Selection Buttons */}
+            {/* Animation Controls */}
             <div className="space-y-4">
               <div className="text-center">
                 <span className="text-orange-400 font-bold text-2xl">{moneySupplyYear}</span>
-                <p className="text-zinc-400 text-sm mt-1">Select a year to explore</p>
+                <p className="text-zinc-400 text-sm mt-1">Watch the money printing timeline</p>
               </div>
               
-              {/* Clean milestone buttons */}
+              {/* Watch Money Get Printed Button */}
+              <div className="text-center">
+                <Button
+                  onClick={() => {
+                    const years = [1920, 1929, 1933, 1940, 1945, 1950, 1960, 1971, 1980, 1990, 2000, 2008, 2010, 2015, 2020, 2021, 2025];
+                    let index = 0;
+                    
+                    const animateTimeline = () => {
+                      if (index < years.length) {
+                        setMoneySupplyYear(years[index]);
+                        index++;
+                        setTimeout(animateTimeline, 800); // 800ms between each year
+                      }
+                    };
+                    
+                    setMoneySupplyYear(1920); // Start at 1920
+                    setTimeout(animateTimeline, 500); // Brief delay before starting
+                  }}
+                  className="bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-3 rounded-lg text-lg"
+                >
+                  💸 Watch Money Get Printed
+                </Button>
+              </div>
+              
+              {/* Manual milestone buttons (smaller) */}
               <div className="grid grid-cols-5 gap-1.5">
                 {[
                   { year: 1920, label: "'20", desc: "Gold Era" },
@@ -326,13 +350,13 @@ function FinancePage() {
                   <button
                     key={milestone.year}
                     onClick={() => setMoneySupplyYear(milestone.year)}
-                    className={`p-2 rounded-md border transition-all duration-200 ${
+                    className={`p-2 rounded-md border transition-all duration-200 text-xs ${
                       moneySupplyYear === milestone.year
                         ? 'bg-orange-600/20 border-orange-500 text-orange-300'
                         : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-300'
                     }`}
                   >
-                    <div className="font-semibold text-sm">{milestone.label}</div>
+                    <div className="font-semibold">{milestone.label}</div>
                     <div className="text-xs opacity-75">{milestone.desc}</div>
                   </button>
                 ))}
