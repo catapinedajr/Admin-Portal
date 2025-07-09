@@ -74,10 +74,10 @@ export default function Onboarding() {
               
               {/* Enhanced tagline with gradient */}
               <div className="text-xl space-y-3">
-                <div className="text-zinc-300">Understanding Bitcoin takes time</div>
-                <div className="text-zinc-300">Building conviction takes community</div>
+                <div className="text-zinc-300">Your money loses value every day</div>
+                <div className="text-zinc-300">Bitcoin is your financial escape plan</div>
                 <div className="text-transparent bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text font-bold text-2xl">
-                  This is HODLearn
+                  Start learning now
                 </div>
               </div>
             </div>
