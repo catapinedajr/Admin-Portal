@@ -312,7 +312,7 @@ function FinancePage() {
             {/* Dopamine-Driven Hook */}
             <div className="text-center mb-6">
               <h2 className="text-4xl font-black text-white mb-2">
-                Money Supply Explosion: $23B → $<AnimatedCounter target={21} suffix="T" className="text-red-400" />
+                <span className="whitespace-nowrap">Money Supply Explosion: $23B → $<AnimatedCounter target={21} suffix="T" className="text-red-400" /></span>
               </h2>
               <p className="text-xl text-zinc-300 mb-4">
                 That's a <AnimatedCounter target={922} suffix="x" className="text-red-400" /> increase since 1920
