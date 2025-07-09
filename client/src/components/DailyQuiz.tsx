@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, XCircle, Brain, Trophy, ChevronLeft, ChevronRight, AlertCircle } from "@/lib/icons";
+import { CheckCircle, XCircle, Brain, Trophy, ChevronLeft, ChevronRight, AlertCircle, RotateCcw } from "@/lib/icons";
 import { apiRequest } from "@/lib/queryClient";
 import SatsRewardAnimation from "@/components/animations/SatsRewardAnimation";
 
@@ -50,6 +50,7 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning }: DailyQu
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showSatsAnimation, setShowSatsAnimation] = useState(false);
   const [animationSatsAmount, setAnimationSatsAmount] = useState(0);
+  const [showCompletionAnimation, setShowCompletionAnimation] = useState(false);
   const queryClient = useQueryClient();
   const completionTriggeredRef = useRef(false);
   
@@ -219,6 +220,10 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning }: DailyQu
     if (questions.length > 0 && userAnswers.length === questions.length && onCompletion && !completionTriggeredRef.current) {
       // All questions answered, trigger completion callback
       completionTriggeredRef.current = true;
+      
+      // Show dramatic completion animation
+      setShowCompletionAnimation(true);
+      
       onCompletion();
     }
   }, [questions.length, userAnswers.length, onCompletion]);
@@ -227,6 +232,16 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning }: DailyQu
   useEffect(() => {
     completionTriggeredRef.current = false;
   }, [dayIndex]);
+
+  // Auto-dismiss completion animation
+  useEffect(() => {
+    if (showCompletionAnimation) {
+      const timer = setTimeout(() => {
+        setShowCompletionAnimation(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showCompletionAnimation]);
 
   if (loadingQuestions) {
     return (
@@ -518,6 +533,29 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning }: DailyQu
         satsAmount={animationSatsAmount}
         onComplete={() => setShowSatsAnimation(false)}
       />
+
+      {/* Quiz Completion Animation */}
+      {showCompletionAnimation && (
+        <div className="fixed inset-0 pointer-events-none z-50">
+          <div className="absolute inset-0 bg-black/50 animate-fade-in" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="relative">
+              {/* Dramatic pulse */}
+              <div className="absolute inset-0 bg-green-500/40 rounded-full w-40 h-40 animate-ping" />
+              <div className="absolute inset-0 bg-green-400/30 rounded-full w-32 h-32 animate-pulse" />
+              
+              {/* Completion message */}
+              <div className="relative bg-gradient-to-r from-green-600 to-green-500 text-white px-8 py-6 rounded-xl shadow-2xl animate-scale-in">
+                <div className="text-center space-y-3">
+                  <Trophy className="w-12 h-12 mx-auto text-yellow-300" />
+                  <h3 className="text-2xl font-bold">Quiz Complete!</h3>
+                  <p className="text-green-100">Great job building your Bitcoin conviction!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
