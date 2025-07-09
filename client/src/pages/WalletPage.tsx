@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { 
   Coins, 
+  Wallet,
   TrendingUp, 
   Award, 
   Calendar, 
@@ -18,7 +19,8 @@ import {
   Trophy,
   Zap,
   Crown,
-  Gem
+  Gem,
+  User as UserIcon
 } from "@/lib/icons";
 import { useLocation } from "wouter";
 import BottomNavigation from "@/components/BottomNavigation";
@@ -323,6 +325,17 @@ export default function WalletPage() {
 
             {/* Header Actions */}
             <div className="flex items-center gap-2">
+              {/* Account Button */}
+              <Button 
+                onClick={() => setLocation('/account')}
+                size="sm"
+                className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-2.5 py-1.5"
+                title="Account Settings"
+              >
+                <UserIcon className="w-4 h-4" />
+                <span className="sr-only">Account</span>
+              </Button>
+
               {/* Wallet Button */}
               <Button 
                 onClick={() => setLocation('/wallet')}
@@ -330,7 +343,7 @@ export default function WalletPage() {
                 className="bg-orange-500 hover:bg-orange-600 text-white border border-orange-500 hover:border-orange-600 px-2.5 py-1.5"
                 title="Bitcoin Learning Wallet"
               >
-                <Coins className="w-4 h-4" />
+                <Wallet className="w-4 h-4" />
                 <span className="sr-only">Wallet</span>
               </Button>
 
@@ -376,7 +389,7 @@ export default function WalletPage() {
         <CardContent className="p-6">
           <div className="text-center space-y-4">
             <div className="p-4 bg-orange-500/20 rounded-lg w-16 h-16 mx-auto flex items-center justify-center">
-              <Coins className="w-8 h-8 text-orange-500" />
+              <Wallet className="w-8 h-8 text-orange-500" />
             </div>
             
             <div className="space-y-2">
