@@ -675,35 +675,13 @@ function FinancePage() {
         </Card>
 
         {/* Investment Performance Analysis */}
-        <Card className="bg-zinc-900/50 border-zinc-700/30">
-          <CardHeader className="pb-4">
+        <div className="bg-zinc-950/90 border border-zinc-800/50 rounded-lg">
+          <div className="border-b border-zinc-800/50 px-6 py-4">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-medium text-white mb-1">
-                  Portfolio Performance
-                </h2>
-                <div className="text-sm text-zinc-400">
-                  $10,000 invested · 2014-2025
-                </div>
+                <h2 className="text-lg font-medium text-white tracking-tight">Performance Analysis</h2>
+                <p className="text-sm text-zinc-400 mt-0.5">$10,000 initial allocation · 2014-2025</p>
               </div>
-              <div className="text-xs text-zinc-500 font-mono bg-zinc-800/50 px-2 py-1 rounded">
-                11Y ANALYSIS
-              </div>
-            </div>
-          </CardHeader>
-          
-          <CardContent className="space-y-8">
-            {/* Animation Controls */}
-            <div className="flex flex-col items-center space-y-6">
-              <div className="flex items-center space-x-4">
-                <div className="flex flex-col items-center space-y-2">
-                  <div className="text-sm font-medium text-zinc-400 uppercase tracking-wider">Analysis Period</div>
-                  <div className="bg-zinc-800/50 rounded-xl px-6 py-3 border border-zinc-700/50">
-                    <span className="text-2xl font-bold text-orange-400 font-mono">{investmentYear}</span>
-                  </div>
-                </div>
-              </div>
-              
               <Button
                 onClick={() => {
                   if (investmentRaceActive) return;
@@ -711,15 +689,13 @@ function FinancePage() {
                   setInvestmentRaceActive(true);
                   setInvestmentYear(2014);
                   
-                  // Smooth year-by-year progression
                   let currentYear = 2014;
                   const animateYear = () => {
                     if (currentYear <= 2025) {
                       setInvestmentYear(currentYear);
                       currentYear++;
-                      setTimeout(animateYear, 600); // Consistent smooth timing
+                      setTimeout(animateYear, 600);
                     } else {
-                      // Keep chart visible and complete
                       setInvestmentRaceActive(false);
                     }
                   };
@@ -727,111 +703,99 @@ function FinancePage() {
                   animateYear();
                 }}
                 disabled={investmentRaceActive}
-                className={`w-full px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
-                  investmentRaceActive 
-                    ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed' 
-                    : 'bg-orange-500 hover:bg-orange-600 text-white'
-                }`}
+                className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 text-sm font-medium rounded-md disabled:opacity-50"
               >
-                {investmentRaceActive ? (
-                  <div className="flex items-center justify-center space-x-2">
-                    <div className="w-3 h-3 border-2 border-zinc-500 border-t-transparent rounded-full animate-spin"></div>
-                    <span>Analyzing {investmentYear}...</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center space-x-2">
-                    <TrendingUp className="w-4 h-4" />
-                    <span>{investmentYear === 2025 ? 'Run Again' : 'Start Analysis'}</span>
-                  </div>
-                )}
+                {investmentRaceActive ? "Analyzing..." : "Run Analysis"}
               </Button>
             </div>
+          </div>
+          
+          <div className="p-6">
+            {(() => {
+              const getInvestmentValue = (asset: string, year: number) => {
+                const yearsSince2014 = year - 2014;
+                const baseAmount = 10000;
+                
+                switch (asset) {
+                  case 'cash':
+                    return baseAmount * Math.pow(0.97, yearsSince2014);
+                  case 'stocks':
+                    return baseAmount * Math.pow(1.10, yearsSince2014);
+                  case 'gold':
+                    return baseAmount * Math.pow(1.05, yearsSince2014);
+                  case 'bitcoin':
+                    if (year <= 2014) return baseAmount;
+                    if (year === 2015) return baseAmount * 1.4;
+                    if (year === 2016) return baseAmount * 1.8;
+                    if (year === 2017) return baseAmount * 20;
+                    if (year === 2018) return baseAmount * 8;
+                    if (year === 2019) return baseAmount * 10;
+                    if (year === 2020) return baseAmount * 20;
+                    if (year === 2021) return baseAmount * 65;
+                    if (year === 2022) return baseAmount * 30;
+                    if (year === 2023) return baseAmount * 45;
+                    if (year === 2024) return baseAmount * 90;
+                    return baseAmount * 120;
+                  default:
+                    return baseAmount;
+                }
+              };
 
-            {/* Professional Chart */}
-            <div className="bg-zinc-900/30 rounded-lg p-6">
-              <div className="relative">
-                <svg viewBox="0 0 480 240" className="w-full h-80 bg-zinc-950/30 rounded border border-zinc-700/20">
-                  {/* Professional grid */}
-                  <defs>
-                    <pattern id="grid" width="40" height="20" patternUnits="userSpaceOnUse">
-                      <path d="M 40 0 L 0 0 0 20" fill="none" stroke="#3f3f46" strokeWidth="0.5" opacity="0.15"/>
-                    </pattern>
-                  </defs>
-                  
-                  {/* Grid background */}
-                  <rect x="60" y="20" width="400" height="180" fill="url(#grid)" />
-                  
-                  {/* Axis lines */}
-                  <line x1="60" y1="200" x2="460" y2="200" stroke="#52525b" strokeWidth="1.5"/>
-                  <line x1="60" y1="20" x2="60" y2="200" stroke="#52525b" strokeWidth="1.5"/>
-                  
-                  {/* Y-axis labels */}
-                  <text x="55" y="25" fill="#a1a1aa" fontSize="11" textAnchor="end" fontFamily="ui-monospace">$1.2M</text>
-                  <text x="55" y="60" fill="#a1a1aa" fontSize="11" textAnchor="end" fontFamily="ui-monospace">$500K</text>
-                  <text x="55" y="95" fill="#a1a1aa" fontSize="11" textAnchor="end" fontFamily="ui-monospace">$100K</text>
-                  <text x="55" y="130" fill="#a1a1aa" fontSize="11" textAnchor="end" fontFamily="ui-monospace">$50K</text>
-                  <text x="55" y="165" fill="#a1a1aa" fontSize="11" textAnchor="end" fontFamily="ui-monospace">$25K</text>
-                  <text x="55" y="200" fill="#a1a1aa" fontSize="11" textAnchor="end" fontFamily="ui-monospace">$10K</text>
-                  
-                  {/* X-axis labels */}
-                  <text x="60" y="220" fill="#a1a1aa" fontSize="11" textAnchor="middle" fontFamily="ui-monospace">2014</text>
-                  <text x="160" y="220" fill="#a1a1aa" fontSize="11" textAnchor="middle" fontFamily="ui-monospace">2017</text>
-                  <text x="260" y="220" fill="#a1a1aa" fontSize="11" textAnchor="middle" fontFamily="ui-monospace">2020</text>
-                  <text x="360" y="220" fill="#a1a1aa" fontSize="11" textAnchor="middle" fontFamily="ui-monospace">2023</text>
-                  <text x="460" y="220" fill="#a1a1aa" fontSize="11" textAnchor="middle" fontFamily="ui-monospace">2025</text>
+              return (
+                <>
+                  {/* Clean Chart */}
+                  <div className="bg-zinc-900/30 rounded-md border border-zinc-800/30">
+                    <svg viewBox="0 0 560 320" className="w-full h-96">
+                {/* Grid */}
+                <defs>
+                  <pattern id="grid" width="50" height="25" patternUnits="userSpaceOnUse">
+                    <path d="M 50 0 L 0 0 0 25" fill="none" stroke="#3f3f46" strokeWidth="0.5" opacity="0.1"/>
+                  </pattern>
+                </defs>
+                
+                <rect x="80" y="40" width="440" height="220" fill="url(#grid)" />
+                
+                {/* Axes */}
+                <line x1="80" y1="260" x2="520" y2="260" stroke="#52525b" strokeWidth="1"/>
+                <line x1="80" y1="40" x2="80" y2="260" stroke="#52525b" strokeWidth="1"/>
+                
+                {/* Y-axis labels */}
+                <text x="75" y="45" fill="#9ca3af" fontSize="12" textAnchor="end" fontFamily="ui-monospace">$1.2M</text>
+                <text x="75" y="95" fill="#9ca3af" fontSize="12" textAnchor="end" fontFamily="ui-monospace">$500K</text>
+                <text x="75" y="145" fill="#9ca3af" fontSize="12" textAnchor="end" fontFamily="ui-monospace">$100K</text>
+                <text x="75" y="195" fill="#9ca3af" fontSize="12" textAnchor="end" fontFamily="ui-monospace">$50K</text>
+                <text x="75" y="235" fill="#9ca3af" fontSize="12" textAnchor="end" fontFamily="ui-monospace">$25K</text>
+                <text x="75" y="260" fill="#9ca3af" fontSize="12" textAnchor="end" fontFamily="ui-monospace">$10K</text>
+                
+                {/* X-axis labels */}
+                <text x="80" y="280" fill="#9ca3af" fontSize="12" textAnchor="middle" fontFamily="ui-monospace">2014</text>
+                <text x="190" y="280" fill="#9ca3af" fontSize="12" textAnchor="middle" fontFamily="ui-monospace">2017</text>
+                <text x="300" y="280" fill="#9ca3af" fontSize="12" textAnchor="middle" fontFamily="ui-monospace">2020</text>
+                <text x="410" y="280" fill="#9ca3af" fontSize="12" textAnchor="middle" fontFamily="ui-monospace">2023</text>
+                <text x="520" y="280" fill="#9ca3af" fontSize="12" textAnchor="middle" fontFamily="ui-monospace">2025</text>
                   
                   {(() => {
-                    const getInvestmentValue = (asset: string, year: number) => {
-                      const yearsSince2014 = year - 2014;
-                      const baseAmount = 10000;
-                      
-                      switch (asset) {
-                        case 'cash':
-                          return baseAmount * Math.pow(0.97, yearsSince2014);
-                        case 'stocks':
-                          return baseAmount * Math.pow(1.10, yearsSince2014);
-                        case 'gold':
-                          return baseAmount * Math.pow(1.05, yearsSince2014);
-                        case 'bitcoin':
-                          if (year <= 2014) return baseAmount;
-                          if (year === 2015) return baseAmount * 1.4;
-                          if (year === 2016) return baseAmount * 1.8;
-                          if (year === 2017) return baseAmount * 20;
-                          if (year === 2018) return baseAmount * 8;
-                          if (year === 2019) return baseAmount * 10;
-                          if (year === 2020) return baseAmount * 20;
-                          if (year === 2021) return baseAmount * 65;
-                          if (year === 2022) return baseAmount * 30;
-                          if (year === 2023) return baseAmount * 45;
-                          if (year === 2024) return baseAmount * 90;
-                          return baseAmount * 120;
-                        default:
-                          return baseAmount;
-                      }
-                    };
 
                     const getYPosition = (value: number) => {
                       const logValue = Math.log(value);
                       const logMin = Math.log(8000);
                       const logMax = Math.log(1200000);
-                      return 200 - ((logValue - logMin) / (logMax - logMin)) * 180;
+                      return 260 - ((logValue - logMin) / (logMax - logMin)) * 220;
                     };
 
                     const getXPosition = (year: number) => {
-                      return 60 + ((year - 2014) / (2025 - 2014)) * 400;
+                      return 80 + ((year - 2014) / (2025 - 2014)) * 440;
                     };
 
                     const assets = [
-                      { name: 'cash', color: '#ef4444', width: '2.5', label: 'Cash' },
-                      { name: 'gold', color: '#eab308', width: '2.5', label: 'Gold' },
-                      { name: 'stocks', color: '#3b82f6', width: '2.5', label: 'S&P 500' },
-                      { name: 'bitcoin', color: '#f97316', width: '3.5', label: 'Bitcoin' }
+                      { name: 'cash', color: '#ef4444', width: '2' },
+                      { name: 'gold', color: '#eab308', width: '2' },
+                      { name: 'stocks', color: '#3b82f6', width: '2' },
+                      { name: 'bitcoin', color: '#f97316', width: '3' }
                     ];
 
                     return assets.map((asset) => {
                       const points = [];
-                      
-                      // Show complete line when animation is done, otherwise show up to current year
                       const endYear = !investmentRaceActive && investmentYear === 2025 ? 2025 : Math.min(investmentYear, 2025);
                       
                       for (let year = 2014; year <= endYear; year++) {
@@ -841,12 +805,10 @@ function FinancePage() {
                         points.push(`${x},${y}`);
                       }
                       
-                      // Bitcoin line pulses when complete
                       const isPulsing = asset.name === 'bitcoin' && !investmentRaceActive && investmentYear === 2025;
                       
                       return (
                         <g key={asset.name}>
-                          {/* Professional line with optional pulsing */}
                           <polyline
                             points={points.join(' ')}
                             fill="none"
@@ -854,46 +816,77 @@ function FinancePage() {
                             strokeWidth={asset.width}
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            className={`transition-all duration-300 ${isPulsing ? 'animate-pulse' : ''}`}
-                            style={{
-                              filter: isPulsing ? 'drop-shadow(0 0 8px #f97316)' : 'none'
-                            }}
+                            className={isPulsing ? 'animate-pulse' : ''}
+                            style={{ filter: isPulsing ? 'drop-shadow(0 0 6px #f97316)' : 'none' }}
                           />
                           
-                          {/* Current position indicator */}
                           {investmentRaceActive && investmentYear > 2014 && (
                             <circle
                               cx={getXPosition(investmentYear)}
                               cy={getYPosition(getInvestmentValue(asset.name, investmentYear))}
-                              r="4"
+                              r="3"
                               fill={asset.color}
                               stroke="#ffffff"
-                              strokeWidth="2"
+                              strokeWidth="1"
                             />
                           )}
                         </g>
                       );
                     });
                   })()}
-                  
-                  {/* Current year line */}
-                  {investmentYear > 2014 && (
-                    <line
-                      x1={40 + ((investmentYear - 2014) / (2025 - 2014)) * 340}
-                      y1="10"
-                      x2={40 + ((investmentYear - 2014) / (2025 - 2014)) * 340}
-                      y2="180"
-                      stroke="#f97316"
-                      strokeWidth="1"
-                      strokeDasharray="4,4"
-                      opacity="0.6"
-                    />
-                  )}
                 </svg>
               </div>
+            
+            {/* Professional Legend */}
+            <div className="mt-6 border-t border-zinc-800/30 pt-4">
+              <div className="grid grid-cols-4 gap-4">
+                {[
+                  { name: 'cash', color: '#ef4444', label: 'Cash', value: getInvestmentValue('cash', investmentYear) },
+                  { name: 'gold', color: '#eab308', label: 'Gold', value: getInvestmentValue('gold', investmentYear) },
+                  { name: 'stocks', color: '#3b82f6', label: 'S&P 500', value: getInvestmentValue('stocks', investmentYear) },
+                  { name: 'bitcoin', color: '#f97316', label: 'Bitcoin', value: getInvestmentValue('bitcoin', investmentYear) }
+                ].map(({ name, color, label, value }) => (
+                  <div key={name} className="text-center">
+                    <div className="flex items-center justify-center mb-2">
+                      <div 
+                        className="w-3 h-3 rounded-full mr-2" 
+                        style={{ backgroundColor: color }}
+                      />
+                      <span className="text-sm text-zinc-400">{label}</span>
+                    </div>
+                    <div className="text-lg font-mono text-white">
+                      ${value >= 1000000 ? `${(value/1000000).toFixed(1)}M` : 
+                        value >= 1000 ? `${(value/1000).toFixed(0)}K` : 
+                        value.toFixed(0)}
+                    </div>
+                    {investmentYear === 2025 && (
+                      <div className="text-xs font-mono mt-1" style={{ color }}>
+                        {name === 'cash' ? '-25%' :
+                         name === 'gold' ? '+85%' :
+                         name === 'stocks' ? '+185%' :
+                         '+11,900%'}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
               
-              {/* Professional Legend & Summary */}
-              <div className="mt-6 bg-zinc-800/20 rounded-lg border border-zinc-700/30">
+              {investmentYear === 2025 && (
+                <div className="mt-6 pt-4 border-t border-zinc-800/30 text-center">
+                  <p className="text-sm text-zinc-400">
+                    Bitcoin's fixed supply drove superior wealth preservation over 11 years.
+                  </p>
+                  <div className="text-xs text-zinc-500 mt-1">
+                    Historical performance · Not investment advice
+                  </div>
+                </div>
+              )}
+                </div>
+              </>
+              );
+            })()}
+          </div>
+        </div>
                 <div className="p-5">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-sm font-medium text-zinc-300">Portfolio Performance</h3>
