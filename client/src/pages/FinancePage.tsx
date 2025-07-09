@@ -252,6 +252,20 @@ function FinancePage() {
                 </div>
               </div>
 
+              {/* You're Not Too Late Message */}
+              <div className="bg-gradient-to-r from-green-950/30 to-emerald-800/20 p-4 rounded-xl border border-green-600/40 mb-6">
+                <div className="flex items-center justify-center gap-3 mb-2">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <h3 className="text-xl font-bold text-green-300 text-center">
+                    You're Not Too Late
+                  </h3>
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                </div>
+                <p className="text-green-200 text-center text-sm">
+                  Bitcoin is still in its early adoption phase. Most institutions are just starting to understand this.
+                </p>
+              </div>
+
               {/* The Revelation */}
               <div className="bg-gradient-to-r from-orange-950/30 to-zinc-800/50 p-6 rounded-xl border border-orange-600/30">
                 <h3 className="text-2xl font-bold text-white mb-3">
