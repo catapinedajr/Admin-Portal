@@ -32,8 +32,20 @@ const setupQuestionsSchema = z.array(z.string())
   );
 
 const lessonContentSchema = z.string()
-  .min(300, "Lesson content must be at least 300 words")
-  .max(500, "Lesson content must be under 500 words to maintain 8th grade reading level")
+  .refine(
+    (content) => {
+      const wordCount = content.trim().split(/\s+/).length;
+      return wordCount >= 300;
+    },
+    "Lesson content must be at least 300 words"
+  )
+  .refine(
+    (content) => {
+      const wordCount = content.trim().split(/\s+/).length;
+      return wordCount <= 1200;
+    },
+    "Lesson content must be under 1200 words to maintain readability (1.5x increase for better quality)"
+  )
   .refine(
     (content) => content.toLowerCase().includes('bitcoin'),
     "Lesson content must explicitly mention Bitcoin for relevance check"
@@ -55,6 +67,21 @@ const lessonContentSchema = z.string()
       return !jargonWords.some(word => content.toLowerCase().includes(word));
     },
     "Lesson content must avoid technical jargon - use simple terms instead"
+  )
+  .refine(
+    (content) => {
+      // Check for proper paragraph formatting (multiple paragraph breaks)
+      const paragraphCount = content.split('\n\n').length;
+      return paragraphCount >= 3;
+    },
+    "Lesson content must have proper paragraph formatting with at least 3 paragraphs separated by double line breaks"
+  )
+  .refine(
+    (content) => {
+      // Check for bold headers in content (formatting requirement)
+      return /\*\*[^*]+\*\*/.test(content);
+    },
+    "Lesson content must include bold section headers (**Header**) for visual hierarchy"
   );
 
 const quizQuestionsSchema = z.array(z.object({

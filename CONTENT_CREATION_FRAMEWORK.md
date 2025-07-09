@@ -53,15 +53,33 @@
 - [ ] Builds toward Bitcoin relevance naturally
 - [ ] Under 100 characters each
 
-### 3. LESSON CONTENT (Narrative Storytelling)
-**Goal**: "Conviction Through Curiosity" narrative at 9th grade reading level
+### 3. LESSON CONTENT (Narrative Storytelling with Proper Formatting)
+**Goal**: "Conviction Through Curiosity" narrative at 8th grade reading level
 
-**Structure**: 300-400 word story format (8th grade reading level)
+**Structure**: 300-1200 word story format with clear paragraph breaks
 1. **Hook**: Open with relatable professional scenario
 2. **Problem**: Reveal the hidden financial threat
 3. **Explanation**: Simple explanation with concrete examples
 4. **Solution Preview**: How Bitcoin addresses this specific problem
 5. **Call to Action**: Transition to quiz for comprehension
+
+**FORMATTING REQUIREMENTS**:
+- **Paragraph Breaks**: Use clear paragraph breaks every 2-3 sentences
+- **Section Headers**: Use **bold headers** to break up content sections
+- **Visual Hierarchy**: Create scannable content with logical flow
+- **Example Structure**:
+  ```
+  Opening paragraph establishing the problem.
+  
+  **The Hidden System**
+  Paragraph explaining the mechanism behind the problem.
+  
+  **Your Real Impact**
+  Paragraph showing personal financial consequences.
+  
+  **Bitcoin: The Solution**
+  Paragraph explaining how Bitcoin addresses this issue.
+  ```
 
 **Sequential Building Strategy**:
 - **Day 1**: Establish foundation concept
@@ -90,11 +108,15 @@
 
 **Content Quality Check**:
 - [ ] 8th grade reading level (Hemingway Editor: Grade 8 or below)
+- [ ] 300-1200 words (1.5x increase from original 800 word limit)
+- [ ] Proper paragraph formatting with clear breaks every 2-3 sentences
+- [ ] Bold section headers to create visual hierarchy
 - [ ] Concrete examples with real numbers
 - [ ] Builds Bitcoin conviction through immediate relevance
 - [ ] Flows naturally from setup questions
 - [ ] **SEQUENTIAL FLOW**: References previous day's concepts when building new ideas
 - [ ] Professional tone without academic lectures
+- [ ] Scannable content structure for mobile reading
 
 ### 4. QUIZ QUESTIONS (Comprehension Testing)
 **Goal**: 4 questions testing lesson understanding for daily habit formation
