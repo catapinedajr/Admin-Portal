@@ -807,13 +807,13 @@ function FinancePage() {
                       <div className="grid grid-cols-2 gap-4 text-xs">
                         <div className="text-center">
                           <div className="text-red-400 font-medium">Traditional Savings</div>
-                          <div className="text-red-300 text-lg font-bold">$13,670</div>
-                          <div className="text-red-400">Lost 45% to inflation</div>
+                          <div className="text-red-300 text-lg font-bold animate-pulse">$13,670</div>
+                          <div className="text-red-400 animate-pulse">Lost 45% to inflation</div>
                         </div>
                         <div className="text-center">
                           <div className="text-orange-400 font-medium">Conservative Bitcoin</div>
-                          <div className="text-orange-300 text-lg font-bold">$6.8M</div>
-                          <div className="text-orange-400">271x growth (25% annual)</div>
+                          <div className="text-orange-300 text-lg font-bold animate-pulse">$6.8M</div>
+                          <div className="text-orange-400 animate-pulse">271x growth (25% annual)</div>
                         </div>
                       </div>
                     </div>
