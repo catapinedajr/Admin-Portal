@@ -349,6 +349,19 @@ function FinancePage() {
                   onClick={() => {
                     if (isAnimating) return; // Prevent multiple animations
                     
+                    // Scroll to optimal viewing position for animation
+                    const animationButton = document.querySelector('#money-supply-section .space-y-4');
+                    if (animationButton) {
+                      const headerOffset = 60; // Account for header + some breathing room
+                      const elementPosition = animationButton.getBoundingClientRect().top;
+                      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                      
+                      window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                      });
+                    }
+                    
                     // Create smooth year-by-year animation over 6 seconds
                     const totalYears = 2025 - 1920; // 105 years
                     const totalDuration = 6000; // 6 seconds
