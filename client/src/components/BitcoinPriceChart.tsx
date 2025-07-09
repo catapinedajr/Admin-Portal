@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { X, TrendingUp, Bitcoin } from "@/lib/icons";
 
@@ -15,7 +15,7 @@ interface BitcoinPriceChartProps {
 }
 
 export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: BitcoinPriceChartProps) {
-  const [selectedTimeframe, setSelectedTimeframe] = useState<'1Y' | '4Y' | '10Y' | 'ALL'>('1Y');
+  const [selectedTimeframe, setSelectedTimeframe] = useState<'1Y' | '4Y' | '10Y' | 'ALL'>('10Y');
   const [priceData, setPriceData] = useState<PricePoint[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -230,6 +230,8 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-none w-full h-full bg-black border-none p-0 m-0 rounded-none [&>button]:hidden">
+        <DialogTitle className="sr-only">Bitcoin Price Chart</DialogTitle>
+        <DialogDescription className="sr-only">Historical Bitcoin price data with multiple timeframes</DialogDescription>
         <div className="flex flex-col h-full">
           {/* Header - Robinhood style */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800/50">
@@ -238,7 +240,7 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
                 <span className="text-white font-bold text-sm">₿</span>
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-white">Bitcoin</h2>
+                <h2 className="text-lg font-semibold text-white">When in doubt, zoom out</h2>
                 <p className="text-xs text-zinc-400">BTC Price History</p>
               </div>
             </div>
@@ -346,9 +348,9 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
             </div>
           </div>
 
-          {/* Stats and Footer - Combined */}
-          <div className="px-4 py-2 border-t border-zinc-800/50 bg-zinc-900/30">
-            <div className="grid grid-cols-2 gap-3 mb-2">
+          {/* Stats - Clean footer */}
+          <div className="px-4 py-3 border-t border-zinc-800/50 bg-zinc-900/30">
+            <div className="grid grid-cols-2 gap-3">
               <div className="text-center">
                 <div className="text-xs text-zinc-400 mb-1">Period Start</div>
                 <div className="text-sm font-semibold text-white">
@@ -361,11 +363,6 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
                   {priceData.length > 0 ? formatPrice(Math.max(...priceData.map(p => p.price))) : '-'}
                 </div>
               </div>
-            </div>
-            <div className="text-center pt-1 pb-3 border-t border-zinc-800/30">
-              <p className="text-zinc-400 text-sm font-medium">
-                "When in doubt, zoom out"
-              </p>
             </div>
           </div>
         </div>
