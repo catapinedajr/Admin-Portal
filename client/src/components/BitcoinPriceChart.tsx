@@ -199,13 +199,13 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
 
   const { change, percentage } = getPerformanceData();
 
-  // Create SVG path for the price chart
-  const createPath = () => {
+  // Create SVG path for mobile chart
+  const createMobilePath = () => {
     if (priceData.length < 2) return '';
     
-    const width = 1200;
-    const height = 600;
-    const padding = 40;
+    const width = 800;
+    const height = 400;
+    const padding = 30;
     
     const minPrice = Math.min(...priceData.map(p => p.price));
     const maxPrice = Math.max(...priceData.map(p => p.price));
@@ -229,203 +229,145 @@ export default function BitcoinPriceChart({ isOpen, onClose, currentPrice }: Bit
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-7xl w-[95vw] h-[95vh] bg-zinc-900 border-zinc-700 p-0">
+      <DialogContent className="max-w-none w-full h-full bg-black border-none p-0 m-0 rounded-none">
         <div className="flex flex-col h-full">
-          {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-zinc-700">
+          {/* Header - Robinhood style */}
+          <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800/50">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
+              <div className="w-7 h-7 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
                 <span className="text-white font-bold text-sm">₿</span>
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-white">Bitcoin Price History</h2>
-                <p className="text-sm text-zinc-400">Long-term perspective on Bitcoin's price evolution</p>
+                <h2 className="text-lg font-semibold text-white">Bitcoin</h2>
+                <p className="text-xs text-zinc-400">BTC Price History</p>
               </div>
             </div>
             <Button
               variant="ghost"
               size="sm"
               onClick={onClose}
-              className="text-zinc-400 hover:text-white"
+              className="text-zinc-400 hover:text-white p-2"
             >
               <X className="w-5 h-5" />
             </Button>
           </div>
 
-          {/* Main Content */}
-          <div className="flex-1 p-6 space-y-6">
-            {/* Current Price and Performance */}
-            <div className="bg-zinc-800/30 rounded-xl p-6 border border-zinc-700">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-4xl font-bold text-white">
-                    ${currentPrice.toLocaleString()}
-                  </div>
-                  <div className="text-sm text-zinc-400 mt-1">Current Bitcoin Price</div>
-                </div>
-                <div className="text-right">
-                  <div className={`text-3xl font-bold ${percentage >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                    {percentage >= 0 ? '+' : ''}{percentage.toFixed(1)}%
-                  </div>
-                  <div className="text-sm text-zinc-400 mt-1">
-                    {selectedTimeframe} Performance
-                  </div>
-                </div>
+          {/* Price Display - Robinhood style */}
+          <div className="px-4 py-4 bg-zinc-900/50">
+            <div className="flex items-baseline justify-between mb-2">
+              <div className="text-3xl font-bold text-white">
+                ${currentPrice.toLocaleString()}
+              </div>
+              <div className={`text-lg font-semibold ${percentage >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                {percentage >= 0 ? '+' : ''}{percentage.toFixed(1)}%
               </div>
             </div>
+            <div className="text-sm text-zinc-400">
+              {selectedTimeframe} Performance
+            </div>
+          </div>
 
-            {/* Timeframe Selection */}
-            <div className="flex justify-center space-x-3">
+          {/* Chart - Full height on mobile */}
+          <div className="flex-1 bg-black px-4 py-2">
+            {isLoading ? (
+              <div className="h-full flex items-center justify-center">
+                <div className="text-zinc-400">Loading...</div>
+              </div>
+            ) : (
+              <div className="relative h-full">
+                <svg
+                  width="100%"
+                  height="100%"
+                  viewBox="0 0 800 400"
+                  className="overflow-visible"
+                >
+                  {/* Minimal grid for mobile */}
+                  <defs>
+                    <pattern id="mobileGrid" width="100" height="50" patternUnits="userSpaceOnUse">
+                      <path d="M 100 0 L 0 0 0 50" fill="none" stroke="rgb(63 63 70)" strokeWidth="0.3" opacity="0.15"/>
+                    </pattern>
+                    <linearGradient id="mobilePriceGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" style={{ stopColor: 'rgb(249 115 22)', stopOpacity: 0.4 }} />
+                      <stop offset="100%" style={{ stopColor: 'rgb(249 115 22)', stopOpacity: 0.02 }} />
+                    </linearGradient>
+                  </defs>
+                  <rect width="800" height="400" fill="url(#mobileGrid)" />
+                  
+                  {/* Area under the curve */}
+                  <path
+                    d={createMobilePath() + ' L 770,380 L 30,380 Z'}
+                    fill="url(#mobilePriceGradient)"
+                  />
+                  
+                  {/* Price line - thicker for mobile */}
+                  <path
+                    d={createMobilePath()}
+                    fill="none"
+                    stroke="rgb(249 115 22)"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  
+                  {/* Price labels - mobile optimized */}
+                  {priceData.length > 0 && (
+                    <>
+                      <text x="35" y="50" fill="rgb(161 161 170)" fontSize="12" textAnchor="start">
+                        {formatPrice(Math.max(...priceData.map(p => p.price)))}
+                      </text>
+                      <text x="35" y="360" fill="rgb(161 161 170)" fontSize="12" textAnchor="start">
+                        {formatPrice(Math.min(...priceData.map(p => p.price)))}
+                      </text>
+                    </>
+                  )}
+                </svg>
+              </div>
+            )}
+          </div>
+
+          {/* Timeframe Selection - Robinhood style */}
+          <div className="px-4 py-3 border-t border-zinc-800/50">
+            <div className="flex justify-center space-x-1">
               {timeframes.map((timeframe) => (
                 <Button
                   key={timeframe.key}
-                  variant={selectedTimeframe === timeframe.key ? "default" : "outline"}
-                  size="lg"
+                  variant="ghost"
+                  size="sm"
                   onClick={() => setSelectedTimeframe(timeframe.key)}
                   className={`${
                     selectedTimeframe === timeframe.key
-                      ? 'bg-orange-500 hover:bg-orange-600 text-white shadow-lg'
-                      : 'bg-zinc-800 border-zinc-600 text-zinc-300 hover:bg-zinc-700 hover:text-white'
-                  } px-8 py-3 text-lg font-medium`}
+                      ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
+                      : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'
+                  } px-4 py-2 text-sm font-medium min-w-0 flex-1`}
                 >
-                  {timeframe.label}
+                  {timeframe.key}
                 </Button>
               ))}
             </div>
+          </div>
 
-            {/* Chart */}
-            <div className="bg-zinc-800/20 rounded-xl p-6 border border-zinc-700 flex-1">
-              {isLoading ? (
-                <div className="h-full flex items-center justify-center">
-                  <div className="text-zinc-400 text-lg">Loading chart data...</div>
-                </div>
-              ) : (
-                <div className="relative h-full">
-                  <svg
-                    width="100%"
-                    height="100%"
-                    viewBox="0 0 1200 600"
-                    className="overflow-visible"
-                  >
-                    {/* Grid lines */}
-                    <defs>
-                      <pattern id="grid" width="60" height="30" patternUnits="userSpaceOnUse">
-                        <path d="M 60 0 L 0 0 0 30" fill="none" stroke="rgb(63 63 70)" strokeWidth="0.5" opacity="0.2"/>
-                      </pattern>
-                      <linearGradient id="priceGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" style={{ stopColor: 'rgb(249 115 22)', stopOpacity: 0.3 }} />
-                        <stop offset="100%" style={{ stopColor: 'rgb(249 115 22)', stopOpacity: 0.05 }} />
-                      </linearGradient>
-                    </defs>
-                    <rect width="1200" height="600" fill="url(#grid)" />
-                    
-                    {/* Area under the curve */}
-                    <path
-                      d={createPath() + ' L 1160,560 L 40,560 Z'}
-                      fill="url(#priceGradient)"
-                    />
-                    
-                    {/* Price line */}
-                    <path
-                      d={createPath()}
-                      fill="none"
-                      stroke="rgb(249 115 22)"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      filter="drop-shadow(0 0 8px rgba(249, 115, 22, 0.3))"
-                    />
-                    
-                    {/* Data points */}
-                    {priceData.map((point, index) => {
-                      const width = 1200;
-                      const height = 600;
-                      const padding = 40;
-                      const minPrice = Math.min(...priceData.map(p => p.price));
-                      const maxPrice = Math.max(...priceData.map(p => p.price));
-                      const priceRange = maxPrice - minPrice;
-                      
-                      const x = padding + (index / (priceData.length - 1)) * (width - 2 * padding);
-                      const y = height - padding - ((point.price - minPrice) / priceRange) * (height - 2 * padding);
-                      
-                      return (
-                        <circle
-                          key={index}
-                          cx={x}
-                          cy={y}
-                          r="5"
-                          fill="rgb(249 115 22)"
-                          stroke="white"
-                          strokeWidth="2"
-                          className="hover:r-8 transition-all cursor-pointer"
-                          filter="drop-shadow(0 0 4px rgba(249, 115, 22, 0.4))"
-                        >
-                          <title>{point.date}: ${point.price.toLocaleString()}</title>
-                        </circle>
-                      );
-                    })}
-                    
-                    {/* Price labels with better formatting */}
-                    {priceData.length > 0 && (
-                      <>
-                        <text x="50" y="70" fill="rgb(161 161 170)" fontSize="14" textAnchor="start" fontWeight="500">
-                          {formatPrice(Math.max(...priceData.map(p => p.price)))}
-                        </text>
-                        <text x="50" y="540" fill="rgb(161 161 170)" fontSize="14" textAnchor="start" fontWeight="500">
-                          {formatPrice(Math.min(...priceData.map(p => p.price)))}
-                        </text>
-                        
-                        {/* Time axis labels */}
-                        {priceData.length > 2 && (
-                          <>
-                            <text x="60" y="580" fill="rgb(161 161 170)" fontSize="12" textAnchor="start">
-                              {priceData[0].date}
-                            </text>
-                            <text x="1140" y="580" fill="rgb(161 161 170)" fontSize="12" textAnchor="end">
-                              {priceData[priceData.length - 1].date}
-                            </text>
-                          </>
-                        )}
-                      </>
-                    )}
-                  </svg>
-                </div>
-              )}
-            </div>
-
-            {/* Key Statistics */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-zinc-800/40 rounded-lg p-4 border border-zinc-700">
-                <div className="text-sm text-zinc-400 mb-1">Period Start</div>
-                <div className="text-xl font-bold text-white">
+          {/* Stats - Mobile optimized */}
+          <div className="px-4 py-3 border-t border-zinc-800/50 bg-zinc-900/30">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="text-center">
+                <div className="text-xs text-zinc-400 mb-1">Period Start</div>
+                <div className="text-sm font-semibold text-white">
                   {priceData.length > 0 ? formatPrice(priceData[0].price) : '-'}
                 </div>
               </div>
-              <div className="bg-zinc-800/40 rounded-lg p-4 border border-zinc-700">
-                <div className="text-sm text-zinc-400 mb-1">Current Price</div>
-                <div className="text-xl font-bold text-white">
-                  {priceData.length > 0 ? formatPrice(priceData[priceData.length - 1].price) : '-'}
-                </div>
-              </div>
-              <div className="bg-zinc-800/40 rounded-lg p-4 border border-zinc-700">
-                <div className="text-sm text-zinc-400 mb-1">All-Time High</div>
-                <div className="text-xl font-bold text-green-400">
+              <div className="text-center">
+                <div className="text-xs text-zinc-400 mb-1">All-Time High</div>
+                <div className="text-sm font-semibold text-green-400">
                   {priceData.length > 0 ? formatPrice(Math.max(...priceData.map(p => p.price))) : '-'}
-                </div>
-              </div>
-              <div className="bg-zinc-800/40 rounded-lg p-4 border border-zinc-700">
-                <div className="text-sm text-zinc-400 mb-1">Period Low</div>
-                <div className="text-xl font-bold text-red-400">
-                  {priceData.length > 0 ? formatPrice(Math.min(...priceData.map(p => p.price))) : '-'}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Footer */}
-          <div className="px-6 py-4 border-t border-zinc-700 bg-zinc-800/30">
-            <div className="flex items-center justify-center">
-              <p className="text-zinc-400 text-sm font-medium italic">
+          {/* Footer - Mobile optimized */}
+          <div className="px-4 py-3 border-t border-zinc-800/50 bg-zinc-900/50">
+            <div className="text-center">
+              <p className="text-zinc-500 text-xs font-medium italic">
                 "When in doubt, zoom out"
               </p>
             </div>
