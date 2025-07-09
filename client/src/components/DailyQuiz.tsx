@@ -301,56 +301,44 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning, dayComple
   }
 
   return (
-    <div className="space-y-6">
-      {/* Quiz Score Summary */}
+    <div className="space-y-3">
+      {/* Compact Quiz Score */}
       {score && score.total > 0 && (
-        <Card className="bg-gradient-to-r from-green-900/20 to-blue-900/20 border-green-800/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Trophy className="w-6 h-6 text-yellow-500" />
-                <div>
-                  <h3 className="text-white font-semibold">Today's Quiz Score</h3>
-                  <p className="text-zinc-400 text-sm">
-                    {score.correct} out of {score.total} correct ({score.percentage}%)
-                  </p>
-                </div>
-              </div>
-              <Badge variant={score.percentage >= 70 ? "default" : "secondary"} className="bg-green-900 text-green-100">
-                {score.percentage >= 70 ? "Great!" : "Keep Learning"}
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="flex items-center justify-between p-3 bg-green-900/20 border border-green-800/50 rounded-lg">
+          <div className="flex items-center gap-2">
+            <Trophy className="w-4 h-4 text-yellow-500" />
+            <span className="text-white text-sm font-medium">
+              {score.correct}/{score.total} correct ({score.percentage}%)
+            </span>
+          </div>
+          <Badge variant={score.percentage >= 70 ? "default" : "secondary"} className="bg-green-900 text-green-100 text-xs">
+            {score.percentage >= 70 ? "Great!" : "Keep Learning"}
+          </Badge>
+        </div>
       )}
 
-      {/* Quiz Question */}
+      {/* Compact Quiz Question */}
       <Card className="bg-zinc-900 border-zinc-800">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-white flex items-center gap-2">
-              <Brain className="w-5 h-5 text-orange-500" />
-              Daily Quiz
-            </CardTitle>
+        <CardContent className="p-4 space-y-4">
+          {/* Quiz Header - Compact */}
+          <div className="flex items-center justify-between pb-2 border-b border-zinc-700">
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="border-zinc-700 text-zinc-300">
-                {currentQuestion?.difficulty}
-              </Badge>
-              <Badge variant="secondary" className="bg-zinc-800 text-zinc-300">
-                {currentQuestionIndex + 1} of {questions.length}
-              </Badge>
+              <Brain className="w-4 h-4 text-orange-500" />
+              <span className="text-white font-medium text-sm">Question {currentQuestionIndex + 1} of {questions.length}</span>
             </div>
+            <Badge variant="outline" className="border-zinc-700 text-zinc-400 text-xs">
+              {currentQuestion?.difficulty}
+            </Badge>
           </div>
-        </CardHeader>
-        <CardContent className="space-y-6">
+
           {currentQuestion && (
             <>
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium text-white">
+              <div className="space-y-3">
+                <h3 className="text-base font-medium text-white leading-snug">
                   {currentQuestion.question}
                 </h3>
                 
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {['A', 'B', 'C', 'D'].map((option) => {
                     const optionText = currentQuestion[`option${option}` as keyof QuizQuestion] as string;
                     const isSelected = selectedAnswers[currentQuestion.id] === option;
@@ -365,7 +353,7 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning, dayComple
                         onClick={() => !isAnswered && handleAnswerSelect(currentQuestion.id, option)}
                         disabled={isAnswered}
                         className={`
-                          w-full p-4 text-left rounded-lg border transition-all
+                          w-full p-3 text-left rounded-lg border transition-all text-sm
                           ${isAnswered 
                             ? isCorrectAnswer 
                               ? 'bg-green-900/30 border-green-700 text-green-100'
@@ -379,7 +367,7 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning, dayComple
                         `}
                       >
                         <div className="flex items-center gap-3">
-                          <span className={`flex-shrink-0 w-6 h-6 rounded-full text-sm flex items-center justify-center font-medium ${
+                          <span className={`flex-shrink-0 w-5 h-5 rounded-full text-xs flex items-center justify-center font-medium ${
                             isAnswered && isCorrectAnswer 
                               ? 'bg-green-600 text-white' 
                               : isAnswered && wasAnsweredIncorrectly
@@ -388,18 +376,13 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning, dayComple
                           }`}>
                             {option}
                           </span>
-                          <span className="flex-1">{optionText}</span>
-                          <div className="flex items-center gap-2">
-                            {isAnswered && isCorrectAnswer && (
-                              <div className="flex items-center gap-1">
-                                <CheckCircle className="w-4 h-4 text-green-400" />
-                                <span className="text-xs text-green-400 font-medium">Correct</span>
-                              </div>
-                            )}
-                            {isAnswered && wasAnsweredIncorrectly && (
-                              <XCircle className="w-5 h-5 text-red-500" />
-                            )}
-                          </div>
+                          <span className="flex-1 leading-tight">{optionText}</span>
+                          {isAnswered && isCorrectAnswer && (
+                            <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
+                          )}
+                          {isAnswered && wasAnsweredIncorrectly && (
+                            <XCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                          )}
                         </div>
                       </button>
                     );
@@ -407,53 +390,32 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning, dayComple
                 </div>
               </div>
 
-              {/* Answer Feedback */}
+              {/* Compact Answer Feedback */}
               {userAnswer && (
-                <div className={`p-4 rounded-lg border ${
+                <div className={`p-3 rounded-lg border ${
                   userAnswer.isCorrect 
                     ? 'bg-green-900/20 border-green-800/50' 
                     : 'bg-orange-900/20 border-orange-800/50'
                 }`}>
-                  <div className="flex items-center gap-2 mb-3">
+                  <div className="flex items-center gap-2 mb-2">
                     {userAnswer.isCorrect ? (
                       <>
-                        <CheckCircle className="w-5 h-5 text-green-400" />
-                        <h4 className="font-semibold text-green-100">Correct!</h4>
+                        <CheckCircle className="w-4 h-4 text-green-400" />
+                        <h4 className="font-medium text-green-100 text-sm">Correct!</h4>
                       </>
                     ) : (
                       <>
-                        <XCircle className="w-5 h-5 text-orange-400" />
-                        <h4 className="font-semibold text-orange-100">Not quite right</h4>
+                        <XCircle className="w-4 h-4 text-orange-400" />
+                        <h4 className="font-medium text-orange-100 text-sm">Not quite right</h4>
                       </>
                     )}
                   </div>
                   
-                  {!userAnswer.isCorrect && (
-                    <div className="space-y-2 text-sm mb-4">
-                      <div className="flex items-start gap-2">
-                        <span className="text-orange-300 font-medium">Your answer:</span>
-                        <span className="text-orange-200">
-                          {userAnswer.selectedAnswer}. {currentQuestion[`option${userAnswer.selectedAnswer}` as keyof QuizQuestion]}
-                        </span>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <span className="text-green-300 font-medium">Correct answer:</span>
-                        <span className="text-green-200">
-                          {currentQuestion.correctAnswer}. {currentQuestion[`option${currentQuestion.correctAnswer}` as keyof QuizQuestion]}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Consolidated Explanation */}
-                  <div className={`border-t pt-3 ${
+                  {/* Compact Explanation */}
+                  <div className={`border-t pt-2 ${
                     userAnswer.isCorrect ? 'border-green-700/50' : 'border-orange-700/50'
                   }`}>
-                    <div className="flex items-center gap-2 mb-2">
-                      <Brain className="w-4 h-4 text-blue-400" />
-                      <h4 className="font-medium text-zinc-200">Explanation</h4>
-                    </div>
-                    <p className={`text-sm leading-relaxed ${
+                    <p className={`text-xs leading-relaxed ${
                       userAnswer.isCorrect ? 'text-green-200' : 'text-zinc-300'
                     }`}>
                       {currentQuestion.explanation}
@@ -462,10 +424,11 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning, dayComple
                 </div>
               )}
 
-              {/* Action buttons */}
-              <div className="flex items-center justify-between pt-4">
+              {/* Compact Action buttons */}
+              <div className="flex items-center justify-between pt-3">
                 <Button
                   variant="outline"
+                  size="sm"
                   onClick={prevQuestion}
                   disabled={currentQuestionIndex === 0}
                   className="border-zinc-700 text-zinc-300 hover:bg-zinc-800"
@@ -473,28 +436,30 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning, dayComple
                   Previous
                 </Button>
 
-                <div className="flex gap-3">
+                <div className="flex gap-2">
                   {!isAnswered ? (
                     <Button
+                      size="sm"
                       onClick={handleSubmitAnswer}
                       disabled={!selectedAnswers[currentQuestion.id] || submitAnswerMutation.isPending}
-                      className="bg-orange-600 hover:bg-orange-700 text-white px-6"
+                      className="bg-orange-600 hover:bg-orange-700 text-white px-4"
                     >
-                      {submitAnswerMutation.isPending ? "Submitting..." : "Submit Answer"}
+                      {submitAnswerMutation.isPending ? "Submitting..." : "Submit"}
                     </Button>
                   ) : (
                     <>
                       {currentQuestionIndex < questions.length - 1 ? (
                         <Button
+                          size="sm"
                           onClick={nextQuestion}
-                          className="bg-green-600 hover:bg-green-700 text-white px-6"
+                          className="bg-green-600 hover:bg-green-700 text-white px-4"
                         >
-                          Next Question →
+                          Next →
                         </Button>
                       ) : (
-                        <div className="flex items-center gap-2 px-4 py-2 bg-green-900/30 border border-green-700 rounded-lg">
-                          <CheckCircle className="w-4 h-4 text-green-400" />
-                          <span className="text-green-300 font-medium">Quiz Complete!</span>
+                        <div className="flex items-center gap-2 px-3 py-1 bg-green-900/30 border border-green-700 rounded-lg">
+                          <CheckCircle className="w-3 h-3 text-green-400" />
+                          <span className="text-green-300 font-medium text-sm">Complete!</span>
                         </div>
                       )}
                     </>
