@@ -72,10 +72,13 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Bitcoin Price Display */}
-            <div className="hidden md:block">
+            {/* Centered Bitcoin Price Display */}
+            <div className="hidden md:flex justify-center flex-1">
               <BitcoinPriceDisplay />
             </div>
+
+            {/* Right spacer to balance layout */}
+            <div className="hidden md:block w-[200px]"></div>
 
             {/* Header Actions */}
             <div className="flex items-center gap-2">
