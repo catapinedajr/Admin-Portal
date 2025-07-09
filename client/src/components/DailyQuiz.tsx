@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, XCircle, Brain, Trophy, ChevronLeft, ChevronRight, AlertCircle } from "@/lib/icons";
 import { apiRequest } from "@/lib/queryClient";
+import SatsRewardAnimation from "@/components/animations/SatsRewardAnimation";
 
 interface QuizQuestion {
   id: number;
@@ -47,6 +48,8 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning }: DailyQu
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const [submittedAnswers, setSubmittedAnswers] = useState<Record<number, QuizAnswer>>({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [showSatsAnimation, setShowSatsAnimation] = useState(false);
+  const [animationSatsAmount, setAnimationSatsAmount] = useState(0);
   const queryClient = useQueryClient();
   const completionTriggeredRef = useRef(false);
   
@@ -148,8 +151,14 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning }: DailyQu
       }));
       
       // Trigger earning animation if answer is correct
-      if (data.isCorrect && onEarning) {
-        onEarning(100); // Award 100 satoshis for correct answer
+      if (data.isCorrect) {
+        const satsEarned = 100; // Award 100 satoshis for correct answer
+        setAnimationSatsAmount(satsEarned);
+        setShowSatsAnimation(true);
+        
+        if (onEarning) {
+          onEarning(satsEarned);
+        }
       }
       
       // Invalidate queries to refresh data
@@ -502,6 +511,13 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning }: DailyQu
           );
         })}
       </div>
+
+      {/* Sats Reward Animation */}
+      <SatsRewardAnimation 
+        isActive={showSatsAnimation}
+        satsAmount={animationSatsAmount}
+        onComplete={() => setShowSatsAnimation(false)}
+      />
     </div>
   );
 }
