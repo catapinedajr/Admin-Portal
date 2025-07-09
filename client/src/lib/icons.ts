@@ -101,6 +101,7 @@ export { default as Car } from "lucide-react/dist/esm/icons/car";
 // Additional icons needed by components
 export { default as Trophy } from "lucide-react/dist/esm/icons/trophy";
 export { default as Award } from "lucide-react/dist/esm/icons/award";
+export { default as Sparkles } from "lucide-react/dist/esm/icons/sparkles";
 export { default as Star } from "lucide-react/dist/esm/icons/star";
 export { default as ShoppingCart } from "lucide-react/dist/esm/icons/shopping-cart";
 export { default as Heart } from "lucide-react/dist/esm/icons/heart";

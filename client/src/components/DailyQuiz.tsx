@@ -40,9 +40,10 @@ interface QuizScore {
 interface DailyQuizProps {
   dayIndex: number;
   onCompletion?: () => void; // Callback when quiz is completed successfully
+  onEarning?: (sats: number) => void; // Callback when user earns satoshis
 }
 
-export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
+export default function DailyQuiz({ dayIndex, onCompletion, onEarning }: DailyQuizProps) {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const [submittedAnswers, setSubmittedAnswers] = useState<Record<number, QuizAnswer>>({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -145,6 +146,12 @@ export default function DailyQuiz({ dayIndex, onCompletion }: DailyQuizProps) {
         ...prev,
         [variables.questionId]: data
       }));
+      
+      // Trigger earning animation if answer is correct
+      if (data.isCorrect && onEarning) {
+        onEarning(100); // Award 100 satoshis for correct answer
+      }
+      
       // Invalidate queries to refresh data
       queryClient.invalidateQueries({ queryKey: ['/api/quiz/answers', userId, today] });
       queryClient.invalidateQueries({ queryKey: ['/api/quiz/score', userId, today] });

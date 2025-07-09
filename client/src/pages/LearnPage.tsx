@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
-import { Crown, Gem, User as UserIcon, ChevronDown, ChevronUp, Coins, Clock, CheckCircle, Key, GraduationCap, Brain } from "@/lib/icons";
+import { Crown, Gem, User as UserIcon, ChevronDown, ChevronUp, Coins, Clock, CheckCircle, Key, GraduationCap, Brain, TrendingUp, Zap, Award, Sparkles } from "@/lib/icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -41,6 +41,10 @@ function LearnPage() {
 
   // Local state for expandable content
   const [expandedFacts, setExpandedFacts] = useState<Set<number>>(new Set());
+  
+  // Animation state for earning satoshis
+  const [showEarningAnimation, setShowEarningAnimation] = useState(false);
+  const [earnedSats, setEarnedSats] = useState(0);
 
   // Get day metadata
   const { data: dayMetadata } = useQuery({
@@ -101,6 +105,14 @@ function LearnPage() {
   // Check if quiz is completed (based on actual quiz score data)
   const isQuizCompleted = quizScore && quizScore.total > 0;
 
+  // Get wallet data for learning progress
+  const { data: walletData } = useQuery({
+    queryKey: ['/api/wallet/dashboard'],
+    enabled: !!localStorage.getItem('sessionId'),
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+
   const getPersonalizedGreeting = () => {
     const timeGreeting = getTimeBasedGreeting();
     if (user?.firstName) {
@@ -142,6 +154,48 @@ function LearnPage() {
     return diveDeeperContent.find((content: any) => 
       content.factTitle === factTitle
     );
+  };
+
+  // Animation function to trigger earning satoshis
+  const triggerEarningAnimation = async (sats: number) => {
+    setEarnedSats(sats);
+    setShowEarningAnimation(true);
+    
+    // Make API call to record earning
+    try {
+      const sessionId = localStorage.getItem('hodlearn_session');
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      
+      if (sessionId) {
+        headers['Authorization'] = `Bearer ${sessionId}`;
+      }
+      
+      const today = new Date().toISOString().split('T')[0];
+      
+      await fetch('/api/wallet/earn', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          dayIndex: currentDayIndex,
+          earningType: 'quiz_correct',
+          satoshisEarned: sats,
+          bitcoinPriceUsd: 109256, // Will be updated with real price from API
+          description: `Correct answer on Day ${currentDayIndex} quiz`,
+          date: today
+        }),
+        credentials: 'same-origin'
+      });
+      
+      // Refresh wallet data after earning
+      queryClient.invalidateQueries({ queryKey: ['/api/wallet/progress'] });
+    } catch (error) {
+      console.error('Failed to record earning:', error);
+    }
+    
+    // Hide the animation after 3 seconds
+    setTimeout(() => {
+      setShowEarningAnimation(false);
+    }, 3000);
   };
 
   return (
@@ -253,6 +307,53 @@ function LearnPage() {
               {getMotivationalMessage()}
             </p>
           </div>
+
+          {/* Compact Learning Wallet Display */}
+          {walletData && (
+            <div className="relative">
+              {/* Main Wallet Card */}
+              <Card className="bg-gradient-to-r from-orange-500/10 to-orange-600/10 border-orange-500/20 mx-auto max-w-md">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                        <Coins className="w-5 h-5 text-orange-400" />
+                      </div>
+                      <div>
+                        <div className="text-lg font-bold text-orange-400">
+                          {walletData.totalSatoshisEarned?.toLocaleString() || 0} sats
+                        </div>
+                        <div className="text-xs text-zinc-400">
+                          ≈ ${(walletData.totalUsdValue || 0).toFixed(2)} USD
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="flex items-center gap-1 text-orange-400">
+                        <Zap className="w-4 h-4" />
+                        <span className="text-sm font-medium">
+                          {walletData.currentStreakMultiplier || 1}x
+                        </span>
+                      </div>
+                      <div className="text-xs text-zinc-500">multiplier</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Floating Earning Animation */}
+              {showEarningAnimation && (
+                <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+                  <div className="animate-bounce">
+                    <div className="flex items-center gap-2 bg-green-500/90 text-white px-3 py-2 rounded-full shadow-lg">
+                      <Sparkles className="w-4 h-4" />
+                      <span className="font-bold">+{earnedSats} sats!</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Content Gating Logic */}
           {isDayLockedBySubscription ? (
@@ -388,6 +489,7 @@ function LearnPage() {
                   <DailyQuiz
                     dayIndex={currentDayIndex}
                     onCompletion={handleQuizCompletion}
+                    onEarning={triggerEarningAnimation}
                   />
                 </CardContent>
               </Card>
