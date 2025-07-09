@@ -3,6 +3,7 @@ import compression from "compression";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { testConnection } from "./db";
+import bitcoinPriceRouter from "./bitcoin-price";
 
 const app = express();
 
@@ -70,6 +71,9 @@ app.use((req, res, next) => {
     console.error('❌ Failed to connect to database. Server starting without database functionality.');
   }
 
+  // Add Bitcoin price router
+  app.use(bitcoinPriceRouter);
+  
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

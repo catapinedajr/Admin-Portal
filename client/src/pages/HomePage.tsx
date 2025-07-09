@@ -4,6 +4,7 @@ import { useLocation } from "wouter";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { Crown, Gem, Gamepad2, MoreHorizontal, User as UserIcon, Users, MessageSquare, TrendingUp, ArrowRight, Shield, TrendingDown, Award } from "@/lib/icons";
+import BitcoinPriceDisplay from "@/components/BitcoinPriceDisplay";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { User } from "@shared/schema";
@@ -68,6 +69,11 @@ export default function HomePage() {
               </div>
             </div>
 
+            {/* Bitcoin Price Display */}
+            <div className="hidden md:block">
+              <BitcoinPriceDisplay />
+            </div>
+
             {/* Header Actions */}
             <div className="flex items-center gap-2">
               {/* Account Button */}
@@ -102,6 +108,13 @@ export default function HomePage() {
           </div>
         </div>
       </header>
+
+      {/* Mobile Bitcoin Price Display */}
+      <div className="md:hidden bg-zinc-800/50 border-b border-zinc-700/50">
+        <div className="max-w-6xl mx-auto px-4 py-3">
+          <BitcoinPriceDisplay />
+        </div>
+      </div>
 
       <main className="max-w-6xl mx-auto px-4 py-6 pb-32">
         <div className="space-y-8">
