@@ -43,7 +43,7 @@ export function DCASimulator() {
         const response = await fetch('/api/bitcoin-price');
         if (response.ok) {
           const data = await response.json();
-          const price = parseFloat(data.priceUsd);
+          const price = parseFloat(data.price);
           setCurrentBitcoinPrice(price);
         }
       } catch (error) {
@@ -62,6 +62,12 @@ export function DCASimulator() {
     // Validate inputs
     const validAmount = Number(monthlyAmount) || 100;
     if (!startDate || !frequency) return;
+    
+    // Ensure currentBitcoinPrice is available
+    if (!currentBitcoinPrice || currentBitcoinPrice <= 0) {
+      console.log('Waiting for Bitcoin price to load:', currentBitcoinPrice);
+      return;
+    }
     
     // Calculate duration from start date to January 2025 (present)
     const startDateObj = new Date(startDate);
@@ -113,6 +119,14 @@ export function DCASimulator() {
     // Calculate mathematically accurate growth rate with safety checks
     const totalGrowthRatio = currentBitcoinPrice / startingPrice;
     const annualGrowthRate = Math.max(1, Math.pow(totalGrowthRatio, 1/durationYears)); // Ensure positive growth
+    
+    console.log('DCA Calculation:', {
+      startingPrice,
+      currentBitcoinPrice,
+      totalGrowthRatio,
+      durationYears,
+      totalPurchases
+    });
     
     // Generate Bitcoin price progression with simple, reliable calculation
     for (let i = 0; i < totalPurchases; i++) {
