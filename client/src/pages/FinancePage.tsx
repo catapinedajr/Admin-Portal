@@ -219,11 +219,11 @@ function FinancePage() {
     setAdoptionAnimationRunning(true);
     setAdoptionProgress(0);
 
-    // Step-by-step story animation with engaging timing
+    // Step-by-step story animation with fast timing for 2-second attention spans
     const adoptionSteps = [
-      { step: 1, delay: 1500 },   // Internet 2000 "too late" moment at 1.5 seconds
-      { step: 2, delay: 4000 },   // What actually happened next at 4 seconds  
-      { step: 3, delay: 7000 }    // Bitcoin today parallel at 7 seconds
+      { step: 1, delay: 800 },    // Internet 2000 "too late" moment at 0.8 seconds
+      { step: 2, delay: 2000 },   // What actually happened next at 2 seconds  
+      { step: 3, delay: 3500 }    // Bitcoin today parallel at 3.5 seconds
     ];
 
     adoptionSteps.forEach(({ step, delay }) => {
@@ -232,10 +232,10 @@ function FinancePage() {
       }, delay);
     });
 
-    // Stop animation running indicator after 9 seconds
+    // Stop animation running indicator after 4.5 seconds
     setTimeout(() => {
       setAdoptionAnimationRunning(false);
-    }, 9000);
+    }, 4500);
   };
 
   const resetAdoptionAnimation = () => {
@@ -836,7 +836,7 @@ function FinancePage() {
           </CardContent>
         </Card>
 
-        {/* Visual "Too Late" Growth Chart */}
+        {/* Instant "Too Late" Visual Story */}
         <Card className="bg-zinc-900 border-zinc-800">
           <CardHeader className="pb-3">
             <CardTitle className="text-white flex items-center gap-2 text-lg">
@@ -849,18 +849,18 @@ function FinancePage() {
             {!adoptionAnimationActive && (
               <div className="text-center space-y-3">
                 <div className="p-4 bg-zinc-800 rounded-lg border border-zinc-700">
-                  <p className="text-zinc-300 text-sm mb-2">
-                    <span className="text-orange-400 font-bold">"Am I too late for Bitcoin?"</span>
+                  <p className="text-zinc-300 text-base font-bold mb-2">
+                    <span className="text-orange-400">"Am I too late for Bitcoin?"</span>
                   </p>
-                  <p className="text-zinc-400 text-xs">
-                    Let's see what happened when people asked this same question about past technologies...
+                  <p className="text-zinc-400 text-sm">
+                    Here's what happened to the last people who thought they were "too late"...
                   </p>
                 </div>
                 <Button 
                   onClick={startAdoptionAnimation}
-                  className="w-full bg-orange-600 hover:bg-orange-700 h-10 text-base font-medium"
+                  className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg font-bold"
                 >
-                  Show The Growth Chart
+                  Show Me The Truth
                 </Button>
               </div>
             )}
@@ -878,127 +878,59 @@ function FinancePage() {
                   </Button>
                 </div>
                 
-                {/* Visual Growth Chart */}
-                <div className="bg-zinc-800 rounded-lg p-4 border border-zinc-700">
-                  <svg 
-                    viewBox="0 0 320 200" 
-                    className="w-full h-48"
-                  >
-                    {/* Grid background */}
-                    <defs>
-                      <pattern id="gridPattern" width="32" height="20" patternUnits="userSpaceOnUse">
-                        <path d="M 32 0 L 0 0 0 20" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.3"/>
-                      </pattern>
-                    </defs>
-                    <rect width="320" height="200" fill="url(#gridPattern)" />
-                    
-                    {/* Y-axis labels */}
-                    <text x="20" y="25" fill="#9CA3AF" fontSize="9" textAnchor="middle">6B</text>
-                    <text x="20" y="65" fill="#9CA3AF" fontSize="9" textAnchor="middle">4B</text>
-                    <text x="20" y="105" fill="#9CA3AF" fontSize="9" textAnchor="middle">2B</text>
-                    <text x="20" y="145" fill="#9CA3AF" fontSize="9" textAnchor="middle">1B</text>
-                    <text x="20" y="185" fill="#9CA3AF" fontSize="9" textAnchor="middle">0</text>
-
-                    {/* Internet Growth Line */}
-                    <path
-                      d="M 40,185 Q 80,175 120,145 Q 160,105 200,65 Q 240,35 280,25"
-                      stroke="#3B82F6"
-                      strokeWidth="3"
-                      fill="none"
-                      strokeDasharray={adoptionProgress >= 1 ? "none" : "0,1000"}
-                      style={{
-                        strokeDasharray: adoptionProgress >= 1 ? "none" : `${adoptionProgress * 240},1000`,
-                        transition: 'stroke-dasharray 2s ease-in-out'
-                      }}
-                    />
-
-                    {/* "Too Late" marker 2000 */}
-                    {adoptionProgress >= 1 && (
-                      <g>
-                        <circle cx="120" cy="145" r="3" fill="#EF4444" opacity="0.8">
-                          <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
-                        </circle>
-                        <rect x="85" y="155" width="70" height="25" fill="#1F2937" stroke="#EF4444" strokeWidth="1" rx="4"/>
-                        <text x="120" y="167" fill="#EF4444" fontSize="7" textAnchor="middle" fontWeight="bold">
-                          "TOO LATE" 2000
-                        </text>
-                        <text x="120" y="175" fill="#EF4444" fontSize="6" textAnchor="middle">
-                          400M users
-                        </text>
-                      </g>
-                    )}
-
-                    {/* What happened after */}
-                    {adoptionProgress >= 2 && (
-                      <g className="animate-fade-in">
-                        <rect x="200" y="35" width="60" height="20" fill="#059669" rx="3"/>
-                        <text x="230" y="47" fill="#FFF" fontSize="7" textAnchor="middle" fontWeight="bold">
-                          +1,200% MORE
-                        </text>
-                        
-                        {/* Major companies that came after */}
-                        <rect x="125" y="100" width="120" height="35" fill="#1F2937" stroke="#10B981" strokeWidth="1" rx="4"/>
-                        <text x="185" y="112" fill="#10B981" fontSize="8" textAnchor="middle" fontWeight="bold">
-                          Born AFTER 2000:
-                        </text>
-                        <text x="145" y="122" fill="#E5E7EB" fontSize="6">Google</text>
-                        <text x="170" y="122" fill="#E5E7EB" fontSize="6">Facebook</text>
-                        <text x="205" y="122" fill="#E5E7EB" fontSize="6">iPhone</text>
-                        <text x="145" y="130" fill="#E5E7EB" fontSize="6">YouTube</text>
-                        <text x="170" y="130" fill="#E5E7EB" fontSize="6">Uber</text>
-                        <text x="195" y="130" fill="#E5E7EB" fontSize="6">TikTok</text>
-                      </g>
-                    )}
-
-                    {/* Bitcoin line starting */}
-                    {adoptionProgress >= 3 && (
-                      <g>
-                        <path
-                          d="M 40,185 Q 70,180 100,175 Q 130,170 160,165 Q 190,160 220,155"
-                          stroke="#F97316"
-                          strokeWidth="3"
-                          fill="none"
-                          className="animate-fade-in"
-                        />
-                        
-                        <circle cx="220" cy="155" r="3" fill="#F97316" opacity="0.8">
-                          <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
-                        </circle>
-                        
-                        <rect x="185" y="135" width="70" height="15" fill="#1F2937" stroke="#F97316" strokeWidth="1" rx="3"/>
-                        <text x="220" y="145" fill="#F97316" fontSize="7" textAnchor="middle" fontWeight="bold">
-                          Bitcoin 2024: 200M
-                        </text>
-                        
-                        <rect x="260" y="125" width="50" height="20" fill="#F97316" rx="3"/>
-                        <text x="285" y="137" fill="#000" fontSize="7" textAnchor="middle" fontWeight="bold">
-                          SAME SPOT
-                        </text>
-                      </g>
-                    )}
-
-                    {/* Timeline */}
-                    <text x="40" y="195" fill="#9CA3AF" fontSize="8" textAnchor="middle">1995</text>
-                    <text x="120" y="195" fill="#9CA3AF" fontSize="8" textAnchor="middle">2000</text>
-                    <text x="200" y="195" fill="#9CA3AF" fontSize="8" textAnchor="middle">2010</text>
-                    <text x="280" y="195" fill="#9CA3AF" fontSize="8" textAnchor="middle">2024</text>
-                  </svg>
-                </div>
-
-                {/* Key Insight */}
-                {adoptionProgress >= 3 && (
-                  <div className="p-4 bg-gradient-to-r from-green-900/40 to-orange-900/40 rounded-lg border border-green-600/50 animate-fade-in">
-                    <div className="text-center space-y-2">
-                      <div className="text-green-400 font-bold text-lg">
-                        You're Right Where You Want To Be
+                {/* Super Simple Visual Story - 3 Big Cards */}
+                <div className="space-y-3">
+                  
+                  {/* Step 1: The "Too Late" Moment */}
+                  {adoptionProgress >= 1 && (
+                    <div className="bg-red-900/30 border-2 border-red-500 rounded-xl p-6 animate-fade-in">
+                      <div className="text-center space-y-2">
+                        <div className="text-4xl font-black text-red-400">2000</div>
+                        <div className="text-xl font-bold text-white">Internet had 400M users</div>
+                        <div className="bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-lg">
+                          "TOO LATE FOR INTERNET!"
+                        </div>
+                        <div className="text-red-300 text-sm">Everyone said the boom was over</div>
                       </div>
-                      <p className="text-zinc-300 text-sm">
-                        Bitcoin today = Internet in 2000 when people said "too late"<br/>
-                        <span className="text-orange-400 font-bold">The biggest gains came after that moment.</span>
-                      </p>
                     </div>
-                  </div>
-                )}
+                  )}
+                  
+                  {/* Step 2: What Actually Happened */}
+                  {adoptionProgress >= 2 && (
+                    <div className="bg-green-900/30 border-2 border-green-500 rounded-xl p-6 animate-fade-in">
+                      <div className="text-center space-y-3">
+                        <div className="text-4xl font-black text-green-400">2024</div>
+                        <div className="text-xl font-bold text-white">Internet now has 5.2B users</div>
+                        <div className="bg-green-600 text-white px-4 py-2 rounded-lg font-bold text-lg">
+                          +1,200% GROWTH AFTER "TOO LATE"
+                        </div>
+                        <div className="grid grid-cols-3 gap-2 mt-3 text-xs">
+                          <div className="bg-zinc-800 p-2 rounded text-white">Google</div>
+                          <div className="bg-zinc-800 p-2 rounded text-white">Facebook</div>
+                          <div className="bg-zinc-800 p-2 rounded text-white">iPhone</div>
+                        </div>
+                        <div className="text-green-300 text-sm">All created AFTER the "too late" moment</div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Step 3: Bitcoin Today */}
+                  {adoptionProgress >= 3 && (
+                    <div className="bg-orange-900/30 border-2 border-orange-500 rounded-xl p-6 animate-fade-in">
+                      <div className="text-center space-y-2">
+                        <div className="text-4xl font-black text-orange-400">2024</div>
+                        <div className="text-xl font-bold text-white">Bitcoin has 200M users</div>
+                        <div className="bg-orange-600 text-white px-4 py-2 rounded-lg font-bold text-lg">
+                          SAME EXACT SPOT AS INTERNET 2000
+                        </div>
+                        <div className="text-orange-300 text-lg font-bold mt-3">
+                          You're NOT too late. You're perfectly timed.
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                </div>
               </div>
             )}
           </CardContent>
