@@ -134,7 +134,7 @@ export default function HomePage() {
       </div>
 
       <main className="max-w-6xl mx-auto px-4 py-6 pb-32">
-        <div className="space-y-8">
+        <div className="space-y-4">
 
           {/* Bitcoin Learning Wallet Summary */}
           <WalletSummaryCard />
