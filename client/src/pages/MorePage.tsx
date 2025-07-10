@@ -59,21 +59,7 @@ export default function MorePage() {
                 <span className="sr-only">Account</span>
               </Button>
               
-              {/* Premium Status Indicator */}
-              {isPremiumTier ? (
-                <div className="bg-orange-500 hover:bg-orange-600 text-white border-orange-500 px-3 py-1.5 font-medium rounded text-sm">
-                  Premium
-                </div>
-              ) : (
-                <Button 
-                  onClick={() => setShowEmailModal(true)}
-                  size="sm"
-                  className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-3 py-1.5 text-sm"
-                  title="Upgrade to Premium"
-                >
-                  Upgrade
-                </Button>
-              )}
+
             </div>
           </div>
         </div>
