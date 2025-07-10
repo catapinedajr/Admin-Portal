@@ -7,7 +7,7 @@ import { Crown, Gem, Gamepad2, MoreHorizontal, User as UserIcon, Users, MessageS
 import BitcoinPriceDisplay from "@/components/BitcoinPriceDisplay";
 import WalletDisplay from "@/components/WalletDisplay";
 import WalletSummaryCard from "@/components/WalletSummaryCard";
-import StreakAchievementCard from "@/components/StreakAchievementCard";
+import HomeSection from "@/components/sections/HomeSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { User } from "@shared/schema";
@@ -139,12 +139,13 @@ export default function HomePage() {
           {/* Bitcoin Learning Wallet Summary */}
           <WalletSummaryCard />
 
-          {/* Streak Achievement Card with Learning Section */}
-          <StreakAchievementCard 
+          {/* Home Learning Cards */}
+          <HomeSection 
+            user={user}
             currentDayIndex={currentDayIndex}
             dayMetadata={dayMetadata}
             dailyFacts={dailyFacts}
-            includeLearningSection={true}
+            setActiveSection={setActiveSection}
           />
 
           {/* Quick Actions Grid - Streamlined */}
