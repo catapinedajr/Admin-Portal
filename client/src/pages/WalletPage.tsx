@@ -132,12 +132,11 @@ export default function WalletPage() {
                     HL
                   </div>
                   <div>
-                    <h1 className="text-xl font-bold">HODLearn</h1>
+                    <h1 className="text-xl font-bold">HODLearn™</h1>
                     <p className="text-xs text-zinc-400">How-to-learn BTC</p>
                   </div>
                 </div>
               </div>
-
 
               {/* Header Actions */}
               <div className="flex items-center gap-2">
@@ -152,23 +151,16 @@ export default function WalletPage() {
                   <span className="sr-only">Wallet</span>
                 </Button>
 
-                {/* Premium Status Indicator */}
-                {isPremiumTier ? (
-                  <div className="bg-orange-500 hover:bg-orange-600 text-white border-orange-500 px-2.5 py-1.5 font-medium rounded flex items-center">
-                    <Gem className="w-4 h-4" />
-                    <span className="sr-only">Premium</span>
-                  </div>
-                ) : (
-                  <Button 
-                    onClick={() => setShowEmailModal(true)}
-                    size="sm"
-                    className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-2.5 py-1.5"
-                    title="Upgrade to Premium"
-                  >
-                    <Crown className="w-4 h-4" />
-                    <span className="sr-only">Upgrade</span>
-                  </Button>
-                )}
+                {/* Account Button */}
+                <Button 
+                  onClick={() => setLocation('/account')}
+                  size="sm"
+                  className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-2.5 py-1.5"
+                  title="Account Settings"
+                >
+                  <UserIcon className="w-4 h-4" />
+                  <span className="sr-only">Account</span>
+                </Button>
               </div>
             </div>
           </div>
@@ -234,12 +226,11 @@ export default function WalletPage() {
                     HL
                   </div>
                   <div>
-                    <h1 className="text-xl font-bold">HODLearn</h1>
+                    <h1 className="text-xl font-bold">HODLearn™</h1>
                     <p className="text-xs text-zinc-400">How-to-learn BTC</p>
                   </div>
                 </div>
               </div>
-
 
               {/* Header Actions */}
               <div className="flex items-center gap-2">
@@ -254,23 +245,16 @@ export default function WalletPage() {
                   <span className="sr-only">Wallet</span>
                 </Button>
 
-                {/* Premium Status Indicator */}
-                {isPremiumTier ? (
-                  <div className="bg-orange-500 hover:bg-orange-600 text-white border-orange-500 px-2.5 py-1.5 font-medium rounded flex items-center">
-                    <Gem className="w-4 h-4" />
-                    <span className="sr-only">Premium</span>
-                  </div>
-                ) : (
-                  <Button 
-                    onClick={() => setShowEmailModal(true)}
-                    size="sm"
-                    className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-2.5 py-1.5"
-                    title="Upgrade to Premium"
-                  >
-                    <Crown className="w-4 h-4" />
-                    <span className="sr-only">Upgrade</span>
-                  </Button>
-                )}
+                {/* Account Button */}
+                <Button 
+                  onClick={() => setLocation('/account')}
+                  size="sm"
+                  className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-2.5 py-1.5"
+                  title="Account Settings"
+                >
+                  <UserIcon className="w-4 h-4" />
+                  <span className="sr-only">Account</span>
+                </Button>
               </div>
             </div>
           </div>
@@ -367,23 +351,7 @@ export default function WalletPage() {
                 <span className="sr-only">Wallet</span>
               </Button>
 
-              {/* Premium Status Indicator */}
-              {isPremiumTier ? (
-                <div className="bg-orange-500 hover:bg-orange-600 text-white border-orange-500 px-2.5 py-1.5 font-medium rounded flex items-center">
-                  <Gem className="w-4 h-4" />
-                  <span className="sr-only">Premium</span>
-                </div>
-              ) : (
-                <Button 
-                  onClick={() => setShowEmailModal(true)}
-                  size="sm"
-                  className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-2.5 py-1.5"
-                  title="Upgrade to Premium"
-                >
-                  <Crown className="w-4 h-4" />
-                  <span className="sr-only">Upgrade</span>
-                </Button>
-              )}
+
             </div>
           </div>
         </div>
