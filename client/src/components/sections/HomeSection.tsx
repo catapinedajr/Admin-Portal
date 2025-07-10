@@ -71,7 +71,7 @@ export default function HomeSection({
   const completedMilestones = milestones.filter(m => m.days <= currentStreak);
   
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       {/* Top Card - Rewards/Streak Section */}
       <Card 
         onClick={() => setLocation('/wallet/rewards')}
