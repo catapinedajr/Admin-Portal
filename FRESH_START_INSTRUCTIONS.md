@@ -2,7 +2,7 @@
 
 ## Download Your Complete Project
 
-Your project is packaged and ready for download: **`hodlearn-ios-complete.tar.gz`**
+Your project is packaged and ready for download: **`hodlearn-ios-project.zip`**
 
 ## What's Included:
 - Complete source code with all latest updates
@@ -17,10 +17,11 @@ Your project is packaged and ready for download: **`hodlearn-ios-complete.tar.gz
 
 ### 1. Download and Extract
 ```bash
-# Download the file from Replit
-# Extract it wherever you want to work
-tar -xzf hodlearn-ios-complete.tar.gz
-cd hodlearn-ios-complete
+# Download hodlearn-ios-project.zip from Replit
+# Double-click the ZIP file on Mac to extract it
+# Or use Terminal:
+unzip hodlearn-ios-project.zip
+cd hodlearn-ios-project
 ```
 
 ### 2. Install Dependencies
