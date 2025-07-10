@@ -1,31 +1,27 @@
-# HODLearn iOS App Export
+# HODLearn iOS Project Files
 
-This is a standalone iOS project that loads your HODLearn app from the deployment URL.
+## Download These Individual Files
 
-## Files Included:
-- `ContentView.swift` - Main app view with web loading
-- `Info.plist` - iOS app configuration
-- `HODLearnApp.swift` - App entry point
+Instead of dealing with the compressed archive, download these key files individually:
 
-## Setup Instructions:
+### Essential Configuration Files:
+1. `capacitor.config.ts` - Main iOS configuration
+2. `package.json` - Dependencies
+3. `ios-deploy.sh` - Deployment script
 
-1. **Create New iOS Project in Xcode:**
-   - Open Xcode
-   - File → New → Project
-   - iOS → App
-   - Product Name: "HODLearn"
-   - Bundle Identifier: "com.hodlearn.app"
-   - Language: Swift
-   - Interface: SwiftUI
+### iOS Project:
+4. `hodlearn-ios-native.tar.gz` - Just the iOS native project (much smaller)
 
-2. **Replace Files:**
-   - Replace ContentView.swift with the provided ContentView.swift
-   - Replace Info.plist with the provided Info.plist
-   - Replace HODLearnApp.swift with the provided HODLearnApp.swift
+### Source Code:
+5. Download the entire `client/` folder
+6. Download the entire `server/` folder
+7. Download the `shared/` folder
 
-3. **Build and Run:**
-   - Select iPhone simulator
-   - Click Play button
-   - App will load https://hodlearnbeta.replit.app
+## Setup Steps:
+1. Create a new folder on your Mac called `hodlearn-ios`
+2. Download all files above into that folder
+3. Open Terminal and navigate to the folder
+4. Run: `npm install`
+5. Run: `./ios-deploy.sh`
 
-This approach bypasses Capacitor entirely and gives you a clean, native iOS app.
+This approach avoids the compression issues and gets you the same result.
