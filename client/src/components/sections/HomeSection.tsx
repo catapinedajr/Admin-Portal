@@ -32,7 +32,7 @@ export default function HomeSection({
   const [, setLocation] = useLocation();
   
   return (
-    <div className="space-y-4">
+    <div className="space-y-8">
       {/* Top Card - Rewards/Streak Section */}
       <Card 
         onClick={() => setLocation('/wallet/rewards')}
@@ -71,7 +71,7 @@ export default function HomeSection({
       {/* Bottom Card - Learning Section */}
       <Card 
         onClick={() => setActiveSection("learn")}
-        className="bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800 border-zinc-800 hover:border-orange-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10 cursor-pointer"
+        className="bg-gradient-to-br from-zinc-800 via-zinc-800 to-zinc-700 border-zinc-700 hover:border-orange-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10 cursor-pointer"
       >
         <CardContent className="p-8">
           <div className="space-y-6 text-center">
