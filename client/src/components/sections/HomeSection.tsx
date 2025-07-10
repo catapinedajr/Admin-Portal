@@ -76,7 +76,10 @@ export default function HomeSection({
 
           {/* Bottom Half - Clickable to Learn */}
           <div 
-            onClick={() => setActiveSection("learn")}
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent any parent event bubbling
+              setActiveSection("learn");
+            }}
             className="p-8 pt-4 cursor-pointer hover:bg-zinc-800/30 transition-colors"
           >
             <div className="space-y-6 text-center">
