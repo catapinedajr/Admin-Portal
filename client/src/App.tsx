@@ -129,6 +129,7 @@ function Router() {
         <Route path="/more" component={MorePage} />
         <Route path="/account" component={AccountPage} />
         <Route path="/wallet" component={WalletPage} />
+        <Route path="/wallet/rewards" component={WalletPage} />
 
         <Route path="/about" component={About} />
         <Route path="/" component={NewUserRedirect} />

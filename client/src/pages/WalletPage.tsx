@@ -43,19 +43,25 @@ interface WalletData {
 }
 
 export default function WalletPage() {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const [showSatsEducation, setShowSatsEducation] = useState(false);
   const [activeTab, setActiveTab] = useState<'wallet' | 'rewards'>('wallet');
   const { isPremiumTier, setShowEmailModal } = useSubscription();
 
-  // Check URL parameters for tab selection
+  // Check URL and URL parameters for tab selection
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const tabParam = urlParams.get('tab');
-    if (tabParam === 'rewards') {
+    // Check if we're on the rewards route
+    if (location.includes('/wallet/rewards')) {
       setActiveTab('rewards');
+    } else {
+      // Check URL parameters for tab selection
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get('tab');
+      if (tabParam === 'rewards') {
+        setActiveTab('rewards');
+      }
     }
-  }, []);
+  }, [location]);
 
   // Get wallet data (demo mode)
   const { data: walletData, isLoading } = useQuery<WalletData>({
