@@ -29,7 +29,7 @@ export default function MorePage() {
                   HL
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold">HODLearn</h1>
+                  <h1 className="text-xl font-bold">HODLearn™</h1>
                   <p className="text-xs text-zinc-400">How-to-learn BTC</p>
                 </div>
               </div>
