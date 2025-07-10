@@ -340,19 +340,17 @@ function SimulatorsPageWithLayout() {
               
               {/* Premium Status Indicator */}
               {isPremiumTier ? (
-                <div className="bg-orange-500 hover:bg-orange-600 text-white border-orange-500 px-2.5 py-1.5 font-medium rounded flex items-center">
-                  <Gem className="w-4 h-4" />
-                  <span className="sr-only">Premium</span>
+                <div className="bg-orange-500 hover:bg-orange-600 text-white border-orange-500 px-3 py-1.5 font-medium rounded text-sm">
+                  Premium
                 </div>
               ) : (
                 <Button 
                   onClick={() => setShowEmailModal(true)}
                   size="sm"
-                  className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-2.5 py-1.5"
+                  className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-3 py-1.5 text-sm"
                   title="Upgrade to Premium"
                 >
-                  <Crown className="w-4 h-4" />
-                  <span className="sr-only">Upgrade</span>
+                  Upgrade
                 </Button>
               )}
             </div>
