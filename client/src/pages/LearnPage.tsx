@@ -175,24 +175,19 @@ function LessonCard({ lesson }: { lesson: any }) {
             
             {/* Content Preview Teaser */}
             {!isExpanded && (
-              <div className="relative">
-                <div className="text-zinc-300 text-base leading-relaxed line-clamp-3">
-                  {(lesson.content || '').split(' ').slice(0, 25).join(' ')}...
-                </div>
-                <div className="absolute bottom-0 right-0 bg-gradient-to-l from-zinc-900 via-zinc-900/80 to-transparent pl-8 pr-2">
-                  <span className="text-orange-400 font-medium text-sm">Continue Reading →</span>
+              <div className="space-y-4">
+                <div className="bg-zinc-800/30 rounded-lg p-4 border border-zinc-700/30">
+                  <div className="text-zinc-300 text-sm leading-relaxed mb-4">
+                    {(lesson.content || '').split(' ').slice(0, 25).join(' ')}...
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-zinc-500 text-xs">Essential knowledge for your financial future</span>
+                    <span className="text-orange-400 font-medium text-sm">Continue Reading →</span>
+                  </div>
                 </div>
               </div>
             )}
           </div>
-
-          {/* Action Hint */}
-          {!isExpanded && (
-            <div className="flex items-center justify-between pt-2 border-t border-zinc-700/50">
-              <p className="text-zinc-400 text-sm">Discover why your financial future depends on this</p>
-              <div className="text-xs text-orange-400">Tap to unlock insights</div>
-            </div>
-          )}
         </div>
         
         {/* Subtle Orange Accent Border */}
