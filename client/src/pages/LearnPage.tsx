@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
-import { Crown, Gem, User as UserIcon, ChevronDown, ChevronUp, Wallet, Clock, CheckCircle, Key, GraduationCap, Brain, TrendingUp, Zap, Award, Sparkles, Trophy, Coins, BookOpen } from "@/lib/icons";
+import { Crown, Gem, User as UserIcon, ChevronDown, ChevronUp, Wallet, Clock, CheckCircle, Key, GraduationCap, Brain, TrendingUp, Zap, Award, Sparkles, Trophy, Coins, BookOpen, X } from "@/lib/icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -194,13 +194,32 @@ function LessonCard({ lesson }: { lesson: any }) {
         <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-orange-500/50 to-orange-600/30"></div>
       </HODLearnCard>
 
-      {/* Expanded Content */}
+      {/* Focused Reading Mode - Expanded Content */}
       {isExpanded && (
-        <div className="bg-zinc-800/20 border border-zinc-700/30 rounded-lg p-8 space-y-8">
-          {/* Database-driven Lesson Content */}
-          <div className="prose prose-invert max-w-none space-y-6">
-            <div className="text-zinc-300 leading-relaxed space-y-4 text-base leading-[1.8]">
-              <div>
+        <div className="bg-gradient-to-br from-zinc-900/95 to-zinc-800/90 rounded-xl p-10 space-y-10 border border-zinc-700/20 shadow-2xl">
+          {/* Reading Mode Header */}
+          <div className="flex items-center justify-between border-b border-zinc-700/30 pb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-orange-500/30 rounded-lg flex items-center justify-center">
+                <BookOpen className="w-4 h-4 text-orange-300" />
+              </div>
+              <span className="text-orange-300 text-sm font-medium">Reading Mode</span>
+            </div>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => setIsExpanded(false)}
+              className="text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+            >
+              <X className="w-4 h-4 mr-2" />
+              Close
+            </Button>
+          </div>
+
+          {/* Optimized Reading Content */}
+          <div className="prose prose-invert max-w-none space-y-8">
+            <div className="text-zinc-200 leading-relaxed space-y-6 text-base leading-[1.9] max-w-4xl">
+              <div className="text-lg leading-[1.8] font-light">
                 {cleanText(lesson.content)}
               </div>
             </div>
@@ -216,14 +235,15 @@ function LessonCard({ lesson }: { lesson: any }) {
             content={lesson.whyItMatters || "Understanding these fundamentals helps you make informed decisions about Bitcoin and see why it represents a significant advancement in monetary technology."} 
           />
 
-          {/* Collapse Button */}
-          <div className="text-center">
+          {/* Reading Progress Indicator */}
+          <div className="text-center pt-6 border-t border-zinc-700/30">
+            <div className="text-zinc-500 text-sm mb-4">You've completed today's lesson</div>
             <Button 
               variant="outline" 
               onClick={() => setIsExpanded(false)}
-              className="border-zinc-700 text-zinc-400 hover:bg-zinc-800/50"
+              className="border-zinc-600/50 text-zinc-300 hover:bg-zinc-800/50 hover:border-orange-500/30"
             >
-              Collapse Lesson
+              Return to Overview
             </Button>
           </div>
         </div>
