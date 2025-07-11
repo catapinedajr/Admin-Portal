@@ -1,0 +1,58 @@
+{
+        "dayIndex": 14,
+        "title": "Week 2 Reality Check: You're No Longer a Complete Beginner",
+        "setup_questions": [
+          "What's the difference between where you were 7 days ago and where you are now?",
+          "How much of the 'Bitcoin is too complicated' fear was actually true?",
+          "What can you do today that you couldn't do a week ago?"
+        ],
+        "lesson_content": "One week ago, you knew Bitcoin was important but had no idea how to actually get it safely.\\n\\nToday, you could walk someone else through the entire process.\\n\\n**Your Week 2 Journey**\\n\\nDay 8: You learned why most people lose money (excitement and poor preparation)\\nDay 9: You learned to spot legitimate exchanges vs scams\\nDay 10: You learned the practice purchase strategy\\nDay 11: You understood verification requirements\\nDay 12: You grasped the difference between exchange IOUs and real ownership\\nDay 13: You learned about wallet basics and self-custody\\n\\nThat's a complete Bitcoin implementation education.\\n\\n**What You Can Do Now**\\n\\nYou can:\\n- Identify legitimate Bitcoin exchanges confidently\\n- Avoid common scams that fool most beginners\\n- Complete the verification process without panic\\n- Make practice purchases safely\\n- Understand fees and timing\\n- Explain why self-custody matters\\n- Choose appropriate wallets for different amounts\\n- Send test transactions safely\\n\\n**The Knowledge Gap You've Closed**\\n\\nMost people think Bitcoin is \\\"too complicated\\\" because they imagine the whole process at once. You learned it step by step.\\n\\nBuying Bitcoin isn't complicated. It's just unfamiliar. You've made it familiar.\\n\\n**Your Confidence Level**\\n\\nA week ago: \\\"Bitcoin seems scary and complicated\\\"\\nToday: \\\"I know how to buy Bitcoin safely\\\"\\n\\nThat's a massive shift in just 7 days.\\n\\n**What You've Accomplished**\\n\\nYou've completed the scariest part of Bitcoin adoption: going from zero knowledge to basic competence.\\n\\nEverything from here builds on this foundation. You're past the steepest part of the learning curve.\\n\\n**The Beginner Trap You Avoided**\\n\\nMost people try to learn everything about Bitcoin before buying any. They spend months reading and never take action.\\n\\nYou learned the practical implementation first. This gives you context for everything else you'll learn.\\n\\n**Your Next Phase**\\n\\nWeek 3 will cover strategic thinking:\\n- When to buy more\\n- How much is appropriate\\n- Long-term planning\\n- Advanced concepts\\n\\nBut you're approaching these topics as someone who actually owns Bitcoin, not someone who's just thinking about it.\\n\\nAnd this is HODLearn!\\n\\n**The Compound Effect**\\n\\nEvery day you understand Bitcoin better, you're ahead of someone discovering it tomorrow.\\n\\nEvery small action you took this week compounds into confidence and knowledge.\\n\\n**Your New Status**\\n\\nYou're no longer a complete beginner. You're a Bitcoin owner who knows the fundamentals.\\n\\nYou can have intelligent conversations about Bitcoin buying and storage. You can help others avoid common mistakes.\\n\\n**The Questions You Can Answer**\\n\\n\\\"How do I buy Bitcoin safely?\\\" - You know this\\n\\\"Which exchange should I use?\\\" - You can help\\n\\\"Why does Coinbase want my ID?\\\" - You understand\\n\\\"Should I leave Bitcoin on the exchange?\\\" - You have opinions\\n\\\"What wallet should I get?\\\" - You can guide them\\n\\n**Week 3 Preview**\\n\\nNext week we'll cover:\\n- How much Bitcoin makes sense for your situation\\n- When to buy more (timing and strategy)\\n- Long-term thinking and patience\\n- Common mistakes in the accumulation phase\\n- Building conviction for the journey ahead\\n\\n**Your Advantage**\\n\\nYou now have practical Bitcoin experience. Most people who talk about Bitcoin don't.\\n\\nYou've closed the gap between theory and reality. That's the hardest part.\\n\\n**The Path Forward**\\n\\nYou've built a solid foundation. Everything from here is building on that foundation, not starting from scratch.\\n\\nYou're ready for the next level.",
+        "quiz_questions": [
+          {
+            "question": "What's the main difference between your knowledge level today versus Day 8?",
+            "optionA": "You know more Bitcoin technical details",
+            "optionB": "You can safely implement Bitcoin buying and storage",
+            "optionC": "You understand Bitcoin's price movements",
+            "optionD": "You know how to mine Bitcoin",
+            "correctAnswer": "B",
+            "explanation": "The main progress is moving from theoretical knowledge to practical implementation skills - you can now safely buy, store, and manage Bitcoin."
+          },
+          {
+            "question": "According to the lesson, what makes most people think Bitcoin is 'too complicated'?",
+            "optionA": "Bitcoin actually is too complicated for most people",
+            "optionB": "They try to imagine the whole process at once instead of learning step by step",
+            "optionC": "They don't have enough money to buy Bitcoin",
+            "optionD": "They need advanced technical knowledge first",
+            "correctAnswer": "B",
+            "explanation": "The lesson explains that Bitcoin seems complicated when people try to understand everything at once, but becomes manageable when learned step by step."
+          },
+          {
+            "question": "What advantage do you now have over people just discovering Bitcoin?",
+            "optionA": "You bought Bitcoin at a better price",
+            "optionB": "You have more money to invest",
+            "optionC": "You have practical experience, not just theoretical knowledge",
+            "optionD": "You understand all of Bitcoin's technical details",
+            "correctAnswer": "C",
+            "explanation": "Having actual experience with buying and storing Bitcoin gives you practical knowledge that most people who only read about Bitcoin lack."
+          },
+          {
+            "question": "What will Week 3 focus on according to the lesson?",
+            "optionA": "Advanced technical Bitcoin concepts",
+            "optionB": "Strategic thinking about amounts, timing, and long-term planning",
+            "optionC": "How to become a Bitcoin developer",
+            "optionD": "Trading strategies for profit",
+            "correctAnswer": "B",
+            "explanation": "Week 3 will build on the implementation foundation with strategic thinking about how much Bitcoin to buy, when to buy more, and long-term planning."
+          }
+        ],
+        "key_takeaways": [
+          "You've completed the practical foundation of Bitcoin implementation",
+          "Bitcoin isn't complicated when learned step-by-step rather than all at once",
+          "You now have practical experience that most Bitcoin discussions lack"
+        ],
+        "why_it_matters": "This matters because recognizing your progress builds confidence to continue learning and helps you realize you've overcome the biggest hurdle - moving from theory to practice. Understanding that you've closed the knowledge gap that stops most people helps you approach advanced topics with confidence rather than intimidation. Acknowledging your new competence level prepares you for the strategic thinking phase of Bitcoin adoption, where you'll make decisions about amounts, timing, and long-term planning from a position of practical knowledge rather than pure theory.",
+        "simulator_references": ["progress_assessment", "knowledge_check"],
+        "premium_content": false,
+        "hodlearn_tagline_used": true,
+        "word_count": 456
+      }
