@@ -274,7 +274,6 @@ export const contentQuizzes = pgTable("content_quizzes", {
   options: json("options").$type<string[]>().notNull(),
   correctAnswer: integer("correct_answer").notNull(),
   explanation: text("explanation").notNull(),
-  orderIndex: integer("order_index").notNull().default(0), // for multiple questions per day
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

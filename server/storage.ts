@@ -371,11 +371,11 @@ export class DatabaseStorage implements IStorage {
     const day = await this.getContentDay(dayIndex);
     if (!day) return [];
 
-    return await db.select().from(contentQuizzes).where(eq(contentQuizzes.dayId, day.id)).orderBy(contentQuizzes.orderIndex);
+    return await db.select().from(contentQuizzes).where(eq(contentQuizzes.dayId, day.id)).orderBy(contentQuizzes.id);
   }
 
   async getAllContentQuizzes(): Promise<ContentQuiz[]> {
-    return await db.select().from(contentQuizzes).orderBy(contentQuizzes.dayId, contentQuizzes.orderIndex);
+    return await db.select().from(contentQuizzes).orderBy(contentQuizzes.dayId, contentQuizzes.id);
   }
 
   async createContentQuiz(quiz: InsertContentQuiz): Promise<ContentQuiz> {

@@ -119,8 +119,31 @@ Comprehensive component library built on Radix UI primitives:
 2. Backend bundled with esbuild to `dist/index.js`
 3. Static file serving configured for production deployment
 
+## UI Design System
+
+### HODLearn Card Format
+Standardized interactive card design system based on the streak achievement card pattern:
+
+**Design Pattern:**
+- **Dark/Inactive Default**: `bg-zinc-900/50 border-zinc-700/50` (subtle, non-demanding)
+- **Orange Glow Engagement**: `hover:border-orange-500/30 hover:shadow-orange-500/10` (clear interaction feedback)
+- **Subtle Scale Animation**: `hover:scale-[1.02]` (tactile response)
+- **Smooth Transitions**: `transition-all duration-300` (polished feel)
+
+**Component Variants:**
+- `HODLearnCard` - Base component with default/interactive/premium variants
+- `HODLearnInteractiveCard` - Quick-use interactive variant
+- `HODLearnPremiumCard` - Enhanced effects for premium features
+
+**Benefits:**
+- Visual cohesion across all interactive elements
+- User learns orange glow = interactive/clickable
+- Reduced design decisions and faster development
+- Central maintenance point for interaction patterns
+
 ## Changelog
 
+- July 11, 2025. **HODLEARN CARD FORMAT DESIGN SYSTEM CREATED**: Established standardized interactive card design system based on streak achievement card's engaging hover states, featuring dark/inactive default state with orange glow engagement, subtle scale animations, and smooth transitions; created reusable HODLearnCard component with default/interactive/premium variants for visual cohesion across platform; documented complete design token system and implementation guidelines for systematic application throughout HODLearn interface.
 - July 11, 2025. **WEEK 2 COMPLETION WITH DAY 14**: Successfully imported Day 14 completing Week 2 curriculum with Progress Assessment theme, bringing total curriculum to 14 complete days (42 setup questions, 14 lessons, 56 quiz questions) with clean sequential database structure maintained where Day N = ID N throughout entire curriculum. Week 2 now complete covering Safe Purchasing, Exchange Safety, Practice Purchasing, Identity Verification, Self-Custody Understanding, Wallet Selection, and Progress Assessment - establishing comprehensive foundation for strategic Bitcoin adoption before advancing to Week 3 strategic thinking phase.
 - July 11, 2025. **WEEK 2 COMPLETION WITH DAYS 12-13**: Successfully imported Days 12-13 continuing sequential numbering from Day 11, added Self-Custody Understanding (Day 12) and Wallet Selection (Day 13) content with 6 setup questions, 2 comprehensive lessons, 8 quiz questions, completing Week 2 foundation covering Safe Purchasing, Exchange Safety, Practice Purchasing, Identity Verification, Self-Custody Understanding, and Wallet Selection themes, bringing total curriculum to 13 complete days (39 setup questions, 13 lessons, 52 quiz questions) with clean sequential database structure maintained where Day N = ID N throughout entire curriculum.
 - July 11, 2025. **WEEK 2 COMPLETION WITH DAYS 10-11**: Successfully imported Days 10-11 continuing sequential numbering from Day 9, added Practice Purchase Strategy (Day 10) and Identity Verification (Day 11) content with 6 setup questions, 2 comprehensive lessons, 8 quiz questions, completing Week 2 foundation covering Safe Purchasing, Exchange Safety, Practice Purchasing, and Identity Verification themes, bringing total curriculum to 11 complete days (33 setup questions, 11 lessons, 44 quiz questions) with clean sequential database structure maintained.
