@@ -1,0 +1,168 @@
+{
+  "content_batch": [
+    {
+      "dayIndex": 12,
+      "title": "The Wallet Wake-Up Call: Why Exchanges Aren't Banks",
+      "theme": "Self-Custody Understanding",
+      "setup_questions": [
+        {
+          "title": "What's the difference between buying Bitcoin and actually owning Bitcoin?",
+          "content": "What's the difference between buying Bitcoin and actually owning Bitcoin?",
+          "category": "ownership_basics",
+          "icon": "Key"
+        },
+        {
+          "title": "Why do people say 'not your keys, not your Bitcoin'?",
+          "content": "Why do people say 'not your keys, not your Bitcoin'?",
+          "category": "key_control",
+          "icon": "Lock"
+        },
+        {
+          "title": "What happens to your Bitcoin if Coinbase gets hacked or goes bankrupt?",
+          "content": "What happens to your Bitcoin if Coinbase gets hacked or goes bankrupt?",
+          "category": "exchange_risk",
+          "icon": "AlertTriangle"
+        }
+      ],
+      "lesson": {
+        "title": "The Wallet Wake-Up Call: Why Exchanges Aren't Banks",
+        "content": "You bought Bitcoin on Coinbase. You see it in your account. You think you own it.\n\nYou don't. Not yet.\n\n**The Uncomfortable Truth**\n\nWhen you buy Bitcoin on an exchange, you're buying an IOU. The exchange owns the actual Bitcoin. You own a promise that they'll give it to you when you ask.\n\nMost of the time, this works fine. Sometimes, it doesn't.\n\n**The Exchange Risk**\n\nExchanges can:\n- Get hacked and lose customer Bitcoin\n- Go bankrupt and freeze withdrawals\n- Face government shutdown orders\n- Experience \"technical difficulties\" when you want to withdraw\n\n**Banks vs. Exchanges: The Critical Difference**\n\nYour bank has FDIC insurance. Up to $250,000 of your money is guaranteed by the U.S. government. Banks also have centuries of regulation and oversight.\n\nExchanges have limited insurance and minimal oversight. They're startups in a new industry, not established financial institutions.\n\n**The Solution: Self-Custody**\n\nTrue Bitcoin ownership means controlling your own private keys. When you control the keys, you control the Bitcoin. No exchange can freeze your account or lose your Bitcoin.\n\nThis doesn't mean you should never use exchanges. It means you should understand the risk and only keep amounts you can afford to lose completely.\n\n**Your Next Step**\n\nLearn about Bitcoin wallets. Start small. Test the process. Take control of your Bitcoin gradually as you learn.",
+        "estimated_read_time": 3
+      },
+      "quiz_questions": [
+        {
+          "question": "What do you actually own when you buy Bitcoin on an exchange?",
+          "options": {
+            "A": "The actual Bitcoin stored on the blockchain",
+            "B": "An IOU or promise that the exchange will give you Bitcoin when requested",
+            "C": "A share in the exchange company",
+            "D": "Insurance against Bitcoin price changes"
+          },
+          "correct_answer": 1,
+          "explanation": "When you buy Bitcoin on an exchange, you own a claim to Bitcoin, not the actual Bitcoin itself - the exchange controls the private keys and therefore the actual Bitcoin."
+        },
+        {
+          "question": "What makes banks different from Bitcoin exchanges in terms of safety?",
+          "options": {
+            "A": "Banks are newer and more innovative",
+            "B": "Banks have FDIC insurance and strict government oversight",
+            "C": "Banks invest in Bitcoin",
+            "D": "Banks have better websites"
+          },
+          "correct_answer": 1,
+          "explanation": "Banks have FDIC insurance up to $250,000 and centuries of regulation, while exchanges have limited insurance and minimal oversight in a new industry."
+        },
+        {
+          "question": "What does 'not your keys, not your Bitcoin' mean?",
+          "options": {
+            "A": "You need physical keys to access Bitcoin",
+            "B": "Bitcoin requires special hardware to work",
+            "C": "Without controlling private keys, you don't truly own the Bitcoin",
+            "D": "Keys are more important than passwords"
+          },
+          "correct_answer": 2,
+          "explanation": "Private keys are what actually control Bitcoin - if you don't control the keys, you're trusting someone else to give you access to 'your' Bitcoin."
+        },
+        {
+          "question": "According to the lesson, how much Bitcoin should you keep on exchanges?",
+          "options": {
+            "A": "All of it for maximum convenience",
+            "B": "None of it - exchanges are too risky",
+            "C": "Only amounts you can afford to lose completely",
+            "D": "Exactly half of your total Bitcoin"
+          },
+          "correct_answer": 2,
+          "explanation": "The lesson suggests keeping only small amounts on exchanges for convenience while moving larger amounts you can't afford to lose to your own storage."
+        }
+      ],
+      "key_takeaways": [
+        "Buying Bitcoin on exchanges gives you an IOU, not actual Bitcoin ownership",
+        "Exchanges lack the insurance and oversight that protect traditional bank deposits",
+        "True Bitcoin ownership requires controlling your own private keys"
+      ],
+      "why_it_matters": "This matters because many people lose significant money when exchanges fail, get hacked, or freeze accounts, thinking their Bitcoin was as safe as money in a bank. Understanding that exchanges are custodians, not banks, helps you make informed decisions about how much Bitcoin to leave in exchange custody versus moving to your own control. This knowledge prevents the shock and financial loss that comes when people realize too late that 'their' exchange Bitcoin was never actually theirs to control."
+    },
+    {
+      "dayIndex": 13,
+      "title": "Your Bitcoin Fortress: Choosing Your First Wallet",
+      "theme": "Wallet Selection",
+      "setup_questions": [
+        {
+          "title": "What's the simplest way to take control of your own Bitcoin?",
+          "content": "What's the simplest way to take control of your own Bitcoin?",
+          "category": "wallet_basics",
+          "icon": "Smartphone"
+        },
+        {
+          "title": "How do you choose your first Bitcoin wallet without getting overwhelmed?",
+          "content": "How do you choose your first Bitcoin wallet without getting overwhelmed?",
+          "category": "wallet_selection",
+          "icon": "Filter"
+        },
+        {
+          "title": "What's the difference between hot wallets and cold wallets?",
+          "content": "What's the difference between hot wallets and cold wallets?",
+          "category": "wallet_types",
+          "icon": "Thermometer"
+        }
+      ],
+      "lesson": {
+        "title": "Your Bitcoin Fortress: Choosing Your First Wallet",
+        "content": "Yesterday you learned why exchanges aren't safe for long-term storage. Today you learn about the alternative: your own Bitcoin wallet.\n\nDon't panic. This isn't as complicated as it sounds.\n\n**What is a Bitcoin Wallet?**\n\nA Bitcoin wallet is software that manages your private keys. Think of it like a keychain for digital keys.\n\nThe wallet doesn't store Bitcoin. Bitcoin lives on the blockchain. The wallet stores the keys that prove you own specific Bitcoin.\n\n**Hot vs. Cold Wallets**\n\nHot wallets are connected to the internet. They're convenient but less secure.\nCold wallets are offline. They're more secure but less convenient.\n\n**Your Wallet Journey**\n\nStart simple:\n1. **Mobile Wallet** - For small amounts and learning\n2. **Desktop Wallet** - For medium amounts and more features\n3. **Hardware Wallet** - For large amounts and maximum security\n\nDon't jump to hardware wallets immediately. Start with a mobile wallet like Blue Wallet or Exodus. Learn the basics with small amounts.\n\n**The Recovery Phrase**\n\nEvery wallet gives you a recovery phrase - usually 12 or 24 words. This phrase can restore your wallet if your phone breaks or gets lost.\n\nWrite it down. Store it safely. Never take a photo or store it digitally.\n\n**Testing is Critical**\n\nAlways send a small test amount first. Confirm you can receive Bitcoin and access your wallet before sending larger amounts.\n\n**Your Action Plan**\n\n1. Download a reputable mobile wallet\n2. Write down your recovery phrase\n3. Send a small test amount from your exchange\n4. Practice accessing your wallet\n5. Gradually move larger amounts as you gain confidence",
+        "estimated_read_time": 3
+      },
+      "quiz_questions": [
+        {
+          "question": "What does a Bitcoin wallet actually store?",
+          "options": {
+            "A": "The actual Bitcoin",
+            "B": "Private keys that prove you own Bitcoin",
+            "C": "Your exchange account information",
+            "D": "Bitcoin price information"
+          },
+          "correct_answer": 1,
+          "explanation": "Bitcoin wallets store private keys that prove ownership of Bitcoin on the blockchain - the Bitcoin itself always stays on the blockchain."
+        },
+        {
+          "question": "What's the main difference between hot and cold wallets?",
+          "options": {
+            "A": "Hot wallets cost more money",
+            "B": "Cold wallets work faster",
+            "C": "Hot wallets are connected to internet, cold wallets are not",
+            "D": "Hot wallets hold more Bitcoin"
+          },
+          "correct_answer": 2,
+          "explanation": "Hot wallets are connected to the internet (convenient but less secure), while cold wallets are offline (more secure but less convenient)."
+        },
+        {
+          "question": "What should you always do before sending large amounts to a new wallet?",
+          "options": {
+            "A": "Send the full amount immediately",
+            "B": "Send a small test amount first",
+            "C": "Contact customer service",
+            "D": "Wait 24 hours"
+          },
+          "correct_answer": 1,
+          "explanation": "Always send a small test amount first to confirm the wallet address is correct and you understand the process before sending larger amounts."
+        },
+        {
+          "question": "How should you store your wallet's recovery phrase?",
+          "options": {
+            "A": "Take a photo and store it on your phone",
+            "B": "Email it to yourself for safekeeping",
+            "C": "Write it on paper and store it securely offline",
+            "D": "Memorize it and don't write it down"
+          },
+          "correct_answer": 2,
+          "explanation": "Recovery phrases should be written on paper and stored securely offline - never stored digitally where they could be hacked or accessed by others."
+        }
+      ],
+      "key_takeaways": [
+        "Bitcoin wallets store private keys, not actual Bitcoin",
+        "Start with simple mobile wallets and upgrade as your knowledge and Bitcoin grow",
+        "Always test with small amounts before sending larger transactions"
+      ],
+      "why_it_matters": "This matters because choosing the right wallet for your experience level and Bitcoin amount helps you take control of your Bitcoin safely without getting overwhelmed by complexity. Understanding the progression from mobile to desktop to hardware wallets gives you a clear path forward as your Bitcoin holdings grow. Knowing how to test transactions and secure recovery phrases prevents the devastating losses that happen when people rush into self-custody without proper preparation and understanding."
+    }
+  ]
+}
