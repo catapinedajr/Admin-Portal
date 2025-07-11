@@ -1,4 +1,4 @@
-/* Reading Enhancement Styles for HODLearn */
+/* Dynamic Reading Enhancement Styles for HODLearn */
 
 .lesson-content {
   position: relative;
@@ -6,65 +6,125 @@
 
 .lesson-paragraph {
   position: relative;
-  transition: all 0.3s ease-out;
-  margin-bottom: 1rem;
+  transition: all 1s ease-out;
+  margin-bottom: 1.5rem;
   line-height: 1.8;
+  opacity: 0.6;
+  transform: translateY(20px);
 }
 
-/* Active reading state - highlight current paragraph in viewport */
-.lesson-paragraph.in-view {
-  background: rgba(249, 115, 22, 0.08);
-  border-color: rgba(249, 115, 22, 0.2);
-  box-shadow: 0 4px 20px rgba(249, 115, 22, 0.1);
-  transform: scale(1.005);
+/* Revealed state - paragraph comes into view */
+.lesson-paragraph.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Enhanced state for insight-rich paragraphs */
+.lesson-paragraph.revealed.has-insights {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.05), rgba(249, 115, 22, 0.02));
+  border-left: 2px solid rgba(249, 115, 22, 0.3);
   padding-left: 1rem;
-  border-left: 3px solid rgba(249, 115, 22, 0.4);
+  border-radius: 0 8px 8px 0;
+  box-shadow: 0 2px 20px rgba(249, 115, 22, 0.08);
 }
 
-/* Subtle reading progress indicator */
-.lesson-paragraph::before {
+/* Smart highlighting for key Bitcoin terms */
+.insight-word {
+  transition: all 0.6s ease-out;
+  position: relative;
+}
+
+.lesson-paragraph.revealed .insight-word {
+  background: linear-gradient(120deg, rgba(249, 115, 22, 0.15), rgba(249, 115, 22, 0.25));
+  color: rgb(254, 215, 170);
+  font-weight: 500;
+  animation: insightGlow 2s ease-out 0.5s;
+}
+
+@keyframes insightGlow {
+  0% { 
+    background: transparent;
+    color: inherit;
+  }
+  50% { 
+    background: rgba(249, 115, 22, 0.3);
+    color: rgb(255, 237, 213);
+    box-shadow: 0 0 15px rgba(249, 115, 22, 0.4);
+  }
+  100% { 
+    background: linear-gradient(120deg, rgba(249, 115, 22, 0.15), rgba(249, 115, 22, 0.25));
+    color: rgb(254, 215, 170);
+  }
+}
+
+/* Insight indicator reveals */
+.lesson-paragraph.revealed .insight-indicator {
+  opacity: 1 !important;
+  transform: translateY(0);
+}
+
+/* Progressive reveal animation */
+.lesson-paragraph:nth-child(1) { transition-delay: 0.1s; }
+.lesson-paragraph:nth-child(2) { transition-delay: 0.2s; }
+.lesson-paragraph:nth-child(3) { transition-delay: 0.3s; }
+.lesson-paragraph:nth-child(4) { transition-delay: 0.4s; }
+.lesson-paragraph:nth-child(5) { transition-delay: 0.5s; }
+
+/* Dopamine-triggering pulse effect for key insights */
+.lesson-paragraph.revealed.has-insights::before {
   content: '';
   position: absolute;
   left: -8px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 4px;
-  background: rgba(156, 163, 175, 0.3);
-  border-radius: 50%;
-  transition: all 0.3s ease;
-}
-
-.lesson-paragraph.in-view::before {
-  background: rgba(249, 115, 22, 0.8);
+  top: 20px;
   width: 6px;
   height: 6px;
-  box-shadow: 0 0 10px rgba(249, 115, 22, 0.5);
+  background: rgba(249, 115, 22, 0.8);
+  border-radius: 50%;
+  animation: insightPulse 3s ease-in-out infinite;
 }
 
-/* Smooth fade effect for non-active paragraphs */
-.lesson-content.reading-mode .lesson-paragraph:not(.in-view) {
-  opacity: 0.7;
-  transform: scale(0.998);
+@keyframes insightPulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% { 
+    transform: scale(1.3);
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.6);
+  }
 }
 
-/* Enhanced hover effects */
-.lesson-paragraph:hover {
-  background: rgba(249, 115, 22, 0.06) !important;
-  border-color: rgba(249, 115, 22, 0.25) !important;
-  transform: scale(1.008) !important;
-  cursor: pointer;
+/* Reading achievement progress */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(249, 115, 22, 0.2);
+  z-index: 50;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease-out;
+}
+
+.reading-progress.active {
+  transform: scaleX(var(--progress, 0));
 }
 
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .lesson-paragraph {
-    padding: 0.75rem;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1.25rem;
   }
   
-  .lesson-paragraph.in-view {
+  .lesson-paragraph.revealed.has-insights {
     padding-left: 0.75rem;
     border-left-width: 2px;
+  }
+  
+  .insight-word {
+    padding: 0 2px;
   }
 }

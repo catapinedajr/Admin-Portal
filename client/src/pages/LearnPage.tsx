@@ -79,52 +79,78 @@ function LearnPage() {
     return "Good evening";
   };
 
-  // Reading enhancement effect - tracks paragraph visibility
+  // Dynamic content revealing effect - creates dopamine hits as content becomes visible
   useEffect(() => {
     if (!lesson) return;
 
     const observerOptions = {
       root: null,
-      rootMargin: '-20% 0px -20% 0px', // Trigger when paragraph is in center 60% of viewport
-      threshold: 0.8
+      rootMargin: '-10% 0px -30% 0px', // Trigger earlier for smooth reveals
+      threshold: 0.3
     };
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        const paragraphIndex = parseInt(entry.target.getAttribute('data-paragraph') || '0');
-        
         if (entry.isIntersecting) {
-          setActiveReadingParagraph(paragraphIndex);
+          // Add revealed class for smooth entrance animation
+          entry.target.classList.add('revealed');
           
-          // Add reading-mode class to content container
-          const contentContainer = entry.target.closest('.lesson-content');
-          if (contentContainer) {
-            contentContainer.classList.add('reading-mode');
+          // Special treatment for insight-rich paragraphs
+          if (entry.target.classList.contains('has-insights')) {
+            // Delay the insight indicator reveal for dramatic effect
+            setTimeout(() => {
+              const indicator = entry.target.querySelector('.insight-indicator');
+              if (indicator) {
+                indicator.style.opacity = '1';
+                indicator.style.transform = 'translateY(0)';
+              }
+            }, 800);
           }
         }
       });
     }, observerOptions);
 
-    // Observe all lesson paragraphs
-    const paragraphs = document.querySelectorAll('.lesson-paragraph');
-    paragraphs.forEach((p) => observer.observe(p));
+    // Initial delay before starting reveals
+    setTimeout(() => {
+      const paragraphs = document.querySelectorAll('.lesson-paragraph');
+      paragraphs.forEach((p) => observer.observe(p));
+    }, 300);
 
     return () => {
       observer.disconnect();
     };
   }, [lesson]);
 
-  // Update paragraph highlighting based on active reading position
+  // Reading progress tracking for dopamine feedback
   useEffect(() => {
-    const paragraphs = document.querySelectorAll('.lesson-paragraph');
-    paragraphs.forEach((p, index) => {
-      if (index === activeReadingParagraph) {
-        p.classList.add('in-view');
-      } else {
-        p.classList.remove('in-view');
+    if (!lesson) return;
+
+    const handleScroll = () => {
+      const lessonContent = lessonContentRef.current;
+      if (!lessonContent) return;
+
+      const rect = lessonContent.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      
+      // Calculate reading progress
+      const contentTop = rect.top;
+      const contentHeight = rect.height;
+      const scrolled = Math.max(0, viewportHeight - contentTop);
+      const progress = Math.min(1, scrolled / (contentHeight + viewportHeight));
+      
+      // Update progress indicator
+      const progressBar = document.querySelector('.reading-progress');
+      if (progressBar) {
+        progressBar.style.setProperty('--progress', progress.toString());
+        if (progress > 0) {
+          progressBar.classList.add('active');
+        }
       }
-    });
-  }, [activeReadingParagraph]);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lesson]);
 
   // Helper function to get user's first name
   const { data: user } = useQuery({
@@ -484,38 +510,59 @@ function LearnPage() {
                       </div>
                     </div>
                     
-                    {/* Database-driven Lesson Content with Reading Enhancement */}
+                    {/* Database-driven Lesson Content with Dynamic Revealing */}
                     <div className="prose prose-invert max-w-none space-y-6">
-                      <div className="lesson-content text-zinc-300 leading-relaxed space-y-4 text-base leading-[1.8]">
+                      <div className="lesson-content text-zinc-300 leading-relaxed space-y-6 text-base leading-[1.8]" ref={lessonContentRef}>
                         {lesson.content && lesson.content.split(/\n\s*\n/).filter(p => p.trim()).map((paragraph, index) => {
-                          // Handle bold formatting within paragraphs
+                          // Identify key Bitcoin concepts and insights for smart highlighting
+                          const keyTerms = ['bitcoin', 'inflation', 'monetary', 'currency', 'central bank', 'fed', 'dollar', 'gold', 'store of value', 'scarcity', '21 million', 'digital gold', 'fiat'];
+                          const hasKeyTerm = keyTerms.some(term => paragraph.toLowerCase().includes(term));
+                          
+                          // Handle bold formatting and smart highlighting
                           const parts = paragraph.split(/\*\*(.*?)\*\*/g);
                           const formattedContent = parts.map((part, partIndex) => {
                             if (partIndex % 2 === 0) {
-                              return part;
+                              // Check for key insights in regular text
+                              const words = part.split(' ');
+                              return words.map((word, wordIndex) => {
+                                const isKeyWord = keyTerms.some(term => word.toLowerCase().includes(term.toLowerCase()));
+                                if (isKeyWord) {
+                                  return (
+                                    <span 
+                                      key={`${partIndex}-${wordIndex}`}
+                                      className="insight-word px-1 rounded transition-all duration-700 ease-out"
+                                    >
+                                      {word}
+                                    </span>
+                                  );
+                                }
+                                return word + ' ';
+                              });
                             } else {
                               return <strong key={partIndex} className="font-semibold text-white">{part}</strong>;
                             }
                           });
                           
                           return (
-                            <p 
+                            <div 
                               key={index} 
-                              className="lesson-paragraph transition-all duration-500 ease-out p-3 rounded-lg border border-transparent hover:border-orange-500/20 hover:bg-orange-500/5 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.01] cursor-pointer"
-                              onClick={() => {
-                                // Smooth scroll to center this paragraph
-                                const element = document.querySelector(`[data-paragraph="${index}"]`);
-                                if (element) {
-                                  element.scrollIntoView({ 
-                                    behavior: 'smooth', 
-                                    block: 'center' 
-                                  });
-                                }
-                              }}
+                              className={`lesson-paragraph transition-all duration-1000 ease-out opacity-60 translate-y-4 ${
+                                hasKeyTerm ? 'has-insights' : ''
+                              }`}
                               data-paragraph={index}
                             >
-                              {formattedContent}
-                            </p>
+                              <p className="mb-0 leading-[1.8]">
+                                {formattedContent}
+                              </p>
+                              
+                              {/* Insight indicator for key paragraphs */}
+                              {hasKeyTerm && (
+                                <div className="insight-indicator opacity-0 flex items-center gap-2 mt-3 p-2 rounded-lg bg-orange-500/10 border border-orange-500/20 transition-all duration-500 delay-300">
+                                  <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
+                                  <span className="text-orange-300 text-sm font-medium">Key Bitcoin Insight</span>
+                                </div>
+                              )}
+                            </div>
                           );
                         })}
                       </div>
