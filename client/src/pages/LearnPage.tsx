@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
-import { Crown, Gem, User as UserIcon, ChevronDown, ChevronUp, Wallet, Clock, CheckCircle, Key, GraduationCap, Brain, TrendingUp, Zap, Award, Sparkles, Trophy, Coins } from "@/lib/icons";
+import { Crown, Gem, User as UserIcon, ChevronDown, ChevronUp, Wallet, Clock, CheckCircle, Key, GraduationCap, Brain, TrendingUp, Zap, Award, Sparkles, Trophy, Coins, BookOpen } from "@/lib/icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -144,25 +144,59 @@ function LessonCard({ lesson }: { lesson: any }) {
 
   return (
     <div className="space-y-4">
-      {/* Collapsed Preview Card */}
+      {/* Enhanced Preview Card with Content Teaser */}
       <HODLearnCard 
-        variant="reading" 
+        variant="interactive" 
         onClick={() => setIsExpanded(!isExpanded)}
         showChevron={true}
+        className="border-orange-500/20 hover:border-orange-500/40 relative overflow-hidden"
       >
-        <div className="space-y-3">
-          <h3 className="text-lg font-bold text-white">Today's Lesson</h3>
-          <div className="flex items-start justify-between gap-4">
-            <h4 className="text-xl font-bold text-white leading-tight flex-1">{lesson.title}</h4>
-            <Badge variant="outline" className="border-zinc-700 text-zinc-400 flex-shrink-0">
+        <div className="space-y-4">
+          {/* Header Section with Better Layout */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                <BookOpen className="w-4 h-4 text-orange-400" />
+              </div>
+              <div>
+                <p className="text-xs text-orange-400 font-medium uppercase tracking-wide">Today's Deep Dive</p>
+                <h3 className="text-lg font-bold text-white">Your Bitcoin Lesson</h3>
+              </div>
+            </div>
+            <Badge variant="outline" className="border-orange-500/30 text-orange-300 bg-orange-500/10 flex-shrink-0">
               <Clock className="w-3 h-3 mr-1" />
-              {lesson.estimatedReadTime || 3} min read
+              {lesson.estimatedReadTime || 3} min
             </Badge>
           </div>
+
+          {/* Lesson Title with Better Typography */}
+          <div className="space-y-3">
+            <h4 className="text-2xl font-bold text-white leading-tight">{lesson.title}</h4>
+            
+            {/* Content Preview Teaser */}
+            {!isExpanded && (
+              <div className="relative">
+                <div className="text-zinc-300 text-base leading-relaxed line-clamp-3">
+                  {(lesson.content || '').split(' ').slice(0, 25).join(' ')}...
+                </div>
+                <div className="absolute bottom-0 right-0 bg-gradient-to-l from-zinc-900 via-zinc-900/80 to-transparent pl-8 pr-2">
+                  <span className="text-orange-400 font-medium text-sm">Continue Reading →</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Action Hint */}
           {!isExpanded && (
-            <p className="text-zinc-400 text-sm">Click to read today's lesson</p>
+            <div className="flex items-center justify-between pt-2 border-t border-zinc-700/50">
+              <p className="text-zinc-400 text-sm">Discover why your financial future depends on this</p>
+              <div className="text-xs text-orange-400">Tap to unlock insights</div>
+            </div>
           )}
         </div>
+        
+        {/* Subtle Orange Accent Border */}
+        <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-orange-500/50 to-orange-600/30"></div>
       </HODLearnCard>
 
       {/* Expanded Content */}
