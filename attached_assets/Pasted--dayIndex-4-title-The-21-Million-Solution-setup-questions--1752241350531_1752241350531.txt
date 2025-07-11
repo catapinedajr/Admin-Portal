@@ -1,0 +1,183 @@
+{
+        "dayIndex": 4,
+        "title": "The 21 Million Solution",
+        "setup_questions": [
+          "What if money existed that couldn't be printed when politicians needed to spend more?",
+          "How would fixed-supply money change your financial future?",
+          "What makes 21 million the magic number that could save your wealth?"
+        ],
+        "lesson_content": "For three days you've learned how money gets stolen. Today you discover the solution that can't be corrupted.\\n\\n**The Bitcoin Revolution**\\n\\n21 million Bitcoin. That's it. Forever. No exceptions. No emergency printings. No just this once promises.\\n\\nWhen politicians want to spend money they don't have, they can't just print more Bitcoin. When banks want to create inflation, Bitcoin doesn't care.\\n\\n**Why 21 Million Matters**\\n\\nEvery Bitcoin that will ever exist can fit in your pocket as a number. No vaults. No printing presses. No central banks.\\n\\nScarcity creates value. Abundance destroys it. Bitcoin chose scarcity.\\n\\n**Your Wealth Protection**\\n\\nGovernment prints dollars: Your dollars lose value.\\nGovernment prints more dollars: Bitcoin stays the same.\\n\\nIt's like having money that exists outside their money-printing casino.\\n\\n**The Network Effect**\\n\\nBitcoin doesn't need banks. It runs on thousands of computers worldwide. No single point of failure. No CEO to pressure. No headquarters to raid.\\n\\nPure digital scarcity.\\n\\n**Your Financial Independence**\\n\\nFor the first time in history, you can opt out of their money system. You can own money they can't inflate away.\\n\\n**The Question**\\n\\nIf you could own money that politicians can't print more of, wouldn't you want to understand how it works?",
+        "quiz_questions": [
+          {
+            "question": "What is the maximum number of Bitcoin that will ever exist?",
+            "optionA": "100 million",
+            "optionB": "21 million",
+            "optionC": "50 million",
+            "optionD": "There is no limit",
+            "correctAnswer": "B",
+            "explanation": "Bitcoin is programmed with a hard cap of exactly 21 million coins, which can never be changed."
+          },
+          {
+            "question": "What happens to Bitcoin when governments print more of their currency?",
+            "optionA": "Bitcoin gets printed too",
+            "optionB": "Bitcoin loses value",
+            "optionC": "Bitcoin supply stays exactly the same",
+            "optionD": "Bitcoin becomes illegal",
+            "correctAnswer": "C",
+            "explanation": "Bitcoin's supply is fixed regardless of what governments do with their currencies, protecting it from monetary inflation."
+          },
+          {
+            "question": "How is Bitcoin's network secured?",
+            "optionA": "By government backing",
+            "optionB": "By bank guarantees",
+            "optionC": "By thousands of computers worldwide",
+            "optionD": "By gold reserves",
+            "correctAnswer": "C",
+            "explanation": "Bitcoin operates on a decentralized network of thousands of computers, making it resistant to single points of failure."
+          },
+          {
+            "question": "What makes Bitcoin different from traditional money systems?",
+            "optionA": "Bitcoin has lower fees",
+            "optionB": "Bitcoin can't be inflated by authorities",
+            "optionC": "Bitcoin is faster to transfer",
+            "optionD": "Bitcoin is backed by commodities",
+            "correctAnswer": "B",
+            "explanation": "Bitcoin's key differentiator is its fixed supply that no government or authority can increase, protecting against inflation."
+          }
+        ],
+        "key_takeaways": [
+          "Bitcoin's 21 million cap creates permanent scarcity that can't be inflated away",
+          "No government or bank can print more Bitcoin when they need funding",
+          "Digital scarcity protects your wealth from political money printing"
+        ],
+        "why_it_matters": "This matters because for the first time in monetary history, you can own money with mathematically guaranteed scarcity that no authority can override. Understanding Bitcoin's fixed supply helps you see why it serves as a hedge against the endless money printing that devalues your savings. When politicians can't create more Bitcoin to fund their spending, your Bitcoin holdings maintain their proportion of the total supply, protecting your wealth from monetary dilution.",
+        "simulator_references": ["bitcoin_scarcity_model"],
+        "premium_content": false,
+        "hodlearn_tagline_used": false,
+        "word_count": 276
+      },
+      {
+        "dayIndex": 5,
+        "title": "Why Smart Money is Moving to Bitcoin",
+        "setup_questions": [
+          "What do billionaires know about Bitcoin that you don't?",
+          "Why are companies putting Bitcoin on their balance sheets?",
+          "What happens when institutions realize fiat money is broken?"
+        ],
+        "lesson_content": "While you're debating whether Bitcoin is real, smart money already decided. They're moving billions into Bitcoin.\\n\\nHere's what they figured out that you're just learning.\\n\\n**The Corporate Migration**\\n\\nMicroStrategy: $4+ billion in Bitcoin.\\nTesla: Billions in Bitcoin.\\nEl Salvador: Made Bitcoin legal tender.\\n\\nThese aren't crypto bros. These are serious businesses protecting shareholder value.\\n\\n**The Billionaire Playbook**\\n\\nThey see the same inflation destroying your grocery budget. But they have enough money to do something about it.\\n\\nThey're not buying Bitcoin to get rich quick. They're buying Bitcoin to stay rich long-term.\\n\\n**The Professional's Advantage**\\n\\nYou don't need billions to use their strategy. You just need to understand what they understand: fiat money is broken.\\n\\nEvery paycheck you convert to Bitcoin is a paycheck protected from inflation.\\n\\n**The Institutional Wave**\\n\\nWhen pension funds and insurance companies start buying Bitcoin, the price won't be $60,000 anymore.\\n\\nYou're early. They know you're early. The question is: will you act like you're early?\\n\\n**Your Strategic Position**\\n\\nYou still have time to position yourself before the institutional money flood arrives. But that window won't stay open forever.",
+        "quiz_questions": [
+          {
+            "question": "Why are major corporations adding Bitcoin to their balance sheets?",
+            "optionA": "To speculate on price increases",
+            "optionB": "To protect shareholder value from currency debasement",
+            "optionC": "Because it's required by law",
+            "optionD": "To appear trendy to customers",
+            "correctAnswer": "B",
+            "explanation": "Corporations like MicroStrategy and Tesla use Bitcoin as a treasury asset to protect against currency debasement and inflation."
+          },
+          {
+            "question": "What does it mean when billionaires buy Bitcoin to stay rich long-term?",
+            "optionA": "They expect Bitcoin to make them richer",
+            "optionB": "They're diversifying into risky assets",
+            "optionC": "They're preserving wealth against monetary debasement",
+            "optionD": "They're following investment trends",
+            "correctAnswer": "C",
+            "explanation": "Wealthy individuals use Bitcoin to preserve purchasing power against the systematic debasement of fiat currencies."
+          },
+          {
+            "question": "What happens when institutional investors like pension funds start buying Bitcoin?",
+            "optionA": "Bitcoin becomes more volatile",
+            "optionB": "Bitcoin price likely increases significantly",
+            "optionC": "Bitcoin becomes government controlled",
+            "optionD": "Bitcoin loses its decentralized nature",
+            "correctAnswer": "B",
+            "explanation": "Large institutional demand typically drives prices higher due to Bitcoin's fixed supply and limited availability."
+          },
+          {
+            "question": "What advantage do you have as an individual investor right now?",
+            "optionA": "You can buy Bitcoin cheaper than institutions",
+            "optionB": "You're positioned before the major institutional wave",
+            "optionC": "You have access to better Bitcoin exchanges",
+            "optionD": "You understand Bitcoin better than institutions",
+            "correctAnswer": "B",
+            "explanation": "Individual investors currently have the opportunity to position themselves before massive institutional adoption drives prices significantly higher."
+          }
+        ],
+        "key_takeaways": [
+          "Major corporations and billionaires are using Bitcoin to protect wealth from debasement",
+          "Smart money sees Bitcoin as insurance against monetary system failure",
+          "You can adopt institutional wealth preservation strategies before institutions drive prices higher"
+        ],
+        "why_it_matters": "This matters because when the world's smartest money managers are moving billions into Bitcoin for wealth preservation, it signals a fundamental shift in how serious investors view monetary risk. Understanding that you can access the same wealth protection strategy that billionaires use - before massive institutional adoption drives prices much higher - helps you see the strategic opportunity Bitcoin represents for protecting your financial future from currency debasement.",
+        "simulator_references": ["institutional_adoption_tracker"],
+        "premium_content": false,
+        "hodlearn_tagline_used": false,
+        "word_count": 289
+      },
+      {
+        "dayIndex": 6,
+        "title": "Your First Bitcoin Decision",
+        "setup_questions": [
+          "How much of your wealth should you protect with Bitcoin?",
+          "What's the difference between gambling and strategic allocation?",
+          "How do you start without risking money you can't afford to lose?"
+        ],
+        "lesson_content": "You understand the problem. You understand the solution. Now comes the practical question: what do you actually do?\\n\\n**Start Small, Think Big**\\n\\nYou don't need to bet everything on Bitcoin. You need to bet something.\\n\\nStart with money you can afford to lose. Money that would otherwise sit in your checking account losing value anyway.\\n\\n**The 5% Rule**\\n\\nMany professionals start with 5% of their investment portfolio in Bitcoin. Not life-changing if you lose it. Life-changing if Bitcoin does what it's designed to do.\\n\\n$50,000 net worth? Consider $2,500 in Bitcoin.\\n$100,000 net worth? Consider $5,000 in Bitcoin.\\n\\n**Dollar-Cost Averaging**\\n\\nInstead of buying once, buy a little every week. Smooth out the volatility. Build your position over time.\\n\\n$100 per week for a year beats trying to time the perfect entry point.\\n\\n**Your Bitcoin Education**\\n\\nThe best investment you can make is understanding what you own. Every week you learn more, every dollar feels more confident.\\n\\n**The Risk of Not Acting**\\n\\nThe biggest risk isn't Bitcoin going down. The biggest risk is inflation continuing to steal your wealth while you do nothing.\\n\\n**Your Next Step**\\n\\nLearning about Bitcoin is free. Understanding Bitcoin is priceless. Acting on Bitcoin knowledge? That's where wealth protection begins.",
+        "quiz_questions": [
+          {
+            "question": "What's a common starting allocation for Bitcoin in a professional's portfolio?",
+            "optionA": "50% of net worth",
+            "optionB": "5% of investment portfolio",
+            "optionC": "25% of savings",
+            "optionD": "100% of emergency fund",
+            "correctAnswer": "B",
+            "explanation": "Many professionals start with around 5% of their investment portfolio in Bitcoin as a reasonable initial allocation."
+          },
+          {
+            "question": "What is dollar-cost averaging in Bitcoin investing?",
+            "optionA": "Buying Bitcoin only when the price is low",
+            "optionB": "Buying a fixed dollar amount regularly regardless of price",
+            "optionC": "Buying Bitcoin with leftover change",
+            "optionD": "Buying Bitcoin only once per year",
+            "correctAnswer": "B",
+            "explanation": "Dollar-cost averaging involves investing a fixed amount regularly, which helps smooth out price volatility over time."
+          },
+          {
+            "question": "What should you use to buy your first Bitcoin?",
+            "optionA": "Money borrowed from credit cards",
+            "optionB": "Your entire emergency fund",
+            "optionC": "Money you can afford to lose",
+            "optionD": "Money earmarked for rent",
+            "correctAnswer": "C",
+            "explanation": "Only invest money you can afford to lose, especially when starting with a new asset class like Bitcoin."
+          },
+          {
+            "question": "According to the lesson, what's the biggest risk with Bitcoin?",
+            "optionA": "Bitcoin price going down",
+            "optionB": "Bitcoin being banned",
+            "optionC": "Doing nothing while inflation steals your wealth",
+            "optionD": "Bitcoin becoming too expensive",
+            "correctAnswer": "C",
+            "explanation": "The lesson emphasizes that the biggest risk is inaction while inflation systematically erodes your purchasing power."
+          }
+        ],
+        "key_takeaways": [
+          "Start with small amounts you can afford to lose while learning",
+          "Dollar-cost averaging reduces timing risk and builds positions steadily",
+          "The biggest risk is inaction while inflation destroys your purchasing power"
+        ],
+        "why_it_matters": "This matters because understanding how to prudently allocate to Bitcoin helps you take action without risking your financial stability. Learning to start small and build over time through dollar-cost averaging gives you a practical framework for protecting wealth while you deepen your Bitcoin knowledge. The key insight is that doing nothing while inflation systematically destroys your purchasing power is often riskier than thoughtfully allocating a small percentage to Bitcoin as monetary insurance.",
+        "simulator_references": ["dca_calculator", "portfolio_allocation"],
+        "premium_content": false,
+        "hodlearn_tagline_used": false,
+        "word_count": 295
+      },
+      {
+        "dayIndex": 7,
+        "title": "The System Doesn't Want You to Know This",
+        "setup_questions": [
+          "Why don't schools teach you about money creation and inflation?",
+          "What would happen if everyone understood how the monetary system really works?",
+          "Why is financial education deliberately kept from working professionals?"
+        ],
+        "lesson_content": "This week you learned what they don't want you to know. Now let's talk about why they don't want you to know it.\\n\\n**The Education Gap**\\n\\nYou spent 12+ years in school. How many hours did they spend teaching you about money? About inflation? About how banks really work?\\n\\nZero. That's not an accident.\\n\\n**The System's Survival**\\n\\nThe money system only works if most people don't understand it. If everyone knew their savings were being stolen through inflation, they'd demand change.\\n\\nThe system depends on your ignorance. And this is HODLearn!\\n\\n**The Bitcoin Threat**\\n\\nBitcoin threatens the entire wealth transfer system. No more printing money to benefit the connected few. No more banking middlemen taking cuts.\\n\\nThat's why they want you to think Bitcoin is risky, complicated, or a scam.\\n\\n**Your Awakening**\\n\\nThis week you saw through the lies:\\n- Your money IS being stolen\\n- Banks ARE profiting from your deposits\\n- Inflation IS much higher than reported\\n- Bitcoin IS a solution they can't control\\n- Smart money IS already moving\\n\\n**The Professional's Power**\\n\\nYou're educated. You're capable. You can understand this. The only thing stopping you was information.\\n\\nNow you have information. What you do with it determines your financial future.\\n\\n**Week 2 Preview**\\n\\nNext week we dive deeper: How to actually buy Bitcoin safely. How to store it. How to make it part of your wealth strategy.\\n\\nThe learning never stops. The opportunity won't wait forever.",

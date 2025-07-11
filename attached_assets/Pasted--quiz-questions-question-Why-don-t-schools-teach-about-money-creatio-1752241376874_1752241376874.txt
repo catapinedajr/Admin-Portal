@@ -1,0 +1,54 @@
+"quiz_questions": [
+          {
+            "question": "Why don't schools teach about money creation and monetary policy?",
+            "optionA": "It's too complex for students",
+            "optionB": "Teachers don't understand it themselves",
+            "optionC": "The system benefits from financial ignorance",
+            "optionD": "There isn't enough time in the curriculum",
+            "correctAnswer": "C",
+            "explanation": "The current monetary system depends on people not understanding how wealth is transferred through money creation and inflation."
+          },
+          {
+            "question": "What would happen if everyone understood how inflation really works?",
+            "optionA": "Nothing would change",
+            "optionB": "People would demand monetary reform",
+            "optionC": "Inflation would stop happening",
+            "optionD": "Schools would teach more economics",
+            "correctAnswer": "B",
+            "explanation": "If people understood how inflation transfers their wealth to money creators, they would demand changes to the monetary system."
+          },
+          {
+            "question": "Why do authorities often portray Bitcoin negatively?",
+            "optionA": "Bitcoin is actually dangerous",
+            "optionB": "Bitcoin threatens the current wealth transfer system",
+            "optionC": "Bitcoin is too volatile for anyone",
+            "optionD": "Bitcoin is technically flawed",
+            "correctAnswer": "B",
+            "explanation": "Bitcoin threatens the existing system that allows wealth transfer through money printing and banking intermediaries."
+          },
+          {
+            "question": "What's the most important thing you learned this week?",
+            "optionA": "Bitcoin's price might go up",
+            "optionB": "Banks are evil institutions",
+            "optionC": "Your wealth is being systematically transferred away from you",
+            "optionD": "The government controls everything",
+            "correctAnswer": "C",
+            "explanation": "The key insight is understanding how the monetary system systematically transfers wealth from workers and savers to money creators."
+          }
+        ],
+        "key_takeaways": [
+          "Financial ignorance is deliberately maintained to preserve the current system",
+          "Bitcoin threatens established wealth transfer mechanisms",
+          "Education is your most powerful tool for financial self-defense"
+        ],
+        "why_it_matters": "This matters because recognizing that your financial education was deliberately limited helps you understand why taking control of your monetary future is both necessary and urgent. Understanding that Bitcoin threatens the very system that profits from your ignorance explains the resistance you'll encounter, but also confirms why learning about it is so important. Your ability to think independently about money - rather than accepting what authorities tell you - is the foundation of true financial security and wealth preservation.",
+        "simulator_references": ["monetary_system_overview"],
+        "premium_content": false,
+        "hodlearn_tagline_used": true,
+        "word_count": 312
+      }
+    ]
+  }
+}
+
+=== HODLEARN CONTENT BATCH END ===
