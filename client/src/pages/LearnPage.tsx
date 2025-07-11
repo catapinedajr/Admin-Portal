@@ -418,7 +418,7 @@ function LearnPage() {
 
               {/* Today's Lesson - Using HODLearn Card Format */}
               {lesson && (
-                <HODLearnCard variant="default">
+                <HODLearnCard variant="interactive">
                   <div className="space-y-6">
                     {/* Lesson Header */}
                     <div className="space-y-4">
