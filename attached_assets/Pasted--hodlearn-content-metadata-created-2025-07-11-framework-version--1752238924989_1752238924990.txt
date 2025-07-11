@@ -1,0 +1,79 @@
+{
+  "hodlearn_content": {
+    "metadata": {
+      "created": "2025-07-11",
+      "framework_version": "1.0",
+      "target_audience": "Working professionals 20-late 30s",
+      "content_philosophy": "Conviction Through Curiosity",
+      "tagline_usage": "One 'And this is HODLearn' per day maximum"
+    },
+    "lessons": [
+      {
+        "day": 1,
+        "title": "Your Money is Being Stolen (And You Don't Even Know It)",
+        "setup_questions": [
+          "Why does your paycheck feel smaller every year, even when you get raises?",
+          "Who benefits when your money loses value while you're just trying to save for the future?",
+          "What if there was money that couldn't be secretly devalued behind your back?"
+        ],
+        "lesson_content": "You work hard. You get raises. But somehow your money doesn't go as far as it used to.\n\nSomething's wrong here.\n\n**The Invisible Crime**\n\nWhile you sleep, someone is stealing from you. They're making every dollar you own worth less.\n\nEvery time new money gets printed, your existing money becomes less valuable. It's like owning one slice of pizza, then watching someone add ten more slices to everyone else's pizza. Your slice just got smaller.\n\nThis isn't an accident. It's how the system works.\n\n**Your Shrinking Paycheck**\n\nMade $60,000 in 2020? You need $72,000 today just to buy the same stuff. That's not getting ahead. That's running to stay in place.\n\nThe government claims inflation is only 3% per year. Your rent? Up 25%. Groceries? Up 30%. The official numbers are lying.\n\n**The Savings Account Trap**\n\nYou're being responsible. Saving money in a bank account. Building an emergency fund.\n\nBut that savings account earning 0.5%? When real inflation runs 8-10%, you're losing thousands every year. You're getting poorer while thinking you're being smart.\n\n**Who Wins, Who Loses**\n\nWinners: People who print money. People who borrow it first. People who own assets.\n\nLosers: People who work for money. People who save money. People like you.\n\n**Bitcoin: Money That Can't Be Stolen**\n\n21 million Bitcoin. That's it. Forever. No exceptions. No emergency printings. No politician promises.\n\nWhen governments print dollars, Bitcoin doesn't get diluted. It's money nobody can devalue behind your back. And this is HODLearn - how to learn what they don't want you to know!\n\n**Your Wake-Up Call**\n\nThe robbery is happening right now. Legal. Silent. But not unstoppable.\n\nTime to learn how money really works.",
+        "quiz_questions": [
+          {
+            "question": "What happens to your money's value when new money gets printed?",
+            "options": {
+              "a": "It stays exactly the same",
+              "b": "It becomes more valuable", 
+              "c": "It becomes less valuable",
+              "d": "It depends on the stock market"
+            },
+            "correct_answer": "c",
+            "explanation": "When new money is created, it dilutes the value of existing money, reducing purchasing power."
+          },
+          {
+            "question": "If you made $60,000 in 2020, approximately how much do you need today for the same purchasing power?",
+            "options": {
+              "a": "$60,000",
+              "b": "$65,000",
+              "c": "$72,000", 
+              "d": "$80,000"
+            },
+            "correct_answer": "c",
+            "explanation": "Due to inflation, you need approximately 20% more income to maintain the same purchasing power from 2020."
+          },
+          {
+            "question": "Who benefits most when money loses value over time?",
+            "options": {
+              "a": "People who save cash in banks",
+              "b": "People who work for wages",
+              "c": "People who print money and access it first",
+              "d": "People who keep money under their mattress"
+            },
+            "correct_answer": "c",
+            "explanation": "Those who create new money or access it first can spend it before prices adjust, transferring wealth from savers."
+          },
+          {
+            "question": "What makes Bitcoin different from government money?",
+            "options": {
+              "a": "Bitcoin can be printed in unlimited amounts",
+              "b": "Bitcoin has a fixed supply that can never be increased",
+              "c": "Bitcoin is controlled by banks", 
+              "d": "Bitcoin always loses value"
+            },
+            "correct_answer": "b",
+            "explanation": "Bitcoin's key feature is its fixed supply of 21 million coins, which cannot be increased by any authority."
+          }
+        ],
+        "key_takeaways": [
+          "New money creation makes your existing money worth less",
+          "This wealth transfer happens silently from savers to money creators", 
+          "Bitcoin's fixed supply protects against this hidden devaluation"
+        ],
+        "why_it_matters": "This matters because the invisible theft of your purchasing power affects every financial goal you have - buying a house, retiring comfortably, building wealth for your family. Understanding how Bitcoin's unchangeable supply shield against this systematic robbery helps you evaluate whether it deserves a place in your financial defense strategy. The sooner you see how the game is rigged, the sooner you can stop playing by their rules.",
+        "simulator_references": [],
+        "premium_content": false,
+        "hodlearn_tagline_used": true,
+        "word_count": 347
+      }
+    ]
+  }
+}
