@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import BottomNavigation from "@/components/BottomNavigation";
@@ -14,7 +14,6 @@ import { cleanText } from "@/utils/textUtils";
 import { iconMap, bitcoinTerms } from "@/constants/appData";
 import { queryClient } from "@/lib/queryClient";
 import HODLearnCard from "@/components/HODLearnCard";
-import "../styles/reading-enhancement.css";
 
 // Temporary interface for database-driven lesson content
 interface LessonWithKeyTakeaways {
@@ -45,10 +44,6 @@ function LearnPage() {
   // Animation state for earning satoshis
   const [showEarningAnimation, setShowEarningAnimation] = useState(false);
   const [earnedSats, setEarnedSats] = useState(0);
-  
-  // Reading enhancement state
-  const [activeReadingParagraph, setActiveReadingParagraph] = useState<number | null>(null);
-  const lessonContentRef = useRef<HTMLDivElement>(null);
 
   // Get day metadata
   const { data: dayMetadata } = useQuery({
@@ -78,79 +73,6 @@ function LearnPage() {
     if (hour < 21) return "Good evening";
     return "Good evening";
   };
-
-  // Dynamic content revealing effect - creates dopamine hits as content becomes visible
-  useEffect(() => {
-    if (!lesson) return;
-
-    const observerOptions = {
-      root: null,
-      rootMargin: '-10% 0px -30% 0px', // Trigger earlier for smooth reveals
-      threshold: 0.3
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          // Add revealed class for smooth entrance animation
-          entry.target.classList.add('revealed');
-          
-          // Special treatment for insight-rich paragraphs
-          if (entry.target.classList.contains('has-insights')) {
-            // Delay the insight indicator reveal for dramatic effect
-            setTimeout(() => {
-              const indicator = entry.target.querySelector('.insight-indicator');
-              if (indicator) {
-                indicator.style.opacity = '1';
-                indicator.style.transform = 'translateY(0)';
-              }
-            }, 800);
-          }
-        }
-      });
-    }, observerOptions);
-
-    // Initial delay before starting reveals
-    setTimeout(() => {
-      const paragraphs = document.querySelectorAll('.lesson-paragraph');
-      paragraphs.forEach((p) => observer.observe(p));
-    }, 300);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [lesson]);
-
-  // Reading progress tracking for dopamine feedback
-  useEffect(() => {
-    if (!lesson) return;
-
-    const handleScroll = () => {
-      const lessonContent = lessonContentRef.current;
-      if (!lessonContent) return;
-
-      const rect = lessonContent.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-      
-      // Calculate reading progress
-      const contentTop = rect.top;
-      const contentHeight = rect.height;
-      const scrolled = Math.max(0, viewportHeight - contentTop);
-      const progress = Math.min(1, scrolled / (contentHeight + viewportHeight));
-      
-      // Update progress indicator
-      const progressBar = document.querySelector('.reading-progress');
-      if (progressBar) {
-        progressBar.style.setProperty('--progress', progress.toString());
-        if (progress > 0) {
-          progressBar.classList.add('active');
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lesson]);
 
   // Helper function to get user's first name
   const { data: user } = useQuery({
@@ -510,61 +432,12 @@ function LearnPage() {
                       </div>
                     </div>
                     
-                    {/* Database-driven Lesson Content with Dynamic Revealing */}
+                    {/* Database-driven Lesson Content */}
                     <div className="prose prose-invert max-w-none space-y-6">
-                      <div className="lesson-content text-zinc-300 leading-relaxed space-y-6 text-base leading-[1.8]" ref={lessonContentRef}>
-                        {lesson.content && lesson.content.split(/\n\s*\n/).filter(p => p.trim()).map((paragraph, index) => {
-                          // Identify key Bitcoin concepts and insights for smart highlighting
-                          const keyTerms = ['bitcoin', 'inflation', 'monetary', 'currency', 'central bank', 'fed', 'dollar', 'gold', 'store of value', 'scarcity', '21 million', 'digital gold', 'fiat'];
-                          const hasKeyTerm = keyTerms.some(term => paragraph.toLowerCase().includes(term));
-                          
-                          // Handle bold formatting and smart highlighting
-                          const parts = paragraph.split(/\*\*(.*?)\*\*/g);
-                          const formattedContent = parts.map((part, partIndex) => {
-                            if (partIndex % 2 === 0) {
-                              // Check for key insights in regular text
-                              const words = part.split(' ');
-                              return words.map((word, wordIndex) => {
-                                const isKeyWord = keyTerms.some(term => word.toLowerCase().includes(term.toLowerCase()));
-                                if (isKeyWord) {
-                                  return (
-                                    <span 
-                                      key={`${partIndex}-${wordIndex}`}
-                                      className="insight-word px-1 rounded transition-all duration-700 ease-out"
-                                    >
-                                      {word}
-                                    </span>
-                                  );
-                                }
-                                return word + ' ';
-                              });
-                            } else {
-                              return <strong key={partIndex} className="font-semibold text-white">{part}</strong>;
-                            }
-                          });
-                          
-                          return (
-                            <div 
-                              key={index} 
-                              className={`lesson-paragraph transition-all duration-1000 ease-out opacity-60 translate-y-4 ${
-                                hasKeyTerm ? 'has-insights' : ''
-                              }`}
-                              data-paragraph={index}
-                            >
-                              <p className="mb-0 leading-[1.8]">
-                                {formattedContent}
-                              </p>
-                              
-                              {/* Insight indicator for key paragraphs */}
-                              {hasKeyTerm && (
-                                <div className="insight-indicator opacity-0 flex items-center gap-2 mt-3 p-2 rounded-lg bg-orange-500/10 border border-orange-500/20 transition-all duration-500 delay-300">
-                                  <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
-                                  <span className="text-orange-300 text-sm font-medium">Key Bitcoin Insight</span>
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
+                      <div className="text-zinc-300 leading-relaxed space-y-4 text-base leading-[1.8]">
+                        <div>
+                          {cleanText(lesson.content)}
+                        </div>
                       </div>
                       
                       {/* Database-driven Key Takeaways - Simple and Clean */}
@@ -587,13 +460,9 @@ function LearnPage() {
                     <div className="bg-zinc-800/50 rounded-lg p-6 border border-zinc-700 mt-8">
                       <h4 className="text-white font-semibold mb-6 text-lg">Why This Matters</h4>
                       <div className="text-zinc-300 text-base leading-[1.7]">
-                        {(lesson.whyItMatters || "Understanding these fundamentals helps you make informed decisions about Bitcoin and see why it represents a significant advancement in monetary technology.").split(/\*\*(.*?)\*\*/g).map((part, index) => {
-                          if (index % 2 === 0) {
-                            return <span key={index}>{part}</span>;
-                          } else {
-                            return <strong key={index} className="font-semibold text-white">{part}</strong>;
-                          }
-                        })}
+                        <div>
+                          {cleanText(lesson.whyItMatters || "Understanding these fundamentals helps you make informed decisions about Bitcoin and see why it represents a significant advancement in monetary technology.")}
+                        </div>
                       </div>
                     </div>
 
