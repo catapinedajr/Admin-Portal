@@ -15,6 +15,129 @@ import { iconMap, bitcoinTerms } from "@/constants/appData";
 import { queryClient } from "@/lib/queryClient";
 import HODLearnCard from "@/components/HODLearnCard";
 
+// Interactive Key Points Component
+function InteractiveKeyPoints({ keyTakeaways }: { keyTakeaways: string[] }) {
+  const [checkedPoints, setCheckedPoints] = useState<boolean[]>(
+    new Array(keyTakeaways.length).fill(false)
+  );
+  const [allCompleted, setAllCompleted] = useState(false);
+
+  const togglePoint = (index: number) => {
+    const newCheckedPoints = [...checkedPoints];
+    newCheckedPoints[index] = !newCheckedPoints[index];
+    setCheckedPoints(newCheckedPoints);
+    
+    const completed = newCheckedPoints.every(checked => checked);
+    setAllCompleted(completed);
+  };
+
+  const completedCount = checkedPoints.filter(Boolean).length;
+  const progressPercentage = (completedCount / keyTakeaways.length) * 100;
+
+  return (
+    <div className="my-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <h5 className="font-medium text-orange-300">Key Points</h5>
+        <div className="text-xs text-zinc-400">
+          {completedCount} of {keyTakeaways.length} understood
+        </div>
+      </div>
+      
+      {/* Progress Bar */}
+      <div className="w-full bg-zinc-700 rounded-full h-2">
+        <div 
+          className="h-full bg-orange-500 rounded-full transition-all duration-500 ease-out" 
+          style={{ width: `${progressPercentage}%` }}
+        ></div>
+      </div>
+
+      <div className="grid gap-3">
+        {keyTakeaways.map((point, pointIdx) => (
+          <div 
+            key={pointIdx} 
+            className={`flex items-start gap-3 p-3 rounded-lg border transition-all duration-300 cursor-pointer group ${
+              checkedPoints[pointIdx] 
+                ? "bg-orange-600/10 border-orange-600/30 shadow-sm" 
+                : "bg-zinc-800/30 border-zinc-700/50 hover:bg-zinc-800/50 hover:border-zinc-600/50"
+            }`}
+            onClick={() => togglePoint(pointIdx)}
+          >
+            <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
+              checkedPoints[pointIdx] 
+                ? "bg-orange-500 border-orange-500" 
+                : "border-zinc-500 group-hover:border-orange-400"
+            }`}>
+              {checkedPoints[pointIdx] && (
+                <CheckCircle className="w-3 h-3 text-white" />
+              )}
+            </div>
+            <span className={`text-sm leading-relaxed transition-all duration-200 ${
+              checkedPoints[pointIdx] ? "text-orange-100" : "text-zinc-300"
+            }`}>
+              {point}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {allCompleted && (
+        <div className="text-center p-2">
+          <div className="inline-flex items-center gap-2 text-green-400 text-sm font-medium">
+            <Trophy className="w-4 h-4" />
+            All key points understood!
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Interactive Why It Matters Component
+function InteractiveWhyItMatters({ content }: { content: string }) {
+  const [isUnlocked, setIsUnlocked] = useState(false);
+
+  return (
+    <div className="mt-8">
+      {!isUnlocked ? (
+        <HODLearnCard variant="interactive" onClick={() => setIsUnlocked(true)} showChevron={true}>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                <Award className="w-4 h-4 text-orange-400" />
+              </div>
+              <div>
+                <h4 className="text-white font-semibold text-lg">Why This Matters</h4>
+                <p className="text-zinc-400 text-sm">Click to reveal the bigger picture</p>
+              </div>
+            </div>
+          </div>
+        </HODLearnCard>
+      ) : (
+        <div className="bg-gradient-to-r from-orange-500/10 to-orange-600/10 border border-orange-500/30 rounded-lg p-6 space-y-4">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-8 h-8 bg-orange-500/30 rounded-lg flex items-center justify-center">
+              <Award className="w-4 h-4 text-orange-300" />
+            </div>
+            <h4 className="text-white font-semibold text-lg">Why This Matters</h4>
+          </div>
+          <div className="text-zinc-300 text-base leading-[1.7]">
+            {cleanText(content)}
+          </div>
+          <div className="text-center pt-2">
+            <Button 
+              variant="outline" 
+              onClick={() => setIsUnlocked(false)}
+              className="border-orange-500/30 text-orange-400 hover:bg-orange-500/10 text-xs"
+            >
+              Collapse
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // Collapsible Lesson Card Component
 function LessonCard({ lesson }: { lesson: any }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -53,31 +176,16 @@ function LessonCard({ lesson }: { lesson: any }) {
               </div>
             </div>
             
-            {/* Database-driven Key Takeaways - Simple and Clean */}
+            {/* Interactive Checklist Key Takeaways */}
             {lesson.keyTakeaways && Array.isArray(lesson.keyTakeaways) && lesson.keyTakeaways.length > 0 && (
-              <div className="my-6">
-                <h5 className="font-medium text-orange-300 mb-3">Key Points</h5>
-                <div className="grid gap-2">
-                  {lesson.keyTakeaways.map((point, pointIdx) => (
-                    <div key={pointIdx} className="flex items-start gap-2 p-2 bg-orange-600/10 rounded-lg border border-orange-600/20">
-                      <CheckCircle className="w-4 h-4 text-orange-400 flex-shrink-0 mt-0.5" />
-                      <span className="text-orange-100 text-sm leading-relaxed">{point}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <InteractiveKeyPoints keyTakeaways={lesson.keyTakeaways} />
             )}
           </div>
 
-          {/* Why This Matters - Database-driven */}
-          <div className="bg-zinc-800/50 rounded-lg p-6 border border-zinc-700 mt-8">
-            <h4 className="text-white font-semibold mb-6 text-lg">Why This Matters</h4>
-            <div className="text-zinc-300 text-base leading-[1.7]">
-              <div>
-                {cleanText(lesson.whyItMatters || "Understanding these fundamentals helps you make informed decisions about Bitcoin and see why it represents a significant advancement in monetary technology.")}
-              </div>
-            </div>
-          </div>
+          {/* Interactive Why This Matters */}
+          <InteractiveWhyItMatters 
+            content={lesson.whyItMatters || "Understanding these fundamentals helps you make informed decisions about Bitcoin and see why it represents a significant advancement in monetary technology."} 
+          />
 
           {/* Collapse Button */}
           <div className="text-center">
