@@ -145,4 +145,13 @@ WHERE cd.day_index = [DAY_NUMBER];
 ✅ **Content Loading**: Application loading content correctly
 ✅ **Scalable Process**: Template ready for 180-day curriculum
 
+## Bulk Import Process
+
+For importing multiple days at once, use the JSON format in `CLAUDE_BULK_IMPORT_FORMAT.md`:
+
+1. Generate JSON with Claude using the bulk format
+2. Save as `.json` file (e.g., `week2-content.json`)
+3. Run: `node bulk-import.js week2-content.json`
+4. Verify import with database queries
+
 This template enables rapid content creation using external AI tools while maintaining HODLearn's educational framework and database integrity.
