@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import BottomNavigation from "@/components/BottomNavigation";
@@ -14,6 +14,7 @@ import { cleanText } from "@/utils/textUtils";
 import { iconMap, bitcoinTerms } from "@/constants/appData";
 import { queryClient } from "@/lib/queryClient";
 import HODLearnCard from "@/components/HODLearnCard";
+import "../styles/reading-enhancement.css";
 
 // Temporary interface for database-driven lesson content
 interface LessonWithKeyTakeaways {
@@ -44,6 +45,10 @@ function LearnPage() {
   // Animation state for earning satoshis
   const [showEarningAnimation, setShowEarningAnimation] = useState(false);
   const [earnedSats, setEarnedSats] = useState(0);
+  
+  // Reading enhancement state
+  const [activeReadingParagraph, setActiveReadingParagraph] = useState<number | null>(null);
+  const lessonContentRef = useRef<HTMLDivElement>(null);
 
   // Get day metadata
   const { data: dayMetadata } = useQuery({
@@ -73,6 +78,53 @@ function LearnPage() {
     if (hour < 21) return "Good evening";
     return "Good evening";
   };
+
+  // Reading enhancement effect - tracks paragraph visibility
+  useEffect(() => {
+    if (!lesson) return;
+
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -20% 0px', // Trigger when paragraph is in center 60% of viewport
+      threshold: 0.8
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const paragraphIndex = parseInt(entry.target.getAttribute('data-paragraph') || '0');
+        
+        if (entry.isIntersecting) {
+          setActiveReadingParagraph(paragraphIndex);
+          
+          // Add reading-mode class to content container
+          const contentContainer = entry.target.closest('.lesson-content');
+          if (contentContainer) {
+            contentContainer.classList.add('reading-mode');
+          }
+        }
+      });
+    }, observerOptions);
+
+    // Observe all lesson paragraphs
+    const paragraphs = document.querySelectorAll('.lesson-paragraph');
+    paragraphs.forEach((p) => observer.observe(p));
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [lesson]);
+
+  // Update paragraph highlighting based on active reading position
+  useEffect(() => {
+    const paragraphs = document.querySelectorAll('.lesson-paragraph');
+    paragraphs.forEach((p, index) => {
+      if (index === activeReadingParagraph) {
+        p.classList.add('in-view');
+      } else {
+        p.classList.remove('in-view');
+      }
+    });
+  }, [activeReadingParagraph]);
 
   // Helper function to get user's first name
   const { data: user } = useQuery({
@@ -432,12 +484,40 @@ function LearnPage() {
                       </div>
                     </div>
                     
-                    {/* Database-driven Lesson Content */}
+                    {/* Database-driven Lesson Content with Reading Enhancement */}
                     <div className="prose prose-invert max-w-none space-y-6">
-                      <div className="text-zinc-300 leading-relaxed space-y-4 text-base leading-[1.8]">
-                        <div>
-                          {cleanText(lesson.content)}
-                        </div>
+                      <div className="lesson-content text-zinc-300 leading-relaxed space-y-4 text-base leading-[1.8]">
+                        {lesson.content && lesson.content.split(/\n\s*\n/).filter(p => p.trim()).map((paragraph, index) => {
+                          // Handle bold formatting within paragraphs
+                          const parts = paragraph.split(/\*\*(.*?)\*\*/g);
+                          const formattedContent = parts.map((part, partIndex) => {
+                            if (partIndex % 2 === 0) {
+                              return part;
+                            } else {
+                              return <strong key={partIndex} className="font-semibold text-white">{part}</strong>;
+                            }
+                          });
+                          
+                          return (
+                            <p 
+                              key={index} 
+                              className="lesson-paragraph transition-all duration-500 ease-out p-3 rounded-lg border border-transparent hover:border-orange-500/20 hover:bg-orange-500/5 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.01] cursor-pointer"
+                              onClick={() => {
+                                // Smooth scroll to center this paragraph
+                                const element = document.querySelector(`[data-paragraph="${index}"]`);
+                                if (element) {
+                                  element.scrollIntoView({ 
+                                    behavior: 'smooth', 
+                                    block: 'center' 
+                                  });
+                                }
+                              }}
+                              data-paragraph={index}
+                            >
+                              {formattedContent}
+                            </p>
+                          );
+                        })}
                       </div>
                       
                       {/* Database-driven Key Takeaways - Simple and Clean */}
@@ -460,9 +540,13 @@ function LearnPage() {
                     <div className="bg-zinc-800/50 rounded-lg p-6 border border-zinc-700 mt-8">
                       <h4 className="text-white font-semibold mb-6 text-lg">Why This Matters</h4>
                       <div className="text-zinc-300 text-base leading-[1.7]">
-                        <div>
-                          {cleanText(lesson.whyItMatters || "Understanding these fundamentals helps you make informed decisions about Bitcoin and see why it represents a significant advancement in monetary technology.")}
-                        </div>
+                        {(lesson.whyItMatters || "Understanding these fundamentals helps you make informed decisions about Bitcoin and see why it represents a significant advancement in monetary technology.").split(/\*\*(.*?)\*\*/g).map((part, index) => {
+                          if (index % 2 === 0) {
+                            return <span key={index}>{part}</span>;
+                          } else {
+                            return <strong key={index} className="font-semibold text-white">{part}</strong>;
+                          }
+                        })}
                       </div>
                     </div>
 

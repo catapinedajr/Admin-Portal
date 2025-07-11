@@ -1,0 +1,70 @@
+/* Reading Enhancement Styles for HODLearn */
+
+.lesson-content {
+  position: relative;
+}
+
+.lesson-paragraph {
+  position: relative;
+  transition: all 0.3s ease-out;
+  margin-bottom: 1rem;
+  line-height: 1.8;
+}
+
+/* Active reading state - highlight current paragraph in viewport */
+.lesson-paragraph.in-view {
+  background: rgba(249, 115, 22, 0.08);
+  border-color: rgba(249, 115, 22, 0.2);
+  box-shadow: 0 4px 20px rgba(249, 115, 22, 0.1);
+  transform: scale(1.005);
+  padding-left: 1rem;
+  border-left: 3px solid rgba(249, 115, 22, 0.4);
+}
+
+/* Subtle reading progress indicator */
+.lesson-paragraph::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 4px;
+  background: rgba(156, 163, 175, 0.3);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.lesson-paragraph.in-view::before {
+  background: rgba(249, 115, 22, 0.8);
+  width: 6px;
+  height: 6px;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.5);
+}
+
+/* Smooth fade effect for non-active paragraphs */
+.lesson-content.reading-mode .lesson-paragraph:not(.in-view) {
+  opacity: 0.7;
+  transform: scale(0.998);
+}
+
+/* Enhanced hover effects */
+.lesson-paragraph:hover {
+  background: rgba(249, 115, 22, 0.06) !important;
+  border-color: rgba(249, 115, 22, 0.25) !important;
+  transform: scale(1.008) !important;
+  cursor: pointer;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .lesson-paragraph {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .lesson-paragraph.in-view {
+    padding-left: 0.75rem;
+    border-left-width: 2px;
+  }
+}
