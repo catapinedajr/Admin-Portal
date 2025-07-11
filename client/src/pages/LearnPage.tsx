@@ -416,70 +416,68 @@ function LearnPage() {
                 </div>
               </HODLearnCard>
 
-              {/* Today's Lesson - Clean and Focused */}
+              {/* Today's Lesson - Using HODLearn Card Format */}
               {lesson && (
-                <Card className="bg-zinc-900 border-orange-400/40 shadow-lg shadow-orange-400/20">
-                  <CardContent className="p-6">
-                    <div className="space-y-6">
-                      {/* Lesson Header */}
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-bold text-white border-b border-zinc-700 pb-3">Today's Lesson</h3>
-                        <div className="flex items-start justify-between gap-4">
-                          <h4 className="text-xl font-bold text-white leading-tight flex-1">{lesson.title}</h4>
-                          <Badge variant="outline" className="border-zinc-700 text-zinc-400 flex-shrink-0">
-                            <Clock className="w-3 h-3 mr-1" />
-                            {lesson.estimatedReadTime || 3} min read
-                          </Badge>
+                <HODLearnCard variant="default">
+                  <div className="space-y-6">
+                    {/* Lesson Header */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-bold text-white border-b border-zinc-700 pb-3">Today's Lesson</h3>
+                      <div className="flex items-start justify-between gap-4">
+                        <h4 className="text-xl font-bold text-white leading-tight flex-1">{lesson.title}</h4>
+                        <Badge variant="outline" className="border-zinc-700 text-zinc-400 flex-shrink-0">
+                          <Clock className="w-3 h-3 mr-1" />
+                          {lesson.estimatedReadTime || 3} min read
+                        </Badge>
+                      </div>
+                    </div>
+                    
+                    {/* Database-driven Lesson Content */}
+                    <div className="prose prose-invert max-w-none space-y-6">
+                      <div className="text-zinc-300 leading-relaxed space-y-4 text-base leading-[1.8]">
+                        <div>
+                          {cleanText(lesson.content)}
                         </div>
                       </div>
                       
-                      {/* Database-driven Lesson Content */}
-                      <div className="prose prose-invert max-w-none space-y-6">
-                        <div className="text-zinc-300 leading-relaxed space-y-4 text-base leading-[1.8]">
-                          <div>
-                            {cleanText(lesson.content)}
+                      {/* Database-driven Key Takeaways - Simple and Clean */}
+                      {lesson.keyTakeaways && Array.isArray(lesson.keyTakeaways) && lesson.keyTakeaways.length > 0 && (
+                        <div className="my-6">
+                          <h5 className="font-medium text-orange-300 mb-3">Key Points</h5>
+                          <div className="grid gap-2">
+                            {lesson.keyTakeaways.map((point, pointIdx) => (
+                              <div key={pointIdx} className="flex items-start gap-2 p-2 bg-orange-600/10 rounded-lg border border-orange-600/20">
+                                <CheckCircle className="w-4 h-4 text-orange-400 flex-shrink-0 mt-0.5" />
+                                <span className="text-orange-100 text-sm leading-relaxed">{point}</span>
+                              </div>
+                            ))}
                           </div>
                         </div>
-                        
-                        {/* Database-driven Key Takeaways - Simple and Clean */}
-                        {lesson.keyTakeaways && Array.isArray(lesson.keyTakeaways) && lesson.keyTakeaways.length > 0 && (
-                          <div className="my-6">
-                            <h5 className="font-medium text-orange-300 mb-3">Key Points</h5>
-                            <div className="grid gap-2">
-                              {lesson.keyTakeaways.map((point, pointIdx) => (
-                                <div key={pointIdx} className="flex items-start gap-2 p-2 bg-orange-600/10 rounded-lg border border-orange-600/20">
-                                  <CheckCircle className="w-4 h-4 text-orange-400 flex-shrink-0 mt-0.5" />
-                                  <span className="text-orange-100 text-sm leading-relaxed">{point}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Why This Matters - Database-driven */}
-                      <div className="bg-zinc-800/50 rounded-lg p-6 border border-zinc-700 mt-8">
-                        <h4 className="text-white font-semibold mb-6 text-lg">Why This Matters</h4>
-                        <div className="text-zinc-300 text-base leading-[1.7]">
-                          <div>
-                            {cleanText(lesson.whyItMatters || "Understanding these fundamentals helps you make informed decisions about Bitcoin and see why it represents a significant advancement in monetary technology.")}
-                          </div>
-                        </div>
-                      </div>
-
+                      )}
                     </div>
-                  </CardContent>
-                </Card>
+
+                    {/* Why This Matters - Database-driven */}
+                    <div className="bg-zinc-800/50 rounded-lg p-6 border border-zinc-700 mt-8">
+                      <h4 className="text-white font-semibold mb-6 text-lg">Why This Matters</h4>
+                      <div className="text-zinc-300 text-base leading-[1.7]">
+                        <div>
+                          {cleanText(lesson.whyItMatters || "Understanding these fundamentals helps you make informed decisions about Bitcoin and see why it represents a significant advancement in monetary technology.")}
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </HODLearnCard>
               )}
 
-              {/* Daily Quiz - Clean with Subtle Progress */}
-              <Card className="bg-zinc-800/50 border-zinc-700">
-                <CardHeader>
+              {/* Daily Quiz - Using HODLearn Card Format */}
+              <HODLearnCard variant="interactive">
+                <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-xl text-white flex items-center gap-2">
+                    <div className="text-xl text-white font-semibold flex items-center gap-2">
                       <GraduationCap className="w-5 h-5 text-orange-500" />
                       Knowledge Check
-                    </CardTitle>
+                    </div>
                     {isQuizCompleted && (
                       <div className="flex items-center gap-1 bg-green-500/20 text-green-400 px-2 py-1 rounded-full text-xs font-medium">
                         <Trophy className="w-3 h-3" />
@@ -489,8 +487,8 @@ function LearnPage() {
                   </div>
                   
                   {/* Simple Progress Bar */}
-                  <div className="mt-3">
-                    <div className="flex items-center justify-between text-sm text-zinc-400 mb-2">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm text-zinc-400">
                       <span>Daily Challenge</span>
                       <span>100 sats per correct answer</span>
                     </div>
@@ -501,16 +499,15 @@ function LearnPage() {
                       ></div>
                     </div>
                   </div>
-                </CardHeader>
-                <CardContent>
+
                   <DailyQuiz
                     dayIndex={currentDayIndex}
                     onCompletion={handleQuizCompletion}
                     onEarning={triggerEarningAnimation}
                     dayCompleted={dayCompleted}
                   />
-                </CardContent>
-              </Card>
+                </div>
+              </HODLearnCard>
             </div>
           )}
         </div>
