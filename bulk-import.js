@@ -2,7 +2,8 @@
 // Usage: node bulk-import.js <filename.json>
 
 import fs from 'fs';
-import { Pool } from 'pg';
+import pkg from 'pg';
+const { Pool } = pkg;
 import dotenv from 'dotenv';
 dotenv.config();
 
