@@ -1,9 +1,10 @@
 // Bulk Content Import Script for HODLearn
 // Usage: node bulk-import.js <filename.json>
 
-const fs = require('fs');
-const { Pool } = require('pg');
-require('dotenv').config();
+import fs from 'fs';
+import { Pool } from 'pg';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL
