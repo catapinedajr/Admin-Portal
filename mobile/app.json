@@ -16,19 +16,32 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.hodlearn.app"
+      "bundleIdentifier": "com.hodlearn.app",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app does not use the camera.",
+        "NSMicrophoneUsageDescription": "This app does not use the microphone."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#09090b"
-      }
+      },
+      "package": "com.hodlearn.app",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
-      "apiUrl": "https://hodlearnbeta.replit.app"
-    }
+      "apiUrl": "https://hodlearnbeta.replit.app",
+      "eas": {
+        "projectId": "placeholder-will-be-generated"
+      }
+    },
+    "owner": "placeholder-your-expo-username",
+    "privacy": "unlisted",
+    "platforms": ["ios", "android", "web"]
   }
 }
