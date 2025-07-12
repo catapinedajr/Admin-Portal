@@ -72,8 +72,6 @@ export { default as Wifi } from "lucide-react/dist/esm/icons/wifi";
 export { default as Globe } from "lucide-react/dist/esm/icons/globe";
 export { default as Zap } from "lucide-react/dist/esm/icons/zap";
 export { default as Flame } from "lucide-react/dist/esm/icons/flame";
-export { default as Award } from "lucide-react/dist/esm/icons/award";
-export { default as Trophy } from "lucide-react/dist/esm/icons/trophy";
 
 // Content & Media
 export { default as BookOpen } from "lucide-react/dist/esm/icons/book-open";
@@ -102,6 +100,8 @@ export { default as Coffee } from "lucide-react/dist/esm/icons/coffee";
 export { default as Car } from "lucide-react/dist/esm/icons/car";
 
 // Additional icons needed by components
+export { default as Trophy } from "lucide-react/dist/esm/icons/trophy";
+export { default as Award } from "lucide-react/dist/esm/icons/award";
 export { default as Star } from "lucide-react/dist/esm/icons/star";
 export { default as Wallet } from "lucide-react/dist/esm/icons/wallet";
 export { default as Sparkles } from "lucide-react/dist/esm/icons/sparkles";

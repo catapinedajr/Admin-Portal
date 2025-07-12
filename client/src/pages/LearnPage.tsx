@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
-import { Crown, Gem, User as UserIcon, ChevronDown, ChevronUp, Wallet, Clock, CheckCircle, Key, GraduationCap, Brain, TrendingUp, Zap, Award, Sparkles, Trophy, Coins, BookOpen, X } from "@/lib/icons";
+import { Crown, Gem, User as UserIcon, ChevronDown, ChevronUp, Wallet, Clock, CheckCircle, Key, GraduationCap, Brain, TrendingUp, Zap, Award, Sparkles, Trophy, Coins } from "@/lib/icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,243 +14,6 @@ import { cleanText } from "@/utils/textUtils";
 import { iconMap, bitcoinTerms } from "@/constants/appData";
 import { queryClient } from "@/lib/queryClient";
 import HODLearnCard from "@/components/HODLearnCard";
-
-// Interactive Key Points Component
-function InteractiveKeyPoints({ keyTakeaways }: { keyTakeaways: string[] }) {
-  const [checkedPoints, setCheckedPoints] = useState<boolean[]>(
-    new Array(keyTakeaways.length).fill(false)
-  );
-  const [allCompleted, setAllCompleted] = useState(false);
-
-  const togglePoint = (index: number) => {
-    const newCheckedPoints = [...checkedPoints];
-    newCheckedPoints[index] = !newCheckedPoints[index];
-    setCheckedPoints(newCheckedPoints);
-    
-    const completed = newCheckedPoints.every(checked => checked);
-    setAllCompleted(completed);
-  };
-
-  const completedCount = checkedPoints.filter(Boolean).length;
-  const progressPercentage = (completedCount / keyTakeaways.length) * 100;
-
-  return (
-    <div className="my-6 space-y-4">
-      <div className="flex items-center justify-between">
-        <h5 className="font-medium text-orange-300">Key Points</h5>
-        <div className="text-xs text-zinc-400">
-          {completedCount} of {keyTakeaways.length} understood
-        </div>
-      </div>
-      
-      {/* Progress Bar */}
-      <div className="w-full bg-zinc-700 rounded-full h-2">
-        <div 
-          className="h-full bg-orange-500 rounded-full transition-all duration-500 ease-out" 
-          style={{ width: `${progressPercentage}%` }}
-        ></div>
-      </div>
-
-      <div className="grid gap-3">
-        {keyTakeaways.map((point, pointIdx) => (
-          <div 
-            key={pointIdx} 
-            className={`flex items-start gap-3 p-3 rounded-lg border transition-all duration-300 cursor-pointer group ${
-              checkedPoints[pointIdx] 
-                ? "bg-orange-600/10 border-orange-600/30 shadow-sm" 
-                : "bg-zinc-800/30 border-zinc-700/50 hover:bg-zinc-800/50 hover:border-zinc-600/50"
-            }`}
-            onClick={() => togglePoint(pointIdx)}
-          >
-            <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
-              checkedPoints[pointIdx] 
-                ? "bg-orange-500 border-orange-500" 
-                : "border-zinc-500 group-hover:border-orange-400"
-            }`}>
-              {checkedPoints[pointIdx] && (
-                <CheckCircle className="w-3 h-3 text-white" />
-              )}
-            </div>
-            <span className={`text-sm leading-relaxed transition-all duration-200 ${
-              checkedPoints[pointIdx] ? "text-orange-100" : "text-zinc-300"
-            }`}>
-              {point}
-            </span>
-          </div>
-        ))}
-      </div>
-
-      {allCompleted && (
-        <div className="text-center p-2">
-          <div className="inline-flex items-center gap-2 text-green-400 text-sm font-medium">
-            <Trophy className="w-4 h-4" />
-            All key points understood!
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// Interactive Why It Matters Component
-function InteractiveWhyItMatters({ content }: { content: string }) {
-  const [isUnlocked, setIsUnlocked] = useState(false);
-
-  return (
-    <div className="mt-8">
-      {!isUnlocked ? (
-        <HODLearnCard variant="interactive" onClick={() => setIsUnlocked(true)} showChevron={true}>
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                <Award className="w-4 h-4 text-orange-400" />
-              </div>
-              <div>
-                <h4 className="text-white font-semibold text-lg">Why This Matters</h4>
-                <p className="text-zinc-400 text-sm">Click to reveal the bigger picture</p>
-              </div>
-            </div>
-          </div>
-        </HODLearnCard>
-      ) : (
-        <div className="bg-gradient-to-r from-orange-500/10 to-orange-600/10 border border-orange-500/30 rounded-lg p-6 space-y-4">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 bg-orange-500/30 rounded-lg flex items-center justify-center">
-              <Award className="w-4 h-4 text-orange-300" />
-            </div>
-            <h4 className="text-white font-semibold text-lg">Why This Matters</h4>
-          </div>
-          <div className="text-zinc-300 text-base leading-[1.7]">
-            {cleanText(content)}
-          </div>
-          <div className="text-center pt-2">
-            <Button 
-              variant="outline" 
-              onClick={() => setIsUnlocked(false)}
-              className="border-orange-500/30 text-orange-400 hover:bg-orange-500/10 text-xs"
-            >
-              Collapse
-            </Button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// Collapsible Lesson Card Component
-function LessonCard({ lesson }: { lesson: any }) {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  return (
-    <div className="space-y-4">
-      {/* Enhanced Preview Card with Content Teaser */}
-      <HODLearnCard 
-        variant="interactive" 
-        onClick={() => setIsExpanded(!isExpanded)}
-        showChevron={true}
-        className="border-orange-500/20 hover:border-orange-500/40 relative overflow-hidden"
-      >
-        <div className="space-y-4">
-          {/* Header Section with Better Layout */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                <BookOpen className="w-4 h-4 text-orange-400" />
-              </div>
-              <div>
-                <p className="text-xs text-orange-400 font-medium uppercase tracking-wide">Today's Deep Dive</p>
-                <h3 className="text-lg font-bold text-white">Your Bitcoin Lesson</h3>
-              </div>
-            </div>
-            <Badge variant="outline" className="border-orange-500/30 text-orange-300 bg-orange-500/10 flex-shrink-0">
-              <Clock className="w-3 h-3 mr-1" />
-              {lesson.estimatedReadTime || 3} min
-            </Badge>
-          </div>
-
-          {/* Lesson Title with Better Typography */}
-          <div className="space-y-3">
-            <h4 className="text-2xl font-bold text-white leading-tight">{lesson.title}</h4>
-            
-            {/* Content Preview Teaser */}
-            {!isExpanded && (
-              <div className="space-y-4">
-                <div className="bg-zinc-800/30 rounded-lg p-4 border border-zinc-700/30">
-                  <div className="text-zinc-300 text-sm leading-relaxed mb-4">
-                    {(lesson.content || '').split(' ').slice(0, 25).join(' ')}...
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-zinc-500 text-xs">Essential knowledge for your financial future</span>
-                    <span className="text-orange-400 font-medium text-sm">Continue Reading →</span>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-        
-        {/* Subtle Orange Accent Border */}
-        <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-orange-500/50 to-orange-600/30"></div>
-      </HODLearnCard>
-
-      {/* Focused Reading Mode - Expanded Content */}
-      {isExpanded && (
-        <div className="bg-gradient-to-br from-zinc-900/95 to-zinc-800/90 rounded-xl p-10 space-y-10 border border-zinc-700/20 shadow-2xl">
-          {/* Reading Mode Header */}
-          <div className="flex items-center justify-between border-b border-zinc-700/30 pb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-orange-500/30 rounded-lg flex items-center justify-center">
-                <BookOpen className="w-4 h-4 text-orange-300" />
-              </div>
-              <span className="text-orange-300 text-sm font-medium">Reading Mode</span>
-            </div>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => setIsExpanded(false)}
-              className="text-zinc-400 hover:text-white hover:bg-zinc-800/50"
-            >
-              <X className="w-4 h-4 mr-2" />
-              Close
-            </Button>
-          </div>
-
-          {/* Optimized Reading Content */}
-          <div className="prose prose-invert max-w-none space-y-8">
-            <div className="text-zinc-200 leading-relaxed space-y-6 text-base leading-[1.9] max-w-4xl">
-              <div className="text-lg leading-[1.8] font-light">
-                {cleanText(lesson.content)}
-              </div>
-            </div>
-            
-            {/* Interactive Checklist Key Takeaways */}
-            {lesson.keyTakeaways && Array.isArray(lesson.keyTakeaways) && lesson.keyTakeaways.length > 0 && (
-              <InteractiveKeyPoints keyTakeaways={lesson.keyTakeaways} />
-            )}
-          </div>
-
-          {/* Interactive Why This Matters */}
-          <InteractiveWhyItMatters 
-            content={lesson.whyItMatters || "Understanding these fundamentals helps you make informed decisions about Bitcoin and see why it represents a significant advancement in monetary technology."} 
-          />
-
-          {/* Reading Progress Indicator */}
-          <div className="text-center pt-6 border-t border-zinc-700/30">
-            <div className="text-zinc-500 text-sm mb-4">You've completed today's lesson</div>
-            <Button 
-              variant="outline" 
-              onClick={() => setIsExpanded(false)}
-              className="border-zinc-600/50 text-zinc-300 hover:bg-zinc-800/50 hover:border-orange-500/30"
-            >
-              Return to Overview
-            </Button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
 // Temporary interface for database-driven lesson content
 interface LessonWithKeyTakeaways {
@@ -653,9 +416,58 @@ function LearnPage() {
                 </div>
               </HODLearnCard>
 
-              {/* Today's Lesson - Progressive Disclosure Style */}
+              {/* Today's Lesson - Using HODLearn Card Format */}
               {lesson && (
-                <LessonCard lesson={lesson} />
+                <HODLearnCard variant="interactive">
+                  <div className="space-y-6">
+                    {/* Lesson Header */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-bold text-white border-b border-zinc-700 pb-3">Today's Lesson</h3>
+                      <div className="flex items-start justify-between gap-4">
+                        <h4 className="text-xl font-bold text-white leading-tight flex-1">{lesson.title}</h4>
+                        <Badge variant="outline" className="border-zinc-700 text-zinc-400 flex-shrink-0">
+                          <Clock className="w-3 h-3 mr-1" />
+                          {lesson.estimatedReadTime || 3} min read
+                        </Badge>
+                      </div>
+                    </div>
+                    
+                    {/* Database-driven Lesson Content */}
+                    <div className="prose prose-invert max-w-none space-y-6">
+                      <div className="text-zinc-300 leading-relaxed space-y-4 text-base leading-[1.8]">
+                        <div>
+                          {cleanText(lesson.content)}
+                        </div>
+                      </div>
+                      
+                      {/* Database-driven Key Takeaways - Simple and Clean */}
+                      {lesson.keyTakeaways && Array.isArray(lesson.keyTakeaways) && lesson.keyTakeaways.length > 0 && (
+                        <div className="my-6">
+                          <h5 className="font-medium text-orange-300 mb-3">Key Points</h5>
+                          <div className="grid gap-2">
+                            {lesson.keyTakeaways.map((point, pointIdx) => (
+                              <div key={pointIdx} className="flex items-start gap-2 p-2 bg-orange-600/10 rounded-lg border border-orange-600/20">
+                                <CheckCircle className="w-4 h-4 text-orange-400 flex-shrink-0 mt-0.5" />
+                                <span className="text-orange-100 text-sm leading-relaxed">{point}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Why This Matters - Database-driven */}
+                    <div className="bg-zinc-800/50 rounded-lg p-6 border border-zinc-700 mt-8">
+                      <h4 className="text-white font-semibold mb-6 text-lg">Why This Matters</h4>
+                      <div className="text-zinc-300 text-base leading-[1.7]">
+                        <div>
+                          {cleanText(lesson.whyItMatters || "Understanding these fundamentals helps you make informed decisions about Bitcoin and see why it represents a significant advancement in monetary technology.")}
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </HODLearnCard>
               )}
 
               {/* Daily Quiz - Using HODLearn Card Format */}

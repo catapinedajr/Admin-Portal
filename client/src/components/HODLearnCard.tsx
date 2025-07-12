@@ -5,7 +5,7 @@ import { ChevronRight } from "@/lib/icons";
 interface HODLearnCardProps {
   children: React.ReactNode;
   onClick?: () => void;
-  variant?: "default" | "interactive" | "premium" | "reading";
+  variant?: "default" | "interactive" | "premium";
   className?: string;
   disabled?: boolean;
   showChevron?: boolean;
@@ -50,12 +50,6 @@ export default function HODLearnCard({
       hover:from-zinc-800/80 hover:to-zinc-700/60 hover:border-orange-500/40
       hover:shadow-xl hover:shadow-orange-500/20 hover:scale-[1.03]
       hover:ring-1 hover:ring-orange-500/30
-      cursor-pointer
-    `,
-    reading: `
-      bg-zinc-800/20 border-zinc-700/30 
-      hover:bg-zinc-800/30 hover:border-zinc-600/40
-      hover:shadow-sm hover:shadow-zinc-500/5
       cursor-pointer
     `
   };
