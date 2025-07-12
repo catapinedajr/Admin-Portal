@@ -1,0 +1,17 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="256" fill="#09090b"/>
+  
+  <!-- Orange Bitcoin-inspired circle -->
+  <circle cx="256" cy="256" r="180" fill="#f97316" stroke="#ffffff" stroke-width="8"/>
+  
+  <!-- HODLearn text -->
+  <text x="256" y="220" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="48" font-weight="bold">HL</text>
+  
+  <!-- Tagline -->
+  <text x="256" y="300" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="20" opacity="0.9">Learn</text>
+  
+  <!-- Small Bitcoin symbol in corner -->
+  <circle cx="380" cy="140" r="30" fill="white" opacity="0.2"/>
+  <text x="380" y="150" text-anchor="middle" fill="#f97316" font-family="Arial, sans-serif" font-size="24" font-weight="bold">₿</text>
+</svg>
