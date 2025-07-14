@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HODLearn Mobile - Expo Go Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .expo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #000428, #004e92);
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            border: 8px solid #1a1a1a;
+            border-radius: 40px;
+            background: #09090b;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 30px;
+            background: #1a1a1a;
+            border-radius: 0 0 15px 15px;
+            z-index: 10;
+        }
+
+        .expo-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 30px;
+            z-index: 5;
+        }
+
+        .expo-logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .app-iframe {
+            position: absolute;
+            top: 80px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: none;
+            width: 100%;
+            height: calc(100% - 80px);
+        }
+
+        .instructions {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 20;
+        }
+
+        .qr-placeholder {
+            width: 200px;
+            height: 200px;
+            border: 2px dashed #f97316;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #f97316;
+        }
+
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(249, 115, 22, 0.1);
+            border-radius: 5px;
+            border-left: 3px solid #f97316;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 15;
+        }
+
+        .spinner {
+            border: 4px solid #333;
+            border-top: 4px solid #f97316;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .button {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+
+        .button:hover {
+            transform: scale(1.05);
+        }
+
+        .info-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 14px;
+            z-index: 25;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="expo-container">
+        <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="expo-header">
+                <div class="expo-logo">📱 HODLearn Mobile</div>
+            </div>
+
+            <!-- Instructions Screen -->
+            <div class="instructions" id="instructions">
+                <h2>🚀 Expo Go Testing</h2>
+                <div class="qr-placeholder">
+                    QR Code Would<br>Appear Here
+                </div>
+                
+                <div class="step">
+                    <strong>1.</strong> Download "Expo Go" from App Store or Google Play
+                </div>
+                <div class="step">
+                    <strong>2.</strong> Scan QR code with Expo Go app
+                </div>
+                <div class="step">
+                    <strong>3.</strong> Your HODLearn app opens instantly
+                </div>
+
+                <button class="button" onclick="startPreview()">
+                    Preview Mobile App
+                </button>
+                <button class="button" onclick="showInstructions()">
+                    Setup Instructions
+                </button>
+            </div>
+
+            <!-- Loading Screen -->
+            <div class="loading hidden" id="loading">
+                <div class="spinner"></div>
+                <p>Loading HODLearn Mobile...</p>
+            </div>
+
+            <!-- App Preview -->
+            <iframe class="app-iframe hidden" id="appFrame" src=""></iframe>
+        </div>
+
+        <div class="info-panel">
+            <strong>Backend:</strong> https://hodlearnbeta.replit.app<br>
+            <strong>Status:</strong> <span id="status">Ready for Testing</span>
+        </div>
+    </div>
+
+    <script>
+        function startPreview() {
+            document.getElementById('instructions').classList.add('hidden');
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('status').textContent = 'Loading Preview...';
+
+            // Simulate loading
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('appFrame').classList.remove('hidden');
+                document.getElementById('appFrame').src = 'https://hodlearnbeta.replit.app';
+                document.getElementById('status').textContent = 'Mobile Preview Active';
+            }, 2000);
+        }
+
+        function showInstructions() {
+            document.getElementById('instructions').classList.remove('hidden');
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('appFrame').classList.add('hidden');
+            document.getElementById('status').textContent = 'Setup Instructions';
+        }
+
+        // Auto-start preview after 3 seconds
+        setTimeout(() => {
+            // startPreview();
+        }, 3000);
+    </script>
+</body>
+</html>

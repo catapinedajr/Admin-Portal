@@ -42,6 +42,7 @@
     },
     "owner": "placeholder-your-expo-username",
     "privacy": "unlisted",
-    "platforms": ["ios", "android", "web"]
+    "platforms": ["ios", "android", "web"],
+    "scheme": "hodlearn"
   }
 }
