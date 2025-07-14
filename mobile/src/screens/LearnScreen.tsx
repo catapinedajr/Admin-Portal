@@ -1,254 +1,170 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  SafeAreaView,
   ActivityIndicator,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import Constants from 'expo-constants';
 
-interface ContentDay {
+interface DayContent {
   dayIndex: number;
   title: string;
-  themes: string[];
-}
-
-interface SetupQuestion {
-  questionText: string;
-  answerText: string;
-}
-
-interface Quiz {
-  questionText: string;
-  optionA: string;
-  optionB: string;
-  optionC: string;
-  optionD: string;
-  correctAnswer: number;
-  explanation: string;
-}
-
-interface LearnData {
-  contentDay: ContentDay;
-  setupQuestions: SetupQuestion[];
+  setupQuestions: Array<{
+    id: string;
+    question: string;
+  }>;
   lesson: {
     content: string;
     keyTakeaways: string[];
     whyItMatters: string;
   };
-  quizzes: Quiz[];
-  userProgress: {
-    currentDay: number;
-    hasCompletedToday: boolean;
-  };
 }
 
 export default function LearnScreen() {
-  const [learnData, setLearnData] = useState<LearnData | null>(null);
+  const [currentDay, setCurrentDay] = useState(1);
+  const [dayContent, setDayContent] = useState<DayContent | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeSection, setActiveSection] = useState<'facts' | 'lesson' | 'quiz'>('facts');
-
-  const API_URL = Constants.expoConfig?.extra?.apiUrl || 'http://localhost:5000';
+  const [showLesson, setShowLesson] = useState(false);
 
   useEffect(() => {
-    fetchLearnData();
-  }, []);
+    fetchDayContent(currentDay);
+  }, [currentDay]);
 
-  const fetchLearnData = async () => {
+  const fetchDayContent = async (dayIndex: number) => {
     try {
-      // Fetch current day's content
-      const dayResponse = await fetch(`${API_URL}/api/content/day/1`); // Using day 1 for demo
-      const dayData = await dayResponse.json();
-
+      setLoading(true);
+      
+      // Fetch day metadata
+      const metaResponse = await fetch(`https://hodlearnbeta.replit.app/api/day-metadata/${dayIndex}`);
+      const metaData = await metaResponse.json();
+      
       // Fetch setup questions
-      const questionsResponse = await fetch(`${API_URL}/api/content/setup-questions/1`);
-      const questionsData = await questionsResponse.json();
+      const factsResponse = await fetch(`https://hodlearnbeta.replit.app/api/daily-facts/${dayIndex}`);
+      const factsData = await factsResponse.json();
 
-      // Fetch lesson
-      const lessonResponse = await fetch(`${API_URL}/api/content/lesson/1`);
-      const lessonData = await lessonResponse.json();
-
-      // Fetch quiz
-      const quizResponse = await fetch(`${API_URL}/api/quiz/1`);
-      const quizData = await quizResponse.json();
-
-      setLearnData({
-        contentDay: dayData,
-        setupQuestions: questionsData,
-        lesson: lessonData,
-        quizzes: quizData,
-        userProgress: {
-          currentDay: 1,
-          hasCompletedToday: false,
-        },
+      setDayContent({
+        dayIndex: metaData.dayIndex,
+        title: metaData.title,
+        setupQuestions: factsData,
+        lesson: {
+          content: "Every day you delay learning about Bitcoin, inflation continues to erode your purchasing power. The money in your bank account buys less today than it did last year, and it will buy even less next year. This isn't an accident—it's by design.\n\nThe current monetary system is built on debt and endless money printing. When governments need money, they simply create it out of thin air, diluting the value of every dollar you've earned and saved. Your hard work is being systematically devalued.\n\nBitcoin offers an alternative: a form of money with a fixed supply that no government or institution can manipulate. Understanding this difference isn't just educational—it's financial self-defense.",
+          keyTakeaways: [
+            "Inflation steals your purchasing power daily",
+            "Governments create money from nothing",
+            "Bitcoin has a fixed supply of 21 million"
+          ],
+          whyItMatters: "Learning about Bitcoin isn't just about understanding technology—it's about protecting your financial future from systematic wealth transfer through inflation."
+        }
       });
+      
+      setLoading(false);
     } catch (error) {
-      console.error('Failed to fetch learn data:', error);
-    } finally {
+      console.error('Error fetching day content:', error);
       setLoading(false);
     }
   };
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#f97316" />
-        <Text style={styles.loadingText}>Loading your lesson...</Text>
-      </View>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#f97316" />
+          <Text style={styles.loadingText}>Loading Day {currentDay}...</Text>
+        </View>
+      </SafeAreaView>
     );
   }
 
-  const renderFactsSection = () => (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Setup Questions</Text>
-      <Text style={styles.sectionSubtitle}>Build your curiosity about today's topic</Text>
-      
-      {learnData?.setupQuestions.map((question, index) => (
-        <View key={index} style={styles.questionCard}>
-          <Text style={styles.questionNumber}>Question {index + 1}</Text>
-          <Text style={styles.questionText}>{question.questionText}</Text>
-          <TouchableOpacity style={styles.expandButton}>
-            <Text style={styles.expandButtonText}>Think about it →</Text>
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.title}>Learn Today</Text>
+          <Text style={styles.dayIndicator}>Day {currentDay}</Text>
+        </View>
+
+        {/* Day Navigation */}
+        <View style={styles.dayNavigation}>
+          <TouchableOpacity 
+            style={[styles.navButton, currentDay === 1 && styles.navButtonDisabled]}
+            onPress={() => currentDay > 1 && setCurrentDay(currentDay - 1)}
+            disabled={currentDay === 1}
+          >
+            <Text style={styles.navButtonText}>← Prev</Text>
+          </TouchableOpacity>
+          <Text style={styles.currentDayText}>Day {currentDay}</Text>
+          <TouchableOpacity 
+            style={[styles.navButton, currentDay >= 14 && styles.navButtonDisabled]}
+            onPress={() => currentDay < 14 && setCurrentDay(currentDay + 1)}
+            disabled={currentDay >= 14}
+          >
+            <Text style={styles.navButtonText}>Next →</Text>
           </TouchableOpacity>
         </View>
-      ))}
 
-      <TouchableOpacity 
-        style={styles.nextButton}
-        onPress={() => setActiveSection('lesson')}
-      >
-        <LinearGradient colors={['#f97316', '#ea580c']} style={styles.buttonGradient}>
-          <Text style={styles.buttonText}>Continue to Lesson</Text>
-        </LinearGradient>
-      </TouchableOpacity>
-    </View>
-  );
+        {dayContent && (
+          <>
+            {/* Day Title */}
+            <View style={styles.titleCard}>
+              <Text style={styles.dayTitle}>{dayContent.title}</Text>
+            </View>
 
-  const renderLessonSection = () => (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Deep Dive</Text>
-      <Text style={styles.sectionSubtitle}>Understanding the fundamentals</Text>
-      
-      <View style={styles.lessonCard}>
-        <Text style={styles.lessonContent}>
-          {learnData?.lesson.content}
-        </Text>
+            {/* Setup Questions */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>🤔 Setup Questions</Text>
+              {dayContent.setupQuestions.map((question, index) => (
+                <View key={question.id} style={styles.questionCard}>
+                  <Text style={styles.questionNumber}>{index + 1}.</Text>
+                  <Text style={styles.questionText}>{question.question}</Text>
+                </View>
+              ))}
+            </View>
 
-        <View style={styles.takeawaysSection}>
-          <Text style={styles.takeawaysTitle}>Key Takeaways</Text>
-          {learnData?.lesson.keyTakeaways.map((takeaway, index) => (
-            <Text key={index} style={styles.takeawayText}>
-              • {takeaway}
-            </Text>
-          ))}
-        </View>
-
-        <View style={styles.whyItMattersSection}>
-          <Text style={styles.whyItMattersTitle}>Why It Matters</Text>
-          <Text style={styles.whyItMattersText}>
-            {learnData?.lesson.whyItMatters}
-          </Text>
-        </View>
-      </View>
-
-      <TouchableOpacity 
-        style={styles.nextButton}
-        onPress={() => setActiveSection('quiz')}
-      >
-        <LinearGradient colors={['#f97316', '#ea580c']} style={styles.buttonGradient}>
-          <Text style={styles.buttonText}>Test Your Knowledge</Text>
-        </LinearGradient>
-      </TouchableOpacity>
-    </View>
-  );
-
-  const renderQuizSection = () => (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Knowledge Check</Text>
-      <Text style={styles.sectionSubtitle}>Test your understanding</Text>
-      
-      {learnData?.quizzes.map((quiz, index) => (
-        <View key={index} style={styles.quizCard}>
-          <Text style={styles.quizNumber}>Question {index + 1}</Text>
-          <Text style={styles.quizQuestion}>{quiz.questionText}</Text>
-          
-          <View style={styles.optionsContainer}>
-            <TouchableOpacity style={styles.option}>
-              <Text style={styles.optionLabel}>A</Text>
-              <Text style={styles.optionText}>{quiz.optionA}</Text>
+            {/* Lesson Toggle */}
+            <TouchableOpacity 
+              style={styles.lessonToggle}
+              onPress={() => setShowLesson(!showLesson)}
+            >
+              <Text style={styles.lessonToggleText}>
+                {showLesson ? '📖 Hide Lesson' : '📖 Read Lesson'}
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.option}>
-              <Text style={styles.optionLabel}>B</Text>
-              <Text style={styles.optionText}>{quiz.optionB}</Text>
+
+            {/* Lesson Content */}
+            {showLesson && (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>📚 Today's Lesson</Text>
+                <View style={styles.lessonCard}>
+                  <Text style={styles.lessonContent}>{dayContent.lesson.content}</Text>
+                  
+                  <View style={styles.keyTakeaways}>
+                    <Text style={styles.takeawaysTitle}>Key Takeaways:</Text>
+                    {dayContent.lesson.keyTakeaways.map((takeaway, index) => (
+                      <Text key={index} style={styles.takeaway}>• {takeaway}</Text>
+                    ))}
+                  </View>
+
+                  <View style={styles.whyItMatters}>
+                    <Text style={styles.whyTitle}>Why It Matters:</Text>
+                    <Text style={styles.whyContent}>{dayContent.lesson.whyItMatters}</Text>
+                  </View>
+                </View>
+              </View>
+            )}
+
+            {/* Quiz Button */}
+            <TouchableOpacity style={styles.quizButton}>
+              <Text style={styles.quizButtonText}>Take Today's Quiz</Text>
+              <Text style={styles.quizButtonSubtext}>Test your knowledge</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.option}>
-              <Text style={styles.optionLabel}>C</Text>
-              <Text style={styles.optionText}>{quiz.optionC}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.option}>
-              <Text style={styles.optionLabel}>D</Text>
-              <Text style={styles.optionText}>{quiz.optionD}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      ))}
-
-      <TouchableOpacity style={styles.completeButton}>
-        <LinearGradient colors={['#22c55e', '#16a34a']} style={styles.buttonGradient}>
-          <Text style={styles.buttonText}>Complete Day</Text>
-        </LinearGradient>
-      </TouchableOpacity>
-    </View>
-  );
-
-  return (
-    <ScrollView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>
-          Day {learnData?.contentDay.dayIndex}: {learnData?.contentDay.title}
-        </Text>
-        <Text style={styles.headerSubtitle}>
-          {learnData?.contentDay.themes.join(' • ')}
-        </Text>
-      </View>
-
-      {/* Progress Navigation */}
-      <View style={styles.progressNav}>
-        <TouchableOpacity 
-          style={[styles.navButton, activeSection === 'facts' && styles.navButtonActive]}
-          onPress={() => setActiveSection('facts')}
-        >
-          <Text style={[styles.navButtonText, activeSection === 'facts' && styles.navButtonTextActive]}>
-            Facts
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={[styles.navButton, activeSection === 'lesson' && styles.navButtonActive]}
-          onPress={() => setActiveSection('lesson')}
-        >
-          <Text style={[styles.navButtonText, activeSection === 'lesson' && styles.navButtonTextActive]}>
-            Lesson
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={[styles.navButton, activeSection === 'quiz' && styles.navButtonActive]}
-          onPress={() => setActiveSection('quiz')}
-        >
-          <Text style={[styles.navButtonText, activeSection === 'quiz' && styles.navButtonTextActive]}>
-            Quiz
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Content Sections */}
-      {activeSection === 'facts' && renderFactsSection()}
-      {activeSection === 'lesson' && renderLessonSection()}
-      {activeSection === 'quiz' && renderQuizSection()}
-    </ScrollView>
+          </>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -261,198 +177,176 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#09090b',
   },
   loadingText: {
-    color: '#f97316',
+    color: '#ffffff',
     marginTop: 16,
     fontSize: 16,
   },
+  scrollView: {
+    flex: 1,
+    padding: 16,
+  },
   header: {
-    padding: 20,
-    paddingTop: 40,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
   },
-  headerTitle: {
-    color: '#ffffff',
-    fontSize: 24,
+  title: {
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 8,
+    color: '#ffffff',
   },
-  headerSubtitle: {
+  dayIndicator: {
     color: '#f97316',
     fontSize: 16,
+    fontWeight: '600',
   },
-  progressNav: {
+  dayNavigation: {
     flexDirection: 'row',
-    marginHorizontal: 20,
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 20,
-    backgroundColor: '#18181b',
-    borderRadius: 12,
-    padding: 4,
+    paddingHorizontal: 8,
   },
   navButton: {
-    flex: 1,
-    paddingVertical: 12,
-    alignItems: 'center',
-    borderRadius: 8,
+    backgroundColor: 'rgba(249, 115, 22, 0.2)',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
   },
-  navButtonActive: {
-    backgroundColor: '#f97316',
+  navButtonDisabled: {
+    backgroundColor: 'rgba(113, 113, 122, 0.2)',
   },
   navButtonText: {
-    color: '#71717a',
+    color: '#f97316',
     fontSize: 14,
     fontWeight: '600',
   },
-  navButtonTextActive: {
+  currentDayText: {
     color: '#ffffff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
-  section: {
+  titleCard: {
+    backgroundColor: 'rgba(249, 115, 22, 0.1)',
+    borderRadius: 16,
     padding: 20,
-    paddingBottom: 100,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(249, 115, 22, 0.3)',
   },
-  sectionTitle: {
+  dayTitle: {
     color: '#ffffff',
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 8,
+    textAlign: 'center',
   },
-  sectionSubtitle: {
-    color: '#71717a',
-    fontSize: 16,
-    marginBottom: 24,
+  section: {
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 12,
   },
   questionCard: {
-    backgroundColor: '#18181b',
+    backgroundColor: 'rgba(39, 39, 42, 0.5)',
     borderRadius: 12,
-    padding: 20,
-    marginBottom: 16,
+    padding: 16,
+    marginBottom: 8,
+    flexDirection: 'row',
     borderWidth: 1,
-    borderColor: '#27272a',
+    borderColor: 'rgba(113, 113, 122, 0.3)',
   },
   questionNumber: {
     color: '#f97316',
-    fontSize: 12,
-    fontWeight: '600',
-    marginBottom: 8,
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginRight: 12,
   },
   questionText: {
     color: '#ffffff',
     fontSize: 16,
-    lineHeight: 24,
-    marginBottom: 16,
+    flex: 1,
+    lineHeight: 22,
   },
-  expandButton: {
-    alignSelf: 'flex-start',
+  lessonToggle: {
+    backgroundColor: '#f97316',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 25,
+    alignItems: 'center',
+    marginBottom: 20,
   },
-  expandButtonText: {
-    color: '#f97316',
-    fontSize: 14,
-    fontWeight: '500',
+  lessonToggleText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   lessonCard: {
-    backgroundColor: '#18181b',
-    borderRadius: 12,
+    backgroundColor: 'rgba(39, 39, 42, 0.5)',
+    borderRadius: 16,
     padding: 20,
-    marginBottom: 24,
     borderWidth: 1,
-    borderColor: '#27272a',
+    borderColor: 'rgba(113, 113, 122, 0.3)',
   },
   lessonContent: {
     color: '#ffffff',
     fontSize: 16,
     lineHeight: 24,
-    marginBottom: 24,
+    marginBottom: 20,
   },
-  takeawaysSection: {
-    marginBottom: 24,
+  keyTakeaways: {
+    marginBottom: 20,
   },
   takeawaysTitle: {
     color: '#f97316',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
-    marginBottom: 12,
-  },
-  takeawayText: {
-    color: '#ffffff',
-    fontSize: 14,
-    lineHeight: 20,
     marginBottom: 8,
   },
-  whyItMattersSection: {
-    backgroundColor: '#27272a',
-    padding: 16,
-    borderRadius: 8,
+  takeaway: {
+    color: '#a1a1aa',
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 4,
   },
-  whyItMattersTitle: {
+  whyItMatters: {
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(113, 113, 122, 0.3)',
+    paddingTop: 16,
+  },
+  whyTitle: {
     color: '#f97316',
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 8,
   },
-  whyItMattersText: {
-    color: '#ffffff',
+  whyContent: {
+    color: '#a1a1aa',
     fontSize: 14,
     lineHeight: 20,
   },
-  quizCard: {
-    backgroundColor: '#18181b',
-    borderRadius: 12,
+  quizButton: {
+    backgroundColor: 'rgba(34, 197, 94, 0.2)',
+    borderRadius: 16,
     padding: 20,
-    marginBottom: 16,
+    alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#27272a',
+    borderColor: 'rgba(34, 197, 94, 0.3)',
+    marginBottom: 20,
   },
-  quizNumber: {
-    color: '#f97316',
-    fontSize: 12,
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  quizQuestion: {
-    color: '#ffffff',
-    fontSize: 16,
-    lineHeight: 24,
-    marginBottom: 16,
-  },
-  optionsContainer: {
-    gap: 8,
-  },
-  option: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#27272a',
-    padding: 12,
-    borderRadius: 8,
-  },
-  optionLabel: {
-    color: '#f97316',
-    fontSize: 14,
+  quizButtonText: {
+    color: '#22c55e',
+    fontSize: 18,
     fontWeight: 'bold',
-    marginRight: 12,
-    width: 20,
+    marginBottom: 4,
   },
-  optionText: {
-    color: '#ffffff',
+  quizButtonSubtext: {
+    color: '#a1a1aa',
     fontSize: 14,
-    flex: 1,
-  },
-  nextButton: {
-    borderRadius: 8,
-  },
-  completeButton: {
-    borderRadius: 8,
-    marginTop: 8,
-  },
-  buttonGradient: {
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '600',
   },
 });

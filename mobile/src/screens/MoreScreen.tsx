@@ -5,189 +5,183 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  SafeAreaView,
   Linking,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+
+interface FeatureItem {
+  icon: string;
+  title: string;
+  description: string;
+  status: 'available' | 'coming-soon';
+}
 
 export default function MoreScreen() {
-  const handleOpenLink = (url: string) => {
-    Linking.openURL(url);
+  const features: FeatureItem[] = [
+    {
+      icon: '📚',
+      title: 'Daily Bitcoin Lessons',
+      description: '180 days of Bitcoin education at your own pace',
+      status: 'available'
+    },
+    {
+      icon: '🧠',
+      title: 'Interactive Quizzes',
+      description: 'Test your knowledge and earn satoshis',
+      status: 'available'
+    },
+    {
+      icon: '💰',
+      title: 'Satoshi Rewards',
+      description: 'Earn real Bitcoin value while learning',
+      status: 'available'
+    },
+    {
+      icon: '🏆',
+      title: 'Streak Tracking',
+      description: 'Build consistency with daily learning habits',
+      status: 'available'
+    },
+    {
+      icon: '📊',
+      title: 'Price Charts',
+      description: 'Live Bitcoin price and historical data',
+      status: 'available'
+    },
+    {
+      icon: '🎯',
+      title: 'Practice Simulators',
+      description: 'Risk-free Bitcoin transaction practice',
+      status: 'coming-soon'
+    },
+    {
+      icon: '👥',
+      title: 'Community Forum',
+      description: 'Connect with other Bitcoin learners',
+      status: 'coming-soon'
+    },
+    {
+      icon: '🎥',
+      title: 'Expert Videos',
+      description: 'Curated Bitcoin content from industry leaders',
+      status: 'coming-soon'
+    }
+  ];
+
+  const handleWebsiteOpen = () => {
+    Linking.openURL('https://hodlearnbeta.replit.app');
   };
 
-  const menuItems = [
-    {
-      title: 'Community',
-      subtitle: 'Connect with other learners',
-      icon: '👥',
-      action: () => console.log('Navigate to community'),
-    },
-    {
-      title: 'Practice Simulators',
-      subtitle: 'Safe Bitcoin practice',
-      icon: '🎯',
-      action: () => console.log('Navigate to simulators'),
-    },
-    {
-      title: 'Security Training',
-      subtitle: 'Bitcoin safety certification',
-      icon: '🔒',
-      action: () => console.log('Navigate to security'),
-    },
-    {
-      title: 'Inflation Calculator',
-      subtitle: 'See money printing impact',
-      icon: '📈',
-      action: () => console.log('Navigate to inflation calculator'),
-    },
-  ];
-
-  const storeItems = [
-    {
-      title: 'Hardware Wallets',
-      subtitle: 'Secure Bitcoin storage',
-      icon: '🔐',
-      items: ['Ledger Nano X', 'Trezor Model T', 'ColdCard Mk4'],
-    },
-    {
-      title: 'Bitcoin Books',
-      subtitle: 'Essential reading',
-      icon: '📚',
-      items: ['The Bitcoin Standard', 'Broken Money', 'Fiat Standard'],
-    },
-    {
-      title: 'Exchanges',
-      subtitle: 'Trusted Bitcoin platforms',
-      icon: '🏦',
-      items: ['River Financial', 'Swan Bitcoin', 'Strike'],
-    },
-  ];
-
-  const supportLinks = [
-    {
-      title: 'HODLearn Web App',
-      subtitle: 'Full desktop experience',
-      url: 'https://hodlearnbeta.replit.app',
-    },
-    {
-      title: 'Support & Feedback',
-      subtitle: 'Get help or share suggestions',
-      url: 'mailto:support@hodlearn.app',
-    },
-    {
-      title: 'Privacy Policy',
-      subtitle: 'How we protect your data',
-      url: 'https://hodlearnbeta.replit.app/privacy',
-    },
-  ];
+  const handleSupportEmail = () => {
+    Linking.openURL('mailto:support@hodlearn.com');
+  };
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>More</Text>
-        <Text style={styles.headerSubtitle}>Explore additional features and resources</Text>
-      </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.title}>HODLearn</Text>
+          <Text style={styles.subtitle}>Building Bitcoin conviction daily</Text>
+        </View>
 
-      {/* Features Section */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Features</Text>
-        {menuItems.map((item, index) => (
-          <TouchableOpacity key={index} style={styles.menuItem} onPress={item.action}>
-            <View style={styles.menuIcon}>
-              <Text style={styles.menuIconText}>{item.icon}</Text>
-            </View>
-            <View style={styles.menuContent}>
-              <Text style={styles.menuTitle}>{item.title}</Text>
-              <Text style={styles.menuSubtitle}>{item.subtitle}</Text>
-            </View>
-            <Text style={styles.menuArrow}>›</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* Store Section */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Store</Text>
-        <View style={styles.storeNotice}>
-          <Text style={styles.storeNoticeText}>
-            🚧 Coming Soon - Bitcoin products and educational resources
+        {/* App Info */}
+        <View style={styles.infoCard}>
+          <Text style={styles.infoTitle}>📱 About the App</Text>
+          <Text style={styles.infoText}>
+            HODLearn is your complete Bitcoin education platform. Learn at your own pace 
+            with daily lessons, earn satoshis for progress, and build lasting Bitcoin 
+            conviction through practical knowledge.
           </Text>
         </View>
-        {storeItems.map((category, index) => (
-          <View key={index} style={styles.storeCategory}>
-            <View style={styles.storeCategoryHeader}>
-              <Text style={styles.storeCategoryIcon}>{category.icon}</Text>
-              <View>
-                <Text style={styles.storeCategoryTitle}>{category.title}</Text>
-                <Text style={styles.storeCategorySubtitle}>{category.subtitle}</Text>
+
+        {/* Features List */}
+        <View style={styles.featuresSection}>
+          <Text style={styles.sectionTitle}>✨ Features</Text>
+          {features.map((feature, index) => (
+            <View key={index} style={styles.featureItem}>
+              <View style={styles.featureLeft}>
+                <Text style={styles.featureIcon}>{feature.icon}</Text>
+                <View style={styles.featureContent}>
+                  <Text style={styles.featureTitle}>{feature.title}</Text>
+                  <Text style={styles.featureDescription}>{feature.description}</Text>
+                </View>
+              </View>
+              <View style={[
+                styles.statusBadge,
+                feature.status === 'available' ? styles.statusAvailable : styles.statusComingSoon
+              ]}>
+                <Text style={[
+                  styles.statusText,
+                  feature.status === 'available' ? styles.statusTextAvailable : styles.statusTextComingSoon
+                ]}>
+                  {feature.status === 'available' ? 'Live' : 'Soon'}
+                </Text>
               </View>
             </View>
-            <View style={styles.storeItems}>
-              {category.items.map((item, itemIndex) => (
-                <View key={itemIndex} style={styles.storeItem}>
-                  <Text style={styles.storeItemText}>{item}</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-        ))}
-      </View>
+          ))}
+        </View>
 
-      {/* App Info */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>App Information</Text>
-        
-        <View style={styles.appInfoCard}>
-          <LinearGradient
-            colors={['#f97316', '#ea580c']}
-            style={styles.appIcon}
-          >
-            <Text style={styles.appIconText}>H</Text>
-          </LinearGradient>
-          <View style={styles.appDetails}>
-            <Text style={styles.appName}>HODLearn</Text>
-            <Text style={styles.appVersion}>Version 1.0.0</Text>
-            <Text style={styles.appDescription}>
-              Bitcoin education through daily learning and safe practice
-            </Text>
+        {/* Learning Progress */}
+        <View style={styles.progressCard}>
+          <Text style={styles.progressTitle}>🎯 Your Learning Journey</Text>
+          <View style={styles.progressStats}>
+            <View style={styles.progressStat}>
+              <Text style={styles.progressNumber}>180</Text>
+              <Text style={styles.progressLabel}>Days of Content</Text>
+            </View>
+            <View style={styles.progressStat}>
+              <Text style={styles.progressNumber}>5</Text>
+              <Text style={styles.progressLabel}>Minutes Daily</Text>
+            </View>
+            <View style={styles.progressStat}>
+              <Text style={styles.progressNumber}>Free</Text>
+              <Text style={styles.progressLabel}>To Start</Text>
+            </View>
           </View>
         </View>
 
-        <View style={styles.taglineCard}>
-          <Text style={styles.tagline}>Understanding Bitcoin takes time</Text>
-          <Text style={styles.tagline}>Building conviction takes community</Text>
-          <Text style={[styles.tagline, styles.taglineHighlight]}>This is HODLearn</Text>
-        </View>
-      </View>
-
-      {/* Support & Links */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Support & Links</Text>
-        {supportLinks.map((link, index) => (
-          <TouchableOpacity 
-            key={index} 
-            style={styles.linkItem}
-            onPress={() => handleOpenLink(link.url)}
-          >
-            <View style={styles.linkContent}>
-              <Text style={styles.linkTitle}>{link.title}</Text>
-              <Text style={styles.linkSubtitle}>{link.subtitle}</Text>
-            </View>
-            <Text style={styles.linkArrow}>↗</Text>
+        {/* Quick Actions */}
+        <View style={styles.actionsSection}>
+          <TouchableOpacity style={styles.actionButton} onPress={handleWebsiteOpen}>
+            <Text style={styles.actionIcon}>🌐</Text>
+            <Text style={styles.actionText}>Visit Website</Text>
           </TouchableOpacity>
-        ))}
-      </View>
+          <TouchableOpacity style={styles.actionButton} onPress={handleSupportEmail}>
+            <Text style={styles.actionIcon}>📧</Text>
+            <Text style={styles.actionText}>Contact Support</Text>
+          </TouchableOpacity>
+        </View>
 
-      {/* Educational Notice */}
-      <View style={styles.disclaimerCard}>
-        <Text style={styles.disclaimerTitle}>📚 Educational Platform</Text>
-        <Text style={styles.disclaimerText}>
-          HODLearn is designed for educational purposes. All Bitcoin amounts shown in the wallet 
-          are learning credits, not real Bitcoin. Always do your own research before making 
-          any financial decisions.
-        </Text>
-      </View>
-    </ScrollView>
+        {/* Mission Statement */}
+        <View style={styles.missionCard}>
+          <Text style={styles.missionTitle}>🚀 Our Mission</Text>
+          <Text style={styles.missionText}>
+            To make Bitcoin education accessible, engaging, and rewarding for everyone. 
+            We believe that understanding Bitcoin is essential financial literacy for 
+            the digital age.
+          </Text>
+        </View>
+
+        {/* Version Info */}
+        <View style={styles.versionCard}>
+          <Text style={styles.versionText}>HODLearn Mobile v1.0.0</Text>
+          <Text style={styles.versionSubtext}>Built with React Native & Expo</Text>
+          <Text style={styles.versionSubtext}>
+            Powered by {'\n'}Live Bitcoin data & PostgreSQL
+          </Text>
+        </View>
+
+        {/* Footer */}
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>
+            Understanding Bitcoin takes time.{'\n'}
+            Building conviction takes community.{'\n'}
+            <Text style={styles.footerHighlight}>This is HODLearn.</Text>
+          </Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -196,229 +190,213 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#09090b',
   },
-  header: {
-    padding: 20,
-    paddingTop: 40,
+  scrollView: {
+    flex: 1,
+    padding: 16,
   },
-  headerTitle: {
-    color: '#ffffff',
-    fontSize: 24,
+  header: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  title: {
+    fontSize: 32,
     fontWeight: 'bold',
+    color: '#ffffff',
     marginBottom: 4,
   },
-  headerSubtitle: {
-    color: '#71717a',
+  subtitle: {
     fontSize: 16,
+    color: '#a1a1aa',
   },
-  section: {
-    marginBottom: 32,
-    paddingHorizontal: 20,
+  infoCard: {
+    backgroundColor: 'rgba(39, 39, 42, 0.5)',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(113, 113, 122, 0.3)',
+  },
+  infoTitle: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  infoText: {
+    color: '#a1a1aa',
+    fontSize: 16,
+    lineHeight: 24,
+  },
+  featuresSection: {
+    marginBottom: 20,
   },
   sectionTitle: {
+    color: '#ffffff',
+    fontSize: 20,
+    fontWeight: '600',
+    marginBottom: 16,
+  },
+  featureItem: {
+    backgroundColor: 'rgba(39, 39, 42, 0.5)',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(113, 113, 122, 0.3)',
+  },
+  featureLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  featureIcon: {
+    fontSize: 20,
+    marginRight: 12,
+  },
+  featureContent: {
+    flex: 1,
+  },
+  featureTitle: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  featureDescription: {
+    color: '#a1a1aa',
+    fontSize: 14,
+  },
+  statusBadge: {
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+  },
+  statusAvailable: {
+    backgroundColor: 'rgba(34, 197, 94, 0.2)',
+  },
+  statusComingSoon: {
+    backgroundColor: 'rgba(249, 115, 22, 0.2)',
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  statusTextAvailable: {
+    color: '#22c55e',
+  },
+  statusTextComingSoon: {
+    color: '#f97316',
+  },
+  progressCard: {
+    backgroundColor: 'rgba(249, 115, 22, 0.1)',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(249, 115, 22, 0.3)',
+  },
+  progressTitle: {
     color: '#ffffff',
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 16,
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#18181b',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: '#27272a',
-  },
-  menuIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#27272a',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  menuIconText: {
-    fontSize: 20,
-  },
-  menuContent: {
-    flex: 1,
-  },
-  menuTitle: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  menuSubtitle: {
-    color: '#71717a',
-    fontSize: 14,
-    marginTop: 2,
-  },
-  menuArrow: {
-    color: '#71717a',
-    fontSize: 20,
-  },
-  storeNotice: {
-    backgroundColor: '#f97316',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
-  },
-  storeNoticeText: {
-    color: '#ffffff',
-    fontSize: 14,
-    fontWeight: '500',
     textAlign: 'center',
   },
-  storeCategory: {
-    backgroundColor: '#18181b',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#27272a',
-  },
-  storeCategoryHeader: {
+  progressStats: {
     flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  progressStat: {
     alignItems: 'center',
-    marginBottom: 12,
   },
-  storeCategoryIcon: {
-    fontSize: 24,
-    marginRight: 12,
-  },
-  storeCategoryTitle: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  storeCategorySubtitle: {
-    color: '#71717a',
-    fontSize: 14,
-  },
-  storeItems: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  storeItem: {
-    backgroundColor: '#27272a',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  storeItemText: {
-    color: '#ffffff',
-    fontSize: 12,
-  },
-  appInfoCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#18181b',
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#27272a',
-  },
-  appIcon: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  appIconText: {
-    color: '#ffffff',
+  progressNumber: {
+    color: '#f97316',
     fontSize: 24,
     fontWeight: 'bold',
-  },
-  appDetails: {
-    flex: 1,
-  },
-  appName: {
-    color: '#ffffff',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  appVersion: {
-    color: '#71717a',
-    fontSize: 14,
-    marginTop: 2,
-  },
-  appDescription: {
-    color: '#a1a1aa',
-    fontSize: 14,
-    marginTop: 4,
-    lineHeight: 20,
-  },
-  taglineCard: {
-    backgroundColor: '#18181b',
-    borderRadius: 12,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: '#27272a',
-    alignItems: 'center',
-  },
-  tagline: {
-    color: '#ffffff',
-    fontSize: 16,
-    textAlign: 'center',
     marginBottom: 4,
   },
-  taglineHighlight: {
-    color: '#f97316',
-    fontWeight: '600',
-    marginBottom: 0,
+  progressLabel: {
+    color: '#a1a1aa',
+    fontSize: 12,
+    textAlign: 'center',
   },
-  linkItem: {
+  actionsSection: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  actionButton: {
+    backgroundColor: 'rgba(39, 39, 42, 0.5)',
+    borderRadius: 16,
+    padding: 20,
+    flex: 0.48,
     alignItems: 'center',
-    backgroundColor: '#18181b',
+    borderWidth: 1,
+    borderColor: 'rgba(113, 113, 122, 0.3)',
+  },
+  actionIcon: {
+    fontSize: 24,
+    marginBottom: 8,
+  },
+  actionText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  missionCard: {
+    backgroundColor: 'rgba(34, 197, 94, 0.1)',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(34, 197, 94, 0.3)',
+  },
+  missionTitle: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  missionText: {
+    color: '#a1a1aa',
+    fontSize: 16,
+    lineHeight: 24,
+  },
+  versionCard: {
+    backgroundColor: 'rgba(39, 39, 42, 0.3)',
     borderRadius: 12,
     padding: 16,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: '#27272a',
+    marginBottom: 20,
+    alignItems: 'center',
   },
-  linkContent: {
-    flex: 1,
-  },
-  linkTitle: {
+  versionText: {
     color: '#ffffff',
     fontSize: 16,
-    fontWeight: '500',
-  },
-  linkSubtitle: {
-    color: '#71717a',
-    fontSize: 14,
-    marginTop: 2,
-  },
-  linkArrow: {
-    color: '#f97316',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  disclaimerCard: {
-    backgroundColor: '#18181b',
-    borderRadius: 12,
-    padding: 20,
-    marginHorizontal: 20,
-    marginBottom: 40,
-    borderWidth: 1,
-    borderColor: '#27272a',
-  },
-  disclaimerTitle: {
-    color: '#f97316',
-    fontSize: 16,
     fontWeight: '600',
-    marginBottom: 8,
+    marginBottom: 4,
   },
-  disclaimerText: {
+  versionSubtext: {
+    color: '#71717a',
+    fontSize: 12,
+    textAlign: 'center',
+    marginBottom: 2,
+  },
+  footer: {
+    alignItems: 'center',
+    padding: 20,
+    marginBottom: 20,
+  },
+  footerText: {
     color: '#a1a1aa',
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 16,
+    textAlign: 'center',
+    lineHeight: 24,
+  },
+  footerHighlight: {
+    color: '#f97316',
+    fontWeight: '600',
   },
 });
