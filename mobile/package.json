@@ -1,13 +1,12 @@
 {
   "name": "hodlearn-mobile",
   "version": "1.0.0",
-  "main": "App.tsx",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "npx expo start",
-    "android": "npx expo start --android",
-    "ios": "npx expo start --ios",
-    "web": "npx expo start --web",
-    "tunnel": "npx expo start --tunnel"
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
   },
   "dependencies": {
     "expo": "~51.0.0",
@@ -17,9 +16,9 @@
     "react-native-safe-area-context": "4.10.5",
     "@react-navigation/native": "^6.1.0",
     "@react-navigation/bottom-tabs": "^6.6.0",
+    "react-native-screens": "~3.31.1",
     "expo-linear-gradient": "~13.0.0",
-    "expo-constants": "~16.0.0",
-    "react-native-screens": "~3.31.1"
+    "expo-constants": "~16.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

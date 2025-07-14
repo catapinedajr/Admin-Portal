@@ -1,9 +1,8 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { LinearGradient } from 'expo-linear-gradient';
+import { StyleSheet, Text } from 'react-native';
 
 // Import screens
 import HomeScreen from './src/screens/HomeScreen';
@@ -16,27 +15,26 @@ const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
+    <NavigationContainer>
       <StatusBar style="light" backgroundColor="#09090b" />
-      <NavigationContainer>
-        <Tab.Navigator
-          screenOptions={{
-            headerShown: false,
-            tabBarStyle: {
-              backgroundColor: '#09090b',
-              borderTopColor: '#27272a',
-              paddingBottom: 8,
-              paddingTop: 8,
-              height: 80,
-            },
-            tabBarActiveTintColor: '#f97316',
-            tabBarInactiveTintColor: '#71717a',
-            tabBarLabelStyle: {
-              fontSize: 10,
-              fontWeight: '500',
-            },
-          }}
-        >
+      <Tab.Navigator
+        screenOptions={{
+          headerShown: false,
+          tabBarStyle: {
+            backgroundColor: '#09090b',
+            borderTopColor: '#27272a',
+            paddingBottom: 8,
+            paddingTop: 8,
+            height: 80,
+          },
+          tabBarActiveTintColor: '#f97316',
+          tabBarInactiveTintColor: '#71717a',
+          tabBarLabelStyle: {
+            fontSize: 10,
+            fontWeight: '500',
+          },
+        }}
+      >
           <Tab.Screen 
             name="Home" 
             component={HomeScreen}
@@ -73,15 +71,9 @@ export default function App() {
               ),
             }}
           />
-        </Tab.Navigator>
-      </NavigationContainer>
-    </SafeAreaView>
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#09090b',
-  },
-});
+const styles = StyleSheet.create({});
