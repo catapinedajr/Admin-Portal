@@ -1,7 +1,7 @@
 {
   "name": "hodlearn-mobile",
   "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
+  "main": "App.tsx",
   "scripts": {
     "start": "npx expo start",
     "android": "npx expo start --android",
@@ -18,7 +18,8 @@
     "@react-navigation/native": "^6.1.0",
     "@react-navigation/bottom-tabs": "^6.6.0",
     "expo-linear-gradient": "~13.0.0",
-    "expo-constants": "~16.0.0"
+    "expo-constants": "~16.0.0",
+    "react-native-screens": "~3.31.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
