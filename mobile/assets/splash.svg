@@ -1,0 +1,24 @@
+<svg width="1080" height="1920" viewBox="0 0 1080 1920" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1080" height="1920" fill="#09090b"/>
+  
+  <!-- Centered logo -->
+  <g transform="translate(290, 760)">
+    <!-- HL Logo -->
+    <rect x="0" y="0" width="120" height="272" rx="20" fill="#f97316"/>
+    <rect x="160" y="0" width="120" height="120" rx="20" fill="#f97316"/>
+    <rect x="160" y="152" width="120" height="120" rx="20" fill="#f97316"/>
+  </g>
+  
+  <!-- HODLearn text -->
+  <text x="540" y="1100" text-anchor="middle" fill="#ffffff" font-size="48" font-weight="bold">HODLearn</text>
+  <text x="540" y="1140" text-anchor="middle" fill="#f97316" font-size="20">How-to-learn BTC</text>
+  
+  <!-- Tagline -->
+  <text x="540" y="1200" text-anchor="middle" fill="#a1a1aa" font-size="18">Building conviction through community</text>
+  
+  <!-- Loading indicator -->
+  <circle cx="540" cy="1300" r="20" fill="none" stroke="#f97316" stroke-width="4" stroke-dasharray="31.4" stroke-linecap="round">
+    <animateTransform attributeName="transform" type="rotate" dur="1s" repeatCount="indefinite" values="0 540 1300;360 540 1300"/>
+  </circle>
+</svg>
