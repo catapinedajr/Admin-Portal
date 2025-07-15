@@ -40,15 +40,20 @@ export default function HomeScreen() {
 
   const fetchData = async () => {
     try {
-      // Fetch Bitcoin price
-      const priceResponse = await fetch('https://hodlearnbeta.replit.app/api/bitcoin-price');
-      const priceData = await priceResponse.json();
-      setBitcoinPrice(priceData);
+      // Import API service
+      const { api } = await import('../utils/api');
+      
+      // Fetch Bitcoin price with error handling
+      const priceResult = await api.getBitcoinPrice();
+      if (priceResult.data) {
+        setBitcoinPrice(priceResult.data);
+      }
 
-      // Fetch wallet data
-      const walletResponse = await fetch('https://hodlearnbeta.replit.app/api/wallet/dashboard');
-      const walletInfo = await walletResponse.json();
-      setWalletData(walletInfo);
+      // Fetch wallet data with error handling
+      const walletResult = await api.getWalletDashboard();
+      if (walletResult.data) {
+        setWalletData(walletResult.data);
+      }
 
       setLoading(false);
     } catch (error) {

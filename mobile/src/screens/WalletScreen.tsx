@@ -61,9 +61,16 @@ export default function WalletScreen() {
 
   const fetchWalletData = async () => {
     try {
-      const response = await fetch('https://hodlearnbeta.replit.app/api/wallet/dashboard');
-      const data = await response.json();
-      setWalletData(data);
+      // Import API service
+      const { api } = await import('../utils/api');
+      
+      // Fetch wallet data with error handling
+      const result = await api.getWalletDashboard();
+      if (result.data) {
+        setWalletData(result.data);
+      } else {
+        console.error('Failed to fetch wallet data:', result.error);
+      }
       setLoading(false);
     } catch (error) {
       console.error('Error fetching wallet data:', error);

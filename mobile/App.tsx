@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StyleSheet, Text } from 'react-native';
+import 'react-native-gesture-handler';
 
 // Import screens
 import HomeScreen from './src/screens/HomeScreen';
@@ -40,7 +41,7 @@ export default function App() {
             component={HomeScreen}
             options={{
               tabBarIcon: ({ color }) => (
-                <Text style={{ color, fontSize: 20 }}>🏠</Text>
+                <Text style={{ color, fontSize: 18 }}>🏠</Text>
               ),
             }}
           />
@@ -49,7 +50,7 @@ export default function App() {
             component={LearnScreen}
             options={{
               tabBarIcon: ({ color }) => (
-                <Text style={{ color, fontSize: 20 }}>📚</Text>
+                <Text style={{ color, fontSize: 18 }}>📚</Text>
               ),
             }}
           />
@@ -58,7 +59,7 @@ export default function App() {
             component={WalletScreen}
             options={{
               tabBarIcon: ({ color }) => (
-                <Text style={{ color, fontSize: 20 }}>💰</Text>
+                <Text style={{ color, fontSize: 18 }}>💰</Text>
               ),
             }}
           />
@@ -67,7 +68,7 @@ export default function App() {
             component={MoreScreen}
             options={{
               tabBarIcon: ({ color }) => (
-                <Text style={{ color, fontSize: 20 }}>⋯</Text>
+                <Text style={{ color, fontSize: 18 }}>⚡</Text>
               ),
             }}
           />

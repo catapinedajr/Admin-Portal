@@ -37,13 +37,21 @@ export default function LearnScreen() {
     try {
       setLoading(true);
       
-      // Fetch day metadata
-      const metaResponse = await fetch(`https://hodlearnbeta.replit.app/api/day-metadata/${dayIndex}`);
-      const metaData = await metaResponse.json();
+      // Import API service
+      const { api } = await import('../utils/api');
       
-      // Fetch setup questions
-      const factsResponse = await fetch(`https://hodlearnbeta.replit.app/api/daily-facts/${dayIndex}`);
-      const factsData = await factsResponse.json();
+      // Fetch day metadata with error handling
+      const metaResult = await api.getDayMetadata(dayIndex);
+      const factsResult = await api.getDailyFacts(dayIndex);
+      
+      if (!metaResult.data || !factsResult.data) {
+        console.error('Failed to fetch day content');
+        setLoading(false);
+        return;
+      }
+      
+      const metaData = metaResult.data;
+      const factsData = factsResult.data;
 
       setDayContent({
         dayIndex: metaData.dayIndex,

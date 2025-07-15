@@ -37,11 +37,10 @@
     "extra": {
       "apiUrl": "https://hodlearnbeta.replit.app",
       "eas": {
-        "projectId": "placeholder-will-be-generated"
+        "projectId": "hodlearn-mobile-app"
       }
     },
-    "owner": "placeholder-your-expo-username",
-    "privacy": "unlisted",
+    "privacy": "public",
     "platforms": ["ios", "android", "web"],
     "scheme": "hodlearn"
   }
