@@ -9,6 +9,8 @@ import 'react-native-gesture-handler';
 import HomeScreen from './src/screens/HomeScreen';
 import LearnScreen from './src/screens/LearnScreen';
 import WalletScreen from './src/screens/WalletScreen';
+import SimulatorsScreen from './src/screens/SimulatorsScreen';
+import ConnectScreen from './src/screens/ConnectScreen';
 import MoreScreen from './src/screens/MoreScreen';
 
 // Navigation
@@ -64,11 +66,29 @@ export default function App() {
             }}
           />
           <Tab.Screen 
+            name="Simulators" 
+            component={SimulatorsScreen}
+            options={{
+              tabBarIcon: ({ color }) => (
+                <Text style={{ color, fontSize: 18 }}>🎮</Text>
+              ),
+            }}
+          />
+          <Tab.Screen 
+            name="Connect" 
+            component={ConnectScreen}
+            options={{
+              tabBarIcon: ({ color }) => (
+                <Text style={{ color, fontSize: 18 }}>👥</Text>
+              ),
+            }}
+          />
+          <Tab.Screen 
             name="More" 
             component={MoreScreen}
             options={{
               tabBarIcon: ({ color }) => (
-                <Text style={{ color, fontSize: 18 }}>⚡</Text>
+                <Text style={{ color, fontSize: 18 }}>⋯</Text>
               ),
             }}
           />

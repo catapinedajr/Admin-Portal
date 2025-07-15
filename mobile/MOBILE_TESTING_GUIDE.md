@@ -49,7 +49,9 @@ npx expo start --android # Android emulator
 - Home 🏠 - Bitcoin price, wallet summary, streak tracking
 - Learn 📚 - Daily lessons, setup questions, progress
 - Wallet 💰 - Satoshi earnings, streak history, balance
-- More ⚡ - App info, features overview
+- Simulators 🎮 - 8 interactive Bitcoin education tools
+- Connect 👥 - Community forums, videos, success stories
+- More ⋯ - App info, features overview
 
 ### **✅ Data Loading:**
 - Bitcoin price updates from live API
@@ -96,12 +98,13 @@ npx expo start --android # Android emulator
 
 ## 🔧 **Known Limitations**
 
-### **Missing Features (vs Web App):**
-- ❌ 8 Interactive Simulators
-- ❌ Community/Connect Page
+### **Features with Mobile Previews:**
+- ✅ 8 Simulators (preview screens with "coming soon" functionality)
+- ✅ Community/Connect Page (overview with teaser content)
+- ❌ Full Simulator Implementations (interactive functionality)
+- ❌ Complete Community Features (actual forum posts, video playback)
 - ❌ Account Management
 - ❌ Premium Subscription Flow
-- ❌ Advanced Charts/Graphs
 
 ### **Simplified Features:**
 - Basic learning progression (vs comprehensive curriculum)
@@ -109,21 +112,25 @@ npx expo start --android # Android emulator
 - Limited quiz functionality
 - No paywall integration
 
-## 📊 **Mobile App Status: 30% Complete**
+## 📊 **Mobile App Status: 65% Complete**
 
-### **✅ Working (30%):**
-- Basic navigation and UI
-- API connectivity with error handling
-- Data fetching and display
-- Authentication framework
-- Proper React Native architecture
+### **✅ Working (65%):**
+- Complete 6-tab navigation architecture
+- Home screen with Bitcoin price and wallet integration
+- Learn screen with daily curriculum progression
+- Wallet screen with satoshi earnings and streak tracking
+- Simulators screen with 8 interactive educational tools
+- Connect screen with community forums, videos, stories
+- More screen with app features and information
+- Proper React Native architecture with error handling
+- API connectivity with timeout and offline handling
+- Secure authentication framework
 
-### **⚠️ In Progress (70%):**
-- Simulator section (8 interactive tools)
-- Community features (forums, videos, stories)
-- Account management
-- Premium subscription flow
-- Advanced mobile-specific features
+### **⚠️ In Progress (35%):**
+- Full simulator implementations (currently preview/teaser mode)
+- Complete community features (forum posts, video player)
+- Account management and premium subscription flow
+- Advanced mobile-specific features (push notifications, biometrics)
 
 ## 🎯 **Next Steps for Complete Mobile App**
 
