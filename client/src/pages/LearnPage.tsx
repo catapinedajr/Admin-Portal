@@ -287,7 +287,7 @@ function LearnPage() {
           {walletData && (
             <div className="relative">
               {/* Main Wallet Card */}
-              <Card className="bg-black hover:bg-zinc-800/50 border border-zinc-700/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer mx-auto max-w-md">
+              <Card className="bg-gradient-to-r from-orange-500/10 to-orange-600/10 border-orange-500/20 mx-auto max-w-md">
                 <CardContent className="p-4">
                   <div className="space-y-3">
                     {/* Title */}
@@ -298,8 +298,8 @@ function LearnPage() {
                     
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300 flex items-center justify-center">
-                          <Wallet className="w-5 h-5 text-orange-400 group-hover:animate-pulse" />
+                        <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                          <Wallet className="w-5 h-5 text-orange-400" />
                         </div>
                         <div>
                           <div className="text-lg font-bold text-orange-400">
