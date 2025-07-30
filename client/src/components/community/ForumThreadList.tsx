@@ -3,9 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { ArrowLeft, Plus, TrendingUp, Clock, Award, Filter, X } from 'lucide-react';
+import { ArrowLeft, Plus, TrendingUp, Clock, Award } from 'lucide-react';
 import { ForumPost } from './ForumPost';
 // import { CreatePostModal } from './CreatePostModal';
 import type { ForumPostWithStats, ForumCategory } from '@shared/schema';
@@ -32,16 +30,18 @@ export function ForumThreadList({
   currentSort 
 }: ForumThreadListProps) {
   const [showCreatePost, setShowCreatePost] = useState(false);
-  const [dayFilter, setDayFilter] = useState<string>('');
-  const [showDayFilter, setShowDayFilter] = useState(false);
-  
-  // Filter posts by day if day filter is active
-  const filteredPosts = dayFilter 
-    ? posts.filter(post => post.dayIndex === parseInt(dayFilter))
-    : posts;
   
   // Check if this is the Daily Lesson Discussions category
   const isDailyLessonsCategory = category.name === "Daily Lesson Discussions";
+  
+  // For Daily Lesson Discussions, group by user's current day
+  const userCurrentDay = 1; // TODO: Get from user context
+  const currentDayPosts = isDailyLessonsCategory 
+    ? posts.filter(post => post.dayIndex === userCurrentDay)
+    : [];
+  const otherPosts = isDailyLessonsCategory 
+    ? posts.filter(post => !post.dayIndex || post.dayIndex !== userCurrentDay)
+    : posts;
   
   return (
     <div className="space-y-4">
@@ -79,62 +79,32 @@ export function ForumThreadList({
             </div>
           </div>
           
-          <div className="flex items-center gap-2">
-            {isDailyLessonsCategory && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowDayFilter(!showDayFilter)}
-                className="border-zinc-600 text-zinc-300 hover:bg-zinc-800"
-              >
-                <Filter className="h-4 w-4 mr-1" />
-                {dayFilter ? `Day ${dayFilter}` : 'Filter by Day'}
-              </Button>
-            )}
-            <Button
-              onClick={() => setShowCreatePost(true)}
-              className="bg-orange-500 hover:bg-orange-600 text-white"
-            >
-              <Plus className="h-4 w-4 mr-1" />
-              New Post
-            </Button>
-          </div>
+          <Button
+            onClick={() => setShowCreatePost(true)}
+            className="bg-orange-500 hover:bg-orange-600 text-white"
+          >
+            <Plus className="h-4 w-4 mr-1" />
+            New Post
+          </Button>
         </div>
       </Card>
       
-      {/* Day filter for Daily Lesson Discussions */}
-      {isDailyLessonsCategory && showDayFilter && (
-        <Card className="bg-zinc-900/50 border-zinc-700/50 p-4">
-          <div className="flex items-center gap-3">
-            <Label htmlFor="dayFilter" className="text-sm font-medium text-zinc-300 whitespace-nowrap">
-              Filter by Day:
-            </Label>
-            <Input
-              id="dayFilter"
-              type="number"
-              placeholder="Enter day number (1-180)"
-              value={dayFilter}
-              onChange={(e) => setDayFilter(e.target.value)}
-              className="bg-zinc-800 border-zinc-600 text-white placeholder:text-zinc-500 focus:border-orange-500 focus:ring-orange-500/20 max-w-xs"
-              min="1"
-              max="180"
-            />
-            {dayFilter && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setDayFilter('')}
-                className="text-zinc-400 hover:text-white"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
-          <div className="text-xs text-zinc-500 mt-2">
-            {dayFilter 
-              ? `Showing discussions for Day ${dayFilter} (${filteredPosts.length} posts)`
-              : "Enter a day number to see discussions specific to that curriculum day"
-            }
+      {/* Simple day grouping for Daily Lesson Discussions */}
+      {isDailyLessonsCategory && currentDayPosts.length > 0 && (
+        <Card className="bg-blue-900/20 border-blue-500/30 p-4">
+          <h3 className="text-sm font-medium text-blue-300 mb-3">
+            📚 Your Day ({userCurrentDay}) - {currentDayPosts.length} discussions
+          </h3>
+          <div className="space-y-3">
+            {currentDayPosts.map((post) => (
+              <ForumPost
+                key={post.id}
+                post={post}
+                onVote={onVote}
+                onReply={onReply}
+                compact={true}
+              />
+            ))}
           </div>
         </Card>
       )}
@@ -168,19 +138,42 @@ export function ForumThreadList({
         <TabsContent value={currentSort} className="mt-4">
           {/* Posts list */}
           <div className="space-y-3">
-            {filteredPosts.length === 0 ? (
+            {/* Show other day posts or all posts if not daily lessons category */}
+            {isDailyLessonsCategory && otherPosts.length > 0 && (
+              <>
+                <h3 className="text-sm font-medium text-zinc-400 mb-3 border-b border-zinc-700 pb-2">
+                  Other Days - {otherPosts.length} discussions
+                </h3>
+                {otherPosts.map((post) => (
+                  <ForumPost
+                    key={post.id}
+                    post={post}
+                    onVote={onVote}
+                    onReply={onReply}
+                    compact={true}
+                  />
+                ))}
+              </>
+            )}
+            
+            {!isDailyLessonsCategory && posts.length > 0 && (
+              posts.map((post) => (
+                <ForumPost
+                  key={post.id}
+                  post={post}
+                  onVote={onVote}
+                  onReply={onReply}
+                  compact={true}
+                />
+              ))
+            )}
+            
+            {posts.length === 0 && (
               <Card className="bg-zinc-900/30 border-zinc-700/30 p-8 text-center">
                 <div className="text-zinc-400 mb-4">
                   <TrendingUp className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                  <h3 className="text-lg font-medium mb-2">
-                    {dayFilter ? `No posts for Day ${dayFilter}` : 'No posts yet'}
-                  </h3>
-                  <p className="text-sm">
-                    {dayFilter 
-                      ? `No discussions found for Day ${dayFilter}. Be the first to ask a question!`
-                      : 'Be the first to start a discussion in this category!'
-                    }
-                  </p>
+                  <h3 className="text-lg font-medium mb-2">No posts yet</h3>
+                  <p className="text-sm">Be the first to start a discussion in this category!</p>
                 </div>
                 <Button
                   onClick={() => setShowCreatePost(true)}
@@ -190,16 +183,6 @@ export function ForumThreadList({
                   Create First Post
                 </Button>
               </Card>
-            ) : (
-              filteredPosts.map((post) => (
-                <ForumPost
-                  key={post.id}
-                  post={post}
-                  onVote={onVote}
-                  onReply={onReply}
-                  compact={true}
-                />
-              ))
             )}
           </div>
         </TabsContent>

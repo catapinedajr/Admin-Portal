@@ -12,12 +12,16 @@ interface CreatePostModalProps {
   categoryName: string;
   onClose: () => void;
   onCreatePost: (post: { title: string; content: string; categoryId: number; dayIndex?: number }) => void;
+  userCurrentDay?: number; // User's current curriculum day
 }
 
-export function CreatePostModal({ categoryId, categoryName, onClose, onCreatePost }: CreatePostModalProps) {
+export function CreatePostModal({ categoryId, categoryName, onClose, onCreatePost, userCurrentDay }: CreatePostModalProps) {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [dayIndex, setDayIndex] = useState<string>('');
+  const [dayIndex, setDayIndex] = useState<string>(
+    // Auto-populate with user's current day for Daily Lesson Discussions
+    categoryName === "Daily Lesson Discussions" && userCurrentDay ? userCurrentDay.toString() : ''
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -106,25 +110,41 @@ export function CreatePostModal({ categoryId, categoryName, onClose, onCreatePos
             </div>
           </div>
           
-          {/* Day tagging - Enhanced for Daily Lesson Discussions */}
+          {/* Simplified day tagging for Daily Lesson Discussions */}
           {categoryName === "Daily Lesson Discussions" && (
             <div>
               <Label htmlFor="dayIndex" className="text-sm font-medium text-zinc-300">
                 Curriculum Day *
               </Label>
-              <Input
-                id="dayIndex"
-                type="number"
-                placeholder="Which day are you discussing? (e.g., 7)"
-                value={dayIndex}
-                onChange={(e) => setDayIndex(e.target.value)}
-                className="bg-zinc-800 border-zinc-600 text-white placeholder:text-zinc-500 focus:border-orange-500 focus:ring-orange-500/20"
-                min="1"
-                max="180"
-                required
-              />
-              <div className="text-xs text-orange-400 mt-1">
-                Required: Tag your post with the curriculum day you're discussing
+              <div className="flex items-center gap-2">
+                <Input
+                  id="dayIndex"
+                  type="number"
+                  placeholder="Day number"
+                  value={dayIndex}
+                  onChange={(e) => setDayIndex(e.target.value)}
+                  className="bg-zinc-800 border-zinc-600 text-white placeholder:text-zinc-500 focus:border-orange-500 focus:ring-orange-500/20 max-w-[120px]"
+                  min="1"
+                  max="180"
+                  required
+                />
+                {userCurrentDay && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setDayIndex(userCurrentDay.toString())}
+                    className="border-zinc-600 text-zinc-300 hover:bg-zinc-800"
+                  >
+                    Use My Day ({userCurrentDay})
+                  </Button>
+                )}
+              </div>
+              <div className="text-xs text-zinc-500 mt-1">
+                {userCurrentDay 
+                  ? `Your current day is ${userCurrentDay}. Choose any day you want to discuss.`
+                  : "Which curriculum day are you discussing?"
+                }
               </div>
             </div>
           )}
