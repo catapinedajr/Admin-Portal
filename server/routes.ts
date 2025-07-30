@@ -110,8 +110,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // User endpoint - get authenticated user
-  app.get("/api/user", requireAuth, async (req: any, res) => {
+  // User endpoint - get authenticated user (demo mode)
+  app.get("/api/user", setDefaultUser, async (req: any, res) => {
     try {
       const user = await storage.getUser(req.user.id);
       if (!user) {
