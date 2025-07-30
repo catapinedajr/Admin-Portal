@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Plus, TrendingUp, Clock, Award } from 'lucide-react';
 import { ForumPost } from './ForumPost';
-// import { CreatePostModal } from './CreatePostModal';
+import { CreatePostModal } from './CreatePostModal';
 import type { ForumPostWithStats, ForumCategory } from '@shared/schema';
 
 interface ForumThreadListProps {
@@ -58,36 +58,29 @@ export function ForumThreadList({
         </Button>
       </div>
       
-      {/* iPhone-optimized category info */}
-      <Card className="bg-zinc-900/50 border-zinc-700/50 p-4 sm:p-6">
-        <div className="space-y-4">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-white mb-3 leading-tight">{category.name}</h1>
-            {category.description && (
-              <p className="text-zinc-400 mb-4 text-base leading-relaxed">{category.description}</p>
+      {/* Simplified category header */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-white mb-2">{category.name}</h1>
+          <div className="flex items-center gap-3 text-sm text-zinc-400">
+            <span>{category.postCount} posts</span>
+            {isDailyLessonsCategory && (
+              <>
+                <span>•</span>
+                <span className="text-orange-400">Day-specific discussions</span>
+              </>
             )}
-            <div className="flex items-center gap-3 text-sm text-zinc-500 flex-wrap">
-              <span className="font-medium">{category.postCount} posts</span>
-              <span>•</span>
-              <span>Active community</span>
-              {isDailyLessonsCategory && (
-                <>
-                  <span>•</span>
-                  <span className="text-orange-400 font-medium">Day-specific discussions</span>
-                </>
-              )}
-            </div>
           </div>
-          
-          <Button
-            onClick={() => setShowCreatePost(true)}
-            className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto h-12 text-base font-medium touch-manipulation"
-          >
-            <Plus className="h-5 w-5 mr-2" />
-            New Post
-          </Button>
         </div>
-      </Card>
+        
+        <Button
+          onClick={() => setShowCreatePost(true)}
+          className="bg-orange-500 hover:bg-orange-600 text-white font-medium"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          New Post
+        </Button>
+      </div>
       
       {/* Simple day grouping for Daily Lesson Discussions */}
       {isDailyLessonsCategory && currentDayPosts.length > 0 && (
@@ -109,28 +102,25 @@ export function ForumThreadList({
         </Card>
       )}
       
-      {/* iPhone-optimized sort tabs */}
+      {/* Simplified sort tabs */}
       <Tabs value={currentSort} onValueChange={onSortChange} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 bg-zinc-900/50 border border-zinc-700/50 h-12">
+        <TabsList className="grid w-full grid-cols-3 bg-zinc-900/50 border border-zinc-700/50">
           <TabsTrigger 
             value="hot" 
-            className="data-[state=active]:bg-orange-500 data-[state=active]:text-white text-base font-medium h-10 touch-manipulation"
+            className="data-[state=active]:bg-orange-500 data-[state=active]:text-white"
           >
-            <TrendingUp className="h-5 w-5 mr-2" />
             Hot
           </TabsTrigger>
           <TabsTrigger 
             value="new"
-            className="data-[state=active]:bg-orange-500 data-[state=active]:text-white text-base font-medium h-10 touch-manipulation"
+            className="data-[state=active]:bg-orange-500 data-[state=active]:text-white"
           >
-            <Clock className="h-5 w-5 mr-2" />
             New
           </TabsTrigger>
           <TabsTrigger 
             value="top"
-            className="data-[state=active]:bg-orange-500 data-[state=active]:text-white text-base font-medium h-10 touch-manipulation"
+            className="data-[state=active]:bg-orange-500 data-[state=active]:text-white"
           >
-            <Award className="h-5 w-5 mr-2" />
             Top
           </TabsTrigger>
         </TabsList>
@@ -188,28 +178,18 @@ export function ForumThreadList({
         </TabsContent>
       </Tabs>
       
-      {/* Community guidelines */}
-      {posts.length > 0 && (
-        <Card className="bg-zinc-900/30 border-zinc-700/30 p-4">
-          <h3 className="text-sm font-medium text-orange-400 mb-2">Community Guidelines</h3>
-          <ul className="text-xs text-zinc-500 space-y-1">
-            <li>• Be respectful and constructive in your discussions</li>
-            <li>• Share accurate information and cite sources when possible</li>
-            <li>• Help newcomers learn about Bitcoin</li>
-            <li>• No financial advice - only educational content</li>
-          </ul>
-        </Card>
-      )}
-      
-      {/* Create post modal - temporarily disabled */}
+      {/* Create post modal */}
       {showCreatePost && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-zinc-900 border border-zinc-700 rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold text-white mb-4">Create Post</h3>
-            <p className="text-zinc-400 mb-4">Post creation feature coming soon!</p>
-            <Button onClick={() => setShowCreatePost(false)}>Close</Button>
-          </div>
-        </div>
+        <CreatePostModal
+          categoryId={category.id}
+          categoryName={category.name}
+          userCurrentDay={userCurrentDay}
+          onClose={() => setShowCreatePost(false)}
+          onCreatePost={async (postData) => {
+            await onCreatePost(postData);
+            setShowCreatePost(false);
+          }}
+        />
       )}
     </div>
   );
