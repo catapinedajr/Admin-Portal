@@ -30,7 +30,7 @@ export function ForumCategoryList({ categories, onSelectCategory }: ForumCategor
         {categories.map((category) => (
           <Card
             key={category.id}
-            className="bg-black border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:scale-[1.01] transition-all duration-300 cursor-pointer group"
+            className="bg-black border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:scale-[1.02] transition-all duration-300 cursor-pointer group"
             onClick={() => onSelectCategory(category.id)}
           >
             <div className="p-4">
