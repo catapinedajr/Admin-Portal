@@ -27,6 +27,11 @@ export function CreatePostModal({ categoryId, categoryName, onClose, onCreatePos
       return;
     }
     
+    // For Daily Lesson Discussions, dayIndex is required
+    if (categoryName === "Daily Lesson Discussions" && !dayIndex) {
+      return;
+    }
+    
     setIsSubmitting(true);
     
     try {
@@ -101,25 +106,49 @@ export function CreatePostModal({ categoryId, categoryName, onClose, onCreatePos
             </div>
           </div>
           
-          {/* Optional day link */}
-          <div>
-            <Label htmlFor="dayIndex" className="text-sm font-medium text-zinc-300">
-              Related to Curriculum Day (Optional)
-            </Label>
-            <Input
-              id="dayIndex"
-              type="number"
-              placeholder="e.g., 7"
-              value={dayIndex}
-              onChange={(e) => setDayIndex(e.target.value)}
-              className="bg-zinc-800 border-zinc-600 text-white placeholder:text-zinc-500 focus:border-orange-500 focus:ring-orange-500/20"
-              min="1"
-              max="180"
-            />
-            <div className="text-xs text-zinc-500 mt-1">
-              Link your post to a specific day in the HODLearn curriculum
+          {/* Day tagging - Enhanced for Daily Lesson Discussions */}
+          {categoryName === "Daily Lesson Discussions" && (
+            <div>
+              <Label htmlFor="dayIndex" className="text-sm font-medium text-zinc-300">
+                Curriculum Day *
+              </Label>
+              <Input
+                id="dayIndex"
+                type="number"
+                placeholder="Which day are you discussing? (e.g., 7)"
+                value={dayIndex}
+                onChange={(e) => setDayIndex(e.target.value)}
+                className="bg-zinc-800 border-zinc-600 text-white placeholder:text-zinc-500 focus:border-orange-500 focus:ring-orange-500/20"
+                min="1"
+                max="180"
+                required
+              />
+              <div className="text-xs text-orange-400 mt-1">
+                Required: Tag your post with the curriculum day you're discussing
+              </div>
             </div>
-          </div>
+          )}
+          
+          {categoryName !== "Daily Lesson Discussions" && (
+            <div>
+              <Label htmlFor="dayIndex" className="text-sm font-medium text-zinc-300">
+                Related to Curriculum Day (Optional)
+              </Label>
+              <Input
+                id="dayIndex"
+                type="number"
+                placeholder="e.g., 7"
+                value={dayIndex}
+                onChange={(e) => setDayIndex(e.target.value)}
+                className="bg-zinc-800 border-zinc-600 text-white placeholder:text-zinc-500 focus:border-orange-500 focus:ring-orange-500/20"
+                min="1"
+                max="180"
+              />
+              <div className="text-xs text-zinc-500 mt-1">
+                Link your post to a specific day in the HODLearn curriculum
+              </div>
+            </div>
+          )}
           
           {/* Guidelines reminder */}
           <div className="bg-zinc-800/50 border border-zinc-700 rounded-md p-3">

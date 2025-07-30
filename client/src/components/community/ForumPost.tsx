@@ -66,10 +66,15 @@ export function ForumPost({ post, onVote, onReply, compact = false }: ForumPostP
         {/* Post content */}
         <div className="flex-1 min-w-0">
           {/* Post header */}
-          <div className="flex items-center gap-2 text-sm text-zinc-400 mb-2">
+          <div className="flex items-center gap-2 text-sm text-zinc-400 mb-2 flex-wrap">
             <Badge variant="secondary" className="bg-orange-500/10 text-orange-300 border-orange-500/20">
               {post.category?.name}
             </Badge>
+            {post.dayIndex && (
+              <Badge variant="outline" className="text-blue-400 border-blue-500/30 bg-blue-500/5">
+                Day {post.dayIndex}
+              </Badge>
+            )}
             <span>Posted by</span>
             <span className="text-orange-400 hover:text-orange-300 cursor-pointer">
               u/{post.author?.username}
@@ -138,14 +143,7 @@ export function ForumPost({ post, onVote, onReply, compact = false }: ForumPostP
             </Button>
           </div>
           
-          {/* Day index link if applicable */}
-          {post.dayIndex && (
-            <div className="mt-3 pt-3 border-t border-zinc-700/50">
-              <Badge variant="outline" className="text-orange-400 border-orange-500/30">
-                Related to Day {post.dayIndex}
-              </Badge>
-            </div>
-          )}
+
         </div>
       </div>
     </Card>
