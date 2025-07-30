@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useLocation } from "wouter";
 import { MessageSquare, Video, Users, BookOpen, Trophy, ArrowRight, Crown, Gem, User as UserIcon, Wallet } from "@/lib/icons";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,7 +16,14 @@ type CommunitySubTab = "overview" | "forums" | "videos" | "stories";
 export default function CommunityPage() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState<CommunitySubTab>("overview");
+  const [forumResetTrigger, setForumResetTrigger] = useState(0);
   const { isPremiumTier, setShowEmailModal } = useSubscription();
+
+  const handleForumsTabClick = () => {
+    setActiveTab("forums");
+    // Trigger reset to forum list by incrementing the trigger
+    setForumResetTrigger(prev => prev + 1);
+  };
 
   return (
     <div className="min-h-screen bg-zinc-900">
@@ -86,7 +93,7 @@ export default function CommunityPage() {
               <Button
                 variant={activeTab === "forums" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setActiveTab("forums")}
+                onClick={handleForumsTabClick}
                 className="text-xs px-3 py-1"
               >
                 <MessageSquare className="w-3 h-3 mr-1" />
@@ -115,7 +122,7 @@ export default function CommunityPage() {
 
           {/* Content */}
           {activeTab === "overview" && <CommunityOverview setActiveTab={setActiveTab} />}
-          {activeTab === "forums" && <ForumsSection />}
+          {activeTab === "forums" && <ForumsSection key={forumResetTrigger} />}
           {activeTab === "videos" && <VideosSection />}
           {activeTab === "stories" && <StoriesSection />}
         </div>
