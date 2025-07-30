@@ -292,8 +292,13 @@ function LearnPage() {
                   <div className="space-y-3">
                     {/* Title */}
                     <div className="text-center">
-                      <h3 className="text-sm font-medium text-orange-400">Your Learning Progress</h3>
-                      <p className="text-xs text-zinc-500">Satoshis earned from daily lessons</p>
+                      <div className="flex items-center justify-center gap-2">
+                        <h3 className="text-sm font-medium text-orange-400">Your Learning Progress</h3>
+                        <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-orange-500/30 text-orange-400">
+                          Educational
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-zinc-500">Learning sats earned from daily lessons</p>
                     </div>
                     
                     <div className="flex items-center justify-between">
@@ -303,7 +308,7 @@ function LearnPage() {
                         </div>
                         <div>
                           <div className="text-lg font-bold text-orange-400">
-                            {(walletData as any)?.totalSatoshisEarned?.toLocaleString() || 0} sats
+                            {(walletData as any)?.totalSatoshisEarned?.toLocaleString() || 0} learning sats
                           </div>
                           <div className="text-xs text-zinc-400">
                             ≈ ${((walletData as any)?.totalUsdValue || 0).toFixed(2)} USD
