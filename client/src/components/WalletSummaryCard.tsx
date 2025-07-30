@@ -54,19 +54,19 @@ export default function WalletSummaryCard() {
 
   if (isLoading) {
     return (
-      <Card className="w-full cursor-pointer hover:bg-zinc-800/50 transition-colors">
+      <Card className="w-full cursor-pointer hover:bg-zinc-800/50 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] group border border-zinc-700/50 hover:border-orange-500/30">
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-orange-500/20 rounded-lg">
-                <Wallet className="w-5 h-5 text-orange-500" />
+              <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300">
+                <Wallet className="w-5 h-5 text-orange-500 group-hover:animate-pulse" />
               </div>
               <div className="space-y-1">
                 <div className="h-4 bg-gray-600 rounded animate-pulse w-24"></div>
                 <div className="h-3 bg-gray-700 rounded animate-pulse w-16"></div>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-gray-500" />
+            <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-orange-400 transition-colors" />
           </div>
         </CardContent>
       </Card>
@@ -75,19 +75,19 @@ export default function WalletSummaryCard() {
 
   if (!walletData) {
     return (
-      <Card className="w-full cursor-pointer hover:bg-zinc-800/50 transition-colors" onClick={handleCardClick}>
+      <Card className="w-full cursor-pointer hover:bg-zinc-800/50 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] group border border-zinc-700/50 hover:border-orange-500/30" onClick={handleCardClick}>
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-orange-500/20 rounded-lg">
-                <Wallet className="w-5 h-5 text-orange-500" />
+              <div className="p-3 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300">
+                <Wallet className="w-6 h-6 text-orange-500 group-hover:animate-pulse" />
               </div>
               <div>
-                <div className="text-sm font-medium text-gray-300">Bitcoin Learning Wallet</div>
+                <div className="text-sm font-medium text-orange-400">Bitcoin Learning Wallet</div>
                 <div className="text-xs text-gray-500">Start earning satoshis</div>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-gray-500" />
+            <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-orange-400 transition-colors" />
           </div>
         </CardContent>
       </Card>
@@ -97,7 +97,7 @@ export default function WalletSummaryCard() {
   const todaysEarnings = getTodaysEarnings();
 
   return (
-    <Card className="w-full cursor-pointer hover:bg-zinc-800/50 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] group" onClick={handleCardClick}>
+    <Card className="w-full cursor-pointer hover:bg-zinc-800/50 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] group border border-zinc-700/50 hover:border-orange-500/30" onClick={handleCardClick}>
       <CardContent className="p-5">
         <div className="space-y-4">
           {/* Header with animated coin and performance highlight */}

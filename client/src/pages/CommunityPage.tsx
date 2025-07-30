@@ -154,47 +154,57 @@ function CommunityOverview({ setActiveTab }: { setActiveTab: (tab: CommunitySubT
         </p>
       </div>
 
-      {/* Community Stats */}
+      {/* Community Stats - Enhanced with Streak Achievement Style */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="bg-zinc-800/50 border-zinc-700">
+        <Card className="bg-zinc-900/50 border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group">
           <CardContent className="p-4 text-center">
-            <Users className="h-6 w-6 text-orange-500 mx-auto mb-2" />
+            <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300 w-fit mx-auto mb-3">
+              <Users className="h-6 w-6 text-orange-500 group-hover:animate-pulse" />
+            </div>
             <div className="text-xl font-bold">2,847</div>
             <div className="text-zinc-400 text-xs">Active Learners</div>
           </CardContent>
         </Card>
-        <Card className="bg-zinc-800/50 border-zinc-700">
+        <Card className="bg-zinc-900/50 border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group">
           <CardContent className="p-4 text-center">
-            <MessageSquare className="h-6 w-6 text-orange-500 mx-auto mb-2" />
+            <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300 w-fit mx-auto mb-3">
+              <MessageSquare className="h-6 w-6 text-orange-500 group-hover:animate-pulse" />
+            </div>
             <div className="text-xl font-bold">12,394</div>
             <div className="text-zinc-400 text-xs">Forum Posts</div>
           </CardContent>
         </Card>
-        <Card className="bg-zinc-800/50 border-zinc-700">
+        <Card className="bg-zinc-900/50 border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group">
           <CardContent className="p-4 text-center">
-            <Video className="h-6 w-6 text-orange-500 mx-auto mb-2" />
+            <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300 w-fit mx-auto mb-3">
+              <Video className="h-6 w-6 text-orange-500 group-hover:animate-pulse" />
+            </div>
             <div className="text-xl font-bold">156</div>
             <div className="text-zinc-400 text-xs">Curated Videos</div>
           </CardContent>
         </Card>
-        <Card className="bg-zinc-800/50 border-zinc-700">
+        <Card className="bg-zinc-900/50 border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group">
           <CardContent className="p-4 text-center">
-            <Trophy className="h-6 w-6 text-orange-500 mx-auto mb-2" />
+            <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300 w-fit mx-auto mb-3">
+              <Trophy className="h-6 w-6 text-orange-500 group-hover:animate-pulse" />
+            </div>
             <div className="text-xl font-bold">891</div>
             <div className="text-zinc-400 text-xs">Success Stories</div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Quick Access Cards */}
+      {/* Quick Access Cards - With Streak Achievement Style */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card 
-          className="bg-zinc-800/50 border-zinc-700 hover:border-orange-500/50 transition-colors cursor-pointer"
+          className="bg-zinc-900/50 border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
           onClick={() => setActiveTab("forums")}
         >
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
-              <MessageSquare className="h-4 w-4 text-orange-500" />
+              <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300">
+                <MessageSquare className="h-4 w-4 text-orange-500 group-hover:animate-pulse" />
+              </div>
               Daily Discussions
             </CardTitle>
             <CardDescription className="text-sm">
@@ -206,18 +216,20 @@ function CommunityOverview({ setActiveTab }: { setActiveTab: (tab: CommunitySubT
               <div className="text-xs text-zinc-400">
                 Latest: Day 5 - Store of Value
               </div>
-              <ArrowRight className="h-3 w-3 text-orange-500" />
+              <ArrowRight className="h-3 w-3 text-orange-500 group-hover:text-orange-300 transition-colors" />
             </div>
           </CardContent>
         </Card>
 
         <Card 
-          className="bg-zinc-800/50 border-zinc-700 hover:border-orange-500/50 transition-colors cursor-pointer"
+          className="bg-zinc-900/50 border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
           onClick={() => setActiveTab("videos")}
         >
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
-              <Video className="h-4 w-4 text-orange-500" />
+              <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300">
+                <Video className="h-4 w-4 text-orange-500 group-hover:animate-pulse" />
+              </div>
               Curated Videos
             </CardTitle>
             <CardDescription className="text-sm">
@@ -229,18 +241,20 @@ function CommunityOverview({ setActiveTab }: { setActiveTab: (tab: CommunitySubT
               <div className="text-xs text-zinc-400">
                 Trending: Why Bitcoin Matters
               </div>
-              <ArrowRight className="h-3 w-3 text-orange-500" />
+              <ArrowRight className="h-3 w-3 text-orange-500 group-hover:text-orange-300 transition-colors" />
             </div>
           </CardContent>
         </Card>
 
         <Card 
-          className="bg-zinc-800/50 border-zinc-700 hover:border-orange-500/50 transition-colors cursor-pointer"
+          className="bg-zinc-900/50 border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
           onClick={() => setActiveTab("stories")}
         >
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
-              <BookOpen className="h-4 w-4 text-orange-500" />
+              <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300">
+                <BookOpen className="h-4 w-4 text-orange-500 group-hover:animate-pulse" />
+              </div>
               Success Stories
             </CardTitle>
             <CardDescription className="text-sm">
@@ -252,7 +266,7 @@ function CommunityOverview({ setActiveTab }: { setActiveTab: (tab: CommunitySubT
               <div className="text-xs text-zinc-400">
                 Latest: From Skeptic to Believer
               </div>
-              <ArrowRight className="h-3 w-3 text-orange-500" />
+              <ArrowRight className="h-3 w-3 text-orange-500 group-hover:text-orange-300 transition-colors" />
             </div>
           </CardContent>
         </Card>

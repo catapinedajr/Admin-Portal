@@ -132,50 +132,53 @@ export default function HomePage() {
             setActiveSection={setActiveSection}
           />
 
-          {/* Quick Actions Grid - Streamlined */}
+          {/* Quick Actions Grid - Streamlined with Streak Achievement Style */}
           <div className="grid grid-cols-3 gap-3">
-            <Card className="bg-zinc-900/80 border border-zinc-700/40 hover:border-orange-500/30 transition-colors group">
+            <Card 
+              className="bg-zinc-900/50 border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
+              onClick={() => setLocation('/simulators')}
+            >
               <CardContent className="p-4 text-center">
-                <Shield className="w-5 h-5 text-zinc-400 group-hover:text-orange-400 mx-auto mb-2 transition-colors" />
+                <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300 w-fit mx-auto mb-3">
+                  <Shield className="w-5 h-5 text-orange-500 group-hover:animate-pulse" />
+                </div>
                 <h5 className="text-white font-medium text-sm mb-1">Security</h5>
                 <p className="text-zinc-500 text-xs mb-3">Practice safe habits</p>
-                <Button 
-                  onClick={() => setLocation('/simulators')}
-                  size="sm"
-                  className="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-600 text-xs py-1.5"
-                >
-                  Train
-                </Button>
+                <div className="text-orange-400 text-xs font-medium group-hover:text-orange-300 transition-colors">
+                  Train Now →
+                </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-zinc-900/80 border border-zinc-700/40 hover:border-orange-500/30 transition-colors group">
+            <Card 
+              className="bg-zinc-900/50 border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
+              onClick={() => setLocation('/money')}
+            >
               <CardContent className="p-4 text-center">
-                <TrendingDown className="w-5 h-5 text-zinc-400 group-hover:text-orange-400 mx-auto mb-2 transition-colors" />
+                <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300 w-fit mx-auto mb-3">
+                  <TrendingDown className="w-5 h-5 text-orange-500 group-hover:animate-pulse" />
+                </div>
                 <h5 className="text-white font-medium text-sm mb-1">Why Bitcoin</h5>
                 <p className="text-zinc-500 text-xs mb-3">Inflation impact</p>
-                <Button 
-                  onClick={() => setLocation('/money')}
-                  size="sm"
-                  className="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-600 text-xs py-1.5"
-                >
-                  Explore
-                </Button>
+                <div className="text-orange-400 text-xs font-medium group-hover:text-orange-300 transition-colors">
+                  Explore →
+                </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-zinc-900/80 border border-zinc-700/40 hover:border-zinc-600/50 transition-colors group">
+            <Card 
+              className="bg-zinc-900/50 border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
+              onClick={() => setLocation('/community')}
+            >
               <CardContent className="p-4 text-center">
-                <Users className="w-5 h-5 text-zinc-400 mx-auto mb-2 transition-colors" />
+                <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300 w-fit mx-auto mb-3">
+                  <Users className="w-5 h-5 text-orange-500 group-hover:animate-pulse" />
+                </div>
                 <h5 className="text-white font-medium text-sm mb-1">Community</h5>
                 <p className="text-zinc-500 text-xs mb-3">Connect & learn</p>
-                <Button 
-                  onClick={() => setLocation('/community')}
-                  size="sm"
-                  className="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-600 text-xs py-1.5"
-                >
-                  Join
-                </Button>
+                <div className="text-orange-400 text-xs font-medium group-hover:text-orange-300 transition-colors">
+                  Join →
+                </div>
               </CardContent>
             </Card>
           </div>
