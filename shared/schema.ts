@@ -74,7 +74,7 @@ export const forumReplies = pgTable("forum_replies", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-// Curated video content
+// Enhanced curated video content with better categorization
 export const curatedVideos = pgTable("curated_videos", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
@@ -83,11 +83,17 @@ export const curatedVideos = pgTable("curated_videos", {
   channelName: text("channel_name").notNull(),
   duration: integer("duration"), // in seconds
   difficulty: text("difficulty").notNull(), // beginner, intermediate, advanced
-  category: text("category").notNull(), // economics, technical, stories, news
+  categoryId: integer("category_id").references(() => videoCategories.id),
+  subcategoryId: integer("subcategory_id").references(() => videoSubcategories.id),
   tags: text("tags").array(), // searchable tags
-  isPopular: boolean("is_popular").notNull().default(false),
-  isTrending: boolean("is_trending").notNull().default(false),
+  isEssential: boolean("is_essential").notNull().default(false), // For "Essentials" section
+  isRecent: boolean("is_recent").notNull().default(false), // Auto-managed for "Recent" section
+  isCommunityPick: boolean("is_community_pick").notNull().default(false),
+  communityScore: integer("community_score").notNull().default(0), // Community voting score
   viewCount: integer("view_count").notNull().default(0),
+  submittedBy: integer("submitted_by").references(() => users.id), // For community submissions
+  approvedBy: integer("approved_by").references(() => users.id), // For moderation
+  approvedAt: timestamp("approved_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -111,6 +117,83 @@ export const successStories = pgTable("success_stories", {
   isFeature: boolean("is_featured").notNull().default(false),
   likeCount: integer("like_count").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Reddit-style voting system for forum posts and replies
+export const forumVotes = pgTable("forum_votes", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  postId: integer("post_id").references(() => forumPosts.id, { onDelete: 'cascade' }),
+  replyId: integer("reply_id").references(() => forumReplies.id, { onDelete: 'cascade' }),
+  voteType: text("vote_type").notNull(), // 'upvote' or 'downvote'
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// User karma tracking system
+export const userKarma = pgTable("user_karma", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  totalKarma: integer("total_karma").notNull().default(0),
+  postKarma: integer("post_karma").notNull().default(0),
+  commentKarma: integer("comment_karma").notNull().default(0),
+  awardedKarma: integer("awarded_karma").notNull().default(0),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Video categories for better organization
+export const videoCategories = pgTable("video_categories", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull().unique(),
+  description: text("description"),
+  slug: text("slug").notNull().unique(),
+  sortOrder: integer("sort_order").notNull().default(0),
+  isEssential: boolean("is_essential").notNull().default(false), // For "Essentials" section
+  icon: text("icon"), // For UI display
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Enhanced video table with better categorization
+export const videoSubcategories = pgTable("video_subcategories", {
+  id: serial("id").primaryKey(),
+  categoryId: integer("category_id").notNull().references(() => videoCategories.id, { onDelete: 'cascade' }),
+  name: text("name").notNull(),
+  description: text("description"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Story featuring and moderation system
+export const storyFeatures = pgTable("story_features", {
+  id: serial("id").primaryKey(),
+  storyId: integer("story_id").notNull().references(() => successStories.id, { onDelete: 'cascade' }),
+  featuredDate: timestamp("featured_date").notNull().defaultNow(),
+  featuredBy: integer("featured_by").notNull().references(() => users.id),
+  adminNotes: text("admin_notes"),
+  displayOrder: integer("display_order").notNull().default(0),
+  isActive: boolean("is_active").notNull().default(true),
+});
+
+// Enhanced forum posts with Reddit-style features
+export const forumPostStats = pgTable("forum_post_stats", {
+  id: serial("id").primaryKey(),
+  postId: integer("post_id").notNull().references(() => forumPosts.id, { onDelete: 'cascade' }),
+  upvotes: integer("upvotes").notNull().default(0),
+  downvotes: integer("downvotes").notNull().default(0),
+  hotScore: decimal("hot_score", { precision: 10, scale: 4 }).notNull().default('0'), // For "hot" algorithm
+  controversyScore: decimal("controversy_score", { precision: 10, scale: 4 }).notNull().default('0'),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Enhanced forum replies with threading support
+export const forumReplyStats = pgTable("forum_reply_stats", {
+  id: serial("id").primaryKey(),
+  replyId: integer("reply_id").notNull().references(() => forumReplies.id, { onDelete: 'cascade' }),
+  parentReplyId: integer("parent_reply_id").references(() => forumReplies.id), // For threaded replies
+  depth: integer("depth").notNull().default(0), // Reply depth (0 = top level, 1 = reply to post, 2 = reply to reply, etc.)
+  upvotes: integer("upvotes").notNull().default(0),
+  downvotes: integer("downvotes").notNull().default(0),
+  childCount: integer("child_count").notNull().default(0),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
@@ -597,3 +680,103 @@ export const insertSimulatorCompletionSchema = createInsertSchema(simulatorCompl
 
 export type SimulatorCompletion = typeof simulatorCompletions.$inferSelect;
 export type InsertSimulatorCompletion = z.infer<typeof insertSimulatorCompletionSchema>;
+
+// Community Reddit-style feature schemas
+export const insertForumVoteSchema = createInsertSchema(forumVotes).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertUserKarmaSchema = createInsertSchema(userKarma).omit({
+  id: true,
+  updatedAt: true,
+});
+
+export const insertVideoCategorySchema = createInsertSchema(videoCategories).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertVideoSubcategorySchema = createInsertSchema(videoSubcategories).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertStoryFeatureSchema = createInsertSchema(storyFeatures).omit({
+  id: true,
+  featuredDate: true,
+});
+
+export const insertForumPostStatsSchema = createInsertSchema(forumPostStats).omit({
+  id: true,
+  updatedAt: true,
+});
+
+export const insertForumReplyStatsSchema = createInsertSchema(forumReplyStats).omit({
+  id: true,
+  updatedAt: true,
+});
+
+// Enhanced curated videos schema
+export const insertCuratedVideoSchema = createInsertSchema(curatedVideos).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  approvedAt: true,
+});
+
+// Community types
+export type ForumVote = typeof forumVotes.$inferSelect;
+export type InsertForumVote = z.infer<typeof insertForumVoteSchema>;
+export type UserKarma = typeof userKarma.$inferSelect;
+export type InsertUserKarma = z.infer<typeof insertUserKarmaSchema>;
+export type VideoCategory = typeof videoCategories.$inferSelect;
+export type InsertVideoCategory = z.infer<typeof insertVideoCategorySchema>;
+export type VideoSubcategory = typeof videoSubcategories.$inferSelect;
+export type InsertVideoSubcategory = z.infer<typeof insertVideoSubcategorySchema>;
+export type StoryFeature = typeof storyFeatures.$inferSelect;
+export type InsertStoryFeature = z.infer<typeof insertStoryFeatureSchema>;
+export type ForumPostStats = typeof forumPostStats.$inferSelect;
+export type InsertForumPostStats = z.infer<typeof insertForumPostStatsSchema>;
+export type ForumReplyStats = typeof forumReplyStats.$inferSelect;
+export type InsertForumReplyStats = z.infer<typeof insertForumReplyStatsSchema>;
+
+// Enhanced community types for API responses
+export type CuratedVideo = typeof curatedVideos.$inferSelect;
+export type InsertCuratedVideo = z.infer<typeof insertCuratedVideoSchema>;
+export type ForumCategory = typeof forumCategories.$inferSelect;
+export type ForumPost = typeof forumPosts.$inferSelect;
+export type ForumReply = typeof forumReplies.$inferSelect;
+export type SuccessStory = typeof successStories.$inferSelect;
+
+// Enhanced forum post with Reddit-style data
+export type ForumPostWithStats = ForumPost & {
+  stats: ForumPostStats;
+  author: Pick<User, 'id' | 'username'>;
+  category: ForumCategory;
+  userVote?: ForumVote;
+  karma: number;
+};
+
+// Enhanced forum reply with threading
+export type ForumReplyWithStats = ForumReply & {
+  stats: ForumReplyStats;
+  author: Pick<User, 'id' | 'username'>;
+  userVote?: ForumVote;
+  children?: ForumReplyWithStats[];
+  karma: number;
+};
+
+// Video with categorization
+export type VideoWithCategory = CuratedVideo & {
+  category?: VideoCategory;
+  subcategory?: VideoSubcategory;
+  submittedByUser?: Pick<User, 'id' | 'username'>;
+  approvedByUser?: Pick<User, 'id' | 'username'>;
+};
+
+// Featured story
+export type FeaturedStory = SuccessStory & {
+  author: Pick<User, 'id' | 'username'>;
+  feature?: StoryFeature;
+};
