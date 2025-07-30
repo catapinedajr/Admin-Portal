@@ -35,19 +35,19 @@ export default function HODLearnCard({
   
   const variantClasses = {
     default: `
-      bg-zinc-900/50 border-zinc-700/50 
-      hover:bg-zinc-800/70 hover:border-zinc-600/50
-      hover:shadow-md hover:shadow-zinc-500/10
+      bg-black border-zinc-700/50 
+      hover:bg-zinc-800/50 hover:border-zinc-600/50
+      hover:shadow-md hover:shadow-zinc-500/10 hover:scale-[1.01]
     `,
     interactive: `
-      bg-zinc-900/50 border-zinc-700/50 
+      bg-black border-zinc-700/50 
       hover:bg-zinc-800/50 hover:border-orange-500/30
       hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02]
       cursor-pointer
     `,
     premium: `
-      bg-gradient-to-br from-zinc-900/80 to-zinc-800/60 border-zinc-700/50
-      hover:from-zinc-800/80 hover:to-zinc-700/60 hover:border-orange-500/40
+      bg-black border-zinc-700/50
+      hover:bg-zinc-800/50 hover:border-orange-500/40
       hover:shadow-xl hover:shadow-orange-500/20 hover:scale-[1.03]
       hover:ring-1 hover:ring-orange-500/30
       cursor-pointer
