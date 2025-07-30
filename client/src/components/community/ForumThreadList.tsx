@@ -58,22 +58,22 @@ export function ForumThreadList({
         </Button>
       </div>
       
-      {/* Category info */}
-      <Card className="bg-zinc-900/50 border-zinc-700/50 p-4">
-        <div className="flex items-start justify-between">
+      {/* iPhone-optimized category info */}
+      <Card className="bg-zinc-900/50 border-zinc-700/50 p-4 sm:p-6">
+        <div className="space-y-4">
           <div>
-            <h1 className="text-2xl font-bold text-white mb-2">{category.name}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-white mb-3 leading-tight">{category.name}</h1>
             {category.description && (
-              <p className="text-zinc-400 mb-3">{category.description}</p>
+              <p className="text-zinc-400 mb-4 text-base leading-relaxed">{category.description}</p>
             )}
-            <div className="flex items-center gap-4 text-sm text-zinc-500">
-              <span>{category.postCount} posts</span>
+            <div className="flex items-center gap-3 text-sm text-zinc-500 flex-wrap">
+              <span className="font-medium">{category.postCount} posts</span>
               <span>•</span>
               <span>Active community</span>
               {isDailyLessonsCategory && (
                 <>
                   <span>•</span>
-                  <span className="text-orange-400">Day-specific discussions</span>
+                  <span className="text-orange-400 font-medium">Day-specific discussions</span>
                 </>
               )}
             </div>
@@ -81,9 +81,9 @@ export function ForumThreadList({
           
           <Button
             onClick={() => setShowCreatePost(true)}
-            className="bg-orange-500 hover:bg-orange-600 text-white"
+            className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto h-12 text-base font-medium touch-manipulation"
           >
-            <Plus className="h-4 w-4 mr-1" />
+            <Plus className="h-5 w-5 mr-2" />
             New Post
           </Button>
         </div>
@@ -109,28 +109,28 @@ export function ForumThreadList({
         </Card>
       )}
       
-      {/* Sort tabs */}
+      {/* iPhone-optimized sort tabs */}
       <Tabs value={currentSort} onValueChange={onSortChange} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 bg-zinc-900/50 border border-zinc-700/50">
+        <TabsList className="grid w-full grid-cols-3 bg-zinc-900/50 border border-zinc-700/50 h-12">
           <TabsTrigger 
             value="hot" 
-            className="data-[state=active]:bg-orange-500 data-[state=active]:text-white"
+            className="data-[state=active]:bg-orange-500 data-[state=active]:text-white text-base font-medium h-10 touch-manipulation"
           >
-            <TrendingUp className="h-4 w-4 mr-1" />
+            <TrendingUp className="h-5 w-5 mr-2" />
             Hot
           </TabsTrigger>
           <TabsTrigger 
             value="new"
-            className="data-[state=active]:bg-orange-500 data-[state=active]:text-white"
+            className="data-[state=active]:bg-orange-500 data-[state=active]:text-white text-base font-medium h-10 touch-manipulation"
           >
-            <Clock className="h-4 w-4 mr-1" />
+            <Clock className="h-5 w-5 mr-2" />
             New
           </TabsTrigger>
           <TabsTrigger 
             value="top"
-            className="data-[state=active]:bg-orange-500 data-[state=active]:text-white"
+            className="data-[state=active]:bg-orange-500 data-[state=active]:text-white text-base font-medium h-10 touch-manipulation"
           >
-            <Award className="h-4 w-4 mr-1" />
+            <Award className="h-5 w-5 mr-2" />
             Top
           </TabsTrigger>
         </TabsList>

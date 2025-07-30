@@ -25,23 +25,23 @@ export function ForumPost({ post, onVote, onReply, compact = false }: ForumPostP
   
   return (
     <Card className="bg-zinc-900/50 border-zinc-700/50 hover:border-orange-500/30 transition-all duration-300">
-      <div className="flex gap-3 p-4">
-        {/* Reddit-style voting column */}
-        <div className="flex flex-col items-center gap-1 min-w-[40px]">
+      <div className="flex gap-4 p-4 sm:p-6">
+        {/* iPhone-optimized voting column */}
+        <div className="flex flex-col items-center gap-2 min-w-[48px]">
           <Button
             variant="ghost"
             size="sm"
-            className={`h-8 w-8 p-0 ${
+            className={`h-10 w-10 p-0 touch-manipulation ${
               isUpvoted 
-                ? 'text-orange-500 hover:text-orange-400' 
-                : 'text-zinc-400 hover:text-orange-500'
+                ? 'text-orange-500 hover:text-orange-400 bg-orange-500/10' 
+                : 'text-zinc-400 hover:text-orange-500 hover:bg-orange-500/10'
             }`}
             onClick={() => handleVote('upvote')}
           >
-            <ChevronUp className="h-5 w-5" />
+            <ChevronUp className="h-6 w-6" />
           </Button>
           
-          <span className={`text-sm font-medium ${
+          <span className={`text-base font-bold ${
             post.karma > 0 ? 'text-orange-500' : 
             post.karma < 0 ? 'text-red-500' : 
             'text-zinc-400'
@@ -52,94 +52,98 @@ export function ForumPost({ post, onVote, onReply, compact = false }: ForumPostP
           <Button
             variant="ghost"
             size="sm"
-            className={`h-8 w-8 p-0 ${
+            className={`h-10 w-10 p-0 touch-manipulation ${
               isDownvoted 
-                ? 'text-red-500 hover:text-red-400' 
-                : 'text-zinc-400 hover:text-red-500'
+                ? 'text-red-500 hover:text-red-400 bg-red-500/10' 
+                : 'text-zinc-400 hover:text-red-500 hover:bg-red-500/10'
             }`}
             onClick={() => handleVote('downvote')}
           >
-            <ChevronDown className="h-5 w-5" />
+            <ChevronDown className="h-6 w-6" />
           </Button>
         </div>
         
         {/* Post content */}
         <div className="flex-1 min-w-0">
-          {/* Post header */}
-          <div className="flex items-center gap-2 text-sm text-zinc-400 mb-2 flex-wrap">
-            <Badge variant="secondary" className="bg-orange-500/10 text-orange-300 border-orange-500/20">
+          {/* iPhone-optimized post header */}
+          <div className="flex items-center gap-2 text-sm text-zinc-400 mb-3 flex-wrap">
+            <Badge variant="secondary" className="bg-orange-500/10 text-orange-300 border-orange-500/20 text-xs px-2 py-1">
               {post.category?.name}
             </Badge>
             {post.dayIndex && (
-              <Badge variant="outline" className="text-blue-400 border-blue-500/30 bg-blue-500/5">
+              <Badge variant="outline" className="text-blue-400 border-blue-500/30 bg-blue-500/5 text-xs px-2 py-1">
                 Day {post.dayIndex}
               </Badge>
             )}
-            <span>Posted by</span>
-            <span className="text-orange-400 hover:text-orange-300 cursor-pointer">
-              u/{post.author?.username}
-            </span>
-            <span>•</span>
-            <span>{formatDistanceToNow(new Date(post.createdAt))} ago</span>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs">by</span>
+              <span className="text-orange-400 hover:text-orange-300 cursor-pointer text-sm font-medium">
+                u/{post.author?.username}
+              </span>
+              <span className="text-xs">•</span>
+              <span className="text-xs">{formatDistanceToNow(new Date(post.createdAt))} ago</span>
+            </div>
             {post.isSticky && (
-              <Badge variant="outline" className="text-green-400 border-green-400/50">
+              <Badge variant="outline" className="text-green-400 border-green-400/50 text-xs">
                 Pinned
               </Badge>
             )}
           </div>
           
-          {/* Post title */}
-          <h3 className={`font-semibold text-white mb-2 hover:text-orange-300 cursor-pointer transition-colors ${
-            compact ? 'text-base' : 'text-lg'
+          {/* iPhone-optimized post title */}
+          <h3 className={`font-bold text-white mb-3 hover:text-orange-300 cursor-pointer transition-colors leading-snug ${
+            compact ? 'text-lg' : 'text-xl'
           }`}>
             {post.title}
           </h3>
           
-          {/* Post content */}
+          {/* iPhone-optimized post content */}
           {(!compact || isExpanded) && (
             <div className="text-zinc-300 mb-4 prose prose-sm max-w-none">
-              <div className="whitespace-pre-wrap">{post.content}</div>
+              <div className="whitespace-pre-wrap text-base leading-relaxed">{post.content}</div>
             </div>
           )}
           
-          {/* Post actions */}
-          <div className="flex items-center gap-4 text-sm text-zinc-400">
+          {/* iPhone-optimized post actions */}
+          <div className="flex items-center gap-3 text-sm text-zinc-400 flex-wrap">
             <Button
               variant="ghost"
               size="sm"
-              className="text-zinc-400 hover:text-orange-400 hover:bg-orange-500/10 transition-colors h-8 px-2"
+              className="text-zinc-400 hover:text-orange-400 hover:bg-orange-500/10 transition-colors h-10 px-3 touch-manipulation"
               onClick={() => onReply(post.id)}
             >
-              <MessageCircle className="h-4 w-4 mr-1" />
-              {post.replyCount} {post.replyCount === 1 ? 'comment' : 'comments'}
+              <MessageCircle className="h-5 w-5 mr-2" />
+              <span className="text-sm font-medium">
+                {post.replyCount} {post.replyCount === 1 ? 'reply' : 'replies'}
+              </span>
             </Button>
             
             <Button
               variant="ghost"
               size="sm"
-              className="text-zinc-400 hover:text-orange-400 hover:bg-orange-500/10 transition-colors h-8 px-2"
+              className="text-zinc-400 hover:text-orange-400 hover:bg-orange-500/10 transition-colors h-10 px-3 touch-manipulation"
             >
-              <Share className="h-4 w-4 mr-1" />
-              Share
+              <Share className="h-5 w-5 mr-2" />
+              <span className="text-sm">Share</span>
             </Button>
             
             {compact && !isExpanded && (
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-zinc-400 hover:text-orange-400 transition-colors h-8 px-2"
+                className="text-zinc-400 hover:text-orange-400 transition-colors h-10 px-3 touch-manipulation"
                 onClick={() => setIsExpanded(true)}
               >
-                Read more
+                <span className="text-sm">Read more</span>
               </Button>
             )}
             
             <Button
               variant="ghost"
               size="sm"
-              className="text-zinc-400 hover:text-orange-400 hover:bg-orange-500/10 transition-colors h-8 px-2 ml-auto"
+              className="text-zinc-400 hover:text-orange-400 hover:bg-orange-500/10 transition-colors h-10 w-10 p-0 ml-auto touch-manipulation"
             >
-              <MoreHorizontal className="h-4 w-4" />
+              <MoreHorizontal className="h-5 w-5" />
             </Button>
           </div>
           
