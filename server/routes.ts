@@ -2023,7 +2023,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  // Community API endpoints
+  // Enhanced Community API endpoints with Reddit-style features
   
   // Forum categories
   app.get("/api/community/forum-categories", async (req, res) => {
@@ -2036,11 +2036,17 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  // Forum posts by category
-  app.get("/api/community/forum-posts/:categoryId?", async (req, res) => {
+  // Enhanced forum posts with stats and voting
+  app.get("/api/community/forum-posts", async (req, res) => {
     try {
-      const categoryId = req.params.categoryId ? parseInt(req.params.categoryId) : undefined;
-      const posts = await communityStorage.getForumPosts(categoryId);
+      const { categoryId, sortBy } = req.query;
+      const userId = req.user?.id; // Get from auth if available
+      
+      const posts = await communityStorage.getForumPostsWithStats(
+        categoryId ? parseInt(categoryId as string) : undefined,
+        sortBy as string || 'new',
+        userId
+      );
       res.json(posts);
     } catch (error) {
       console.error("Error fetching forum posts:", error);
@@ -2067,6 +2073,85 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     } catch (error) {
       console.error("Error creating forum post:", error);
       res.status(500).json({ message: "Failed to create forum post" });
+    }
+  });
+
+  // Vote on forum post
+  app.post("/api/community/forum-posts/:postId/vote", setDefaultUser, async (req, res) => {
+    try {
+      const { postId } = req.params;
+      const { voteType } = req.body;
+      const userId = req.user.id;
+      
+      await communityStorage.voteOnPost(userId, parseInt(postId), voteType);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error voting on post:", error);
+      res.status(500).json({ message: "Failed to vote on post" });
+    }
+  });
+
+  // Get threaded replies for a post
+  app.get("/api/community/forum-posts/:postId/replies", async (req, res) => {
+    try {
+      const { postId } = req.params;
+      const userId = req.user?.id;
+      
+      const replies = await communityStorage.getThreadedReplies(parseInt(postId), userId);
+      res.json(replies);
+    } catch (error) {
+      console.error("Error fetching replies:", error);
+      res.status(500).json({ message: "Failed to fetch replies" });
+    }
+  });
+
+  // Create reply
+  app.post("/api/community/forum-posts/:postId/replies", setDefaultUser, async (req, res) => {
+    try {
+      const { postId } = req.params;
+      const { content, parentReplyId } = req.body;
+      const userId = req.user.id;
+      
+      const replyData = {
+        postId: parseInt(postId),
+        userId,
+        content,
+        parentReplyId: parentReplyId || null,
+        depth: parentReplyId ? 1 : 0 // Simple depth calculation
+      };
+
+      const newReply = await communityStorage.createReply(replyData);
+      res.json(newReply);
+    } catch (error) {
+      console.error("Error creating reply:", error);
+      res.status(500).json({ message: "Failed to create reply" });
+    }
+  });
+
+  // Vote on reply
+  app.post("/api/community/forum-replies/:replyId/vote", setDefaultUser, async (req, res) => {
+    try {
+      const { replyId } = req.params;
+      const { voteType } = req.body;
+      const userId = req.user.id;
+      
+      await communityStorage.voteOnReply(userId, parseInt(replyId), voteType);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error voting on reply:", error);
+      res.status(500).json({ message: "Failed to vote on reply" });
+    }
+  });
+
+  // Get user karma
+  app.get("/api/community/karma/:userId", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const karma = await communityStorage.getUserKarma(parseInt(userId));
+      res.json(karma);
+    } catch (error) {
+      console.error("Error fetching user karma:", error);
+      res.status(500).json({ message: "Failed to fetch user karma" });
     }
   });
 

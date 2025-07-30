@@ -6,6 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
+import { ForumCategoryList } from "@/components/community/ForumCategoryList";
+import { ForumThreadList } from "@/components/community/ForumThreadList";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import type { ForumCategory, ForumPostWithStats } from '@shared/schema';
 
 type CommunitySubTab = "overview" | "forums" | "videos" | "stories";
 
@@ -251,90 +255,137 @@ function CommunityOverview({ setActiveTab }: { setActiveTab: (tab: CommunitySubT
 }
 
 function ForumsSection() {
+  const [selectedCategory, setSelectedCategory] = useState<ForumCategory | null>(null);
+  const [sortBy, setSortBy] = useState('new');
+  const queryClient = useQueryClient();
+
+  // Mock categories for now - will be replaced with API call
+  const mockCategories: ForumCategory[] = [
+    {
+      id: 1,
+      name: "Getting Started",
+      description: "New to Bitcoin? Ask your beginner questions here",
+      postCount: 1247,
+      isActive: true,
+      sortOrder: 1,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    },
+    {
+      id: 2,
+      name: "Daily Lesson Discussions", 
+      description: "Discuss today's lesson with other learners",
+      postCount: 3891,
+      isActive: true,
+      sortOrder: 2,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    },
+    {
+      id: 3,
+      name: "Technical Deep Dives",
+      description: "Advanced Bitcoin topics and technical discussions",
+      postCount: 567,
+      isActive: true,
+      sortOrder: 3,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    },
+    {
+      id: 4,
+      name: "Local Meetups",
+      description: "Find and organize Bitcoin meetups in your area",
+      postCount: 234,
+      isActive: true,
+      sortOrder: 4,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+  ];
+
+  // Mock posts for now - will be replaced with API call
+  const mockPosts: ForumPostWithStats[] = [];
+
+  // Vote mutation
+  const voteMutation = useMutation({
+    mutationFn: async ({ postId, voteType }: { postId: number; voteType: 'upvote' | 'downvote' }) => {
+      const response = await fetch(`/api/community/forum-posts/${postId}/vote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ voteType })
+      });
+      if (!response.ok) throw new Error('Failed to vote');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/community/forum-posts'] });
+    }
+  });
+
+  // Create post mutation
+  const createPostMutation = useMutation({
+    mutationFn: async (postData: { title: string; content: string; categoryId: number; dayIndex?: number }) => {
+      const response = await fetch('/api/community/forum-posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(postData)
+      });
+      if (!response.ok) throw new Error('Failed to create post');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/community/forum-posts'] });
+    }
+  });
+
+  const handleVote = (postId: number, voteType: 'upvote' | 'downvote') => {
+    voteMutation.mutate({ postId, voteType });
+  };
+
+  const handleReply = (postId: number) => {
+    // TODO: Implement reply functionality
+    console.log('Reply to post:', postId);
+  };
+
+  const handleCreatePost = (postData: { title: string; content: string; categoryId: number; dayIndex?: number }) => {
+    createPostMutation.mutate(postData);
+  };
+
+  const handleSelectCategory = (categoryId: number) => {
+    const category = mockCategories.find(c => c.id === categoryId);
+    if (category) {
+      setSelectedCategory(category);
+    }
+  };
+
+  const handleBack = () => {
+    setSelectedCategory(null);
+  };
+
+  const handleSortChange = (newSort: string) => {
+    setSortBy(newSort);
+  };
+
+  if (selectedCategory) {
+    return (
+      <ForumThreadList
+        category={selectedCategory}
+        posts={mockPosts}
+        onBack={handleBack}
+        onVote={handleVote}
+        onReply={handleReply}
+        onCreatePost={handleCreatePost}
+        onSortChange={handleSortChange}
+        currentSort={sortBy}
+      />
+    );
+  }
+
   return (
-    <div className="space-y-6">
-      <div className="text-center py-4">
-        <h2 className="text-xl font-bold mb-2">Community Forums</h2>
-        <p className="text-zinc-400 text-sm">Connect with fellow Bitcoin learners</p>
-      </div>
-
-      {/* Forum Categories */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="bg-zinc-800/50 border-zinc-700 hover:border-orange-500/50 transition-colors cursor-pointer">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center justify-between text-lg">
-              <span>Getting Started</span>
-              <Badge variant="secondary" className="text-xs">1,247 posts</Badge>
-            </CardTitle>
-            <CardDescription className="text-sm">
-              New to Bitcoin? Ask your beginner questions here
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-xs text-zinc-400">
-              Latest: "Is Bitcoin actually secure?" - 2 hours ago
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-zinc-800/50 border-zinc-700 hover:border-orange-500/50 transition-colors cursor-pointer">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center justify-between text-lg">
-              <span>Daily Lesson Discussions</span>
-              <Badge variant="secondary" className="text-xs">3,891 posts</Badge>
-            </CardTitle>
-            <CardDescription className="text-sm">
-              Discuss today's lesson with other learners
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-xs text-zinc-400">
-              Latest: "Day 15 - Mining Discussion" - 1 hour ago
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-zinc-800/50 border-zinc-700 hover:border-orange-500/50 transition-colors cursor-pointer">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center justify-between text-lg">
-              <span>Technical Deep Dives</span>
-              <Badge variant="secondary" className="text-xs">567 posts</Badge>
-            </CardTitle>
-            <CardDescription className="text-sm">
-              Advanced Bitcoin topics and technical discussions
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-xs text-zinc-400">
-              Latest: "Lightning Network routing" - 4 hours ago
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-zinc-800/50 border-zinc-700 hover:border-orange-500/50 transition-colors cursor-pointer">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center justify-between text-lg">
-              <span>Local Meetups</span>
-              <Badge variant="secondary" className="text-xs">234 posts</Badge>
-            </CardTitle>
-            <CardDescription className="text-sm">
-              Find and organize Bitcoin meetups in your area
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-xs text-zinc-400">
-              Latest: "NYC Bitcoin Meetup - Jan 15" - 6 hours ago
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="text-center py-6">
-        <Button className="bg-orange-500 hover:bg-orange-600 text-sm px-6">
-          Create New Discussion
-        </Button>
-      </div>
-    </div>
+    <ForumCategoryList
+      categories={mockCategories}
+      onSelectCategory={handleSelectCategory}
+    />
   );
 }
 
