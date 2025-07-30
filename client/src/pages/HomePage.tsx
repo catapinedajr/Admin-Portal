@@ -135,7 +135,7 @@ export default function HomePage() {
           {/* Quick Actions Grid - Streamlined with Streak Achievement Style */}
           <div className="grid grid-cols-3 gap-3">
             <Card 
-              className="bg-zinc-900/50 border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
+              className="bg-black border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
               onClick={() => setLocation('/simulators')}
             >
               <CardContent className="p-4 text-center">
@@ -151,7 +151,7 @@ export default function HomePage() {
             </Card>
 
             <Card 
-              className="bg-zinc-900/50 border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
+              className="bg-black border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
               onClick={() => setLocation('/money')}
             >
               <CardContent className="p-4 text-center">
@@ -167,7 +167,7 @@ export default function HomePage() {
             </Card>
 
             <Card 
-              className="bg-zinc-900/50 border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
+              className="bg-black border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
               onClick={() => setLocation('/community')}
             >
               <CardContent className="p-4 text-center">
