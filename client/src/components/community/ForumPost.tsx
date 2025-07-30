@@ -24,7 +24,7 @@ export function ForumPost({ post, onVote, onReply, compact = false }: ForumPostP
   const isDownvoted = post.userVote?.voteType === 'downvote';
   
   return (
-    <Card className="bg-zinc-900/50 border-zinc-700/50 hover:border-orange-500/30 transition-all duration-300">
+    <Card className="bg-black border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:scale-[1.01] transition-all duration-300 group">
       <div className="flex gap-4 p-4 sm:p-6">
         {/* iPhone-optimized voting column */}
         <div className="flex flex-col items-center gap-2 min-w-[48px]">

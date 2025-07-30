@@ -30,7 +30,7 @@ export function ForumCategoryList({ categories, onSelectCategory }: ForumCategor
         {categories.map((category) => (
           <Card
             key={category.id}
-            className="bg-zinc-900/50 border-zinc-700/50 hover:border-orange-500/30 hover:scale-[1.01] transition-all duration-300 cursor-pointer"
+            className="bg-black border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:scale-[1.01] transition-all duration-300 cursor-pointer group"
             onClick={() => onSelectCategory(category.id)}
           >
             <div className="p-4">
@@ -84,22 +84,22 @@ export function ForumCategoryList({ categories, onSelectCategory }: ForumCategor
       
       {/* Quick stats */}
       <div className="grid grid-cols-3 gap-3 mt-6">
-        <Card className="bg-zinc-900/30 border-zinc-700/30 p-3 text-center">
-          <div className="text-lg font-bold text-orange-400">
+        <Card className="bg-black border-zinc-700/30 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:scale-[1.02] transition-all duration-300 p-3 text-center group">
+          <div className="text-lg font-bold text-orange-400 group-hover:text-orange-300 transition-colors">
             {categories.reduce((sum, cat) => sum + cat.postCount, 0)}
           </div>
           <div className="text-xs text-zinc-400">Total Discussions</div>
         </Card>
         
-        <Card className="bg-zinc-900/30 border-zinc-700/30 p-3 text-center">
-          <div className="text-lg font-bold text-orange-400">
+        <Card className="bg-black border-zinc-700/30 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:scale-[1.02] transition-all duration-300 p-3 text-center group">
+          <div className="text-lg font-bold text-orange-400 group-hover:text-orange-300 transition-colors">
             {categories.filter(cat => cat.postCount > 0).length}
           </div>
           <div className="text-xs text-zinc-400">Active Categories</div>
         </Card>
         
-        <Card className="bg-zinc-900/30 border-zinc-700/30 p-3 text-center">
-          <div className="text-lg font-bold text-orange-400">24/7</div>
+        <Card className="bg-black border-zinc-700/30 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:scale-[1.02] transition-all duration-300 p-3 text-center group">
+          <div className="text-lg font-bold text-orange-400 group-hover:text-orange-300 transition-colors">24/7</div>
           <div className="text-xs text-zinc-400">Community Online</div>
         </Card>
       </div>

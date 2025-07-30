@@ -154,9 +154,9 @@ function CommunityOverview({ setActiveTab }: { setActiveTab: (tab: CommunitySubT
         </p>
       </div>
 
-      {/* Community Stats - Enhanced with Streak Achievement Style */}
+      {/* Community Stats - Enhanced with Dopamine Background Transition */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="bg-zinc-900/50 border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group">
+        <Card className="bg-black border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group">
           <CardContent className="p-4 text-center">
             <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300 w-fit mx-auto mb-3">
               <Users className="h-6 w-6 text-orange-500 group-hover:animate-pulse" />
@@ -165,7 +165,7 @@ function CommunityOverview({ setActiveTab }: { setActiveTab: (tab: CommunitySubT
             <div className="text-zinc-400 text-xs">Active Learners</div>
           </CardContent>
         </Card>
-        <Card className="bg-zinc-900/50 border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group">
+        <Card className="bg-black border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group">
           <CardContent className="p-4 text-center">
             <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300 w-fit mx-auto mb-3">
               <MessageSquare className="h-6 w-6 text-orange-500 group-hover:animate-pulse" />
@@ -174,7 +174,7 @@ function CommunityOverview({ setActiveTab }: { setActiveTab: (tab: CommunitySubT
             <div className="text-zinc-400 text-xs">Forum Posts</div>
           </CardContent>
         </Card>
-        <Card className="bg-zinc-900/50 border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group">
+        <Card className="bg-black border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group">
           <CardContent className="p-4 text-center">
             <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300 w-fit mx-auto mb-3">
               <Video className="h-6 w-6 text-orange-500 group-hover:animate-pulse" />
@@ -183,7 +183,7 @@ function CommunityOverview({ setActiveTab }: { setActiveTab: (tab: CommunitySubT
             <div className="text-zinc-400 text-xs">Curated Videos</div>
           </CardContent>
         </Card>
-        <Card className="bg-zinc-900/50 border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group">
+        <Card className="bg-black border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group">
           <CardContent className="p-4 text-center">
             <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300 w-fit mx-auto mb-3">
               <Trophy className="h-6 w-6 text-orange-500 group-hover:animate-pulse" />
@@ -194,10 +194,10 @@ function CommunityOverview({ setActiveTab }: { setActiveTab: (tab: CommunitySubT
         </Card>
       </div>
 
-      {/* Quick Access Cards - With Streak Achievement Style */}
+      {/* Quick Access Cards - With Dopamine Background Transition */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card 
-          className="bg-zinc-900/50 border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
+          className="bg-black border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
           onClick={() => setActiveTab("forums")}
         >
           <CardHeader className="pb-3">
@@ -222,7 +222,7 @@ function CommunityOverview({ setActiveTab }: { setActiveTab: (tab: CommunitySubT
         </Card>
 
         <Card 
-          className="bg-zinc-900/50 border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
+          className="bg-black border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
           onClick={() => setActiveTab("videos")}
         >
           <CardHeader className="pb-3">
@@ -247,7 +247,7 @@ function CommunityOverview({ setActiveTab }: { setActiveTab: (tab: CommunitySubT
         </Card>
 
         <Card 
-          className="bg-zinc-900/50 border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
+          className="bg-black border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
           onClick={() => setActiveTab("stories")}
         >
           <CardHeader className="pb-3">
