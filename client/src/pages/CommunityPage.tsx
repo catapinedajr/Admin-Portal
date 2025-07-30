@@ -259,52 +259,27 @@ function ForumsSection() {
   const [sortBy, setSortBy] = useState('new');
   const queryClient = useQueryClient();
 
-  // Mock categories for now - will be replaced with API call
-  const mockCategories: ForumCategory[] = [
-    {
-      id: 1,
-      name: "Getting Started",
-      description: "New to Bitcoin? Ask your beginner questions here",
-      postCount: 1247,
-      isActive: true,
-      sortOrder: 1,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    },
-    {
-      id: 2,
-      name: "Daily Lesson Discussions", 
-      description: "Discuss today's lesson with other learners",
-      postCount: 3891,
-      isActive: true,
-      sortOrder: 2,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    },
-    {
-      id: 3,
-      name: "Technical Deep Dives",
-      description: "Advanced Bitcoin topics and technical discussions",
-      postCount: 567,
-      isActive: true,
-      sortOrder: 3,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    },
-    {
-      id: 4,
-      name: "Local Meetups",
-      description: "Find and organize Bitcoin meetups in your area",
-      postCount: 234,
-      isActive: true,
-      sortOrder: 4,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+  // Fetch real categories from API
+  const { data: categories = [], isLoading: categoriesLoading } = useQuery({
+    queryKey: ['/api/community/forum-categories'],
+    queryFn: async () => {
+      const response = await fetch('/api/community/forum-categories');
+      if (!response.ok) throw new Error('Failed to fetch categories');
+      return response.json() as ForumCategory[];
     }
-  ];
+  });
 
-  // Mock posts for now - will be replaced with API call
-  const mockPosts: ForumPostWithStats[] = [];
+  // Fetch real posts for selected category
+  const { data: posts = [], isLoading: postsLoading } = useQuery({
+    queryKey: ['/api/community/forum-posts', selectedCategory?.id, sortBy],
+    queryFn: async () => {
+      if (!selectedCategory) return [];
+      const response = await fetch(`/api/community/forum-posts?categoryId=${selectedCategory.id}&sortBy=${sortBy}`);
+      if (!response.ok) throw new Error('Failed to fetch posts');
+      return response.json() as ForumPostWithStats[];
+    },
+    enabled: !!selectedCategory
+  });
 
   // Vote mutation
   const voteMutation = useMutation({
@@ -352,7 +327,7 @@ function ForumsSection() {
   };
 
   const handleSelectCategory = (categoryId: number) => {
-    const category = mockCategories.find(c => c.id === categoryId);
+    const category = categories.find(c => c.id === categoryId);
     if (category) {
       setSelectedCategory(category);
     }
@@ -370,7 +345,7 @@ function ForumsSection() {
     return (
       <ForumThreadList
         category={selectedCategory}
-        posts={mockPosts}
+        posts={posts}
         onBack={handleBack}
         onVote={handleVote}
         onReply={handleReply}
@@ -381,9 +356,29 @@ function ForumsSection() {
     );
   }
 
+  if (categoriesLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center py-4">
+          <h2 className="text-xl font-bold mb-2">Community Forums</h2>
+          <p className="text-zinc-400 text-sm">Loading forum categories...</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="bg-zinc-800/50 border border-zinc-700 rounded-lg p-4 animate-pulse">
+              <div className="h-4 bg-zinc-700 rounded mb-2"></div>
+              <div className="h-3 bg-zinc-700 rounded w-3/4 mb-2"></div>
+              <div className="h-2 bg-zinc-700 rounded w-1/2"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <ForumCategoryList
-      categories={mockCategories}
+      categories={categories}
       onSelectCategory={handleSelectCategory}
     />
   );

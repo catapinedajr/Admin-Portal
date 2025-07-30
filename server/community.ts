@@ -40,7 +40,9 @@ export interface ICommunityStorage {
 
 export class CommunityStorage implements ICommunityStorage {
   async getForumCategories() {
-    return await db.select().from(forumCategories).where(eq(forumCategories.isActive, true));
+    return await db.select().from(forumCategories)
+      .where(eq(forumCategories.isActive, true))
+      .orderBy(forumCategories.sortOrder);
   }
   
   async getForumPostsWithStats(categoryId?: number, sortBy = 'new', userId?: number): Promise<ForumPostWithStats[]> {

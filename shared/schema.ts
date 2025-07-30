@@ -43,7 +43,9 @@ export const forumCategories = pgTable("forum_categories", {
   slug: text("slug").notNull().unique(),
   postCount: integer("post_count").notNull().default(0),
   isActive: boolean("is_active").notNull().default(true),
+  sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 // Forum posts
