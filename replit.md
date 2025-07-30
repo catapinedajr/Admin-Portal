@@ -1,5 +1,9 @@
 # Daily Learning App - Architecture Overview
 
+## User Preferences
+
+**CRITICAL: Approval-Required Workflow** - All code changes, implementations, and file modifications require explicit "Approved" message from user before execution. Always propose changes first and wait for approval.
+
 ## Overview
 
 This is a full-stack web application built for daily learning and knowledge acquisition. The app provides users with daily facts, lessons, and progress tracking to encourage consistent learning habits. It features a modern React frontend with a Node.js/Express backend, using PostgreSQL for data persistence.
