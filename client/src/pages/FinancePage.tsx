@@ -248,7 +248,7 @@ function FinancePage() {
               {/* Dopamine-Driven Hook */}
               <div className="mb-8">
                 <h1 className="text-5xl font-black text-white mb-4 tracking-tight">
-                  While You Lost Money, Bitcoin Made <AnimatedCounter target={2090} suffix="%" />
+                  While You Lost Money, Bitcoin Made <AnimatedCounter target={12275} suffix="%" />
                 </h1>
                 <p className="text-xl text-zinc-300 leading-relaxed">
                   Bitcoin is the new hurdle rate—it doesn't just beat inflation, it crushes every traditional investment.
@@ -269,7 +269,7 @@ function FinancePage() {
                   <div className="text-zinc-400 font-bold text-lg">S&P 500</div>
                   <div className="text-zinc-300 text-sm">10-year return</div>
                   <div className="text-zinc-300 text-xl font-bold">
-                    <AnimatedCounter target={180} suffix="%" className="text-zinc-300" />
+                    <AnimatedCounter target={299} suffix="%" className="text-zinc-300" />
                   </div>
                   <div className="text-zinc-400 text-xs">Traditional best</div>
                 </div>
@@ -277,7 +277,7 @@ function FinancePage() {
                   <div className="text-yellow-400 font-bold text-lg">Gold</div>
                   <div className="text-zinc-300 text-sm">10-year return</div>
                   <div className="text-yellow-300 text-xl font-bold">
-                    <AnimatedCounter target={65} suffix="%" className="text-zinc-300" />
+                    <AnimatedCounter target={120} suffix="%" className="text-zinc-300" />
                   </div>
                   <div className="text-zinc-400 text-xs">Store of value</div>
                 </div>
@@ -285,7 +285,7 @@ function FinancePage() {
                   <div className="text-orange-400 font-bold text-lg">Bitcoin</div>
                   <div className="text-zinc-300 text-sm">10-year return</div>
                   <div className="text-green-400 text-xl font-bold">
-                    <AnimatedCounter target={2090} suffix="%" className="text-green-400" />
+                    <AnimatedCounter target={12275} suffix="%" className="text-green-400" />
                   </div>
                   <div className="text-orange-300 text-xs">New standard</div>
                 </div>
@@ -361,7 +361,7 @@ function FinancePage() {
               </p>
               <div className="bg-red-900/20 border border-red-600/30 rounded-lg p-4 inline-block">
                 <div className="text-red-300 font-bold text-lg">
-                  Shocking fact: <AnimatedCounter target={40} suffix="%" className="text-red-400" /> of all dollars were printed in just 4 years (2020-2024)
+                  Shocking fact: <AnimatedCounter target={29} suffix="%" className="text-red-400" /> of money supply created during COVID response (2020-2022)
                 </div>
               </div>
             </div>
