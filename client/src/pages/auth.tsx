@@ -112,7 +112,6 @@ export function AuthPage() {
         localStorage.setItem('hodlearn_session', data.sessionId);
         localStorage.setItem('hodlearn_user', JSON.stringify(data.user));
       } catch (error) {
-        console.warn('Safari localStorage issue:', error);
       }
       
       toast({
@@ -145,7 +144,6 @@ export function AuthPage() {
         localStorage.setItem('hodlearn_session', data.sessionId);
         localStorage.setItem('hodlearn_user', JSON.stringify(data.user));
       } catch (error) {
-        console.warn('Safari localStorage issue:', error);
       }
       
       toast({

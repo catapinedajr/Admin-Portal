@@ -142,7 +142,6 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning, dayComple
         
         return await response.json() as QuizAnswer;
       } catch (error) {
-        console.error('Quiz submission error:', error);
         throw error;
       }
     },
@@ -168,7 +167,6 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning, dayComple
       queryClient.invalidateQueries({ queryKey: ['/api/quiz/score', userId, today] });
     },
     onError: (error) => {
-      console.error('Failed to submit quiz answer:', error);
       // Note: We could add toast notification here if needed
     },
     retry: 2,

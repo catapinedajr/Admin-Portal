@@ -7,7 +7,7 @@ export default function DevSubscriptionToggle() {
   const { subscriptionTier, toggleSubscription, isPremiumTier } = useSubscription();
 
   // Only show in development
-  if (process.env.NODE_ENV === 'production') {
+  if (import.meta.env.PROD) {
     return null;
   }
 

@@ -404,7 +404,7 @@ function FinancePage() {
                     const totalDuration = 6000; // 6 seconds
                     const baseInterval = totalDuration / totalYears; // ~57ms per year
                     
-                    const timeline = [];
+                    const timeline: { year: number; duration: number; flash: boolean }[] = [];
                     for (let year = 1920; year <= 2025; year++) {
                       const isFlashYear = [1971, 2000, 2008, 2020].includes(year);
                       timeline.push({
@@ -428,7 +428,6 @@ function FinancePage() {
                           setFlashingYear(step.year);
                           
                           // Add tactile feedback for iPhone users on crisis years - visual shake effect
-                          console.log(`Crisis year ${step.year} - triggering shake effect`);
                           setShakingContainer(true);
                           setTimeout(() => setShakingContainer(false), 300); // Quick shake duration
                           

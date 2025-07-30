@@ -90,15 +90,12 @@ function NewUserRedirect() {
       // 2. On Day 1 (hasn't progressed past the first day)
       if (!hasVisited && nextAvailableDay?.dayIndex === 1) {
         localStorage.setItem('hodlearn-has-visited', 'true');
-        console.log('First-day user - redirecting to money page for value proposition');
         setLocation('/money');
         return;
       }
       
-      console.log('Returning user or progressed past Day 1 - staying on home');
     } catch (error) {
       // If localStorage fails in Safari, just show home page
-      console.warn('Safari localStorage access issue, showing home page:', error);
     }
   }, [setLocation, nextAvailableDay, dayLoading]);
 

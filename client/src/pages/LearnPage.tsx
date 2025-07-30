@@ -162,7 +162,6 @@ function LearnPage() {
       // Refresh wallet data after earning
       queryClient.invalidateQueries({ queryKey: ['/api/wallet/progress'] });
     } catch (error) {
-      console.error('Failed to record earning:', error);
     }
     
     // Hide the animation after 3 seconds
@@ -235,7 +234,7 @@ function LearnPage() {
             </div>
             
             {/* Dev Day Toggle - Hidden in normal use */}
-            {process.env.NODE_ENV === 'development' && (
+            {import.meta.env.DEV && (
               <div className="flex justify-center">
                 <div className="flex items-center gap-2 px-3 py-1 bg-zinc-900/50 rounded text-xs">
                   <span className="text-zinc-500">Dev:</span>
@@ -304,10 +303,10 @@ function LearnPage() {
                         </div>
                         <div>
                           <div className="text-lg font-bold text-orange-400">
-                            {walletData.totalSatoshisEarned?.toLocaleString() || 0} sats
+                            {(walletData as any)?.totalSatoshisEarned?.toLocaleString() || 0} sats
                           </div>
                           <div className="text-xs text-zinc-400">
-                            ≈ ${(walletData.totalUsdValue || 0).toFixed(2)} USD
+                            ≈ ${((walletData as any)?.totalUsdValue || 0).toFixed(2)} USD
                           </div>
                         </div>
                       </div>
@@ -315,7 +314,7 @@ function LearnPage() {
                         <div className="flex items-center gap-1 text-orange-400">
                           <Zap className="w-4 h-4" />
                           <span className="text-sm font-medium">
-                            {walletData.currentStreakMultiplier || 1}x
+                            {(walletData as any)?.currentStreakMultiplier || 1}x
                           </span>
                         </div>
                         <div className="text-xs text-zinc-500">multiplier</div>

@@ -11,7 +11,6 @@ if ('serviceWorker' in navigator && typeof navigator.serviceWorker !== 'undefine
   navigator.serviceWorker.getRegistrations().then(function(registrations) {
     for(let registration of registrations) {
       registration.unregister();
-      console.log('HODLearn: Cleared service worker for development');
     }
   });
 }
@@ -22,13 +21,10 @@ if ('serviceWorker' in navigator && typeof navigator.serviceWorker !== 'undefine
     try {
       navigator.serviceWorker.register('/sw.js')
         .then((registration) => {
-          console.log('HODLearn: Service Worker registered successfully:', registration.scope);
         })
         .catch((error) => {
-          console.log('HODLearn: Service Worker registration failed (Safari may not support):', error);
         });
     } catch (error) {
-      console.log('HODLearn: Service Worker not available in Safari:', error);
     }
   });
 }

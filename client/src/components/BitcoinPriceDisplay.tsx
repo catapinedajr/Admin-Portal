@@ -24,7 +24,6 @@ export default function BitcoinPriceDisplay() {
       setPriceData(data);
       setLoading(false);
     } catch (error) {
-      console.error('Failed to fetch Bitcoin price:', error);
       setLoading(false);
     }
   };

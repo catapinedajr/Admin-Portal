@@ -21,7 +21,6 @@ export async function apiRequest(
       headers['Authorization'] = `Bearer ${sessionId}`;
     }
   } catch (error) {
-    console.warn('LocalStorage not available for auth headers:', error);
   }
 
   const res = await fetch(url, {
@@ -50,7 +49,6 @@ export const getQueryFn: <T>(options: {
         headers['Authorization'] = `Bearer ${sessionId}`;
       }
     } catch (error) {
-      console.warn('LocalStorage not available for query auth:', error);
     }
 
     const res = await fetch(queryKey[0] as string, {

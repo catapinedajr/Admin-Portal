@@ -32,7 +32,6 @@ export default function PWAInstallButton() {
     if (isSafari && isIOS) {
       // For Safari on iOS, we can't auto-trigger install but we can always show the button
       setIsInstallable(true);
-      console.log('HODLearn: Safari iOS detected - install button will show instructions');
     }
 
     // Listen for beforeinstallprompt event (Chrome/Android)
@@ -40,7 +39,6 @@ export default function PWAInstallButton() {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       setIsInstallable(true);
-      console.log('HODLearn: beforeinstallprompt event triggered');
     };
 
     // Listen for appinstalled event
@@ -48,7 +46,6 @@ export default function PWAInstallButton() {
       setIsInstalled(true);
       setIsInstallable(false);
       setDeferredPrompt(null);
-      console.log('HODLearn: App installed successfully');
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -62,14 +59,8 @@ export default function PWAInstallButton() {
 
   const handleInstall = async () => {
     setIsClicked(true);
-    console.log('HODLearn: Install button clicked');
-    console.log('HODLearn: deferredPrompt available:', !!deferredPrompt);
-    console.log('HODLearn: isInstallable:', isInstallable);
-    console.log('HODLearn: isInstalled:', isInstalled);
-    console.log('HODLearn: User Agent:', navigator.userAgent);
 
     if (!deferredPrompt) {
-      console.log('HODLearn: No install prompt available - checking browser install options');
       
       // Reset click state after showing alert
       setTimeout(() => setIsClicked(false), 100);
@@ -110,22 +101,17 @@ export default function PWAInstallButton() {
     }
 
     try {
-      console.log('HODLearn: Attempting to show install prompt...');
       await deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
       
-      console.log('HODLearn: User choice:', outcome);
       
       if (outcome === 'accepted') {
-        console.log('HODLearn: PWA installation accepted');
       } else {
-        console.log('HODLearn: PWA installation dismissed');
       }
       
       setDeferredPrompt(null);
       setIsInstallable(false);
     } catch (error) {
-      console.error('HODLearn: PWA installation error:', error);
       alert('Installation not available in this browser. Try Chrome or Edge on desktop.');
     } finally {
       setIsClicked(false);

@@ -34,7 +34,6 @@ export function initSafariCompat() {
       performReactRefresh: function() {}
     };
     
-    console.log('HODLearn: Safari compatibility mode enabled');
   }
 }
 

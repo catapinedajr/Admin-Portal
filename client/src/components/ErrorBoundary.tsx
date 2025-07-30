@@ -20,11 +20,9 @@ class ErrorBoundary extends React.Component<
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // Log error for debugging but don't crash the app
-    console.warn('HODLearn: Caught React error:', error.message);
     
     // For Safari/React Refresh issues, try to recover
     if (error.message.includes('$RefreshSig$') || error.message.includes('RefreshRuntime')) {
-      console.log('HODLearn: Attempting recovery from React Refresh error');
       setTimeout(() => {
         this.setState({ hasError: false, error: undefined });
       }, 100);
