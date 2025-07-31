@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { VideoPlayer } from '@/components/VideoPlayer';
 
 type CommunitySubTab = "daily" | "reddit" | "videos" | "stories";
 
@@ -256,6 +257,13 @@ function DailyDiscussionSection() {
 // Simplified Videos Section
 function VideosSection() {
   const [activeCategory, setActiveCategory] = useState("foundation");
+  const [selectedVideo, setSelectedVideo] = useState<{
+    id: string;
+    title: string;
+    creator: string;
+    duration: string;
+    note: string;
+  } | null>(null);
   
   const videoCategories = {
     foundation: {
@@ -267,56 +275,56 @@ function VideosSection() {
           creator: "Andreas Antonopoulos",
           duration: "30 mins",
           note: "This is where my journey started - perfect entry point",
-          url: "https://www.youtube.com/watch?v=l1si5ZWLgy0"
+          videoId: "l1si5ZWLgy0"
         },
         {
           title: "Bitcoin on Lex Fridman",
           creator: "Michael Saylor",
           duration: "20 min segments",
           note: "4-hour masterclass broken into digestible parts",
-          url: "https://www.youtube.com/watch?v=mC43pZkpTec"
+          videoId: "mC43pZkpTec"
         },
         {
           title: "What is Money? (Part 1)",
           creator: "Saifedean Ammous",
           duration: "25 mins",
           note: "Essential economic foundation before diving into Bitcoin",
-          url: "https://www.youtube.com/watch?v=1WBrdLQhUrg"
+          videoId: "1WBrdLQhUrg"
         },
         {
           title: "21 Lessons Introduction",
           creator: "Gigi",
           duration: "20 mins",
           note: "Philosophy meets practicality - changed my perspective",
-          url: "https://www.youtube.com/watch?v=F-EHF8oFyLE"
+          videoId: "F-EHF8oFyLE"
         },
         {
           title: "Bitcoin vs Banks",
           creator: "Andreas Antonopoulos",
           duration: "15 mins",
           note: "Why the traditional system is broken",
-          url: "https://www.youtube.com/watch?v=LgI0liAee4s"
+          videoId: "LgI0liAee4s"
         },
         {
           title: "Bitcoin for Beginners",
           creator: "Preston Pysh",
           duration: "25 mins",
           note: "Investment thesis made simple",
-          url: "https://www.youtube.com/watch?v=Zbm772vF-5M"
+          videoId: "Zbm772vF-5M"
         },
         {
           title: "Deflationary World Intro",
           creator: "Jeff Booth",
           duration: "20 mins",
           note: "Mind-bending perspective on future economics",
-          url: "https://www.youtube.com/watch?v=O3hq2vIhtz8"
+          videoId: "O3hq2vIhtz8"
         },
         {
           title: "Financial Freedom Basics",
           creator: "Alex Gladstein",
           duration: "18 mins",
           note: "Real-world impact beyond investment",
-          url: "https://www.youtube.com/watch?v=xLYYh4aPXAM"
+          videoId: "xLYYh4aPXAM"
         }
       ]
     },
@@ -329,56 +337,56 @@ function VideosSection() {
           creator: "Saylor & Breedlove",
           duration: "45 mins",
           note: "Deep dive that solidified my conviction",
-          url: "https://www.youtube.com/watch?v=Vp7Q_3E_gzU"
+          videoId: "Vp7Q_3E_gzU"
         },
         {
           title: "Bitcoin vs Gold",
           creator: "Lyn Alden",
           duration: "30 mins",
           note: "Best comparison of store of value assets",
-          url: "https://www.youtube.com/watch?v=VdPkpxmN9g4"
+          videoId: "VdPkpxmN9g4"
         },
         {
           title: "The Bitcoin Standard Key Chapter",
           creator: "Saifedean Ammous",
           duration: "35 mins",
           note: "Economic theory meets Bitcoin reality",
-          url: "https://www.youtube.com/watch?v=Zbm772vF-5M"
+          videoId: "Zbm772vF-5M"
         },
         {
           title: "AI, Deflation, and Bitcoin",
           creator: "Jeff Booth",
           duration: "25 mins",
           note: "Future economics explained brilliantly",
-          url: "https://www.youtube.com/watch?v=O3hq2vIhtz8"
+          videoId: "O3hq2vIhtz8"
         },
         {
           title: "Inflation Hedge Thesis",
           creator: "Preston Pysh",
           duration: "20 mins",
           note: "Why Bitcoin wins against money printing",
-          url: "https://www.youtube.com/watch?v=Zbm772vF-5M"
+          videoId: "Zbm772vF-5M"
         },
         {
           title: "Bitcoin in Changing World Order",
           creator: "Ray Dalio",
           duration: "15 mins",
           note: "Traditional finance acknowledging Bitcoin",
-          url: "https://www.youtube.com/watch?v=Nu4lHaSh7D4"
+          videoId: "Nu4lHaSh7D4"
         },
         {
           title: "Volatility as Feature",
           creator: "Anthony Pompliano",
           duration: "25 mins",
           note: "Reframes risk vs opportunity perfectly",
-          url: "https://www.youtube.com/watch?v=KzpQR2r5sJE"
+          videoId: "KzpQR2r5sJE"
         },
         {
           title: "IMF and Bitcoin",
           creator: "Alex Gladstein",
           duration: "30 mins",
           note: "Eye-opening global financial system critique",
-          url: "https://www.youtube.com/watch?v=xLYYh4aPXAM"
+          videoId: "xLYYh4aPXAM"
         }
       ]
     },
@@ -391,56 +399,56 @@ function VideosSection() {
           creator: "Andreas Antonopoulos",
           duration: "40 mins",
           note: "Technical concepts made accessible",
-          url: "https://www.youtube.com/watch?v=l1si5ZWLgy0"
+          videoId: "l1si5ZWLgy0"
         },
         {
           title: "Lightning Network Explained",
           creator: "Andreas Antonopoulos",
           duration: "25 mins",
           note: "Scaling solution that makes sense",
-          url: "https://www.youtube.com/watch?v=rrr_zPmEiME"
+          videoId: "rrr_zPmEiME"
         },
         {
           title: "Self-Custody Basics",
           creator: "Andreas Antonopoulos",
           duration: "20 mins",
           note: "Not your keys, not your Bitcoin - essential",
-          url: "https://www.youtube.com/watch?v=F12lpqnug-0"
+          videoId: "F12lpqnug-0"
         },
         {
           title: "Proof of Work vs Proof of Stake",
           creator: "Gigi",
           duration: "30 mins",
           note: "Why energy 'waste' is actually security",
-          url: "https://www.youtube.com/watch?v=F-EHF8oFyLE"
+          videoId: "F-EHF8oFyLE"
         },
         {
           title: "Corporate Bitcoin Strategy",
           creator: "Michael Saylor",
           duration: "35 mins",
           note: "How companies adopt Bitcoin treasury",
-          url: "https://www.youtube.com/watch?v=mC43pZkpTec"
+          videoId: "mC43pZkpTec"
         },
         {
           title: "Bitcoin Mining Reality",
           creator: "Andreas Antonopoulos",
           duration: "25 mins",
           note: "Dispels environmental myths with facts",
-          url: "https://www.youtube.com/watch?v=2T0OUIW89II"
+          videoId: "2T0OUIW89II"
         },
         {
           title: "DCA Strategy Deep Dive",
           creator: "Preston Pysh",
           duration: "20 mins",
           note: "Practical investment approach that works",
-          url: "https://www.youtube.com/watch?v=Zbm772vF-5M"
+          videoId: "Zbm772vF-5M"
         },
         {
           title: "Fiat Standard Problems",
           creator: "Saifedean Ammous",
           duration: "30 mins",
           note: "Why the current system fails everyone",
-          url: "https://www.youtube.com/watch?v=1WBrdLQhUrg"
+          videoId: "1WBrdLQhUrg"
         }
       ]
     },
@@ -453,42 +461,42 @@ function VideosSection() {
           creator: "Alex Gladstein",
           duration: "25 mins",
           note: "Nation-state adoption lessons learned",
-          url: "https://www.youtube.com/watch?v=xLYYh4aPXAM"
+          videoId: "xLYYh4aPXAM"
         },
         {
           title: "Institutional Adoption Wave",
           creator: "Michael Saylor",
           duration: "20 mins",
           note: "Why corporations choose Bitcoin",
-          url: "https://www.youtube.com/watch?v=mC43pZkpTec"
+          videoId: "mC43pZkpTec"
         },
         {
           title: "Hyper-Bitcoinized World",
           creator: "Jeff Booth",
           duration: "30 mins",
           note: "What happens when Bitcoin wins",
-          url: "https://www.youtube.com/watch?v=O3hq2vIhtz8"
+          videoId: "O3hq2vIhtz8"
         },
         {
           title: "Bitcoin Culture & Community",
           creator: "Gigi",
           duration: "15 mins",
           note: "Why Bitcoiners think differently",
-          url: "https://www.youtube.com/watch?v=F-EHF8oFyLE"
+          videoId: "F-EHF8oFyLE"
         },
         {
           title: "Bitcoin Privacy",
           creator: "Andreas Antonopoulos",
           duration: "25 mins",
           note: "Financial privacy in digital age",
-          url: "https://www.youtube.com/watch?v=l1si5ZWLgy0"
+          videoId: "l1si5ZWLgy0"
         },
         {
           title: "Bitcoin 2030 Predictions",
           creator: "Multi-Expert Panel",
           duration: "45 mins",
           note: "Combined wisdom of top voices",
-          url: "https://www.youtube.com/watch?v=Nu4lHaSh7D4"
+          videoId: "Nu4lHaSh7D4"
         }
       ]
     }
@@ -545,7 +553,13 @@ function VideosSection() {
                       "{video.note}"
                     </div>
                     <Button 
-                      onClick={() => window.open(video.url, '_blank')}
+                      onClick={() => setSelectedVideo({
+                        id: video.videoId,
+                        title: video.title,
+                        creator: video.creator,
+                        duration: video.duration,
+                        note: video.note
+                      })}
                       size="sm"
                       className="bg-orange-500/20 hover:bg-orange-500 text-orange-400 hover:text-white border border-orange-500/30 hover:border-orange-500 text-xs px-3 py-1"
                     >
@@ -571,6 +585,19 @@ function VideosSection() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Video Player Modal */}
+      {selectedVideo && (
+        <VideoPlayer
+          videoId={selectedVideo.id}
+          title={selectedVideo.title}
+          creator={selectedVideo.creator}
+          duration={selectedVideo.duration}
+          note={selectedVideo.note}
+          isOpen={true}
+          onClose={() => setSelectedVideo(null)}
+        />
+      )}
     </div>
   );
 }

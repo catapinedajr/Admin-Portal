@@ -103,13 +103,64 @@ export const curatedVideos = pgTable("curated_videos", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-// User video engagement
+// Enhanced user video engagement with completion tracking and rewards
 export const userVideoEngagement = pgTable("user_video_engagement", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
-  videoId: integer("video_id").notNull(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  videoId: text("video_id").notNull(), // YouTube video ID
   watchedAt: timestamp("watched_at").notNull().defaultNow(),
   progressPercent: integer("progress_percent").notNull().default(0), // 0-100
+  completed: boolean("completed").notNull().default(false),
+  completedAt: timestamp("completed_at"),
+  rewardEarned: integer("reward_earned").notNull().default(0), // sats earned
+  totalWatchTime: integer("total_watch_time").notNull().default(0), // seconds
+  lastPosition: integer("last_position").notNull().default(0), // seconds
+});
+
+// Video reactions system (Bitcoin-themed reactions)
+export const videoReactions = pgTable("video_reactions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  videoId: text("video_id").notNull(), // YouTube video ID
+  reactionType: text("reaction_type").notNull(), // 'mind_blown', 'rocket', 'lightbulb', 'fire'
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Video comments with timestamp support
+export const videoComments = pgTable("video_comments", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  videoId: text("video_id").notNull(), // YouTube video ID
+  content: text("content").notNull(),
+  timestamp: integer("timestamp"), // Video timestamp in seconds (optional)
+  parentCommentId: integer("parent_comment_id"), // For replies - self-reference resolved later
+  likeCount: integer("like_count").notNull().default(0),
+  isDeleted: boolean("is_deleted").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Video comment likes
+export const videoCommentLikes = pgTable("video_comment_likes", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  commentId: integer("comment_id").notNull().references(() => videoComments.id, { onDelete: 'cascade' }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Video stats aggregation
+export const videoStats = pgTable("video_stats", {
+  id: serial("id").primaryKey(),
+  videoId: text("video_id").notNull().unique(), // YouTube video ID
+  totalViews: integer("total_views").notNull().default(0),
+  uniqueViewers: integer("unique_viewers").notNull().default(0),
+  completionCount: integer("completion_count").notNull().default(0),
+  averageWatchTime: integer("average_watch_time").notNull().default(0), // seconds
+  completionRate: integer("completion_rate").notNull().default(0), // percentage
+  totalReactions: integer("total_reactions").notNull().default(0),
+  totalComments: integer("total_comments").notNull().default(0),
+  trending: boolean("trending").notNull().default(false),
+  lastUpdated: timestamp("last_updated").notNull().defaultNow(),
 });
 
 // Success stories
@@ -541,7 +592,7 @@ export const walletEarnings = pgTable("wallet_earnings", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   dayIndex: integer("day_index").notNull(), // Which day of curriculum
-  earningType: text("earning_type").notNull(), // 'quiz_question', 'quiz_completion', 'streak_7', 'streak_30', 'streak_365', 'simulator', 'community'
+  earningType: text("earning_type").notNull(), // 'quiz_question', 'quiz_completion', 'streak_7', 'streak_30', 'streak_365', 'simulator', 'community', 'video_completion', 'video_category_completion', 'video_engagement'
   satoshisEarned: integer("satoshis_earned").notNull(),
   streakMultiplier: decimal("streak_multiplier", { precision: 3, scale: 2 }).notNull().default("1.00"),
   bitcoinPriceUsd: decimal("bitcoin_price_usd", { precision: 10, scale: 2 }).notNull(), // Price at time of earning

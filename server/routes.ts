@@ -6,6 +6,7 @@ import { db } from "./db";
 import { communityStorage } from "./community";
 import { authService } from "./auth";
 import { registerWalletRoutes } from "./wallet-routes";
+import { registerVideoRoutes } from "./video-routes";
 import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentGenerationSteps, userQuizAnswers, registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, dailyDiscussions, users } from "@shared/schema";
 import { eq, sql, desc } from "drizzle-orm";
 import { v4 as uuidv4 } from 'uuid';
@@ -2271,6 +2272,9 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
 
   // Register wallet routes
   registerWalletRoutes(app, requireAuth);
+  
+  // Register video routes
+  registerVideoRoutes(app);
 
   // CONTENT VALIDATION PROTECTION ROUTES
   // Add new day content (with framework validation)
