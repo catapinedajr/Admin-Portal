@@ -7,6 +7,7 @@ import { Heart, MessageCircle, Zap, Rocket, Lightbulb, Flame, Play, X, PictureIn
 import { useToast } from '@/hooks/use-toast';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
+import { usePipVideo } from '@/hooks/usePipVideo';
 
 interface VideoPlayerProps {
   videoId: string;
@@ -47,11 +48,11 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
   const [isCompleted, setIsCompleted] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState('');
-  const [isPip, setIsPip] = useState(false);
   const [rewardEarned, setRewardEarned] = useState(0);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { setPipVideo } = usePipVideo();
 
   // Fetch video stats
   const { data: stats } = useQuery<VideoStats>({
@@ -171,11 +172,22 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
   };
 
   const togglePip = () => {
-    setIsPip(!isPip);
-    // Close the main dialog when entering PIP mode
-    if (!isPip) {
-      // Don't call onClose - let the dialog stay open but invisible
-    }
+    // Set up global PIP video
+    setPipVideo({
+      videoId,
+      title,
+      creator,
+      progress,
+      onExpand: () => {
+        // Reopen the main dialog
+        // Already handled by parent component state
+      },
+      onClose: () => {
+        onClose();
+      }
+    });
+    // Close the main dialog to allow navigation
+    onClose();
   };
 
   const reactionIcons = {
@@ -186,60 +198,7 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
   };
 
   return (
-    <>
-      {/* PIP Video - Always rendered when isPip is true */}
-      {isPip && (
-        <div className="fixed bottom-20 right-4 w-72 h-44 bg-zinc-900 border border-zinc-700 rounded-lg shadow-2xl z-50 overflow-hidden">
-          <div className="relative h-28">
-            <iframe
-              ref={iframeRef}
-              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0`}
-              className="w-full h-full rounded-t-lg"
-              frameBorder="0"
-              allowFullScreen
-              allow="autoplay; encrypted-media"
-            />
-            <div className="absolute top-1 right-1 flex gap-1">
-              <Button 
-                size="sm" 
-                variant="ghost" 
-                onClick={() => setIsPip(false)} 
-                className="h-6 w-6 p-0 bg-black/70 hover:bg-black/90 text-white"
-                title="Expand to full view"
-              >
-                <Maximize2 className="w-3 h-3" />
-              </Button>
-              <Button 
-                size="sm" 
-                variant="ghost" 
-                onClick={onClose} 
-                className="h-6 w-6 p-0 bg-black/70 hover:bg-black/90 text-white"
-                title="Close video"
-              >
-                <X className="w-3 h-3" />
-              </Button>
-            </div>
-          </div>
-          <div className="p-2 bg-zinc-900">
-            <h4 className="text-xs font-medium text-white truncate">{title}</h4>
-            <div className="flex items-center justify-between mt-1">
-              <p className="text-xs text-zinc-400 truncate">{creator}</p>
-              <div className="flex items-center gap-1">
-                <div className="w-8 bg-zinc-700 rounded-full h-1">
-                  <div
-                    className="bg-orange-500 h-1 rounded-full transition-all duration-300"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-                <span className="text-xs text-zinc-400">{Math.round(progress)}%</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Main Dialog - Hidden when in PIP mode */}
-      <Dialog open={isOpen && !isPip} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-6xl w-[95vw] max-h-[95vh] h-auto lg:h-[90vh] bg-zinc-900 border-zinc-700 p-0 overflow-hidden">
         <div className="flex flex-col lg:flex-row h-full">
           {/* Video Section */}
@@ -250,10 +209,10 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
                   <DialogTitle className="text-lg lg:text-xl line-clamp-2">{title}</DialogTitle>
                   <p className="text-zinc-400 text-sm">{creator} • {duration}</p>
                 </div>
-                <div className="flex gap-2 flex-shrink-0">
-                  <Button size="sm" variant="ghost" onClick={togglePip} className="flex items-center gap-1 bg-zinc-800 hover:bg-zinc-700">
+                <div className="flex flex-col lg:flex-row gap-1 lg:gap-2 flex-shrink-0">
+                  <Button size="sm" variant="ghost" onClick={togglePip} className="flex items-center justify-center gap-1 bg-orange-600/20 hover:bg-orange-600/30 border border-orange-500/50">
                     <PictureInPicture className="w-4 h-4" />
-                    <span className="hidden sm:inline text-xs">PIP</span>
+                    <span className="hidden sm:inline text-xs">Float</span>
                   </Button>
                   <Button size="sm" variant="ghost" onClick={onClose} className="hidden lg:flex bg-zinc-800 hover:bg-zinc-700">
                     <X className="w-4 h-4" />
@@ -381,7 +340,16 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
             </div>
 
             {/* Comments List - Scrollable */}
-            <div className="flex-1 overflow-y-scroll overflow-x-hidden p-4 space-y-4" style={{maxHeight: '400px', minHeight: '200px', overscrollBehavior: 'contain', WebkitOverflowScrolling: 'touch'}}>
+            <div 
+              className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-4" 
+              style={{
+                maxHeight: 'calc(100vh - 500px)', 
+                minHeight: '300px', 
+                overscrollBehavior: 'contain', 
+                WebkitOverflowScrolling: 'touch',
+                scrollbarWidth: 'thin'
+              }}
+            >
               {comments?.map((comment) => (
                 <Card key={comment.id} className="bg-zinc-800/30 border-zinc-700">
                   <CardContent className="p-3">
@@ -417,6 +385,5 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
         </div>
         </DialogContent>
       </Dialog>
-    </>
   );
 }

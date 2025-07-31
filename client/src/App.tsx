@@ -4,6 +4,7 @@ import { QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
+import { PipProvider } from "@/hooks/usePipVideo";
 import { useEffect, useState } from "react";
 
 import HomePage from "@/pages/HomePage";
@@ -93,7 +94,7 @@ function NewUserRedirect() {
       // Only redirect to Money page if:
       // 1. First-time visitor AND 
       // 2. On Day 1 (hasn't progressed past the first day)
-      if (!hasVisited && nextAvailableDay?.dayIndex === 1) {
+      if (!hasVisited && nextAvailableDay && 'dayIndex' in nextAvailableDay && nextAvailableDay.dayIndex === 1) {
         localStorage.setItem('hodlearn-has-visited', 'true');
         setLocation('/money');
         return;
@@ -146,12 +147,16 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <SubscriptionProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </SubscriptionProvider>
+      <TooltipProvider>
+        <SubscriptionProvider>
+          <PipProvider>
+            <AuthGuard>
+              <Router />
+            </AuthGuard>
+            <Toaster />
+          </PipProvider>
+        </SubscriptionProvider>
+      </TooltipProvider>
     </QueryClientProvider>
   );
 }
