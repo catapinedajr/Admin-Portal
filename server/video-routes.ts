@@ -136,8 +136,8 @@ export function registerVideoRoutes(app: Express, authMiddleware?: any) {
         }
       }
 
-      // Update video stats
-      await updateVideoStats(videoId);
+      // Update video stats - temporarily disabled due to SQL error
+      // await updateVideoStats(videoId);
 
       res.json({ 
         success: true, 
@@ -247,7 +247,7 @@ export function registerVideoRoutes(app: Express, authMiddleware?: any) {
             .where(eq(userWalletProgress.userId, userId));
         }
 
-        await updateVideoStats(videoId);
+        // await updateVideoStats(videoId);
       }
 
       res.json({ success: true });
@@ -362,7 +362,7 @@ export function registerVideoRoutes(app: Express, authMiddleware?: any) {
           .where(eq(userWalletProgress.userId, userId));
       }
 
-      await updateVideoStats(videoId);
+      // await updateVideoStats(videoId);
       res.json({ success: true });
     } catch (error) {
       console.error('Error adding comment:', error);
@@ -495,15 +495,16 @@ export function registerVideoRoutes(app: Express, authMiddleware?: any) {
 
 async function updateVideoStats(videoId: string) {
   try {
-    // Calculate stats
-    const engagementStats = await db
-      .select({
-        totalViews: count(),
-        completions: sum(userVideoEngagement.completed),
-        avgWatchTime: avg(userVideoEngagement.totalWatchTime),
-      })
+    // Simplified stats update - basic count only
+    const viewCount = await db
+      .select({ count: count() })
       .from(userVideoEngagement)
       .where(eq(userVideoEngagement.videoId, videoId));
+
+    const completionCount = await db
+      .select({ count: count() })
+      .from(userVideoEngagement)
+      .where(and(eq(userVideoEngagement.videoId, videoId), eq(userVideoEngagement.completed, true)));
 
     const reactionCount = await db
       .select({ count: count() })
@@ -518,9 +519,8 @@ async function updateVideoStats(videoId: string) {
         eq(videoComments.isDeleted, false)
       ));
 
-    const stats = engagementStats[0];
-    const completions = Number(stats.completions) || 0;
-    const totalViews = stats.totalViews || 0;
+    const totalViews = viewCount[0]?.count || 0;
+    const completions = completionCount[0]?.count || 0;
     const completionRate = totalViews > 0 ? Math.round((completions / totalViews) * 100) : 0;
 
     // Update or insert stats
@@ -529,13 +529,13 @@ async function updateVideoStats(videoId: string) {
       .values({
         videoId,
         totalViews,
-        uniqueViewers: totalViews, // Same as total views for now
+        uniqueViewers: totalViews,
         completionCount: completions,
-        averageWatchTime: Math.round(Number(stats.avgWatchTime) || 0),
+        averageWatchTime: 0, // Simplified for now
         completionRate,
         totalReactions: reactionCount[0]?.count || 0,
         totalComments: commentCount[0]?.count || 0,
-        trending: completions > 10, // Mark as trending if more than 10 completions
+        trending: completions > 10,
       })
       .onConflictDoUpdate({
         target: videoStats.videoId,
@@ -543,7 +543,6 @@ async function updateVideoStats(videoId: string) {
           totalViews,
           uniqueViewers: totalViews,
           completionCount: completions,
-          averageWatchTime: Math.round(Number(stats.avgWatchTime) || 0),
           completionRate,
           totalReactions: reactionCount[0]?.count || 0,
           totalComments: commentCount[0]?.count || 0,

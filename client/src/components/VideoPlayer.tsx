@@ -310,7 +310,7 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
           </div>
 
           {/* Comments Sidebar - Mobile Responsive */}
-          <div className={`${showComments ? 'block' : 'hidden'} lg:block w-full lg:w-80 border-t lg:border-t-0 lg:border-l border-zinc-700 flex flex-col max-h-96 lg:max-h-none`}>
+          <div className={`${showComments ? 'block' : 'hidden'} lg:block w-full lg:w-80 border-t lg:border-t-0 lg:border-l border-zinc-700 flex flex-col max-h-[50vh] lg:max-h-full`}>
             <div className="p-4 border-b border-zinc-700">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-medium">Discussion</h3>
@@ -351,8 +351,8 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
               </Button>
             </div>
 
-            {/* Comments List */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {/* Comments List - Scrollable */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
               {comments?.map((comment) => (
                 <Card key={comment.id} className="bg-zinc-800/30 border-zinc-700">
                   <CardContent className="p-3">
