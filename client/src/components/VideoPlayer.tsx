@@ -74,7 +74,7 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
   // Track video progress
   const trackProgressMutation = useMutation({
     mutationFn: async (progressData: { videoId: string; progress: number; completed: boolean }) => {
-      return apiRequest('/api/videos/progress', 'POST', progressData);
+      return apiRequest('POST', '/api/videos/progress', progressData);
     },
     onSuccess: (data: any) => {
       if (data?.rewardEarned > 0) {
@@ -92,7 +92,7 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
   // Add reaction
   const addReactionMutation = useMutation({
     mutationFn: async (reactionType: string) => {
-      return apiRequest('/api/videos/reactions', 'POST', { videoId, reactionType });
+      return apiRequest('POST', '/api/videos/reactions', { videoId, reactionType });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/videos/${videoId}/reactions`] });
@@ -103,7 +103,7 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
   // Add comment
   const addCommentMutation = useMutation({
     mutationFn: async (commentData: { content: string; timestamp?: number }) => {
-      return apiRequest('/api/videos/comments', 'POST', { videoId, ...commentData });
+      return apiRequest('POST', '/api/videos/comments', { videoId, ...commentData });
     },
     onSuccess: () => {
       setNewComment('');
@@ -119,7 +119,7 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
   // Like comment
   const likeCommentMutation = useMutation({
     mutationFn: async (commentId: number) => {
-      return apiRequest('/api/videos/comments/like', 'POST', { commentId });
+      return apiRequest('POST', '/api/videos/comments/like', { commentId });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/videos/${videoId}/comments`] });
