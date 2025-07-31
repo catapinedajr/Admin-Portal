@@ -295,7 +295,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteSession(sessionId: string): Promise<void> {
     try {
-      await db.delete(sessions).where(eq(sessions.id, sessionId));
+      await db.delete(userSessions).where(eq(userSessions.id, sessionId));
       console.log(`Session ${sessionId} deleted successfully`);
     } catch (error) {
       console.error("Error deleting session:", error);
@@ -304,7 +304,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async cleanupExpiredSessions(): Promise<void> {
-    await db.delete(sessions).where(sql`${sessions.expiresAt} < NOW()`);
+    await db.delete(userSessions).where(sql`${userSessions.expiresAt} < NOW()`);
   }
 
   // Password reset methods
@@ -362,7 +362,7 @@ export class DatabaseStorage implements IStorage {
     return result;
   }
 
-  async updateContentDayApproval(dayIndex: number, isApproved: boolean | null): Promise<ContentDay | undefined> {
+  async updateContentDayApproval(dayIndex: number, isApproved: boolean): Promise<ContentDay | undefined> {
     const [result] = await db.update(contentDays)
       .set({ isApproved, updatedAt: new Date() })
       .where(eq(contentDays.dayIndex, dayIndex))
@@ -401,7 +401,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createContentLesson(lesson: InsertContentLesson): Promise<ContentLesson> {
-    const [result] = await db.insert(contentLessons).values([lesson]).returning();
+    const [result] = await db.insert(contentLessons).values(lesson as any).returning();
     return result;
   }
 
@@ -418,7 +418,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createContentQuiz(quiz: InsertContentQuiz): Promise<ContentQuiz> {
-    const [result] = await db.insert(contentQuizzes).values([quiz]).returning();
+    const [result] = await db.insert(contentQuizzes).values(quiz as any).returning();
     return result;
   }
 
@@ -947,7 +947,7 @@ export class DatabaseStorage implements IStorage {
       bestStreak,
       totalDaysCompleted,
       totalQuizScore,
-      joinDate: user.createdAt || new Date().toISOString()
+      joinDate: user.createdAt ? user.createdAt.toISOString() : new Date().toISOString()
     };
   }
 
@@ -957,8 +957,7 @@ export class DatabaseStorage implements IStorage {
       .update(users)
       .set({
         username: data.username,
-        email: data.email,
-        updatedAt: new Date()
+        email: data.email
       })
       .where(eq(users.id, userId))
       .returning();
@@ -987,8 +986,7 @@ export class DatabaseStorage implements IStorage {
     await db
       .update(users)
       .set({
-        passwordHash: hashedPassword,
-        updatedAt: new Date()
+        passwordHash: hashedPassword
       })
       .where(eq(users.id, userId));
 
