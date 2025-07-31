@@ -8,10 +8,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import DailyQuiz from "@/components/DailyQuiz";
-import { BitcoinTerm, AutoGlossary } from "@/components/BitcoinGlossary";
 import { useAppContext } from "@/components/shared/AppContextProvider";
 import { cleanText } from "@/utils/textUtils";
-import { iconMap, bitcoinTerms } from "@/constants/appData";
+import { iconMap } from "@/constants/appData";
 import { queryClient } from "@/lib/queryClient";
 import HODLearnCard from "@/components/HODLearnCard";
 import { PWAInstallButton } from "@/components/PWAInstallButton";
@@ -173,31 +172,10 @@ function LearnPage() {
 
   return (
     <div className="space-y-6 pb-24">
-      {/* Learn Sub-navigation */}
-      <div className="flex justify-center">
-        <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2">
-          <Button
-            variant={learnSubTab === "today" ? "secondary" : "ghost"}
-            size="sm"
-            onClick={() => setLearnSubTab("today")}
-            className="text-xs px-3 py-1"
-          >
-            Today
-          </Button>
 
-          <Button
-            variant={learnSubTab === "reference" ? "secondary" : "ghost"}
-            size="sm"
-            onClick={() => setLearnSubTab("reference")}
-            className="text-xs px-3 py-1"
-          >
-            Reference
-          </Button>
-        </div>
-      </div>
 
       {/* Today's Learning */}
-      {learnSubTab === "today" && (
+      {(
         <div className="space-y-4">
           <div className="text-center space-y-3">
             {/* Streamlined Header with Better Hierarchy */}
@@ -513,38 +491,7 @@ function LearnPage() {
         </div>
       )}
 
-      {/* Reference Tab */}
-      {learnSubTab === "reference" && (
-        <div className="space-y-6">
-          <div className="text-center space-y-2">
-            <h3 className="text-xl font-bold text-white">Bitcoin Reference Guide</h3>
-            <p className="text-zinc-400 max-w-2xl mx-auto">
-              Essential Bitcoin terminology and concepts. Click on any term to learn more.
-            </p>
-          </div>
 
-          <Card className="bg-black hover:bg-zinc-800/50 border border-zinc-700/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group">
-            <CardHeader>
-              <CardTitle className="text-lg text-white">Bitcoin Glossary</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {bitcoinTerms.map((termData) => (
-                  <div key={termData.term} className="p-3 bg-black hover:bg-zinc-800/50 rounded-lg border border-zinc-700/50 hover:border-orange-500/30 hover:scale-[1.01] transition-all duration-300 cursor-pointer group">
-                    <div className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0 group-hover:animate-pulse"></div>
-                      <div>
-                        <h4 className="text-orange-400 font-medium mb-1">{termData.term}</h4>
-                        <p className="text-zinc-300 text-sm leading-relaxed">{termData.definition}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
     </div>
   );
 }
