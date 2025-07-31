@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MessageCircle, Share } from 'lucide-react';
+import { MessageCircle, Share, Heart } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Textarea } from '@/components/ui/textarea';
 import { formatDistanceToNow } from 'date-fns';
 import type { ForumPostWithStats } from '@shared/schema';
 
 interface ForumPostProps {
   post: ForumPostWithStats;
-  onReply: (postId: number) => void;
+  onReply: (postId: number, content: string) => void;
+  onLike: (postId: number) => void;
   compact?: boolean;
 }
 
-export function ForumPost({ post, onReply, compact = false }: ForumPostProps) {
+export function ForumPost({ post, onReply, onLike, compact = false }: ForumPostProps) {
   const [isExpanded, setIsExpanded] = useState(!compact);
+  const [showReplyForm, setShowReplyForm] = useState(false);
+  const [replyContent, setReplyContent] = useState('');
   
   return (
     <Card className="bg-black border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:scale-[1.02] transition-all duration-300 group">
@@ -64,12 +68,28 @@ export function ForumPost({ post, onReply, compact = false }: ForumPostProps) {
             <Button
               variant="ghost"
               size="sm"
+              className={`transition-colors h-10 px-3 touch-manipulation ${
+                post.userVote?.voteType === 'upvote' 
+                  ? 'text-red-400 hover:text-red-300 bg-red-500/10' 
+                  : 'text-zinc-400 hover:text-red-400 hover:bg-red-500/10'
+              }`}
+              onClick={() => onLike(post.id)}
+            >
+              <Heart className={`h-5 w-5 mr-2 ${post.userVote?.voteType === 'upvote' ? 'fill-current' : ''}`} />
+              <span className="text-sm font-medium">
+                {post.karma || 0} {post.karma === 1 ? 'like' : 'likes'}
+              </span>
+            </Button>
+            
+            <Button
+              variant="ghost"
+              size="sm"
               className="text-zinc-400 hover:text-orange-400 hover:bg-orange-500/10 transition-colors h-10 px-3 touch-manipulation"
-              onClick={() => onReply(post.id)}
+              onClick={() => setShowReplyForm(!showReplyForm)}
             >
               <MessageCircle className="h-5 w-5 mr-2" />
               <span className="text-sm font-medium">
-                {post.replyCount} {post.replyCount === 1 ? 'reply' : 'replies'}
+                {showReplyForm ? 'Cancel' : 'Reply'}
               </span>
             </Button>
             
@@ -92,9 +112,46 @@ export function ForumPost({ post, onReply, compact = false }: ForumPostProps) {
                 <span className="text-sm">Read more</span>
               </Button>
             )}
-            
-
           </div>
+          
+          {/* Inline reply form */}
+          {showReplyForm && (
+            <div className="mt-4 p-4 bg-zinc-800/30 rounded-lg border border-zinc-700/50">
+              <Textarea
+                placeholder="Write your reply..."
+                value={replyContent}
+                onChange={(e) => setReplyContent(e.target.value)}
+                className="mb-3 bg-zinc-800 border-zinc-600 text-white placeholder-zinc-400 min-h-[100px] resize-none"
+              />
+              <div className="flex gap-2 justify-end">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setShowReplyForm(false);
+                    setReplyContent('');
+                  }}
+                  className="text-zinc-400 hover:text-zinc-300"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    if (replyContent.trim()) {
+                      onReply(post.id, replyContent.trim());
+                      setReplyContent('');
+                      setShowReplyForm(false);
+                    }
+                  }}
+                  disabled={!replyContent.trim()}
+                  className="bg-orange-500 hover:bg-orange-600 text-white"
+                >
+                  Reply
+                </Button>
+              </div>
+            </div>
+          )}
           
 
         </div>
