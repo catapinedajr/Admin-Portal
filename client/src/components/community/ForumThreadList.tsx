@@ -12,7 +12,9 @@ interface ForumThreadListProps {
   category: ForumCategory;
   posts: ForumPostWithStats[];
   onBack: () => void;
-  onReply: (postId: number) => void;
+  onPostClick: (post: ForumPostWithStats) => void;
+  onLike: (postId: number) => void;
+  onReply: (postId: number, content: string) => void;
   onCreatePost: (post: { title: string; content: string; categoryId: number; dayIndex?: number }) => void;
   onSortChange: (sortBy: string) => void;
   currentSort: string;
@@ -22,6 +24,8 @@ export function ForumThreadList({
   category, 
   posts, 
   onBack, 
+  onPostClick,
+  onLike,
   onReply, 
   onCreatePost,
   onSortChange,
@@ -88,12 +92,14 @@ export function ForumThreadList({
           </h3>
           <div className="space-y-3">
             {currentDayPosts.map((post) => (
-              <ForumPost
-                key={post.id}
-                post={post}
-                onReply={onReply}
-                compact={true}
-              />
+              <div key={post.id} onClick={() => onPostClick(post)} className="cursor-pointer">
+                <ForumPost
+                  post={post}
+                  onLike={onLike}
+                  onReply={onReply}
+                  compact={true}
+                />
+              </div>
             ))}
           </div>
         </Card>
@@ -132,24 +138,28 @@ export function ForumThreadList({
                   Other Days - {otherPosts.length} discussions
                 </h3>
                 {otherPosts.map((post) => (
-                  <ForumPost
-                    key={post.id}
-                    post={post}
-                    onReply={onReply}
-                    compact={true}
-                  />
+                  <div key={post.id} onClick={() => onPostClick(post)} className="cursor-pointer">
+                    <ForumPost
+                      post={post}
+                      onLike={onLike}
+                      onReply={onReply}
+                      compact={true}
+                    />
+                  </div>
                 ))}
               </>
             )}
             
             {!isDailyLessonsCategory && posts.length > 0 && (
               posts.map((post) => (
-                <ForumPost
-                  key={post.id}
-                  post={post}
-                  onReply={onReply}
-                  compact={true}
-                />
+                <div key={post.id} onClick={() => onPostClick(post)} className="cursor-pointer">
+                  <ForumPost
+                    post={post}
+                    onLike={onLike}
+                    onReply={onReply}
+                    compact={true}
+                  />
+                </div>
               ))
             )}
             

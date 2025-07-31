@@ -8,6 +8,7 @@ import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { ForumCategoryList } from "@/components/community/ForumCategoryList";
 import { ForumThreadList } from "@/components/community/ForumThreadList";
+import { PostDetailView } from "@/components/community/PostDetailView";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { ForumCategory, ForumPostWithStats } from '@shared/schema';
 
@@ -277,6 +278,7 @@ function CommunityOverview({ setActiveTab }: { setActiveTab: (tab: CommunitySubT
 
 function ForumsSection() {
   const [selectedCategory, setSelectedCategory] = useState<ForumCategory | null>(null);
+  const [selectedPost, setSelectedPost] = useState<ForumPostWithStats | null>(null);
   const [sortBy, setSortBy] = useState('new');
   const queryClient = useQueryClient();
 
@@ -338,15 +340,31 @@ function ForumsSection() {
 
 
 
-  const handleReply = (postId: number) => {
-    // Create a simple reply - for now, we'll prompt for content
-    const replyContent = prompt('Enter your reply:');
-    if (replyContent && replyContent.trim()) {
-      replyMutation.mutate({ 
-        postId, 
-        content: replyContent.trim() 
+  // Like mutation (using existing vote system as like)
+  const likeMutation = useMutation({
+    mutationFn: async (postId: number) => {
+      const response = await fetch(`/api/community/forum-posts/${postId}/vote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ voteType: 'upvote' })
       });
+      if (!response.ok) throw new Error('Failed to like post');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/community/forum-posts'] });
     }
+  });
+
+  const handleLike = (postId: number) => {
+    likeMutation.mutate(postId);
+  };
+
+  const handleReply = (postId: number, content: string) => {
+    replyMutation.mutate({ 
+      postId, 
+      content 
+    });
   };
 
   const handleCreatePost = (postData: { title: string; content: string; categoryId: number; dayIndex?: number }) => {
@@ -361,12 +379,37 @@ function ForumsSection() {
   };
 
   const handleBack = () => {
-    setSelectedCategory(null);
+    if (selectedPost) {
+      setSelectedPost(null); // Go back to post list
+    } else {
+      setSelectedCategory(null); // Go back to subject list
+    }
+  };
+
+  const handlePostClick = (post: ForumPostWithStats) => {
+    setSelectedPost(post);
   };
 
   const handleSortChange = (newSort: string) => {
     setSortBy(newSort);
   };
+
+  // Three-tier navigation
+  if (selectedPost) {
+    return (
+      <div className="min-h-screen bg-zinc-900">
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <PostDetailView
+            post={selectedPost}
+            discussions={[]} // TODO: Fetch actual discussions
+            onBack={handleBack}
+            onLike={handleLike}
+            onReply={handleReply}
+          />
+        </div>
+      </div>
+    );
+  }
 
   if (selectedCategory) {
     return (
@@ -374,6 +417,8 @@ function ForumsSection() {
         category={selectedCategory}
         posts={posts}
         onBack={handleBack}
+        onPostClick={handlePostClick}
+        onLike={handleLike}
         onReply={handleReply}
         onCreatePost={handleCreatePost}
         onSortChange={handleSortChange}
