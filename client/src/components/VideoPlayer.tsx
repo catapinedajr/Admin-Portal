@@ -52,15 +52,7 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { setPipVideo, expandedVideo, setExpandedVideo } = usePipVideo();
-
-  // Handle expanded video from PIP
-  useEffect(() => {
-    if (expandedVideo && expandedVideo.videoId === videoId) {
-      // Video was expanded from PIP - keep it open
-      setExpandedVideo(null); // Clear the expanded state
-    }
-  }, [expandedVideo, videoId, setExpandedVideo]);
+  const { setPipVideo } = usePipVideo();
 
   // Fetch video stats
   const { data: stats } = useQuery<VideoStats>({
@@ -180,7 +172,6 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
   };
 
   const togglePip = () => {
-    // Don't try to calculate time - let YouTube handle continuity
     // Set up global PIP video
     setPipVideo({
       videoId,
@@ -189,10 +180,6 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
       duration,
       note,
       progress,
-      currentTime: 0, // Let YouTube handle the position
-      onExpand: () => {
-        // This will be handled by the global PIP context
-      },
       onClose: () => {
         onClose();
       }
