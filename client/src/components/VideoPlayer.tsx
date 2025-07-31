@@ -212,18 +212,18 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl h-[90vh] bg-zinc-900 border-zinc-700 p-0 overflow-hidden">
-        <div className="flex h-full">
+      <DialogContent className="max-w-6xl w-[95vw] max-h-[95vh] h-auto lg:h-[90vh] bg-zinc-900 border-zinc-700 p-0 overflow-hidden">
+        <div className="flex flex-col lg:flex-row h-full">
           {/* Video Section */}
-          <div className="flex-1">
-            <DialogHeader className="p-4 border-b border-zinc-700">
-              <div className="flex items-center justify-between">
-                <div>
-                  <DialogTitle className="text-xl">{title}</DialogTitle>
+          <div className="flex-1 flex flex-col">
+            <DialogHeader className="p-3 lg:p-4 border-b border-zinc-700">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <DialogTitle className="text-lg lg:text-xl line-clamp-2">{title}</DialogTitle>
                   <p className="text-zinc-400 text-sm">{creator} • {duration}</p>
                 </div>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="ghost" onClick={togglePip}>
+                <div className="flex gap-1 lg:gap-2 flex-shrink-0">
+                  <Button size="sm" variant="ghost" onClick={togglePip} className="hidden lg:flex">
                     <PictureInPicture className="w-4 h-4" />
                   </Button>
                   <Button size="sm" variant="ghost" onClick={onClose}>
@@ -234,7 +234,7 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
             </DialogHeader>
 
             {/* Video Player */}
-            <div className="aspect-video bg-black">
+            <div className="aspect-video bg-black flex-shrink-0">
               <iframe
                 ref={iframeRef}
                 src={`https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0`}
@@ -245,15 +245,16 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
               />
             </div>
 
-            {/* Progress & Reactions */}
-            <div className="p-4 border-b border-zinc-700">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-4 mb-2">
-                    <span className="text-sm text-zinc-400">Progress: {Math.round(progress)}%</span>
-                    {isCompleted && <span className="text-green-400 text-sm">✅ Completed</span>}
+            {/* Progress & Reactions - Mobile Optimized */}
+            <div className="p-3 lg:p-4 border-b border-zinc-700">
+              <div className="flex flex-col gap-3">
+                {/* Progress */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-zinc-400">Progress: {Math.round(progress)}%</span>
+                    {isCompleted && <span className="text-green-400">✅ Completed</span>}
                     {rewardEarned > 0 && (
-                      <span className="text-orange-400 text-sm">⚡ +{rewardEarned} sats</span>
+                      <span className="text-orange-400">⚡ +{rewardEarned} sats</span>
                     )}
                   </div>
                   <div className="w-full bg-zinc-700 rounded-full h-2">
@@ -263,37 +264,50 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
                     />
                   </div>
                 </div>
-              </div>
 
-              {/* Reactions */}
-              <div className="flex items-center gap-4">
-                {reactions?.map((reaction) => {
-                  const ReactionIcon = reactionIcons[reaction.type].icon;
-                  return (
-                    <Button
-                      key={reaction.type}
-                      size="sm"
-                      variant={reaction.userReacted ? "secondary" : "ghost"}
-                      onClick={() => handleReaction(reaction.type)}
-                      className="flex items-center gap-2"
-                    >
-                      <ReactionIcon className={`w-4 h-4 ${reactionIcons[reaction.type].color}`} />
-                      <span>{reaction.count}</span>
-                    </Button>
-                  );
-                })}
+                {/* Reactions - Mobile Grid */}
+                <div className="grid grid-cols-4 gap-2">
+                  {reactions?.map((reaction) => {
+                    const ReactionIcon = reactionIcons[reaction.type].icon;
+                    return (
+                      <Button
+                        key={reaction.type}
+                        size="sm"
+                        variant={reaction.userReacted ? "secondary" : "ghost"}
+                        onClick={() => handleReaction(reaction.type)}
+                        className="flex flex-col items-center gap-1 h-auto py-2 px-1"
+                      >
+                        <ReactionIcon className={`w-4 h-4 ${reactionIcons[reaction.type].color}`} />
+                        <span className="text-xs">{reaction.count}</span>
+                      </Button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
-            {/* Personal Note */}
-            <div className="p-4 bg-zinc-800/50 border-b border-zinc-700">
+            {/* Personal Note - Mobile Optimized */}
+            <div className="p-3 lg:p-4 bg-zinc-800/50 border-b border-zinc-700 lg:border-b-0">
               <h4 className="text-sm font-medium mb-2">Why I chose this video:</h4>
               <p className="text-sm text-zinc-300 italic">"{note}"</p>
             </div>
+
+            {/* Comments Toggle for Mobile */}
+            <div className="lg:hidden p-3 border-b border-zinc-700">
+              <Button
+                onClick={() => setShowComments(!showComments)}
+                variant="outline"
+                className="w-full flex items-center justify-center gap-2"
+              >
+                <MessageCircle className="w-4 h-4" />
+                {showComments ? 'Hide Comments' : 'Show Comments'}
+                {stats && <span className="text-zinc-400">({stats.totalComments})</span>}
+              </Button>
+            </div>
           </div>
 
-          {/* Comments Sidebar */}
-          <div className="w-80 border-l border-zinc-700 flex flex-col">
+          {/* Comments Sidebar - Mobile Responsive */}
+          <div className={`${showComments ? 'block' : 'hidden'} lg:block w-full lg:w-80 border-t lg:border-t-0 lg:border-l border-zinc-700 flex flex-col max-h-96 lg:max-h-none`}>
             <div className="p-4 border-b border-zinc-700">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-medium">Discussion</h3>

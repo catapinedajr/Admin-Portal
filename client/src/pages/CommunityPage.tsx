@@ -8,6 +8,7 @@ import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { VideoPlayer } from '@/components/VideoPlayer';
+import { Play } from 'lucide-react';
 
 type CommunitySubTab = "daily" | "reddit" | "videos" | "stories";
 
@@ -536,35 +537,48 @@ function VideosSection() {
         {/* Video Grid */}
         <div className="grid md:grid-cols-2 gap-4">
           {videoCategories[activeCategory].videos.map((video, index) => (
-            <Card key={index} className="bg-zinc-800/30 border-zinc-700 hover:border-orange-500/30 hover:bg-zinc-800/50 transition-all duration-300 cursor-pointer group">
-              <CardContent className="p-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Video className="w-6 h-6 text-orange-500" />
+            <Card key={index} className="bg-zinc-900/50 border-zinc-800 hover:border-orange-500/30 transition-all duration-300 group cursor-pointer overflow-hidden"
+              onClick={() => setSelectedVideo({
+                id: video.videoId,
+                title: video.title,
+                creator: video.creator,
+                duration: video.duration,
+                note: video.note
+              })}>
+              <CardContent className="p-0">
+                {/* Video Thumbnail */}
+                <div className="relative aspect-video w-full overflow-hidden">
+                  <img 
+                    src={`https://img.youtube.com/vi/${video.videoId}/maxresdefault.jpg`}
+                    alt={video.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    onError={(e) => {
+                      // Fallback to medium quality thumbnail if maxres doesn't exist
+                      const target = e.target as HTMLImageElement;
+                      target.src = `https://img.youtube.com/vi/${video.videoId}/mqdefault.jpg`;
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300" />
+                  <div className="absolute top-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">
+                    {video.duration}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-white group-hover:text-orange-400 transition-colors mb-1 line-clamp-2">
-                      {video.title}
-                    </h4>
-                    <p className="text-zinc-400 text-sm mb-2">
-                      {video.creator} • {video.duration}
-                    </p>
-                    <div className="bg-zinc-900/50 p-2 rounded text-xs text-zinc-300 italic mb-3">
-                      "{video.note}"
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-12 h-12 bg-orange-500/90 hover:bg-orange-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                      <Play className="w-5 h-5 text-white ml-0.5" />
                     </div>
-                    <Button 
-                      onClick={() => setSelectedVideo({
-                        id: video.videoId,
-                        title: video.title,
-                        creator: video.creator,
-                        duration: video.duration,
-                        note: video.note
-                      })}
-                      size="sm"
-                      className="bg-orange-500/20 hover:bg-orange-500 text-orange-400 hover:text-white border border-orange-500/30 hover:border-orange-500 text-xs px-3 py-1"
-                    >
-                      Watch Video
-                    </Button>
+                  </div>
+                </div>
+                
+                {/* Video Details */}
+                <div className="p-4">
+                  <h4 className="font-semibold text-white mb-2 group-hover:text-orange-400 transition-colors line-clamp-2">
+                    {video.title}
+                  </h4>
+                  <p className="text-sm text-zinc-400 mb-3">
+                    by {video.creator}
+                  </p>
+                  <div className="bg-zinc-900/50 p-2 rounded text-xs text-zinc-300 italic">
+                    "{video.note}"
                   </div>
                 </div>
               </CardContent>
