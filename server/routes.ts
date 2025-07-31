@@ -2274,7 +2274,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   registerWalletRoutes(app, requireAuth);
   
   // Register video routes
-  registerVideoRoutes(app, requireAuth);
+  registerVideoRoutes(app, setDefaultUser);
 
   // CONTENT VALIDATION PROTECTION ROUTES
   // Add new day content (with framework validation)
