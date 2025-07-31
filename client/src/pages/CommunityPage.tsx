@@ -302,21 +302,7 @@ function ForumsSection() {
     enabled: !!selectedCategory
   });
 
-  // Vote mutation
-  const voteMutation = useMutation({
-    mutationFn: async ({ postId, voteType }: { postId: number; voteType: 'upvote' | 'downvote' }) => {
-      const response = await fetch(`/api/community/forum-posts/${postId}/vote`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ voteType })
-      });
-      if (!response.ok) throw new Error('Failed to vote');
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/community/forum-posts'] });
-    }
-  });
+
 
   // Create post mutation
   const createPostMutation = useMutation({
@@ -350,9 +336,7 @@ function ForumsSection() {
     }
   });
 
-  const handleVote = (postId: number, voteType: 'upvote' | 'downvote') => {
-    voteMutation.mutate({ postId, voteType });
-  };
+
 
   const handleReply = (postId: number) => {
     // Create a simple reply - for now, we'll prompt for content
@@ -390,7 +374,6 @@ function ForumsSection() {
         category={selectedCategory}
         posts={posts}
         onBack={handleBack}
-        onVote={handleVote}
         onReply={handleReply}
         onCreatePost={handleCreatePost}
         onSortChange={handleSortChange}

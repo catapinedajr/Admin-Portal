@@ -1,68 +1,23 @@
 import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ChevronUp, ChevronDown, MessageCircle, Share, MoreHorizontal } from 'lucide-react';
+import { MessageCircle, Share } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { formatDistanceToNow } from 'date-fns';
 import type { ForumPostWithStats } from '@shared/schema';
 
 interface ForumPostProps {
   post: ForumPostWithStats;
-  onVote: (postId: number, voteType: 'upvote' | 'downvote') => void;
   onReply: (postId: number) => void;
   compact?: boolean;
 }
 
-export function ForumPost({ post, onVote, onReply, compact = false }: ForumPostProps) {
+export function ForumPost({ post, onReply, compact = false }: ForumPostProps) {
   const [isExpanded, setIsExpanded] = useState(!compact);
-  
-  const handleVote = (voteType: 'upvote' | 'downvote') => {
-    onVote(post.id, voteType);
-  };
-  
-  const isUpvoted = post.userVote?.voteType === 'upvote';
-  const isDownvoted = post.userVote?.voteType === 'downvote';
   
   return (
     <Card className="bg-black border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:scale-[1.02] transition-all duration-300 group">
-      <div className="flex gap-4 p-4 sm:p-6">
-        {/* iPhone-optimized voting column */}
-        <div className="flex flex-col items-center gap-2 min-w-[48px]">
-          <Button
-            variant="ghost"
-            size="sm"
-            className={`h-10 w-10 p-0 touch-manipulation ${
-              isUpvoted 
-                ? 'text-orange-500 hover:text-orange-400 bg-orange-500/10' 
-                : 'text-zinc-400 hover:text-orange-500 hover:bg-orange-500/10'
-            }`}
-            onClick={() => handleVote('upvote')}
-          >
-            <ChevronUp className="h-6 w-6" />
-          </Button>
-          
-          <span className={`text-base font-bold ${
-            post.karma > 0 ? 'text-orange-500' : 
-            post.karma < 0 ? 'text-red-500' : 
-            'text-zinc-400'
-          }`}>
-            {post.karma}
-          </span>
-          
-          <Button
-            variant="ghost"
-            size="sm"
-            className={`h-10 w-10 p-0 touch-manipulation ${
-              isDownvoted 
-                ? 'text-red-500 hover:text-red-400 bg-red-500/10' 
-                : 'text-zinc-400 hover:text-red-500 hover:bg-red-500/10'
-            }`}
-            onClick={() => handleVote('downvote')}
-          >
-            <ChevronDown className="h-6 w-6" />
-          </Button>
-        </div>
-        
+      <div className="p-4 sm:p-6">
         {/* Post content */}
         <div className="flex-1 min-w-0">
           {/* iPhone-optimized post header */}
@@ -138,13 +93,7 @@ export function ForumPost({ post, onVote, onReply, compact = false }: ForumPostP
               </Button>
             )}
             
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-zinc-400 hover:text-orange-400 hover:bg-orange-500/10 transition-colors h-10 w-10 p-0 ml-auto touch-manipulation"
-            >
-              <MoreHorizontal className="h-5 w-5" />
-            </Button>
+
           </div>
           
 

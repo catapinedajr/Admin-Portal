@@ -12,7 +12,6 @@ interface ForumThreadListProps {
   category: ForumCategory;
   posts: ForumPostWithStats[];
   onBack: () => void;
-  onVote: (postId: number, voteType: 'upvote' | 'downvote') => void;
   onReply: (postId: number) => void;
   onCreatePost: (post: { title: string; content: string; categoryId: number; dayIndex?: number }) => void;
   onSortChange: (sortBy: string) => void;
@@ -23,7 +22,6 @@ export function ForumThreadList({
   category, 
   posts, 
   onBack, 
-  onVote, 
   onReply, 
   onCreatePost,
   onSortChange,
@@ -93,7 +91,6 @@ export function ForumThreadList({
               <ForumPost
                 key={post.id}
                 post={post}
-                onVote={onVote}
                 onReply={onReply}
                 compact={true}
               />
@@ -138,7 +135,6 @@ export function ForumThreadList({
                   <ForumPost
                     key={post.id}
                     post={post}
-                    onVote={onVote}
                     onReply={onReply}
                     compact={true}
                   />
@@ -151,7 +147,6 @@ export function ForumThreadList({
                 <ForumPost
                   key={post.id}
                   post={post}
-                  onVote={onVote}
                   onReply={onReply}
                   compact={true}
                 />
