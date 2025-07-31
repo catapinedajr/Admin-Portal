@@ -22,6 +22,8 @@ export class AuthService {
         email: userData.email,
         firstName: userData.firstName,
         lastName: userData.lastName,
+        termsAcceptedAt: new Date(),
+        termsVersion: "1.0",
       })
       .returning();
 

@@ -21,6 +21,9 @@ const registerSchema = z.object({
   email: z.string().email('Valid email is required for account recovery'),
   firstName: z.string().min(1, 'First name is required').max(50),
   lastName: z.string().min(1, 'Last name is required').max(50),
+  acceptedTerms: z.boolean().refine(val => val === true, {
+    message: 'You must accept the Terms of Service and Privacy Policy to create an account'
+  }),
 });
 
 const forgotPasswordSchema = z.object({
@@ -82,6 +85,7 @@ export function AuthPage() {
       email: '',
       firstName: '',
       lastName: '',
+      acceptedTerms: false,
     },
     mode: 'onChange',
   });
@@ -378,11 +382,11 @@ export function AuthPage() {
 
                     <div>
                       <label className="block text-sm font-medium text-zinc-300 mb-1">
-                        Username
+                        Username / Community Alias
                       </label>
                       <input
                         type="text"
-                        placeholder="Choose a username"
+                        placeholder="Choose a username for community forums"
                         value={registerForm.watch('username')}
                         onChange={(e) => registerForm.setValue('username', e.target.value)}
                         className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-zinc-200 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -393,6 +397,9 @@ export function AuthPage() {
                           {registerForm.formState.errors.username.message}
                         </p>
                       )}
+                      <p className="mt-1 text-xs text-zinc-400">
+                        This will be your public alias in community discussions
+                      </p>
                     </div>
 
                     <div>
@@ -434,6 +441,42 @@ export function AuthPage() {
                       <p className="mt-1 text-xs text-zinc-400">
                         Required for password recovery
                       </p>
+                    </div>
+
+                    {/* Terms and Conditions */}
+                    <div className="space-y-3">
+                      <div className="flex items-start space-x-3">
+                        <input
+                          type="checkbox"
+                          id="acceptedTerms"
+                          checked={registerForm.watch('acceptedTerms')}
+                          onChange={(e) => registerForm.setValue('acceptedTerms', e.target.checked)}
+                          className="mt-1 h-4 w-4 text-orange-500 focus:ring-orange-500 border-zinc-600 rounded bg-zinc-700"
+                        />
+                        <label htmlFor="acceptedTerms" className="text-sm text-zinc-300 leading-tight">
+                          I agree to the{' '}
+                          <a 
+                            href="/terms" 
+                            target="_blank" 
+                            className="text-orange-500 hover:text-orange-400 underline"
+                          >
+                            Terms of Service
+                          </a>
+                          {' '}and{' '}
+                          <a 
+                            href="/privacy" 
+                            target="_blank" 
+                            className="text-orange-500 hover:text-orange-400 underline"
+                          >
+                            Privacy Policy
+                          </a>
+                        </label>
+                      </div>
+                      {registerForm.formState.errors.acceptedTerms && (
+                        <p className="text-sm text-red-400 ml-7">
+                          {registerForm.formState.errors.acceptedTerms.message}
+                        </p>
+                      )}
                     </div>
                   </div>
 

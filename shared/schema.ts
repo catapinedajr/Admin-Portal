@@ -13,6 +13,8 @@ export const users = pgTable("users", {
   longestStreak: integer("longest_streak").notNull().default(0),
   completedLessons: integer("completed_lessons").notNull().default(0),
   lastActivityDate: text("last_activity_date"), // YYYY-MM-DD format
+  termsAcceptedAt: timestamp("terms_accepted_at"),
+  termsVersion: text("terms_version").default("1.0"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -403,11 +405,14 @@ export const loginSchema = z.object({
 });
 
 export const registerSchema = z.object({
-  username: z.string().min(3).max(20),
-  password: z.string().min(6).max(100),
-  email: z.string().email(),
-  firstName: z.string().min(1).max(50),
-  lastName: z.string().min(1).max(50),
+  username: z.string().min(3, 'Username must be at least 3 characters').max(20),
+  password: z.string().min(6, 'Password must be at least 6 characters').max(100),
+  email: z.string().email('Valid email is required for account recovery'),
+  firstName: z.string().min(1, 'First name is required').max(50),
+  lastName: z.string().min(1, 'Last name is required').max(50),
+  acceptedTerms: z.boolean().refine(val => val === true, {
+    message: 'You must accept the Terms of Service and Privacy Policy to create an account'
+  }),
 });
 
 export const forgotPasswordSchema = z.object({
