@@ -226,7 +226,7 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
                   <Button size="sm" variant="ghost" onClick={togglePip} className="hidden lg:flex">
                     <PictureInPicture className="w-4 h-4" />
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={onClose}>
+                  <Button size="sm" variant="ghost" onClick={onClose} className="hidden lg:flex">
                     <X className="w-4 h-4" />
                   </Button>
                 </div>
@@ -293,15 +293,18 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
             </div>
 
             {/* Comments Toggle for Mobile */}
-            <div className="lg:hidden p-3 border-b border-zinc-700">
+            <div className="lg:hidden p-3 border-b border-zinc-700 flex gap-2">
               <Button
                 onClick={() => setShowComments(!showComments)}
                 variant="outline"
-                className="w-full flex items-center justify-center gap-2"
+                className="flex-1 flex items-center justify-center gap-2"
               >
                 <MessageCircle className="w-4 h-4" />
                 {showComments ? 'Hide Comments' : 'Show Comments'}
                 {stats && <span className="text-zinc-400">({stats.totalComments})</span>}
+              </Button>
+              <Button size="sm" variant="ghost" onClick={onClose} className="px-3">
+                <X className="w-4 h-4" />
               </Button>
             </div>
           </div>
@@ -311,13 +314,16 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
             <div className="p-4 border-b border-zinc-700">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-medium">Discussion</h3>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => setShowComments(!showComments)}
-                >
-                  <MessageCircle className="w-4 h-4" />
-                </Button>
+                <div className="flex gap-1">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setShowComments(!showComments)}
+                    className="lg:hidden"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                  </Button>
+                </div>
               </div>
               {stats && (
                 <div className="text-xs text-zinc-400 space-y-1">
@@ -341,7 +347,7 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
                 disabled={!newComment.trim() || addCommentMutation.isPending}
                 className="w-full bg-orange-500 hover:bg-orange-600"
               >
-                Add Comment (+25 sats)
+                {addCommentMutation.isPending ? "Posting..." : "Add Comment (+25 sats)"}
               </Button>
             </div>
 
@@ -362,6 +368,7 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
                         size="sm"
                         variant="ghost"
                         onClick={() => likeCommentMutation.mutate(comment.id)}
+                        disabled={likeCommentMutation.isPending}
                         className="h-6 px-2 text-xs"
                       >
                         <Heart className={`w-3 h-3 mr-1 ${comment.userLiked ? 'fill-red-500 text-red-500' : ''}`} />
