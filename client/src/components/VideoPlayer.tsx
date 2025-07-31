@@ -127,36 +127,7 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
     },
   });
 
-  // Simulate progress tracking (in real implementation, this would come from YouTube API)
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const interval = setInterval(() => {
-      setProgress(prev => {
-        const newProgress = Math.min(prev + 1, 100);
-        
-        // Mark as completed at 90% progress
-        if (newProgress >= 90 && !isCompleted) {
-          setIsCompleted(true);
-          trackProgressMutation.mutate({
-            videoId,
-            progress: newProgress,
-            completed: true,
-          });
-        } else if (newProgress > prev) {
-          trackProgressMutation.mutate({
-            videoId,
-            progress: newProgress,
-            completed: false,
-          });
-        }
-        
-        return newProgress;
-      });
-    }, 2000); // Update every 2 seconds for demo
-
-    return () => clearInterval(interval);
-  }, [isOpen, isCompleted, videoId]);
+  // Progress tracking disabled for seamless PIP experience
 
   const handleReaction = (type: string) => {
     addReactionMutation.mutate(type);
@@ -172,7 +143,7 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
   };
 
   const togglePip = () => {
-    // Set up global PIP video
+    // Set up global PIP video without time tracking to avoid restarts
     setPipVideo({
       videoId,
       title,

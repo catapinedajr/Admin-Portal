@@ -10,6 +10,7 @@ interface PipVideoData {
   duration: string;
   note: string;
   progress: number;
+  startTime?: number; // Current playback time when entering PIP
   onClose: () => void;
 }
 
@@ -39,7 +40,7 @@ export function PipProvider({ children }: { children: ReactNode }) {
         <div className="fixed bottom-20 right-4 w-80 h-52 bg-zinc-900 border border-zinc-700 rounded-lg shadow-2xl z-50 overflow-hidden">
           <div className="relative h-32">
             <iframe
-              src={`https://www.youtube.com/embed/${pipVideo.videoId}?autoplay=1&modestbranding=1&rel=0&enablejsapi=1`}
+              src={`https://www.youtube.com/embed/${pipVideo.videoId}?autoplay=1&modestbranding=1&rel=0`}
               className="w-full h-full rounded-t-lg"
               frameBorder="0"
               allowFullScreen
@@ -106,7 +107,7 @@ export function PipProvider({ children }: { children: ReactNode }) {
               </div>
               <div className="flex-1">
                 <iframe
-                  src={`https://www.youtube.com/embed/${expandedVideo.videoId}?autoplay=1&modestbranding=1&rel=0&enablejsapi=1`}
+                  src={`https://www.youtube.com/embed/${expandedVideo.videoId}?autoplay=1&modestbranding=1&rel=0`}
                   className="w-full h-full"
                   frameBorder="0"
                   allowFullScreen
