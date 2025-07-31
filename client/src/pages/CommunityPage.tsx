@@ -334,13 +334,35 @@ function ForumsSection() {
     }
   });
 
+  // Create reply mutation
+  const replyMutation = useMutation({
+    mutationFn: async ({ postId, content }: { postId: number; content: string }) => {
+      const response = await fetch(`/api/community/forum-posts/${postId}/replies`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content })
+      });
+      if (!response.ok) throw new Error('Failed to create reply');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/community/forum-posts'] });
+    }
+  });
+
   const handleVote = (postId: number, voteType: 'upvote' | 'downvote') => {
     voteMutation.mutate({ postId, voteType });
   };
 
   const handleReply = (postId: number) => {
-    // TODO: Implement reply functionality
-    console.log('Reply to post:', postId);
+    // Create a simple reply - for now, we'll prompt for content
+    const replyContent = prompt('Enter your reply:');
+    if (replyContent && replyContent.trim()) {
+      replyMutation.mutate({ 
+        postId, 
+        content: replyContent.trim() 
+      });
+    }
   };
 
   const handleCreatePost = (postData: { title: string; content: string; categoryId: number; dayIndex?: number }) => {
