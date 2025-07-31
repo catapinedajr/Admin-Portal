@@ -244,8 +244,8 @@ export function AuthPage() {
         <div className="text-center mb-12">
           <div className="space-y-3">
             <h1 className="text-4xl md:text-5xl font-bold text-orange-500 mb-6">Welcome</h1>
-            <p className="text-xl md:text-2xl text-zinc-300 font-medium">Learning Bitcoin takes curiosity</p>
-            <p className="text-lg md:text-xl text-zinc-400">Building conviction takes community</p>
+            <p className="text-xl md:text-2xl text-zinc-300 font-medium">Stop wondering about Bitcoin</p>
+            <p className="text-lg md:text-xl text-zinc-400">Start Learning</p>
             <div className="text-center space-y-1 mt-8">
               <p className="text-xl md:text-2xl font-bold text-orange-400">This is</p>
               <p className="text-3xl md:text-4xl font-bold text-orange-400">HODLearn</p>
