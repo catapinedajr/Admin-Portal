@@ -20,6 +20,8 @@ import Onboarding from "@/pages/onboarding";
 import About from "@/pages/about";
 import NotFound from "@/pages/not-found";
 import { AuthPage } from "@/pages/auth";
+import { TermsPage } from "@/pages/terms";
+import { PrivacyPage } from "@/pages/privacy";
 
 // Authentication guard
 function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -118,6 +120,8 @@ function Router() {
       <ScrollToTop />
       <Switch>
         <Route path="/auth" component={AuthPage} />
+        <Route path="/terms" component={TermsPage} />
+        <Route path="/privacy" component={PrivacyPage} />
         <Route path="/onboarding" component={Onboarding} />
         <Route path="/learn" component={LearnPage} />
         <Route path="/money" component={FinancePage} />
