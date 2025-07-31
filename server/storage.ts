@@ -995,6 +995,15 @@ export class DatabaseStorage implements IStorage {
     return true;
   }
 
+  async updateUserPWAInstallation(userId: number): Promise<void> {
+    await db
+      .update(users)
+      .set({
+        pwaInstalledAt: new Date()
+      })
+      .where(eq(users.id, userId));
+  }
+
   // Bitcoin Learning Wallet methods
   async getUserWalletProgress(userId: number): Promise<UserWalletProgress | undefined> {
     const [wallet] = await db.select().from(userWalletProgress).where(eq(userWalletProgress.userId, userId));

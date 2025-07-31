@@ -14,6 +14,7 @@ import { cleanText } from "@/utils/textUtils";
 import { iconMap, bitcoinTerms } from "@/constants/appData";
 import { queryClient } from "@/lib/queryClient";
 import HODLearnCard from "@/components/HODLearnCard";
+import { PWAInstallButton } from "@/components/PWAInstallButton";
 
 // Temporary interface for database-driven lesson content
 interface LessonWithKeyTakeaways {
@@ -578,6 +579,9 @@ function LearnPageWithLayout() {
 
             {/* Header Actions */}
             <div className="flex items-center gap-2">
+              {/* PWA Install Button */}
+              <PWAInstallButton />
+              
               {/* Wallet Button */}
               <Button 
                 onClick={() => setLocation('/wallet')}

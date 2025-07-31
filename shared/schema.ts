@@ -15,6 +15,7 @@ export const users = pgTable("users", {
   lastActivityDate: text("last_activity_date"), // YYYY-MM-DD format
   termsAcceptedAt: timestamp("terms_accepted_at"),
   termsVersion: text("terms_version").default("1.0"),
+  pwaInstalledAt: timestamp("pwa_installed_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

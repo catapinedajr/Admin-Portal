@@ -8,6 +8,7 @@ import BitcoinPriceDisplay from "@/components/BitcoinPriceDisplay";
 import WalletDisplay from "@/components/WalletDisplay";
 import WalletSummaryCard from "@/components/WalletSummaryCard";
 import HomeSection from "@/components/sections/HomeSection";
+import { PWAInstallButton } from "@/components/PWAInstallButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { User } from "@shared/schema";
@@ -82,6 +83,9 @@ export default function HomePage() {
 
             {/* Header Actions */}
             <div className="flex items-center gap-2">
+              {/* PWA Install Button */}
+              <PWAInstallButton />
+              
               {/* Wallet Button */}
               <Button 
                 onClick={() => setLocation('/wallet')}

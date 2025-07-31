@@ -142,6 +142,52 @@ export function registerWalletRoutes(app: Express, requireAuth: any) {
       res.status(500).json({ message: "Failed to get wallet dashboard" });
     }
   });
+
+  // Award PWA installation bonus
+  app.post("/api/wallet/pwa-bonus", setDefaultUser, async (req: any, res) => {
+    try {
+      const currentBitcoinPrice = await getCurrentBitcoinPrice();
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+      
+      // Check if user already received PWA bonus
+      const user = await storage.getUserById(req.user.id);
+      if (user && 'pwaInstalledAt' in user && user.pwaInstalledAt) {
+        return res.status(400).json({ message: "PWA bonus already claimed" });
+      }
+      
+      // Award 10,000 sats bonus
+      const satoshisEarned = 10000;
+      const usdValueAtEarning = (satoshisEarned / 100000000) * currentBitcoinPrice;
+      
+      const earning = await storage.addWalletEarning({
+        userId: req.user.id,
+        dayIndex: 0, // Special indicator for PWA bonus
+        earningType: "streak_bonus", // Use existing type for bonus
+        satoshisEarned,
+        streakMultiplier: "1.00",
+        bitcoinPriceUsd: currentBitcoinPrice.toString(),
+        usdValueAtEarning: usdValueAtEarning.toString(),
+        description: "PWA Installation Bonus",
+        date: today
+      });
+
+      // Update user's pwa_installed_at timestamp
+      await storage.updateUserPWAInstallation(req.user.id);
+
+      // Check for achievements after bonus
+      await checkForAchievements(req.user.id, satoshisEarned);
+
+      res.json({
+        earning,
+        message: "PWA Installation Bonus awarded: +10,000 sats!",
+        usdValue: usdValueAtEarning,
+        satoshisEarned
+      });
+    } catch (error) {
+      console.error("Error awarding PWA bonus:", error);
+      res.status(500).json({ message: "Failed to award PWA bonus" });
+    }
+  });
 }
 
 // Helper function to get current Bitcoin price
