@@ -7,6 +7,7 @@ interface PipVideoData {
   title: string;
   creator: string;
   progress: number;
+  currentTime?: number;
   onExpand: () => void;
   onClose: () => void;
 }
@@ -29,7 +30,7 @@ export function PipProvider({ children }: { children: ReactNode }) {
         <div className="fixed bottom-20 right-4 w-72 h-44 bg-zinc-900 border border-zinc-700 rounded-lg shadow-2xl z-50 overflow-hidden">
           <div className="relative h-28">
             <iframe
-              src={`https://www.youtube.com/embed/${pipVideo.videoId}?autoplay=1&modestbranding=1&rel=0`}
+              src={`https://www.youtube.com/embed/${pipVideo.videoId}?start=${pipVideo.currentTime || 0}&modestbranding=1&rel=0&enablejsapi=1`}
               className="w-full h-full rounded-t-lg"
               frameBorder="0"
               allowFullScreen

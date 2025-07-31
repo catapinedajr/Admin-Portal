@@ -127,36 +127,31 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
     },
   });
 
-  // Simulate progress tracking (in real implementation, this would come from YouTube API)
+  // Realistic progress tracking - manual tracking via user interaction
   useEffect(() => {
     if (!isOpen) return;
 
+    let startTime = Date.now();
     const interval = setInterval(() => {
-      setProgress(prev => {
-        const newProgress = Math.min(prev + 1, 100);
-        
-        // Mark as completed at 90% progress
-        if (newProgress >= 90 && !isCompleted) {
-          setIsCompleted(true);
-          trackProgressMutation.mutate({
-            videoId,
-            progress: newProgress,
-            completed: true,
-          });
-        } else if (newProgress > prev) {
-          trackProgressMutation.mutate({
-            videoId,
-            progress: newProgress,
-            completed: false,
-          });
-        }
-        
-        return newProgress;
-      });
-    }, 2000); // Update every 2 seconds for demo
+      const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+      // Progress based on elapsed time - 8 minutes to complete (typical educational video length)
+      const newProgress = Math.min(Math.floor((elapsedSeconds / 480) * 100), 100);
+      
+      setProgress(newProgress);
+      
+      // Only track completion once when reaching 100%
+      if (newProgress >= 100 && !isCompleted) {
+        setIsCompleted(true);
+        trackProgressMutation.mutate({
+          videoId,
+          progress: 100,
+          completed: true,
+        });
+      }
+    }, 3000); // Check every 3 seconds
 
     return () => clearInterval(interval);
-  }, [isOpen, isCompleted, videoId]);
+  }, [isOpen, videoId, isCompleted, trackProgressMutation]);
 
   const handleReaction = (type: string) => {
     addReactionMutation.mutate(type);
@@ -172,12 +167,16 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
   };
 
   const togglePip = () => {
+    // Calculate current time from progress (assuming video duration)
+    const estimatedCurrentTime = Math.floor((progress / 100) * 600); // Assume 10 min video
+    
     // Set up global PIP video
     setPipVideo({
       videoId,
       title,
       creator,
       progress,
+      currentTime: estimatedCurrentTime,
       onExpand: () => {
         // Reopen the main dialog
         // Already handled by parent component state
@@ -225,7 +224,7 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
             <div className="aspect-video bg-black flex-shrink-0">
               <iframe
                 ref={iframeRef}
-                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0`}
+                src={`https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0&enablejsapi=1`}
                 className="w-full h-full"
                 frameBorder="0"
                 allowFullScreen
@@ -298,7 +297,7 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
           </div>
 
           {/* Comments Sidebar - Mobile Responsive */}
-          <div className={`${showComments ? 'block' : 'hidden'} lg:block w-full lg:w-80 border-t lg:border-t-0 lg:border-l border-zinc-700 flex flex-col h-[60vh] lg:h-full`}>
+          <div className={`${showComments ? 'block' : 'hidden'} lg:block w-full lg:w-80 border-t lg:border-t-0 lg:border-l border-zinc-700 flex flex-col h-[70vh] lg:h-full`}>
             <div className="p-4 border-b border-zinc-700">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-medium">Discussion</h3>
@@ -343,11 +342,13 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
             <div 
               className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-4" 
               style={{
-                maxHeight: 'calc(100vh - 500px)', 
-                minHeight: '300px', 
+                maxHeight: 'calc(100vh - 600px)', 
+                minHeight: '200px', 
                 overscrollBehavior: 'contain', 
                 WebkitOverflowScrolling: 'touch',
-                scrollbarWidth: 'thin'
+                scrollbarWidth: 'thin',
+                transform: 'translateZ(0)', // Force hardware acceleration on iOS
+                touchAction: 'pan-y' // Allow vertical scrolling on mobile
               }}
             >
               {comments?.map((comment) => (
