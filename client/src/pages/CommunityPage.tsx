@@ -173,11 +173,32 @@ function DailyDiscussionSection() {
 
   return (
     <div className="space-y-6">
+      {/* Reddit Community Section */}
+      <Card className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border-orange-500/20">
+        <CardContent className="p-6 text-center">
+          <div className="w-12 h-12 bg-orange-500/20 rounded-full mx-auto mb-4 flex items-center justify-center">
+            <Users className="w-6 h-6 text-orange-500" />
+          </div>
+          <h3 className="text-lg font-semibold mb-2">Join Our Reddit Community</h3>
+          <p className="text-zinc-400 text-sm mb-4">
+            Connect with Bitcoin learners worldwide for deeper discussions, debates, and community support
+          </p>
+          <Button 
+            onClick={() => window.open('#', '_blank')} // Link will be updated when Reddit group is created
+            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2"
+          >
+            <Users className="w-4 h-4 mr-2" />
+            Join Reddit Group
+          </Button>
+          <p className="text-xs text-zinc-500 mt-2">Opens in new tab • Free to join</p>
+        </CardContent>
+      </Card>
+
       {/* Today's Discussion Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold mb-2">Day {currentDay} Discussion</h2>
+        <h2 className="text-2xl font-bold mb-2">Day {currentDay} Quick Reflection</h2>
         <p className="text-zinc-400 text-sm mb-1">{dayMetadata?.title}</p>
-        <p className="text-xs text-zinc-500">Share thoughts, ask questions, help others understand</p>
+        <p className="text-xs text-zinc-500">Quick thoughts on today's lesson</p>
       </div>
 
       {/* Post New Comment */}
