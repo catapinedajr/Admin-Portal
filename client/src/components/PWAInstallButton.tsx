@@ -32,8 +32,20 @@ export function PWAInstallButton() {
     onSuccess: (data) => {
       toast({
         title: '🎉 PWA Installation Bonus!',
-        description: `+10,000 sats added to your wallet!`,
-        duration: 5000,
+        description: (
+          <div className="space-y-2 text-sm leading-relaxed">
+            <div className="text-lg font-bold text-green-400">
+              +10,000 sats added to your wallet!
+            </div>
+            <div className="text-zinc-300">
+              HODLearn is now installed on your home screen.
+            </div>
+            <div className="text-zinc-400">
+              Bonus value: $1.18 at current Bitcoin price
+            </div>
+          </div>
+        ),
+        duration: 8000,
       });
       
       // Invalidate wallet and user data to refresh
@@ -87,8 +99,34 @@ export function PWAInstallButton() {
       // Show detailed manual installation instructions for Safari/unsupported browsers
       toast({
         title: '🎉 Install HODLearn & Earn 10,000 Sats!',
-        description: 'iOS Safari: Tap Share button (box with arrow) → scroll down → "Add to Home Screen" | Chrome/Edge: Tap menu (3 dots) → "Install app" | Get instant 10,000 sats bonus ($1.18 value) added to your wallet when complete!',
-        duration: 15000,
+        description: (
+          <div className="space-y-3 text-sm leading-relaxed">
+            <div>
+              <strong className="text-orange-400">iOS Safari:</strong>
+              <br />
+              1. Tap Share button (box with arrow)
+              <br />
+              2. Scroll down → "Add to Home Screen"
+              <br />
+              3. Tap "Add" to install
+            </div>
+            
+            <div>
+              <strong className="text-orange-400">Chrome/Edge:</strong>
+              <br />
+              1. Tap menu (3 dots)
+              <br />
+              2. Select "Install app"
+              <br />
+              3. Confirm installation
+            </div>
+            
+            <div className="pt-2 border-t border-zinc-600">
+              <strong className="text-green-400">Reward:</strong> Get instant 10,000 sats bonus ($1.18 value) added to your wallet when installation is complete!
+            </div>
+          </div>
+        ),
+        duration: 20000,
       });
       return;
     }
