@@ -8,7 +8,7 @@ import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-type CommunitySubTab = "daily" | "videos" | "stories";
+type CommunitySubTab = "daily" | "reddit" | "videos" | "stories";
 
 export default function CommunityPage() {
   const [, setLocation] = useLocation();
@@ -79,6 +79,15 @@ export default function CommunityPage() {
                 Daily Discussion
               </Button>
               <Button
+                variant={activeTab === "reddit" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setActiveTab("reddit")}
+                className="text-xs px-3 py-1"
+              >
+                <Users className="w-3 h-3 mr-1" />
+                Reddit
+              </Button>
+              <Button
                 variant={activeTab === "videos" ? "secondary" : "ghost"}
                 size="sm"
                 onClick={() => setActiveTab("videos")}
@@ -101,6 +110,7 @@ export default function CommunityPage() {
 
           {/* Content */}
           {activeTab === "daily" && <DailyDiscussionSection />}
+          {activeTab === "reddit" && <RedditSection />}
           {activeTab === "videos" && <VideosSection />}
           {activeTab === "stories" && <StoriesSection />}
         </div>
@@ -173,27 +183,6 @@ function DailyDiscussionSection() {
 
   return (
     <div className="space-y-6">
-      {/* Reddit Community Section */}
-      <Card className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border-orange-500/20">
-        <CardContent className="p-6 text-center">
-          <div className="w-12 h-12 bg-orange-500/20 rounded-full mx-auto mb-4 flex items-center justify-center">
-            <Users className="w-6 h-6 text-orange-500" />
-          </div>
-          <h3 className="text-lg font-semibold mb-2">Join Our Reddit Community</h3>
-          <p className="text-zinc-400 text-sm mb-4">
-            Connect with Bitcoin learners worldwide for deeper discussions, debates, and community support
-          </p>
-          <Button 
-            onClick={() => window.open('#', '_blank')} // Link will be updated when Reddit group is created
-            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2"
-          >
-            <Users className="w-4 h-4 mr-2" />
-            Join Reddit Group
-          </Button>
-          <p className="text-xs text-zinc-500 mt-2">Opens in new tab • Free to join</p>
-        </CardContent>
-      </Card>
-
       {/* Today's Discussion Header */}
       <div className="text-center">
         <h2 className="text-2xl font-bold mb-2">Day {currentDay} Quick Reflection</h2>
@@ -277,6 +266,65 @@ function VideosSection() {
         <Video className="w-16 h-16 mx-auto mb-4 opacity-50" />
         <h3 className="text-lg font-medium mb-2">Coming Soon</h3>
         <p className="text-sm">Expert Bitcoin education videos</p>
+      </div>
+    </div>
+  );
+}
+
+// Reddit Community Section
+function RedditSection() {
+  return (
+    <div className="space-y-6">
+      <div className="text-center">
+        <h2 className="text-2xl font-bold mb-2">Reddit Community</h2>
+        <p className="text-zinc-400 text-sm">Join our Bitcoin learning community on Reddit</p>
+      </div>
+      
+      {/* Reddit Community Card */}
+      <Card className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border-orange-500/20">
+        <CardContent className="p-6 text-center">
+          <div className="w-16 h-16 bg-orange-500/20 rounded-full mx-auto mb-4 flex items-center justify-center">
+            <Users className="w-8 h-8 text-orange-500" />
+          </div>
+          <h3 className="text-xl font-semibold mb-3">Join Our Reddit Community</h3>
+          <p className="text-zinc-400 text-sm mb-6 max-w-md mx-auto leading-relaxed">
+            Connect with Bitcoin learners worldwide for deeper discussions, debates, and community support. 
+            Share insights, ask questions, and learn from others on their Bitcoin journey.
+          </p>
+          <Button 
+            onClick={() => window.open('#', '_blank')} // Link will be updated when Reddit group is created
+            className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 text-base"
+          >
+            <Users className="w-5 h-5 mr-2" />
+            Join Reddit Group
+          </Button>
+          <p className="text-xs text-zinc-500 mt-3">Opens in new tab • Free to join</p>
+        </CardContent>
+      </Card>
+
+      {/* Benefits */}
+      <div className="grid md:grid-cols-3 gap-4">
+        <Card className="bg-zinc-800/30 border-zinc-700">
+          <CardContent className="p-4 text-center">
+            <MessageSquare className="w-8 h-8 text-orange-500 mx-auto mb-2" />
+            <h4 className="font-medium mb-1">Deep Discussions</h4>
+            <p className="text-xs text-zinc-400">Threaded conversations and debates</p>
+          </CardContent>
+        </Card>
+        <Card className="bg-zinc-800/30 border-zinc-700">
+          <CardContent className="p-4 text-center">
+            <Users className="w-8 h-8 text-orange-500 mx-auto mb-2" />
+            <h4 className="font-medium mb-1">Global Community</h4>
+            <p className="text-xs text-zinc-400">Connect with learners worldwide</p>
+          </CardContent>
+        </Card>
+        <Card className="bg-zinc-800/30 border-zinc-700">
+          <CardContent className="p-4 text-center">
+            <Trophy className="w-8 h-8 text-orange-500 mx-auto mb-2" />
+            <h4 className="font-medium mb-1">Share Success</h4>
+            <p className="text-xs text-zinc-400">Celebrate Bitcoin milestones</p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
