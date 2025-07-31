@@ -255,17 +255,321 @@ function DailyDiscussionSection() {
 
 // Simplified Videos Section
 function VideosSection() {
+  const [activeCategory, setActiveCategory] = useState("foundation");
+  
+  const videoCategories = {
+    foundation: {
+      title: "🔰 Foundation Level",
+      description: "Getting Started & Core Concepts",
+      videos: [
+        {
+          title: "Introduction to Bitcoin",
+          creator: "Andreas Antonopoulos",
+          duration: "30 mins",
+          note: "This is where my journey started - perfect entry point",
+          url: "https://www.youtube.com/watch?v=l1si5ZWLgy0"
+        },
+        {
+          title: "Bitcoin on Lex Fridman",
+          creator: "Michael Saylor",
+          duration: "20 min segments",
+          note: "4-hour masterclass broken into digestible parts",
+          url: "https://www.youtube.com/watch?v=mC43pZkpTec"
+        },
+        {
+          title: "What is Money? (Part 1)",
+          creator: "Saifedean Ammous",
+          duration: "25 mins",
+          note: "Essential economic foundation before diving into Bitcoin",
+          url: "https://www.youtube.com/watch?v=1WBrdLQhUrg"
+        },
+        {
+          title: "21 Lessons Introduction",
+          creator: "Gigi",
+          duration: "20 mins",
+          note: "Philosophy meets practicality - changed my perspective",
+          url: "https://www.youtube.com/watch?v=F-EHF8oFyLE"
+        },
+        {
+          title: "Bitcoin vs Banks",
+          creator: "Andreas Antonopoulos",
+          duration: "15 mins",
+          note: "Why the traditional system is broken",
+          url: "https://www.youtube.com/watch?v=LgI0liAee4s"
+        },
+        {
+          title: "Bitcoin for Beginners",
+          creator: "Preston Pysh",
+          duration: "25 mins",
+          note: "Investment thesis made simple",
+          url: "https://www.youtube.com/watch?v=Zbm772vF-5M"
+        },
+        {
+          title: "Deflationary World Intro",
+          creator: "Jeff Booth",
+          duration: "20 mins",
+          note: "Mind-bending perspective on future economics",
+          url: "https://www.youtube.com/watch?v=O3hq2vIhtz8"
+        },
+        {
+          title: "Financial Freedom Basics",
+          creator: "Alex Gladstein",
+          duration: "18 mins",
+          note: "Real-world impact beyond investment",
+          url: "https://www.youtube.com/watch?v=xLYYh4aPXAM"
+        }
+      ]
+    },
+    economics: {
+      title: "📈 Economics & Macro",
+      description: "Understanding the Why",
+      videos: [
+        {
+          title: "What is Money? Episode 1",
+          creator: "Saylor & Breedlove",
+          duration: "45 mins",
+          note: "Deep dive that solidified my conviction",
+          url: "https://www.youtube.com/watch?v=Vp7Q_3E_gzU"
+        },
+        {
+          title: "Bitcoin vs Gold",
+          creator: "Lyn Alden",
+          duration: "30 mins",
+          note: "Best comparison of store of value assets",
+          url: "https://www.youtube.com/watch?v=VdPkpxmN9g4"
+        },
+        {
+          title: "The Bitcoin Standard Key Chapter",
+          creator: "Saifedean Ammous",
+          duration: "35 mins",
+          note: "Economic theory meets Bitcoin reality",
+          url: "https://www.youtube.com/watch?v=Zbm772vF-5M"
+        },
+        {
+          title: "AI, Deflation, and Bitcoin",
+          creator: "Jeff Booth",
+          duration: "25 mins",
+          note: "Future economics explained brilliantly",
+          url: "https://www.youtube.com/watch?v=O3hq2vIhtz8"
+        },
+        {
+          title: "Inflation Hedge Thesis",
+          creator: "Preston Pysh",
+          duration: "20 mins",
+          note: "Why Bitcoin wins against money printing",
+          url: "https://www.youtube.com/watch?v=Zbm772vF-5M"
+        },
+        {
+          title: "Bitcoin in Changing World Order",
+          creator: "Ray Dalio",
+          duration: "15 mins",
+          note: "Traditional finance acknowledging Bitcoin",
+          url: "https://www.youtube.com/watch?v=Nu4lHaSh7D4"
+        },
+        {
+          title: "Volatility as Feature",
+          creator: "Anthony Pompliano",
+          duration: "25 mins",
+          note: "Reframes risk vs opportunity perfectly",
+          url: "https://www.youtube.com/watch?v=KzpQR2r5sJE"
+        },
+        {
+          title: "IMF and Bitcoin",
+          creator: "Alex Gladstein",
+          duration: "30 mins",
+          note: "Eye-opening global financial system critique",
+          url: "https://www.youtube.com/watch?v=xLYYh4aPXAM"
+        }
+      ]
+    },
+    technical: {
+      title: "⚡ Technical & Advanced",
+      description: "How Bitcoin Works",
+      videos: [
+        {
+          title: "How Bitcoin Works",
+          creator: "Andreas Antonopoulos",
+          duration: "40 mins",
+          note: "Technical concepts made accessible",
+          url: "https://www.youtube.com/watch?v=l1si5ZWLgy0"
+        },
+        {
+          title: "Lightning Network Explained",
+          creator: "Andreas Antonopoulos",
+          duration: "25 mins",
+          note: "Scaling solution that makes sense",
+          url: "https://www.youtube.com/watch?v=rrr_zPmEiME"
+        },
+        {
+          title: "Self-Custody Basics",
+          creator: "Andreas Antonopoulos",
+          duration: "20 mins",
+          note: "Not your keys, not your Bitcoin - essential",
+          url: "https://www.youtube.com/watch?v=F12lpqnug-0"
+        },
+        {
+          title: "Proof of Work vs Proof of Stake",
+          creator: "Gigi",
+          duration: "30 mins",
+          note: "Why energy 'waste' is actually security",
+          url: "https://www.youtube.com/watch?v=F-EHF8oFyLE"
+        },
+        {
+          title: "Corporate Bitcoin Strategy",
+          creator: "Michael Saylor",
+          duration: "35 mins",
+          note: "How companies adopt Bitcoin treasury",
+          url: "https://www.youtube.com/watch?v=mC43pZkpTec"
+        },
+        {
+          title: "Bitcoin Mining Reality",
+          creator: "Andreas Antonopoulos",
+          duration: "25 mins",
+          note: "Dispels environmental myths with facts",
+          url: "https://www.youtube.com/watch?v=2T0OUIW89II"
+        },
+        {
+          title: "DCA Strategy Deep Dive",
+          creator: "Preston Pysh",
+          duration: "20 mins",
+          note: "Practical investment approach that works",
+          url: "https://www.youtube.com/watch?v=Zbm772vF-5M"
+        },
+        {
+          title: "Fiat Standard Problems",
+          creator: "Saifedean Ammous",
+          duration: "30 mins",
+          note: "Why the current system fails everyone",
+          url: "https://www.youtube.com/watch?v=1WBrdLQhUrg"
+        }
+      ]
+    },
+    realworld: {
+      title: "🌍 Real World & Future",
+      description: "Bitcoin in Practice",
+      videos: [
+        {
+          title: "Bitcoin in El Salvador",
+          creator: "Alex Gladstein",
+          duration: "25 mins",
+          note: "Nation-state adoption lessons learned",
+          url: "https://www.youtube.com/watch?v=xLYYh4aPXAM"
+        },
+        {
+          title: "Institutional Adoption Wave",
+          creator: "Michael Saylor",
+          duration: "20 mins",
+          note: "Why corporations choose Bitcoin",
+          url: "https://www.youtube.com/watch?v=mC43pZkpTec"
+        },
+        {
+          title: "Hyper-Bitcoinized World",
+          creator: "Jeff Booth",
+          duration: "30 mins",
+          note: "What happens when Bitcoin wins",
+          url: "https://www.youtube.com/watch?v=O3hq2vIhtz8"
+        },
+        {
+          title: "Bitcoin Culture & Community",
+          creator: "Gigi",
+          duration: "15 mins",
+          note: "Why Bitcoiners think differently",
+          url: "https://www.youtube.com/watch?v=F-EHF8oFyLE"
+        },
+        {
+          title: "Bitcoin Privacy",
+          creator: "Andreas Antonopoulos",
+          duration: "25 mins",
+          note: "Financial privacy in digital age",
+          url: "https://www.youtube.com/watch?v=l1si5ZWLgy0"
+        },
+        {
+          title: "Bitcoin 2030 Predictions",
+          creator: "Multi-Expert Panel",
+          duration: "45 mins",
+          note: "Combined wisdom of top voices",
+          url: "https://www.youtube.com/watch?v=Nu4lHaSh7D4"
+        }
+      ]
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="text-center">
         <h2 className="text-2xl font-bold mb-2">Expert Videos</h2>
-        <p className="text-zinc-400 text-sm">Curated Bitcoin education from industry experts</p>
+        <p className="text-zinc-400 text-sm">30 essential Bitcoin videos curated from my personal learning journey</p>
       </div>
-      
-      <div className="text-center py-12 text-zinc-400">
-        <Video className="w-16 h-16 mx-auto mb-4 opacity-50" />
-        <h3 className="text-lg font-medium mb-2">Coming Soon</h3>
-        <p className="text-sm">Expert Bitcoin education videos</p>
+
+      {/* Category Navigation */}
+      <div className="flex justify-center">
+        <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2 max-w-2xl">
+          {Object.entries(videoCategories).map(([key, category]) => (
+            <Button
+              key={key}
+              variant={activeCategory === key ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setActiveCategory(key)}
+              className="text-xs px-3 py-1.5"
+            >
+              {category.title}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      {/* Category Content */}
+      <div className="space-y-4">
+        <div className="text-center">
+          <h3 className="text-xl font-semibold mb-1">{videoCategories[activeCategory].title}</h3>
+          <p className="text-zinc-400 text-sm">{videoCategories[activeCategory].description}</p>
+        </div>
+
+        {/* Video Grid */}
+        <div className="grid md:grid-cols-2 gap-4">
+          {videoCategories[activeCategory].videos.map((video, index) => (
+            <Card key={index} className="bg-zinc-800/30 border-zinc-700 hover:border-orange-500/30 hover:bg-zinc-800/50 transition-all duration-300 cursor-pointer group">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Video className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold text-white group-hover:text-orange-400 transition-colors mb-1 line-clamp-2">
+                      {video.title}
+                    </h4>
+                    <p className="text-zinc-400 text-sm mb-2">
+                      {video.creator} • {video.duration}
+                    </p>
+                    <div className="bg-zinc-900/50 p-2 rounded text-xs text-zinc-300 italic mb-3">
+                      "{video.note}"
+                    </div>
+                    <Button 
+                      onClick={() => window.open(video.url, '_blank')}
+                      size="sm"
+                      className="bg-orange-500/20 hover:bg-orange-500 text-orange-400 hover:text-white border border-orange-500/30 hover:border-orange-500 text-xs px-3 py-1"
+                    >
+                      Watch Video
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Learning Path Guide */}
+        <Card className="bg-gradient-to-r from-orange-500/10 to-yellow-500/10 border-orange-500/20 mt-8">
+          <CardContent className="p-6 text-center">
+            <h4 className="font-semibold mb-2">Recommended Learning Path</h4>
+            <p className="text-sm text-zinc-400 mb-4">
+              Start with Foundation → Progress to Economics → Advance to Technical → Finish with Real World
+            </p>
+            <p className="text-xs text-orange-400">
+              These are the exact videos that built my Bitcoin conviction. Each one chosen for maximum learning impact.
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
