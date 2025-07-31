@@ -29,6 +29,7 @@ import {
 import { useLocation } from "wouter";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
+import { PWAInstallButton } from "@/components/PWAInstallButton";
 
 interface WalletData {
   totalSatoshisEarned: number;
@@ -140,6 +141,9 @@ export default function WalletPage() {
 
               {/* Header Actions */}
               <div className="flex items-center gap-2">
+                {/* PWA Install Button */}
+                <PWAInstallButton />
+                
                 {/* Wallet Button */}
                 <Button 
                   onClick={() => setLocation('/wallet')}
@@ -234,6 +238,9 @@ export default function WalletPage() {
 
               {/* Header Actions */}
               <div className="flex items-center gap-2">
+                {/* PWA Install Button */}
+                <PWAInstallButton />
+                
                 {/* Wallet Button */}
                 <Button 
                   onClick={() => setLocation('/wallet')}
@@ -329,6 +336,9 @@ export default function WalletPage() {
 
             {/* Header Actions */}
             <div className="flex items-center gap-2">
+              {/* PWA Install Button */}
+              <PWAInstallButton />
+              
               {/* Account Button */}
               <Button 
                 onClick={() => setLocation('/account')}

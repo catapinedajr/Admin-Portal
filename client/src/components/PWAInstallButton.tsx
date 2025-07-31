@@ -84,11 +84,11 @@ export function PWAInstallButton() {
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) {
-      // Show manual installation instructions for Safari/unsupported browsers
+      // Show detailed manual installation instructions for Safari/unsupported browsers
       toast({
-        title: 'Install HODLearn',
-        description: 'Tap the Share button, then "Add to Home Screen"',
-        duration: 8000,
+        title: '🎉 Install HODLearn & Earn 10,000 Sats!',
+        description: 'iOS Safari: Tap Share button (box with arrow) → scroll down → "Add to Home Screen" | Chrome/Edge: Tap menu (3 dots) → "Install app" | Get instant 10,000 sats bonus ($1.18 value) added to your wallet when complete!',
+        duration: 15000,
       });
       return;
     }
@@ -116,13 +116,13 @@ export function PWAInstallButton() {
       onClick={handleInstallClick}
       size="sm"
       className="bg-orange-500 hover:bg-orange-600 text-white border-orange-600 hover:border-orange-700 px-2.5 py-1.5 animate-pulse hover:animate-none relative overflow-hidden"
-      title="Download to Home Screen - Get 10,000 sats bonus!"
+      title="Download to Home Screen - Get 10,000 sats bonus ($1.18 value)!"
     >
       {/* Flashing effect overlay */}
       <div className="absolute inset-0 bg-orange-300 opacity-30 animate-ping"></div>
       
       <Download className="w-4 h-4 relative z-10" />
-      <span className="sr-only">Download to Home Screen</span>
+      <span className="sr-only">Download to Home Screen - Get 10,000 sats bonus!</span>
     </Button>
   );
 }

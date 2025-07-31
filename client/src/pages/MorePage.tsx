@@ -5,6 +5,7 @@ import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { Crown, Gem, User as UserIcon, Wallet } from "@/lib/icons";
 import { Button } from "@/components/ui/button";
+import { PWAInstallButton } from "@/components/PWAInstallButton";
 
 type MoreSubTab = "store" | "conviction";
 
@@ -37,6 +38,9 @@ export default function MorePage() {
 
             {/* Header Actions */}
             <div className="flex items-center gap-2">
+              {/* PWA Install Button */}
+              <PWAInstallButton />
+              
               {/* Wallet Button */}
               <Button 
                 onClick={() => setLocation('/wallet')}

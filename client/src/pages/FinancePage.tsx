@@ -10,6 +10,7 @@ import { useAppContext } from "@/components/shared/AppContextProvider";
 import { useQuery } from "@tanstack/react-query";
 import { User } from "@shared/schema";
 import EmailCollectionModal from "@/components/EmailCollectionModal";
+import { PWAInstallButton } from "@/components/PWAInstallButton";
 
 // Counter animation component
 function AnimatedCounter({ target, duration = 2000, suffix = "", className = "" }: { target: number; duration?: number; suffix?: string; className?: string }) {
@@ -1010,6 +1011,9 @@ function FinancePageWithLayout() {
 
             {/* Header Actions */}
             <div className="flex items-center gap-2">
+              {/* PWA Install Button */}
+              <PWAInstallButton />
+              
               {/* Wallet Button */}
               <Button 
                 onClick={() => setLocation('/wallet')}

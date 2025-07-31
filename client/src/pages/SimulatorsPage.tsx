@@ -5,6 +5,7 @@ import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { Crown, Gem, User as UserIcon, Lock, Shield, Wallet, ArrowLeftRight, Coins, TrendingUp, DollarSign, TrendingDown, FileText } from "@/lib/icons";
 import { Card, CardContent } from "@/components/ui/card";
+import { PWAInstallButton } from "@/components/PWAInstallButton";
 
 // Lazy load all simulator components for performance
 const WalletSimulator = lazy(() => import("@/components/simulators/WalletSimulator"));
@@ -316,6 +317,9 @@ function SimulatorsPageWithLayout() {
 
             {/* Header Actions */}
             <div className="flex items-center gap-2">
+              {/* PWA Install Button */}
+              <PWAInstallButton />
+              
               {/* Wallet Button */}
               <Button 
                 onClick={() => setLocation('/wallet')}
