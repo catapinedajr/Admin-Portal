@@ -6,8 +6,8 @@ import { db } from "./db";
 import { communityStorage } from "./community";
 import { authService } from "./auth";
 import { registerWalletRoutes } from "./wallet-routes";
-import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentGenerationSteps, userQuizAnswers, registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema } from "@shared/schema";
-import { eq, sql } from "drizzle-orm";
+import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentGenerationSteps, userQuizAnswers, registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, dailyDiscussions, users } from "@shared/schema";
+import { eq, sql, desc } from "drizzle-orm";
 import { v4 as uuidv4 } from 'uuid';
 import { randomUUID } from 'crypto';
 import { validateContentMiddleware, validateContent, performFrameworkChecks } from "./content-validation";
@@ -2366,6 +2366,51 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
       message: "All content must pass framework validation through /api/content/create-day",
       framework: "CONTENT_CREATION_FRAMEWORK.md"
     });
+  });
+
+  // Daily Discussions API - Simple community discussions for each day
+  app.get("/api/daily-discussions/:dayIndex", setDefaultUser, async (req, res) => {
+    try {
+      const dayIndex = parseInt(req.params.dayIndex);
+      const discussions = await db.select({
+        id: dailyDiscussions.id,
+        content: dailyDiscussions.content,
+        createdAt: dailyDiscussions.createdAt,
+        username: users.username
+      })
+      .from(dailyDiscussions)
+      .leftJoin(users, eq(dailyDiscussions.userId, users.id))
+      .where(eq(dailyDiscussions.dayIndex, dayIndex))
+      .orderBy(desc(dailyDiscussions.createdAt));
+      
+      res.json(discussions);
+    } catch (error) {
+      console.error("Failed to get daily discussions:", error);
+      res.status(500).json({ message: "Failed to get discussions" });
+    }
+  });
+
+  app.post("/api/daily-discussions", setDefaultUser, async (req: any, res) => {
+    try {
+      const { dayIndex, content } = req.body;
+      
+      if (!content || !content.trim()) {
+        return res.status(400).json({ message: "Content is required" });
+      }
+
+      const [discussion] = await db.insert(dailyDiscussions)
+        .values({
+          userId: req.user.id,
+          dayIndex,
+          content: content.trim()
+        })
+        .returning();
+      
+      res.json(discussion);
+    } catch (error) {
+      console.error("Failed to create discussion:", error);
+      res.status(500).json({ message: "Failed to create discussion" });
+    }
   });
 
   const httpServer = createServer(app);

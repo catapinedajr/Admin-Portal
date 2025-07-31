@@ -6,25 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
-import { ForumCategoryList } from "@/components/community/ForumCategoryList";
-import { ForumThreadList } from "@/components/community/ForumThreadList";
-import { PostDetailView } from "@/components/community/PostDetailView";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { ForumCategory, ForumPostWithStats } from '@shared/schema';
 
-type CommunitySubTab = "overview" | "forums" | "videos" | "stories";
+type CommunitySubTab = "daily" | "videos" | "stories";
 
 export default function CommunityPage() {
   const [, setLocation] = useLocation();
-  const [activeTab, setActiveTab] = useState<CommunitySubTab>("overview");
-  const [forumResetTrigger, setForumResetTrigger] = useState(0);
-  const { isPremiumTier, setShowEmailModal } = useSubscription();
-
-  const handleForumsTabClick = () => {
-    setActiveTab("forums");
-    // Trigger reset to forum list by incrementing the trigger
-    setForumResetTrigger(prev => prev + 1);
-  };
+  const [activeTab, setActiveTab] = useState<CommunitySubTab>("daily");
+  const { isPremiumTier } = useSubscription();
 
   return (
     <div className="min-h-screen bg-zinc-900">
@@ -70,8 +59,6 @@ export default function CommunityPage() {
                 <UserIcon className="w-4 h-4" />
                 <span className="sr-only">Account</span>
               </Button>
-              
-
             </div>
           </div>
         </div>
@@ -83,22 +70,13 @@ export default function CommunityPage() {
           <div className="flex justify-center">
             <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2">
               <Button
-                variant={activeTab === "overview" ? "secondary" : "ghost"}
+                variant={activeTab === "daily" ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setActiveTab("overview")}
-                className="text-xs px-3 py-1"
-              >
-                <Users className="w-3 h-3 mr-1" />
-                Overview
-              </Button>
-              <Button
-                variant={activeTab === "forums" ? "secondary" : "ghost"}
-                size="sm"
-                onClick={handleForumsTabClick}
+                onClick={() => setActiveTab("daily")}
                 className="text-xs px-3 py-1"
               >
                 <MessageSquare className="w-3 h-3 mr-1" />
-                Forums
+                Daily Discussion
               </Button>
               <Button
                 variant={activeTab === "videos" ? "secondary" : "ghost"}
@@ -107,7 +85,7 @@ export default function CommunityPage() {
                 className="text-xs px-3 py-1"
               >
                 <Video className="w-3 h-3 mr-1" />
-                Videos
+                Expert Videos
               </Button>
               <Button
                 variant={activeTab === "stories" ? "secondary" : "ghost"}
@@ -115,463 +93,187 @@ export default function CommunityPage() {
                 onClick={() => setActiveTab("stories")}
                 className="text-xs px-3 py-1"
               >
-                <BookOpen className="w-3 h-3 mr-1" />
-                Stories
+                <Trophy className="w-3 h-3 mr-1" />
+                Success Stories
               </Button>
             </div>
           </div>
 
           {/* Content */}
-          {activeTab === "overview" && <CommunityOverview setActiveTab={setActiveTab} />}
-          {activeTab === "forums" && <ForumsSection key={forumResetTrigger} />}
+          {activeTab === "daily" && <DailyDiscussionSection />}
           {activeTab === "videos" && <VideosSection />}
           {activeTab === "stories" && <StoriesSection />}
         </div>
       </main>
 
       <BottomNavigation 
-        activeSection="community"
-        onSectionChange={(section) => {
-          if (section === 'home') setLocation('/');
-          else if (section === 'learn') setLocation('/learn');
-          else if (section === 'money') setLocation('/money');
-          else if (section === 'simulators') setLocation('/simulators');
-          else if (section === 'more') setLocation('/more');
+        currentSection="connect" 
+        setCurrentSection={(section) => {
+          if (section === "home") setLocation('/');
+          else if (section === "learn") setLocation('/learn');
+          else if (section === "simulators") setLocation('/simulators');
+          else if (section === "money") setLocation('/money');
+          else if (section === "connect") setLocation('/community');
         }}
       />
     </div>
   );
 }
 
-function CommunityOverview({ setActiveTab }: { setActiveTab: (tab: CommunitySubTab) => void }) {
+// Simple Daily Discussion Component - Focused on current day's lesson
+function DailyDiscussionSection() {
+  const [newComment, setNewComment] = useState("");
+  const queryClient = useQueryClient();
+
+  // Get user's current day
+  const { data: user } = useQuery({
+    queryKey: ['/api/user'],
+  });
+
+  const { data: nextDay } = useQuery({
+    queryKey: ['/api/next-available-day', user?.id],
+    enabled: !!user?.id,
+  });
+
+  const currentDay = nextDay?.dayIndex || 1;
+
+  // Get today's lesson info
+  const { data: dayMetadata } = useQuery({
+    queryKey: ['/api/day-metadata', currentDay],
+  });
+
+  // Simple discussion posts for today
+  const { data: discussions = [], isLoading } = useQuery({
+    queryKey: ['/api/daily-discussions', currentDay],
+  });
+
+  // Post new comment mutation
+  const postMutation = useMutation({
+    mutationFn: async (content: string) => {
+      const response = await fetch('/api/daily-discussions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dayIndex: currentDay, content })
+      });
+      if (!response.ok) throw new Error('Failed to post');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/daily-discussions', currentDay] });
+      setNewComment("");
+    }
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newComment.trim()) {
+      postMutation.mutate(newComment.trim());
+    }
+  };
+
   return (
-    <div className="space-y-8">
-      {/* Welcome Section */}
-      <div className="text-center py-6">
-        <h2 className="text-2xl font-bold mb-3">Welcome to the HODLearn Community</h2>
-        <p className="text-zinc-400 max-w-2xl mx-auto">
-          Join thousands of Bitcoin learners on their journey to understanding and conviction. 
-          Share experiences, ask questions, and learn from others who've walked this path.
-        </p>
+    <div className="space-y-6">
+      {/* Today's Discussion Header */}
+      <div className="text-center">
+        <h2 className="text-2xl font-bold mb-2">Day {currentDay} Discussion</h2>
+        <p className="text-zinc-400 text-sm mb-1">{dayMetadata?.title}</p>
+        <p className="text-xs text-zinc-500">Share thoughts, ask questions, help others understand</p>
       </div>
 
-      {/* Community Stats - Enhanced with Dopamine Background Transition */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="bg-black border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group">
-          <CardContent className="p-4 text-center">
-            <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300 w-fit mx-auto mb-3">
-              <Users className="h-6 w-6 text-orange-500 group-hover:animate-pulse" />
+      {/* Post New Comment */}
+      <Card className="bg-zinc-800/50 border-zinc-700">
+        <CardContent className="p-4">
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="What did you think about today's lesson?"
+              className="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-lg text-sm resize-none focus:outline-none focus:border-orange-500 transition-colors"
+              rows={3}
+            />
+            <div className="flex justify-end">
+              <Button 
+                type="submit" 
+                disabled={!newComment.trim() || postMutation.isPending}
+                className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 text-sm"
+              >
+                {postMutation.isPending ? 'Posting...' : 'Share Thought'}
+              </Button>
             </div>
-            <div className="text-xl font-bold">2,847</div>
-            <div className="text-zinc-400 text-xs">Active Learners</div>
-          </CardContent>
-        </Card>
-        <Card className="bg-black border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group">
-          <CardContent className="p-4 text-center">
-            <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300 w-fit mx-auto mb-3">
-              <MessageSquare className="h-6 w-6 text-orange-500 group-hover:animate-pulse" />
-            </div>
-            <div className="text-xl font-bold">12,394</div>
-            <div className="text-zinc-400 text-xs">Forum Posts</div>
-          </CardContent>
-        </Card>
-        <Card className="bg-black border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group">
-          <CardContent className="p-4 text-center">
-            <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300 w-fit mx-auto mb-3">
-              <Video className="h-6 w-6 text-orange-500 group-hover:animate-pulse" />
-            </div>
-            <div className="text-xl font-bold">156</div>
-            <div className="text-zinc-400 text-xs">Curated Videos</div>
-          </CardContent>
-        </Card>
-        <Card className="bg-black border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group">
-          <CardContent className="p-4 text-center">
-            <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300 w-fit mx-auto mb-3">
-              <Trophy className="h-6 w-6 text-orange-500 group-hover:animate-pulse" />
-            </div>
-            <div className="text-xl font-bold">891</div>
-            <div className="text-zinc-400 text-xs">Success Stories</div>
-          </CardContent>
-        </Card>
-      </div>
+          </form>
+        </CardContent>
+      </Card>
 
-      {/* Quick Access Cards - With Dopamine Background Transition */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card 
-          className="bg-black border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
-          onClick={() => setActiveTab("forums")}
-        >
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300">
-                <MessageSquare className="h-4 w-4 text-orange-500 group-hover:animate-pulse" />
-              </div>
-              Daily Discussions
-            </CardTitle>
-            <CardDescription className="text-sm">
-              Join discussions about today's Bitcoin lesson and ask questions
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="flex items-center justify-between">
-              <div className="text-xs text-zinc-400">
-                Latest: Day 5 - Store of Value
-              </div>
-              <ArrowRight className="h-3 w-3 text-orange-500 group-hover:text-orange-300 transition-colors" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card 
-          className="bg-black border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
-          onClick={() => setActiveTab("videos")}
-        >
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300">
-                <Video className="h-4 w-4 text-orange-500 group-hover:animate-pulse" />
-              </div>
-              Curated Videos
-            </CardTitle>
-            <CardDescription className="text-sm">
-              Hand-picked YouTube content to deepen your understanding
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="flex items-center justify-between">
-              <div className="text-xs text-zinc-400">
-                Trending: Why Bitcoin Matters
-              </div>
-              <ArrowRight className="h-3 w-3 text-orange-500 group-hover:text-orange-300 transition-colors" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card 
-          className="bg-black border border-zinc-700/50 hover:bg-zinc-800/50 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer"
-          onClick={() => setActiveTab("stories")}
-        >
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl border border-orange-500/20 group-hover:scale-110 transition-transform duration-300">
-                <BookOpen className="h-4 w-4 text-orange-500 group-hover:animate-pulse" />
-              </div>
-              Success Stories
-            </CardTitle>
-            <CardDescription className="text-sm">
-              Read how others built Bitcoin conviction and overcame challenges
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="flex items-center justify-between">
-              <div className="text-xs text-zinc-400">
-                Latest: From Skeptic to Believer
-              </div>
-              <ArrowRight className="h-3 w-3 text-orange-500 group-hover:text-orange-300 transition-colors" />
-            </div>
-          </CardContent>
-        </Card>
+      {/* Discussion Thread */}
+      <div className="space-y-4">
+        {isLoading ? (
+          <div className="text-center py-8 text-zinc-400">Loading discussion...</div>
+        ) : discussions.length === 0 ? (
+          <div className="text-center py-8 text-zinc-400">
+            <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-50" />
+            <p>No discussion yet for Day {currentDay}</p>
+            <p className="text-xs mt-1">Be the first to share your thoughts!</p>
+          </div>
+        ) : (
+          discussions.map((discussion: any) => (
+            <Card key={discussion.id} className="bg-zinc-800/30 border-zinc-700">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-orange-500/20 rounded-full flex items-center justify-center">
+                    <span className="text-orange-500 text-sm font-medium">
+                      {discussion.username?.[0]?.toUpperCase() || 'U'}
+                    </span>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="font-medium text-sm">{discussion.username || 'Anonymous'}</span>
+                      <span className="text-xs text-zinc-500">
+                        {new Date(discussion.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <p className="text-sm text-zinc-300 leading-relaxed">{discussion.content}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
       </div>
     </div>
   );
 }
 
-function ForumsSection() {
-  const [selectedCategory, setSelectedCategory] = useState<ForumCategory | null>(null);
-  const [selectedPost, setSelectedPost] = useState<ForumPostWithStats | null>(null);
-  const [sortBy, setSortBy] = useState('new');
-  const queryClient = useQueryClient();
-
-  // Fetch real categories from API
-  const { data: categories = [], isLoading: categoriesLoading } = useQuery({
-    queryKey: ['/api/community/forum-categories'],
-    queryFn: async () => {
-      const response = await fetch('/api/community/forum-categories');
-      if (!response.ok) throw new Error('Failed to fetch categories');
-      return response.json() as ForumCategory[];
-    }
-  });
-
-  // Fetch real posts for selected category
-  const { data: posts = [], isLoading: postsLoading } = useQuery({
-    queryKey: ['/api/community/forum-posts', selectedCategory?.id, sortBy],
-    queryFn: async () => {
-      if (!selectedCategory) return [];
-      const response = await fetch(`/api/community/forum-posts?categoryId=${selectedCategory.id}&sortBy=${sortBy}`);
-      if (!response.ok) throw new Error('Failed to fetch posts');
-      return response.json() as ForumPostWithStats[];
-    },
-    enabled: !!selectedCategory
-  });
-
-
-
-  // Create post mutation
-  const createPostMutation = useMutation({
-    mutationFn: async (postData: { title: string; content: string; categoryId: number; dayIndex?: number }) => {
-      const response = await fetch('/api/community/forum-posts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(postData)
-      });
-      if (!response.ok) throw new Error('Failed to create post');
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/community/forum-posts'] });
-    }
-  });
-
-  // Create reply mutation
-  const replyMutation = useMutation({
-    mutationFn: async ({ postId, content }: { postId: number; content: string }) => {
-      const response = await fetch(`/api/community/forum-posts/${postId}/replies`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content })
-      });
-      if (!response.ok) throw new Error('Failed to create reply');
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/community/forum-posts'] });
-    }
-  });
-
-
-
-  // Like mutation (using existing vote system as like)
-  const likeMutation = useMutation({
-    mutationFn: async (postId: number) => {
-      const response = await fetch(`/api/community/forum-posts/${postId}/vote`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ voteType: 'upvote' })
-      });
-      if (!response.ok) throw new Error('Failed to like post');
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/community/forum-posts'] });
-    }
-  });
-
-  const handleLike = (postId: number) => {
-    likeMutation.mutate(postId);
-  };
-
-  const handleReply = (postId: number, content: string) => {
-    replyMutation.mutate({ 
-      postId, 
-      content 
-    });
-  };
-
-  const handleCreatePost = (postData: { title: string; content: string; categoryId: number; dayIndex?: number }) => {
-    createPostMutation.mutate(postData);
-  };
-
-  const handleSelectCategory = (categoryId: number) => {
-    const category = categories.find(c => c.id === categoryId);
-    if (category) {
-      setSelectedCategory(category);
-    }
-  };
-
-  const handleBack = () => {
-    if (selectedPost) {
-      setSelectedPost(null); // Go back to post list
-    } else {
-      setSelectedCategory(null); // Go back to subject list
-    }
-  };
-
-  const handlePostClick = (post: ForumPostWithStats) => {
-    setSelectedPost(post);
-  };
-
-  const handleSortChange = (newSort: string) => {
-    setSortBy(newSort);
-  };
-
-  // Three-tier navigation
-  if (selectedPost) {
-    return (
-      <div className="min-h-screen bg-zinc-900">
-        <div className="max-w-4xl mx-auto px-4 py-6">
-          <PostDetailView
-            post={selectedPost}
-            discussions={[]} // TODO: Fetch actual discussions
-            onBack={handleBack}
-            onLike={handleLike}
-            onReply={handleReply}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  if (selectedCategory) {
-    return (
-      <ForumThreadList
-        category={selectedCategory}
-        posts={posts}
-        onBack={handleBack}
-        onPostClick={handlePostClick}
-        onLike={handleLike}
-        onReply={handleReply}
-        onCreatePost={handleCreatePost}
-        onSortChange={handleSortChange}
-        currentSort={sortBy}
-      />
-    );
-  }
-
-  if (categoriesLoading) {
-    return (
-      <div className="space-y-6">
-        <div className="text-center py-4">
-          <h2 className="text-xl font-bold mb-2">Community Forums</h2>
-          <p className="text-zinc-400 text-sm">Loading forum categories...</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-zinc-800/50 border border-zinc-700 rounded-lg p-4 animate-pulse">
-              <div className="h-4 bg-zinc-700 rounded mb-2"></div>
-              <div className="h-3 bg-zinc-700 rounded w-3/4 mb-2"></div>
-              <div className="h-2 bg-zinc-700 rounded w-1/2"></div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <ForumCategoryList
-      categories={categories}
-      onSelectCategory={handleSelectCategory}
-    />
-  );
-}
-
+// Simplified Videos Section
 function VideosSection() {
   return (
     <div className="space-y-6">
-      <div className="text-center py-4">
-        <h2 className="text-xl font-bold mb-2">Curated Video Library</h2>
-        <p className="text-zinc-400 text-sm">Hand-picked content to enhance your learning</p>
+      <div className="text-center">
+        <h2 className="text-2xl font-bold mb-2">Expert Videos</h2>
+        <p className="text-zinc-400 text-sm">Curated Bitcoin education from industry experts</p>
       </div>
-
-      {/* Video Categories */}
-      <div className="space-y-6">
-        <div>
-          <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-            <Badge className="bg-green-600 text-xs">Beginner</Badge>
-            Foundation Videos
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <Card className="bg-zinc-800/50 border-zinc-700">
-              <div className="aspect-video bg-zinc-800 rounded-t-lg flex items-center justify-center">
-                <Video className="h-8 w-8 text-zinc-600" />
-              </div>
-              <CardContent className="p-3">
-                <h4 className="font-semibold mb-1 text-sm">What is Bitcoin?</h4>
-                <p className="text-xs text-zinc-400 mb-2">Andreas Antonopoulos</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-zinc-500">15 min</span>
-                  <Badge variant="outline" className="text-xs">Popular</Badge>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        <div>
-          <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-            <Badge className="bg-yellow-600 text-xs">Intermediate</Badge>
-            Economics & Monetary Theory
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <Card className="bg-zinc-800/50 border-zinc-700">
-              <div className="aspect-video bg-zinc-800 rounded-t-lg flex items-center justify-center">
-                <Video className="h-8 w-8 text-zinc-600" />
-              </div>
-              <CardContent className="p-3">
-                <h4 className="font-semibold mb-1 text-sm">The Fiat Standard</h4>
-                <p className="text-xs text-zinc-400 mb-2">Saifedean Ammous</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-zinc-500">45 min</span>
-                  <Badge variant="outline" className="text-xs">New</Badge>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+      
+      <div className="text-center py-12 text-zinc-400">
+        <Video className="w-16 h-16 mx-auto mb-4 opacity-50" />
+        <h3 className="text-lg font-medium mb-2">Coming Soon</h3>
+        <p className="text-sm">Expert Bitcoin education videos</p>
       </div>
     </div>
   );
 }
 
+// Simplified Stories Section
 function StoriesSection() {
   return (
     <div className="space-y-6">
-      <div className="text-center py-4">
-        <h2 className="text-xl font-bold mb-2">Bitcoin Journey Stories</h2>
-        <p className="text-zinc-400 text-sm">Real experiences from the community</p>
+      <div className="text-center">
+        <h2 className="text-2xl font-bold mb-2">Success Stories</h2>
+        <p className="text-zinc-400 text-sm">Real stories from HODLearn graduates</p>
       </div>
-
-      {/* Story Categories */}
-      <div className="space-y-4">
-        <Card className="bg-zinc-800/50 border-zinc-700">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center justify-between text-lg">
-              <span>From Skeptic to Believer</span>
-              <Badge variant="outline" className="text-xs">New</Badge>
-            </CardTitle>
-            <CardDescription className="text-sm">
-              How I went from thinking Bitcoin was a scam to understanding its value
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <p className="text-xs text-zinc-400 mb-3">
-              "I remember laughing at my friend when he told me about Bitcoin in 2017. 
-              'Digital money that isn't backed by anything?' I thought he was crazy..."
-            </p>
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-zinc-500">Posted 2 days ago by @sarah_learns</span>
-              <Button variant="ghost" size="sm" className="text-xs px-3 py-1">Read More</Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-zinc-800/50 border-zinc-700">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center justify-between text-lg">
-              <span>Convincing My Family</span>
-              <Badge variant="outline" className="text-xs">Popular</Badge>
-            </CardTitle>
-            <CardDescription className="text-sm">
-              The challenges and breakthroughs of orange-pilling loved ones
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <p className="text-xs text-zinc-400 mb-3">
-              "My parents thought I had joined a cult when I started talking about Bitcoin. 
-              Here's how I gradually helped them understand..."
-            </p>
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-zinc-500">Posted 1 week ago by @mike_hodler</span>
-              <Button variant="ghost" size="sm" className="text-xs px-3 py-1">Read More</Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="text-center py-6">
-        <Button className="bg-orange-500 hover:bg-orange-600 text-sm px-6">
-          Share Your Story
-        </Button>
+      
+      <div className="text-center py-12 text-zinc-400">
+        <Trophy className="w-16 h-16 mx-auto mb-4 opacity-50" />
+        <h3 className="text-lg font-medium mb-2">Coming Soon</h3>
+        <p className="text-sm">Success stories from Bitcoin learners</p>
       </div>
     </div>
   );

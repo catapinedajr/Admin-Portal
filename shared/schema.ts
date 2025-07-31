@@ -125,6 +125,15 @@ export const successStories = pgTable("success_stories", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+// Daily Discussions - Simple day-based community discussions
+export const dailyDiscussions = pgTable("daily_discussions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  dayIndex: integer("day_index").notNull(),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at").defaultNow()
+});
+
 // Reddit-style voting system for forum posts and replies
 export const forumVotes = pgTable("forum_votes", {
   id: serial("id").primaryKey(),
@@ -756,6 +765,7 @@ export type ForumCategory = typeof forumCategories.$inferSelect;
 export type ForumPost = typeof forumPosts.$inferSelect;
 export type ForumReply = typeof forumReplies.$inferSelect;
 export type SuccessStory = typeof successStories.$inferSelect;
+export type DailyDiscussion = typeof dailyDiscussions.$inferSelect;
 
 // Enhanced forum post with Reddit-style data
 export type ForumPostWithStats = ForumPost & {
