@@ -68,12 +68,12 @@ export default function CommunityPage() {
         <div className="space-y-6">
           {/* Community Sub-navigation - Consistent with Learn and Simulators */}
           <div className="flex justify-center">
-            <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2 max-w-md mx-auto">
+            <div className="grid grid-cols-2 gap-2 bg-zinc-800/50 rounded-lg p-2 max-w-sm mx-auto">
               <Button
                 variant={activeTab === "reddit" ? "secondary" : "ghost"}
                 size="sm"
                 onClick={() => setActiveTab("reddit")}
-                className="text-xs px-3 py-1 flex-1"
+                className="text-xs px-3 py-1"
               >
                 <Users className="w-3 h-3 mr-1" />
                 Reddit
@@ -82,7 +82,7 @@ export default function CommunityPage() {
                 variant={activeTab === "daily" ? "secondary" : "ghost"}
                 size="sm"
                 onClick={() => setActiveTab("daily")}
-                className="text-xs px-3 py-1 flex-1"
+                className="text-xs px-3 py-1"
               >
                 <MessageSquare className="w-3 h-3 mr-1" />
                 Daily Discussion
@@ -91,7 +91,7 @@ export default function CommunityPage() {
                 variant={activeTab === "videos" ? "secondary" : "ghost"}
                 size="sm"
                 onClick={() => setActiveTab("videos")}
-                className="text-xs px-3 py-1 flex-1"
+                className="text-xs px-3 py-1"
               >
                 <Video className="w-3 h-3 mr-1" />
                 Expert Videos
@@ -100,7 +100,7 @@ export default function CommunityPage() {
                 variant={activeTab === "stories" ? "secondary" : "ghost"}
                 size="sm"
                 onClick={() => setActiveTab("stories")}
-                className="text-xs px-3 py-1 flex-1"
+                className="text-xs px-3 py-1"
               >
                 <Trophy className="w-3 h-3 mr-1" />
                 Success Stories
