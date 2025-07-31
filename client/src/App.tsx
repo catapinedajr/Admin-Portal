@@ -57,8 +57,11 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   // Show loading while checking auth
   if (!sessionId || isLoading || hasRedirected) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white">Loading...</div>
+      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mb-4"></div>
+          <div className="text-zinc-400">Loading...</div>
+        </div>
       </div>
     );
   }

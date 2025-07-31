@@ -9,6 +9,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
+import { Loader2 } from 'lucide-react';
+import { useLocation } from 'wouter';
 
 const loginSchema = z.object({
   username: z.string().min(3, 'Username must be at least 3 characters').max(20),
@@ -56,6 +58,7 @@ interface AuthResponse {
 
 export function AuthPage() {
   const [authMode, setAuthMode] = useState<'login' | 'register' | 'forgot-password' | 'reset-password'>('login');
+  const [, setLocation] = useLocation();
   const { toast } = useToast();
 
   // Check if we have a reset token in the URL
@@ -123,10 +126,8 @@ export function AuthPage() {
         description: `Logged in as ${data.user.username}`,
       });
       
-      // Safari-compatible redirect with delay
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 100);
+      // Use React Router navigation to prevent white screen flash
+      setLocation('/');
     },
     onError: (error: any) => {
       toast({
@@ -155,10 +156,8 @@ export function AuthPage() {
         description: `Account created for ${data.user.username}`,
       });
       
-      // Safari-compatible redirect with delay
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 100);
+      // Use React Router navigation to prevent white screen flash
+      setLocation('/');
     },
     onError: (error: any) => {
       toast({
@@ -317,7 +316,12 @@ export function AuthPage() {
                     className="w-full bg-orange-500 hover:bg-orange-600"
                     disabled={loginMutation.isPending}
                   >
-                    {loginMutation.isPending ? 'Signing in...' : 'Sign In'}
+                    {loginMutation.isPending ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Signing in...
+                      </>
+                    ) : 'Sign In'}
                   </Button>
                   
                   <div className="text-center">
@@ -485,7 +489,12 @@ export function AuthPage() {
                     className="w-full bg-orange-500 hover:bg-orange-600"
                     disabled={registerMutation.isPending}
                   >
-                    {registerMutation.isPending ? 'Creating Account...' : 'Create Account'}
+                    {registerMutation.isPending ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Creating Account...
+                      </>
+                    ) : 'Create Account'}
                   </Button>
                 </form>
               </Form>
