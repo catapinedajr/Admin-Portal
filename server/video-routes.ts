@@ -12,15 +12,12 @@ import {
 } from "@shared/schema";
 import { eq, and, desc, count, avg, sum } from "drizzle-orm";
 
-export function registerVideoRoutes(app: Express) {
+export function registerVideoRoutes(app: Express, requireAuth?: any) {
   
   // Track video progress and award completion rewards
-  app.post('/api/videos/progress', async (req: any, res) => {
+  app.post('/api/videos/progress', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user?.id;
-      if (!userId) {
-        return res.status(401).json({ message: 'Unauthorized' });
-      }
 
       const { videoId, progress, completed } = req.body;
 
@@ -200,12 +197,9 @@ export function registerVideoRoutes(app: Express) {
   });
 
   // Add video reaction
-  app.post('/api/videos/reactions', async (req: any, res) => {
+  app.post('/api/videos/reactions', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user?.id;
-      if (!userId) {
-        return res.status(401).json({ message: 'Unauthorized' });
-      }
 
       const { videoId, reactionType } = req.body;
 
@@ -269,7 +263,15 @@ export function registerVideoRoutes(app: Express) {
   });
 
   // Get video reactions
-  app.get('/api/videos/:videoId/reactions', async (req: any, res) => {
+  app.get('/api/videos/:videoId/reactions', (req: any, res: any, next: any) => {
+    // Try to get user if authenticated, but don't require auth
+    if (requireAuth && req.headers.authorization) {
+      requireAuth(req, res, next);
+    } else {
+      req.user = null;
+      next();
+    }
+  }, async (req: any, res) => {
     try {
       const { videoId } = req.params;
       const userId = req.user?.id;
@@ -322,12 +324,9 @@ export function registerVideoRoutes(app: Express) {
   });
 
   // Add video comment
-  app.post('/api/videos/comments', async (req: any, res) => {
+  app.post('/api/videos/comments', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user?.id;
-      if (!userId) {
-        return res.status(401).json({ message: 'Unauthorized' });
-      }
 
       const { videoId, content, timestamp } = req.body;
 
@@ -378,7 +377,15 @@ export function registerVideoRoutes(app: Express) {
   });
 
   // Get video comments
-  app.get('/api/videos/:videoId/comments', async (req: any, res) => {
+  app.get('/api/videos/:videoId/comments', (req: any, res: any, next: any) => {
+    // Try to get user if authenticated, but don't require auth
+    if (requireAuth && req.headers.authorization) {
+      requireAuth(req, res, next);
+    } else {
+      req.user = null;
+      next();
+    }
+  }, async (req: any, res) => {
     try {
       const { videoId } = req.params;
       const userId = req.user?.id;
@@ -423,12 +430,9 @@ export function registerVideoRoutes(app: Express) {
   });
 
   // Like comment
-  app.post('/api/videos/comments/like', async (req: any, res) => {
+  app.post('/api/videos/comments/like', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user?.id;
-      if (!userId) {
-        return res.status(401).json({ message: 'Unauthorized' });
-      }
 
       const { commentId } = req.body;
 
