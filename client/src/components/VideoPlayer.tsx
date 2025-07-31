@@ -66,10 +66,10 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
     enabled: isOpen,
   });
 
-  // Fetch video comments
+  // Fetch video comments - always load when dialog is open
   const { data: comments } = useQuery<VideoComment[]>({
     queryKey: [`/api/videos/${videoId}/comments`],
-    enabled: isOpen && showComments,
+    enabled: isOpen,
   });
 
   // Track video progress
@@ -172,12 +172,16 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
   };
 
   const togglePip = () => {
+    // Calculate approximate current time based on progress (assuming 10 minute video)
+    const estimatedCurrentTime = Math.floor((progress / 100) * 600); // 600 seconds = 10 minutes
+    
     // Set up global PIP video
     setPipVideo({
       videoId,
       title,
       creator,
       progress,
+      currentTime: estimatedCurrentTime,
       onExpand: () => {
         // Reopen the main dialog
         // Already handled by parent component state
@@ -301,7 +305,8 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
                 height: '0' // Forces flex-1 to work properly
               }}
             >
-              {comments?.map((comment) => (
+              {comments && comments.length > 0 ? (
+                comments.map((comment) => (
                 <Card key={comment.id} className="bg-zinc-800/30 border-zinc-700">
                   <CardContent className="p-3">
                     <div className="flex items-start justify-between mb-2">
@@ -330,7 +335,13 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+                ))
+              ) : (
+                <div className="text-center text-zinc-400 py-8">
+                  <MessageCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                  <p>No comments yet. Be the first to share your thoughts!</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
