@@ -66,10 +66,10 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
     enabled: isOpen,
   });
 
-  // Fetch video comments - always load when dialog is open
+  // Fetch video comments
   const { data: comments } = useQuery<VideoComment[]>({
     queryKey: [`/api/videos/${videoId}/comments`],
-    enabled: isOpen,
+    enabled: isOpen && showComments,
   });
 
   // Track video progress
@@ -127,7 +127,36 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
     },
   });
 
-  // Progress tracking disabled for seamless PIP experience
+  // Simulate progress tracking (in real implementation, this would come from YouTube API)
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const interval = setInterval(() => {
+      setProgress(prev => {
+        const newProgress = Math.min(prev + 1, 100);
+        
+        // Mark as completed at 90% progress
+        if (newProgress >= 90 && !isCompleted) {
+          setIsCompleted(true);
+          trackProgressMutation.mutate({
+            videoId,
+            progress: newProgress,
+            completed: true,
+          });
+        } else if (newProgress > prev) {
+          trackProgressMutation.mutate({
+            videoId,
+            progress: newProgress,
+            completed: false,
+          });
+        }
+        
+        return newProgress;
+      });
+    }, 2000); // Update every 2 seconds for demo
+
+    return () => clearInterval(interval);
+  }, [isOpen, isCompleted, videoId]);
 
   const handleReaction = (type: string) => {
     addReactionMutation.mutate(type);
@@ -143,14 +172,16 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
   };
 
   const togglePip = () => {
-    // Set up global PIP video without time tracking to avoid restarts
+    // Set up global PIP video
     setPipVideo({
       videoId,
       title,
       creator,
-      duration,
-      note,
       progress,
+      onExpand: () => {
+        // Reopen the main dialog
+        // Already handled by parent component state
+      },
       onClose: () => {
         onClose();
       }
@@ -168,26 +199,25 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-7xl w-[95vw] h-[95vh] bg-zinc-900 border-zinc-700 p-0 overflow-hidden">
+        <DialogContent className="max-w-6xl w-[95vw] max-h-[95vh] h-auto lg:h-[90vh] bg-zinc-900 border-zinc-700 p-0 overflow-hidden">
         <div className="flex flex-col lg:flex-row h-full">
           {/* Video Section */}
           <div className="flex-1 flex flex-col">
             <DialogHeader className="p-3 lg:p-4 border-b border-zinc-700">
               <div className="flex items-start justify-between gap-2">
-                <div className="flex gap-2 flex-shrink-0">
-                  <Button size="sm" variant="ghost" onClick={onClose} className="bg-zinc-800 hover:bg-zinc-700">
-                    <X className="w-4 h-4" />
-                  </Button>
+                <div className="flex-1 min-w-0">
+                  <DialogTitle className="text-lg lg:text-xl line-clamp-2">{title}</DialogTitle>
+                  <p className="text-zinc-400 text-sm">{creator} • {duration}</p>
+                </div>
+                <div className="flex flex-col lg:flex-row gap-1 lg:gap-2 flex-shrink-0">
                   <Button size="sm" variant="ghost" onClick={togglePip} className="flex items-center justify-center gap-1 bg-orange-600/20 hover:bg-orange-600/30 border border-orange-500/50">
                     <PictureInPicture className="w-4 h-4" />
                     <span className="hidden sm:inline text-xs">Float</span>
                   </Button>
+                  <Button size="sm" variant="ghost" onClick={onClose} className="hidden lg:flex bg-zinc-800 hover:bg-zinc-700">
+                    <X className="w-4 h-4" />
+                  </Button>
                 </div>
-                <div className="flex-1 min-w-0 text-center">
-                  <DialogTitle className="text-lg lg:text-xl line-clamp-2">{title}</DialogTitle>
-                  <p className="text-zinc-400 text-sm">{creator} • {duration}</p>
-                </div>
-                <div className="w-20"></div> {/* Spacer for balance */}
               </div>
             </DialogHeader>
 
@@ -203,11 +233,29 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
               />
             </div>
 
-            {/* Simple Reactions Bar */}
+            {/* Progress & Reactions - Mobile Optimized */}
             <div className="p-3 lg:p-4 border-b border-zinc-700">
-              <div className="flex items-center justify-between">
-                <div className="flex gap-3">
-                  {reactions?.slice(0, 2).map((reaction) => {
+              <div className="flex flex-col gap-3">
+                {/* Progress */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-zinc-400">Progress: {Math.round(progress)}%</span>
+                    {isCompleted && <span className="text-green-400">✅ Completed</span>}
+                    {rewardEarned > 0 && (
+                      <span className="text-orange-400">⚡ +{rewardEarned} sats</span>
+                    )}
+                  </div>
+                  <div className="w-full bg-zinc-700 rounded-full h-2">
+                    <div
+                      className="bg-orange-500 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Reactions - Mobile Grid */}
+                <div className="grid grid-cols-4 gap-2">
+                  {reactions?.map((reaction) => {
                     const ReactionIcon = reactionIcons[reaction.type].icon;
                     return (
                       <Button
@@ -215,41 +263,71 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
                         size="sm"
                         variant={reaction.userReacted ? "secondary" : "ghost"}
                         onClick={() => handleReaction(reaction.type)}
-                        className="flex items-center gap-2"
+                        className="flex flex-col items-center gap-1 h-auto py-2 px-1"
                       >
                         <ReactionIcon className={`w-4 h-4 ${reactionIcons[reaction.type].color}`} />
-                        <span className="text-sm">{reaction.count}</span>
+                        <span className="text-xs">{reaction.count}</span>
                       </Button>
                     );
                   })}
                 </div>
-                <div className="flex items-center gap-2">
-                  {isCompleted && <span className="text-green-400 text-sm">✅ Completed</span>}
-                  {rewardEarned > 0 && (
-                    <span className="text-orange-400 text-sm">⚡ +{rewardEarned} sats</span>
-                  )}
-                </div>
               </div>
+            </div>
+
+            {/* Personal Note - Mobile Optimized */}
+            <div className="p-3 lg:p-4 bg-zinc-800/50 border-b border-zinc-700 lg:border-b-0">
+              <h4 className="text-sm font-medium mb-2">Why I chose this video:</h4>
+              <p className="text-sm text-zinc-300 italic">"{note}"</p>
+            </div>
+
+            {/* Comments Toggle for Mobile */}
+            <div className="lg:hidden p-3 border-b border-zinc-700 flex gap-2">
+              <Button
+                onClick={() => setShowComments(!showComments)}
+                variant="outline"
+                className="flex-1 flex items-center justify-center gap-2"
+              >
+                <MessageCircle className="w-4 h-4" />
+                {showComments ? 'Hide Comments' : 'Show Comments'}
+                {stats && <span className="text-zinc-400">({stats.totalComments})</span>}
+              </Button>
+              <Button size="sm" variant="ghost" onClick={onClose} className="px-3">
+                <X className="w-4 h-4" />
+              </Button>
             </div>
           </div>
 
-          {/* Comments Section - Full Height */}
-          <div className="w-full lg:w-96 border-t lg:border-t-0 lg:border-l border-zinc-700 flex flex-col h-full">
-            {/* Comments Header */}
-            <div className="p-4 border-b border-zinc-700 flex-shrink-0">
-              <h3 className="font-medium text-lg">Comments</h3>
+          {/* Comments Sidebar - Mobile Responsive */}
+          <div className={`${showComments ? 'block' : 'hidden'} lg:block w-full lg:w-80 border-t lg:border-t-0 lg:border-l border-zinc-700 flex flex-col h-[60vh] lg:h-full`}>
+            <div className="p-4 border-b border-zinc-700">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="font-medium">Discussion</h3>
+                <div className="flex gap-1">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setShowComments(!showComments)}
+                    className="lg:hidden"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
               {stats && (
-                <p className="text-sm text-zinc-400 mt-1">{stats.totalComments} comments</p>
+                <div className="text-xs text-zinc-400 space-y-1">
+                  <div>{stats.totalViews} views • {stats.completionCount} completed</div>
+                  <div>{stats.completionRate}% completion rate</div>
+                </div>
               )}
             </div>
 
             {/* Add Comment */}
-            <div className="p-4 border-b border-zinc-700 flex-shrink-0">
+            <div className="p-4 border-b border-zinc-700">
               <Textarea
                 placeholder="Share your thoughts..."
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                className="mb-3 min-h-[100px] bg-zinc-800 border-zinc-600 resize-none"
+                className="mb-2 min-h-[80px] bg-zinc-800 border-zinc-600"
               />
               <Button
                 size="sm"
@@ -261,17 +339,18 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
               </Button>
             </div>
 
-            {/* Comments List - Maximum Space */}
+            {/* Comments List - Scrollable */}
             <div 
-              className="flex-1 overflow-y-auto p-4 space-y-4" 
+              className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-4" 
               style={{
+                maxHeight: 'calc(100vh - 500px)', 
+                minHeight: '300px', 
+                overscrollBehavior: 'contain', 
                 WebkitOverflowScrolling: 'touch',
-                scrollbarWidth: 'thin',
-                height: '0' // Forces flex-1 to work properly
+                scrollbarWidth: 'thin'
               }}
             >
-              {comments && comments.length > 0 ? (
-                comments.map((comment) => (
+              {comments?.map((comment) => (
                 <Card key={comment.id} className="bg-zinc-800/30 border-zinc-700">
                   <CardContent className="p-3">
                     <div className="flex items-start justify-between mb-2">
@@ -300,13 +379,7 @@ export function VideoPlayer({ videoId, title, creator, duration, note, isOpen, o
                     </div>
                   </CardContent>
                 </Card>
-                ))
-              ) : (
-                <div className="text-center text-zinc-400 py-8">
-                  <MessageCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p>No comments yet. Be the first to share your thoughts!</p>
-                </div>
-              )}
+              ))}
             </div>
           </div>
         </div>
