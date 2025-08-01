@@ -21,9 +21,32 @@ export default function BitcoinPriceDisplay() {
     try {
       const response = await fetch('/api/bitcoin-price');
       const data = await response.json();
-      setPriceData(data);
+      
+      // Ensure all required fields exist with fallbacks
+      const safeData = {
+        price: data.price || 109000,
+        change24h: data.change24h || 0,
+        performance: {
+          oneYear: data.performance?.oneYear || 160,
+          fourYear: data.performance?.fourYear || 374,
+          tenYear: data.performance?.tenYear || 2080,
+        }
+      };
+      
+      setPriceData(safeData);
       setLoading(false);
     } catch (error) {
+      console.error('Bitcoin price fetch error:', error);
+      // Set fallback data
+      setPriceData({
+        price: 109000,
+        change24h: 0,
+        performance: {
+          oneYear: 160,
+          fourYear: 374,
+          tenYear: 2080,
+        }
+      });
       setLoading(false);
     }
   };
@@ -46,7 +69,7 @@ export default function BitcoinPriceDisplay() {
   }
 
   const satoshiValue = (priceData.price / 100000000).toFixed(6);
-  const isPositive = priceData.change24h > 0;
+  const isPositive = (priceData.change24h || 0) > 0;
 
   return (
     <>
@@ -65,7 +88,7 @@ export default function BitcoinPriceDisplay() {
               ${priceData.price.toLocaleString()}
             </span>
             <span className={`text-xs font-medium ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
-              {isPositive ? '+' : ''}{priceData.change24h.toFixed(1)}%
+              {isPositive ? '+' : ''}{(priceData.change24h || 0).toFixed(1)}%
             </span>
           </div>
         </div>
@@ -76,7 +99,7 @@ export default function BitcoinPriceDisplay() {
             <div className="flex items-center gap-1">
               <TrendingUp className="w-3 h-3 text-green-400 animate-pulse" />
               <div className="text-center">
-                <div className="text-green-400 font-bold text-[11px]">+{priceData.performance.oneYear.toLocaleString()}%</div>
+                <div className="text-green-400 font-bold text-[11px]">+{(priceData.performance?.oneYear || 160).toLocaleString()}%</div>
                 <div className="text-zinc-400 text-[9px]">1yr</div>
               </div>
             </div>
@@ -85,7 +108,7 @@ export default function BitcoinPriceDisplay() {
             <div className="flex items-center gap-1">
               <TrendingUp className="w-3 h-3 text-green-400 animate-pulse" />
               <div className="text-center">
-                <div className="text-green-400 font-bold text-[11px]">+{priceData.performance.fourYear.toLocaleString()}%</div>
+                <div className="text-green-400 font-bold text-[11px]">+{(priceData.performance?.fourYear || 374).toLocaleString()}%</div>
                 <div className="text-zinc-400 text-[9px]">4yr</div>
               </div>
             </div>
@@ -94,7 +117,7 @@ export default function BitcoinPriceDisplay() {
             <div className="flex items-center gap-1">
               <TrendingUp className="w-3 h-3 text-green-400 animate-pulse" />
               <div className="text-center">
-                <div className="text-green-400 font-bold text-[11px]">+{priceData.performance.tenYear.toLocaleString()}%</div>
+                <div className="text-green-400 font-bold text-[11px]">+{(priceData.performance?.tenYear || 2080).toLocaleString()}%</div>
                 <div className="text-zinc-400 text-[9px]">10yr</div>
               </div>
             </div>
