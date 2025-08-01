@@ -322,43 +322,6 @@
   .border-b-3 {
     border-bottom-width: 3px;
   }
-}
-
-/* Enhanced touch feedback - works alongside hover, doesn't replace it */
-@media (max-width: 768px) {
-  /* Add tactile feedback for touch interactions while preserving hover */
-  .group:active .group-hover\:scale-110 {
-    transform: scale(1.08) !important;
-    transition: transform 100ms ease-out !important;
-  }
-  
-  .group:active .group-hover\:text-orange-400 {
-    color: rgb(251 146 60) !important;
-    transition: color 100ms ease-out !important;
-  }
-  
-  /* Quick tactile feedback on card press */
-  .hover\:scale-\[1\.02\]:active {
-    transform: scale(1.00) !important;
-    transition: transform 100ms ease-out !important;
-  }
-  
-  .hover\:scale-\[1\.03\]:active {
-    transform: scale(1.01) !important;
-    transition: transform 100ms ease-out !important;
-  }
-}
-
-/* Enhanced touch targets for mobile accessibility */
-@media (max-width: 768px) {
-  .touch-target,
-  button,
-  [role="button"],
-  input[type="button"],
-  input[type="submit"] {
-    min-height: 44px;
-    min-width: 44px;
-  }
   
   .hover-lift {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

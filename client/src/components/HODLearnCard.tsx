@@ -38,23 +38,19 @@ export default function HODLearnCard({
       bg-black border-zinc-700/50 
       hover:bg-zinc-800/50 hover:border-zinc-600/50
       hover:shadow-md hover:shadow-zinc-500/10 hover:scale-[1.01]
-      active:bg-zinc-800/60 active:border-zinc-600/60 active:scale-100
-      transition-all duration-200 touch-manipulation
     `,
     interactive: `
       bg-black border-zinc-700/50 
       hover:bg-zinc-800/50 hover:border-orange-500/30
       hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02]
-      active:bg-zinc-800/60 active:border-orange-500/40 active:shadow-lg active:shadow-orange-500/15 active:scale-[1.01]
-      cursor-pointer transition-all duration-200 touch-manipulation select-none
+      cursor-pointer
     `,
     premium: `
       bg-black border-zinc-700/50
       hover:bg-zinc-800/50 hover:border-orange-500/40
       hover:shadow-xl hover:shadow-orange-500/20 hover:scale-[1.03]
       hover:ring-1 hover:ring-orange-500/30
-      active:bg-zinc-800/60 active:border-orange-500/50 active:shadow-xl active:shadow-orange-500/25 active:scale-[1.02] active:ring-1 active:ring-orange-500/40
-      cursor-pointer transition-all duration-200 touch-manipulation select-none
+      cursor-pointer
     `
   };
   

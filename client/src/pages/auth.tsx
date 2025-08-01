@@ -61,24 +61,6 @@ export function AuthPage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
-  // Quick Demo Login for Safari/iPhone testing
-  const handleQuickLogin = () => {
-    try {
-      localStorage.setItem('hodlearn_session', 'demo-session-' + Date.now());
-      toast({
-        title: "Demo Login Successful",
-        description: "Welcome to HODLearn!",
-      });
-      setLocation('/');
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Cannot access storage. Please try refreshing the page.",
-        variant: "destructive"
-      });
-    }
-  };
-
   // Check if we have a reset token in the URL
   const urlParams = new URLSearchParams(window.location.search);
   const resetToken = urlParams.get('token');
@@ -257,9 +239,10 @@ export function AuthPage() {
       </div>
       
       <div className="w-full max-w-md relative z-10">
-        {/* App Branding */}
+        {/* Welcome Message */}
         <div className="text-center mb-12">
           <div className="space-y-3">
+            <h1 className="text-4xl md:text-5xl font-bold text-orange-500 mb-6">Welcome</h1>
             <p className="text-xl md:text-2xl text-zinc-300 font-medium">Stop wondering about Bitcoin</p>
             <p className="text-lg md:text-xl text-zinc-400">Start Learning</p>
             <div className="text-center space-y-1 mt-8">
@@ -273,7 +256,7 @@ export function AuthPage() {
         <Card className="border-zinc-700 bg-zinc-800 shadow-xl">
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-2xl font-bold text-zinc-200">
-              {authMode === 'login' && 'Sign In'}
+              {authMode === 'login' && 'Welcome Back'}
               {authMode === 'register' && 'Create Your Account'}
               {authMode === 'forgot-password' && 'Reset Password'}
               {authMode === 'reset-password' && 'Set New Password'}
@@ -339,16 +322,6 @@ export function AuthPage() {
                         Signing in...
                       </>
                     ) : 'Sign In'}
-                  </Button>
-                  
-                  {/* Demo Login Button */}
-                  <Button 
-                    type="button"
-                    onClick={handleQuickLogin}
-                    className="w-full bg-blue-600 hover:bg-blue-700"
-                    variant="secondary"
-                  >
-                    Quick Demo Access
                   </Button>
                   
                   <div className="text-center">
