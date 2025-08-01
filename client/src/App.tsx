@@ -24,22 +24,48 @@ import { AuthPage } from "@/pages/auth";
 import { TermsPage } from "@/pages/terms";
 import { PrivacyPage } from "@/pages/privacy";
 
-// Authentication guard
+// Authentication guard - Safari compatible
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const [, setLocation] = useLocation();
   const [hasRedirected, setHasRedirected] = useState(false);
+  const [sessionChecked, setSessionChecked] = useState(false);
   
-  // Check session first before making API calls
-  const sessionId = localStorage.getItem('hodlearn_session');
+  // Safari localStorage compatibility check
+  let sessionId = null;
+  try {
+    sessionId = localStorage.getItem('hodlearn_session');
+  } catch (error) {
+    console.warn('localStorage not available in Safari private mode');
+  }
   
   const { data: user, isLoading, error } = useQuery({
     queryKey: ["/api/user"],
     retry: false,
-    enabled: !!sessionId && !hasRedirected, // Only run query if we have a session
+    enabled: sessionChecked && !!sessionId && !hasRedirected,
+    // Fallback for demo sessions
+    queryFn: async () => {
+      if (sessionId && sessionId.startsWith('demo-session-')) {
+        return {
+          id: 1,
+          username: 'demo-user',
+          email: 'demo@hodlearn.com',
+          currentStreak: 1,
+          longestStreak: 1,
+          completedLessons: 0
+        };
+      }
+      // Regular API call for real sessions
+      const response = await fetch('/api/user');
+      if (!response.ok) throw new Error('Failed to fetch user');
+      return response.json();
+    }
   });
   
   useEffect(() => {
-    // If no session ID, redirect immediately
+    // Set sessionChecked after component mounts (Safari compatibility)
+    setSessionChecked(true);
+    
+    // If no session ID or localStorage fails, redirect to auth
     if (!sessionId && !hasRedirected) {
       setHasRedirected(true);
       setLocation('/auth');
@@ -47,21 +73,27 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     }
     
     // If we have session but API fails, also redirect
-    if (sessionId && !isLoading && (error || !user) && !hasRedirected) {
+    if (sessionId && !isLoading && (error || !user) && !hasRedirected && sessionChecked) {
       // Clear invalid session
-      localStorage.removeItem('hodlearn_session');
+      try {
+        localStorage.removeItem('hodlearn_session');
+      } catch (e) {
+        // Ignore if localStorage is not available
+      }
       setHasRedirected(true);
       setLocation('/auth');
     }
-  }, [sessionId, error, user, isLoading, setLocation, hasRedirected]);
+  }, [sessionId, error, user, isLoading, setLocation, hasRedirected, sessionChecked]);
 
-  // Show loading while checking auth
-  if (!sessionId || isLoading || hasRedirected) {
+  // Show loading while checking auth or if redirecting
+  if (!sessionChecked || isLoading || hasRedirected || (!sessionId && !hasRedirected)) {
     return (
       <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mb-4"></div>
-          <div className="text-zinc-400">Loading...</div>
+          <div className="text-zinc-400">
+            {!sessionChecked ? 'Initializing...' : hasRedirected ? 'Redirecting...' : 'Loading...'}
+          </div>
         </div>
       </div>
     );
@@ -94,7 +126,7 @@ function NewUserRedirect() {
       // Only redirect to Money page if:
       // 1. First-time visitor AND 
       // 2. On Day 1 (hasn't progressed past the first day)
-      if (!hasVisited && nextAvailableDay && 'dayIndex' in nextAvailableDay && nextAvailableDay.dayIndex === 1) {
+      if (!hasVisited && nextAvailableDay && typeof nextAvailableDay === 'object' && 'dayIndex' in nextAvailableDay && nextAvailableDay.dayIndex === 1) {
         localStorage.setItem('hodlearn-has-visited', 'true');
         setLocation('/money');
         return;
@@ -127,17 +159,37 @@ function Router() {
         <Route path="/terms" component={TermsPage} />
         <Route path="/privacy" component={PrivacyPage} />
         <Route path="/onboarding" component={Onboarding} />
-        <Route path="/learn" component={LearnPage} />
-        <Route path="/money" component={FinancePage} />
-        <Route path="/simulators" component={SimulatorsPage} />
-        <Route path="/community" component={CommunityPage} />
-        <Route path="/more" component={MorePage} />
-        <Route path="/account" component={AccountPage} />
-        <Route path="/wallet" component={WalletPage} />
-        <Route path="/wallet/rewards" component={WalletPage} />
-
         <Route path="/about" component={About} />
-        <Route path="/" component={NewUserRedirect} />
+        
+        {/* Protected routes wrapped with AuthGuard */}
+        <Route path="/learn">
+          <AuthGuard><LearnPage /></AuthGuard>
+        </Route>
+        <Route path="/money">
+          <AuthGuard><FinancePage /></AuthGuard>
+        </Route>
+        <Route path="/simulators">
+          <AuthGuard><SimulatorsPage /></AuthGuard>
+        </Route>
+        <Route path="/community">
+          <AuthGuard><CommunityPage /></AuthGuard>
+        </Route>
+        <Route path="/more">
+          <AuthGuard><MorePage /></AuthGuard>
+        </Route>
+        <Route path="/account">
+          <AuthGuard><AccountPage /></AuthGuard>
+        </Route>
+        <Route path="/wallet">
+          <AuthGuard><WalletPage /></AuthGuard>
+        </Route>
+        <Route path="/wallet/rewards">
+          <AuthGuard><WalletPage /></AuthGuard>
+        </Route>
+
+        <Route path="/">
+          <AuthGuard><NewUserRedirect /></AuthGuard>
+        </Route>
         <Route component={NotFound} />
       </Switch>
     </AppContextProvider>
@@ -150,9 +202,7 @@ function App() {
       <TooltipProvider>
         <SubscriptionProvider>
           <PipProvider>
-            <AuthGuard>
-              <Router />
-            </AuthGuard>
+            <Router />
             <Toaster />
           </PipProvider>
         </SubscriptionProvider>

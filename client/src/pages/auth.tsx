@@ -61,6 +61,24 @@ export function AuthPage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
+  // Quick Demo Login for Safari/iPhone testing
+  const handleQuickLogin = () => {
+    try {
+      localStorage.setItem('hodlearn_session', 'demo-session-' + Date.now());
+      toast({
+        title: "Demo Login Successful",
+        description: "Welcome to HODLearn!",
+      });
+      setLocation('/');
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Cannot access storage. Please try refreshing the page.",
+        variant: "destructive"
+      });
+    }
+  };
+
   // Check if we have a reset token in the URL
   const urlParams = new URLSearchParams(window.location.search);
   const resetToken = urlParams.get('token');
@@ -322,6 +340,16 @@ export function AuthPage() {
                         Signing in...
                       </>
                     ) : 'Sign In'}
+                  </Button>
+                  
+                  {/* Demo Login Button */}
+                  <Button 
+                    type="button"
+                    onClick={handleQuickLogin}
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    variant="secondary"
+                  >
+                    Quick Demo Access
                   </Button>
                   
                   <div className="text-center">
