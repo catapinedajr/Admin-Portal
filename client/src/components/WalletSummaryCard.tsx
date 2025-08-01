@@ -54,7 +54,7 @@ export default function WalletSummaryCard() {
 
   if (isLoading) {
     return (
-      <Card className="w-full cursor-pointer bg-black hover:bg-zinc-800/50 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] group border border-zinc-700/50 hover:border-orange-500/30">
+      <Card className="w-full cursor-pointer bg-black hover:bg-zinc-800/50 active:bg-zinc-800/60 transition-all duration-200 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] active:scale-[1.01] group border border-zinc-700/50 hover:border-orange-500/30 active:border-orange-500/40 touch-manipulation select-none">
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -75,7 +75,7 @@ export default function WalletSummaryCard() {
 
   if (!walletData) {
     return (
-      <Card className="w-full cursor-pointer bg-black hover:bg-zinc-800/50 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] group border border-zinc-700/50 hover:border-orange-500/30" onClick={handleCardClick}>
+      <Card className="w-full cursor-pointer bg-black hover:bg-zinc-800/50 active:bg-zinc-800/60 transition-all duration-200 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] active:scale-[1.01] group border border-zinc-700/50 hover:border-orange-500/30 active:border-orange-500/40 touch-manipulation select-none" onClick={handleCardClick}>
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -97,7 +97,7 @@ export default function WalletSummaryCard() {
   const todaysEarnings = getTodaysEarnings();
 
   return (
-    <Card className="w-full cursor-pointer bg-black hover:bg-zinc-800/50 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] group border border-zinc-700/50 hover:border-orange-500/30" onClick={handleCardClick}>
+    <Card className="w-full cursor-pointer bg-black hover:bg-zinc-800/50 active:bg-zinc-800/60 transition-all duration-200 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02] active:scale-[1.01] group border border-zinc-700/50 hover:border-orange-500/30 active:border-orange-500/40 touch-manipulation select-none" onClick={handleCardClick}>
       <CardContent className="p-5">
         <div className="space-y-4">
           {/* Header with animated coin and performance highlight */}

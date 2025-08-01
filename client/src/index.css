@@ -322,6 +322,54 @@
   .border-b-3 {
     border-bottom-width: 3px;
   }
+}
+
+/* Mobile-first card interactions for touch devices */
+@media (hover: none) and (pointer: coarse) {
+  /* Override hover states on touch devices and use active states instead */
+  .group:hover .group-hover\:scale-110 {
+    transform: none !important;
+  }
+  
+  .group:hover .group-hover\:animate-pulse {
+    animation: none !important;
+  }
+  
+  .group:hover .group-hover\:text-orange-400 {
+    color: inherit !important;
+  }
+  
+  /* Active states for touch feedback */
+  .group:active .group-hover\:scale-110 {
+    transform: scale(1.05) !important;
+    transition: transform 150ms ease-out !important;
+  }
+  
+  .group:active .group-hover\:text-orange-400 {
+    color: rgb(251 146 60) !important;
+    transition: color 150ms ease-out !important;
+  }
+  
+  /* Card touch feedback */
+  .hover\:scale-\[1\.02\]:active {
+    transform: scale(1.01) !important;
+  }
+  
+  .hover\:scale-\[1\.03\]:active {
+    transform: scale(1.02) !important;
+  }
+}
+
+/* Enhanced touch targets for mobile accessibility */
+@media (max-width: 768px) {
+  .touch-target,
+  button,
+  [role="button"],
+  input[type="button"],
+  input[type="submit"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
   
   .hover-lift {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
