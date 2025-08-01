@@ -324,39 +324,28 @@
   }
 }
 
-/* Mobile-first card interactions for touch devices */
-@media (hover: none) and (pointer: coarse) {
-  /* Override hover states on touch devices and use active states instead */
-  .group:hover .group-hover\:scale-110 {
-    transform: none !important;
-  }
-  
-  .group:hover .group-hover\:animate-pulse {
-    animation: none !important;
-  }
-  
-  .group:hover .group-hover\:text-orange-400 {
-    color: inherit !important;
-  }
-  
-  /* Active states for touch feedback */
+/* Enhanced touch feedback - works alongside hover, doesn't replace it */
+@media (max-width: 768px) {
+  /* Add tactile feedback for touch interactions while preserving hover */
   .group:active .group-hover\:scale-110 {
-    transform: scale(1.05) !important;
-    transition: transform 150ms ease-out !important;
+    transform: scale(1.08) !important;
+    transition: transform 100ms ease-out !important;
   }
   
   .group:active .group-hover\:text-orange-400 {
     color: rgb(251 146 60) !important;
-    transition: color 150ms ease-out !important;
+    transition: color 100ms ease-out !important;
   }
   
-  /* Card touch feedback */
+  /* Quick tactile feedback on card press */
   .hover\:scale-\[1\.02\]:active {
-    transform: scale(1.01) !important;
+    transform: scale(1.00) !important;
+    transition: transform 100ms ease-out !important;
   }
   
   .hover\:scale-\[1\.03\]:active {
-    transform: scale(1.02) !important;
+    transform: scale(1.01) !important;
+    transition: transform 100ms ease-out !important;
   }
 }
 
