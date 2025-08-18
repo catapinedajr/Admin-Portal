@@ -63,7 +63,7 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning, dayComple
     retry: false,
   });
   
-  const userId = user?.id || 1; // Fallback to user ID 1 for testing
+  const userId = (user as any)?.id || 1; // Fallback to user ID 1 for testing
 
   // Fetch quiz questions for today
   const { data: questions = [], isLoading: loadingQuestions, error: questionsError } = useQuery({

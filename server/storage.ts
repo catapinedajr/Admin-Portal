@@ -164,6 +164,7 @@ export interface IStorage {
   getUserProgress(userId: number, date: string): Promise<UserProgress | undefined>;
   getUserProgressByDay(userId: number, dayIndex: number): Promise<UserProgress | undefined>;
   getUserProgressForWeek(userId: number, startDate: string): Promise<UserProgress[]>;
+  updateUserProgress(userId: number, progress: Partial<UserProgress>): Promise<UserProgress>;
   createOrUpdateUserProgress(progress: InsertUserProgress): Promise<UserProgress>;
   
   // Day completion and access control methods
@@ -223,6 +224,23 @@ export interface IStorage {
   getUserWalletAchievements(userId: number): Promise<WalletAchievement[]>;
   unlockWalletAchievement(achievement: InsertWalletAchievement): Promise<WalletAchievement>;
   getTotalEarningsValue(userId: number, currentBitcoinPrice: number): Promise<{ totalSats: number; totalUsdValue: number }>;
+
+  // Video method declarations
+  getCuratedVideos(): Promise<CuratedVideo[]>;
+  
+  // Treasury and sovereign methods
+  getTreasuryCompanyById(id: number): Promise<TreasuryCompany | undefined>;
+  getSovereignAdoptionById(id: number): Promise<SovereignAdoption | undefined>;
+  getSovereignAdoptionsByType(type: string): Promise<SovereignAdoption[]>;
+  
+  // Weekly topic methods
+  getCurrentWeeklyTopic(): Promise<any>;
+  getWeeklyTopic(weekId: number): Promise<any>;
+  getAllWeeklyTopics(): Promise<any[]>;
+  getUserWeeklyProgress(userId: number, weekId: number): Promise<any>;
+  createOrUpdateWeeklyProgress(userId: number, weekId: number, progress: any): Promise<any>;
+  updateWeeklyProgress(userId: number, weekId: number, progress: any): Promise<any>;
+  completeWeeklyTopic(userId: number, weekId: number): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1087,16 +1105,7 @@ export class DatabaseStorage implements IStorage {
     return newAchievement;
   }
 
-  async getTotalEarningsValue(userId: number, currentBitcoinPrice: number): Promise<{ totalSats: number; totalUsdValue: number }> {
-    const wallet = await this.getUserWalletProgress(userId);
-    const totalSats = wallet?.totalSatoshisEarned || 0;
-    const totalUsdValue = (totalSats / 100000000) * currentBitcoinPrice; // Convert sats to BTC, then to USD
-    
-    return {
-      totalSats,
-      totalUsdValue
-    };
-  }
+  // Removed duplicate - method implemented later in class
 
   // Streak reward system methods
   async checkAndAwardStreakBonuses(userId: number, dayIndex: number, currentBitcoinPrice: number): Promise<WalletEarning[]> {
@@ -1295,25 +1304,75 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, userId));
   }
 
-  async updateWalletTotals(userId: number): Promise<void> {
-    // Calculate total earnings from all wallet earnings
-    const earnings = await db
-      .select()
-      .from(walletEarnings)
-      .where(eq(walletEarnings.userId, userId));
+  // Removed duplicate - method implemented later in class
 
+  async getTotalEarningsValue(userId: number, currentBitcoinPrice: number): Promise<{ totalSats: number; totalUsdValue: number }> {
+    const earnings = await this.getUserWalletEarnings(userId);
     const totalSats = earnings.reduce((sum, earning) => sum + earning.satoshisEarned, 0);
-
-    // Update or create wallet progress record
-    await this.createOrUpdateUserWalletProgress({
-      userId,
-      totalSatoshisEarned: totalSats,
-      currentStreakMultiplier: "1.00",
-      lastEarningDate: new Date().toISOString().split('T')[0]
-    });
+    const totalUsdValue = (totalSats / 100000000) * currentBitcoinPrice;
+    
+    return { totalSats, totalUsdValue };
   }
 
+  // Missing interface method implementations
+  async updateUserProgress(userId: number, progress: Partial<UserProgress>): Promise<UserProgress> {
+    const [updated] = await db
+      .update(userProgress)
+      .set({
+        ...progress
+        // Note: updatedAt not in userProgress schema
+      })
+      .where(eq(userProgress.userId, userId))
+      .returning();
+    return updated;
+  }
 
+  async getTreasuryCompanyById(id: number): Promise<TreasuryCompany | undefined> {
+    const [company] = await db.select().from(treasuryCompanies).where(eq(treasuryCompanies.id, id));
+    return company || undefined;
+  }
+
+  async getSovereignAdoptionById(id: number): Promise<SovereignAdoption | undefined> {
+    const [adoption] = await db.select().from(sovereignAdoption).where(eq(sovereignAdoption.id, id));
+    return adoption || undefined;
+  }
+
+  async getSovereignAdoptionsByType(type: string): Promise<SovereignAdoption[]> {
+    return await db.select().from(sovereignAdoption).where(eq(sovereignAdoption.adoptionType, type));
+  }
+
+  // Weekly topic placeholder methods (not implemented in schema yet)
+  async getCurrentWeeklyTopic(): Promise<any> {
+    return { message: "Weekly topics not implemented yet" };
+  }
+
+  async getWeeklyTopic(weekId: number): Promise<any> {
+    return { message: "Weekly topics not implemented yet", weekId };
+  }
+
+  async getAllWeeklyTopics(): Promise<any[]> {
+    return [];
+  }
+
+  async getUserWeeklyProgress(userId: number, weekId: number): Promise<any> {
+    return { message: "Weekly progress not implemented yet", userId, weekId };
+  }
+
+  async createOrUpdateWeeklyProgress(userId: number, weekId: number, progress: any): Promise<any> {
+    return { message: "Weekly progress creation not implemented yet", userId, weekId };
+  }
+
+  async updateWeeklyProgress(userId: number, weekId: number, progress: any): Promise<any> {
+    return { message: "Weekly progress update not implemented yet", userId, weekId };
+  }
+
+  async completeWeeklyTopic(userId: number, weekId: number): Promise<any> {
+    return { message: "Weekly topic completion not implemented yet", userId, weekId };
+  }
+
+  async getCuratedVideos(): Promise<CuratedVideo[]> {
+    return await db.select().from(curatedVideos);
+  }
 }
 
 export const storage = new DatabaseStorage();

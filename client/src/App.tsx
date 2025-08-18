@@ -94,7 +94,7 @@ function NewUserRedirect() {
       // Only redirect to Money page if:
       // 1. First-time visitor AND 
       // 2. On Day 1 (hasn't progressed past the first day)
-      if (!hasVisited && nextAvailableDay && 'dayIndex' in nextAvailableDay && nextAvailableDay.dayIndex === 1) {
+      if (!hasVisited && nextAvailableDay && typeof nextAvailableDay === 'object' && 'dayIndex' in nextAvailableDay && nextAvailableDay.dayIndex === 1) {
         localStorage.setItem('hodlearn-has-visited', 'true');
         setLocation('/money');
         return;
