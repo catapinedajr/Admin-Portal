@@ -119,13 +119,13 @@ export default function CommunityPage() {
       </main>
 
       <BottomNavigation 
-        currentSection="connect" 
-        setCurrentSection={(section) => {
+        activeSection="community" 
+        onSectionChange={(section: string) => {
           if (section === "home") setLocation('/');
           else if (section === "learn") setLocation('/learn');
           else if (section === "simulators") setLocation('/simulators');
           else if (section === "money") setLocation('/money');
-          else if (section === "connect") setLocation('/community');
+          else if (section === "community") setLocation('/community');
         }}
       />
     </div>
@@ -138,11 +138,11 @@ function DailyDiscussionSection() {
   const queryClient = useQueryClient();
 
   // Get user's current day
-  const { data: user } = useQuery({
+  const { data: user } = useQuery<any>({
     queryKey: ['/api/user'],
   });
 
-  const { data: nextDay } = useQuery({
+  const { data: nextDay } = useQuery<any>({
     queryKey: ['/api/next-available-day', user?.id],
     enabled: !!user?.id,
   });
@@ -150,12 +150,12 @@ function DailyDiscussionSection() {
   const currentDay = nextDay?.dayIndex || 1;
 
   // Get today's lesson info
-  const { data: dayMetadata } = useQuery({
+  const { data: dayMetadata } = useQuery<any>({
     queryKey: ['/api/day-metadata', currentDay],
   });
 
   // Simple discussion posts for today
-  const { data: discussions = [], isLoading } = useQuery({
+  const { data: discussions = [], isLoading } = useQuery<any[]>({
     queryKey: ['/api/daily-discussions', currentDay],
   });
 
@@ -257,7 +257,8 @@ function DailyDiscussionSection() {
 
 // Simplified Videos Section
 function VideosSection() {
-  const [activeCategory, setActiveCategory] = useState("foundation");
+  type VideoCategory = "foundation" | "economics" | "technical" | "realworld";
+  const [activeCategory, setActiveCategory] = useState<VideoCategory>("foundation");
   const [selectedVideo, setSelectedVideo] = useState<{
     id: string;
     title: string;
@@ -266,7 +267,17 @@ function VideosSection() {
     note: string;
   } | null>(null);
   
-  const videoCategories = {
+  const videoCategories: Record<VideoCategory, {
+    title: string;
+    description: string;
+    videos: Array<{
+      title: string;
+      creator: string;
+      duration: string;
+      note: string;
+      videoId: string;
+    }>;
+  }> = {
     foundation: {
       title: "🔰 Foundation Level",
       description: "Getting Started & Core Concepts",
@@ -518,7 +529,7 @@ function VideosSection() {
               key={key}
               variant={activeCategory === key ? "secondary" : "ghost"}
               size="sm"
-              onClick={() => setActiveCategory(key)}
+              onClick={() => setActiveCategory(key as VideoCategory)}
               className="text-xs px-3 py-1.5"
             >
               {category.title}
