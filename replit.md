@@ -4,7 +4,7 @@
 This is a full-stack web application designed for daily learning and knowledge acquisition, specifically focused on Bitcoin education. The app delivers daily facts, lessons, and progress tracking to foster consistent learning habits. It aims to build Bitcoin conviction through immediate relevance rather than an academic approach, targeting young professionals. The project envisions significant market potential, positioning itself as the "Duolingo of Bitcoin Education" with ambitious revenue and valuation goals.
 
 ## User Preferences
-**PRODUCTION HANDOFF FOCUS** - User is preparing for production launch within 1 month, targeting 10K users with freemium model (7 days free, paywall at Day 8). Primary focus is creating comprehensive handoff documentation for development and DevOps teams to take project from MVP to production-ready platform.
+**CRITICAL: Approval-Required Workflow** - All code changes, implementations, and file modifications require explicit "Approved" message from user before execution. Always propose changes first and wait for approval.
 
 ## System Architecture
 

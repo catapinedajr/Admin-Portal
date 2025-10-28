@@ -54,7 +54,10 @@ export default function WalletDisplay() {
       satoshisEarned: number;
       description: string;
       date: string;
-    }) => apiRequest('/api/wallet/earn', 'POST', earningData),
+    }) => apiRequest('/api/wallet/earn', {
+      method: 'POST',
+      body: JSON.stringify(earningData),
+    }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/wallet/dashboard'] });
     },

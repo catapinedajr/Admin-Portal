@@ -187,14 +187,14 @@ function FinancePage() {
     // Animate Bitcoin steps
     bitcoinSteps.forEach(({ step, delay }) => {
       setTimeout(() => {
-        setSettlementProgress({ traditional: settlementProgress.traditional, bitcoin: step });
+        setSettlementProgress((prev: { traditional: number; bitcoin: number }) => ({ ...prev, bitcoin: step }));
       }, delay);
     });
 
     // Animate Traditional steps  
     traditionalSteps.forEach(({ step, delay }) => {
       setTimeout(() => {
-        setSettlementProgress({ traditional: step, bitcoin: settlementProgress.bitcoin });
+        setSettlementProgress((prev: { traditional: number; bitcoin: number }) => ({ ...prev, traditional: step }));
       }, delay);
     });
 
