@@ -14,7 +14,7 @@ const KARMA_PER_COMMENT_UPVOTE = 5;
 export interface ICommunityStorage {
   // Enhanced forum operations with Reddit-style features
   getForumCategories(): Promise<any[]>;
-  getForumPostsWithStats(categoryId?: number, sortBy?: string, userId?: number): Promise<ForumPostWithStats[]>;
+  getForumPostsWithStats(categoryId?: number, sortBy?: string, userId?: number, flair?: string): Promise<ForumPostWithStats[]>;
   createForumPost(post: any): Promise<any>;
   
   // Upvote-only voting system (positive community focus)
@@ -50,7 +50,17 @@ export class CommunityStorage implements ICommunityStorage {
       .orderBy(forumCategories.sortOrder);
   }
   
-  async getForumPostsWithStats(categoryId?: number, sortBy = 'new', userId?: number): Promise<ForumPostWithStats[]> {
+  async getForumPostsWithStats(categoryId?: number, sortBy = 'new', userId?: number, flair?: string): Promise<ForumPostWithStats[]> {
+    const conditions = [];
+    
+    if (categoryId) {
+      conditions.push(eq(forumPosts.categoryId, categoryId));
+    }
+    
+    if (flair) {
+      conditions.push(eq(forumPosts.flair, flair));
+    }
+
     const query = db
       .select({
         post: forumPosts,
@@ -66,8 +76,8 @@ export class CommunityStorage implements ICommunityStorage {
       .leftJoin(users, eq(forumPosts.userId, users.id))
       .leftJoin(forumCategories, eq(forumPosts.categoryId, forumCategories.id));
 
-    if (categoryId) {
-      query.where(eq(forumPosts.categoryId, categoryId));
+    if (conditions.length > 0) {
+      query.where(and(...conditions));
     }
 
     // Apply sorting

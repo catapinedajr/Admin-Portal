@@ -2039,13 +2039,14 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   // Enhanced forum posts with stats and voting
   app.get("/api/community/forum-posts", async (req, res) => {
     try {
-      const { categoryId, sortBy } = req.query;
+      const { categoryId, sortBy, flair } = req.query;
       const userId = req.user?.id; // Get from auth if available
       
       const posts = await communityStorage.getForumPostsWithStats(
         categoryId ? parseInt(categoryId as string) : undefined,
         sortBy as string || 'new',
-        userId
+        userId,
+        flair as string | undefined
       );
       res.json(posts);
     } catch (error) {
@@ -2054,10 +2055,10 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  // Create forum post
+  // Create forum post with rich media support
   app.post("/api/community/forum-posts", setDefaultUser, async (req, res) => {
     try {
-      const { title, content, categoryId, dayIndex } = req.body;
+      const { title, content, categoryId, dayIndex, imageUrl, linkUrl, linkPreview, flair } = req.body;
       const userId = req.user.id;
       
       const postData = {
@@ -2065,7 +2066,11 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
         content,
         categoryId,
         userId,
-        dayIndex: dayIndex || null
+        dayIndex: dayIndex || null,
+        imageUrl: imageUrl || null,
+        linkUrl: linkUrl || null,
+        linkPreview: linkPreview || null,
+        flair: flair || null
       };
 
       const newPost = await communityStorage.createForumPost(postData);
@@ -2073,6 +2078,75 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     } catch (error) {
       console.error("Error creating forum post:", error);
       res.status(500).json({ message: "Failed to create forum post" });
+    }
+  });
+
+  // Fetch link preview metadata (YouTube, articles, etc.)
+  app.post("/api/community/link-preview", async (req, res) => {
+    try {
+      const { url } = req.body;
+      if (!url) {
+        return res.status(400).json({ message: "URL is required" });
+      }
+
+      // Check if it's a YouTube URL
+      const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+      const youtubeMatch = url.match(youtubeRegex);
+
+      if (youtubeMatch) {
+        const videoId = youtubeMatch[1];
+        // Use YouTube oEmbed API (no API key required)
+        const oembedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+        const response = await fetch(oembedUrl);
+        
+        if (response.ok) {
+          const data = await response.json();
+          return res.json({
+            type: 'video',
+            title: data.title,
+            description: data.author_name ? `By ${data.author_name}` : '',
+            image: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+            siteName: 'YouTube',
+            videoId
+          });
+        }
+      }
+
+      // For other URLs, fetch and parse HTML for Open Graph tags
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (compatible; HODLearnBot/1.0)'
+        }
+      });
+
+      if (!response.ok) {
+        return res.status(400).json({ message: "Could not fetch URL" });
+      }
+
+      const html = await response.text();
+      
+      // Parse Open Graph tags
+      const getMetaContent = (property: string): string | null => {
+        const regex = new RegExp(`<meta[^>]*(?:property|name)=["']${property}["'][^>]*content=["']([^"']*)["']`, 'i');
+        const altRegex = new RegExp(`<meta[^>]*content=["']([^"']*)["'][^>]*(?:property|name)=["']${property}["']`, 'i');
+        const match = html.match(regex) || html.match(altRegex);
+        return match ? match[1] : null;
+      };
+
+      const titleMatch = html.match(/<title[^>]*>([^<]*)<\/title>/i);
+
+      const preview = {
+        type: 'article',
+        title: getMetaContent('og:title') || getMetaContent('twitter:title') || (titleMatch ? titleMatch[1] : ''),
+        description: getMetaContent('og:description') || getMetaContent('twitter:description') || getMetaContent('description') || '',
+        image: getMetaContent('og:image') || getMetaContent('twitter:image') || '',
+        siteName: getMetaContent('og:site_name') || new URL(url).hostname
+      };
+
+      res.json(preview);
+    } catch (error) {
+      console.error("Error fetching link preview:", error);
+      res.status(500).json({ message: "Failed to fetch link preview" });
     }
   });
 
