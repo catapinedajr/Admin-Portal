@@ -193,8 +193,9 @@ export const forumPostStats = pgTable("forum_post_stats", {
   id: serial("id").primaryKey(),
   postId: integer("post_id").notNull().references(() => forumPosts.id, { onDelete: 'cascade' }),
   upvotes: integer("upvotes").notNull().default(0),
-  downvotes: integer("downvotes").notNull().default(0),
+  downvotes: integer("downvotes").notNull().default(0), // Kept for schema compatibility, always 0 (upvote-only system)
   hotScore: decimal("hot_score", { precision: 10, scale: 4 }).notNull().default('0'), // For "hot" algorithm
+  trendingScore: decimal("trending_score", { precision: 10, scale: 4 }).notNull().default('0'), // For "trending" algorithm
   controversyScore: decimal("controversy_score", { precision: 10, scale: 4 }).notNull().default('0'),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -698,6 +699,25 @@ export const insertSimulatorCompletionSchema = createInsertSchema(simulatorCompl
 export type SimulatorCompletion = typeof simulatorCompletions.$inferSelect;
 export type InsertSimulatorCompletion = z.infer<typeof insertSimulatorCompletionSchema>;
 
+// Forum CRUD schemas
+export const insertForumCategorySchema = createInsertSchema(forumCategories).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertForumPostSchema = createInsertSchema(forumPosts).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertForumReplySchema = createInsertSchema(forumReplies).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Community Reddit-style feature schemas
 export const insertForumVoteSchema = createInsertSchema(forumVotes).omit({
   id: true,
@@ -743,6 +763,12 @@ export const insertCuratedVideoSchema = createInsertSchema(curatedVideos).omit({
 });
 
 // Community types
+export type ForumCategory = typeof forumCategories.$inferSelect;
+export type InsertForumCategory = z.infer<typeof insertForumCategorySchema>;
+export type ForumPost = typeof forumPosts.$inferSelect;
+export type InsertForumPost = z.infer<typeof insertForumPostSchema>;
+export type ForumReply = typeof forumReplies.$inferSelect;
+export type InsertForumReply = z.infer<typeof insertForumReplySchema>;
 export type ForumVote = typeof forumVotes.$inferSelect;
 export type InsertForumVote = z.infer<typeof insertForumVoteSchema>;
 export type UserKarma = typeof userKarma.$inferSelect;
@@ -761,9 +787,6 @@ export type InsertForumReplyStats = z.infer<typeof insertForumReplyStatsSchema>;
 // Enhanced community types for API responses
 export type CuratedVideo = typeof curatedVideos.$inferSelect;
 export type InsertCuratedVideo = z.infer<typeof insertCuratedVideoSchema>;
-export type ForumCategory = typeof forumCategories.$inferSelect;
-export type ForumPost = typeof forumPosts.$inferSelect;
-export type ForumReply = typeof forumReplies.$inferSelect;
 export type SuccessStory = typeof successStories.$inferSelect;
 export type DailyDiscussion = typeof dailyDiscussions.$inferSelect;
 

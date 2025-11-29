@@ -88,8 +88,11 @@ import {
   type InsertStreakInsurance,
   // New community types
   type ForumCategory,
+  type InsertForumCategory,
   type ForumPost,
+  type InsertForumPost,
   type ForumReply,
+  type InsertForumReply,
   type ForumVote,
   type InsertForumVote,
   type UserKarma,
@@ -223,6 +226,23 @@ export interface IStorage {
   getUserWalletAchievements(userId: number): Promise<WalletAchievement[]>;
   unlockWalletAchievement(achievement: InsertWalletAchievement): Promise<WalletAchievement>;
   getTotalEarningsValue(userId: number, currentBitcoinPrice: number): Promise<{ totalSats: number; totalUsdValue: number }>;
+
+  // Forum methods
+  getForumCategories(): Promise<ForumCategory[]>;
+  getForumPosts(filter: 'new' | 'hot' | 'trending', categoryId?: number): Promise<ForumPostWithStats[]>;
+  getForumPost(postId: number, userId?: number): Promise<ForumPostWithStats | undefined>;
+  createForumPost(post: InsertForumPost): Promise<ForumPost>;
+  getForumReplies(postId: number, userId?: number): Promise<ForumReplyWithStats[]>;
+  createForumReply(reply: InsertForumReply): Promise<ForumReply>;
+  
+  // Voting methods
+  upvotePost(userId: number, postId: number): Promise<{ success: boolean; newUpvotes: number; karmaAwarded: number }>;
+  upvoteReply(userId: number, replyId: number): Promise<{ success: boolean; newUpvotes: number; karmaAwarded: number }>;
+  removeVote(userId: number, postId?: number, replyId?: number): Promise<boolean>;
+  
+  // Karma methods
+  getUserKarma(userId: number): Promise<UserKarma | undefined>;
+  awardKarma(userId: number, amount: number, type: 'post' | 'comment', bitcoinPriceUsd: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1313,7 +1333,370 @@ export class DatabaseStorage implements IStorage {
     });
   }
 
+  // Forum methods
+  async getForumCategories(): Promise<ForumCategory[]> {
+    return await db
+      .select()
+      .from(forumCategories)
+      .where(eq(forumCategories.isActive, true))
+      .orderBy(forumCategories.sortOrder);
+  }
 
+  async getForumPosts(filter: 'new' | 'hot' | 'trending', categoryId?: number): Promise<ForumPostWithStats[]> {
+    let orderByClause;
+    switch (filter) {
+      case 'hot':
+        orderByClause = desc(forumPostStats.hotScore);
+        break;
+      case 'trending':
+        orderByClause = desc(forumPostStats.trendingScore);
+        break;
+      case 'new':
+      default:
+        orderByClause = desc(forumPosts.createdAt);
+        break;
+    }
+
+    const query = db
+      .select({
+        post: forumPosts,
+        stats: forumPostStats,
+        author: {
+          id: users.id,
+          username: users.username,
+        },
+        category: forumCategories,
+      })
+      .from(forumPosts)
+      .leftJoin(forumPostStats, eq(forumPosts.id, forumPostStats.postId))
+      .leftJoin(users, eq(forumPosts.userId, users.id))
+      .leftJoin(forumCategories, eq(forumPosts.categoryId, forumCategories.id))
+      .orderBy(orderByClause)
+      .limit(50);
+
+    const results = categoryId 
+      ? await query.where(eq(forumPosts.categoryId, categoryId))
+      : await query;
+
+    return results.map(r => ({
+      ...r.post,
+      stats: r.stats || { id: 0, postId: r.post.id, upvotes: 0, downvotes: 0, hotScore: "0", trendingScore: "0", controversyScore: "0", updatedAt: new Date() },
+      author: r.author || { id: 0, username: 'Unknown' },
+      category: r.category || { id: 0, name: 'General', description: '', slug: 'general', postCount: 0, isActive: true, sortOrder: 0, createdAt: new Date(), updatedAt: new Date() },
+      karma: r.stats?.upvotes || 0
+    }));
+  }
+
+  async getForumPost(postId: number, userId?: number): Promise<ForumPostWithStats | undefined> {
+    const [result] = await db
+      .select({
+        post: forumPosts,
+        stats: forumPostStats,
+        author: {
+          id: users.id,
+          username: users.username,
+        },
+        category: forumCategories,
+      })
+      .from(forumPosts)
+      .leftJoin(forumPostStats, eq(forumPosts.id, forumPostStats.postId))
+      .leftJoin(users, eq(forumPosts.userId, users.id))
+      .leftJoin(forumCategories, eq(forumPosts.categoryId, forumCategories.id))
+      .where(eq(forumPosts.id, postId));
+
+    if (!result) return undefined;
+
+    let userVote: ForumVote | undefined;
+    if (userId) {
+      const [vote] = await db
+        .select()
+        .from(forumVotes)
+        .where(and(
+          eq(forumVotes.userId, userId),
+          eq(forumVotes.postId, postId)
+        ));
+      userVote = vote;
+    }
+
+    return {
+      ...result.post,
+      stats: result.stats || { id: 0, postId: result.post.id, upvotes: 0, downvotes: 0, hotScore: "0", trendingScore: "0", controversyScore: "0", updatedAt: new Date() },
+      author: result.author || { id: 0, username: 'Unknown' },
+      category: result.category || { id: 0, name: 'General', description: '', slug: 'general', postCount: 0, isActive: true, sortOrder: 0, createdAt: new Date(), updatedAt: new Date() },
+      userVote,
+      karma: result.stats?.upvotes || 0
+    };
+  }
+
+  async createForumPost(post: InsertForumPost): Promise<ForumPost> {
+    const [newPost] = await db.insert(forumPosts).values(post).returning();
+    
+    // Create stats entry for the post
+    await db.insert(forumPostStats).values({
+      postId: newPost.id,
+      upvotes: 0,
+      downvotes: 0,
+      hotScore: "0",
+      trendingScore: "0",
+      controversyScore: "0"
+    });
+
+    // Update category post count
+    await db.update(forumCategories)
+      .set({ postCount: sql`${forumCategories.postCount} + 1` })
+      .where(eq(forumCategories.id, post.categoryId));
+
+    return newPost;
+  }
+
+  async getForumReplies(postId: number, userId?: number): Promise<ForumReplyWithStats[]> {
+    const results = await db
+      .select({
+        reply: forumReplies,
+        stats: forumReplyStats,
+        author: {
+          id: users.id,
+          username: users.username,
+        },
+      })
+      .from(forumReplies)
+      .leftJoin(forumReplyStats, eq(forumReplies.id, forumReplyStats.replyId))
+      .leftJoin(users, eq(forumReplies.userId, users.id))
+      .where(and(
+        eq(forumReplies.postId, postId),
+        eq(forumReplies.isDeleted, false)
+      ))
+      .orderBy(forumReplies.createdAt);
+
+    // Get user votes if userId provided
+    const userVotes: Map<number, ForumVote> = new Map();
+    if (userId) {
+      const replyIds = results.map(r => r.reply.id);
+      if (replyIds.length > 0) {
+        const votes = await db
+          .select()
+          .from(forumVotes)
+          .where(and(
+            eq(forumVotes.userId, userId),
+            sql`${forumVotes.replyId} IN (${sql.join(replyIds.map(id => sql`${id}`), sql`, `)})`
+          ));
+        votes.forEach(v => {
+          if (v.replyId) userVotes.set(v.replyId, v);
+        });
+      }
+    }
+
+    return results.map(r => ({
+      ...r.reply,
+      stats: r.stats || { id: 0, replyId: r.reply.id, parentReplyId: null, depth: 0, upvotes: 0, downvotes: 0, childCount: 0, updatedAt: new Date() },
+      author: r.author || { id: 0, username: 'Unknown' },
+      userVote: userVotes.get(r.reply.id),
+      karma: r.stats?.upvotes || 0
+    }));
+  }
+
+  async createForumReply(reply: InsertForumReply): Promise<ForumReply> {
+    const [newReply] = await db.insert(forumReplies).values(reply).returning();
+    
+    // Create stats entry for the reply
+    await db.insert(forumReplyStats).values({
+      replyId: newReply.id,
+      upvotes: 0,
+      downvotes: 0,
+      depth: 0,
+      childCount: 0
+    });
+
+    // Update post reply count
+    await db.update(forumPosts)
+      .set({ 
+        replyCount: sql`${forumPosts.replyCount} + 1`,
+        lastReplyAt: new Date(),
+        lastReplyUserId: reply.userId
+      })
+      .where(eq(forumPosts.id, reply.postId));
+
+    return newReply;
+  }
+
+  // Voting methods
+  async upvotePost(userId: number, postId: number): Promise<{ success: boolean; newUpvotes: number; karmaAwarded: number }> {
+    // Check if user already voted
+    const [existingVote] = await db
+      .select()
+      .from(forumVotes)
+      .where(and(
+        eq(forumVotes.userId, userId),
+        eq(forumVotes.postId, postId)
+      ));
+
+    if (existingVote) {
+      return { success: false, newUpvotes: 0, karmaAwarded: 0 };
+    }
+
+    // Get the post to find the author
+    const [post] = await db.select().from(forumPosts).where(eq(forumPosts.id, postId));
+    if (!post) return { success: false, newUpvotes: 0, karmaAwarded: 0 };
+
+    // Can't upvote your own post
+    if (post.userId === userId) {
+      return { success: false, newUpvotes: 0, karmaAwarded: 0 };
+    }
+
+    // Add the vote
+    await db.insert(forumVotes).values({
+      userId,
+      postId,
+      voteType: 'upvote'
+    });
+
+    // Update post stats
+    const [stats] = await db
+      .update(forumPostStats)
+      .set({ 
+        upvotes: sql`${forumPostStats.upvotes} + 1`,
+        hotScore: sql`${forumPostStats.upvotes} + 1`, // Simple hot score
+        trendingScore: sql`(${forumPostStats.upvotes} + 1) / EXTRACT(EPOCH FROM (NOW() - ${forumPosts.createdAt})) * 3600`, // Trending: upvotes per hour
+        updatedAt: new Date()
+      })
+      .where(eq(forumPostStats.postId, postId))
+      .returning();
+
+    const newUpvotes = stats?.upvotes || 0;
+    const karmaAwarded = 10; // 10 karma points per post upvote
+
+    return { success: true, newUpvotes, karmaAwarded };
+  }
+
+  async upvoteReply(userId: number, replyId: number): Promise<{ success: boolean; newUpvotes: number; karmaAwarded: number }> {
+    // Check if user already voted
+    const [existingVote] = await db
+      .select()
+      .from(forumVotes)
+      .where(and(
+        eq(forumVotes.userId, userId),
+        eq(forumVotes.replyId, replyId)
+      ));
+
+    if (existingVote) {
+      return { success: false, newUpvotes: 0, karmaAwarded: 0 };
+    }
+
+    // Get the reply to find the author
+    const [reply] = await db.select().from(forumReplies).where(eq(forumReplies.id, replyId));
+    if (!reply) return { success: false, newUpvotes: 0, karmaAwarded: 0 };
+
+    // Can't upvote your own reply
+    if (reply.userId === userId) {
+      return { success: false, newUpvotes: 0, karmaAwarded: 0 };
+    }
+
+    // Add the vote
+    await db.insert(forumVotes).values({
+      userId,
+      replyId,
+      voteType: 'upvote'
+    });
+
+    // Update reply stats
+    const [stats] = await db
+      .update(forumReplyStats)
+      .set({ 
+        upvotes: sql`${forumReplyStats.upvotes} + 1`,
+        updatedAt: new Date()
+      })
+      .where(eq(forumReplyStats.replyId, replyId))
+      .returning();
+
+    const newUpvotes = stats?.upvotes || 0;
+    const karmaAwarded = 5; // 5 karma points per reply upvote
+
+    return { success: true, newUpvotes, karmaAwarded };
+  }
+
+  async removeVote(userId: number, postId?: number, replyId?: number): Promise<boolean> {
+    if (postId) {
+      const result = await db
+        .delete(forumVotes)
+        .where(and(
+          eq(forumVotes.userId, userId),
+          eq(forumVotes.postId, postId)
+        ))
+        .returning();
+
+      if (result.length > 0) {
+        await db
+          .update(forumPostStats)
+          .set({ upvotes: sql`${forumPostStats.upvotes} - 1` })
+          .where(eq(forumPostStats.postId, postId));
+        return true;
+      }
+    }
+
+    if (replyId) {
+      const result = await db
+        .delete(forumVotes)
+        .where(and(
+          eq(forumVotes.userId, userId),
+          eq(forumVotes.replyId, replyId)
+        ))
+        .returning();
+
+      if (result.length > 0) {
+        await db
+          .update(forumReplyStats)
+          .set({ upvotes: sql`${forumReplyStats.upvotes} - 1` })
+          .where(eq(forumReplyStats.replyId, replyId));
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  // Karma methods
+  async getUserKarma(userId: number): Promise<UserKarma | undefined> {
+    const [karma] = await db
+      .select()
+      .from(userKarma)
+      .where(eq(userKarma.userId, userId));
+    return karma || undefined;
+  }
+
+  async awardKarma(userId: number, amount: number, type: 'post' | 'comment', bitcoinPriceUsd: number): Promise<void> {
+    const existingKarma = await this.getUserKarma(userId);
+    const today = new Date().toISOString().split('T')[0];
+
+    if (existingKarma) {
+      const updateData = type === 'post' 
+        ? { postKarma: existingKarma.postKarma + amount, totalKarma: existingKarma.totalKarma + amount }
+        : { commentKarma: existingKarma.commentKarma + amount, totalKarma: existingKarma.totalKarma + amount };
+      
+      await db.update(userKarma)
+        .set({ ...updateData, updatedAt: new Date() })
+        .where(eq(userKarma.userId, userId));
+    } else {
+      const insertData = type === 'post'
+        ? { userId, totalKarma: amount, postKarma: amount, commentKarma: 0, awardedKarma: 0 }
+        : { userId, totalKarma: amount, postKarma: 0, commentKarma: amount, awardedKarma: 0 };
+      
+      await db.insert(userKarma).values(insertData);
+    }
+
+    // Also add to wallet earnings (karma → learning points integration)
+    const satoshisFromKarma = amount; // 1 karma = 1 sat
+    await this.addWalletEarning({
+      userId,
+      dayIndex: 0, // Community earnings not tied to specific day
+      earningType: 'community',
+      satoshisEarned: satoshisFromKarma,
+      streakMultiplier: "1.00",
+      bitcoinPriceUsd: bitcoinPriceUsd.toString(),
+      usdValueAtEarning: ((satoshisFromKarma / 100000000) * bitcoinPriceUsd).toString(),
+      description: type === 'post' ? 'Post upvote karma' : 'Reply upvote karma',
+      date: today
+    });
+  }
 }
 
 export const storage = new DatabaseStorage();
