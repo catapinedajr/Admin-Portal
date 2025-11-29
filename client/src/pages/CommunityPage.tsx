@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
-import { MessageSquare, Video, ArrowBigUp, MessageCircle, Clock, TrendingUp, Flame, Plus, User as UserIcon, Wallet, Send, ChevronDown, ChevronUp, ExternalLink, Megaphone, Filter, Image, Link2, X, Loader2, Share2 } from "lucide-react";
+import { MessageSquare, Video, ArrowBigUp, MessageCircle, Clock, TrendingUp, Flame, Plus, User as UserIcon, Wallet, Send, ChevronDown, ChevronUp, ExternalLink, Megaphone, Filter, Image, Link2, X, Loader2, Share2, ArrowLeft, Reply } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -633,45 +633,49 @@ function SponsoredPostCard({ ad }: { ad: SponsoredPost }) {
   return (
     <div 
       ref={cardRef}
-      className="border-b border-zinc-800 bg-gradient-to-r from-orange-950/10 to-transparent"
+      className="border-b border-zinc-800 border-l-2 border-l-orange-500 bg-gradient-to-br from-orange-950/20 via-orange-900/10 to-transparent relative overflow-hidden"
       data-testid={`card-sponsored-${ad.id}`}
     >
-      <div className="px-4 py-3">
-        <div className="flex items-center gap-1.5 mb-1.5 text-xs text-zinc-500">
-          <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px] py-0 px-1.5 h-4">
-            Promoted
-          </Badge>
+      <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-transparent pointer-events-none" />
+      
+      <div className="px-4 py-3 relative">
+        <div className="flex items-center gap-2 mb-2">
           {ad.logoUrl && (
-            <img src={ad.logoUrl} alt={ad.advertiser} className="w-4 h-4 rounded object-contain" />
+            <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center overflow-hidden">
+              <img src={ad.logoUrl} alt={ad.advertiser} className="w-6 h-6 object-contain" />
+            </div>
           )}
-          <span className="text-zinc-400">{ad.advertiser}</span>
-          {ad.category && (
-            <>
-              <span className="text-zinc-600">•</span>
-              <span className="text-zinc-500">{ad.category}</span>
-            </>
-          )}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5 text-xs">
+              <Badge className="bg-orange-500 text-white border-0 text-[10px] py-0 px-1.5 h-4 font-medium">
+                Promoted
+              </Badge>
+              <span className="text-zinc-300 font-medium truncate">{ad.advertiser}</span>
+            </div>
+            {ad.category && (
+              <span className="text-[11px] text-zinc-500">{ad.category}</span>
+            )}
+          </div>
         </div>
         
-        <h3 className="font-medium text-white text-[15px] leading-snug">{ad.title}</h3>
+        <h3 className="font-semibold text-white text-[15px] leading-snug">{ad.title}</h3>
         <p className="text-sm text-zinc-400 line-clamp-2 mt-1">{ad.description}</p>
 
         {ad.imageUrl && (
-          <div className="mt-3">
+          <div className="mt-3 rounded-lg overflow-hidden ring-1 ring-orange-500/20">
             <img 
               src={ad.imageUrl} 
               alt={ad.title}
-              className="w-full aspect-video object-cover rounded-lg"
+              className="w-full aspect-video object-cover"
             />
           </div>
         )}
       </div>
 
-      <div className="flex items-center gap-1 px-2 pb-2">
+      <div className="flex items-center gap-2 px-3 pb-3 relative">
         <Button
           size="sm"
-          variant="ghost"
-          className="h-9 px-3 gap-1.5 rounded-full text-orange-400 hover:bg-orange-500/10 hover:text-orange-300"
+          className="h-9 px-4 gap-1.5 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-medium"
           onClick={handleClick}
           data-testid={`button-cta-${ad.id}`}
         >
@@ -731,10 +735,21 @@ function PostDetailView({ postId, onBack }: { postId: number; onBack: () => void
   if (postLoading) {
     return (
       <div className="space-y-4">
-        <Button variant="ghost" onClick={onBack}>← Back</Button>
-        <Card className="bg-zinc-800/30 border-zinc-700 animate-pulse">
-          <CardContent className="p-6 h-48" />
-        </Card>
+        <Button variant="ghost" onClick={onBack} className="text-zinc-400">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back
+        </Button>
+        <div className="bg-zinc-900/50 rounded-xl border border-zinc-800/50 animate-pulse">
+          <div className="px-4 py-3 space-y-2">
+            <div className="h-3 bg-zinc-800 rounded w-1/3" />
+            <div className="h-5 bg-zinc-800 rounded w-3/4" />
+            <div className="h-20 bg-zinc-800 rounded w-full" />
+          </div>
+          <div className="flex gap-2 px-2 pb-2">
+            <div className="h-9 w-16 bg-zinc-800 rounded-full" />
+            <div className="h-9 w-14 bg-zinc-800 rounded-full" />
+          </div>
+        </div>
       </div>
     );
   }
@@ -745,155 +760,183 @@ function PostDetailView({ postId, onBack }: { postId: number; onBack: () => void
 
   return (
     <div className="space-y-4">
-      <Button variant="ghost" onClick={onBack} data-testid="button-back">
-        ← Back to forums
+      <Button variant="ghost" onClick={onBack} className="text-zinc-400 hover:text-white" data-testid="button-back">
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Back
       </Button>
 
-      <Card className="bg-zinc-800/30 border-zinc-700">
-        <CardContent className="p-4">
-          <div className="flex gap-4">
-            <div className="flex flex-col items-center">
-              <Button
-                variant="ghost"
-                size="sm"
-                className={`p-1 h-auto ${hasVoted ? 'text-orange-500' : 'text-zinc-400 hover:text-orange-400'}`}
-                onClick={() => !hasVoted && upvotePostMutation.mutate()}
-                disabled={hasVoted || upvotePostMutation.isPending}
-                data-testid="button-upvote-post"
-              >
-                <ArrowBigUp className={`w-6 h-6 ${hasVoted ? 'fill-orange-500' : ''}`} />
-              </Button>
-              <span className={`text-lg font-bold ${hasVoted ? 'text-orange-500' : 'text-zinc-300'}`}>
-                {upvotes}
-              </span>
-            </div>
-
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2 text-xs text-zinc-500 flex-wrap">
-                {post?.flair && (
-                  <Badge variant="outline" className={`text-xs py-0 px-1.5 ${getFlairStyle(post.flair)}`}>
-                    {post.flair.charAt(0).toUpperCase() + post.flair.slice(1)}
-                  </Badge>
-                )}
-                {post?.category && (
-                  <Badge variant="outline" className="border-zinc-600">{post.category.name}</Badge>
-                )}
-                <span>Posted by {post?.author?.username || 'Anonymous'}</span>
-                <span>•</span>
-                <span>{formatTimeAgo(post?.createdAt)}</span>
-              </div>
-              
-              <h2 className="text-xl font-bold mb-3">{post?.title}</h2>
-              
-              {post?.content && (
-                <p className="text-zinc-300 whitespace-pre-wrap mb-4">{post?.content}</p>
-              )}
-
-              {post?.imageUrl && (
-                <div className="mb-4">
-                  <img 
-                    src={post.imageUrl} 
-                    alt="" 
-                    className="w-full max-h-96 object-contain rounded-lg bg-zinc-900"
-                    onError={(e) => e.currentTarget.style.display = 'none'}
-                  />
-                </div>
-              )}
-
-              {linkPreview && (
-                <a 
-                  href={post?.linkUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="block mb-4 rounded-lg border border-zinc-700 overflow-hidden bg-zinc-800/50 hover:border-zinc-600 transition-colors"
-                >
-                  {linkPreview.image && (
-                    <img 
-                      src={linkPreview.image} 
-                      alt="" 
-                      className="w-full h-48 object-cover"
-                      onError={(e) => e.currentTarget.style.display = 'none'}
-                    />
-                  )}
-                  <div className="p-3">
-                    <p className="text-xs text-zinc-500 mb-1 flex items-center gap-1">
-                      <ExternalLink className="w-3 h-3" />
-                      {linkPreview.siteName}
-                    </p>
-                    <p className="font-medium text-zinc-200">{linkPreview.title}</p>
-                    {linkPreview.description && (
-                      <p className="text-sm text-zinc-400 mt-1 line-clamp-2">{linkPreview.description}</p>
-                    )}
-                  </div>
-                </a>
-              )}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="bg-zinc-800/50 border-zinc-700">
-        <CardContent className="p-4">
-          <textarea
-            value={replyContent}
-            onChange={(e) => setReplyContent(e.target.value)}
-            placeholder={replyingTo ? "Write a reply..." : "What are your thoughts?"}
-            className="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-lg text-sm resize-none focus:outline-none focus:border-orange-500 transition-colors"
-            rows={3}
-            data-testid="input-reply"
-          />
-          <div className="flex justify-between items-center mt-2">
-            {replyingTo && (
-              <Button variant="ghost" size="sm" onClick={() => setReplyingTo(null)}>
-                Cancel reply
-              </Button>
+      <div className="bg-zinc-900/50 rounded-xl border border-zinc-800/50">
+        <div className="px-4 py-3">
+          <div className="flex items-center gap-1.5 mb-2 text-xs text-zinc-500">
+            {post?.flair && (
+              <Badge variant="outline" className={`text-[10px] py-0 px-1.5 h-4 ${getFlairStyle(post.flair)}`}>
+                {post.flair.charAt(0).toUpperCase() + post.flair.slice(1)}
+              </Badge>
             )}
-            <div className="ml-auto">
-              <Button 
-                onClick={() => replyMutation.mutate()}
-                disabled={!replyContent.trim() || replyMutation.isPending}
-                className="bg-orange-500 hover:bg-orange-600"
-                data-testid="button-submit-reply"
-              >
-                <Send className="w-4 h-4 mr-2" />
-                {replyMutation.isPending ? 'Posting...' : 'Reply'}
-              </Button>
-            </div>
+            {post?.category && (
+              <span className="text-zinc-500">{post.category.name}</span>
+            )}
+            <span className="text-zinc-600">•</span>
+            <span className="text-zinc-400">{post?.author?.username || 'Anonymous'}</span>
+            <span className="text-zinc-600">•</span>
+            <span className="text-zinc-500">{formatTimeAgo(post?.createdAt)}</span>
           </div>
-        </CardContent>
-      </Card>
+          
+          <h2 className="text-lg font-semibold text-white mb-2">{post?.title}</h2>
+          
+          {post?.content && (
+            <p className="text-zinc-300 whitespace-pre-wrap text-sm leading-relaxed">{post?.content}</p>
+          )}
 
-      <div className="space-y-2">
-        <h3 className="text-sm font-medium text-zinc-400">
-          {replies.length} {replies.length === 1 ? 'Reply' : 'Replies'}
-        </h3>
+          {post?.imageUrl && (
+            <div className="mt-3">
+              <img 
+                src={post.imageUrl} 
+                alt="" 
+                className="w-full aspect-video object-cover rounded-lg"
+                onError={(e) => e.currentTarget.style.display = 'none'}
+              />
+            </div>
+          )}
+
+          {linkPreview && (
+            <a 
+              href={post?.linkUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="block mt-3 rounded-lg border border-zinc-700/50 overflow-hidden bg-zinc-800/30 hover:border-zinc-600 transition-colors"
+            >
+              {linkPreview.image && (
+                <img 
+                  src={linkPreview.image} 
+                  alt="" 
+                  className="w-full aspect-video object-cover"
+                  onError={(e) => e.currentTarget.style.display = 'none'}
+                />
+              )}
+              <div className="p-2.5">
+                <p className="text-[11px] text-zinc-500 flex items-center gap-1">
+                  <ExternalLink className="w-3 h-3" />
+                  {linkPreview.siteName}
+                </p>
+                <p className="text-sm font-medium text-zinc-200 line-clamp-2">{linkPreview.title}</p>
+                {linkPreview.description && (
+                  <p className="text-xs text-zinc-400 mt-1 line-clamp-2">{linkPreview.description}</p>
+                )}
+              </div>
+            </a>
+          )}
+        </div>
+
+        <div className="flex items-center gap-1 px-2 pb-2 border-b border-zinc-800">
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`h-9 px-3 gap-1.5 rounded-full ${hasVoted ? 'text-orange-500 bg-orange-500/10' : 'text-zinc-400 hover:text-orange-400 hover:bg-zinc-800'}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (!hasVoted) upvotePostMutation.mutate();
+            }}
+            disabled={hasVoted || upvotePostMutation.isPending}
+            data-testid="button-upvote-post"
+          >
+            <ArrowBigUp className={`w-5 h-5 ${hasVoted ? 'fill-orange-500' : ''}`} />
+            <span className="text-sm font-medium">{upvotes}</span>
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-9 px-3 gap-1.5 rounded-full text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <MessageCircle className="w-4 h-4" />
+            <span className="text-sm">{replies.length}</span>
+          </Button>
+
+          {post?.linkUrl && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-9 px-3 gap-1.5 rounded-full text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800"
+              onClick={(e) => {
+                e.stopPropagation();
+                window.open(post.linkUrl, '_blank');
+              }}
+            >
+              <Link2 className="w-4 h-4" />
+              <span className="text-sm">Link</span>
+            </Button>
+          )}
+        </div>
+      </div>
+
+      <div className="bg-zinc-900/50 rounded-xl border border-zinc-800/50 p-4">
+        {replyingTo && (
+          <div className="flex items-center gap-2 mb-2 text-xs text-zinc-500">
+            <Reply className="w-3 h-3" />
+            <span>Replying to comment</span>
+            <Button variant="ghost" size="sm" className="h-5 px-1.5 text-xs text-zinc-400" onClick={() => setReplyingTo(null)}>
+              <X className="w-3 h-3" />
+            </Button>
+          </div>
+        )}
+        <textarea
+          value={replyContent}
+          onChange={(e) => setReplyContent(e.target.value)}
+          placeholder={replyingTo ? "Write a reply..." : "What are your thoughts?"}
+          className="w-full p-3 bg-zinc-800/50 border border-zinc-700/50 rounded-lg text-sm resize-none focus:outline-none focus:border-orange-500/50 transition-colors placeholder:text-zinc-500"
+          rows={3}
+          data-testid="input-reply"
+        />
+        <div className="flex justify-end mt-2">
+          <Button 
+            onClick={() => replyMutation.mutate()}
+            disabled={!replyContent.trim() || replyMutation.isPending}
+            className="bg-orange-500 hover:bg-orange-600 h-9 px-4 rounded-full"
+            data-testid="button-submit-reply"
+          >
+            <Send className="w-4 h-4 mr-2" />
+            {replyMutation.isPending ? 'Posting...' : 'Reply'}
+          </Button>
+        </div>
+      </div>
+
+      <div className="space-y-0">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-medium text-zinc-400">
+            {replies.length} {replies.length === 1 ? 'Reply' : 'Replies'}
+          </h3>
+        </div>
         
         {repliesLoading ? (
-          <Card className="bg-zinc-800/30 border-zinc-700 animate-pulse">
-            <CardContent className="p-4 h-20" />
-          </Card>
+          <div className="bg-zinc-900/50 rounded-xl border border-zinc-800/50 animate-pulse p-4 space-y-2">
+            <div className="h-3 bg-zinc-800 rounded w-1/4" />
+            <div className="h-4 bg-zinc-800 rounded w-3/4" />
+          </div>
         ) : replies.length === 0 ? (
-          <Card className="bg-zinc-800/30 border-zinc-700">
-            <CardContent className="p-6 text-center text-zinc-500">
-              No replies yet. Be the first to respond!
-            </CardContent>
-          </Card>
+          <div className="bg-zinc-900/50 rounded-xl border border-zinc-800/50 py-8 text-center text-zinc-500">
+            No replies yet. Be the first to respond!
+          </div>
         ) : (
-          replies.map((reply: any) => (
-            <ReplyCard 
-              key={reply.id} 
-              reply={reply} 
-              onReply={() => setReplyingTo(reply.id)}
-              postId={postId}
-            />
-          ))
+          <div className="bg-zinc-900/50 rounded-xl border border-zinc-800/50 overflow-hidden">
+            {replies.map((reply: any, index: number) => (
+              <ReplyCard 
+                key={reply.id} 
+                reply={reply} 
+                onReply={() => setReplyingTo(reply.id)}
+                postId={postId}
+                isLast={index === replies.length - 1}
+              />
+            ))}
+          </div>
         )}
       </div>
     </div>
   );
 }
 
-function ReplyCard({ reply, onReply, postId }: { reply: any; onReply: () => void; postId: number }) {
+function ReplyCard({ reply, onReply, postId, isLast }: { reply: any; onReply: () => void; postId: number; isLast?: boolean }) {
   const queryClient = useQueryClient();
   
   const upvoteMutation = useMutation({
@@ -910,50 +953,45 @@ function ReplyCard({ reply, onReply, postId }: { reply: any; onReply: () => void
   const depth = reply.stats?.depth || 0;
 
   return (
-    <Card 
-      className="bg-zinc-800/20 border-zinc-700/50"
-      style={{ marginLeft: `${Math.min(depth * 20, 60)}px` }}
+    <div 
+      className={`${!isLast ? 'border-b border-zinc-800' : ''}`}
+      style={{ marginLeft: `${Math.min(depth * 16, 48)}px` }}
       data-testid={`card-reply-${reply.id}`}
     >
-      <CardContent className="p-3">
-        <div className="flex gap-3">
-          <div className="flex flex-col items-center">
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`p-0.5 h-auto ${hasVoted ? 'text-orange-500' : 'text-zinc-500 hover:text-orange-400'}`}
-              onClick={() => !hasVoted && upvoteMutation.mutate()}
-              disabled={hasVoted || upvoteMutation.isPending}
-              data-testid={`button-upvote-reply-${reply.id}`}
-            >
-              <ArrowBigUp className={`w-4 h-4 ${hasVoted ? 'fill-orange-500' : ''}`} />
-            </Button>
-            <span className={`text-xs ${hasVoted ? 'text-orange-500' : 'text-zinc-400'}`}>
-              {upvotes}
-            </span>
-          </div>
-
-          <div className="flex-1">
-            <div className="flex items-center gap-2 text-xs text-zinc-500 mb-1">
-              <span className="font-medium text-zinc-400">{reply.author?.username || 'Anonymous'}</span>
-              <span>•</span>
-              <span>{formatTimeAgo(reply.createdAt)}</span>
-            </div>
-            
-            <p className="text-sm text-zinc-300">{reply.content}</p>
-            
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="text-xs text-zinc-500 hover:text-zinc-300 mt-1 p-0 h-auto"
-              onClick={onReply}
-            >
-              Reply
-            </Button>
-          </div>
+      <div className="px-4 py-3">
+        <div className="flex items-center gap-1.5 text-xs text-zinc-500 mb-1">
+          <span className="font-medium text-zinc-400">{reply.author?.username || 'Anonymous'}</span>
+          <span className="text-zinc-600">•</span>
+          <span>{formatTimeAgo(reply.createdAt)}</span>
         </div>
-      </CardContent>
-    </Card>
+        
+        <p className="text-sm text-zinc-300 leading-relaxed">{reply.content}</p>
+      </div>
+      
+      <div className="flex items-center gap-1 px-2 pb-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          className={`h-8 px-2.5 gap-1 rounded-full text-xs ${hasVoted ? 'text-orange-500 bg-orange-500/10' : 'text-zinc-500 hover:text-orange-400 hover:bg-zinc-800'}`}
+          onClick={() => !hasVoted && upvoteMutation.mutate()}
+          disabled={hasVoted || upvoteMutation.isPending}
+          data-testid={`button-upvote-reply-${reply.id}`}
+        >
+          <ArrowBigUp className={`w-4 h-4 ${hasVoted ? 'fill-orange-500' : ''}`} />
+          <span>{upvotes}</span>
+        </Button>
+        
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="h-8 px-2.5 gap-1 rounded-full text-xs text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800"
+          onClick={onReply}
+        >
+          <Reply className="w-3.5 h-3.5" />
+          Reply
+        </Button>
+      </div>
+    </div>
   );
 }
 
