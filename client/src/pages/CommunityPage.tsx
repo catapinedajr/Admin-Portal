@@ -250,7 +250,7 @@ export default function CommunityPage() {
 function ForumsSection() {
   const [filter, setFilter] = useState<ForumFilter>("hot");
   const [selectedCategory, setSelectedCategory] = useState<number | undefined>(undefined);
-  const [selectedFlair, setSelectedFlair] = useState<string | undefined>(undefined);
+  const [selectedTag, setSelectedTag] = useState<string | undefined>(undefined);
   const [selectedPost, setSelectedPost] = useState<number | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const queryClient = useQueryClient();
@@ -260,11 +260,11 @@ function ForumsSection() {
   });
 
   const { data: posts = [], isLoading } = useQuery({
-    queryKey: ['/api/community/forum-posts', filter, selectedCategory, selectedFlair],
+    queryKey: ['/api/community/forum-posts', filter, selectedCategory, selectedTag],
     queryFn: async () => {
       let url = `/api/community/forum-posts?sortBy=${filter}`;
       if (selectedCategory) url += `&categoryId=${selectedCategory}`;
-      if (selectedFlair) url += `&flair=${selectedFlair}`;
+      if (selectedTag) url += `&flair=${selectedTag}`;
       const res = await fetch(url);
       return res.json();
     }
@@ -382,38 +382,38 @@ function ForumsSection() {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className={`text-xs h-8 px-3 ${selectedFlair ? getFlairStyle(selectedFlair) : "border-zinc-600 bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300"}`}
-                data-testid="button-filter-flair"
+                className={`text-xs h-8 px-3 ${selectedTag ? getTagStyle(selectedTag) : "border-zinc-600 bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300"}`}
+                data-testid="button-filter-tag"
               >
                 <span className="truncate max-w-[50px] sm:max-w-[80px]">
-                  {selectedFlair 
-                    ? selectedFlair.charAt(0).toUpperCase() + selectedFlair.slice(1)
-                    : "Flair"}
+                  {selectedTag 
+                    ? selectedTag.charAt(0).toUpperCase() + selectedTag.slice(1)
+                    : "Tag"}
                 </span>
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-40 p-1 bg-zinc-800 border-zinc-700" align="center">
               <div className="flex flex-col">
                 <Button
-                  variant={selectedFlair === undefined ? "secondary" : "ghost"}
+                  variant={selectedTag === undefined ? "secondary" : "ghost"}
                   size="sm"
-                  onClick={() => setSelectedFlair(undefined)}
+                  onClick={() => setSelectedTag(undefined)}
                   className="justify-start text-xs h-8"
-                  data-testid="button-flair-all"
+                  data-testid="button-tag-all"
                 >
-                  All Flair
+                  All Tags
                 </Button>
-                {FLAIR_OPTIONS.map((f) => (
+                {TAG_OPTIONS.map((t) => (
                   <Button
-                    key={f.value}
-                    variant={selectedFlair === f.value ? "secondary" : "ghost"}
+                    key={t.value}
+                    variant={selectedTag === t.value ? "secondary" : "ghost"}
                     size="sm"
-                    onClick={() => setSelectedFlair(f.value)}
+                    onClick={() => setSelectedTag(t.value)}
                     className="justify-start text-xs h-8"
-                    data-testid={`button-flair-${f.value}`}
+                    data-testid={`button-tag-${t.value}`}
                   >
-                    <span className={`w-2 h-2 rounded-full mr-2 ${f.color}`} />
-                    {f.label}
+                    <span className={`w-2 h-2 rounded-full mr-2 ${t.color}`} />
+                    {t.label}
                   </Button>
                 ))}
               </div>
@@ -506,7 +506,7 @@ function ForumsSection() {
   );
 }
 
-function getFlairStyle(flair: string) {
+function getTagStyle(tag: string) {
   const styles: Record<string, string> = {
     discussion: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
     question: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
@@ -517,7 +517,7 @@ function getFlairStyle(flair: string) {
     news: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
     chart: 'bg-pink-500/20 text-pink-400 border-pink-500/30',
   };
-  return styles[flair] || 'bg-zinc-500/20 text-zinc-400 border-zinc-500/30';
+  return styles[tag] || 'bg-zinc-500/20 text-zinc-400 border-zinc-500/30';
 }
 
 function PostCard({ post, onClick, isLast }: { post: any; onClick: () => void; isLast?: boolean }) {
@@ -548,7 +548,7 @@ function PostCard({ post, onClick, isLast }: { post: any; onClick: () => void; i
       <div className="px-4 py-3" onClick={onClick}>
         <div className="flex items-center gap-1.5 mb-1.5 text-xs text-zinc-500">
           {post.flair && (
-            <Badge variant="outline" className={`text-[10px] py-0 px-1.5 h-4 ${getFlairStyle(post.flair)}`}>
+            <Badge variant="outline" className={`text-[10px] py-0 px-1.5 h-4 ${getTagStyle(post.flair)}`}>
               {post.flair.charAt(0).toUpperCase() + post.flair.slice(1)}
             </Badge>
           )}
@@ -839,7 +839,7 @@ function PostDetailView({ postId, onBack }: { postId: number; onBack: () => void
         <div className="px-4 py-3">
           <div className="flex items-center gap-1.5 mb-2 text-xs text-zinc-500">
             {post?.flair && (
-              <Badge variant="outline" className={`text-[10px] py-0 px-1.5 h-4 ${getFlairStyle(post.flair)}`}>
+              <Badge variant="outline" className={`text-[10px] py-0 px-1.5 h-4 ${getTagStyle(post.flair)}`}>
                 {post.flair.charAt(0).toUpperCase() + post.flair.slice(1)}
               </Badge>
             )}
@@ -1071,7 +1071,7 @@ function ReplyCard({ reply, onReply, postId, isLast }: { reply: any; onReply: ()
   );
 }
 
-const FLAIR_OPTIONS = [
+const TAG_OPTIONS = [
   { value: 'discussion', label: 'Discussion', color: 'bg-blue-500' },
   { value: 'question', label: 'Question', color: 'bg-purple-500' },
   { value: 'video', label: 'Video', color: 'bg-red-500' },
@@ -1095,7 +1095,7 @@ function CreatePostForm({ categories, onSuccess }: { categories: any[]; onSucces
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [categoryId, setCategoryId] = useState<string>("");
-  const [flair, setFlair] = useState<string>("");
+  const [tag, setTag] = useState<string>("");
   const [imageUrl, setImageUrl] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
   const [linkPreview, setLinkPreview] = useState<LinkPreview | null>(null);
@@ -1118,10 +1118,10 @@ function CreatePostForm({ categories, onSuccess }: { categories: any[]; onSucces
       if (response.ok) {
         const preview = await response.json();
         setLinkPreview(preview);
-        if (preview.type === 'video' && !flair) {
-          setFlair('video');
-        } else if (preview.type === 'article' && !flair) {
-          setFlair('article');
+        if (preview.type === 'video' && !tag) {
+          setTag('video');
+        } else if (preview.type === 'article' && !tag) {
+          setTag('article');
         }
       }
     } catch (error) {
@@ -1136,7 +1136,7 @@ function CreatePostForm({ categories, onSuccess }: { categories: any[]; onSucces
         title, 
         content, 
         categoryId: parseInt(categoryId),
-        flair: flair || null,
+        flair: tag || null,
         imageUrl: imageUrl || null,
         linkUrl: linkUrl || null,
         linkPreview: linkPreview || null
@@ -1161,16 +1161,16 @@ function CreatePostForm({ categories, onSuccess }: { categories: any[]; onSucces
           </SelectContent>
         </Select>
 
-        <Select value={flair} onValueChange={setFlair}>
-          <SelectTrigger className="bg-zinc-800 border-zinc-700 w-32" data-testid="select-flair">
-            <SelectValue placeholder="Flair" />
+        <Select value={tag} onValueChange={setTag}>
+          <SelectTrigger className="bg-zinc-800 border-zinc-700 w-32" data-testid="select-tag">
+            <SelectValue placeholder="Tag" />
           </SelectTrigger>
           <SelectContent className="bg-zinc-800 border-zinc-700">
-            {FLAIR_OPTIONS.map((f) => (
-              <SelectItem key={f.value} value={f.value}>
+            {TAG_OPTIONS.map((t) => (
+              <SelectItem key={t.value} value={t.value}>
                 <span className="flex items-center gap-2">
-                  <span className={`w-2 h-2 rounded-full ${f.color}`} />
-                  {f.label}
+                  <span className={`w-2 h-2 rounded-full ${t.color}`} />
+                  {t.label}
                 </span>
               </SelectItem>
             ))}
