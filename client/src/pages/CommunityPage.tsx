@@ -14,6 +14,68 @@ import { apiRequest } from "@/lib/queryClient";
 type CommunityTab = "forums" | "videos";
 type ForumFilter = "new" | "hot" | "trending";
 
+function extractYouTubeId(url: string): string | null {
+  if (!url) return null;
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,
+    /youtube\.com\/watch\?.*v=([a-zA-Z0-9_-]{11})/
+  ];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+  return null;
+}
+
+function YouTubeEmbed({ videoId, title }: { videoId: string; title?: string }) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+
+  if (isPlaying) {
+    return (
+      <div 
+        className="relative w-full aspect-video rounded-lg overflow-hidden bg-black"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <iframe
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
+          title={title || "YouTube video"}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="absolute inset-0 w-full h-full"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div 
+      className="relative w-full aspect-video rounded-lg overflow-hidden bg-zinc-900 cursor-pointer group"
+      onClick={(e) => {
+        e.stopPropagation();
+        setIsPlaying(true);
+      }}
+    >
+      <img 
+        src={thumbnailUrl}
+        alt={title || "Video thumbnail"}
+        className="w-full h-full object-cover"
+      />
+      <div className="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/40 transition-colors">
+        <div className="w-16 h-16 rounded-full bg-red-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+          <svg viewBox="0 0 24 24" className="w-8 h-8 text-white ml-1" fill="currentColor">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+        </div>
+      </div>
+      <div className="absolute bottom-2 left-2 bg-black/70 px-2 py-0.5 rounded text-xs text-white flex items-center gap-1">
+        <Video className="w-3 h-3" />
+        YouTube
+      </div>
+    </div>
+  );
+}
+
 interface SponsoredPost {
   id: number | string;
   campaignId?: number;
@@ -475,7 +537,8 @@ function PostCard({ post, onClick, isLast }: { post: any; onClick: () => void; i
   const upvotes = post.stats?.upvotes || post.karma || 0;
   const timeAgo = formatTimeAgo(post.createdAt);
   const linkPreview = post.linkPreview as LinkPreview | null;
-  const hasMedia = post.imageUrl || linkPreview?.image;
+  const youtubeId = post.linkUrl ? extractYouTubeId(post.linkUrl) : null;
+  const hasMedia = post.imageUrl || youtubeId || linkPreview?.image;
 
   return (
     <div 
@@ -515,7 +578,13 @@ function PostCard({ post, onClick, isLast }: { post: any; onClick: () => void; i
           </div>
         )}
 
-        {linkPreview && !post.imageUrl && (
+        {youtubeId && !post.imageUrl && (
+          <div className="mt-3">
+            <YouTubeEmbed videoId={youtubeId} title={post.title} />
+          </div>
+        )}
+
+        {linkPreview && !post.imageUrl && !youtubeId && (
           <div className="mt-3 rounded-lg border border-zinc-700/50 overflow-hidden bg-zinc-800/30">
             {linkPreview.image && (
               <img 
@@ -757,6 +826,7 @@ function PostDetailView({ postId, onBack }: { postId: number; onBack: () => void
   const hasVoted = !!post?.userVote;
   const upvotes = post?.stats?.upvotes || post?.karma || 0;
   const linkPreview = post?.linkPreview as LinkPreview | null;
+  const youtubeId = post?.linkUrl ? extractYouTubeId(post.linkUrl) : null;
 
   return (
     <div className="space-y-4">
@@ -799,7 +869,13 @@ function PostDetailView({ postId, onBack }: { postId: number; onBack: () => void
             </div>
           )}
 
-          {linkPreview && (
+          {youtubeId && !post?.imageUrl && (
+            <div className="mt-3">
+              <YouTubeEmbed videoId={youtubeId} title={post?.title} />
+            </div>
+          )}
+
+          {linkPreview && !post?.imageUrl && !youtubeId && (
             <a 
               href={post?.linkUrl} 
               target="_blank" 
