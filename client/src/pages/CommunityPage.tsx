@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
-import { MessageSquare, Video, ArrowBigUp, MessageCircle, Clock, TrendingUp, Flame, Plus, User as UserIcon, Wallet, Send, ChevronDown, ChevronUp, ExternalLink, Megaphone } from "lucide-react";
+import { MessageSquare, Video, ArrowBigUp, MessageCircle, Clock, TrendingUp, Flame, Plus, User as UserIcon, Wallet, Send, ChevronDown, ChevronUp, ExternalLink, Megaphone, Filter } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from "@/lib/queryClient";
@@ -217,6 +218,49 @@ function ForumsSection() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-xs border-zinc-700 bg-zinc-800 hover:bg-zinc-700"
+                data-testid="button-filter-topics"
+              >
+                <Filter className="w-3 h-3 mr-1" />
+                {selectedCategory === undefined 
+                  ? "All Topics" 
+                  : categories.find((c: any) => c.id === selectedCategory)?.name || "Filter"}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-48 p-1 bg-zinc-800 border-zinc-700" align="start">
+              <div className="flex flex-col">
+                <Button
+                  variant={selectedCategory === undefined ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setSelectedCategory(undefined)}
+                  className="justify-start text-xs h-8"
+                  data-testid="button-category-all"
+                >
+                  All Topics
+                </Button>
+                {categories.map((cat: any) => (
+                  <Button
+                    key={cat.id}
+                    variant={selectedCategory === cat.id ? "secondary" : "ghost"}
+                    size="sm"
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className="justify-start text-xs h-8"
+                    data-testid={`button-category-${cat.slug}`}
+                  >
+                    {cat.name}
+                  </Button>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+          
+          <div className="w-px h-4 bg-zinc-700" />
+          
           <Button
             variant={filter === "hot" ? "secondary" : "ghost"}
             size="sm"
@@ -277,30 +321,6 @@ function ForumsSection() {
             </DialogContent>
           </Dialog>
         </div>
-      </div>
-
-      <div className="flex gap-2 flex-wrap">
-        <Button
-          variant={selectedCategory === undefined ? "secondary" : "ghost"}
-          size="sm"
-          onClick={() => setSelectedCategory(undefined)}
-          className="text-xs"
-          data-testid="button-category-all"
-        >
-          All
-        </Button>
-        {categories.map((cat: any) => (
-          <Button
-            key={cat.id}
-            variant={selectedCategory === cat.id ? "secondary" : "ghost"}
-            size="sm"
-            onClick={() => setSelectedCategory(cat.id)}
-            className="text-xs"
-            data-testid={`button-category-${cat.slug}`}
-          >
-            {cat.name}
-          </Button>
-        ))}
       </div>
 
       {isLoading ? (
