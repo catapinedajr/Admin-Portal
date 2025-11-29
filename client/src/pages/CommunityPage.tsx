@@ -393,14 +393,15 @@ function ForumsSection() {
       {isLoading ? (
         <div className="bg-zinc-900/50 rounded-xl border border-zinc-800/50">
           {[1, 2, 3].map(i => (
-            <div key={i} className={`animate-pulse py-4 px-3 ${i < 3 ? 'border-b border-zinc-800' : ''}`}>
-              <div className="flex gap-3">
-                <div className="w-10 h-12 bg-zinc-800 rounded" />
-                <div className="flex-1 space-y-2">
-                  <div className="h-3 bg-zinc-800 rounded w-1/3" />
-                  <div className="h-4 bg-zinc-800 rounded w-2/3" />
-                  <div className="h-3 bg-zinc-800 rounded w-1/4" />
-                </div>
+            <div key={i} className={`animate-pulse ${i < 3 ? 'border-b border-zinc-800' : ''}`}>
+              <div className="px-4 py-3 space-y-2">
+                <div className="h-3 bg-zinc-800 rounded w-1/3" />
+                <div className="h-4 bg-zinc-800 rounded w-3/4" />
+                <div className="h-3 bg-zinc-800 rounded w-1/2" />
+              </div>
+              <div className="flex gap-2 px-2 pb-2">
+                <div className="h-9 w-16 bg-zinc-800 rounded-full" />
+                <div className="h-9 w-14 bg-zinc-800 rounded-full" />
               </div>
             </div>
           ))}
@@ -478,96 +479,102 @@ function PostCard({ post, onClick, isLast }: { post: any; onClick: () => void; i
 
   return (
     <div 
-      className={`cursor-pointer hover:bg-zinc-800/30 transition-colors ${!isLast ? 'border-b border-zinc-800' : ''}`}
+      className={`cursor-pointer hover:bg-zinc-800/20 transition-colors ${!isLast ? 'border-b border-zinc-800' : ''}`}
       data-testid={`card-post-${post.id}`}
     >
-      <div className="flex py-3">
-        <div 
-          className="flex flex-col items-center px-3 pt-0.5"
+      <div className="px-4 py-3" onClick={onClick}>
+        <div className="flex items-center gap-1.5 mb-1.5 text-xs text-zinc-500">
+          {post.flair && (
+            <Badge variant="outline" className={`text-[10px] py-0 px-1.5 h-4 ${getFlairStyle(post.flair)}`}>
+              {post.flair.charAt(0).toUpperCase() + post.flair.slice(1)}
+            </Badge>
+          )}
+          {post.category && (
+            <span className="text-zinc-500">{post.category.name}</span>
+          )}
+          <span className="text-zinc-600">•</span>
+          <span className="text-zinc-400">{post.author?.username || 'Anonymous'}</span>
+          <span className="text-zinc-600">•</span>
+          <span className="text-zinc-500">{timeAgo}</span>
+        </div>
+        
+        <h3 className="font-medium text-white text-[15px] leading-snug line-clamp-2">{post.title}</h3>
+        
+        {post.content && !hasMedia && (
+          <p className="text-sm text-zinc-400 line-clamp-3 mt-1">{post.content}</p>
+        )}
+
+        {post.imageUrl && (
+          <div className="mt-3">
+            <img 
+              src={post.imageUrl} 
+              alt="" 
+              className="w-full aspect-video object-cover rounded-lg"
+              onError={(e) => e.currentTarget.style.display = 'none'}
+            />
+          </div>
+        )}
+
+        {linkPreview && !post.imageUrl && (
+          <div className="mt-3 rounded-lg border border-zinc-700/50 overflow-hidden bg-zinc-800/30">
+            {linkPreview.image && (
+              <img 
+                src={linkPreview.image} 
+                alt="" 
+                className="w-full aspect-video object-cover"
+                onError={(e) => e.currentTarget.style.display = 'none'}
+              />
+            )}
+            <div className="p-2.5">
+              <p className="text-[11px] text-zinc-500 truncate">{linkPreview.siteName}</p>
+              <p className="text-sm font-medium text-zinc-300 line-clamp-2">{linkPreview.title}</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="flex items-center gap-1 px-2 pb-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          className={`h-9 px-3 gap-1.5 rounded-full ${hasVoted ? 'text-orange-500 bg-orange-500/10' : 'text-zinc-400 hover:text-orange-400 hover:bg-zinc-800'}`}
+          disabled={hasVoted || upvoteMutation.isPending}
           onClick={(e) => {
             e.stopPropagation();
             if (!hasVoted) upvoteMutation.mutate();
           }}
+          data-testid={`button-upvote-${post.id}`}
         >
+          <ArrowBigUp className={`w-5 h-5 ${hasVoted ? 'fill-orange-500' : ''}`} />
+          <span className="text-sm font-medium">{upvotes}</span>
+        </Button>
+
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-9 px-3 gap-1.5 rounded-full text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800"
+          onClick={onClick}
+          data-testid={`button-comments-${post.id}`}
+        >
+          <MessageCircle className="w-4 h-4" />
+          <span className="text-sm">{post.replyCount || 0}</span>
+        </Button>
+
+        {post.linkUrl && (
           <Button
             variant="ghost"
             size="sm"
-            className={`p-1 h-auto ${hasVoted ? 'text-orange-500' : 'text-zinc-500 hover:text-orange-400'}`}
-            disabled={hasVoted || upvoteMutation.isPending}
-            data-testid={`button-upvote-${post.id}`}
+            className="h-9 px-3 gap-1.5 rounded-full text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800"
+            onClick={(e) => {
+              e.stopPropagation();
+              window.open(post.linkUrl, '_blank');
+            }}
+            data-testid={`button-link-${post.id}`}
           >
-            <ArrowBigUp className={`w-5 h-5 ${hasVoted ? 'fill-orange-500' : ''}`} />
+            <Link2 className="w-4 h-4" />
+            <span className="text-sm">Link</span>
           </Button>
-          <span className={`text-xs font-medium ${hasVoted ? 'text-orange-500' : 'text-zinc-400'}`}>
-            {upvotes}
-          </span>
-        </div>
-
-        <div className="flex-1 min-w-0 pr-3" onClick={onClick}>
-          <div className="flex items-center gap-1.5 mb-1 text-xs text-zinc-500 flex-wrap">
-            {post.flair && (
-              <Badge variant="outline" className={`text-[10px] py-0 px-1.5 h-4 ${getFlairStyle(post.flair)}`}>
-                {post.flair.charAt(0).toUpperCase() + post.flair.slice(1)}
-              </Badge>
-            )}
-            {post.category && (
-              <span className="text-zinc-500">{post.category.name}</span>
-            )}
-            <span className="text-zinc-600">•</span>
-            <span className="text-zinc-500">{post.author?.username || 'Anonymous'}</span>
-            <span className="text-zinc-600">•</span>
-            <span className="text-zinc-500">{timeAgo}</span>
-          </div>
-          
-          <h3 className="font-medium text-white text-[15px] leading-snug mb-1 line-clamp-2">{post.title}</h3>
-          
-          {post.content && !hasMedia && (
-            <p className="text-sm text-zinc-400 line-clamp-2 mb-2">{post.content}</p>
-          )}
-
-          {post.imageUrl && (
-            <div className="mt-2 mb-2">
-              <img 
-                src={post.imageUrl} 
-                alt="" 
-                className="w-full max-h-72 object-cover rounded-lg"
-                onError={(e) => e.currentTarget.style.display = 'none'}
-              />
-            </div>
-          )}
-
-          {linkPreview && !post.imageUrl && (
-            <div className="mt-2 mb-2 rounded-lg border border-zinc-700/50 overflow-hidden bg-zinc-800/30">
-              <div className="flex">
-                {linkPreview.image && (
-                  <img 
-                    src={linkPreview.image} 
-                    alt="" 
-                    className="w-20 h-16 object-cover flex-shrink-0"
-                    onError={(e) => e.currentTarget.style.display = 'none'}
-                  />
-                )}
-                <div className="p-2 min-w-0 flex-1">
-                  <p className="text-[10px] text-zinc-500 truncate">{linkPreview.siteName}</p>
-                  <p className="text-xs font-medium text-zinc-300 line-clamp-2">{linkPreview.title}</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="flex items-center gap-4 text-xs text-zinc-500">
-            <span className="flex items-center gap-1">
-              <MessageCircle className="w-3.5 h-3.5" />
-              {post.replyCount || 0} {post.replyCount === 1 ? 'reply' : 'replies'}
-            </span>
-            {post.linkUrl && (
-              <span className="flex items-center gap-1">
-                <Link2 className="w-3.5 h-3.5" />
-                Link
-              </span>
-            )}
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
@@ -629,55 +636,48 @@ function SponsoredPostCard({ ad }: { ad: SponsoredPost }) {
       className="border-b border-zinc-800 bg-gradient-to-r from-orange-950/10 to-transparent"
       data-testid={`card-sponsored-${ad.id}`}
     >
-      <div className="py-3">
-        <div className="flex">
-          <div className="flex flex-col items-center px-3 pt-0.5">
-            {ad.logoUrl ? (
-              <img src={ad.logoUrl} alt={ad.advertiser} className="w-8 h-8 rounded object-contain" />
-            ) : (
-              <Megaphone className="w-5 h-5 text-orange-400/70" />
-            )}
-          </div>
-
-          <div className="flex-1 min-w-0 pr-3">
-            <div className="flex items-center gap-1.5 mb-1 text-xs text-zinc-500 flex-wrap">
-              <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px] py-0 px-1.5 h-4">
-                Promoted
-              </Badge>
-              <span className="text-zinc-500">{ad.advertiser}</span>
-              {ad.category && (
-                <>
-                  <span className="text-zinc-600">•</span>
-                  <span className="text-zinc-500">{ad.category}</span>
-                </>
-              )}
-            </div>
-            
-            <h3 className="font-medium text-white text-[15px] leading-snug mb-1">{ad.title}</h3>
-            <p className="text-sm text-zinc-400 line-clamp-2 mb-2">{ad.description}</p>
-
-            {ad.imageUrl && (
-              <div className="mb-2">
-                <img 
-                  src={ad.imageUrl} 
-                  alt={ad.title}
-                  className="w-full max-h-48 object-cover rounded-lg"
-                />
-              </div>
-            )}
-
-            <Button
-              size="sm"
-              variant="ghost"
-              className="text-xs text-orange-400 hover:bg-orange-500/10 hover:text-orange-300 px-2 h-7"
-              onClick={handleClick}
-              data-testid={`button-cta-${ad.id}`}
-            >
-              {ad.ctaText}
-              <ExternalLink className="w-3 h-3 ml-1" />
-            </Button>
-          </div>
+      <div className="px-4 py-3">
+        <div className="flex items-center gap-1.5 mb-1.5 text-xs text-zinc-500">
+          <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px] py-0 px-1.5 h-4">
+            Promoted
+          </Badge>
+          {ad.logoUrl && (
+            <img src={ad.logoUrl} alt={ad.advertiser} className="w-4 h-4 rounded object-contain" />
+          )}
+          <span className="text-zinc-400">{ad.advertiser}</span>
+          {ad.category && (
+            <>
+              <span className="text-zinc-600">•</span>
+              <span className="text-zinc-500">{ad.category}</span>
+            </>
+          )}
         </div>
+        
+        <h3 className="font-medium text-white text-[15px] leading-snug">{ad.title}</h3>
+        <p className="text-sm text-zinc-400 line-clamp-2 mt-1">{ad.description}</p>
+
+        {ad.imageUrl && (
+          <div className="mt-3">
+            <img 
+              src={ad.imageUrl} 
+              alt={ad.title}
+              className="w-full aspect-video object-cover rounded-lg"
+            />
+          </div>
+        )}
+      </div>
+
+      <div className="flex items-center gap-1 px-2 pb-2">
+        <Button
+          size="sm"
+          variant="ghost"
+          className="h-9 px-3 gap-1.5 rounded-full text-orange-400 hover:bg-orange-500/10 hover:text-orange-300"
+          onClick={handleClick}
+          data-testid={`button-cta-${ad.id}`}
+        >
+          {ad.ctaText}
+          <ExternalLink className="w-3.5 h-3.5" />
+        </Button>
       </div>
     </div>
   );
