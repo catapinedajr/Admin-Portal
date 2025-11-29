@@ -126,28 +126,20 @@ export default function CommunityPage() {
       <main className="max-w-6xl mx-auto px-4 py-6 pb-24">
         <div className="space-y-4">
           {/* Community Banner */}
-          <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-orange-600/20 via-orange-500/10 to-zinc-900 border border-orange-500/20">
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmOTczMTYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyek0zNiAzMHYySDI0di0yaDEyek0zNiAyNnYySDI0di0yaDEyeiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
-            <div className="relative px-4 py-4 sm:px-6 sm:py-5">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="hidden sm:flex w-12 h-12 bg-orange-500 rounded-xl items-center justify-center shadow-lg shadow-orange-500/20">
-                    <MessageSquare className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg sm:text-xl font-bold text-white">
-                      HODLearn Community
-                    </h2>
-                    <p className="text-xs sm:text-sm text-zinc-400">
-                      Learn together, grow together
-                    </p>
-                  </div>
+          <div className="relative overflow-hidden rounded-xl bg-gradient-to-b from-orange-500/15 via-orange-500/5 to-transparent border border-orange-500/20">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-orange-500/10 via-transparent to-transparent" />
+            <div className="relative px-4 py-5 sm:px-6 sm:py-6 text-center">
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/30">
+                  <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
-                <div className="hidden md:flex items-center gap-4 text-sm text-zinc-400">
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                    <span>Active now</span>
-                  </div>
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-bold text-white">
+                    HODLearn Community
+                  </h2>
+                  <p className="text-sm text-orange-400/80 mt-1">
+                    Building conviction through community
+                  </p>
                 </div>
               </div>
             </div>
