@@ -391,7 +391,7 @@ function ForumsSection() {
       </div>
 
       {isLoading ? (
-        <div className="bg-zinc-900/50 rounded-xl border border-zinc-800/50">
+        <div>
           {[1, 2, 3].map(i => (
             <div key={i} className={`animate-pulse ${i < 3 ? 'border-b border-zinc-800' : ''}`}>
               <div className="px-4 py-3 space-y-2">
@@ -412,7 +412,7 @@ function ForumsSection() {
           <p className="text-zinc-400">No posts yet. Be the first to start a discussion!</p>
         </div>
       ) : (
-        <div className="bg-zinc-900/50 rounded-xl border border-zinc-800/50">
+        <div>
           {posts.map((post: any, index: number) => {
             const elements = [];
             const isLastPost = index === posts.length - 1;
