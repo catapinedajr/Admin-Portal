@@ -212,7 +212,61 @@ export const forumReplyStats = pgTable("forum_reply_stats", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+// Ad Campaigns for monetization
+export const adCampaigns = pgTable("ad_campaigns", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  advertiser: text("advertiser").notNull(), // Company/brand name
+  status: text("status").notNull().default('draft'), // draft, active, paused, completed
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  budgetCents: integer("budget_cents"), // Total budget in cents
+  spentCents: integer("spent_cents").notNull().default(0),
+  costPerClickCents: integer("cost_per_click_cents"), // CPC pricing
+  costPerImpressionCents: integer("cost_per_impression_cents"), // CPM pricing (per 1000)
+  targetImpressions: integer("target_impressions"), // Campaign goal
+  targetClicks: integer("target_clicks"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
 
+// Ad Creatives (the actual ad content)
+export const adCreatives = pgTable("ad_creatives", {
+  id: serial("id").primaryKey(),
+  campaignId: integer("campaign_id").notNull().references(() => adCampaigns.id, { onDelete: 'cascade' }),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  ctaText: text("cta_text").notNull(), // Button text like "Learn More", "Get Started"
+  ctaUrl: text("cta_url").notNull(), // Destination URL
+  imageUrl: text("image_url"), // Main creative image
+  logoUrl: text("logo_url"), // Brand logo
+  category: text("category"), // Ad category for targeting (Security, Getting Started, etc.)
+  placement: text("placement").notNull().default('in_feed'), // in_feed, sidebar, banner
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Ad Impressions tracking
+export const adImpressions = pgTable("ad_impressions", {
+  id: serial("id").primaryKey(),
+  creativeId: integer("creative_id").notNull().references(() => adCreatives.id, { onDelete: 'cascade' }),
+  campaignId: integer("campaign_id").notNull().references(() => adCampaigns.id, { onDelete: 'cascade' }),
+  userId: integer("user_id"), // Can be null for anonymous
+  sessionId: text("session_id"), // For tracking unique views
+  placement: text("placement").notNull(), // Where the ad was shown
+  viewedAt: timestamp("viewed_at").notNull().defaultNow(),
+});
+
+// Ad Clicks tracking  
+export const adClicks = pgTable("ad_clicks", {
+  id: serial("id").primaryKey(),
+  creativeId: integer("creative_id").notNull().references(() => adCreatives.id, { onDelete: 'cascade' }),
+  campaignId: integer("campaign_id").notNull().references(() => adCampaigns.id, { onDelete: 'cascade' }),
+  userId: integer("user_id"), // Can be null for anonymous
+  sessionId: text("session_id"),
+  clickedAt: timestamp("clicked_at").notNull().defaultNow(),
+});
 
 export const userProgress = pgTable("user_progress", {
   id: serial("id").primaryKey(),
@@ -754,6 +808,30 @@ export const insertForumReplyStatsSchema = createInsertSchema(forumReplyStats).o
   updatedAt: true,
 });
 
+// Ad Campaign schemas
+export const insertAdCampaignSchema = createInsertSchema(adCampaigns).omit({
+  id: true,
+  spentCents: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertAdCreativeSchema = createInsertSchema(adCreatives).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertAdImpressionSchema = createInsertSchema(adImpressions).omit({
+  id: true,
+  viewedAt: true,
+});
+
+export const insertAdClickSchema = createInsertSchema(adClicks).omit({
+  id: true,
+  clickedAt: true,
+});
+
 // Enhanced curated videos schema
 export const insertCuratedVideoSchema = createInsertSchema(curatedVideos).omit({
   id: true,
@@ -820,4 +898,19 @@ export type VideoWithCategory = CuratedVideo & {
 export type FeaturedStory = SuccessStory & {
   author: Pick<User, 'id' | 'username'>;
   feature?: StoryFeature;
+};
+
+// Ad Campaign types
+export type AdCampaign = typeof adCampaigns.$inferSelect;
+export type InsertAdCampaign = z.infer<typeof insertAdCampaignSchema>;
+export type AdCreative = typeof adCreatives.$inferSelect;
+export type InsertAdCreative = z.infer<typeof insertAdCreativeSchema>;
+export type AdImpression = typeof adImpressions.$inferSelect;
+export type InsertAdImpression = z.infer<typeof insertAdImpressionSchema>;
+export type AdClick = typeof adClicks.$inferSelect;
+export type InsertAdClick = z.infer<typeof insertAdClickSchema>;
+
+// Ad creative with campaign info for display
+export type AdCreativeWithCampaign = AdCreative & {
+  campaign: AdCampaign;
 };
