@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { MessageSquare, Video, ArrowBigUp, MessageCircle, Clock, TrendingUp, Flame, Plus, User as UserIcon, Wallet, Send, ChevronDown, ChevronUp } from "lucide-react";
+import { MessageSquare, Video, ArrowBigUp, MessageCircle, Clock, TrendingUp, Flame, Plus, User as UserIcon, Wallet, Send, ChevronDown, ChevronUp, ExternalLink, Megaphone } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +12,48 @@ import { apiRequest } from "@/lib/queryClient";
 
 type CommunityTab = "forums" | "videos";
 type ForumFilter = "new" | "hot" | "trending";
+
+interface SponsoredPost {
+  id: string;
+  sponsor: string;
+  title: string;
+  description: string;
+  ctaText: string;
+  ctaUrl: string;
+  category: string;
+}
+
+const SPONSORED_POSTS: SponsoredPost[] = [
+  {
+    id: "ad-1",
+    sponsor: "Trezor",
+    title: "Secure Your Bitcoin with Hardware Wallets",
+    description: "Industry-leading cold storage for your BTC. Take full control of your private keys.",
+    ctaText: "Learn More",
+    ctaUrl: "#",
+    category: "Security"
+  },
+  {
+    id: "ad-2", 
+    sponsor: "Swan Bitcoin",
+    title: "Stack Sats Automatically",
+    description: "Set up recurring Bitcoin purchases. Dollar-cost averaging made simple.",
+    ctaText: "Start Stacking",
+    ctaUrl: "#",
+    category: "Getting Started"
+  },
+  {
+    id: "ad-3",
+    sponsor: "Unchained Capital",
+    title: "Bitcoin-Backed Loans",
+    description: "Access liquidity without selling your BTC. Collaborative custody solutions.",
+    ctaText: "Explore Options",
+    ctaUrl: "#",
+    category: "Finance"
+  }
+];
+
+const AD_INSERTION_INTERVAL = 5;
 
 export default function CommunityPage() {
   const [, setLocation] = useLocation();
@@ -248,13 +290,29 @@ function ForumsSection() {
         </Card>
       ) : (
         <div className="space-y-2">
-          {posts.map((post: any) => (
-            <PostCard 
-              key={post.id} 
-              post={post} 
-              onClick={() => setSelectedPost(post.id)}
-            />
-          ))}
+          {posts.map((post: any, index: number) => {
+            const elements = [];
+            
+            elements.push(
+              <PostCard 
+                key={post.id} 
+                post={post} 
+                onClick={() => setSelectedPost(post.id)}
+              />
+            );
+            
+            if ((index + 1) % AD_INSERTION_INTERVAL === 0 && index < posts.length - 1) {
+              const adIndex = Math.floor(index / AD_INSERTION_INTERVAL) % SPONSORED_POSTS.length;
+              elements.push(
+                <SponsoredPostCard 
+                  key={`ad-after-${post.id}`}
+                  ad={SPONSORED_POSTS[adIndex]}
+                />
+              );
+            }
+            
+            return elements;
+          })}
         </div>
       )}
     </div>
@@ -333,6 +391,50 @@ function PostCard({ post, onClick }: { post: any; onClick: () => void }) {
                 {post.replyCount || 0} replies
               </span>
             </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function SponsoredPostCard({ ad }: { ad: SponsoredPost }) {
+  return (
+    <Card 
+      className="bg-gradient-to-r from-zinc-800/50 to-zinc-800/30 border-zinc-700 border-l-2 border-l-orange-500/50"
+      data-testid={`card-sponsored-${ad.id}`}
+    >
+      <CardContent className="p-0">
+        <div className="flex">
+          <div className="flex flex-col items-center justify-center py-3 px-3 bg-zinc-800/30 rounded-l-lg">
+            <Megaphone className="w-5 h-5 text-orange-400/70" />
+          </div>
+
+          <div className="flex-1 p-3">
+            <div className="flex items-center gap-2 mb-1 text-xs">
+              <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px] px-1.5 py-0">
+                Sponsored
+              </Badge>
+              <span className="text-zinc-500">{ad.sponsor}</span>
+              <span className="text-zinc-600">•</span>
+              <Badge variant="outline" className="text-xs py-0 text-zinc-500">
+                {ad.category}
+              </Badge>
+            </div>
+            
+            <h3 className="font-semibold text-white mb-1">{ad.title}</h3>
+            <p className="text-sm text-zinc-400 mb-2">{ad.description}</p>
+
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-xs border-orange-500/30 text-orange-400 hover:bg-orange-500/10 hover:text-orange-300"
+              onClick={() => window.open(ad.ctaUrl, '_blank')}
+              data-testid={`button-cta-${ad.id}`}
+            >
+              {ad.ctaText}
+              <ExternalLink className="w-3 h-3 ml-1" />
+            </Button>
           </div>
         </div>
       </CardContent>
