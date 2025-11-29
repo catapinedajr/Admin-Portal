@@ -215,21 +215,23 @@ function ForumsSection() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+    <div className="space-y-3">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1 flex-1 min-w-0">
           <Popover>
             <PopoverTrigger asChild>
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="text-xs border-zinc-700 bg-zinc-800 hover:bg-zinc-700"
+                className="text-xs border-zinc-700 bg-zinc-800 hover:bg-zinc-700 px-2 shrink-0"
                 data-testid="button-filter-topics"
               >
-                <Filter className="w-3 h-3 mr-1" />
-                {selectedCategory === undefined 
-                  ? "All Topics" 
-                  : categories.find((c: any) => c.id === selectedCategory)?.name || "Filter"}
+                <Filter className="w-3 h-3" />
+                <span className="ml-1 truncate max-w-[80px]">
+                  {selectedCategory === undefined 
+                    ? "All" 
+                    : categories.find((c: any) => c.id === selectedCategory)?.name || "Filter"}
+                </span>
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-48 p-1 bg-zinc-800 border-zinc-700" align="start">
@@ -259,52 +261,48 @@ function ForumsSection() {
             </PopoverContent>
           </Popover>
           
-          <div className="w-px h-4 bg-zinc-700" />
-          
-          <Button
-            variant={filter === "hot" ? "secondary" : "ghost"}
-            size="sm"
-            onClick={() => setFilter("hot")}
-            className="text-xs"
-            data-testid="button-filter-hot"
-          >
-            <Flame className="w-3 h-3 mr-1" />
-            Hot
-          </Button>
-          <Button
-            variant={filter === "new" ? "secondary" : "ghost"}
-            size="sm"
-            onClick={() => setFilter("new")}
-            className="text-xs"
-            data-testid="button-filter-new"
-          >
-            <Clock className="w-3 h-3 mr-1" />
-            New
-          </Button>
-          <Button
-            variant={filter === "trending" ? "secondary" : "ghost"}
-            size="sm"
-            onClick={() => setFilter("trending")}
-            className="text-xs"
-            data-testid="button-filter-trending"
-          >
-            <TrendingUp className="w-3 h-3 mr-1" />
-            Trending
-          </Button>
+          <div className="flex items-center gap-0.5 bg-zinc-800/50 rounded-lg p-0.5">
+            <Button
+              variant={filter === "hot" ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setFilter("hot")}
+              className="text-xs h-7 px-2"
+              data-testid="button-filter-hot"
+            >
+              <Flame className="w-3 h-3" />
+            </Button>
+            <Button
+              variant={filter === "new" ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setFilter("new")}
+              className="text-xs h-7 px-2"
+              data-testid="button-filter-new"
+            >
+              <Clock className="w-3 h-3" />
+            </Button>
+            <Button
+              variant={filter === "trending" ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setFilter("trending")}
+              className="text-xs h-7 px-2"
+              data-testid="button-filter-trending"
+            >
+              <TrendingUp className="w-3 h-3" />
+            </Button>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 shrink-0">
           {userKarma && (
-            <Badge variant="outline" className="text-orange-400 border-orange-400/30">
-              {userKarma.totalKarma || 0} karma
+            <Badge variant="outline" className="text-orange-400 border-orange-400/30 text-xs px-1.5">
+              {userKarma.totalKarma || 0}
             </Badge>
           )}
           
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
-              <Button size="sm" className="bg-orange-500 hover:bg-orange-600" data-testid="button-create-post">
-                <Plus className="w-4 h-4 mr-1" />
-                Post
+              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 h-7 px-2" data-testid="button-create-post">
+                <Plus className="w-4 h-4" />
               </Button>
             </DialogTrigger>
             <DialogContent className="bg-zinc-900 border-zinc-700">
