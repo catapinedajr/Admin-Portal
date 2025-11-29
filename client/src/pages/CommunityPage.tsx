@@ -193,6 +193,17 @@ function ForumsSection() {
     queryKey: ['/api/community/karma', 1],
   });
 
+  const { data: activeAds = [] } = useQuery<SponsoredPost[]>({
+    queryKey: ['/api/ads/active'],
+    queryFn: async () => {
+      const res = await fetch('/api/ads/active?placement=in_feed');
+      if (!res.ok) return [];
+      return res.json();
+    }
+  });
+
+  const adsToShow = activeAds.length > 0 ? activeAds : FALLBACK_ADS;
+
   if (selectedPost) {
     return (
       <PostDetailView 
@@ -320,12 +331,12 @@ function ForumsSection() {
               />
             );
             
-            if ((index + 1) % AD_INSERTION_INTERVAL === 0 && index < posts.length - 1) {
-              const adIndex = Math.floor(index / AD_INSERTION_INTERVAL) % FALLBACK_ADS.length;
+            if ((index + 1) % AD_INSERTION_INTERVAL === 0 && index < posts.length - 1 && adsToShow.length > 0) {
+              const adIndex = Math.floor(index / AD_INSERTION_INTERVAL) % adsToShow.length;
               elements.push(
                 <SponsoredPostCard 
                   key={`ad-after-${post.id}`}
-                  ad={FALLBACK_ADS[adIndex]}
+                  ad={adsToShow[adIndex]}
                 />
               );
             }
@@ -343,10 +354,7 @@ function PostCard({ post, onClick }: { post: any; onClick: () => void }) {
   
   const upvoteMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest(`/api/community/forum-posts/${post.id}/upvote`, {
-        method: 'POST',
-        body: JSON.stringify({ bitcoinPriceUsd: 100000 }),
-      });
+      return apiRequest('POST', `/api/community/forum-posts/${post.id}/upvote`, { bitcoinPriceUsd: 100000 });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/community/forum-posts'] });
@@ -564,12 +572,9 @@ function PostDetailView({ postId, onBack }: { postId: number; onBack: () => void
 
   const replyMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest(`/api/community/forum-posts/${postId}/replies`, {
-        method: 'POST',
-        body: JSON.stringify({ 
-          content: replyContent,
-          parentReplyId: replyingTo 
-        }),
+      return apiRequest('POST', `/api/community/forum-posts/${postId}/replies`, { 
+        content: replyContent,
+        parentReplyId: replyingTo 
       });
     },
     onSuccess: () => {
@@ -581,10 +586,7 @@ function PostDetailView({ postId, onBack }: { postId: number; onBack: () => void
 
   const upvotePostMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest(`/api/community/forum-posts/${postId}/upvote`, {
-        method: 'POST',
-        body: JSON.stringify({ bitcoinPriceUsd: 100000 }),
-      });
+      return apiRequest('POST', `/api/community/forum-posts/${postId}/upvote`, { bitcoinPriceUsd: 100000 });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/community/forum-posts'] });
@@ -713,10 +715,7 @@ function ReplyCard({ reply, onReply, postId }: { reply: any; onReply: () => void
   
   const upvoteMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest(`/api/community/forum-replies/${reply.id}/upvote`, {
-        method: 'POST',
-        body: JSON.stringify({ bitcoinPriceUsd: 100000 }),
-      });
+      return apiRequest('POST', `/api/community/forum-replies/${reply.id}/upvote`, { bitcoinPriceUsd: 100000 });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/community/forum-posts', postId, 'replies'] });
@@ -782,13 +781,10 @@ function CreatePostForm({ categories, onSuccess }: { categories: any[]; onSucces
 
   const createMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest('/api/community/forum-posts', {
-        method: 'POST',
-        body: JSON.stringify({ 
-          title, 
-          content, 
-          categoryId: parseInt(categoryId) 
-        }),
+      return apiRequest('POST', '/api/community/forum-posts', { 
+        title, 
+        content, 
+        categoryId: parseInt(categoryId) 
       });
     },
     onSuccess

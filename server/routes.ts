@@ -2612,6 +2612,37 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
+  // Admin: Delete campaign
+  app.delete("/api/admin/ads/campaigns/:id", async (req, res) => {
+    try {
+      const campaignId = parseInt(req.params.id);
+      await db.delete(adCreatives).where(eq(adCreatives.campaignId, campaignId));
+      await db.delete(adCampaigns).where(eq(adCampaigns.id, campaignId));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting campaign:", error);
+      res.status(500).json({ message: "Failed to delete campaign" });
+    }
+  });
+
+  // Admin: Get creatives for a campaign
+  app.get("/api/admin/ads/creatives", async (req, res) => {
+    try {
+      const { campaignId } = req.query;
+      
+      let query = db.select().from(adCreatives);
+      if (campaignId) {
+        query = query.where(eq(adCreatives.campaignId, parseInt(campaignId as string)));
+      }
+      
+      const creatives = await query.orderBy(desc(adCreatives.createdAt));
+      res.json(creatives);
+    } catch (error) {
+      console.error("Error fetching creatives:", error);
+      res.status(500).json({ message: "Failed to fetch creatives" });
+    }
+  });
+
   // Admin: Create creative
   app.post("/api/admin/ads/creatives", async (req, res) => {
     try {

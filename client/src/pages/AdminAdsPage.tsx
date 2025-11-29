@@ -57,16 +57,16 @@ function NewCampaignDialog({ onSuccess }: { onSuccess: () => void }) {
 
   const createMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest('POST', '/api/ads/campaigns', {
+      return apiRequest('POST', '/api/admin/ads/campaigns', {
         name,
         advertiser,
-        budget: parseInt(budget) || 0,
+        budgetCents: (parseInt(budget) || 0) * 100,
         startDate: startDate || new Date().toISOString().split('T')[0],
         endDate: endDate || null
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/ads/campaigns'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/ads/campaigns'] });
       setOpen(false);
       setName("");
       setAdvertiser("");
@@ -175,7 +175,7 @@ function NewCreativeDialog({ campaignId, onSuccess }: { campaignId: number; onSu
 
   const createMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest('POST', '/api/ads/creatives', {
+      return apiRequest('POST', '/api/admin/ads/creatives', {
         campaignId,
         title,
         description,
@@ -183,12 +183,11 @@ function NewCreativeDialog({ campaignId, onSuccess }: { campaignId: number; onSu
         logoUrl: logoUrl || null,
         ctaText,
         ctaUrl,
-        placement,
-        isActive: true
+        placement
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/ads/creatives', campaignId] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/ads/creatives', campaignId] });
       setOpen(false);
       setTitle("");
       setDescription("");
@@ -314,20 +313,20 @@ function CampaignCard({ campaign, onSelect }: { campaign: Campaign; onSelect: ()
   const toggleMutation = useMutation({
     mutationFn: async () => {
       const newStatus = campaign.status === 'active' ? 'paused' : 'active';
-      return apiRequest('PUT', `/api/ads/campaigns/${campaign.id}`, { status: newStatus });
+      return apiRequest('PATCH', `/api/admin/ads/campaigns/${campaign.id}`, { status: newStatus });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/ads/campaigns'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/ads/campaigns'] });
       toast({ title: `Campaign ${campaign.status === 'active' ? 'paused' : 'activated'}` });
     }
   });
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest('DELETE', `/api/ads/campaigns/${campaign.id}`);
+      return apiRequest('DELETE', `/api/admin/ads/campaigns/${campaign.id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/ads/campaigns'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/ads/campaigns'] });
       toast({ title: "Campaign deleted" });
     }
   });
@@ -407,20 +406,20 @@ function CreativeCard({ creative }: { creative: Creative }) {
   
   const toggleMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest('PUT', `/api/ads/creatives/${creative.id}`, { isActive: !creative.isActive });
+      return apiRequest('PATCH', `/api/admin/ads/creatives/${creative.id}`, { isActive: !creative.isActive });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/ads/creatives', creative.campaignId] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/ads/creatives', creative.campaignId] });
       toast({ title: `Creative ${creative.isActive ? 'paused' : 'activated'}` });
     }
   });
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest('DELETE', `/api/ads/creatives/${creative.id}`);
+      return apiRequest('DELETE', `/api/admin/ads/creatives/${creative.id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/ads/creatives', creative.campaignId] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/ads/creatives', creative.campaignId] });
       toast({ title: "Creative deleted" });
     }
   });
@@ -480,22 +479,29 @@ function CreativeCard({ creative }: { creative: Creative }) {
 
 function CampaignDetail({ campaignId, onBack }: { campaignId: number; onBack: () => void }) {
   const { data: campaigns = [] } = useQuery<Campaign[]>({
-    queryKey: ['/api/ads/campaigns']
+    queryKey: ['/api/admin/ads/campaigns']
   });
 
   const { data: creatives = [], isLoading: creativesLoading } = useQuery<Creative[]>({
-    queryKey: ['/api/ads/creatives', campaignId],
+    queryKey: ['/api/admin/ads/creatives', campaignId],
     queryFn: async () => {
-      const res = await fetch(`/api/ads/creatives?campaignId=${campaignId}`);
+      const res = await fetch(`/api/admin/ads/creatives?campaignId=${campaignId}`);
       return res.json();
     }
   });
 
   const { data: analytics } = useQuery<Analytics>({
-    queryKey: ['/api/ads/campaigns', campaignId, 'analytics'],
+    queryKey: ['/api/admin/ads/analytics', campaignId],
     queryFn: async () => {
-      const res = await fetch(`/api/ads/campaigns/${campaignId}/analytics`);
-      return res.json();
+      const res = await fetch(`/api/admin/ads/analytics?campaignId=${campaignId}`);
+      if (!res.ok) return { totalImpressions: 0, totalClicks: 0, ctr: 0, spend: 0 };
+      const data = await res.json();
+      return {
+        totalImpressions: data.summary?.totalImpressions || 0,
+        totalClicks: data.summary?.totalClicks || 0,
+        ctr: parseFloat(data.summary?.overallCtr) || 0,
+        spend: 0
+      };
     }
   });
 
@@ -592,11 +598,22 @@ export default function AdminAdsPage() {
   const [selectedCampaign, setSelectedCampaign] = useState<number | null>(null);
 
   const { data: campaigns = [], isLoading } = useQuery<Campaign[]>({
-    queryKey: ['/api/ads/campaigns']
+    queryKey: ['/api/admin/ads/campaigns']
   });
 
   const { data: overallAnalytics } = useQuery<Analytics>({
-    queryKey: ['/api/ads/analytics']
+    queryKey: ['/api/admin/ads/analytics'],
+    queryFn: async () => {
+      const res = await fetch('/api/admin/ads/analytics');
+      if (!res.ok) return { totalImpressions: 0, totalClicks: 0, ctr: 0, spend: 0 };
+      const data = await res.json();
+      return {
+        totalImpressions: data.summary?.totalImpressions || 0,
+        totalClicks: data.summary?.totalClicks || 0,
+        ctr: parseFloat(data.summary?.overallCtr) || 0,
+        spend: 0
+      };
+    }
   });
 
   return (
