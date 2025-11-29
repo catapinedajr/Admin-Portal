@@ -391,30 +391,37 @@ function ForumsSection() {
       </div>
 
       {isLoading ? (
-        <div className="space-y-3">
+        <div className="bg-zinc-900/50 rounded-xl border border-zinc-800/50">
           {[1, 2, 3].map(i => (
-            <Card key={i} className="bg-zinc-800/30 border-zinc-700 animate-pulse">
-              <CardContent className="p-4 h-24" />
-            </Card>
+            <div key={i} className={`animate-pulse py-4 px-3 ${i < 3 ? 'border-b border-zinc-800' : ''}`}>
+              <div className="flex gap-3">
+                <div className="w-10 h-12 bg-zinc-800 rounded" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 bg-zinc-800 rounded w-1/3" />
+                  <div className="h-4 bg-zinc-800 rounded w-2/3" />
+                  <div className="h-3 bg-zinc-800 rounded w-1/4" />
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       ) : posts.length === 0 ? (
-        <Card className="bg-zinc-800/30 border-zinc-700">
-          <CardContent className="p-8 text-center">
-            <MessageSquare className="w-12 h-12 mx-auto mb-3 text-zinc-600" />
-            <p className="text-zinc-400">No posts yet. Be the first to start a discussion!</p>
-          </CardContent>
-        </Card>
+        <div className="py-12 text-center">
+          <MessageSquare className="w-12 h-12 mx-auto mb-3 text-zinc-600" />
+          <p className="text-zinc-400">No posts yet. Be the first to start a discussion!</p>
+        </div>
       ) : (
-        <div className="space-y-2">
+        <div className="bg-zinc-900/50 rounded-xl border border-zinc-800/50">
           {posts.map((post: any, index: number) => {
             const elements = [];
+            const isLastPost = index === posts.length - 1;
             
             elements.push(
               <PostCard 
                 key={post.id} 
                 post={post} 
                 onClick={() => setSelectedPost(post.id)}
+                isLast={isLastPost && adsToShow.length === 0}
               />
             );
             
@@ -450,7 +457,7 @@ function getFlairStyle(flair: string) {
   return styles[flair] || 'bg-zinc-500/20 text-zinc-400 border-zinc-500/30';
 }
 
-function PostCard({ post, onClick }: { post: any; onClick: () => void }) {
+function PostCard({ post, onClick, isLast }: { post: any; onClick: () => void; isLast?: boolean }) {
   const queryClient = useQueryClient();
   
   const upvoteMutation = useMutation({
@@ -470,104 +477,99 @@ function PostCard({ post, onClick }: { post: any; onClick: () => void }) {
   const hasMedia = post.imageUrl || linkPreview?.image;
 
   return (
-    <Card 
-      className="bg-zinc-800/30 border-zinc-700 hover:border-zinc-600 transition-colors cursor-pointer overflow-hidden"
+    <div 
+      className={`cursor-pointer hover:bg-zinc-800/30 transition-colors ${!isLast ? 'border-b border-zinc-800' : ''}`}
       data-testid={`card-post-${post.id}`}
     >
-      <CardContent className="p-0">
-        <div className="flex">
-          <div 
-            className="flex flex-col items-center py-3 px-3 bg-zinc-800/50"
-            onClick={(e) => {
-              e.stopPropagation();
-              if (!hasVoted) upvoteMutation.mutate();
-            }}
+      <div className="flex py-3">
+        <div 
+          className="flex flex-col items-center px-3 pt-0.5"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (!hasVoted) upvoteMutation.mutate();
+          }}
+        >
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`p-1 h-auto ${hasVoted ? 'text-orange-500' : 'text-zinc-500 hover:text-orange-400'}`}
+            disabled={hasVoted || upvoteMutation.isPending}
+            data-testid={`button-upvote-${post.id}`}
           >
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`p-1 h-auto ${hasVoted ? 'text-orange-500' : 'text-zinc-400 hover:text-orange-400'}`}
-              disabled={hasVoted || upvoteMutation.isPending}
-              data-testid={`button-upvote-${post.id}`}
-            >
-              <ArrowBigUp className={`w-5 h-5 ${hasVoted ? 'fill-orange-500' : ''}`} />
-            </Button>
-            <span className={`text-sm font-medium ${hasVoted ? 'text-orange-500' : 'text-zinc-300'}`}>
-              {upvotes}
-            </span>
-          </div>
+            <ArrowBigUp className={`w-5 h-5 ${hasVoted ? 'fill-orange-500' : ''}`} />
+          </Button>
+          <span className={`text-xs font-medium ${hasVoted ? 'text-orange-500' : 'text-zinc-400'}`}>
+            {upvotes}
+          </span>
+        </div>
 
-          <div className="flex-1 min-w-0" onClick={onClick}>
-            <div className="p-3 pb-2">
-              <div className="flex items-center gap-2 mb-1 text-xs text-zinc-500 flex-wrap">
-                {post.flair && (
-                  <Badge variant="outline" className={`text-xs py-0 px-1.5 ${getFlairStyle(post.flair)}`}>
-                    {post.flair.charAt(0).toUpperCase() + post.flair.slice(1)}
-                  </Badge>
-                )}
-                {post.category && (
-                  <Badge variant="outline" className="text-xs py-0 border-zinc-600">
-                    {post.category.name}
-                  </Badge>
-                )}
-                <span className="truncate">by {post.author?.username || 'Anonymous'}</span>
-                <span>•</span>
-                <span>{timeAgo}</span>
-              </div>
-              
-              <h3 className="font-semibold text-white mb-1 line-clamp-2">{post.title}</h3>
-              
-              {post.content && !hasMedia && (
-                <p className="text-sm text-zinc-400 line-clamp-2">{post.content}</p>
-              )}
-            </div>
-
-            {post.imageUrl && (
-              <div className="px-3 pb-2">
-                <img 
-                  src={post.imageUrl} 
-                  alt="" 
-                  className="w-full max-h-64 object-cover rounded-lg"
-                  onError={(e) => e.currentTarget.style.display = 'none'}
-                />
-              </div>
+        <div className="flex-1 min-w-0 pr-3" onClick={onClick}>
+          <div className="flex items-center gap-1.5 mb-1 text-xs text-zinc-500 flex-wrap">
+            {post.flair && (
+              <Badge variant="outline" className={`text-[10px] py-0 px-1.5 h-4 ${getFlairStyle(post.flair)}`}>
+                {post.flair.charAt(0).toUpperCase() + post.flair.slice(1)}
+              </Badge>
             )}
+            {post.category && (
+              <span className="text-zinc-500">{post.category.name}</span>
+            )}
+            <span className="text-zinc-600">•</span>
+            <span className="text-zinc-500">{post.author?.username || 'Anonymous'}</span>
+            <span className="text-zinc-600">•</span>
+            <span className="text-zinc-500">{timeAgo}</span>
+          </div>
+          
+          <h3 className="font-medium text-white text-[15px] leading-snug mb-1 line-clamp-2">{post.title}</h3>
+          
+          {post.content && !hasMedia && (
+            <p className="text-sm text-zinc-400 line-clamp-2 mb-2">{post.content}</p>
+          )}
 
-            {linkPreview && !post.imageUrl && (
-              <div className="mx-3 mb-2 rounded-lg border border-zinc-700 overflow-hidden bg-zinc-800/50">
-                <div className="flex">
-                  {linkPreview.image && (
-                    <img 
-                      src={linkPreview.image} 
-                      alt="" 
-                      className="w-24 h-20 object-cover flex-shrink-0"
-                      onError={(e) => e.currentTarget.style.display = 'none'}
-                    />
-                  )}
-                  <div className="p-2 min-w-0 flex-1">
-                    <p className="text-xs text-zinc-500 truncate">{linkPreview.siteName}</p>
-                    <p className="text-sm font-medium text-zinc-300 line-clamp-2">{linkPreview.title}</p>
-                  </div>
+          {post.imageUrl && (
+            <div className="mt-2 mb-2">
+              <img 
+                src={post.imageUrl} 
+                alt="" 
+                className="w-full max-h-72 object-cover rounded-lg"
+                onError={(e) => e.currentTarget.style.display = 'none'}
+              />
+            </div>
+          )}
+
+          {linkPreview && !post.imageUrl && (
+            <div className="mt-2 mb-2 rounded-lg border border-zinc-700/50 overflow-hidden bg-zinc-800/30">
+              <div className="flex">
+                {linkPreview.image && (
+                  <img 
+                    src={linkPreview.image} 
+                    alt="" 
+                    className="w-20 h-16 object-cover flex-shrink-0"
+                    onError={(e) => e.currentTarget.style.display = 'none'}
+                  />
+                )}
+                <div className="p-2 min-w-0 flex-1">
+                  <p className="text-[10px] text-zinc-500 truncate">{linkPreview.siteName}</p>
+                  <p className="text-xs font-medium text-zinc-300 line-clamp-2">{linkPreview.title}</p>
                 </div>
               </div>
-            )}
-
-            <div className="flex items-center gap-4 px-3 pb-3 text-xs text-zinc-500">
-              <span className="flex items-center gap-1">
-                <MessageCircle className="w-3 h-3" />
-                {post.replyCount || 0}
-              </span>
-              {post.linkUrl && (
-                <span className="flex items-center gap-1">
-                  <Link2 className="w-3 h-3" />
-                  Link
-                </span>
-              )}
             </div>
+          )}
+
+          <div className="flex items-center gap-4 text-xs text-zinc-500">
+            <span className="flex items-center gap-1">
+              <MessageCircle className="w-3.5 h-3.5" />
+              {post.replyCount || 0} {post.replyCount === 1 ? 'reply' : 'replies'}
+            </span>
+            {post.linkUrl && (
+              <span className="flex items-center gap-1">
+                <Link2 className="w-3.5 h-3.5" />
+                Link
+              </span>
+            )}
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 
@@ -622,65 +624,52 @@ function SponsoredPostCard({ ad }: { ad: SponsoredPost }) {
   };
 
   return (
-    <Card 
+    <div 
       ref={cardRef}
-      className="bg-gradient-to-r from-zinc-800/50 to-zinc-800/30 border-zinc-700 border-l-2 border-l-orange-500/50 overflow-hidden"
+      className="border-b border-zinc-800 bg-gradient-to-r from-orange-950/10 to-transparent"
       data-testid={`card-sponsored-${ad.id}`}
     >
-      <CardContent className="p-0">
-        {ad.imageUrl && (
-          <div className="relative h-32 w-full">
-            <img 
-              src={ad.imageUrl} 
-              alt={ad.title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/90 to-transparent" />
-            <Badge className="absolute top-2 left-2 bg-orange-500/90 text-white border-0 text-[10px] px-1.5 py-0">
-              Sponsored
-            </Badge>
-          </div>
-        )}
-        
+      <div className="py-3">
         <div className="flex">
-          {!ad.imageUrl && (
-            <div className="flex flex-col items-center justify-center py-3 px-3 bg-zinc-800/30 rounded-l-lg">
-              {ad.logoUrl ? (
-                <img src={ad.logoUrl} alt={ad.advertiser} className="w-8 h-8 rounded object-contain" />
-              ) : (
-                <Megaphone className="w-5 h-5 text-orange-400/70" />
-              )}
-            </div>
-          )}
+          <div className="flex flex-col items-center px-3 pt-0.5">
+            {ad.logoUrl ? (
+              <img src={ad.logoUrl} alt={ad.advertiser} className="w-8 h-8 rounded object-contain" />
+            ) : (
+              <Megaphone className="w-5 h-5 text-orange-400/70" />
+            )}
+          </div>
 
-          <div className="flex-1 p-3">
-            <div className="flex items-center gap-2 mb-1 text-xs">
-              {!ad.imageUrl && (
-                <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px] px-1.5 py-0">
-                  Sponsored
-                </Badge>
-              )}
-              {ad.logoUrl && ad.imageUrl && (
-                <img src={ad.logoUrl} alt={ad.advertiser} className="w-4 h-4 rounded object-contain" />
-              )}
+          <div className="flex-1 min-w-0 pr-3">
+            <div className="flex items-center gap-1.5 mb-1 text-xs text-zinc-500 flex-wrap">
+              <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px] py-0 px-1.5 h-4">
+                Promoted
+              </Badge>
               <span className="text-zinc-500">{ad.advertiser}</span>
               {ad.category && (
                 <>
                   <span className="text-zinc-600">•</span>
-                  <Badge variant="outline" className="text-xs py-0 text-zinc-500">
-                    {ad.category}
-                  </Badge>
+                  <span className="text-zinc-500">{ad.category}</span>
                 </>
               )}
             </div>
             
-            <h3 className="font-semibold text-white mb-1">{ad.title}</h3>
-            <p className="text-sm text-zinc-400 mb-2">{ad.description}</p>
+            <h3 className="font-medium text-white text-[15px] leading-snug mb-1">{ad.title}</h3>
+            <p className="text-sm text-zinc-400 line-clamp-2 mb-2">{ad.description}</p>
+
+            {ad.imageUrl && (
+              <div className="mb-2">
+                <img 
+                  src={ad.imageUrl} 
+                  alt={ad.title}
+                  className="w-full max-h-48 object-cover rounded-lg"
+                />
+              </div>
+            )}
 
             <Button
               size="sm"
-              variant="outline"
-              className="text-xs border-orange-500/30 text-orange-400 hover:bg-orange-500/10 hover:text-orange-300"
+              variant="ghost"
+              className="text-xs text-orange-400 hover:bg-orange-500/10 hover:text-orange-300 px-2 h-7"
               onClick={handleClick}
               data-testid={`button-cta-${ad.id}`}
             >
@@ -689,8 +678,8 @@ function SponsoredPostCard({ ad }: { ad: SponsoredPost }) {
             </Button>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 
