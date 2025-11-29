@@ -124,9 +124,38 @@ export default function CommunityPage() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 py-6 pb-24">
-        <div className="space-y-6">
+        <div className="space-y-4">
+          {/* Community Banner */}
+          <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-orange-600/20 via-orange-500/10 to-zinc-900 border border-orange-500/20">
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmOTczMTYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyek0zNiAzMHYySDI0di0yaDEyek0zNiAyNnYySDI0di0yaDEyeiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
+            <div className="relative px-4 py-4 sm:px-6 sm:py-5">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="hidden sm:flex w-12 h-12 bg-orange-500 rounded-xl items-center justify-center shadow-lg shadow-orange-500/20">
+                    <MessageSquare className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg sm:text-xl font-bold text-white">
+                      HODLearn Community
+                    </h2>
+                    <p className="text-xs sm:text-sm text-zinc-400">
+                      Learn together, grow together
+                    </p>
+                  </div>
+                </div>
+                <div className="hidden md:flex items-center gap-4 text-sm text-zinc-400">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                    <span>Active now</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Tab Navigation */}
           <div className="flex justify-center">
-            <div className="grid grid-cols-2 gap-2 bg-zinc-800/50 rounded-lg p-2 max-w-xs mx-auto">
+            <div className="grid grid-cols-2 gap-2 bg-zinc-800/50 rounded-lg p-1.5 max-w-xs mx-auto">
               <Button
                 variant={activeTab === "forums" ? "secondary" : "ghost"}
                 size="sm"
