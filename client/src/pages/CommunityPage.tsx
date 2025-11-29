@@ -126,22 +126,17 @@ export default function CommunityPage() {
       <main className="max-w-6xl mx-auto px-4 py-6 pb-24">
         <div className="space-y-4">
           {/* Community Banner */}
-          <div className="relative overflow-hidden rounded-xl bg-gradient-to-b from-orange-500/15 via-orange-500/5 to-transparent border border-orange-500/20">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-orange-500/10 via-transparent to-transparent" />
-            <div className="relative px-4 py-5 sm:px-6 sm:py-6 text-center">
-              <div className="flex flex-col items-center gap-2">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/30">
-                  <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </div>
-                <div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-white">
-                    HODLearn Community
-                  </h2>
-                  <p className="text-sm text-orange-400/80 mt-1">
-                    Building conviction through community
-                  </p>
-                </div>
-              </div>
+          <div className="flex items-center justify-center gap-3 py-3 px-4 rounded-lg bg-zinc-800/40 border border-zinc-700/50">
+            <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+              <MessageSquare className="w-4 h-4 text-white" />
+            </div>
+            <div className="text-center">
+              <h2 className="text-base font-semibold text-white leading-tight">
+                HODLearn Community
+              </h2>
+              <p className="text-xs text-zinc-400">
+                Building conviction through community
+              </p>
             </div>
           </div>
 
