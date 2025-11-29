@@ -144,20 +144,20 @@ export default function CommunityPage() {
           <div className="flex justify-center">
             <div className="grid grid-cols-2 gap-2 bg-zinc-800/50 rounded-lg p-1.5 max-w-xs mx-auto">
               <Button
-                variant={activeTab === "forums" ? "secondary" : "ghost"}
+                variant="ghost"
                 size="sm"
                 onClick={() => setActiveTab("forums")}
-                className="text-sm px-4 py-2"
+                className={`text-sm px-4 py-2 ${activeTab === "forums" ? "bg-orange-500/20 text-orange-400 border border-orange-500/30" : "text-zinc-400 hover:text-white"}`}
                 data-testid="button-tab-forums"
               >
                 <MessageSquare className="w-4 h-4 mr-2" />
                 Forums
               </Button>
               <Button
-                variant={activeTab === "videos" ? "secondary" : "ghost"}
+                variant="ghost"
                 size="sm"
                 onClick={() => setActiveTab("videos")}
-                className="text-sm px-4 py-2"
+                className={`text-sm px-4 py-2 ${activeTab === "videos" ? "bg-orange-500/20 text-orange-400 border border-orange-500/30" : "text-zinc-400 hover:text-white"}`}
                 data-testid="button-tab-videos"
               >
                 <Video className="w-4 h-4 mr-2" />
@@ -239,30 +239,30 @@ function ForumsSection() {
         {/* Left side: Sort buttons */}
         <div className="flex items-center gap-1 bg-zinc-800/80 rounded-lg p-1">
           <Button
-            variant={filter === "hot" ? "secondary" : "ghost"}
+            variant="ghost"
             size="sm"
             onClick={() => setFilter("hot")}
-            className="text-xs h-8 px-3 gap-1.5"
+            className={`text-xs h-8 px-3 gap-1.5 ${filter === "hot" ? "bg-orange-500/20 text-orange-400 border border-orange-500/30" : "text-zinc-400 hover:text-white"}`}
             data-testid="button-filter-hot"
           >
             <Flame className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Hot</span>
           </Button>
           <Button
-            variant={filter === "new" ? "secondary" : "ghost"}
+            variant="ghost"
             size="sm"
             onClick={() => setFilter("new")}
-            className="text-xs h-8 px-3 gap-1.5"
+            className={`text-xs h-8 px-3 gap-1.5 ${filter === "new" ? "bg-orange-500/20 text-orange-400 border border-orange-500/30" : "text-zinc-400 hover:text-white"}`}
             data-testid="button-filter-new"
           >
             <Clock className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">New</span>
           </Button>
           <Button
-            variant={filter === "trending" ? "secondary" : "ghost"}
+            variant="ghost"
             size="sm"
             onClick={() => setFilter("trending")}
-            className="text-xs h-8 px-3 gap-1.5"
+            className={`text-xs h-8 px-3 gap-1.5 ${filter === "trending" ? "bg-orange-500/20 text-orange-400 border border-orange-500/30" : "text-zinc-400 hover:text-white"}`}
             data-testid="button-filter-trending"
           >
             <TrendingUp className="w-3.5 h-3.5" />
@@ -277,7 +277,7 @@ function ForumsSection() {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="text-xs border-zinc-600 bg-zinc-800/80 hover:bg-zinc-700 h-8 px-3"
+                className={`text-xs h-8 px-3 ${selectedCategory !== undefined ? "bg-orange-500/20 text-orange-400 border-orange-500/30" : "border-zinc-600 bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300"}`}
                 data-testid="button-filter-topics"
               >
                 <Filter className="w-3.5 h-3.5 mr-1.5" />
@@ -320,7 +320,7 @@ function ForumsSection() {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className={`text-xs border-zinc-600 bg-zinc-800/80 hover:bg-zinc-700 h-8 px-3 ${selectedFlair ? getFlairStyle(selectedFlair) : ''}`}
+                className={`text-xs h-8 px-3 ${selectedFlair ? getFlairStyle(selectedFlair) : "border-zinc-600 bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300"}`}
                 data-testid="button-filter-flair"
               >
                 <span className="truncate max-w-[50px] sm:max-w-[80px]">
@@ -1096,10 +1096,10 @@ function CreatePostForm({ categories, onSuccess }: { categories: any[]; onSucces
       <div className="flex gap-2">
         <Button
           type="button"
-          variant={showImageInput ? "secondary" : "outline"}
+          variant="outline"
           size="sm"
           onClick={() => { setShowImageInput(!showImageInput); if (showImageInput) setImageUrl(''); }}
-          className="text-xs"
+          className={`text-xs ${showImageInput ? "bg-orange-500/20 text-orange-400 border-orange-500/30" : "border-zinc-600 text-zinc-300"}`}
           data-testid="button-add-image"
         >
           <Image className="w-3 h-3 mr-1" />
@@ -1107,10 +1107,10 @@ function CreatePostForm({ categories, onSuccess }: { categories: any[]; onSucces
         </Button>
         <Button
           type="button"
-          variant={showLinkInput ? "secondary" : "outline"}
+          variant="outline"
           size="sm"
           onClick={() => { setShowLinkInput(!showLinkInput); if (showLinkInput) { setLinkUrl(''); setLinkPreview(null); } }}
-          className="text-xs"
+          className={`text-xs ${showLinkInput ? "bg-orange-500/20 text-orange-400 border-orange-500/30" : "border-zinc-600 text-zinc-300"}`}
           data-testid="button-add-link"
         >
           <Link2 className="w-3 h-3 mr-1" />
