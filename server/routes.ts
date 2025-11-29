@@ -2076,18 +2076,32 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  // Vote on forum post
-  app.post("/api/community/forum-posts/:postId/vote", setDefaultUser, async (req, res) => {
+  // Upvote forum post (upvote-only system for positive community)
+  app.post("/api/community/forum-posts/:postId/upvote", setDefaultUser, async (req, res) => {
     try {
       const { postId } = req.params;
-      const { voteType } = req.body;
+      const userId = req.user.id;
+      const { bitcoinPriceUsd = 100000 } = req.body;
+      
+      const result = await communityStorage.upvotePost(userId, parseInt(postId), bitcoinPriceUsd);
+      res.json(result);
+    } catch (error) {
+      console.error("Error upvoting post:", error);
+      res.status(500).json({ message: "Failed to upvote post" });
+    }
+  });
+
+  // Remove upvote from forum post
+  app.delete("/api/community/forum-posts/:postId/upvote", setDefaultUser, async (req, res) => {
+    try {
+      const { postId } = req.params;
       const userId = req.user.id;
       
-      await communityStorage.voteOnPost(userId, parseInt(postId), voteType);
-      res.json({ success: true });
+      const success = await communityStorage.removeUpvote(userId, parseInt(postId));
+      res.json({ success });
     } catch (error) {
-      console.error("Error voting on post:", error);
-      res.status(500).json({ message: "Failed to vote on post" });
+      console.error("Error removing upvote:", error);
+      res.status(500).json({ message: "Failed to remove upvote" });
     }
   });
 
@@ -2128,18 +2142,32 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  // Vote on reply
-  app.post("/api/community/forum-replies/:replyId/vote", setDefaultUser, async (req, res) => {
+  // Upvote reply (upvote-only system for positive community)
+  app.post("/api/community/forum-replies/:replyId/upvote", setDefaultUser, async (req, res) => {
     try {
       const { replyId } = req.params;
-      const { voteType } = req.body;
+      const userId = req.user.id;
+      const { bitcoinPriceUsd = 100000 } = req.body;
+      
+      const result = await communityStorage.upvoteReply(userId, parseInt(replyId), bitcoinPriceUsd);
+      res.json(result);
+    } catch (error) {
+      console.error("Error upvoting reply:", error);
+      res.status(500).json({ message: "Failed to upvote reply" });
+    }
+  });
+
+  // Remove upvote from reply
+  app.delete("/api/community/forum-replies/:replyId/upvote", setDefaultUser, async (req, res) => {
+    try {
+      const { replyId } = req.params;
       const userId = req.user.id;
       
-      await communityStorage.voteOnReply(userId, parseInt(replyId), voteType);
-      res.json({ success: true });
+      const success = await communityStorage.removeUpvote(userId, undefined, parseInt(replyId));
+      res.json({ success });
     } catch (error) {
-      console.error("Error voting on reply:", error);
-      res.status(500).json({ message: "Failed to vote on reply" });
+      console.error("Error removing upvote:", error);
+      res.status(500).json({ message: "Failed to remove upvote" });
     }
   });
 

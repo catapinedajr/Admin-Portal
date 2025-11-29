@@ -2,10 +2,14 @@ import { db } from "./db";
 import { 
   forumCategories, forumPosts, forumReplies, curatedVideos, successStories, userVideoEngagement,
   forumVotes, userKarma, forumPostStats, forumReplyStats, users, videoCategories, videoSubcategories,
+  walletEarnings, userWalletProgress,
   type ForumPostWithStats, type ForumReplyWithStats, type VideoWithCategory, type FeaturedStory,
   type InsertForumVote, type InsertUserKarma, type InsertForumPostStats, type InsertForumReplyStats
 } from "@shared/schema";
 import { eq, desc, sql, and, isNull, count } from "drizzle-orm";
+
+const KARMA_PER_POST_UPVOTE = 10;
+const KARMA_PER_COMMENT_UPVOTE = 5;
 
 export interface ICommunityStorage {
   // Enhanced forum operations with Reddit-style features
@@ -13,9 +17,10 @@ export interface ICommunityStorage {
   getForumPostsWithStats(categoryId?: number, sortBy?: string, userId?: number): Promise<ForumPostWithStats[]>;
   createForumPost(post: any): Promise<any>;
   
-  // Reddit-style voting system
-  voteOnPost(userId: number, postId: number, voteType: 'upvote' | 'downvote'): Promise<void>;
-  voteOnReply(userId: number, replyId: number, voteType: 'upvote' | 'downvote'): Promise<void>;
+  // Upvote-only voting system (positive community focus)
+  upvotePost(userId: number, postId: number, bitcoinPriceUsd?: number): Promise<{ success: boolean; newUpvotes: number; karmaAwarded: number }>;
+  upvoteReply(userId: number, replyId: number, bitcoinPriceUsd?: number): Promise<{ success: boolean; newUpvotes: number; karmaAwarded: number }>;
+  removeUpvote(userId: number, postId?: number, replyId?: number): Promise<boolean>;
   getUserVote(userId: number, postId?: number, replyId?: number): Promise<any>;
   
   // Threaded replies with Reddit-style features
@@ -70,6 +75,9 @@ export class CommunityStorage implements ICommunityStorage {
       case 'hot':
         query.orderBy(desc(forumPostStats.hotScore));
         break;
+      case 'trending':
+        query.orderBy(desc(forumPostStats.trendingScore));
+        break;
       case 'top':
         query.orderBy(desc(sql`${forumPostStats.upvotes} - ${forumPostStats.downvotes}`));
         break;
@@ -87,11 +95,11 @@ export class CommunityStorage implements ICommunityStorage {
         userVote = vote;
       }
       
-      const karma = (result.stats?.upvotes || 0) - (result.stats?.downvotes || 0);
+      const karma = result.stats?.upvotes || 0; // Upvote-only: karma = upvotes
       
       return {
         ...result.post,
-        stats: result.stats || { upvotes: 0, downvotes: 0, hotScore: 0, controversyScore: 0 },
+        stats: result.stats || { upvotes: 0, downvotes: 0, hotScore: '0', trendingScore: '0', controversyScore: '0' },
         author: result.author,
         category: result.category,
         userVote,
@@ -117,9 +125,9 @@ export class CommunityStorage implements ICommunityStorage {
     return newPost;
   }
   
-  // Reddit-style voting system
-  async voteOnPost(userId: number, postId: number, voteType: 'upvote' | 'downvote') {
-    // Check for existing vote
+  // Upvote-only voting system (positive community focus)
+  async upvotePost(userId: number, postId: number, bitcoinPriceUsd: number = 100000): Promise<{ success: boolean; newUpvotes: number; karmaAwarded: number }> {
+    // Check for existing vote - can only upvote once
     const existingVote = await db
       .select()
       .from(forumVotes)
@@ -127,27 +135,41 @@ export class CommunityStorage implements ICommunityStorage {
       .limit(1);
     
     if (existingVote.length > 0) {
-      // Update existing vote
-      await db
-        .update(forumVotes)
-        .set({ voteType })
-        .where(and(eq(forumVotes.userId, userId), eq(forumVotes.postId, postId)));
-    } else {
-      // Create new vote
-      await db.insert(forumVotes).values({
-        userId,
-        postId,
-        replyId: null,
-        voteType
-      });
+      return { success: false, newUpvotes: 0, karmaAwarded: 0 };
+    }
+
+    // Get the post to find the author
+    const [post] = await db.select().from(forumPosts).where(eq(forumPosts.id, postId));
+    if (!post) return { success: false, newUpvotes: 0, karmaAwarded: 0 };
+
+    // Can't upvote your own post
+    if (post.userId === userId) {
+      return { success: false, newUpvotes: 0, karmaAwarded: 0 };
     }
     
+    // Create the upvote
+    await db.insert(forumVotes).values({
+      userId,
+      postId,
+      replyId: null,
+      voteType: 'upvote'
+    });
+    
     // Update post stats
-    await this.updatePostStats(postId);
+    const newStats = await this.updatePostStats(postId);
+    
+    // Award karma to the post author
+    const karmaAwarded = KARMA_PER_POST_UPVOTE;
+    await this.updateUserKarma(post.userId, karmaAwarded, 'post');
+    
+    // Add to author's wallet as community earning
+    await this.addCommunityWalletEarning(post.userId, karmaAwarded, 'Post upvote', bitcoinPriceUsd);
+    
+    return { success: true, newUpvotes: newStats.upvotes, karmaAwarded };
   }
   
-  async voteOnReply(userId: number, replyId: number, voteType: 'upvote' | 'downvote') {
-    // Check for existing vote
+  async upvoteReply(userId: number, replyId: number, bitcoinPriceUsd: number = 100000): Promise<{ success: boolean; newUpvotes: number; karmaAwarded: number }> {
+    // Check for existing vote - can only upvote once
     const existingVote = await db
       .select()
       .from(forumVotes)
@@ -155,23 +177,111 @@ export class CommunityStorage implements ICommunityStorage {
       .limit(1);
     
     if (existingVote.length > 0) {
-      // Update existing vote
-      await db
-        .update(forumVotes)
-        .set({ voteType })
-        .where(and(eq(forumVotes.userId, userId), eq(forumVotes.replyId, replyId)));
-    } else {
-      // Create new vote
-      await db.insert(forumVotes).values({
-        userId,
-        postId: null,
-        replyId,
-        voteType
-      });
+      return { success: false, newUpvotes: 0, karmaAwarded: 0 };
+    }
+
+    // Get the reply to find the author
+    const [reply] = await db.select().from(forumReplies).where(eq(forumReplies.id, replyId));
+    if (!reply) return { success: false, newUpvotes: 0, karmaAwarded: 0 };
+
+    // Can't upvote your own reply
+    if (reply.userId === userId) {
+      return { success: false, newUpvotes: 0, karmaAwarded: 0 };
     }
     
+    // Create the upvote
+    await db.insert(forumVotes).values({
+      userId,
+      postId: null,
+      replyId,
+      voteType: 'upvote'
+    });
+    
     // Update reply stats
-    await this.updateReplyStats(replyId);
+    const newStats = await this.updateReplyStats(replyId);
+    
+    // Award karma to the reply author
+    const karmaAwarded = KARMA_PER_COMMENT_UPVOTE;
+    await this.updateUserKarma(reply.userId, karmaAwarded, 'comment');
+    
+    // Add to author's wallet as community earning
+    await this.addCommunityWalletEarning(reply.userId, karmaAwarded, 'Reply upvote', bitcoinPriceUsd);
+    
+    return { success: true, newUpvotes: newStats.upvotes, karmaAwarded };
+  }
+
+  async removeUpvote(userId: number, postId?: number, replyId?: number): Promise<boolean> {
+    if (postId) {
+      const result = await db
+        .delete(forumVotes)
+        .where(and(
+          eq(forumVotes.userId, userId),
+          eq(forumVotes.postId, postId)
+        ))
+        .returning();
+
+      if (result.length > 0) {
+        await this.updatePostStats(postId);
+        return true;
+      }
+    }
+
+    if (replyId) {
+      const result = await db
+        .delete(forumVotes)
+        .where(and(
+          eq(forumVotes.userId, userId),
+          eq(forumVotes.replyId, replyId)
+        ))
+        .returning();
+
+      if (result.length > 0) {
+        await this.updateReplyStats(replyId);
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private async addCommunityWalletEarning(userId: number, satoshis: number, description: string, bitcoinPriceUsd: number) {
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Add wallet earning
+    await db.insert(walletEarnings).values({
+      userId,
+      dayIndex: 0,
+      earningType: 'community',
+      satoshisEarned: satoshis,
+      streakMultiplier: "1.00",
+      bitcoinPriceUsd: bitcoinPriceUsd.toString(),
+      usdValueAtEarning: ((satoshis / 100000000) * bitcoinPriceUsd).toString(),
+      description,
+      date: today
+    });
+
+    // Update user's total wallet progress
+    const [currentWallet] = await db
+      .select()
+      .from(userWalletProgress)
+      .where(eq(userWalletProgress.userId, userId));
+
+    if (currentWallet) {
+      await db
+        .update(userWalletProgress)
+        .set({
+          totalSatoshisEarned: currentWallet.totalSatoshisEarned + satoshis,
+          updatedAt: new Date()
+        })
+        .where(eq(userWalletProgress.userId, userId));
+    } else {
+      await db.insert(userWalletProgress).values({
+        userId,
+        totalSatoshisEarned: satoshis,
+        currentStreakMultiplier: "1.00",
+        lastEarningDate: today
+      });
+    }
   }
   
   async getUserVote(userId: number, postId?: number, replyId?: number) {
@@ -193,43 +303,48 @@ export class CommunityStorage implements ICommunityStorage {
     return vote[0] || null;
   }
   
-  private async updatePostStats(postId: number) {
+  private async updatePostStats(postId: number): Promise<{ upvotes: number }> {
     const votes = await db
-      .select({ voteType: forumVotes.voteType })
+      .select()
       .from(forumVotes)
-      .where(eq(forumVotes.postId, postId));
+      .where(and(eq(forumVotes.postId, postId), eq(forumVotes.voteType, 'upvote')));
     
-    const upvotes = votes.filter(v => v.voteType === 'upvote').length;
-    const downvotes = votes.filter(v => v.voteType === 'downvote').length;
+    const upvotes = votes.length;
     
-    // Simple hot score algorithm (can be enhanced)
-    const score = upvotes - downvotes;
-    const hotScore = score / Math.pow((Date.now() - new Date().getTime()) / (1000 * 60 * 60) + 2, 1.8);
+    // Hot score based on upvotes and age (simpler since no downvotes)
+    const [post] = await db.select().from(forumPosts).where(eq(forumPosts.id, postId));
+    const ageHours = post ? (Date.now() - new Date(post.createdAt).getTime()) / (1000 * 60 * 60) : 0;
+    const hotScore = upvotes / Math.pow(ageHours + 2, 1.5);
+    const trendingScore = upvotes / Math.max(ageHours, 1); // Upvotes per hour
     
     await db
       .update(forumPostStats)
       .set({ 
         upvotes, 
-        downvotes, 
+        downvotes: 0, // Always 0 in upvote-only system
         hotScore: hotScore.toString(),
-        controversyScore: (Math.min(upvotes, downvotes) / Math.max(upvotes + downvotes, 1)).toString()
+        trendingScore: trendingScore.toString(),
+        controversyScore: '0' // No controversy in upvote-only system
       })
       .where(eq(forumPostStats.postId, postId));
+    
+    return { upvotes };
   }
   
-  private async updateReplyStats(replyId: number) {
+  private async updateReplyStats(replyId: number): Promise<{ upvotes: number }> {
     const votes = await db
-      .select({ voteType: forumVotes.voteType })
+      .select()
       .from(forumVotes)
-      .where(eq(forumVotes.replyId, replyId));
+      .where(and(eq(forumVotes.replyId, replyId), eq(forumVotes.voteType, 'upvote')));
     
-    const upvotes = votes.filter(v => v.voteType === 'upvote').length;
-    const downvotes = votes.filter(v => v.voteType === 'downvote').length;
+    const upvotes = votes.length;
     
     await db
       .update(forumReplyStats)
-      .set({ upvotes, downvotes })
+      .set({ upvotes, downvotes: 0 })
       .where(eq(forumReplyStats.replyId, replyId));
+    
+    return { upvotes };
   }
   
   // Threaded replies system
@@ -259,7 +374,7 @@ export class CommunityStorage implements ICommunityStorage {
         userVote = vote;
       }
       
-      const karma = (result.stats?.upvotes || 0) - (result.stats?.downvotes || 0);
+      const karma = result.stats?.upvotes || 0; // Upvote-only: karma = upvotes
       
       return {
         ...result.reply,
