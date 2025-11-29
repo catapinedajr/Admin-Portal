@@ -51,6 +51,10 @@ export const forumCategories = pgTable("forum_categories", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+// Post flair types for categorization
+export const postFlairTypes = ['discussion', 'question', 'video', 'article', 'meme', 'security', 'news', 'chart'] as const;
+export type PostFlair = typeof postFlairTypes[number];
+
 // Forum posts
 export const forumPosts = pgTable("forum_posts", {
   id: serial("id").primaryKey(),
@@ -61,6 +65,11 @@ export const forumPosts = pgTable("forum_posts", {
   dayIndex: integer("day_index"), // Link to specific curriculum day if applicable
   isSticky: boolean("is_sticky").notNull().default(false),
   isLocked: boolean("is_locked").notNull().default(false),
+  isPinned: boolean("is_pinned").notNull().default(false), // Pinned posts appear at top
+  flair: text("flair"), // Post type: discussion, question, video, article, meme, security, news, chart
+  imageUrl: text("image_url"), // Direct image upload URL
+  linkUrl: text("link_url"), // External link (article, YouTube, etc.)
+  linkPreview: json("link_preview"), // { title, description, image, siteName, type }
   replyCount: integer("reply_count").notNull().default(0),
   lastReplyAt: timestamp("last_reply_at"),
   lastReplyUserId: integer("last_reply_user_id"),
