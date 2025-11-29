@@ -1441,40 +1441,31 @@ function VideosSection() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
-          {videoCategories[activeCategory].videos.map((video, index) => (
-            <Card 
-              key={index} 
-              className="bg-zinc-800/30 border-zinc-700 hover:border-orange-500/30 hover:bg-zinc-800/50 transition-all duration-300 cursor-pointer group"
-              data-testid={`card-video-${index}`}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Video className="w-6 h-6 text-orange-500" />
+          {videoCategories[activeCategory].videos.map((video, index) => {
+            const videoId = extractYouTubeId(video.url);
+            return (
+              <Card 
+                key={index} 
+                className="bg-zinc-800/30 border-zinc-700 overflow-hidden"
+                data-testid={`card-video-${index}`}
+              >
+                {videoId && (
+                  <YouTubeEmbed videoId={videoId} title={video.title} />
+                )}
+                <CardContent className="p-4">
+                  <h4 className="font-semibold text-white mb-1 line-clamp-2">
+                    {video.title}
+                  </h4>
+                  <p className="text-zinc-400 text-sm mb-2">
+                    {video.creator} • {video.duration}
+                  </p>
+                  <div className="bg-zinc-900/50 p-2 rounded text-xs text-zinc-300 italic">
+                    "{video.note}"
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-white group-hover:text-orange-400 transition-colors mb-1 line-clamp-2">
-                      {video.title}
-                    </h4>
-                    <p className="text-zinc-400 text-sm mb-2">
-                      {video.creator} • {video.duration}
-                    </p>
-                    <div className="bg-zinc-900/50 p-2 rounded text-xs text-zinc-300 italic mb-3">
-                      "{video.note}"
-                    </div>
-                    <Button 
-                      onClick={() => window.open(video.url, '_blank')}
-                      size="sm"
-                      className="bg-orange-500/20 hover:bg-orange-500 text-orange-400 hover:text-white border border-orange-500/30 hover:border-orange-500 text-xs px-3 py-1"
-                      data-testid={`button-watch-${index}`}
-                    >
-                      Watch Video
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       </div>
     </div>
