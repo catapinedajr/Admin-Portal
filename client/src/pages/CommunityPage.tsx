@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { MessageSquare, Video, ArrowBigUp, MessageCircle, Clock, TrendingUp, Flame, Plus, User as UserIcon, Wallet, Send, ChevronDown, ChevronUp, ExternalLink, Megaphone } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,46 +14,65 @@ type CommunityTab = "forums" | "videos";
 type ForumFilter = "new" | "hot" | "trending";
 
 interface SponsoredPost {
-  id: string;
-  sponsor: string;
+  id: number | string;
+  campaignId?: number;
+  advertiser: string;
   title: string;
   description: string;
   ctaText: string;
   ctaUrl: string;
-  category: string;
+  imageUrl?: string;
+  logoUrl?: string;
+  category?: string;
+  placement?: string;
 }
 
-const SPONSORED_POSTS: SponsoredPost[] = [
+const FALLBACK_ADS: SponsoredPost[] = [
   {
-    id: "ad-1",
-    sponsor: "Trezor",
+    id: "fallback-1",
+    advertiser: "Trezor",
     title: "Secure Your Bitcoin with Hardware Wallets",
     description: "Industry-leading cold storage for your BTC. Take full control of your private keys.",
     ctaText: "Learn More",
-    ctaUrl: "#",
+    ctaUrl: "https://trezor.io",
+    imageUrl: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&h=200&fit=crop",
+    logoUrl: "",
     category: "Security"
   },
   {
-    id: "ad-2", 
-    sponsor: "Swan Bitcoin",
+    id: "fallback-2", 
+    advertiser: "Swan Bitcoin",
     title: "Stack Sats Automatically",
     description: "Set up recurring Bitcoin purchases. Dollar-cost averaging made simple.",
     ctaText: "Start Stacking",
-    ctaUrl: "#",
+    ctaUrl: "https://swanbitcoin.com",
+    imageUrl: "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=400&h=200&fit=crop",
+    logoUrl: "",
     category: "Getting Started"
   },
   {
-    id: "ad-3",
-    sponsor: "Unchained Capital",
+    id: "fallback-3",
+    advertiser: "Unchained Capital",
     title: "Bitcoin-Backed Loans",
     description: "Access liquidity without selling your BTC. Collaborative custody solutions.",
     ctaText: "Explore Options",
-    ctaUrl: "#",
+    ctaUrl: "https://unchained.com",
+    imageUrl: "https://images.unsplash.com/photo-1560472355-536de3962603?w=400&h=200&fit=crop",
+    logoUrl: "",
     category: "Finance"
   }
 ];
 
 const AD_INSERTION_INTERVAL = 5;
+
+function getSessionId() {
+  let sessionId = sessionStorage.getItem('ad_session_id');
+  if (!sessionId) {
+    sessionId = Math.random().toString(36).substring(2) + Date.now().toString(36);
+    sessionStorage.setItem('ad_session_id', sessionId);
+  }
+  return sessionId;
+}
 
 export default function CommunityPage() {
   const [, setLocation] = useLocation();
@@ -302,11 +321,11 @@ function ForumsSection() {
             );
             
             if ((index + 1) % AD_INSERTION_INTERVAL === 0 && index < posts.length - 1) {
-              const adIndex = Math.floor(index / AD_INSERTION_INTERVAL) % SPONSORED_POSTS.length;
+              const adIndex = Math.floor(index / AD_INSERTION_INTERVAL) % FALLBACK_ADS.length;
               elements.push(
                 <SponsoredPostCard 
                   key={`ad-after-${post.id}`}
-                  ad={SPONSORED_POSTS[adIndex]}
+                  ad={FALLBACK_ADS[adIndex]}
                 />
               );
             }
@@ -399,27 +418,106 @@ function PostCard({ post, onClick }: { post: any; onClick: () => void }) {
 }
 
 function SponsoredPostCard({ ad }: { ad: SponsoredPost }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const hasTrackedImpression = useRef(false);
+  
+  useEffect(() => {
+    if (!cardRef.current || hasTrackedImpression.current) return;
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasTrackedImpression.current) {
+            hasTrackedImpression.current = true;
+            
+            if (typeof ad.id === 'number' && ad.campaignId) {
+              fetch('/api/ads/impression', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  creativeId: ad.id,
+                  campaignId: ad.campaignId,
+                  placement: ad.placement || 'in_feed',
+                  sessionId: getSessionId()
+                })
+              }).catch(console.error);
+            }
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+    
+    observer.observe(cardRef.current);
+    return () => observer.disconnect();
+  }, [ad]);
+
+  const handleClick = () => {
+    if (typeof ad.id === 'number' && ad.campaignId) {
+      fetch('/api/ads/click', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          creativeId: ad.id,
+          campaignId: ad.campaignId,
+          sessionId: getSessionId()
+        })
+      }).catch(console.error);
+    }
+    window.open(ad.ctaUrl, '_blank');
+  };
+
   return (
     <Card 
-      className="bg-gradient-to-r from-zinc-800/50 to-zinc-800/30 border-zinc-700 border-l-2 border-l-orange-500/50"
+      ref={cardRef}
+      className="bg-gradient-to-r from-zinc-800/50 to-zinc-800/30 border-zinc-700 border-l-2 border-l-orange-500/50 overflow-hidden"
       data-testid={`card-sponsored-${ad.id}`}
     >
       <CardContent className="p-0">
-        <div className="flex">
-          <div className="flex flex-col items-center justify-center py-3 px-3 bg-zinc-800/30 rounded-l-lg">
-            <Megaphone className="w-5 h-5 text-orange-400/70" />
+        {ad.imageUrl && (
+          <div className="relative h-32 w-full">
+            <img 
+              src={ad.imageUrl} 
+              alt={ad.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/90 to-transparent" />
+            <Badge className="absolute top-2 left-2 bg-orange-500/90 text-white border-0 text-[10px] px-1.5 py-0">
+              Sponsored
+            </Badge>
           </div>
+        )}
+        
+        <div className="flex">
+          {!ad.imageUrl && (
+            <div className="flex flex-col items-center justify-center py-3 px-3 bg-zinc-800/30 rounded-l-lg">
+              {ad.logoUrl ? (
+                <img src={ad.logoUrl} alt={ad.advertiser} className="w-8 h-8 rounded object-contain" />
+              ) : (
+                <Megaphone className="w-5 h-5 text-orange-400/70" />
+              )}
+            </div>
+          )}
 
           <div className="flex-1 p-3">
             <div className="flex items-center gap-2 mb-1 text-xs">
-              <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px] px-1.5 py-0">
-                Sponsored
-              </Badge>
-              <span className="text-zinc-500">{ad.sponsor}</span>
-              <span className="text-zinc-600">•</span>
-              <Badge variant="outline" className="text-xs py-0 text-zinc-500">
-                {ad.category}
-              </Badge>
+              {!ad.imageUrl && (
+                <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px] px-1.5 py-0">
+                  Sponsored
+                </Badge>
+              )}
+              {ad.logoUrl && ad.imageUrl && (
+                <img src={ad.logoUrl} alt={ad.advertiser} className="w-4 h-4 rounded object-contain" />
+              )}
+              <span className="text-zinc-500">{ad.advertiser}</span>
+              {ad.category && (
+                <>
+                  <span className="text-zinc-600">•</span>
+                  <Badge variant="outline" className="text-xs py-0 text-zinc-500">
+                    {ad.category}
+                  </Badge>
+                </>
+              )}
             </div>
             
             <h3 className="font-semibold text-white mb-1">{ad.title}</h3>
@@ -429,7 +527,7 @@ function SponsoredPostCard({ ad }: { ad: SponsoredPost }) {
               size="sm"
               variant="outline"
               className="text-xs border-orange-500/30 text-orange-400 hover:bg-orange-500/10 hover:text-orange-300"
-              onClick={() => window.open(ad.ctaUrl, '_blank')}
+              onClick={handleClick}
               data-testid={`button-cta-${ad.id}`}
             >
               {ad.ctaText}
