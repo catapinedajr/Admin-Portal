@@ -6,8 +6,8 @@ import { db } from "./db";
 import { communityStorage } from "./community";
 import { authService } from "./auth";
 import { registerWalletRoutes } from "./wallet-routes";
-import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentGenerationSteps, userQuizAnswers, registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, dailyDiscussions, users } from "@shared/schema";
-import { eq, sql, desc } from "drizzle-orm";
+import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentGenerationSteps, userQuizAnswers, registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, dailyDiscussions, users, adCampaigns, adCreatives, adImpressions, adClicks } from "@shared/schema";
+import { eq, sql, desc, and } from "drizzle-orm";
 import { v4 as uuidv4 } from 'uuid';
 import { randomUUID } from 'crypto';
 import { validateContentMiddleware, validateContent, performFrameworkChecks } from "./content-validation";
@@ -2438,6 +2438,274 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     } catch (error) {
       console.error("Failed to create discussion:", error);
       res.status(500).json({ message: "Failed to create discussion" });
+    }
+  });
+
+  // ========================================
+  // Ad Campaign Management API
+  // ========================================
+
+  // Get active ads for display (public)
+  app.get("/api/ads/active", async (req, res) => {
+    try {
+      const { placement = 'in_feed' } = req.query;
+      
+      const activeAds = await db.select({
+        id: adCreatives.id,
+        campaignId: adCreatives.campaignId,
+        title: adCreatives.title,
+        description: adCreatives.description,
+        ctaText: adCreatives.ctaText,
+        ctaUrl: adCreatives.ctaUrl,
+        imageUrl: adCreatives.imageUrl,
+        logoUrl: adCreatives.logoUrl,
+        category: adCreatives.category,
+        placement: adCreatives.placement,
+        advertiser: adCampaigns.advertiser,
+      })
+      .from(adCreatives)
+      .leftJoin(adCampaigns, eq(adCreatives.campaignId, adCampaigns.id))
+      .where(
+        and(
+          eq(adCreatives.isActive, true),
+          eq(adCampaigns.status, 'active'),
+          eq(adCreatives.placement, placement as string)
+        )
+      );
+      
+      res.json(activeAds);
+    } catch (error) {
+      console.error("Error fetching active ads:", error);
+      res.status(500).json({ message: "Failed to fetch ads" });
+    }
+  });
+
+  // Track ad impression
+  app.post("/api/ads/impression", setDefaultUser, async (req, res) => {
+    try {
+      const { creativeId, campaignId, placement, sessionId } = req.body;
+      const userId = req.user?.id;
+      
+      await db.insert(adImpressions).values({
+        creativeId,
+        campaignId,
+        userId,
+        sessionId,
+        placement
+      });
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error tracking impression:", error);
+      res.status(500).json({ message: "Failed to track impression" });
+    }
+  });
+
+  // Track ad click
+  app.post("/api/ads/click", setDefaultUser, async (req, res) => {
+    try {
+      const { creativeId, campaignId, sessionId } = req.body;
+      const userId = req.user?.id;
+      
+      await db.insert(adClicks).values({
+        creativeId,
+        campaignId,
+        userId,
+        sessionId
+      });
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error tracking click:", error);
+      res.status(500).json({ message: "Failed to track click" });
+    }
+  });
+
+  // Admin: Get all campaigns
+  app.get("/api/admin/ads/campaigns", async (req, res) => {
+    try {
+      const campaigns = await db.select().from(adCampaigns).orderBy(desc(adCampaigns.createdAt));
+      res.json(campaigns);
+    } catch (error) {
+      console.error("Error fetching campaigns:", error);
+      res.status(500).json({ message: "Failed to fetch campaigns" });
+    }
+  });
+
+  // Admin: Get single campaign with creatives and stats
+  app.get("/api/admin/ads/campaigns/:id", async (req, res) => {
+    try {
+      const campaignId = parseInt(req.params.id);
+      
+      const [campaign] = await db.select().from(adCampaigns).where(eq(adCampaigns.id, campaignId));
+      if (!campaign) {
+        return res.status(404).json({ message: "Campaign not found" });
+      }
+      
+      const creatives = await db.select().from(adCreatives).where(eq(adCreatives.campaignId, campaignId));
+      
+      const impressionCount = await db.select({ count: sql<number>`count(*)` })
+        .from(adImpressions)
+        .where(eq(adImpressions.campaignId, campaignId));
+      
+      const clickCount = await db.select({ count: sql<number>`count(*)` })
+        .from(adClicks)
+        .where(eq(adClicks.campaignId, campaignId));
+      
+      res.json({
+        ...campaign,
+        creatives,
+        stats: {
+          impressions: impressionCount[0]?.count || 0,
+          clicks: clickCount[0]?.count || 0,
+          ctr: impressionCount[0]?.count > 0 
+            ? ((clickCount[0]?.count || 0) / impressionCount[0].count * 100).toFixed(2)
+            : '0.00'
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching campaign:", error);
+      res.status(500).json({ message: "Failed to fetch campaign" });
+    }
+  });
+
+  // Admin: Create campaign
+  app.post("/api/admin/ads/campaigns", async (req, res) => {
+    try {
+      const { name, advertiser, status, startDate, endDate, budgetCents, costPerClickCents, costPerImpressionCents, targetImpressions, targetClicks } = req.body;
+      
+      const [campaign] = await db.insert(adCampaigns).values({
+        name,
+        advertiser,
+        status: status || 'draft',
+        startDate: startDate ? new Date(startDate) : null,
+        endDate: endDate ? new Date(endDate) : null,
+        budgetCents,
+        costPerClickCents,
+        costPerImpressionCents,
+        targetImpressions,
+        targetClicks
+      }).returning();
+      
+      res.json(campaign);
+    } catch (error) {
+      console.error("Error creating campaign:", error);
+      res.status(500).json({ message: "Failed to create campaign" });
+    }
+  });
+
+  // Admin: Update campaign
+  app.patch("/api/admin/ads/campaigns/:id", async (req, res) => {
+    try {
+      const campaignId = parseInt(req.params.id);
+      const updates = req.body;
+      
+      const [campaign] = await db.update(adCampaigns)
+        .set({ ...updates, updatedAt: new Date() })
+        .where(eq(adCampaigns.id, campaignId))
+        .returning();
+      
+      res.json(campaign);
+    } catch (error) {
+      console.error("Error updating campaign:", error);
+      res.status(500).json({ message: "Failed to update campaign" });
+    }
+  });
+
+  // Admin: Create creative
+  app.post("/api/admin/ads/creatives", async (req, res) => {
+    try {
+      const { campaignId, title, description, ctaText, ctaUrl, imageUrl, logoUrl, category, placement } = req.body;
+      
+      const [creative] = await db.insert(adCreatives).values({
+        campaignId,
+        title,
+        description,
+        ctaText,
+        ctaUrl,
+        imageUrl,
+        logoUrl,
+        category,
+        placement: placement || 'in_feed'
+      }).returning();
+      
+      res.json(creative);
+    } catch (error) {
+      console.error("Error creating creative:", error);
+      res.status(500).json({ message: "Failed to create creative" });
+    }
+  });
+
+  // Admin: Update creative
+  app.patch("/api/admin/ads/creatives/:id", async (req, res) => {
+    try {
+      const creativeId = parseInt(req.params.id);
+      const updates = req.body;
+      
+      const [creative] = await db.update(adCreatives)
+        .set({ ...updates, updatedAt: new Date() })
+        .where(eq(adCreatives.id, creativeId))
+        .returning();
+      
+      res.json(creative);
+    } catch (error) {
+      console.error("Error updating creative:", error);
+      res.status(500).json({ message: "Failed to update creative" });
+    }
+  });
+
+  // Admin: Delete creative
+  app.delete("/api/admin/ads/creatives/:id", async (req, res) => {
+    try {
+      const creativeId = parseInt(req.params.id);
+      await db.delete(adCreatives).where(eq(adCreatives.id, creativeId));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting creative:", error);
+      res.status(500).json({ message: "Failed to delete creative" });
+    }
+  });
+
+  // Admin: Get campaign analytics
+  app.get("/api/admin/ads/analytics", async (req, res) => {
+    try {
+      const { startDate, endDate, campaignId } = req.query;
+      
+      let impressionsQuery = db.select({
+        date: sql<string>`DATE(viewed_at)`,
+        count: sql<number>`count(*)`
+      }).from(adImpressions);
+      
+      let clicksQuery = db.select({
+        date: sql<string>`DATE(clicked_at)`,
+        count: sql<number>`count(*)`
+      }).from(adClicks);
+      
+      if (campaignId) {
+        impressionsQuery = impressionsQuery.where(eq(adImpressions.campaignId, parseInt(campaignId as string)));
+        clicksQuery = clicksQuery.where(eq(adClicks.campaignId, parseInt(campaignId as string)));
+      }
+      
+      const impressionsByDay = await impressionsQuery.groupBy(sql`DATE(viewed_at)`);
+      const clicksByDay = await clicksQuery.groupBy(sql`DATE(clicked_at)`);
+      
+      const totalImpressions = await db.select({ count: sql<number>`count(*)` }).from(adImpressions);
+      const totalClicks = await db.select({ count: sql<number>`count(*)` }).from(adClicks);
+      
+      res.json({
+        summary: {
+          totalImpressions: totalImpressions[0]?.count || 0,
+          totalClicks: totalClicks[0]?.count || 0,
+          overallCtr: totalImpressions[0]?.count > 0 
+            ? ((totalClicks[0]?.count || 0) / totalImpressions[0].count * 100).toFixed(2)
+            : '0.00'
+        },
+        impressionsByDay,
+        clicksByDay
+      });
+    } catch (error) {
+      console.error("Error fetching analytics:", error);
+      res.status(500).json({ message: "Failed to fetch analytics" });
     }
   });
 
