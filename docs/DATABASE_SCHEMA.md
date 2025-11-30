@@ -4,7 +4,7 @@ This document provides the complete database schema for the Reddit-style communi
 
 ## Overview
 
-The community forums system uses PostgreSQL with Drizzle ORM. The schema consists of 6 core tables for the forum functionality plus 4 tables for the advertising system.
+The community forums system uses PostgreSQL with Drizzle ORM. The schema consists of core tables for forum functionality plus tables for the advertising system.
 
 ---
 
@@ -12,34 +12,35 @@ The community forums system uses PostgreSQL with Drizzle ORM. The schema consist
 
 ### forum_categories
 
-Defines the 10 topic categories for organizing discussions.
+Defines topic categories for organizing discussions.
 
 ```sql
 CREATE TABLE forum_categories (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  slug VARCHAR(255) UNIQUE NOT NULL,
+  name TEXT NOT NULL,
   description TEXT,
-  icon_name VARCHAR(50),
-  color VARCHAR(7),
-  sort_order INTEGER DEFAULT 0,
-  created_at TIMESTAMP DEFAULT NOW()
+  slug TEXT UNIQUE NOT NULL,
+  post_count INTEGER NOT NULL DEFAULT 0,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 ```
 
-**Default Categories:**
-| ID | Name | Slug | Description |
-|----|------|------|-------------|
-| 1 | Bitcoin Basics | bitcoin-basics | Fundamental concepts and beginner questions |
-| 2 | Why Bitcoin | why-bitcoin | Value proposition and monetary properties |
-| 3 | Stacking & Strategy | stacking-strategy | DCA strategies and accumulation methods |
-| 4 | Macro & Markets | macro-markets | Economic analysis and market cycles |
-| 5 | Security & Self-Custody | security-self-custody | Hardware wallets and seed phrases |
-| 6 | Bitcoin Lifestyle | bitcoin-lifestyle | Living on Bitcoin and personal finance |
-| 7 | Career & Business | career-business | Professional opportunities in Bitcoin |
-| 8 | Orange Pilling | orange-pilling | Sharing knowledge with others |
-| 9 | News & Events | news-events | Latest developments and announcements |
-| 10 | Community | community | General discussion and meetups |
+**Current Categories (10):**
+| Slug | Name | Description |
+|------|------|-------------|
+| bitcoin-basics | Bitcoin Basics | Fundamental concepts and beginner questions |
+| why-bitcoin | Why Bitcoin | Value proposition and monetary properties |
+| stacking-strategy | Stacking & Strategy | DCA strategies and accumulation methods |
+| macro-markets | Macro & Markets | Economic analysis and market cycles |
+| security-self-custody | Security & Self-Custody | Hardware wallets and seed phrases |
+| bitcoin-lifestyle | Bitcoin Lifestyle | Living on Bitcoin and personal finance |
+| career-business | Career & Business | Professional opportunities in Bitcoin |
+| orange-pilling | Orange Pilling | Sharing knowledge with others |
+| news-events | News & Events | Latest developments and announcements |
+| community | Community | General discussion and meetups |
 
 ---
 
@@ -50,27 +51,53 @@ Main posts in the forum, supporting text, images, links, and video content.
 ```sql
 CREATE TABLE forum_posts (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(id),
-  category_id INTEGER NOT NULL REFERENCES forum_categories(id),
-  title VARCHAR(300) NOT NULL,
+  category_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  title TEXT NOT NULL,
   content TEXT NOT NULL,
-  flair VARCHAR(50),        -- Tag: question, discussion, article, media, meme
-  link_url TEXT,            -- External link for link posts
-  image_url TEXT,           -- Image URL for image posts
-  video_url TEXT,           -- YouTube/video URL for video posts
-  is_pinned BOOLEAN DEFAULT FALSE,
-  is_locked BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
+  day_index INTEGER,                -- Link to specific curriculum day if applicable
+  is_sticky BOOLEAN NOT NULL DEFAULT FALSE,
+  is_locked BOOLEAN NOT NULL DEFAULT FALSE,
+  is_pinned BOOLEAN NOT NULL DEFAULT FALSE,
+  flair TEXT,                        -- Post type tag
+  image_url TEXT,                    -- Direct image URL
+  link_url TEXT,                     -- External link URL
+  link_preview JSON,                 -- { title, description, image, siteName, type }
+  reply_count INTEGER NOT NULL DEFAULT 0,
+  last_reply_at TIMESTAMP,
+  last_reply_user_id INTEGER,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 ```
 
 **Flair/Tag Values:**
-- `question` - Q&A posts seeking answers
 - `discussion` - Open-ended conversation starters
+- `question` - Q&A posts seeking answers
+- `video` - Video/YouTube content
 - `article` - Long-form educational content
-- `media` - Video/multimedia content
 - `meme` - Humor and memes
+- `security` - Security-related posts
+- `news` - News updates
+- `chart` - Charts and analysis
+
+---
+
+### forum_replies
+
+Replies to posts.
+
+```sql
+CREATE TABLE forum_replies (
+  id SERIAL PRIMARY KEY,
+  post_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  content TEXT NOT NULL,
+  is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+```
 
 ---
 
@@ -81,12 +108,13 @@ Denormalized statistics for each post (for performance).
 ```sql
 CREATE TABLE forum_post_stats (
   id SERIAL PRIMARY KEY,
-  post_id INTEGER UNIQUE NOT NULL REFERENCES forum_posts(id) ON DELETE CASCADE,
-  upvotes INTEGER DEFAULT 0,
-  downvotes INTEGER DEFAULT 0,      -- Always 0 (upvote-only system)
-  reply_count INTEGER DEFAULT 0,
-  hot_score NUMERIC(10,4) DEFAULT 0,
-  updated_at TIMESTAMP DEFAULT NOW()
+  post_id INTEGER NOT NULL REFERENCES forum_posts(id) ON DELETE CASCADE,
+  upvotes INTEGER NOT NULL DEFAULT 0,
+  downvotes INTEGER NOT NULL DEFAULT 0,      -- Always 0 (upvote-only system)
+  hot_score NUMERIC(10,4) NOT NULL DEFAULT 0,
+  trending_score NUMERIC(10,4) NOT NULL DEFAULT 0,
+  controversy_score NUMERIC(10,4) NOT NULL DEFAULT 0,
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 ```
 
@@ -94,39 +122,37 @@ CREATE TABLE forum_post_stats (
 
 ---
 
-### forum_replies
+### forum_reply_stats
 
-Threaded replies to posts, supporting nested discussions.
+Denormalized statistics for each reply with threading support.
 
 ```sql
-CREATE TABLE forum_replies (
+CREATE TABLE forum_reply_stats (
   id SERIAL PRIMARY KEY,
-  post_id INTEGER NOT NULL REFERENCES forum_posts(id) ON DELETE CASCADE,
-  user_id INTEGER NOT NULL REFERENCES users(id),
-  content TEXT NOT NULL,
+  reply_id INTEGER NOT NULL REFERENCES forum_replies(id) ON DELETE CASCADE,
   parent_reply_id INTEGER REFERENCES forum_replies(id),  -- For threading
-  is_deleted BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
+  depth INTEGER NOT NULL DEFAULT 0,           -- Nesting level
+  upvotes INTEGER NOT NULL DEFAULT 0,
+  downvotes INTEGER NOT NULL DEFAULT 0,       -- Always 0
+  child_count INTEGER NOT NULL DEFAULT 0,     -- Number of direct children
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 ```
 
 ---
 
-### forum_reply_stats
+### forum_votes
 
-Denormalized statistics for each reply.
+Tracks user votes on posts and replies.
 
 ```sql
-CREATE TABLE forum_reply_stats (
+CREATE TABLE forum_votes (
   id SERIAL PRIMARY KEY,
-  reply_id INTEGER UNIQUE NOT NULL REFERENCES forum_replies(id) ON DELETE CASCADE,
-  post_id INTEGER NOT NULL REFERENCES forum_posts(id) ON DELETE CASCADE,
-  parent_reply_id INTEGER REFERENCES forum_replies(id),
-  depth INTEGER DEFAULT 0,          -- Nesting level (0 = top-level)
-  upvotes INTEGER DEFAULT 0,
-  downvotes INTEGER DEFAULT 0,      -- Always 0
-  updated_at TIMESTAMP DEFAULT NOW()
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  post_id INTEGER REFERENCES forum_posts(id) ON DELETE CASCADE,
+  reply_id INTEGER REFERENCES forum_replies(id) ON DELETE CASCADE,
+  vote_type TEXT NOT NULL,           -- 'upvote' only
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 ```
 
@@ -139,54 +165,18 @@ Tracks karma points earned through community participation.
 ```sql
 CREATE TABLE user_karma (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER UNIQUE NOT NULL REFERENCES users(id),
-  total_karma INTEGER DEFAULT 0,
-  post_karma INTEGER DEFAULT 0,     -- Karma from post upvotes
-  comment_karma INTEGER DEFAULT 0,  -- Karma from reply upvotes
-  awarded_karma INTEGER DEFAULT 0,  -- Manual awards (future)
-  updated_at TIMESTAMP DEFAULT NOW()
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  total_karma INTEGER NOT NULL DEFAULT 0,
+  post_karma INTEGER NOT NULL DEFAULT 0,
+  comment_karma INTEGER NOT NULL DEFAULT 0,
+  awarded_karma INTEGER NOT NULL DEFAULT 0,
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 ```
 
 **Karma Rates:**
 - Post upvote: +10 karma to post author
 - Reply upvote: +5 karma to reply author
-
----
-
-## Voting Tables
-
-### post_votes
-
-Tracks user votes on posts.
-
-```sql
-CREATE TABLE post_votes (
-  id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(id),
-  post_id INTEGER NOT NULL REFERENCES forum_posts(id) ON DELETE CASCADE,
-  vote_type VARCHAR(10) NOT NULL,   -- 'up' only
-  created_at TIMESTAMP DEFAULT NOW(),
-  UNIQUE(user_id, post_id)
-);
-```
-
----
-
-### reply_votes
-
-Tracks user votes on replies.
-
-```sql
-CREATE TABLE reply_votes (
-  id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(id),
-  reply_id INTEGER NOT NULL REFERENCES forum_replies(id) ON DELETE CASCADE,
-  vote_type VARCHAR(10) NOT NULL,   -- 'up' only
-  created_at TIMESTAMP DEFAULT NOW(),
-  UNIQUE(user_id, reply_id)
-);
-```
 
 ---
 
@@ -199,19 +189,19 @@ Defines advertising campaigns with budget tracking.
 ```sql
 CREATE TABLE ad_campaigns (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  advertiser VARCHAR(255) NOT NULL,
-  status VARCHAR(20) DEFAULT 'draft',   -- draft, active, paused, completed
+  name TEXT NOT NULL,
+  advertiser TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'draft',   -- draft, active, paused, completed
   start_date TIMESTAMP,
   end_date TIMESTAMP,
-  budget_cents INTEGER DEFAULT 0,
-  spent_cents INTEGER DEFAULT 0,
-  cost_per_click_cents INTEGER DEFAULT 0,
-  cost_per_impression_cents INTEGER DEFAULT 0,
+  budget_cents INTEGER,
+  spent_cents INTEGER NOT NULL DEFAULT 0,
+  cost_per_click_cents INTEGER,
+  cost_per_impression_cents INTEGER,
   target_impressions INTEGER,
   target_clicks INTEGER,
-  created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 ```
 
@@ -225,17 +215,17 @@ Individual ad units within campaigns.
 CREATE TABLE ad_creatives (
   id SERIAL PRIMARY KEY,
   campaign_id INTEGER NOT NULL REFERENCES ad_campaigns(id) ON DELETE CASCADE,
-  title VARCHAR(255) NOT NULL,
-  description TEXT,
-  cta_text VARCHAR(50),             -- Call-to-action button text
-  cta_url TEXT,                     -- Click destination
-  image_url TEXT,                   -- Ad image
-  logo_url TEXT,                    -- Advertiser logo
-  category VARCHAR(50),             -- Target category (optional)
-  placement VARCHAR(20) DEFAULT 'in_feed',  -- in_feed, sidebar, etc.
-  is_active BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  cta_text TEXT NOT NULL,
+  cta_url TEXT NOT NULL,
+  image_url TEXT,
+  logo_url TEXT,
+  category TEXT,
+  placement TEXT NOT NULL DEFAULT 'in_feed',
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 ```
 
@@ -249,10 +239,11 @@ Tracks when ads are viewed by users.
 CREATE TABLE ad_impressions (
   id SERIAL PRIMARY KEY,
   creative_id INTEGER NOT NULL REFERENCES ad_creatives(id) ON DELETE CASCADE,
-  user_id INTEGER REFERENCES users(id),
-  session_id VARCHAR(255),
-  ip_hash VARCHAR(64),
-  viewed_at TIMESTAMP DEFAULT NOW()
+  campaign_id INTEGER NOT NULL REFERENCES ad_campaigns(id) ON DELETE CASCADE,
+  user_id INTEGER,
+  session_id TEXT,
+  placement TEXT NOT NULL,
+  viewed_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 ```
 
@@ -266,35 +257,11 @@ Tracks when users click on ads.
 CREATE TABLE ad_clicks (
   id SERIAL PRIMARY KEY,
   creative_id INTEGER NOT NULL REFERENCES ad_creatives(id) ON DELETE CASCADE,
-  user_id INTEGER REFERENCES users(id),
-  session_id VARCHAR(255),
-  ip_hash VARCHAR(64),
-  clicked_at TIMESTAMP DEFAULT NOW()
+  campaign_id INTEGER NOT NULL REFERENCES ad_campaigns(id) ON DELETE CASCADE,
+  user_id INTEGER,
+  session_id TEXT,
+  clicked_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
-```
-
----
-
-## Indexes (Recommended)
-
-```sql
--- Forum performance indexes
-CREATE INDEX idx_posts_category ON forum_posts(category_id);
-CREATE INDEX idx_posts_user ON forum_posts(user_id);
-CREATE INDEX idx_posts_created ON forum_posts(created_at DESC);
-CREATE INDEX idx_post_stats_hot ON forum_post_stats(hot_score DESC);
-CREATE INDEX idx_replies_post ON forum_replies(post_id);
-CREATE INDEX idx_replies_parent ON forum_replies(parent_reply_id);
-
--- Voting indexes
-CREATE INDEX idx_post_votes_post ON post_votes(post_id);
-CREATE INDEX idx_reply_votes_reply ON reply_votes(reply_id);
-
--- Ad tracking indexes
-CREATE INDEX idx_impressions_creative ON ad_impressions(creative_id);
-CREATE INDEX idx_clicks_creative ON ad_clicks(creative_id);
-CREATE INDEX idx_impressions_time ON ad_impressions(viewed_at);
-CREATE INDEX idx_clicks_time ON ad_clicks(clicked_at);
 ```
 
 ---
@@ -308,7 +275,6 @@ CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   username VARCHAR(50) UNIQUE NOT NULL,
   email VARCHAR(255) UNIQUE,
-  avatar_url TEXT,
   -- Your auth system's additional fields
   created_at TIMESTAMP DEFAULT NOW()
 );
@@ -317,7 +283,6 @@ CREATE TABLE users (
 **Required fields for forum integration:**
 - `id` - Unique user identifier
 - `username` - Display name in forum
-- `avatar_url` (optional) - User avatar image
 
 ---
 
@@ -332,9 +297,8 @@ export const forumPosts
 export const forumPostStats
 export const forumReplies
 export const forumReplyStats
+export const forumVotes
 export const userKarma
-export const postVotes
-export const replyVotes
 export const adCampaigns
 export const adCreatives
 export const adImpressions
@@ -354,6 +318,6 @@ export type ForumReply = typeof forumReplies.$inferSelect
 
 ## Migration Notes
 
-1. Run `npm run db:push` to apply schema changes
+1. Run `npx drizzle-kit push` to apply schema changes
 2. Use `seed-community.ts` to populate initial data
 3. The schema uses Drizzle ORM - see `drizzle.config.ts` for configuration

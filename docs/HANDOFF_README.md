@@ -9,11 +9,10 @@ Welcome to the HODLearn community forums feature! This document provides everyth
 npm install
 
 # 2. Set up environment variables
-cp .env.example .env
-# Edit .env with your database credentials
+# Create .env file with required variables (see Environment Variables section)
 
-# 3. Push database schema
-npm run db:push
+# 3. Push database schema using Drizzle
+npx drizzle-kit push
 
 # 4. Seed initial data
 npx tsx seed-community.ts
@@ -57,16 +56,25 @@ npm run dev
 Create a `.env` file with these variables:
 
 ```env
-# Database (Required)
+# Database (Required - used by both app and Drizzle migrations)
 DATABASE_URL=postgresql://user:password@host:5432/database
 
+# PostgreSQL connection vars (auto-set by Replit, or configure manually)
+PGHOST=your-host
+PGPORT=5432
+PGUSER=your-user
+PGPASSWORD=your-password
+PGDATABASE=your-database
+
 # Session (Required for production)
-SESSION_SECRET=your-secure-random-string
+SESSION_SECRET=your-secure-random-string-min-32-chars
 
 # Server
 PORT=5000
 NODE_ENV=production
 ```
+
+**Note:** The same `DATABASE_URL` is used by both the application runtime (via Neon serverless driver) and Drizzle Kit migrations. Ensure this variable is set before running any database commands.
 
 ---
 
@@ -82,11 +90,11 @@ NODE_ENV=production
 The project uses Drizzle ORM. Apply the schema:
 
 ```bash
-# Development - interactive sync
-npm run db:push
+# Push schema to database
+npx drizzle-kit push
 
-# View current schema
-npm run db:studio
+# View current schema in browser
+npx drizzle-kit studio
 ```
 
 ### Initial Data
@@ -101,8 +109,9 @@ This creates:
 - 10 forum categories
 - 18 sample posts across all categories
 - 15 sample replies with threading
-- 3 ad campaigns with creatives
-- Sample user karma records
+- 3 user karma records
+- 3 ad campaigns
+- 3 ad creatives
 
 ---
 
@@ -172,18 +181,18 @@ This creates:
 All forum endpoints are prefixed with `/api/community/`:
 
 ```
-GET  /api/community/categories          - List categories
-GET  /api/community/forum-posts         - List posts
-GET  /api/community/forum-posts/:id     - Get single post
-POST /api/community/forum-posts         - Create post
-GET  /api/community/forum-posts/:id/replies - List replies
-POST /api/community/forum-posts/:id/replies - Create reply
-POST /api/community/upvote/post         - Upvote post
-POST /api/community/upvote/reply        - Upvote reply
-GET  /api/community/karma/:userId       - Get user karma
-GET  /api/ads/active                    - Get active ads
-POST /api/ads/impression                - Track ad view
-POST /api/ads/click                     - Track ad click
+GET  /api/community/forum-categories           - List categories
+GET  /api/community/forum-posts                - List posts
+GET  /api/community/forum-posts/:postId        - Get single post
+POST /api/community/forum-posts                - Create post
+GET  /api/community/forum-posts/:postId/replies   - List replies
+POST /api/community/forum-posts/:postId/replies   - Create reply
+POST /api/community/forum-posts/:postId/upvote    - Upvote post
+POST /api/community/forum-replies/:replyId/upvote - Upvote reply
+GET  /api/community/karma/:userId              - Get user karma
+GET  /api/ads/active                           - Get active ads
+POST /api/ads/impression                       - Track ad view
+POST /api/ads/click                            - Track ad click
 ```
 
 See `API_REFERENCE.md` for complete documentation.

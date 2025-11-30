@@ -10,17 +10,15 @@ All endpoints are relative to your server base URL:
 
 ## Authentication
 
-The API expects a `user_id` to be available from your authentication system. See `AUTH_INTEGRATION.md` for integration details.
-
-For development/testing, endpoints support a `userId` query parameter.
+The API expects a user to be authenticated via session. Currently uses a default user middleware for development. See `AUTH_INTEGRATION.md` for production setup.
 
 ---
 
 ## Forum Categories
 
-### GET /api/community/categories
+### GET /api/community/forum-categories
 
-Returns all forum categories in sort order.
+Returns all active forum categories ordered by sort_order.
 
 **Response:**
 ```json
@@ -30,10 +28,11 @@ Returns all forum categories in sort order.
     "name": "Bitcoin Basics",
     "slug": "bitcoin-basics",
     "description": "Fundamental concepts and beginner questions",
-    "iconName": "GraduationCap",
-    "color": "#F7931A",
+    "postCount": 15,
+    "isActive": true,
     "sortOrder": 1,
-    "createdAt": "2025-11-29T15:50:38.141Z"
+    "createdAt": "2025-11-29T15:50:38.141Z",
+    "updatedAt": "2025-11-29T15:50:38.141Z"
   }
 ]
 ```
@@ -44,50 +43,72 @@ Returns all forum categories in sort order.
 
 ### GET /api/community/forum-posts
 
-Returns forum posts with statistics and author information.
+Returns forum posts with statistics, author, and category information.
 
 **Query Parameters:**
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `categoryId` | number | Filter by category ID |
-| `sortBy` | string | Sort order: `hot`, `new`, `top` (default: `hot`) |
-| `userId` | number | Current user ID (for auth) |
-| `flair` | string | Filter by tag: `question`, `discussion`, `article`, `media`, `meme` |
+| `categoryId` | number | Filter by category ID (optional) |
+| `sortBy` | string | Sort order: `hot`, `trending`, `top`, `new` (default: `new`) |
+| `flair` | string | Filter by tag (optional) |
 
 **Response:**
 ```json
 [
   {
     "id": 1,
-    "userId": 1,
     "categoryId": 1,
+    "userId": 1,
     "title": "What's the difference between hot and cold wallets?",
     "content": "I keep hearing these terms...",
-    "flair": "question",
-    "linkUrl": null,
-    "imageUrl": null,
-    "videoUrl": null,
-    "isPinned": false,
+    "dayIndex": null,
+    "isSticky": false,
     "isLocked": false,
-    "createdAt": "2025-11-29T15:50:38.141Z",
-    "upvotes": 15,
+    "isPinned": false,
+    "flair": "question",
+    "imageUrl": null,
+    "linkUrl": null,
+    "linkPreview": null,
     "replyCount": 3,
-    "hotScore": 45.5,
-    "hasUpvoted": false,
+    "lastReplyAt": "2025-11-29T16:00:00.000Z",
+    "lastReplyUserId": 2,
+    "createdAt": "2025-11-29T15:50:38.141Z",
+    "updatedAt": "2025-11-29T15:50:38.141Z",
+    "stats": {
+      "id": 1,
+      "postId": 1,
+      "upvotes": 15,
+      "downvotes": 0,
+      "hotScore": "45.5000",
+      "trendingScore": "0.0000",
+      "controversyScore": "0.0000",
+      "updatedAt": "2025-11-29T15:50:38.141Z"
+    },
     "author": {
       "id": 1,
-      "username": "bitcoiner123",
-      "avatarUrl": null
+      "username": "bitcoiner123"
     },
     "category": {
       "id": 1,
       "name": "Bitcoin Basics",
       "slug": "bitcoin-basics",
-      "color": "#F7931A"
-    }
+      "description": "Fundamental concepts...",
+      "postCount": 15,
+      "isActive": true,
+      "sortOrder": 1,
+      "createdAt": "2025-11-29T15:50:38.141Z",
+      "updatedAt": "2025-11-29T15:50:38.141Z"
+    },
+    "userVote": null,
+    "karma": 15
   }
 ]
 ```
+
+**Notes:**
+- `userVote` is the authenticated user's vote record (null if not voted or not authenticated)
+- `karma` equals upvotes (upvote-only system)
+- `stats.downvotes` is always 0 (retained for schema compatibility)
 
 ---
 
@@ -95,49 +116,17 @@ Returns forum posts with statistics and author information.
 
 Returns a single post by ID with full details.
 
-**Parameters:**
+**Path Parameters:**
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `postId` | number | Post ID (path parameter) |
-| `userId` | number | Current user ID (query parameter) |
+| `postId` | number | Post ID |
 
-**Response:**
-```json
-{
-  "id": 1,
-  "userId": 1,
-  "categoryId": 1,
-  "title": "What's the difference between hot and cold wallets?",
-  "content": "I keep hearing these terms...",
-  "flair": "question",
-  "linkUrl": null,
-  "imageUrl": null,
-  "videoUrl": null,
-  "isPinned": false,
-  "isLocked": false,
-  "createdAt": "2025-11-29T15:50:38.141Z",
-  "upvotes": 15,
-  "replyCount": 3,
-  "hotScore": 45.5,
-  "hasUpvoted": true,
-  "author": {
-    "id": 1,
-    "username": "bitcoiner123",
-    "avatarUrl": null
-  },
-  "category": {
-    "id": 1,
-    "name": "Bitcoin Basics",
-    "slug": "bitcoin-basics",
-    "color": "#F7931A"
-  }
-}
-```
+**Response:** Same structure as individual post in list response.
 
 **Error Response (404):**
 ```json
 {
-  "error": "Post not found"
+  "message": "Post not found"
 }
 ```
 
@@ -145,44 +134,83 @@ Returns a single post by ID with full details.
 
 ### POST /api/community/forum-posts
 
-Creates a new forum post.
+Creates a new forum post. Requires authentication.
 
 **Request Body:**
 ```json
 {
-  "userId": 1,
-  "categoryId": 1,
   "title": "My first post",
   "content": "Hello community!",
+  "categoryId": 1,
   "flair": "discussion",
-  "linkUrl": null,
   "imageUrl": null,
-  "videoUrl": null
+  "linkUrl": null,
+  "linkPreview": null,
+  "dayIndex": null
 }
 ```
 
 **Required Fields:**
-- `userId` - Author's user ID
-- `categoryId` - Target category ID
-- `title` - Post title (max 300 chars)
+- `title` - Post title
 - `content` - Post body text
+- `categoryId` - Target category ID
 
 **Optional Fields:**
-- `flair` - Tag: `question`, `discussion`, `article`, `media`, `meme`
-- `linkUrl` - External link URL
-- `imageUrl` - Image URL
-- `videoUrl` - YouTube or video URL
+- `flair` - Tag: `discussion`, `question`, `video`, `article`, `meme`, `security`, `news`, `chart`
+- `imageUrl` - Direct image URL
+- `linkUrl` - External link URL (including YouTube)
+- `linkPreview` - JSON object with link preview metadata
+- `dayIndex` - Link to curriculum day if applicable
 
-**Response (201):**
+**Response:**
 ```json
 {
   "id": 42,
-  "userId": 1,
   "categoryId": 1,
+  "userId": 1,
   "title": "My first post",
   "content": "Hello community!",
   "flair": "discussion",
-  "createdAt": "2025-11-29T16:30:00.000Z"
+  "createdAt": "2025-11-29T16:30:00.000Z",
+  "updatedAt": "2025-11-29T16:30:00.000Z"
+}
+```
+
+---
+
+## Link Preview
+
+### POST /api/community/link-preview
+
+Fetches Open Graph metadata for a URL. Used for rich link previews.
+
+**Request Body:**
+```json
+{
+  "url": "https://youtube.com/watch?v=..."
+}
+```
+
+**Response (YouTube):**
+```json
+{
+  "type": "video",
+  "title": "Video Title",
+  "description": "By Channel Name",
+  "image": "https://img.youtube.com/vi/VIDEO_ID/hqdefault.jpg",
+  "siteName": "YouTube",
+  "videoId": "VIDEO_ID"
+}
+```
+
+**Response (Article):**
+```json
+{
+  "type": "article",
+  "title": "Article Title",
+  "description": "Article description...",
+  "image": "https://example.com/og-image.jpg",
+  "siteName": "Example Site"
 }
 ```
 
@@ -192,7 +220,7 @@ Creates a new forum post.
 
 ### GET /api/community/forum-posts/:postId/replies
 
-Returns all replies for a post, structured for threading.
+Returns all replies for a post with threading information.
 
 **Response:**
 ```json
@@ -202,48 +230,47 @@ Returns all replies for a post, structured for threading.
     "postId": 1,
     "userId": 2,
     "content": "Hot wallet = connected to internet...",
-    "parentReplyId": null,
     "isDeleted": false,
     "createdAt": "2025-11-29T15:55:00.000Z",
-    "depth": 0,
-    "upvotes": 5,
-    "hasUpvoted": false,
+    "updatedAt": "2025-11-29T15:55:00.000Z",
+    "stats": {
+      "id": 1,
+      "replyId": 1,
+      "parentReplyId": null,
+      "depth": 0,
+      "upvotes": 5,
+      "downvotes": 0,
+      "childCount": 1,
+      "updatedAt": "2025-11-29T15:55:00.000Z"
+    },
     "author": {
       "id": 2,
-      "username": "helpfuluser",
-      "avatarUrl": null
-    }
-  },
-  {
-    "id": 3,
-    "postId": 1,
-    "userId": 1,
-    "content": "That analogy helps! Thanks!",
-    "parentReplyId": 2,
-    "isDeleted": false,
-    "createdAt": "2025-11-29T15:58:00.000Z",
-    "depth": 1,
-    "upvotes": 2,
-    "hasUpvoted": true,
-    "author": {
-      "id": 1,
-      "username": "bitcoiner123",
-      "avatarUrl": null
-    }
+      "username": "helpfuluser"
+    },
+    "userVote": null,
+    "karma": 5
   }
 ]
 ```
+
+**Notes:**
+- `stats.depth` indicates nesting level (0 = top-level reply)
+- `stats.parentReplyId` is set for nested replies
 
 ---
 
 ### POST /api/community/forum-posts/:postId/replies
 
-Creates a reply to a post.
+Creates a reply to a post. Requires authentication.
+
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `postId` | number | Post ID to reply to |
 
 **Request Body:**
 ```json
 {
-  "userId": 1,
   "content": "Great explanation!",
   "parentReplyId": null
 }
@@ -253,15 +280,16 @@ Creates a reply to a post.
 - `content` - Reply text (required)
 - `parentReplyId` - ID of parent reply for threading (null for top-level)
 
-**Response (201):**
+**Response:**
 ```json
 {
   "id": 15,
   "postId": 1,
   "userId": 1,
   "content": "Great explanation!",
-  "parentReplyId": null,
-  "createdAt": "2025-11-29T16:45:00.000Z"
+  "isDeleted": false,
+  "createdAt": "2025-11-29T16:45:00.000Z",
+  "updatedAt": "2025-11-29T16:45:00.000Z"
 }
 ```
 
@@ -269,18 +297,24 @@ Creates a reply to a post.
 
 ## Voting
 
-### POST /api/community/upvote/post
+### POST /api/community/forum-posts/:postId/upvote
 
-Upvotes a post. Upvotes are idempotent (calling twice has no effect).
+Upvotes a post. Requires authentication. Idempotent (calling twice has no additional effect).
+
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `postId` | number | Post ID to upvote |
 
 **Request Body:**
 ```json
 {
-  "userId": 1,
-  "postId": 5,
   "bitcoinPriceUsd": 95000
 }
 ```
+
+**Optional Fields:**
+- `bitcoinPriceUsd` - Current BTC price (for wallet integration)
 
 **Response:**
 ```json
@@ -292,20 +326,23 @@ Upvotes a post. Upvotes are idempotent (calling twice has no effect).
 ```
 
 **Notes:**
-- `karmaAwarded` is 10 for post upvotes
-- `bitcoinPriceUsd` is optional, used for wallet integration
+- User ID is derived from authenticated session
+- Karma awarded: 10 points per post upvote to the post author
 
 ---
 
-### POST /api/community/upvote/reply
+### POST /api/community/forum-replies/:replyId/upvote
 
-Upvotes a reply.
+Upvotes a reply. Requires authentication.
+
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `replyId` | number | Reply ID to upvote |
 
 **Request Body:**
 ```json
 {
-  "userId": 1,
-  "replyId": 12,
   "bitcoinPriceUsd": 95000
 }
 ```
@@ -319,22 +356,32 @@ Upvotes a reply.
 }
 ```
 
+**Notes:**
+- Karma awarded: 5 points per reply upvote to the reply author
+
 ---
 
 ## User Karma
 
 ### GET /api/community/karma/:userId
 
-Returns karma stats for a user.
+Returns karma statistics for a user.
+
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `userId` | number | User ID |
 
 **Response:**
 ```json
 {
+  "id": 1,
   "userId": 1,
   "totalKarma": 350,
   "postKarma": 250,
   "commentKarma": 100,
-  "awardedKarma": 0
+  "awardedKarma": 0,
+  "updatedAt": "2025-11-29T16:00:00.000Z"
 }
 ```
 
@@ -361,12 +408,8 @@ Returns active ad creatives for in-feed display.
     "category": null,
     "placement": "in_feed",
     "isActive": true,
-    "campaign": {
-      "id": 1,
-      "name": "Bitcoin Security Launch",
-      "advertiser": "Trezor",
-      "status": "active"
-    }
+    "createdAt": "2025-11-29T16:00:00.000Z",
+    "updatedAt": "2025-11-29T16:00:00.000Z"
   }
 ]
 ```
@@ -381,7 +424,8 @@ Records an ad impression (view).
 ```json
 {
   "creativeId": 1,
-  "sessionId": "abc123"
+  "sessionId": "abc123",
+  "placement": "in_feed"
 }
 ```
 
@@ -422,38 +466,23 @@ All endpoints return standard error responses:
 **400 Bad Request:**
 ```json
 {
-  "error": "Validation failed",
-  "details": ["title is required", "categoryId must be a number"]
+  "message": "URL is required"
 }
 ```
 
 **404 Not Found:**
 ```json
 {
-  "error": "Resource not found"
+  "message": "Post not found"
 }
 ```
 
 **500 Internal Server Error:**
 ```json
 {
-  "error": "Internal server error",
-  "message": "Failed to create post"
+  "message": "Failed to fetch forum posts"
 }
 ```
-
----
-
-## Rate Limiting (Recommended)
-
-Implement rate limiting for production:
-
-| Endpoint Type | Recommended Limit |
-|---------------|-------------------|
-| GET requests | 100 requests/minute |
-| POST (posts/replies) | 10 requests/minute |
-| POST (votes) | 30 requests/minute |
-| POST (ads tracking) | 60 requests/minute |
 
 ---
 
@@ -461,18 +490,13 @@ Implement rate limiting for production:
 
 ### Hot Score Calculation
 
-Posts are ranked using a time-decay algorithm:
-
-```
-hot_score = upvotes / (hours_since_creation + 2)^1.5
-```
-
-This balances upvotes with recency, ensuring new content can surface while highly upvoted content stays visible.
+Posts are ranked using a time-decay algorithm that balances upvotes with recency.
 
 ### Sort Options
 
-- `hot` - Default. Uses hot_score descending
-- `new` - Created timestamp descending
+- `new` (default) - Created timestamp descending
+- `hot` - Hot score descending
+- `trending` - Trending score descending  
 - `top` - Total upvotes descending
 
 ---
@@ -482,6 +506,8 @@ This balances upvotes with recency, ensuring new content can surface while highl
 For cross-origin requests, configure CORS headers:
 
 ```javascript
+import cors from 'cors';
+
 app.use(cors({
   origin: ['https://your-frontend.com'],
   credentials: true,
