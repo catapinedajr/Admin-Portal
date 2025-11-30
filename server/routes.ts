@@ -2055,6 +2055,23 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
+  // Get single forum post by ID
+  app.get("/api/community/forum-posts/:postId", async (req, res) => {
+    try {
+      const { postId } = req.params;
+      const userId = req.user?.id;
+      
+      const post = await communityStorage.getForumPostById(parseInt(postId), userId);
+      if (!post) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+      res.json(post);
+    } catch (error) {
+      console.error("Error fetching forum post:", error);
+      res.status(500).json({ message: "Failed to fetch forum post" });
+    }
+  });
+
   // Create forum post with rich media support
   app.post("/api/community/forum-posts", setDefaultUser, async (req, res) => {
     try {

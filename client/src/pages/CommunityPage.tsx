@@ -762,11 +762,11 @@ function PostDetailView({ postId, onBack }: { postId: number; onBack: () => void
   const queryClient = useQueryClient();
 
   const { data: post, isLoading: postLoading } = useQuery({
-    queryKey: ['/api/community/forum-posts', postId, 'detail'],
+    queryKey: ['/api/community/forum-posts', postId],
     queryFn: async () => {
-      const res = await fetch(`/api/community/forum-posts?postId=${postId}`);
-      const posts = await res.json();
-      return posts[0];
+      const res = await fetch(`/api/community/forum-posts/${postId}`);
+      if (!res.ok) throw new Error('Post not found');
+      return res.json();
     }
   });
 

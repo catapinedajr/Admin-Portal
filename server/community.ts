@@ -15,6 +15,7 @@ export interface ICommunityStorage {
   // Enhanced forum operations with Reddit-style features
   getForumCategories(): Promise<any[]>;
   getForumPostsWithStats(categoryId?: number, sortBy?: string, userId?: number, flair?: string): Promise<ForumPostWithStats[]>;
+  getForumPostById(postId: number, userId?: number): Promise<ForumPostWithStats | null>;
   createForumPost(post: any): Promise<any>;
   
   // Upvote-only voting system (positive community focus)
@@ -118,6 +119,44 @@ export class CommunityStorage implements ICommunityStorage {
     }));
     
     return postsWithStats;
+  }
+
+  async getForumPostById(postId: number, userId?: number): Promise<ForumPostWithStats | null> {
+    const results = await db
+      .select({
+        post: forumPosts,
+        stats: forumPostStats,
+        author: {
+          id: users.id,
+          username: users.username
+        },
+        category: forumCategories
+      })
+      .from(forumPosts)
+      .leftJoin(forumPostStats, eq(forumPosts.id, forumPostStats.postId))
+      .leftJoin(users, eq(forumPosts.userId, users.id))
+      .leftJoin(forumCategories, eq(forumPosts.categoryId, forumCategories.id))
+      .where(eq(forumPosts.id, postId))
+      .limit(1);
+
+    if (results.length === 0) return null;
+
+    const result = results[0];
+    let userVote = null;
+    if (userId) {
+      userVote = await this.getUserVote(userId, result.post.id);
+    }
+    
+    const karma = result.stats?.upvotes || 0;
+    
+    return {
+      ...result.post,
+      stats: result.stats || { upvotes: 0, downvotes: 0, hotScore: '0', trendingScore: '0', controversyScore: '0' },
+      author: result.author,
+      category: result.category,
+      userVote,
+      karma
+    } as ForumPostWithStats;
   }
   
   async createForumPost(post: any) {
