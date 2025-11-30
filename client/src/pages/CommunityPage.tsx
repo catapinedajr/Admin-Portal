@@ -187,21 +187,6 @@ export default function CommunityPage() {
 
       <main className="max-w-6xl mx-auto px-4 py-6 pb-24">
         <div className="space-y-4">
-          {/* Community Banner */}
-          <div className="flex items-center justify-center gap-3 py-3 px-4 rounded-lg bg-zinc-800/40 border border-zinc-700/50">
-            <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
-              <MessageSquare className="w-4 h-4 text-white" />
-            </div>
-            <div className="text-center">
-              <h2 className="text-base font-semibold text-white leading-tight">
-                HODLearn Community
-              </h2>
-              <p className="text-xs text-zinc-400">
-                Building conviction through community
-              </p>
-            </div>
-          </div>
-
           {/* Tab Navigation */}
           <div className="flex justify-center">
             <div className="grid grid-cols-2 gap-2 bg-zinc-800/50 rounded-lg p-1.5 max-w-xs mx-auto">
