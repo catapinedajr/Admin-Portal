@@ -187,6 +187,11 @@ export default function CommunityPage() {
 
       <main className="max-w-6xl mx-auto px-4 py-6 pb-24">
         <div className="space-y-4">
+          {/* Community Tagline */}
+          <p className="text-center text-sm text-zinc-500 tracking-wide">
+            Conviction in Community
+          </p>
+
           {/* Tab Navigation */}
           <div className="flex justify-center">
             <div className="grid grid-cols-2 gap-2 bg-zinc-800/50 rounded-lg p-1.5 max-w-xs mx-auto">
