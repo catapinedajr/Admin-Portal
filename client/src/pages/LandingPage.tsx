@@ -25,7 +25,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-zinc-900 text-white">
       {/* Header */}
       <header className="border-b border-zinc-800 bg-black/50 backdrop-blur-lg sticky top-0 z-50">
-        <div className="max-w-5xl mx-auto px-4 py-3 md:py-4">
+        <div className="max-w-6xl mx-auto px-4 py-3 md:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-sm">
@@ -46,40 +46,40 @@ export default function LandingPage() {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4">
+      <main className="max-w-6xl mx-auto px-4">
         {/* Hero Section */}
-        <section className="py-12 md:py-20 text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-3 md:mb-4 leading-tight px-2">
+        <section className="py-12 md:py-24 text-center">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-5 leading-tight px-2">
             Stop Wondering About Bitcoin.
             <br />
             <span className="text-orange-500">Start Learning.</span>
           </h1>
-          <p className="text-base md:text-lg text-orange-400/90 font-medium mb-4 md:mb-5">
+          <p className="text-base md:text-xl text-orange-400/90 font-medium mb-4 md:mb-6">
             This is HODLearn
           </p>
-          <p className="text-zinc-400 text-sm md:text-base max-w-md mx-auto mb-4 md:mb-6 px-4">
+          <p className="text-zinc-400 text-sm md:text-lg max-w-lg mx-auto mb-5 md:mb-8 px-4">
             Daily Bitcoin lessons, safe simulators, and an active community — all in one place.
           </p>
           
           {/* Social Proof */}
-          <div className="flex items-center justify-center gap-4 md:gap-6 text-xs md:text-sm text-zinc-500 mb-6 md:mb-8">
-            <span className="flex items-center gap-1.5">
-              <Users className="w-4 h-4 text-orange-500/70" />
+          <div className="flex items-center justify-center gap-4 md:gap-8 text-xs md:text-sm text-zinc-500 mb-6 md:mb-10">
+            <span className="flex items-center gap-1.5 md:gap-2">
+              <Users className="w-4 h-4 md:w-5 md:h-5 text-orange-500/70" />
               <span>Active community</span>
             </span>
             <span className="w-1 h-1 rounded-full bg-zinc-600" />
-            <span className="flex items-center gap-1.5">
-              <MessageCircle className="w-4 h-4 text-orange-500/70" />
+            <span className="flex items-center gap-1.5 md:gap-2">
+              <MessageCircle className="w-4 h-4 md:w-5 md:h-5 text-orange-500/70" />
               <span>Learn together</span>
             </span>
           </div>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center px-4 sm:px-0">
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4 sm:px-0">
             <Button
               onClick={() => setLocation('/auth?mode=register')}
               size="lg"
-              className="bg-orange-500 hover:bg-orange-600 text-white px-6 md:px-8 w-full sm:w-auto"
+              className="bg-orange-500 hover:bg-orange-600 text-white px-6 md:px-10 py-5 md:py-6 text-base md:text-lg w-full sm:w-auto"
               data-testid="button-get-started"
             >
               Get Started Free
@@ -88,7 +88,7 @@ export default function LandingPage() {
               onClick={() => setLocation('/auth')}
               size="lg"
               variant="outline"
-              className="border-zinc-700 bg-zinc-800/50 hover:bg-zinc-800 text-white px-6 md:px-8 w-full sm:w-auto"
+              className="border-zinc-700 bg-zinc-800/50 hover:bg-zinc-800 text-white px-6 md:px-10 py-5 md:py-6 text-base md:text-lg w-full sm:w-auto"
               data-testid="button-login-hero"
             >
               Log In
@@ -97,50 +97,48 @@ export default function LandingPage() {
         </section>
 
         {/* How It Works - 3 Steps */}
-        <section className="py-10 md:py-14 border-t border-zinc-800">
-          <h2 className="text-lg md:text-xl font-semibold text-center mb-8 md:mb-10 text-zinc-300">
+        <section className="py-10 md:py-16 border-t border-zinc-800">
+          <h2 className="text-lg md:text-2xl font-semibold text-center mb-8 md:mb-12 text-zinc-300">
             How It Works
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
             {/* Step 1: Learn */}
-            <div className="text-center">
-              <div className="w-12 h-12 md:w-14 md:h-14 bg-orange-500/15 border border-orange-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <BookOpen className="w-6 h-6 md:w-7 md:h-7 text-orange-500" />
+            <div className="text-center max-w-[200px] md:max-w-[240px]">
+              <div className="w-14 h-14 md:w-16 md:h-16 bg-orange-500/15 border border-orange-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <BookOpen className="w-7 h-7 md:w-8 md:h-8 text-orange-500" />
               </div>
-              <h3 className="font-semibold mb-2 text-white">Learn</h3>
-              <p className="text-sm text-zinc-400 max-w-xs mx-auto">
+              <h3 className="font-semibold mb-2 text-white text-base md:text-lg">Learn</h3>
+              <p className="text-sm md:text-base text-zinc-400">
                 Daily bite-sized lessons. 5-10 minutes. No jargon.
               </p>
             </div>
 
-            {/* Arrow (desktop only) */}
-            <div className="hidden md:flex items-center justify-center -mx-4">
-              <div className="w-full h-px bg-gradient-to-r from-zinc-700 via-orange-500/50 to-zinc-700" />
-            </div>
+            {/* Arrow */}
+            <div className="hidden md:block text-zinc-600 text-2xl">→</div>
+            <div className="md:hidden text-zinc-600 text-xl">↓</div>
 
             {/* Step 2: Practice */}
-            <div className="text-center">
-              <div className="w-12 h-12 md:w-14 md:h-14 bg-orange-500/15 border border-orange-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-6 h-6 md:w-7 md:h-7 text-orange-500" />
+            <div className="text-center max-w-[200px] md:max-w-[240px]">
+              <div className="w-14 h-14 md:w-16 md:h-16 bg-orange-500/15 border border-orange-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Shield className="w-7 h-7 md:w-8 md:h-8 text-orange-500" />
               </div>
-              <h3 className="font-semibold mb-2 text-white">Practice</h3>
-              <p className="text-sm text-zinc-400 max-w-xs mx-auto">
+              <h3 className="font-semibold mb-2 text-white text-base md:text-lg">Practice</h3>
+              <p className="text-sm md:text-base text-zinc-400">
                 Risk-free simulators. Learn before using real Bitcoin.
               </p>
             </div>
 
-            {/* Arrow (desktop only) */}
-            <div className="hidden md:flex items-center justify-center -mx-4">
-              <div className="w-full h-px bg-gradient-to-r from-zinc-700 via-orange-500/50 to-zinc-700" />
-            </div>
+            {/* Arrow */}
+            <div className="hidden md:block text-zinc-600 text-2xl">→</div>
+            <div className="md:hidden text-zinc-600 text-xl">↓</div>
 
             {/* Step 3: Connect */}
-            <div className="text-center">
-              <div className="w-12 h-12 md:w-14 md:h-14 bg-orange-500/15 border border-orange-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Users className="w-6 h-6 md:w-7 md:h-7 text-orange-500" />
+            <div className="text-center max-w-[200px] md:max-w-[240px]">
+              <div className="w-14 h-14 md:w-16 md:h-16 bg-orange-500/15 border border-orange-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Users className="w-7 h-7 md:w-8 md:h-8 text-orange-500" />
               </div>
-              <h3 className="font-semibold mb-2 text-white">Connect</h3>
-              <p className="text-sm text-zinc-400 max-w-xs mx-auto">
+              <h3 className="font-semibold mb-2 text-white text-base md:text-lg">Connect</h3>
+              <p className="text-sm md:text-base text-zinc-400">
                 Join a community of learners. Ask questions. Build conviction.
               </p>
             </div>
@@ -148,42 +146,42 @@ export default function LandingPage() {
         </section>
 
         {/* Value Grid - 3 Cards */}
-        <section className="py-10 md:py-14 border-t border-zinc-800/50">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+        <section className="py-10 md:py-16 border-t border-zinc-800/50">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
             {/* Community Card - First */}
-            <Card className="bg-zinc-800/40 border-zinc-700/50 hover:border-orange-500/40 transition-colors">
-              <CardContent className="p-5 md:p-6">
-                <div className="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
-                  <Users className="w-5 h-5 text-orange-500" />
+            <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-colors">
+              <CardContent className="p-5 md:p-7">
+                <div className="w-11 h-11 md:w-12 md:h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
+                  <Users className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />
                 </div>
-                <h3 className="font-semibold mb-2 text-white">Community</h3>
-                <p className="text-sm text-zinc-400 leading-relaxed">
+                <h3 className="font-semibold mb-2 text-white text-base md:text-lg">Community</h3>
+                <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
                   Learn alongside others on the same journey. Discuss ideas, ask questions, and build conviction together.
                 </p>
               </CardContent>
             </Card>
 
             {/* Practice Card */}
-            <Card className="bg-zinc-800/40 border-zinc-700/50 hover:border-orange-500/40 transition-colors">
-              <CardContent className="p-5 md:p-6">
-                <div className="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
-                  <Gamepad2 className="w-5 h-5 text-orange-500" />
+            <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-colors">
+              <CardContent className="p-5 md:p-7">
+                <div className="w-11 h-11 md:w-12 md:h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
+                  <Gamepad2 className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />
                 </div>
-                <h3 className="font-semibold mb-2 text-white">Practice</h3>
-                <p className="text-sm text-zinc-400 leading-relaxed">
+                <h3 className="font-semibold mb-2 text-white text-base md:text-lg">Practice</h3>
+                <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
                   Try wallets, security training, and DCA strategies in safe simulators — no real money at risk.
                 </p>
               </CardContent>
             </Card>
 
             {/* Track Card */}
-            <Card className="bg-zinc-800/40 border-zinc-700/50 hover:border-orange-500/40 transition-colors">
-              <CardContent className="p-5 md:p-6">
-                <div className="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
-                  <TrendingUp className="w-5 h-5 text-orange-500" />
+            <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-colors">
+              <CardContent className="p-5 md:p-7">
+                <div className="w-11 h-11 md:w-12 md:h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
+                  <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />
                 </div>
-                <h3 className="font-semibold mb-2 text-white">Track</h3>
-                <p className="text-sm text-zinc-400 leading-relaxed">
+                <h3 className="font-semibold mb-2 text-white text-base md:text-lg">Track</h3>
+                <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
                   Real-time Bitcoin prices and insights. See how inflation impacts your purchasing power.
                 </p>
               </CardContent>
@@ -192,12 +190,12 @@ export default function LandingPage() {
         </section>
 
         {/* Final CTA */}
-        <section className="py-12 md:py-16 text-center border-t border-zinc-800/50">
-          <p className="text-zinc-400 text-sm mb-4">Ready to start?</p>
+        <section className="py-12 md:py-20 text-center border-t border-zinc-800/50">
+          <p className="text-zinc-400 text-sm md:text-base mb-5">Ready to start?</p>
           <Button
             onClick={() => setLocation('/auth?mode=register')}
             size="lg"
-            className="bg-orange-500 hover:bg-orange-600 text-white px-8 md:px-10 py-5 md:py-6 text-base md:text-lg"
+            className="bg-orange-500 hover:bg-orange-600 text-white px-8 md:px-12 py-5 md:py-6 text-base md:text-lg"
             data-testid="button-cta-bottom"
           >
             Join the Community & Start Learning
@@ -206,8 +204,8 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-800 py-8 md:py-10 bg-zinc-900/50">
-        <div className="max-w-5xl mx-auto px-4">
+      <footer className="border-t border-zinc-800 py-8 md:py-12 bg-zinc-900/50">
+        <div className="max-w-6xl mx-auto px-4">
           {/* App Download */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-8">
             {(deviceType === 'ios' || deviceType === 'desktop') && (
@@ -215,7 +213,7 @@ export default function LandingPage() {
                 href={appStoreUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg px-4 py-2.5 transition-colors text-sm"
+                className="inline-flex items-center justify-center gap-2.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-xl px-5 py-3 transition-colors text-sm"
                 data-testid="link-app-store"
               >
                 <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
@@ -229,7 +227,7 @@ export default function LandingPage() {
                 href={playStoreUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg px-4 py-2.5 transition-colors text-sm"
+                className="inline-flex items-center justify-center gap-2.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-xl px-5 py-3 transition-colors text-sm"
                 data-testid="link-play-store"
               >
                 <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
@@ -241,7 +239,7 @@ export default function LandingPage() {
           </div>
 
           {/* Footer Links */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs md:text-sm text-zinc-500">
             <p>© HODLearn</p>
             <div className="flex gap-6">
               <a 
