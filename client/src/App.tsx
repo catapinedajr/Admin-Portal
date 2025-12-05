@@ -15,6 +15,7 @@ import MorePage from "@/pages/MorePage";
 import AccountPage from "@/pages/AccountPage";
 import WalletPage from "@/pages/WalletPage";
 import AdminAdsPage from "@/pages/AdminAdsPage";
+import LandingPage from "@/pages/LandingPage";
 
 import { AppContextProvider } from "@/components/shared/AppContextProvider";
 import Onboarding from "@/pages/onboarding";
@@ -39,19 +40,19 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   });
   
   useEffect(() => {
-    // If no session ID, redirect immediately
+    // If no session ID, redirect to landing page
     if (!sessionId && !hasRedirected) {
       setHasRedirected(true);
-      setLocation('/auth');
+      setLocation('/landing');
       return;
     }
     
-    // If we have session but API fails, also redirect
+    // If we have session but API fails, also redirect to landing
     if (sessionId && !isLoading && (error || !user) && !hasRedirected) {
       // Clear invalid session
       localStorage.removeItem('hodlearn_session');
       setHasRedirected(true);
-      setLocation('/auth');
+      setLocation('/landing');
     }
   }, [sessionId, error, user, isLoading, setLocation, hasRedirected]);
 
@@ -123,6 +124,7 @@ function Router() {
     <AppContextProvider>
       <ScrollToTop />
       <Switch>
+        <Route path="/landing" component={LandingPage} />
         <Route path="/auth" component={AuthPage} />
         <Route path="/terms" component={TermsPage} />
         <Route path="/privacy" component={PrivacyPage} />
