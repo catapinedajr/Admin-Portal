@@ -1,0 +1,55 @@
+┌─────────────────────────────────────────────────────────────┐
+│  [HL] HODLearn                              [Log In] button │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│            🟠 HERO SECTION                                  │
+│                                                             │
+│         "Stop Wondering About Bitcoin.                      │
+│              Start Understanding It."                       │
+│                                                             │
+│    Learn Bitcoin in bite-sized daily lessons.               │
+│    No jargon. No confusion. Just clarity.                   │
+│                                                             │
+│         [Get Started Free]    [Log In]                      │
+│                                                             │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│            📱 GET THE APP                                   │
+│                                                             │
+│    ┌──────────────┐      ┌──────────────┐                   │
+│    │ 🍎 App Store │      │ ▶ Google Play│                   │
+│    └──────────────┘      └──────────────┘                   │
+│                                                             │
+│    (Shows iOS button on iPhones, Android on Android,        │
+│     both on desktop)                                        │
+│                                                             │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│            ✨ FEATURE SECTIONS                              │
+│                                                             │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌────────┐│
+│  │   💰        │ │   👥        │ │   🎮        │ │   ⚙️   ││
+│  │   MONEY     │ │   CONNECT   │ │  PRACTICE   │ │  MORE  ││
+│  │             │ │             │ │             │ │        ││
+│  │ Track BTC   │ │ Join the    │ │ Try risk-   │ │Glossary││
+│  │ prices, see │ │ community,  │ │ free sims   │ │achieve-││
+│  │ inflation   │ │ discuss &   │ │ for wallets,│ │ments,  ││
+│  │ impact      │ │ learn       │ │ security    │ │settings││
+│  └─────────────┘ └─────────────┘ └─────────────┘ └────────┘│
+│                                                             │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│            🎯 WHY HODLEARN?                                 │
+│                                                             │
+│    • Daily bite-sized lessons (5-10 min)                    │
+│    • Earn sats as you learn                                 │
+│    • Practice with safe simulators                          │
+│    • Join a community of learners                           │
+│                                                             │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│         [Start Your Bitcoin Education Today]                │
+│                                                             │
+├─────────────────────────────────────────────────────────────┤
+│  © HODLearn | Terms | Privacy | About                       │
+└─────────────────────────────────────────────────────────────┘

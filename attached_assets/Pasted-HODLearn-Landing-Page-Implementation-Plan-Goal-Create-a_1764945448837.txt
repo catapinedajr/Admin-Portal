@@ -1,0 +1,69 @@
+HODLearn Landing Page - Implementation Plan
+Goal
+Create a landing page that showcases what HODLearn offers before asking users to sign up. The landing page replaces the current experience where non-logged-in users go directly to a login form.
+
+Page Structure
+1. Header
+
+HODLearn logo/branding (top left)
+"Log In" button (top right)
+2. Hero Section
+
+Headline: "Stop Wondering About Bitcoin. Start Understanding It."
+Subtext: "Learn Bitcoin in bite-sized daily lessons. No jargon. No confusion. Just clarity."
+Two buttons: "Get Started Free" (goes to register) and "Log In" (goes to login)
+3. App Download Section
+
+Smart device detection:
+iOS users see Apple App Store button
+Android users see Google Play button
+Desktop users see both buttons
+Placeholder links until apps are published:
+Apple: https://apps.apple.com/app/hodlearn (update when live)
+Google: https://play.google.com/store/apps/details?id=com.hodlearn (update when live)
+4. Feature Showcase (4 sections)
+
+Feature	Icon	Description
+Money	💰	Track Bitcoin prices in real-time. See how inflation impacts your purchasing power over time.
+Connect	👥	Join a community of Bitcoin learners. Discuss, ask questions, and learn together.
+Practice	🎮	Try risk-free simulators for wallets, security training, DCA strategies, and more.
+More	⚙️	Access the Bitcoin glossary, track achievements, manage your account settings.
+5. Why HODLearn Section
+
+Daily bite-sized lessons (5-10 minutes)
+Earn sats as you learn
+Practice with safe simulators before using real Bitcoin
+Join a supportive community of learners
+6. Call-to-Action
+
+Button: "Start Your Bitcoin Education Today" → goes to registration
+7. Footer
+
+Copyright: © HODLearn
+Links: Terms | Privacy | About
+Technical Implementation
+Files to create/modify:
+
+Create: client/src/pages/LandingPage.tsx
+New landing page component with all sections above
+Modify: client/src/App.tsx
+Add route for /landing
+Change the AuthGuard logic so non-logged-in users go to /landing instead of /auth
+Keep /auth route for when users click Log In or Get Started
+Device Detection Code (for app store buttons):
+
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+const isAndroid = /Android/.test(navigator.userAgent);
+
+Styling:
+
+Match existing dark theme (bg-zinc-900)
+Orange accent color (#f97316 / orange-500)
+Mobile-responsive design
+Use existing shadcn components (Button, Card, etc.)
+User Flow After Implementation
+New visitor → /landing (sees feature showcase)
+Clicks "Get Started" → /auth (registration form)
+Clicks "Log In" → /auth (login form)
+After login → / (home page with app content)
+Mobile user → Can tap app store button for native app
