@@ -16,6 +16,13 @@ export const users = pgTable("users", {
   termsAcceptedAt: timestamp("terms_accepted_at"),
   termsVersion: text("terms_version").default("1.0"),
   pwaInstalledAt: timestamp("pwa_installed_at"),
+  // UTM tracking for marketing attribution
+  utmSource: text("utm_source"),
+  utmMedium: text("utm_medium"),
+  utmCampaign: text("utm_campaign"),
+  utmContent: text("utm_content"),
+  utmTerm: text("utm_term"),
+  referralCampaignId: integer("referral_campaign_id"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

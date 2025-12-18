@@ -62,6 +62,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const { user, sessionId } = await authService.register(userData);
+      
+      // Store UTM params on user record for marketing attribution
+      if (utmSource || utmMedium || utmCampaign || utmContent) {
+        try {
+          await db.update(users)
+            .set({
+              utmSource: utmSource || null,
+              utmMedium: utmMedium || null,
+              utmCampaign: utmCampaign || null,
+              utmContent: utmContent || null,
+            })
+            .where(eq(users.id, user.id));
+        } catch (utmError) {
+          console.error("UTM storage error:", utmError);
+        }
+      }
+      
       const { passwordHash, ...userResponse } = user;
       
       // Track attribution event if UTM params are present
