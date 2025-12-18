@@ -78,8 +78,8 @@ interface SocialPostWithMetrics extends SocialPost {
 }
 
 interface SocialStats {
-  scheduled: number;
-  published: number;
+  planned: number;
+  posted: number;
   totalClicks: number;
   totalSignups: number;
   avgEngagement: number;
@@ -128,26 +128,29 @@ function StatCard({ title, value, icon: Icon, subtext, color = "orange" }: {
   );
 }
 
-function PostCard({ post, onEdit, onDelete }: { 
+function PostCard({ post, onEdit, onDelete, onMarkPosted }: { 
   post: SocialPostWithMetrics; 
   onEdit: () => void;
   onDelete: () => void;
+  onMarkPosted?: () => void;
 }) {
   const statusColors: Record<string, string> = {
+    planned: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+    posted: "bg-green-500/20 text-green-400 border-green-500/30",
     draft: "bg-zinc-600/20 text-zinc-400 border-zinc-500/30",
     scheduled: "bg-blue-500/20 text-blue-400 border-blue-500/30",
     published: "bg-green-500/20 text-green-400 border-green-500/30",
-    failed: "bg-red-500/20 text-red-400 border-red-500/30",
   };
 
   const statusIcons: Record<string, any> = {
+    planned: Clock,
+    posted: CheckCircle2,
     draft: Edit2,
     scheduled: Clock,
     published: CheckCircle2,
-    failed: AlertCircle,
   };
 
-  const StatusIcon = statusIcons[post.status] || Edit2;
+  const StatusIcon = statusIcons[post.status] || Clock;
 
   return (
     <Card className="bg-zinc-800/50 border-zinc-700 hover:border-zinc-600 transition-all" data-testid={`card-post-${post.id}`}>
@@ -156,11 +159,11 @@ function PostCard({ post, onEdit, onDelete }: {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
               <Twitter className="w-4 h-4 text-blue-400" />
-              <Badge className={statusColors[post.status]}>
+              <Badge className={statusColors[post.status] || statusColors.planned}>
                 <StatusIcon className="w-3 h-3 mr-1" />
                 {post.status}
               </Badge>
-              {post.scheduledAt && post.status === 'scheduled' && (
+              {post.scheduledAt && (
                 <span className="text-xs text-zinc-500">
                   {format(parseISO(post.scheduledAt), "MMM d, h:mm a")}
                 </span>
@@ -174,29 +177,6 @@ function PostCard({ post, onEdit, onDelete }: {
               </div>
             )}
           </div>
-          
-          {post.status === 'published' && post.metrics && (
-            <div className="flex gap-4 text-sm">
-              <div className="text-center">
-                <div className="text-zinc-400">
-                  <Eye className="w-4 h-4 mx-auto mb-1" />
-                </div>
-                <span className="text-white font-medium">{post.metrics.impressions.toLocaleString()}</span>
-              </div>
-              <div className="text-center">
-                <div className="text-zinc-400">
-                  <MousePointerClick className="w-4 h-4 mx-auto mb-1" />
-                </div>
-                <span className="text-white font-medium">{post.metrics.clicks.toLocaleString()}</span>
-              </div>
-              <div className="text-center">
-                <div className="text-zinc-400">
-                  <Users className="w-4 h-4 mx-auto mb-1" />
-                </div>
-                <span className="text-orange-400 font-medium">{post.signups || 0}</span>
-              </div>
-            </div>
-          )}
         </div>
 
         <div className="flex items-center justify-between mt-4 pt-3 border-t border-zinc-700">
@@ -204,6 +184,18 @@ function PostCard({ post, onEdit, onDelete }: {
             Created {format(parseISO(post.createdAt), "MMM d, yyyy")}
           </span>
           <div className="flex gap-2">
+            {post.status !== 'posted' && post.status !== 'published' && onMarkPosted && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={onMarkPosted}
+                className="text-green-400 hover:text-green-300 hover:bg-green-500/10"
+                data-testid={`button-mark-posted-${post.id}`}
+              >
+                <CheckCircle2 className="w-4 h-4 mr-1" />
+                Mark Posted
+              </Button>
+            )}
             <Button 
               variant="ghost" 
               size="sm" 
@@ -303,14 +295,14 @@ function PostComposer({
   });
 
   const saveMutation = useMutation({
-    mutationFn: async (status: 'draft' | 'scheduled') => {
+    mutationFn: async () => {
       const scheduledAt = formData.scheduledAt && formData.scheduledTime 
         ? new Date(`${formData.scheduledAt}T${formData.scheduledTime}`).toISOString()
         : null;
 
       const payload = {
         ...formData,
-        status,
+        status: 'planned',
         scheduledAt,
         campaignId: formData.campaignId && formData.campaignId !== "none" ? parseInt(formData.campaignId) : null,
         linkedDayIndex: formData.linkedDayIndex && formData.linkedDayIndex !== "none" ? parseInt(formData.linkedDayIndex) : null,
@@ -327,7 +319,7 @@ function PostComposer({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/social/posts"] });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/social/stats"] });
-      toast({ title: post ? "Post updated" : "Post created" });
+      toast({ title: post ? "Post updated" : "Post saved" });
       onOpenChange(false);
     },
     onError: (error: Error) => {
@@ -483,22 +475,20 @@ function PostComposer({
         <DialogFooter className="gap-2">
           <Button
             variant="outline"
-            onClick={() => saveMutation.mutate('draft')}
-            disabled={saveMutation.isPending || !formData.content.trim()}
+            onClick={() => onOpenChange(false)}
             className="border-zinc-700 text-zinc-300 hover:bg-zinc-800"
-            data-testid="button-save-draft"
+            data-testid="button-cancel"
           >
-            {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-            Save Draft
+            Cancel
           </Button>
           <Button
-            onClick={() => saveMutation.mutate('scheduled')}
-            disabled={saveMutation.isPending || !formData.content.trim() || !formData.scheduledAt || !formData.scheduledTime || charCount > maxChars}
+            onClick={() => saveMutation.mutate()}
+            disabled={saveMutation.isPending || !formData.content.trim() || charCount > maxChars}
             className="bg-orange-500 hover:bg-orange-600 text-white"
-            data-testid="button-schedule-post"
+            data-testid="button-save-post"
           >
             {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Clock className="w-4 h-4 mr-2" />}
-            Schedule Post
+            {formData.scheduledAt ? 'Save & Schedule' : 'Save Post'}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -517,9 +507,9 @@ function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], o
   // Generate 6 weeks of days (42 days) to cover any month layout
   const calendarDays = Array.from({ length: 42 }, (_, i) => addDays(calendarStart, i));
 
-  // Separate scheduled posts from unscheduled drafts
+  // Separate scheduled posts from unscheduled ones
   const scheduledPosts = posts.filter(post => post.scheduledAt);
-  const unscheduledDrafts = posts.filter(post => !post.scheduledAt && post.status === 'draft');
+  const unscheduledPosts = posts.filter(post => !post.scheduledAt && post.status !== 'posted');
 
   const getPostsForDay = (date: Date) => {
     return scheduledPosts.filter(post => {
@@ -537,17 +527,11 @@ function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], o
   };
 
   const statusColors: Record<string, string> = {
+    planned: "bg-blue-500",
+    posted: "bg-green-500",
     draft: "bg-zinc-600",
     scheduled: "bg-blue-500",
     published: "bg-green-500",
-    failed: "bg-red-500",
-  };
-
-  const statusTextColors: Record<string, string> = {
-    draft: "text-zinc-300",
-    scheduled: "text-blue-400",
-    published: "text-green-400",
-    failed: "text-red-400",
   };
 
   return (
@@ -610,9 +594,8 @@ function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], o
               const isToday = isSameDay(day, today);
               const isCurrentMonth = isSameMonth(day, currentMonth);
               const isSelected = selectedDate && isSameDay(day, selectedDate);
-              const hasScheduled = dayPosts.some(p => p.status === 'scheduled');
-              const hasPublished = dayPosts.some(p => p.status === 'published');
-              const hasDraft = dayPosts.some(p => p.status === 'draft');
+              const hasPlanned = dayPosts.some(p => p.status === 'planned' || p.status === 'scheduled' || p.status === 'draft');
+              const hasPosted = dayPosts.some(p => p.status === 'posted' || p.status === 'published');
               
               return (
                 <button 
@@ -638,9 +621,8 @@ function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], o
                   {/* Event indicators */}
                   {dayPosts.length > 0 && (
                     <div className="flex items-center justify-center gap-1 mt-1">
-                      {hasPublished && <div className="w-2 h-2 rounded-full bg-green-500" title="Published"></div>}
-                      {hasScheduled && <div className="w-2 h-2 rounded-full bg-blue-500" title="Scheduled"></div>}
-                      {hasDraft && <div className="w-2 h-2 rounded-full bg-zinc-500" title="Draft"></div>}
+                      {hasPosted && <div className="w-2 h-2 rounded-full bg-green-500" title="Posted"></div>}
+                      {hasPlanned && <div className="w-2 h-2 rounded-full bg-blue-500" title="Planned"></div>}
                     </div>
                   )}
                   {dayPosts.length > 0 && (
@@ -657,16 +639,12 @@ function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], o
           <div className="flex items-center gap-4 mt-4 pt-3 border-t border-zinc-700">
             <span className="text-xs text-zinc-500">Status:</span>
             <div className="flex items-center gap-1">
-              <div className="w-2 h-2 rounded-full bg-zinc-500"></div>
-              <span className="text-xs text-zinc-400">Draft</span>
-            </div>
-            <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-              <span className="text-xs text-zinc-400">Scheduled</span>
+              <span className="text-xs text-zinc-400">Planned</span>
             </div>
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full bg-green-500"></div>
-              <span className="text-xs text-zinc-400">Published</span>
+              <span className="text-xs text-zinc-400">Posted</span>
             </div>
           </div>
         </CardContent>
@@ -735,18 +713,18 @@ function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], o
         </Card>
       )}
 
-      {/* Unscheduled Drafts */}
-      {unscheduledDrafts.length > 0 && (
+      {/* Unscheduled Posts */}
+      {unscheduledPosts.length > 0 && (
         <Card className="bg-zinc-800/50 border-zinc-700">
           <CardHeader className="pb-2">
             <CardTitle className="text-white text-lg flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-zinc-500" />
-              Unscheduled Drafts ({unscheduledDrafts.length})
+              Unscheduled Posts ({unscheduledPosts.length})
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {unscheduledDrafts.map((post) => (
+              {unscheduledPosts.map((post) => (
                 <div
                   key={post.id}
                   className="p-3 bg-zinc-900/50 rounded-lg border border-zinc-700 hover:border-zinc-600 transition-colors flex items-center justify-between gap-3"
@@ -762,10 +740,10 @@ function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], o
                     size="sm"
                     onClick={() => onEditPost(post)}
                     className="border-orange-500/30 text-orange-400 hover:bg-orange-500/10 shrink-0"
-                    data-testid={`button-schedule-draft-${post.id}`}
+                    data-testid={`button-schedule-post-${post.id}`}
                   >
                     <Clock className="w-4 h-4 mr-1" />
-                    Schedule
+                    Add Date
                   </Button>
                 </div>
               ))}
@@ -780,7 +758,7 @@ function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], o
 function AttributionFunnel({ stats }: { stats: SocialStats | undefined }) {
   if (!stats) return null;
 
-  const impressions = stats.published * 1000; // Estimated
+  const impressions = stats.posted * 1000; // Estimated
   const clicks = stats.totalClicks;
   const signups = stats.totalSignups;
   const dayOneComplete = Math.round(signups * 0.35); // Estimated 35% completion
@@ -863,6 +841,20 @@ function SocialMediaHubContent() {
     },
   });
 
+  const markPostedMutation = useMutation({
+    mutationFn: async (postId: number) => {
+      await apiRequest("PATCH", `/api/admin/social/posts/${postId}`, { status: 'posted' });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/social/posts"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/social/stats"] });
+      toast({ title: "Marked as posted", description: "Post status updated" });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to update status", description: error.message, variant: "destructive" });
+    },
+  });
+
   const filteredPosts = statusFilter === "all" 
     ? posts 
     : posts.filter(p => p.status === statusFilter);
@@ -897,14 +889,14 @@ function SocialMediaHubContent() {
 
         <div className="grid grid-cols-4 gap-4">
           <StatCard
-            title="Scheduled"
-            value={stats?.scheduled || 0}
+            title="Planned"
+            value={stats?.planned || 0}
             icon={Clock}
             color="blue"
           />
           <StatCard
-            title="Published"
-            value={stats?.published || 0}
+            title="Posted"
+            value={stats?.posted || 0}
             icon={Send}
             color="green"
           />
@@ -940,9 +932,8 @@ function SocialMediaHubContent() {
                     </SelectTrigger>
                     <SelectContent className="bg-zinc-800 border-zinc-700">
                       <SelectItem value="all">All</SelectItem>
-                      <SelectItem value="draft">Drafts</SelectItem>
-                      <SelectItem value="scheduled">Scheduled</SelectItem>
-                      <SelectItem value="published">Published</SelectItem>
+                      <SelectItem value="planned">Planned</SelectItem>
+                      <SelectItem value="posted">Posted</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -971,6 +962,7 @@ function SocialMediaHubContent() {
                       post={post} 
                       onEdit={() => handleEdit(post)}
                       onDelete={() => deleteMutation.mutate(post.id)}
+                      onMarkPosted={() => markPostedMutation.mutate(post.id)}
                     />
                   ))
                 )}

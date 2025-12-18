@@ -211,7 +211,7 @@ export const invoices = pgTable("invoices", {
 // ============================================
 
 // Social media platform connections
-export const socialPlatformStatusTypes = ['draft', 'scheduled', 'published', 'failed'] as const;
+export const socialPlatformStatusTypes = ['planned', 'posted'] as const;
 export type SocialPostStatus = typeof socialPlatformStatusTypes[number];
 
 export const socialPlatformTypes = ['twitter', 'linkedin', 'instagram', 'facebook'] as const;
@@ -226,7 +226,7 @@ export const socialPosts = pgTable("social_posts", {
   linkUrl: text("link_url"),
   campaignId: integer("campaign_id").references(() => adCampaigns.id),
   linkedDayIndex: integer("linked_day_index"), // Link to curriculum day for content sourcing
-  status: text("status").notNull().default("draft"), // draft, scheduled, published, failed
+  status: text("status").notNull().default("planned"), // planned, posted
   scheduledAt: timestamp("scheduled_at"),
   publishedAt: timestamp("published_at"),
   externalPostId: text("external_post_id"), // ID from Twitter/X API

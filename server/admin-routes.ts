@@ -1478,14 +1478,24 @@ export function registerAdminRoutes(app: Express) {
   app.get("/api/admin/social/stats", requireAdminAuth, async (req: AdminRequest, res) => {
     try {
       const { socialPosts, socialPostMetrics, attributionEvents } = await import('@shared/schema');
+      const { or } = await import('drizzle-orm');
       
-      const [scheduledResult] = await db.select({ count: count() })
+      // Count planned posts (includes legacy 'scheduled' and 'draft' statuses)
+      const [plannedResult] = await db.select({ count: count() })
         .from(socialPosts)
-        .where(eq(socialPosts.status, 'scheduled'));
+        .where(or(
+          eq(socialPosts.status, 'planned'),
+          eq(socialPosts.status, 'scheduled'),
+          eq(socialPosts.status, 'draft')
+        ));
       
-      const [publishedResult] = await db.select({ count: count() })
+      // Count posted posts (includes legacy 'published' status)
+      const [postedResult] = await db.select({ count: count() })
         .from(socialPosts)
-        .where(eq(socialPosts.status, 'published'));
+        .where(or(
+          eq(socialPosts.status, 'posted'),
+          eq(socialPosts.status, 'published')
+        ));
       
       const [clicksResult] = await db.select({ 
         total: sql<number>`COALESCE(SUM(${socialPostMetrics.clicks}), 0)` 
@@ -1496,8 +1506,8 @@ export function registerAdminRoutes(app: Express) {
         .where(eq(attributionEvents.eventType, 'signup'));
 
       res.json({
-        scheduled: scheduledResult?.count || 0,
-        published: publishedResult?.count || 0,
+        planned: plannedResult?.count || 0,
+        posted: postedResult?.count || 0,
         totalClicks: Number(clicksResult?.total) || 0,
         totalSignups: signupsResult?.count || 0,
         avgEngagement: 0,
