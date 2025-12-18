@@ -1479,3 +1479,124 @@ export type CrmCompanyWithContacts = CrmCompany & {
   contacts: CrmContact[];
   deals: CrmDeal[];
 };
+
+// ==================== Product Roadmap Tables ====================
+export const roadmapIdeas = pgTable("roadmap_ideas", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  category: text("category").notNull().default('feature'),
+  priority: text("priority").notNull().default('medium'),
+  status: text("status").notNull().default('backlog'),
+  votes: integer("votes").notNull().default(0),
+  effort: text("effort"),
+  impact: text("impact"),
+  targetRelease: text("target_release"),
+  requestedBy: text("requested_by"),
+  assignedTo: text("assigned_to"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const roadmapReleases = pgTable("roadmap_releases", {
+  id: serial("id").primaryKey(),
+  version: text("version").notNull(),
+  name: text("name").notNull(),
+  description: text("description"),
+  status: text("status").notNull().default('planned'),
+  targetDate: timestamp("target_date"),
+  releaseDate: timestamp("release_date"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// ==================== Goals & OKRs Tables ====================
+export const objectives = pgTable("objectives", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  category: text("category").notNull().default('company'),
+  timeframe: text("timeframe").notNull().default('quarterly'),
+  quarter: text("quarter"),
+  year: integer("year"),
+  status: text("status").notNull().default('active'),
+  progress: integer("progress").notNull().default(0),
+  ownerId: text("owner_id"),
+  ownerName: text("owner_name"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const keyResults = pgTable("key_results", {
+  id: serial("id").primaryKey(),
+  objectiveId: integer("objective_id").notNull().references(() => objectives.id, { onDelete: 'cascade' }),
+  title: text("title").notNull(),
+  description: text("description"),
+  metricType: text("metric_type").notNull().default('percentage'),
+  targetValue: integer("target_value").notNull().default(100),
+  currentValue: integer("current_value").notNull().default(0),
+  unit: text("unit"),
+  status: text("status").notNull().default('on_track'),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const keyResultUpdates = pgTable("key_result_updates", {
+  id: serial("id").primaryKey(),
+  keyResultId: integer("key_result_id").notNull().references(() => keyResults.id, { onDelete: 'cascade' }),
+  previousValue: integer("previous_value").notNull(),
+  newValue: integer("new_value").notNull(),
+  note: text("note"),
+  updatedBy: text("updated_by"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Roadmap schemas
+export const insertRoadmapIdeaSchema = createInsertSchema(roadmapIdeas).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertRoadmapReleaseSchema = createInsertSchema(roadmapReleases).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// OKR schemas
+export const insertObjectiveSchema = createInsertSchema(objectives).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertKeyResultSchema = createInsertSchema(keyResults).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertKeyResultUpdateSchema = createInsertSchema(keyResultUpdates).omit({
+  id: true,
+  createdAt: true,
+});
+
+// Roadmap types
+export type RoadmapIdea = typeof roadmapIdeas.$inferSelect;
+export type InsertRoadmapIdea = z.infer<typeof insertRoadmapIdeaSchema>;
+export type RoadmapRelease = typeof roadmapReleases.$inferSelect;
+export type InsertRoadmapRelease = z.infer<typeof insertRoadmapReleaseSchema>;
+
+// OKR types
+export type Objective = typeof objectives.$inferSelect;
+export type InsertObjective = z.infer<typeof insertObjectiveSchema>;
+export type KeyResult = typeof keyResults.$inferSelect;
+export type InsertKeyResult = z.infer<typeof insertKeyResultSchema>;
+export type KeyResultUpdate = typeof keyResultUpdates.$inferSelect;
+export type InsertKeyResultUpdate = z.infer<typeof insertKeyResultUpdateSchema>;
+
+// Extended OKR types
+export type ObjectiveWithKeyResults = Objective & {
+  keyResults: KeyResult[];
+};
