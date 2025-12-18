@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { adminAuthService } from "./admin-auth";
 import { db } from "./db";
-import { adminLoginSchema, contentDays, users, adCampaigns, storeProducts } from "@shared/schema";
+import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, users, adCampaigns, storeProducts } from "@shared/schema";
 import { count, eq, sql } from "drizzle-orm";
 
 interface AdminRequest extends Request {
@@ -99,6 +99,93 @@ export function registerAdminRoutes(app: Express) {
     } catch (error) {
       console.error("Error fetching admin stats:", error);
       res.status(500).json({ message: "Failed to fetch stats" });
+    }
+  });
+
+  // ============ CONTENT MANAGEMENT ROUTES ============
+
+  // Get all content days with counts
+  app.get("/api/admin/content/days", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const days = await db.select().from(contentDays).orderBy(contentDays.dayIndex);
+      
+      const daysWithCounts = await Promise.all(days.map(async (day) => {
+        const [questionsCount] = await db.select({ count: count() }).from(contentSetUpQuestions).where(eq(contentSetUpQuestions.dayId, day.id));
+        const [lessonsCount] = await db.select({ count: count() }).from(contentLessons).where(eq(contentLessons.dayId, day.id));
+        const [quizzesCount] = await db.select({ count: count() }).from(contentQuizzes).where(eq(contentQuizzes.dayId, day.id));
+        
+        return {
+          ...day,
+          questionsCount: questionsCount?.count || 0,
+          lessonsCount: lessonsCount?.count || 0,
+          quizzesCount: quizzesCount?.count || 0,
+        };
+      }));
+      
+      res.json(daysWithCounts);
+    } catch (error) {
+      console.error("Error fetching content days:", error);
+      res.status(500).json({ message: "Failed to fetch content days" });
+    }
+  });
+
+  // Get lesson for a specific day
+  app.get("/api/admin/content/lessons/:dayId", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const dayId = parseInt(req.params.dayId);
+      const [lesson] = await db.select().from(contentLessons).where(eq(contentLessons.dayId, dayId));
+      res.json(lesson || null);
+    } catch (error) {
+      console.error("Error fetching lesson:", error);
+      res.status(500).json({ message: "Failed to fetch lesson" });
+    }
+  });
+
+  // Get quizzes for a specific day
+  app.get("/api/admin/content/quizzes/:dayId", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const dayId = parseInt(req.params.dayId);
+      const quizzes = await db.select().from(contentQuizzes).where(eq(contentQuizzes.dayId, dayId));
+      res.json(quizzes);
+    } catch (error) {
+      console.error("Error fetching quizzes:", error);
+      res.status(500).json({ message: "Failed to fetch quizzes" });
+    }
+  });
+
+  // Get questions for a specific day
+  app.get("/api/admin/content/questions/:dayId", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const dayId = parseInt(req.params.dayId);
+      const questions = await db.select().from(contentSetUpQuestions).where(eq(contentSetUpQuestions.dayId, dayId)).orderBy(contentSetUpQuestions.orderIndex);
+      res.json(questions);
+    } catch (error) {
+      console.error("Error fetching questions:", error);
+      res.status(500).json({ message: "Failed to fetch questions" });
+    }
+  });
+
+  // Update a content day
+  app.patch("/api/admin/content/days/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { title, theme, isActive, isApproved } = req.body;
+      
+      const [updated] = await db.update(contentDays)
+        .set({ 
+          title, 
+          theme, 
+          isActive, 
+          isApproved,
+          updatedAt: new Date(),
+        })
+        .where(eq(contentDays.id, id))
+        .returning();
+      
+      res.json(updated);
+    } catch (error) {
+      console.error("Error updating content day:", error);
+      res.status(500).json({ message: "Failed to update content day" });
     }
   });
 

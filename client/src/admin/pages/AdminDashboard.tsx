@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { useEffect } from "react";
 import AdminLayout from "../components/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Megaphone, ShoppingBag, Users } from "lucide-react";
+import { BookOpen, Megaphone, ShoppingBag, Users, ChevronRight } from "lucide-react";
 
 function StatsCard({ title, value, icon: Icon, description, trend }: {
   title: string;
@@ -103,47 +103,56 @@ export default function AdminDashboard() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="bg-zinc-900 border-zinc-800 hover:border-orange-500/50 transition-colors cursor-pointer">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                  <BookOpen className="w-6 h-6 text-orange-500" />
+          <Link href="/admin/content">
+            <Card className="bg-zinc-900 border-zinc-800 hover:border-orange-500/50 transition-colors cursor-pointer" data-testid="card-manage-content">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                    <BookOpen className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-white">Manage Content</h3>
+                    <p className="text-sm text-zinc-400">Edit curriculum days</p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-zinc-500" />
                 </div>
-                <div>
-                  <h3 className="font-semibold text-white">Manage Content</h3>
-                  <p className="text-sm text-zinc-400">Edit curriculum days</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Link>
 
-          <Card className="bg-zinc-900 border-zinc-800 hover:border-orange-500/50 transition-colors cursor-pointer">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                  <Megaphone className="w-6 h-6 text-orange-500" />
+          <Link href="/admin/marketing">
+            <Card className="bg-zinc-900 border-zinc-800 hover:border-orange-500/50 transition-colors cursor-pointer" data-testid="card-marketing">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                    <Megaphone className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-white">Marketing</h3>
+                    <p className="text-sm text-zinc-400">Manage ad campaigns</p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-zinc-500" />
                 </div>
-                <div>
-                  <h3 className="font-semibold text-white">Marketing</h3>
-                  <p className="text-sm text-zinc-400">Manage ad campaigns</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Link>
 
-          <Card className="bg-zinc-900 border-zinc-800 hover:border-orange-500/50 transition-colors cursor-pointer">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                  <ShoppingBag className="w-6 h-6 text-orange-500" />
+          <Link href="/admin/store">
+            <Card className="bg-zinc-900 border-zinc-800 hover:border-orange-500/50 transition-colors cursor-pointer" data-testid="card-store">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                    <ShoppingBag className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-white">Store</h3>
+                    <p className="text-sm text-zinc-400">Manage products</p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-zinc-500" />
                 </div>
-                <div>
-                  <h3 className="font-semibold text-white">Store</h3>
-                  <p className="text-sm text-zinc-400">Manage products</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Link>
         </div>
 
         {/* Recent Activity */}

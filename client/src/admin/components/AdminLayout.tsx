@@ -84,23 +84,23 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           {/* Navigation */}
           <nav className="flex-1 p-4 space-y-1">
             {navItems.map((item) => (
-              <Link key={item.href} href={item.href}>
-                <a
-                  onClick={() => setSidebarOpen(false)}
-                  className={cn(
-                    "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
-                    isActive(item.href)
-                      ? "bg-orange-500/20 text-orange-500"
-                      : "text-zinc-400 hover:text-white hover:bg-zinc-800"
-                  )}
-                  data-testid={`nav-${item.label.toLowerCase()}`}
-                >
-                  <item.icon className="w-5 h-5" />
-                  <span>{item.label}</span>
-                  {isActive(item.href) && (
-                    <ChevronRight className="w-4 h-4 ml-auto" />
-                  )}
-                </a>
+              <Link 
+                key={item.href} 
+                href={item.href}
+                onClick={() => setSidebarOpen(false)}
+                className={cn(
+                  "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
+                  isActive(item.href)
+                    ? "bg-orange-500/20 text-orange-500"
+                    : "text-zinc-400 hover:text-white hover:bg-zinc-800"
+                )}
+                data-testid={`nav-${item.label.toLowerCase()}`}
+              >
+                <item.icon className="w-5 h-5" />
+                <span>{item.label}</span>
+                {isActive(item.href) && (
+                  <ChevronRight className="w-4 h-4 ml-auto" />
+                )}
               </Link>
             ))}
           </nav>
