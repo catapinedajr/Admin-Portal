@@ -13,7 +13,8 @@ import {
   Twitter,
   Building2,
   Map,
-  Target
+  Target,
+  BarChart3
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -25,6 +26,8 @@ interface AdminLayoutProps {
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/kpis", label: "KPIs", icon: BarChart3 },
+  { href: "/admin/okrs", label: "Goals & OKRs", icon: Target },
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/content", label: "Content", icon: BookOpen },
   { href: "/admin/marketing", label: "Marketing", icon: Megaphone },
@@ -32,7 +35,6 @@ const navItems = [
   { href: "/admin/store", label: "Store", icon: ShoppingBag },
   { href: "/admin/crm", label: "B2B CRM", icon: Building2 },
   { href: "/admin/roadmap", label: "Roadmap", icon: Map },
-  { href: "/admin/okrs", label: "Goals & OKRs", icon: Target },
 ];
 
 export default function AdminLayout({ children }: AdminLayoutProps) {

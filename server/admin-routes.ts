@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { adminAuthService } from "./admin-auth";
 import { db } from "./db";
-import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, dailyFacts, dailyLessons, forumPosts, forumReplies, adImpressions, adClicks } from "@shared/schema";
+import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks } from "@shared/schema";
 import { count, eq, sql, and, sum } from "drizzle-orm";
 
 interface AdminRequest extends Request {
@@ -2468,10 +2468,10 @@ Return ONLY the post content, nothing else.`
       const [contentDaysResult] = await db.select({ count: count() }).from(contentDays);
       const totalContentDays = Number(contentDaysResult?.count || 0);
 
-      const [factsResult] = await db.select({ count: count() }).from(dailyFacts);
-      const totalFacts = Number(factsResult?.count || 0);
+      const [questionsResult] = await db.select({ count: count() }).from(contentSetUpQuestions);
+      const totalQuestions = Number(questionsResult?.count || 0);
 
-      const [lessonsResult] = await db.select({ count: count() }).from(dailyLessons);
+      const [lessonsResult] = await db.select({ count: count() }).from(contentLessons);
       const totalLessons = Number(lessonsResult?.count || 0);
 
       // === COMMUNITY METRICS ===
@@ -2544,7 +2544,7 @@ Return ONLY the post content, nothing else.`
         },
         content: {
           totalDays: totalContentDays,
-          totalFacts,
+          totalQuestions,
           totalLessons,
           coveragePercent: Math.round((totalContentDays / 180) * 100),
         },
