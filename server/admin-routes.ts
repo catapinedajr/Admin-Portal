@@ -1716,7 +1716,7 @@ export function registerAdminRoutes(app: Express) {
         return res.status(400).json({ message: "Please select a lesson to generate content from" });
       }
       
-      // Get the lesson content
+      // Get the day content by dayIndex
       const [day] = await db.select()
         .from(contentDays)
         .where(eq(contentDays.dayIndex, parseInt(dayIndex)));
@@ -1725,10 +1725,10 @@ export function registerAdminRoutes(app: Express) {
         return res.status(404).json({ message: "Lesson not found" });
       }
       
-      // Get associated lesson content if available
+      // Get associated lesson content using the day's ID (not dayIndex)
       const lessons = await db.select()
         .from(contentLessons)
-        .where(eq(contentLessons.dayIndex, parseInt(dayIndex)));
+        .where(eq(contentLessons.dayId, day.id));
       
       const lessonContent = lessons.map(l => l.content).join('\n\n');
       
@@ -1744,9 +1744,12 @@ ${lessonContent ? `\nLesson Content:\n${lessonContent}` : ''}
         ? 'Maximum 280 characters. Use engaging hooks, relevant hashtags (#Bitcoin, #BTC, etc), and a clear call-to-action.'
         : 'Can be longer form. Include emojis and formatting as appropriate.';
       
-      // Call Claude
+      // Call Claude using Replit AI Integrations env vars
       const Anthropic = (await import('@anthropic-ai/sdk')).default;
-      const anthropic = new Anthropic();
+      const anthropic = new Anthropic({
+        apiKey: process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
+        baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
+      });
       
       const message = await anthropic.messages.create({
         model: "claude-sonnet-4-20250514",
