@@ -32,7 +32,8 @@ interface SocialPost {
   linkUrl: string | null;
   campaignId: number | null;
   linkedDayIndex: number | null;
-  status: string;
+  contentStatus: 'drafted' | 'approved';
+  publishStatus: 'planned' | 'posted';
   scheduledAt: string | null;
   publishedAt: string | null;
   createdAt: string;
@@ -61,6 +62,8 @@ interface ContentDay {
 interface SocialStats {
   planned: number;
   posted: number;
+  drafted: number;
+  approved: number;
   totalClicks: number;
   totalSignups: number;
 }
@@ -162,8 +165,8 @@ function PostCard({
 
   const scheduledDate = post.scheduledAt ? parseISO(post.scheduledAt) : null;
   const createdDate = parseISO(post.createdAt);
-  const contentStatus = (post as any).contentStatus || 'drafted';
-  const publishStatus = (post as any).publishStatus || 'planned';
+  const contentStatus = post.contentStatus || 'drafted';
+  const publishStatus = post.publishStatus || 'planned';
   const canMarkPosted = publishStatus !== 'posted';
   const canApprove = contentStatus !== 'approved';
 
@@ -580,7 +583,7 @@ function SocialCalendar({
 
   // Posts without scheduled dates
   const unscheduledPosts = useMemo(() => 
-    posts.filter(p => !p.scheduledAt && (p as any).publishStatus !== 'posted'),
+    posts.filter(p => !p.scheduledAt && p.publishStatus !== 'posted'),
     [posts]
   );
 
@@ -661,8 +664,8 @@ function SocialCalendar({
               const isCurrentMonth = isSameMonth(day, currentMonth);
               const isSelected = selectedDate && isSameDay(day, selectedDate);
               
-              const hasPlanned = dayPosts.some(p => (p as any).publishStatus === 'planned');
-              const hasPosted = dayPosts.some(p => (p as any).publishStatus === 'posted');
+              const hasPlanned = dayPosts.some(p => p.publishStatus === 'planned');
+              const hasPosted = dayPosts.some(p => p.publishStatus === 'posted');
               
               return (
                 <button 
@@ -752,18 +755,18 @@ function SocialCalendar({
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <Badge className={`text-xs ${
-                            (post as any).contentStatus === 'approved' 
+                            post.contentStatus === 'approved' 
                               ? 'bg-purple-500/20 text-purple-400' 
                               : 'bg-zinc-600/20 text-zinc-400'
                           }`}>
-                            {(post as any).contentStatus || 'drafted'}
+                            {post.contentStatus || 'drafted'}
                           </Badge>
                           <Badge className={`text-xs ${
-                            (post as any).publishStatus === 'posted' 
+                            post.publishStatus === 'posted' 
                               ? 'bg-green-500/20 text-green-400' 
                               : 'bg-blue-500/20 text-blue-400'
                           }`}>
-                            {(post as any).publishStatus || 'planned'}
+                            {post.publishStatus || 'planned'}
                           </Badge>
                           {post.scheduledAt && (
                             <span className="text-xs text-zinc-500">
@@ -961,7 +964,7 @@ function SocialMediaHubContent() {
   // Filter posts for list view (by publish status)
   const filteredPosts = useMemo(() => {
     if (statusFilter === "all") return posts;
-    return posts.filter(p => (p as any).publishStatus === statusFilter);
+    return posts.filter(p => p.publishStatus === statusFilter);
   }, [posts, statusFilter]);
 
   const handleEditPost = (post: SocialPost) => {
