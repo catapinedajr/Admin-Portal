@@ -1480,22 +1480,24 @@ export function registerAdminRoutes(app: Express) {
       const { socialPosts, socialPostMetrics, attributionEvents } = await import('@shared/schema');
       const { or } = await import('drizzle-orm');
       
-      // Count planned posts (includes legacy 'scheduled' and 'draft' statuses)
+      // Count planned posts
       const [plannedResult] = await db.select({ count: count() })
         .from(socialPosts)
-        .where(or(
-          eq(socialPosts.status, 'planned'),
-          eq(socialPosts.status, 'scheduled'),
-          eq(socialPosts.status, 'draft')
-        ));
+        .where(eq(socialPosts.publishStatus, 'planned'));
       
-      // Count posted posts (includes legacy 'published' status)
+      // Count posted posts
       const [postedResult] = await db.select({ count: count() })
         .from(socialPosts)
-        .where(or(
-          eq(socialPosts.status, 'posted'),
-          eq(socialPosts.status, 'published')
-        ));
+        .where(eq(socialPosts.publishStatus, 'posted'));
+      
+      // Count approved vs drafted for content status tracking
+      const [approvedResult] = await db.select({ count: count() })
+        .from(socialPosts)
+        .where(eq(socialPosts.contentStatus, 'approved'));
+      
+      const [draftedResult] = await db.select({ count: count() })
+        .from(socialPosts)
+        .where(eq(socialPosts.contentStatus, 'drafted'));
       
       const [clicksResult] = await db.select({ 
         total: sql<number>`COALESCE(SUM(${socialPostMetrics.clicks}), 0)` 
@@ -1508,6 +1510,8 @@ export function registerAdminRoutes(app: Express) {
       res.json({
         planned: plannedResult?.count || 0,
         posted: postedResult?.count || 0,
+        drafted: draftedResult?.count || 0,
+        approved: approvedResult?.count || 0,
         totalClicks: Number(clicksResult?.total) || 0,
         totalSignups: signupsResult?.count || 0,
         avgEngagement: 0,
@@ -1544,7 +1548,7 @@ export function registerAdminRoutes(app: Express) {
         let metrics = null;
         let signups = 0;
         
-        if (post.status === 'published' || post.status === 'posted') {
+        if (post.publishStatus === 'posted') {
           const [metricsResult] = await db.select()
             .from(socialPostMetrics)
             .where(eq(socialPostMetrics.postId, post.id));
@@ -1583,7 +1587,7 @@ export function registerAdminRoutes(app: Express) {
       const { socialPosts } = await import('@shared/schema');
       const { v4: uuidv4 } = await import('uuid');
       
-      const { content, platform, imageUrl, linkUrl, campaignId, linkedDayIndex, status, scheduledAt } = req.body;
+      const { content, platform, imageUrl, linkUrl, campaignId, linkedDayIndex, contentStatus, publishStatus, scheduledAt } = req.body;
       
       if (!content || !content.trim()) {
         return res.status(400).json({ message: "Content is required" });
@@ -1599,7 +1603,8 @@ export function registerAdminRoutes(app: Express) {
         linkUrl: linkUrl || null,
         campaignId: campaignId || null,
         linkedDayIndex: linkedDayIndex || null,
-        status: status || 'draft',
+        contentStatus: contentStatus || 'drafted',
+        publishStatus: publishStatus || 'planned',
         scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
         utmSource: 'social',
         utmMedium: platform || 'twitter',
@@ -1629,7 +1634,8 @@ export function registerAdminRoutes(app: Express) {
       if (req.body.linkUrl !== undefined) updates.linkUrl = req.body.linkUrl || null;
       if (req.body.campaignId !== undefined) updates.campaignId = req.body.campaignId || null;
       if (req.body.linkedDayIndex !== undefined) updates.linkedDayIndex = req.body.linkedDayIndex || null;
-      if (req.body.status) updates.status = req.body.status;
+      if (req.body.contentStatus) updates.contentStatus = req.body.contentStatus;
+      if (req.body.publishStatus) updates.publishStatus = req.body.publishStatus;
       if (req.body.scheduledAt !== undefined) {
         updates.scheduledAt = req.body.scheduledAt ? new Date(req.body.scheduledAt) : null;
       }
@@ -1672,10 +1678,10 @@ export function registerAdminRoutes(app: Express) {
       const { socialPosts, socialPostMetrics } = await import('@shared/schema');
       const id = parseInt(req.params.id);
       
-      // Update post status to published
+      // Update post status to posted
       const [post] = await db.update(socialPosts)
         .set({
-          status: 'published',
+          publishStatus: 'posted',
           publishedAt: new Date(),
           updatedAt: new Date(),
         })
