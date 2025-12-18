@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import { 
   Plus, BarChart3, DollarSign, Eye, MousePointerClick, 
   Trash2, Play, Pause, Building2, FileText, Receipt,
-  ArrowLeft, Image, ChevronRight, TrendingUp, Send, Check, UserPlus, Target
+  ArrowLeft, Image, ChevronRight, TrendingUp, Send, Check
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -1000,10 +1000,7 @@ function PerformanceTab() {
   const { data: analytics } = useQuery<{ 
     totalImpressions: number; 
     totalClicks: number; 
-    totalConversions: number;
     ctr: number; 
-    overallConversionRate: number;
-    overallCostPerAcquisitionCents: number;
     totalBudgetCents: number;
     totalSpentCents: number;
     budgetPacing: number;
@@ -1100,31 +1097,6 @@ function PerformanceTab() {
         </Card>
       </div>
 
-      {/* Conversion KPI Cards */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card className="bg-zinc-800/50 border-zinc-700">
-          <CardContent className="p-6 text-center">
-            <UserPlus className="w-8 h-8 text-green-400 mx-auto mb-3" />
-            <p className="text-3xl font-bold text-white">{analytics?.totalConversions?.toLocaleString() || 0}</p>
-            <p className="text-sm text-zinc-400">Total Signups</p>
-          </CardContent>
-        </Card>
-        <Card className="bg-zinc-800/50 border-zinc-700">
-          <CardContent className="p-6 text-center">
-            <Target className="w-8 h-8 text-purple-400 mx-auto mb-3" />
-            <p className="text-3xl font-bold text-white">{(analytics?.overallConversionRate || 0).toFixed(2)}%</p>
-            <p className="text-sm text-zinc-400">Conversion Rate</p>
-          </CardContent>
-        </Card>
-        <Card className="bg-zinc-800/50 border-zinc-700">
-          <CardContent className="p-6 text-center">
-            <DollarSign className="w-8 h-8 text-orange-400 mx-auto mb-3" />
-            <p className="text-3xl font-bold text-white">{formatCurrency(analytics?.overallCostPerAcquisitionCents || 0)}</p>
-            <p className="text-sm text-zinc-400">Cost Per Acquisition</p>
-          </CardContent>
-        </Card>
-      </div>
-
       {analytics?.campaigns && analytics.campaigns.length > 0 && (
         <Card className="bg-zinc-800/50 border-zinc-700">
           <CardHeader>
@@ -1151,18 +1123,6 @@ function PerformanceTab() {
                       <div className="text-center">
                         <p className="text-white font-medium">{(campaign.ctr || 0).toFixed(2)}%</p>
                         <p className="text-zinc-500">CTR</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-green-400 font-medium">{campaign.conversions?.toLocaleString() || 0}</p>
-                        <p className="text-zinc-500">Signups</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-purple-400 font-medium">{(campaign.conversionRate || 0).toFixed(2)}%</p>
-                        <p className="text-zinc-500">Conv %</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-orange-400 font-medium">{formatCurrency(campaign.costPerAcquisitionCents || 0)}</p>
-                        <p className="text-zinc-500">CPA</p>
                       </div>
                     </div>
                   </div>
