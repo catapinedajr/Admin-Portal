@@ -997,13 +997,30 @@ function NewCreativeDialog({ open, onOpenChange, campaignId }: { open: boolean; 
 }
 
 function PerformanceTab() {
-  const { data: analytics } = useQuery<{ totalImpressions: number; totalClicks: number; ctr: number; campaigns: any[] }>({
+  const { data: analytics } = useQuery<{ 
+    totalImpressions: number; 
+    totalClicks: number; 
+    ctr: number; 
+    totalBudgetCents: number;
+    totalSpentCents: number;
+    budgetPacing: number;
+    totalCampaigns: number;
+    activeCampaigns: number;
+    campaigns: any[] 
+  }>({
     queryKey: ["/api/admin/marketing/analytics"],
     queryFn: async () => {
       const res = await apiRequest("GET", "/api/admin/marketing/analytics");
       return res.json();
     },
   });
+
+  const formatCurrency = (cents: number) => `$${(cents / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const pacingColor = (pacing: number) => {
+    if (pacing < 80) return 'text-yellow-400';
+    if (pacing > 100) return 'text-red-400';
+    return 'text-green-400';
+  };
 
   return (
     <div className="space-y-6">
@@ -1012,6 +1029,7 @@ function PerformanceTab() {
         <p className="text-sm text-zinc-400">Real-time metrics across all campaigns</p>
       </div>
 
+      {/* Primary KPI Cards */}
       <div className="grid gap-4 md:grid-cols-4">
         <Card className="bg-zinc-800/50 border-zinc-700">
           <CardContent className="p-6 text-center">
@@ -1037,8 +1055,44 @@ function PerformanceTab() {
         <Card className="bg-zinc-800/50 border-zinc-700">
           <CardContent className="p-6 text-center">
             <TrendingUp className="w-8 h-8 text-purple-400 mx-auto mb-3" />
-            <p className="text-3xl font-bold text-white">{analytics?.campaigns?.length || 0}</p>
+            <p className="text-3xl font-bold text-white">{analytics?.activeCampaigns || 0}</p>
             <p className="text-sm text-zinc-400">Active Campaigns</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Budget & Spend KPI Cards */}
+      <div className="grid gap-4 md:grid-cols-4">
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardContent className="p-6 text-center">
+            <DollarSign className="w-8 h-8 text-emerald-400 mx-auto mb-3" />
+            <p className="text-3xl font-bold text-white">{formatCurrency(analytics?.totalBudgetCents || 0)}</p>
+            <p className="text-sm text-zinc-400">Total Budget</p>
+          </CardContent>
+        </Card>
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardContent className="p-6 text-center">
+            <DollarSign className="w-8 h-8 text-orange-400 mx-auto mb-3" />
+            <p className="text-3xl font-bold text-white">{formatCurrency(analytics?.totalSpentCents || 0)}</p>
+            <p className="text-sm text-zinc-400">Total Spent</p>
+          </CardContent>
+        </Card>
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardContent className="p-6 text-center">
+            <BarChart3 className="w-8 h-8 text-cyan-400 mx-auto mb-3" />
+            <p className={`text-3xl font-bold ${pacingColor(analytics?.budgetPacing || 0)}`}>
+              {(analytics?.budgetPacing || 0).toFixed(1)}%
+            </p>
+            <p className="text-sm text-zinc-400">Budget Pacing</p>
+          </CardContent>
+        </Card>
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardContent className="p-6 text-center">
+            <DollarSign className="w-8 h-8 text-zinc-400 mx-auto mb-3" />
+            <p className="text-3xl font-bold text-white">
+              {formatCurrency((analytics?.totalBudgetCents || 0) - (analytics?.totalSpentCents || 0))}
+            </p>
+            <p className="text-sm text-zinc-400">Remaining Budget</p>
           </CardContent>
         </Card>
       </div>
@@ -1051,23 +1105,45 @@ function PerformanceTab() {
           <CardContent>
             <div className="space-y-4">
               {analytics.campaigns.map((campaign: any) => (
-                <div key={campaign.id} className="flex items-center justify-between p-3 bg-zinc-900/50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-white">{campaign.name}</p>
-                    <p className="text-sm text-zinc-400">{campaign.advertiser}</p>
+                <div key={campaign.id} className="p-4 bg-zinc-900/50 rounded-lg space-y-3" data-testid={`campaign-perf-${campaign.id}`}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-white">{campaign.name}</p>
+                      <p className="text-sm text-zinc-400">{campaign.advertiser}</p>
+                    </div>
+                    <div className="flex gap-6 text-sm">
+                      <div className="text-center">
+                        <p className="text-white font-medium">{campaign.impressions?.toLocaleString() || 0}</p>
+                        <p className="text-zinc-500">Impr.</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-white font-medium">{campaign.clicks?.toLocaleString() || 0}</p>
+                        <p className="text-zinc-500">Clicks</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-white font-medium">{(campaign.ctr || 0).toFixed(2)}%</p>
+                        <p className="text-zinc-500">CTR</p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex gap-6 text-sm">
-                    <div className="text-center">
-                      <p className="text-white font-medium">{campaign.impressions?.toLocaleString() || 0}</p>
-                      <p className="text-zinc-500">Impr.</p>
+                  {/* Budget Pacing Bar */}
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-zinc-400">
+                        Spent: {formatCurrency(campaign.spentCents || 0)} / {formatCurrency(campaign.budgetCents || 0)}
+                      </span>
+                      <span className={pacingColor(campaign.budgetPacing || 0)}>
+                        {(campaign.budgetPacing || 0).toFixed(1)}% pacing
+                      </span>
                     </div>
-                    <div className="text-center">
-                      <p className="text-white font-medium">{campaign.clicks?.toLocaleString() || 0}</p>
-                      <p className="text-zinc-500">Clicks</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-white font-medium">{(campaign.ctr || 0).toFixed(2)}%</p>
-                      <p className="text-zinc-500">CTR</p>
+                    <div className="h-2 bg-zinc-700 rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full rounded-full transition-all ${
+                          (campaign.budgetPacing || 0) < 80 ? 'bg-yellow-500' :
+                          (campaign.budgetPacing || 0) > 100 ? 'bg-red-500' : 'bg-green-500'
+                        }`}
+                        style={{ width: `${Math.min(campaign.budgetPacing || 0, 100)}%` }}
+                      />
                     </div>
                   </div>
                 </div>

@@ -4,7 +4,8 @@ import {
   LayoutDashboard, 
   BookOpen, 
   Megaphone, 
-  ShoppingBag, 
+  ShoppingBag,
+  Users,
   LogOut,
   ChevronRight,
   Menu,
@@ -20,6 +21,7 @@ interface AdminLayoutProps {
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/content", label: "Content", icon: BookOpen },
   { href: "/admin/marketing", label: "Marketing", icon: Megaphone },
   { href: "/admin/store", label: "Store", icon: ShoppingBag },

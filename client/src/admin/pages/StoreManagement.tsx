@@ -5,7 +5,7 @@ import {
   Plus, Link2, Building2, Package, ShoppingCart, 
   Trash2, ExternalLink, DollarSign, MousePointerClick,
   TrendingUp, Users, CheckCircle, Clock, XCircle,
-  Edit2, ChevronRight
+  Edit2, ChevronRight, AlertTriangle, Banknote
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -844,10 +844,20 @@ function AffiliatesTab() {
   const totalClicks = stats?.reduce((sum, s) => sum + s.clicks, 0) || 0;
   const totalConversions = stats?.reduce((sum, s) => sum + s.conversions, 0) || 0;
   const totalRevenue = stats?.reduce((sum, s) => sum + s.revenue, 0) || 0;
+  
+  // Calculate estimated commissions per product
+  const commissionsData = affiliates?.map(product => {
+    const productStats = stats?.find(s => s.productId === product.id);
+    const commissionPercent = parseFloat(product.commissionPercent || '0');
+    const commission = (productStats?.revenue || 0) * (commissionPercent / 100);
+    return { product, stats: productStats, commission };
+  }).filter(c => c.commission > 0) || [];
+  
+  const totalCommissions = commissionsData.reduce((sum, c) => sum + c.commission, 0);
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <Card className="bg-zinc-800/50 border-zinc-700">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
@@ -900,7 +910,45 @@ function AffiliatesTab() {
             </div>
           </CardContent>
         </Card>
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                <Banknote className="w-5 h-5 text-emerald-500" />
+              </div>
+              <div>
+                <p className="text-sm text-zinc-400">Commissions Earned</p>
+                <p className="text-2xl font-bold text-emerald-400">${totalCommissions.toFixed(2)}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Commission Breakdown */}
+      {commissionsData.length > 0 && (
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-white text-base flex items-center gap-2">
+              <Banknote className="w-4 h-4 text-emerald-500" />
+              Commission Payouts Summary
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <div className="space-y-2">
+              {commissionsData.slice(0, 5).map(({ product, stats, commission }) => (
+                <div key={product.id} className="flex items-center justify-between p-2 bg-zinc-900/50 rounded-lg" data-testid={`commission-${product.id}`}>
+                  <div>
+                    <p className="text-white text-sm font-medium">{product.name}</p>
+                    <p className="text-xs text-zinc-500">{product.commissionPercent}% commission on ${stats?.revenue.toFixed(2) || '0.00'}</p>
+                  </div>
+                  <Badge className="bg-emerald-600 text-white">${commission.toFixed(2)}</Badge>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-white">Affiliate Products</h3>
@@ -1079,6 +1127,19 @@ function InventoryTab() {
   const activeProducts = products?.filter(p => p.isActive).length || 0;
   const lowStockProducts = products?.filter(p => p.stockQuantity > 0 && p.stockQuantity <= 5).length || 0;
   const outOfStockProducts = products?.filter(p => p.stockQuantity <= 0).length || 0;
+  const lowStockItems = products?.filter(p => p.stockQuantity > 0 && p.stockQuantity <= 5) || [];
+  const outOfStockItems = products?.filter(p => p.stockQuantity <= 0) || [];
+
+  // Calculate revenue from orders
+  const totalRevenue = orders?.filter(o => o.status === 'paid' || o.status === 'shipped' || o.status === 'delivered')
+    .reduce((sum, o) => sum + parseFloat(o.totalUsd || '0'), 0) || 0;
+  const pendingRevenue = orders?.filter(o => o.status === 'pending')
+    .reduce((sum, o) => sum + parseFloat(o.totalUsd || '0'), 0) || 0;
+  const todayOrders = orders?.filter(o => {
+    const orderDate = new Date(o.createdAt);
+    const today = new Date();
+    return orderDate.toDateString() === today.toDateString();
+  }).length || 0;
 
   const filteredOrders = statusFilter === "all" 
     ? orders 
@@ -1086,6 +1147,91 @@ function InventoryTab() {
 
   return (
     <div className="space-y-6">
+      {/* Low Stock Alerts */}
+      {(lowStockProducts > 0 || outOfStockProducts > 0) && (
+        <Card className="bg-red-950/30 border-red-800">
+          <CardContent className="p-4">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" />
+              <div className="flex-1">
+                <h3 className="font-semibold text-red-400 mb-2">Stock Alerts</h3>
+                <div className="space-y-2">
+                  {outOfStockItems.map(item => (
+                    <div key={item.id} className="flex items-center justify-between p-2 bg-red-900/30 rounded-lg" data-testid={`alert-oos-${item.id}`}>
+                      <span className="text-white">{item.name}</span>
+                      <Badge className="bg-red-600 text-white">Out of Stock</Badge>
+                    </div>
+                  ))}
+                  {lowStockItems.map(item => (
+                    <div key={item.id} className="flex items-center justify-between p-2 bg-yellow-900/30 rounded-lg" data-testid={`alert-low-${item.id}`}>
+                      <span className="text-white">{item.name}</span>
+                      <Badge className="bg-yellow-600 text-white">Only {item.stockQuantity} left</Badge>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Revenue Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                <Banknote className="w-5 h-5 text-emerald-500" />
+              </div>
+              <div>
+                <p className="text-sm text-zinc-400">Total Revenue</p>
+                <p className="text-2xl font-bold text-emerald-400">${totalRevenue.toFixed(2)}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                <Clock className="w-5 h-5 text-yellow-500" />
+              </div>
+              <div>
+                <p className="text-sm text-zinc-400">Pending Revenue</p>
+                <p className="text-2xl font-bold text-yellow-400">${pendingRevenue.toFixed(2)}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                <ShoppingCart className="w-5 h-5 text-blue-500" />
+              </div>
+              <div>
+                <p className="text-sm text-zinc-400">Today's Orders</p>
+                <p className="text-2xl font-bold text-blue-400">{todayOrders}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                <Package className="w-5 h-5 text-purple-500" />
+              </div>
+              <div>
+                <p className="text-sm text-zinc-400">Total Orders</p>
+                <p className="text-2xl font-bold text-white">{orders?.length || 0}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Product Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="bg-zinc-800/50 border-zinc-700">
           <CardContent className="p-4">

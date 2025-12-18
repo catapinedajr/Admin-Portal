@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { 
@@ -30,7 +31,9 @@ import {
   Save,
   X,
   Lock,
-  Unlock
+  Unlock,
+  Eye,
+  Smartphone
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -41,12 +44,24 @@ interface ContentDay {
   readingLevel: string;
   culturalStage: string;
   theme: string;
+  status: 'draft' | 'review' | 'approved' | 'live';
   isActive: boolean;
   isApproved: boolean;
+  reviewerNotes: string | null;
+  approvedBy: string | null;
+  approvedAt: string | null;
+  publishedAt: string | null;
   questionsCount: number;
   lessonsCount: number;
   quizzesCount: number;
 }
+
+const STATUS_CONFIG: Record<string, { label: string; color: string; bgColor: string; borderColor: string }> = {
+  draft: { label: 'Draft', color: 'text-zinc-400', bgColor: 'bg-zinc-600/20', borderColor: 'border-zinc-500/30' },
+  review: { label: 'In Review', color: 'text-yellow-400', bgColor: 'bg-yellow-500/20', borderColor: 'border-yellow-500/30' },
+  approved: { label: 'Approved', color: 'text-blue-400', bgColor: 'bg-blue-500/20', borderColor: 'border-blue-500/30' },
+  live: { label: 'Live', color: 'text-green-400', bgColor: 'bg-green-500/20', borderColor: 'border-green-500/30' },
+};
 
 interface ContentLesson {
   id: number;
@@ -104,6 +119,8 @@ function AdminAuthGuard({ children }: { children: React.ReactNode }) {
 }
 
 function ContentDayCard({ day, onEdit }: { day: ContentDay; onEdit: () => void }) {
+  const statusConfig = STATUS_CONFIG[day.status] || STATUS_CONFIG.draft;
+  
   return (
     <Card className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors cursor-pointer" onClick={onEdit}>
       <CardContent className="p-4">
@@ -111,11 +128,9 @@ function ContentDayCard({ day, onEdit }: { day: ContentDay; onEdit: () => void }
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1 flex-wrap">
               <span className="text-orange-500 font-bold">Day {day.dayIndex}</span>
-              {day.isApproved ? (
-                <Badge className="bg-green-500/20 text-green-400 border-0">Approved</Badge>
-              ) : (
-                <Badge className="bg-yellow-500/20 text-yellow-400 border-0">Pending</Badge>
-              )}
+              <Badge className={`${statusConfig.bgColor} ${statusConfig.color} border-0`}>
+                {statusConfig.label}
+              </Badge>
               {!day.isActive && (
                 <Badge className="bg-zinc-700 text-zinc-400 border-0">Inactive</Badge>
               )}
@@ -185,8 +200,10 @@ function EditDayDialog({ day, open, onOpenChange }: {
     theme: "",
     readingLevel: "",
     culturalStage: "",
+    status: "draft" as 'draft' | 'review' | 'approved' | 'live',
     isActive: true,
     isApproved: false,
+    reviewerNotes: "",
   });
   
   const [lessonForm, setLessonForm] = useState({
@@ -203,6 +220,7 @@ function EditDayDialog({ day, open, onOpenChange }: {
   
   const [editingQuestion, setEditingQuestion] = useState<ContentQuestion | null>(null);
   const [newQuestion, setNewQuestion] = useState({ title: "", content: "", category: "financial", icon: "💰" });
+  const [showPreview, setShowPreview] = useState(false);
   const [showNewQuestion, setShowNewQuestion] = useState(false);
   
   const { data: lesson, isLoading: lessonLoading } = useQuery<ContentLesson>({
@@ -342,8 +360,10 @@ function EditDayDialog({ day, open, onOpenChange }: {
         theme: day.theme,
         readingLevel: day.readingLevel,
         culturalStage: day.culturalStage,
+        status: day.status || 'draft',
         isActive: day.isActive,
         isApproved: day.isApproved,
+        reviewerNotes: day.reviewerNotes || '',
       });
     }
   }, [day]);
@@ -437,6 +457,54 @@ function EditDayDialog({ day, open, onOpenChange }: {
               </div>
             </div>
 
+            {/* Status Pipeline */}
+            <div className={`space-y-3 ${detailsLocked ? 'opacity-60 pointer-events-none' : ''}`}>
+              <Label className="text-zinc-300">Content Status</Label>
+              <div className="flex items-center gap-2">
+                {(['draft', 'review', 'approved', 'live'] as const).map((status, index) => {
+                  const config = STATUS_CONFIG[status];
+                  const isCurrentStatus = formData.status === status;
+                  const isPastStatus = ['draft', 'review', 'approved', 'live'].indexOf(formData.status) > index;
+                  return (
+                    <div key={status} className="flex items-center">
+                      <button
+                        type="button"
+                        onClick={() => !detailsLocked && setFormData({ ...formData, status })}
+                        disabled={detailsLocked}
+                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                          isCurrentStatus 
+                            ? `${config.bgColor} ${config.color} ring-2 ring-offset-2 ring-offset-zinc-900 ring-${status === 'draft' ? 'zinc' : status === 'review' ? 'yellow' : status === 'approved' ? 'blue' : 'green'}-500/50`
+                            : isPastStatus
+                              ? 'bg-zinc-700/50 text-zinc-400'
+                              : 'bg-zinc-800 text-zinc-500 hover:bg-zinc-700'
+                        }`}
+                        data-testid={`button-status-${status}`}
+                      >
+                        {config.label}
+                      </button>
+                      {index < 3 && (
+                        <div className={`w-6 h-0.5 mx-1 ${isPastStatus || isCurrentStatus ? 'bg-zinc-600' : 'bg-zinc-800'}`} />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Reviewer Notes (shown when in review or approved) */}
+            {(formData.status === 'review' || formData.status === 'approved') && (
+              <div className={`space-y-2 ${detailsLocked ? 'opacity-60 pointer-events-none' : ''}`}>
+                <Label className="text-zinc-300">Reviewer Notes</Label>
+                <Textarea
+                  value={formData.reviewerNotes}
+                  onChange={(e) => setFormData({ ...formData, reviewerNotes: e.target.value })}
+                  className="bg-zinc-800 border-zinc-700 text-white min-h-[80px]"
+                  placeholder="Add notes about changes needed or approval details..."
+                  disabled={detailsLocked}
+                />
+              </div>
+            )}
+
             <div className={`flex gap-4 ${detailsLocked ? 'opacity-60 pointer-events-none' : ''}`}>
               <label className="flex items-center gap-2 text-zinc-300">
                 <input 
@@ -447,16 +515,6 @@ function EditDayDialog({ day, open, onOpenChange }: {
                   disabled={detailsLocked}
                 />
                 Active
-              </label>
-              <label className="flex items-center gap-2 text-zinc-300">
-                <input 
-                  type="checkbox" 
-                  checked={formData.isApproved}
-                  onChange={(e) => setFormData({ ...formData, isApproved: e.target.checked })}
-                  className="rounded"
-                  disabled={detailsLocked}
-                />
-                Approved
               </label>
             </div>
 
@@ -480,15 +538,29 @@ function EditDayDialog({ day, open, onOpenChange }: {
                 <BookOpen className="w-4 h-4 text-orange-500" />
                 {lesson ? "Lesson Content" : "Create New Lesson"}
               </Label>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setLessonLocked(!lessonLocked)}
-                className={`${lessonLocked ? 'border-zinc-600 text-zinc-400' : 'border-orange-500 text-orange-500'}`}
-              >
-                {lessonLocked ? <Lock className="w-4 h-4 mr-1" /> : <Unlock className="w-4 h-4 mr-1" />}
-                {lessonLocked ? "Locked" : "Editing"}
-              </Button>
+              <div className="flex gap-2">
+                {lesson && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowPreview(true)}
+                    className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+                    data-testid="button-preview-lesson"
+                  >
+                    <Eye className="w-4 h-4 mr-1" />
+                    Preview
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setLessonLocked(!lessonLocked)}
+                  className={`${lessonLocked ? 'border-zinc-600 text-zinc-400' : 'border-orange-500 text-orange-500'}`}
+                >
+                  {lessonLocked ? <Lock className="w-4 h-4 mr-1" /> : <Unlock className="w-4 h-4 mr-1" />}
+                  {lessonLocked ? "Locked" : "Editing"}
+                </Button>
+              </div>
             </div>
             
             <Card className="bg-zinc-800 border-zinc-700">
@@ -906,6 +978,86 @@ function EditDayDialog({ day, open, onOpenChange }: {
           </TabsContent>
         </Tabs>
       </DialogContent>
+
+      {/* Mobile Preview Dialog */}
+      <Dialog open={showPreview} onOpenChange={setShowPreview}>
+        <DialogContent className="bg-zinc-950 border-zinc-800 max-w-sm p-0 overflow-hidden">
+          <div className="bg-zinc-900 px-4 py-3 flex items-center justify-between border-b border-zinc-800">
+            <div className="flex items-center gap-2">
+              <Smartphone className="w-4 h-4 text-orange-500" />
+              <span className="text-sm font-medium text-white">Mobile Preview</span>
+            </div>
+            <Badge className="bg-orange-500/20 text-orange-400 border-0 text-xs">
+              Day {day?.dayIndex}
+            </Badge>
+          </div>
+          
+          {/* Mock Mobile Frame */}
+          <div className="bg-zinc-950 max-h-[70vh] overflow-y-auto">
+            <div className="p-4 space-y-4">
+              {/* Day Header */}
+              <div className="text-center pb-4 border-b border-zinc-800">
+                <h2 className="text-lg font-bold text-white">{day?.title}</h2>
+                <p className="text-sm text-zinc-400 mt-1">{day?.theme}</p>
+              </div>
+              
+              {/* Lesson Content */}
+              {lesson && (
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-md font-semibold text-white mb-2">{lessonForm.title || lesson.title}</h3>
+                    <div className="flex items-center gap-2 text-xs text-zinc-500">
+                      <Clock className="w-3 h-3" />
+                      <span>{lessonForm.estimatedReadTime || lesson.estimatedReadTime} min read</span>
+                    </div>
+                  </div>
+                  
+                  <div className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap">
+                    {lessonForm.content || lesson.content}
+                  </div>
+                  
+                  {/* Key Takeaways */}
+                  {(lessonForm.keyTakeaways?.some(t => t) || lesson.keyTakeaways?.length > 0) && (
+                    <div className="bg-zinc-900 rounded-lg p-4 space-y-2">
+                      <h4 className="text-sm font-medium text-orange-400">Key Takeaways</h4>
+                      {(lessonForm.keyTakeaways || lesson.keyTakeaways)?.filter(t => t).map((takeaway, i) => (
+                        <div key={i} className="flex items-start gap-2 text-sm text-zinc-300">
+                          <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+                          <span>{takeaway}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {/* Why It Matters */}
+                  {(lessonForm.whyItMatters || lesson.whyItMatters) && (
+                    <div className="bg-orange-500/10 rounded-lg p-4">
+                      <h4 className="text-sm font-medium text-orange-400 mb-2">Why This Matters</h4>
+                      <p className="text-sm text-zinc-300">{lessonForm.whyItMatters || lesson.whyItMatters}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {!lesson && (
+                <div className="text-center py-8 text-zinc-500">
+                  <BookOpen className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">No lesson content yet</p>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          <div className="bg-zinc-900 px-4 py-3 border-t border-zinc-800">
+            <Button 
+              onClick={() => setShowPreview(false)}
+              className="w-full bg-zinc-800 hover:bg-zinc-700 text-white"
+            >
+              Close Preview
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Dialog>
   );
 }

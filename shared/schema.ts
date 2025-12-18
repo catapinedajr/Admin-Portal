@@ -564,8 +564,13 @@ export const contentDays = pgTable("content_days", {
   readingLevel: text("reading_level").notNull(), // "9th grade", "10th grade", etc.
   culturalStage: text("cultural_stage").notNull(), // "Normie → Pre-coiner", etc.
   theme: text("theme").notNull(), // "Bitcoin basics", "Austrian economics", etc.
+  status: text("status").notNull().default('draft'), // 'draft', 'review', 'approved', 'live'
   isActive: boolean("is_active").notNull().default(true),
   isApproved: boolean("is_approved").notNull().default(false), // for content approval tracking
+  reviewerNotes: text("reviewer_notes"), // notes from reviewer during review process
+  approvedBy: text("approved_by"), // admin who approved the content
+  approvedAt: timestamp("approved_at"), // when content was approved
+  publishedAt: timestamp("published_at"), // when content went live
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

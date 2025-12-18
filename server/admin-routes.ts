@@ -102,6 +102,101 @@ export function registerAdminRoutes(app: Express) {
     }
   });
 
+  // ============ USER MANAGEMENT ROUTES ============
+
+  // Get all users with optional filtering
+  app.get("/api/admin/users", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const allUsers = await db.select({
+        id: users.id,
+        username: users.username,
+        email: users.email,
+        firstName: users.firstName,
+        lastName: users.lastName,
+        currentStreak: users.currentStreak,
+        longestStreak: users.longestStreak,
+        completedLessons: users.completedLessons,
+        lastActivityDate: users.lastActivityDate,
+        createdAt: users.createdAt,
+      }).from(users).orderBy(users.createdAt);
+      
+      res.json(allUsers);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
+  // Get user statistics
+  app.get("/api/admin/users/stats", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const now = new Date();
+      const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      const oneWeekAgoStr = oneWeekAgo.toISOString().split('T')[0];
+      const oneMonthAgoStr = oneMonthAgo.toISOString().split('T')[0];
+
+      // Total users
+      const [totalResult] = await db.select({ count: count() }).from(users);
+      const totalUsers = totalResult?.count || 0;
+
+      // Active users (activity in last 7 days)
+      const [activeResult] = await db.select({ count: count() })
+        .from(users)
+        .where(sql`${users.lastActivityDate} >= ${oneWeekAgoStr}`);
+      const activeUsers = activeResult?.count || 0;
+
+      // New users this week
+      const [newWeekResult] = await db.select({ count: count() })
+        .from(users)
+        .where(sql`${users.createdAt} >= ${oneWeekAgo}`);
+      const newUsersThisWeek = newWeekResult?.count || 0;
+
+      // New users this month
+      const [newMonthResult] = await db.select({ count: count() })
+        .from(users)
+        .where(sql`${users.createdAt} >= ${oneMonthAgo}`);
+      const newUsersThisMonth = newMonthResult?.count || 0;
+
+      // Average streak and lessons
+      const [avgResult] = await db.select({
+        avgStreak: sql<number>`COALESCE(AVG(${users.currentStreak}), 0)`,
+        avgLessons: sql<number>`COALESCE(AVG(${users.completedLessons}), 0)`,
+      }).from(users);
+
+      res.json({
+        totalUsers,
+        activeUsers,
+        paidUsers: 0, // Placeholder until Stripe integration
+        freeUsers: totalUsers, // All users are free until Stripe
+        newUsersThisWeek,
+        newUsersThisMonth,
+        averageStreak: avgResult?.avgStreak || 0,
+        averageCompletedLessons: avgResult?.avgLessons || 0,
+      });
+    } catch (error) {
+      console.error("Error fetching user stats:", error);
+      res.status(500).json({ message: "Failed to fetch user stats" });
+    }
+  });
+
+  // Get single user details
+  app.get("/api/admin/users/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const [user] = await db.select().from(users).where(eq(users.id, id));
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
   // ============ CONTENT MANAGEMENT ROUTES ============
 
   // Get all content days with counts
@@ -286,18 +381,33 @@ export function registerAdminRoutes(app: Express) {
   app.patch("/api/admin/content/days/:id", requireAdminAuth, async (req: AdminRequest, res) => {
     try {
       const id = parseInt(req.params.id);
-      const { title, theme, readingLevel, culturalStage, isActive, isApproved } = req.body;
+      const { title, theme, readingLevel, culturalStage, status, isActive, isApproved, reviewerNotes } = req.body;
+      
+      const updates: any = { 
+        title, 
+        theme,
+        readingLevel,
+        culturalStage, 
+        status: status || 'draft',
+        isActive, 
+        isApproved,
+        reviewerNotes: reviewerNotes || null,
+        updatedAt: new Date(),
+      };
+      
+      // Set approvedAt and approvedBy when status changes to approved
+      if (status === 'approved') {
+        updates.approvedAt = new Date();
+        updates.approvedBy = req.admin?.email || 'admin';
+      }
+      
+      // Set publishedAt when status changes to live
+      if (status === 'live') {
+        updates.publishedAt = new Date();
+      }
       
       const [updated] = await db.update(contentDays)
-        .set({ 
-          title, 
-          theme,
-          readingLevel,
-          culturalStage, 
-          isActive, 
-          isApproved,
-          updatedAt: new Date(),
-        })
+        .set(updates)
         .where(eq(contentDays.id, id))
         .returning();
       
@@ -756,9 +866,17 @@ export function registerAdminRoutes(app: Express) {
       const totalClicks = clicksResult[0]?.count || 0;
       const ctr = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
       
+      // Get all campaigns for budget/spend aggregation
+      const allCampaigns = await db.select().from(adCampaigns);
+      const activeCampaigns = allCampaigns.filter(c => c.status === 'active');
+      
+      // Calculate total budget and spend across all campaigns
+      const totalBudgetCents = allCampaigns.reduce((sum, c) => sum + (c.budgetCents || 0), 0);
+      const totalSpentCents = allCampaigns.reduce((sum, c) => sum + (c.spentCents || 0), 0);
+      const budgetPacing = totalBudgetCents > 0 ? (totalSpentCents / totalBudgetCents) * 100 : 0;
+      
       // Get campaigns with their stats
-      const campaigns = await db.select().from(adCampaigns).where(eq(adCampaigns.status, 'active'));
-      const campaignsWithStats = await Promise.all(campaigns.map(async (campaign) => {
+      const campaignsWithStats = await Promise.all(activeCampaigns.map(async (campaign) => {
         const impressions = await db.select({ count: count() })
           .from(adImpressions)
           .where(eq(adImpressions.campaignId, campaign.id));
@@ -768,6 +886,9 @@ export function registerAdminRoutes(app: Express) {
         
         const imp = impressions[0]?.count || 0;
         const clk = clicks[0]?.count || 0;
+        const budgetCents = campaign.budgetCents || 0;
+        const spentCents = campaign.spentCents || 0;
+        const campaignBudgetPacing = budgetCents > 0 ? (spentCents / budgetCents) * 100 : 0;
         
         return {
           id: campaign.id,
@@ -776,6 +897,11 @@ export function registerAdminRoutes(app: Express) {
           impressions: imp,
           clicks: clk,
           ctr: imp > 0 ? (clk / imp) * 100 : 0,
+          budgetCents: campaign.budgetCents,
+          spentCents: campaign.spentCents,
+          budgetPacing: campaignBudgetPacing,
+          startDate: campaign.startDate,
+          endDate: campaign.endDate,
         };
       }));
       
@@ -783,6 +909,11 @@ export function registerAdminRoutes(app: Express) {
         totalImpressions, 
         totalClicks, 
         ctr,
+        totalBudgetCents,
+        totalSpentCents,
+        budgetPacing,
+        totalCampaigns: allCampaigns.length,
+        activeCampaigns: activeCampaigns.length,
         campaigns: campaignsWithStats 
       });
     } catch (error) {
