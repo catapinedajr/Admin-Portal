@@ -139,24 +139,33 @@ function PostCard({
   post, 
   onEdit, 
   onDelete, 
-  onMarkPosted 
+  onMarkPosted,
+  onApprove
 }: { 
   post: SocialPostWithMetrics; 
   onEdit: () => void;
   onDelete: () => void;
   onMarkPosted: () => void;
+  onApprove: () => void;
 }) {
-  const statusStyles: Record<string, string> = {
+  // Content status styles: drafted (gray), approved (purple)
+  const contentStatusStyles: Record<string, string> = {
+    drafted: "bg-zinc-600/20 text-zinc-400 border-zinc-500/30",
+    approved: "bg-purple-500/20 text-purple-400 border-purple-500/30",
+  };
+  
+  // Publish status styles: planned (blue), posted (green)
+  const publishStatusStyles: Record<string, string> = {
     planned: "bg-blue-500/20 text-blue-400 border-blue-500/30",
     posted: "bg-green-500/20 text-green-400 border-green-500/30",
-    draft: "bg-zinc-600/20 text-zinc-400 border-zinc-500/30",
-    scheduled: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-    published: "bg-green-500/20 text-green-400 border-green-500/30",
   };
 
   const scheduledDate = post.scheduledAt ? parseISO(post.scheduledAt) : null;
   const createdDate = parseISO(post.createdAt);
-  const canMarkPosted = post.status !== 'posted' && post.status !== 'published';
+  const contentStatus = (post as any).contentStatus || 'drafted';
+  const publishStatus = (post as any).publishStatus || 'planned';
+  const canMarkPosted = publishStatus !== 'posted';
+  const canApprove = contentStatus !== 'approved';
 
   return (
     <Card className="bg-zinc-800/50 border-zinc-700 hover:border-zinc-600 transition-all" data-testid={`card-post-${post.id}`}>
@@ -165,13 +174,21 @@ function PostCard({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2 flex-wrap">
               <Twitter className="w-4 h-4 text-blue-400" />
-              <Badge className={statusStyles[post.status] || statusStyles.planned}>
-                {post.status === 'posted' || post.status === 'published' ? (
+              <Badge className={contentStatusStyles[contentStatus] || contentStatusStyles.drafted}>
+                {contentStatus === 'approved' ? (
+                  <CheckCircle2 className="w-3 h-3 mr-1" />
+                ) : (
+                  <Edit2 className="w-3 h-3 mr-1" />
+                )}
+                {contentStatus}
+              </Badge>
+              <Badge className={publishStatusStyles[publishStatus] || publishStatusStyles.planned}>
+                {publishStatus === 'posted' ? (
                   <CheckCircle2 className="w-3 h-3 mr-1" />
                 ) : (
                   <Clock className="w-3 h-3 mr-1" />
                 )}
-                {post.status}
+                {publishStatus}
               </Badge>
               {scheduledDate && (
                 <span className="text-xs text-zinc-500">
@@ -194,6 +211,18 @@ function PostCard({
             Created {format(createdDate, "MMM d, yyyy")}
           </span>
           <div className="flex gap-2">
+            {canApprove && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={onApprove}
+                className="text-purple-400 hover:text-purple-300 hover:bg-purple-500/10"
+                data-testid={`button-approve-${post.id}`}
+              >
+                <CheckCircle2 className="w-4 h-4 mr-1" />
+                Approve
+              </Button>
+            )}
             {canMarkPosted && (
               <Button 
                 variant="ghost" 
@@ -308,7 +337,8 @@ function PostComposer({
         campaignId: formData.campaignId ? parseInt(formData.campaignId) : null,
         linkedDayIndex: formData.linkedDayIndex ? parseInt(formData.linkedDayIndex) : null,
         scheduledAt,
-        status: scheduledAt ? 'planned' : 'planned', // Always save as planned
+        contentStatus: 'drafted', // New posts start as drafted
+        publishStatus: 'planned', // New posts start as planned
       };
 
       if (post) {
@@ -550,7 +580,7 @@ function SocialCalendar({
 
   // Posts without scheduled dates
   const unscheduledPosts = useMemo(() => 
-    posts.filter(p => !p.scheduledAt && p.status !== 'posted' && p.status !== 'published'),
+    posts.filter(p => !p.scheduledAt && (p as any).publishStatus !== 'posted'),
     [posts]
   );
 
@@ -631,12 +661,8 @@ function SocialCalendar({
               const isCurrentMonth = isSameMonth(day, currentMonth);
               const isSelected = selectedDate && isSameDay(day, selectedDate);
               
-              const hasPlanned = dayPosts.some(p => 
-                p.status === 'planned' || p.status === 'scheduled' || p.status === 'draft'
-              );
-              const hasPosted = dayPosts.some(p => 
-                p.status === 'posted' || p.status === 'published'
-              );
+              const hasPlanned = dayPosts.some(p => (p as any).publishStatus === 'planned');
+              const hasPosted = dayPosts.some(p => (p as any).publishStatus === 'posted');
               
               return (
                 <button 
@@ -726,11 +752,18 @@ function SocialCalendar({
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <Badge className={`text-xs ${
-                            post.status === 'posted' || post.status === 'published' 
+                            (post as any).contentStatus === 'approved' 
+                              ? 'bg-purple-500/20 text-purple-400' 
+                              : 'bg-zinc-600/20 text-zinc-400'
+                          }`}>
+                            {(post as any).contentStatus || 'drafted'}
+                          </Badge>
+                          <Badge className={`text-xs ${
+                            (post as any).publishStatus === 'posted' 
                               ? 'bg-green-500/20 text-green-400' 
                               : 'bg-blue-500/20 text-blue-400'
                           }`}>
-                            {post.status}
+                            {(post as any).publishStatus || 'planned'}
                           </Badge>
                           {post.scheduledAt && (
                             <span className="text-xs text-zinc-500">
@@ -899,7 +932,7 @@ function SocialMediaHubContent() {
 
   const markPostedMutation = useMutation({
     mutationFn: async (postId: number) => {
-      await apiRequest("PATCH", `/api/admin/social/posts/${postId}`, { status: 'posted' });
+      await apiRequest("PATCH", `/api/admin/social/posts/${postId}`, { publishStatus: 'posted' });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/social/posts"] });
@@ -911,10 +944,24 @@ function SocialMediaHubContent() {
     },
   });
 
-  // Filter posts for list view
+  const approveMutation = useMutation({
+    mutationFn: async (postId: number) => {
+      await apiRequest("PATCH", `/api/admin/social/posts/${postId}`, { contentStatus: 'approved' });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/social/posts"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/social/stats"] });
+      toast({ title: "Content approved" });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to approve", description: error.message, variant: "destructive" });
+    },
+  });
+
+  // Filter posts for list view (by publish status)
   const filteredPosts = useMemo(() => {
     if (statusFilter === "all") return posts;
-    return posts.filter(p => p.status === statusFilter);
+    return posts.filter(p => (p as any).publishStatus === statusFilter);
   }, [posts, statusFilter]);
 
   const handleEditPost = (post: SocialPost) => {
@@ -1009,6 +1056,7 @@ function SocialMediaHubContent() {
                       onEdit={() => handleEditPost(post)}
                       onDelete={() => deleteMutation.mutate(post.id)}
                       onMarkPosted={() => markPostedMutation.mutate(post.id)}
+                      onApprove={() => approveMutation.mutate(post.id)}
                     />
                   ))
                 )}
