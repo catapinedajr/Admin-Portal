@@ -1528,12 +1528,23 @@ export function registerAdminRoutes(app: Express) {
         .from(socialPosts)
         .orderBy(desc(socialPosts.createdAt));
       
-      // Get metrics for published posts
+      // Helper to normalize dates to ISO strings
+      const normalizeDate = (date: any): string | null => {
+        if (!date) return null;
+        try {
+          const d = date instanceof Date ? date : new Date(date);
+          return isNaN(d.getTime()) ? null : d.toISOString();
+        } catch {
+          return null;
+        }
+      };
+      
+      // Get metrics for published posts and normalize dates
       const postsWithMetrics = await Promise.all(posts.map(async (post) => {
         let metrics = null;
         let signups = 0;
         
-        if (post.status === 'published') {
+        if (post.status === 'published' || post.status === 'posted') {
           const [metricsResult] = await db.select()
             .from(socialPostMetrics)
             .where(eq(socialPostMetrics.postId, post.id));
@@ -1548,7 +1559,15 @@ export function registerAdminRoutes(app: Express) {
           signups = signupsResult?.count || 0;
         }
         
-        return { ...post, metrics, signups };
+        // Return normalized post with consistent ISO date strings
+        return { 
+          ...post, 
+          scheduledAt: normalizeDate(post.scheduledAt),
+          createdAt: normalizeDate(post.createdAt) || new Date().toISOString(),
+          publishedAt: normalizeDate(post.publishedAt),
+          metrics, 
+          signups 
+        };
       }));
       
       res.json(postsWithMetrics);
