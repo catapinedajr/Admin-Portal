@@ -28,7 +28,9 @@ import {
   AlertCircle,
   Trash2,
   Save,
-  X
+  X,
+  Lock,
+  Unlock
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -172,6 +174,12 @@ function EditDayDialog({ day, open, onOpenChange }: {
   onOpenChange: (open: boolean) => void;
 }) {
   const { toast } = useToast();
+  
+  const [detailsLocked, setDetailsLocked] = useState(true);
+  const [lessonLocked, setLessonLocked] = useState(true);
+  const [questionsLocked, setQuestionsLocked] = useState(true);
+  const [quizzesLocked, setQuizzesLocked] = useState(true);
+  
   const [formData, setFormData] = useState({
     title: "",
     theme: "",
@@ -363,13 +371,27 @@ function EditDayDialog({ day, open, onOpenChange }: {
           </TabsList>
 
           <TabsContent value="details" className="space-y-4 mt-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="flex items-center justify-between mb-4">
+              <Label className="text-zinc-300 text-sm font-medium">Day Details</Label>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setDetailsLocked(!detailsLocked)}
+                className={`${detailsLocked ? 'border-zinc-600 text-zinc-400' : 'border-orange-500 text-orange-500'}`}
+              >
+                {detailsLocked ? <Lock className="w-4 h-4 mr-1" /> : <Unlock className="w-4 h-4 mr-1" />}
+                {detailsLocked ? "Locked" : "Editing"}
+              </Button>
+            </div>
+            
+            <div className={`grid grid-cols-2 gap-4 ${detailsLocked ? 'opacity-60 pointer-events-none' : ''}`}>
               <div className="space-y-2">
                 <Label className="text-zinc-300">Title</Label>
                 <Input 
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   className="bg-zinc-800 border-zinc-700 text-white"
+                  disabled={detailsLocked}
                 />
               </div>
               <div className="space-y-2">
@@ -378,6 +400,7 @@ function EditDayDialog({ day, open, onOpenChange }: {
                   value={formData.theme}
                   onChange={(e) => setFormData({ ...formData, theme: e.target.value })}
                   className="bg-zinc-800 border-zinc-700 text-white"
+                  disabled={detailsLocked}
                 />
               </div>
               <div className="space-y-2">
@@ -387,6 +410,7 @@ function EditDayDialog({ day, open, onOpenChange }: {
                   onChange={(e) => setFormData({ ...formData, readingLevel: e.target.value })}
                   className="bg-zinc-800 border-zinc-700 text-white"
                   placeholder="e.g., 8th grade"
+                  disabled={detailsLocked}
                 />
               </div>
               <div className="space-y-2">
@@ -396,17 +420,19 @@ function EditDayDialog({ day, open, onOpenChange }: {
                   onChange={(e) => setFormData({ ...formData, culturalStage: e.target.value })}
                   className="bg-zinc-800 border-zinc-700 text-white"
                   placeholder="e.g., Normie → Pre-coiner"
+                  disabled={detailsLocked}
                 />
               </div>
             </div>
 
-            <div className="flex gap-4">
+            <div className={`flex gap-4 ${detailsLocked ? 'opacity-60 pointer-events-none' : ''}`}>
               <label className="flex items-center gap-2 text-zinc-300">
                 <input 
                   type="checkbox" 
                   checked={formData.isActive}
                   onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
                   className="rounded"
+                  disabled={detailsLocked}
                 />
                 Active
               </label>
@@ -416,32 +442,45 @@ function EditDayDialog({ day, open, onOpenChange }: {
                   checked={formData.isApproved}
                   onChange={(e) => setFormData({ ...formData, isApproved: e.target.checked })}
                   className="rounded"
+                  disabled={detailsLocked}
                 />
                 Approved
               </label>
             </div>
 
-            <div className="flex justify-end gap-2 pt-4">
-              <Button 
-                onClick={() => updateDayMutation.mutate(formData)}
-                className="bg-orange-500 hover:bg-orange-600"
-                disabled={updateDayMutation.isPending}
-              >
-                <Save className="w-4 h-4 mr-2" />
-                {updateDayMutation.isPending ? "Saving..." : "Save Details"}
-              </Button>
-            </div>
+            {!detailsLocked && (
+              <div className="flex justify-end gap-2 pt-4">
+                <Button 
+                  onClick={() => { updateDayMutation.mutate(formData); setDetailsLocked(true); }}
+                  className="bg-orange-500 hover:bg-orange-600"
+                  disabled={updateDayMutation.isPending}
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  {updateDayMutation.isPending ? "Saving..." : "Save Details"}
+                </Button>
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="lesson" className="mt-4 space-y-4">
+            <div className="flex items-center justify-between mb-4">
+              <Label className="text-zinc-300 text-sm font-medium flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-orange-500" />
+                {lesson ? "Lesson Content" : "Create New Lesson"}
+              </Label>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setLessonLocked(!lessonLocked)}
+                className={`${lessonLocked ? 'border-zinc-600 text-zinc-400' : 'border-orange-500 text-orange-500'}`}
+              >
+                {lessonLocked ? <Lock className="w-4 h-4 mr-1" /> : <Unlock className="w-4 h-4 mr-1" />}
+                {lessonLocked ? "Locked" : "Editing"}
+              </Button>
+            </div>
+            
             <Card className="bg-zinc-800 border-zinc-700">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-orange-500" />
-                  {lesson ? "Edit Lesson" : "Create Lesson"}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className={`p-4 space-y-4 ${lessonLocked ? 'opacity-60' : ''}`}>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label className="text-zinc-300">Lesson Title</Label>
@@ -450,6 +489,7 @@ function EditDayDialog({ day, open, onOpenChange }: {
                       onChange={(e) => setLessonForm({ ...lessonForm, title: e.target.value })}
                       className="bg-zinc-900 border-zinc-700 text-white"
                       placeholder="Enter lesson title..."
+                      disabled={lessonLocked}
                     />
                   </div>
                   <div className="space-y-2">
@@ -461,6 +501,7 @@ function EditDayDialog({ day, open, onOpenChange }: {
                       className="bg-zinc-900 border-zinc-700 text-white"
                       min={1}
                       max={30}
+                      disabled={lessonLocked}
                     />
                   </div>
                 </div>
@@ -472,6 +513,7 @@ function EditDayDialog({ day, open, onOpenChange }: {
                     onChange={(e) => setLessonForm({ ...lessonForm, content: e.target.value })}
                     className="bg-zinc-900 border-zinc-700 text-white min-h-[200px]"
                     placeholder="Write the full lesson content here..."
+                    disabled={lessonLocked}
                   />
                 </div>
                 
@@ -489,6 +531,7 @@ function EditDayDialog({ day, open, onOpenChange }: {
                         }}
                         className="bg-zinc-900 border-zinc-700 text-white"
                         placeholder={`Key takeaway ${i + 1}...`}
+                        disabled={lessonLocked}
                       />
                     </div>
                   ))}
@@ -501,36 +544,55 @@ function EditDayDialog({ day, open, onOpenChange }: {
                     onChange={(e) => setLessonForm({ ...lessonForm, whyItMatters: e.target.value })}
                     className="bg-zinc-900 border-zinc-700 text-white min-h-[100px]"
                     placeholder="Explain why this lesson matters to the learner..."
+                    disabled={lessonLocked}
                   />
                 </div>
                 
-                <div className="flex justify-end pt-4">
-                  <Button 
-                    onClick={() => saveLessonMutation.mutate(lessonForm)}
-                    className="bg-orange-500 hover:bg-orange-600"
-                    disabled={saveLessonMutation.isPending || !lessonForm.title || !lessonForm.content}
-                  >
-                    <Save className="w-4 h-4 mr-2" />
-                    {saveLessonMutation.isPending ? "Saving..." : "Save Lesson"}
-                  </Button>
-                </div>
+                {!lessonLocked && (
+                  <div className="flex justify-end pt-4">
+                    <Button 
+                      onClick={() => { saveLessonMutation.mutate(lessonForm); setLessonLocked(true); }}
+                      className="bg-orange-500 hover:bg-orange-600"
+                      disabled={saveLessonMutation.isPending || !lessonForm.title || !lessonForm.content}
+                    >
+                      <Save className="w-4 h-4 mr-2" />
+                      {saveLessonMutation.isPending ? "Saving..." : "Save Lesson"}
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
 
           <TabsContent value="questions" className="mt-4 space-y-4">
             <div className="flex justify-between items-center">
-              <Label className="text-zinc-300 text-sm">Learning Preview Questions</Label>
-              <Button 
-                size="sm" 
-                onClick={() => setShowNewQuestion(true)}
-                className="bg-orange-500 hover:bg-orange-600"
-              >
-                <Plus className="w-4 h-4 mr-1" /> Add Question
-              </Button>
+              <Label className="text-zinc-300 text-sm font-medium flex items-center gap-2">
+                <HelpCircle className="w-4 h-4 text-orange-500" />
+                Learning Preview Questions
+              </Label>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setQuestionsLocked(!questionsLocked)}
+                  className={`${questionsLocked ? 'border-zinc-600 text-zinc-400' : 'border-orange-500 text-orange-500'}`}
+                >
+                  {questionsLocked ? <Lock className="w-4 h-4 mr-1" /> : <Unlock className="w-4 h-4 mr-1" />}
+                  {questionsLocked ? "Locked" : "Editing"}
+                </Button>
+                {!questionsLocked && (
+                  <Button 
+                    size="sm" 
+                    onClick={() => setShowNewQuestion(true)}
+                    className="bg-orange-500 hover:bg-orange-600"
+                  >
+                    <Plus className="w-4 h-4 mr-1" /> Add
+                  </Button>
+                )}
+              </div>
             </div>
 
-            {showNewQuestion && (
+            {!questionsLocked && showNewQuestion && (
               <Card className="bg-zinc-800 border-orange-500/50">
                 <CardContent className="p-4 space-y-3">
                   <Input 
@@ -581,11 +643,11 @@ function EditDayDialog({ day, open, onOpenChange }: {
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-500"></div>
               </div>
             ) : questions && questions.length > 0 ? (
-              <div className="space-y-3">
+              <div className={`space-y-3 ${questionsLocked ? 'opacity-70' : ''}`}>
                 {questions.map((q, idx) => (
                   <Card key={q.id} className="bg-zinc-800 border-zinc-700">
                     <CardContent className="p-4">
-                      {editingQuestion?.id === q.id ? (
+                      {!questionsLocked && editingQuestion?.id === q.id ? (
                         <div className="space-y-3">
                           <Input 
                             value={editingQuestion.title}
@@ -633,14 +695,16 @@ function EditDayDialog({ day, open, onOpenChange }: {
                               <span>{q.icon}</span>
                             </div>
                           </div>
-                          <div className="flex gap-1">
-                            <Button variant="ghost" size="sm" onClick={() => setEditingQuestion(q)}>
-                              <Edit className="w-4 h-4 text-zinc-400" />
-                            </Button>
-                            <Button variant="ghost" size="sm" onClick={() => deleteQuestionMutation.mutate(q.id)}>
-                              <Trash2 className="w-4 h-4 text-red-400" />
-                            </Button>
-                          </div>
+                          {!questionsLocked && (
+                            <div className="flex gap-1">
+                              <Button variant="ghost" size="sm" onClick={() => setEditingQuestion(q)}>
+                                <Edit className="w-4 h-4 text-zinc-400" />
+                              </Button>
+                              <Button variant="ghost" size="sm" onClick={() => deleteQuestionMutation.mutate(q.id)}>
+                                <Trash2 className="w-4 h-4 text-red-400" />
+                              </Button>
+                            </div>
+                          )}
                         </div>
                       )}
                     </CardContent>
@@ -648,23 +712,41 @@ function EditDayDialog({ day, open, onOpenChange }: {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 text-zinc-400">No questions for this day. Add some above!</div>
+              <div className="text-center py-8 text-zinc-400">
+                {questionsLocked ? "No questions for this day. Unlock to add some." : "No questions for this day. Add some above!"}
+              </div>
             )}
           </TabsContent>
 
           <TabsContent value="quizzes" className="mt-4 space-y-4">
             <div className="flex justify-between items-center">
-              <Label className="text-zinc-300 text-sm">Quiz Questions</Label>
-              <Button 
-                size="sm" 
-                onClick={() => setShowNewQuiz(true)}
-                className="bg-orange-500 hover:bg-orange-600"
-              >
-                <Plus className="w-4 h-4 mr-1" /> Add Quiz
-              </Button>
+              <Label className="text-zinc-300 text-sm font-medium flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-orange-500" />
+                Quiz Questions
+              </Label>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setQuizzesLocked(!quizzesLocked)}
+                  className={`${quizzesLocked ? 'border-zinc-600 text-zinc-400' : 'border-orange-500 text-orange-500'}`}
+                >
+                  {quizzesLocked ? <Lock className="w-4 h-4 mr-1" /> : <Unlock className="w-4 h-4 mr-1" />}
+                  {quizzesLocked ? "Locked" : "Editing"}
+                </Button>
+                {!quizzesLocked && (
+                  <Button 
+                    size="sm" 
+                    onClick={() => setShowNewQuiz(true)}
+                    className="bg-orange-500 hover:bg-orange-600"
+                  >
+                    <Plus className="w-4 h-4 mr-1" /> Add
+                  </Button>
+                )}
+              </div>
             </div>
 
-            {showNewQuiz && (
+            {!quizzesLocked && showNewQuiz && (
               <Card className="bg-zinc-800 border-orange-500/50">
                 <CardContent className="p-4 space-y-3">
                   <Input 
@@ -722,11 +804,11 @@ function EditDayDialog({ day, open, onOpenChange }: {
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-500"></div>
               </div>
             ) : quizzes && quizzes.length > 0 ? (
-              <div className="space-y-4">
+              <div className={`space-y-4 ${quizzesLocked ? 'opacity-70' : ''}`}>
                 {quizzes.map((quiz, idx) => (
                   <Card key={quiz.id} className="bg-zinc-800 border-zinc-700">
                     <CardContent className="p-4">
-                      {editingQuiz?.id === quiz.id ? (
+                      {!quizzesLocked && editingQuiz?.id === quiz.id ? (
                         <div className="space-y-3">
                           <Input 
                             value={editingQuiz.question}
@@ -773,14 +855,16 @@ function EditDayDialog({ day, open, onOpenChange }: {
                         <div>
                           <div className="flex items-start justify-between">
                             <p className="text-white font-medium mb-3">Q{idx + 1}: {quiz.question}</p>
-                            <div className="flex gap-1">
-                              <Button variant="ghost" size="sm" onClick={() => setEditingQuiz(quiz)}>
-                                <Edit className="w-4 h-4 text-zinc-400" />
-                              </Button>
-                              <Button variant="ghost" size="sm" onClick={() => deleteQuizMutation.mutate(quiz.id)}>
-                                <Trash2 className="w-4 h-4 text-red-400" />
-                              </Button>
-                            </div>
+                            {!quizzesLocked && (
+                              <div className="flex gap-1">
+                                <Button variant="ghost" size="sm" onClick={() => setEditingQuiz(quiz)}>
+                                  <Edit className="w-4 h-4 text-zinc-400" />
+                                </Button>
+                                <Button variant="ghost" size="sm" onClick={() => deleteQuizMutation.mutate(quiz.id)}>
+                                  <Trash2 className="w-4 h-4 text-red-400" />
+                                </Button>
+                              </div>
+                            )}
                           </div>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             {quiz.options.map((opt, i) => (
@@ -803,7 +887,9 @@ function EditDayDialog({ day, open, onOpenChange }: {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 text-zinc-400">No quizzes for this day. Add some above!</div>
+              <div className="text-center py-8 text-zinc-400">
+                {quizzesLocked ? "No quizzes for this day. Unlock to add some." : "No quizzes for this day. Add some above!"}
+              </div>
             )}
           </TabsContent>
         </Tabs>
