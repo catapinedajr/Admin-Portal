@@ -4,7 +4,8 @@ import { useLocation } from "wouter";
 import { 
   Plus, Calendar, Send, Eye, MousePointerClick, Users, TrendingUp,
   Twitter, Clock, BarChart3, ArrowRight, Edit2, Trash2, Image,
-  AlertCircle, CheckCircle2, Loader2, Link as LinkIcon, Sparkles, RefreshCw
+  AlertCircle, CheckCircle2, Loader2, Link as LinkIcon, Sparkles, RefreshCw,
+  ChevronLeft, ChevronRight
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,7 @@ import { Progress } from "@/components/ui/progress";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import AdminLayout from "../components/AdminLayout";
-import { format, addDays, startOfWeek, isSameDay, parseISO } from "date-fns";
+import { format, addDays, startOfWeek, startOfMonth, endOfMonth, isSameDay, isSameMonth, parseISO, addMonths, subMonths, getDay } from "date-fns";
 
 function AdminAuthGuard({ children }: { children: React.ReactNode }) {
   const [, setLocation] = useLocation();
@@ -505,10 +506,16 @@ function PostComposer({
   );
 }
 
-function CalendarView({ posts }: { posts: SocialPostWithMetrics[] }) {
+function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], onEditPost: (post: SocialPost) => void }) {
   const today = new Date();
-  const weekStart = startOfWeek(today, { weekStartsOn: 1 });
-  const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+  const [currentMonth, setCurrentMonth] = useState(today);
+
+  const monthStart = startOfMonth(currentMonth);
+  const monthEnd = endOfMonth(currentMonth);
+  const calendarStart = startOfWeek(monthStart, { weekStartsOn: 0 });
+  
+  // Generate 6 weeks of days (42 days) to cover any month layout
+  const calendarDays = Array.from({ length: 42 }, (_, i) => addDays(calendarStart, i));
 
   const getPostsForDay = (date: Date) => {
     return posts.filter(post => {
@@ -517,39 +524,130 @@ function CalendarView({ posts }: { posts: SocialPostWithMetrics[] }) {
     });
   };
 
+  const goToPrevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
+  const goToNextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
+  const goToToday = () => setCurrentMonth(today);
+
+  const statusColors: Record<string, string> = {
+    draft: "bg-zinc-600 text-zinc-200",
+    scheduled: "bg-blue-500 text-white",
+    published: "bg-green-500 text-white",
+    failed: "bg-red-500 text-white",
+  };
+
   return (
     <Card className="bg-zinc-800/50 border-zinc-700">
       <CardHeader className="pb-2">
-        <CardTitle className="text-white text-lg flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-orange-500" />
-          This Week
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-white text-lg flex items-center gap-2">
+            <Calendar className="w-5 h-5 text-orange-500" />
+            Content Calendar
+          </CardTitle>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={goToPrevMonth}
+              className="text-zinc-400 hover:text-white h-8 w-8 p-0"
+              data-testid="button-prev-month"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={goToToday}
+              className="text-zinc-400 hover:text-white text-sm px-2"
+              data-testid="button-today"
+            >
+              Today
+            </Button>
+            <span className="text-white font-medium min-w-[140px] text-center">
+              {format(currentMonth, "MMMM yyyy")}
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={goToNextMonth}
+              className="text-zinc-400 hover:text-white h-8 w-8 p-0"
+              data-testid="button-next-month"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-7 gap-2">
-          {weekDays.map((day) => {
+        {/* Day headers */}
+        <div className="grid grid-cols-7 gap-1 mb-2">
+          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+            <div key={day} className="text-xs text-zinc-500 text-center font-medium py-1">
+              {day}
+            </div>
+          ))}
+        </div>
+        
+        {/* Calendar grid */}
+        <div className="grid grid-cols-7 gap-1">
+          {calendarDays.map((day) => {
             const dayPosts = getPostsForDay(day);
             const isToday = isSameDay(day, today);
+            const isCurrentMonth = isSameMonth(day, currentMonth);
             
             return (
               <div 
                 key={day.toISOString()} 
-                className={`p-2 rounded-lg text-center ${isToday ? 'bg-orange-500/20 border border-orange-500/50' : 'bg-zinc-800'}`}
+                className={`min-h-[80px] p-1 rounded-lg border transition-colors ${
+                  isToday 
+                    ? 'bg-orange-500/20 border-orange-500/50' 
+                    : isCurrentMonth 
+                      ? 'bg-zinc-800/50 border-zinc-700/50 hover:border-zinc-600' 
+                      : 'bg-zinc-900/30 border-transparent'
+                }`}
               >
-                <div className="text-xs text-zinc-500 uppercase">{format(day, "EEE")}</div>
-                <div className={`text-lg font-bold ${isToday ? 'text-orange-400' : 'text-white'}`}>
+                <div className={`text-xs font-medium mb-1 ${
+                  isToday ? 'text-orange-400' : isCurrentMonth ? 'text-zinc-300' : 'text-zinc-600'
+                }`}>
                   {format(day, "d")}
                 </div>
-                {dayPosts.length > 0 && (
-                  <div className="mt-1">
-                    <Badge className="bg-blue-500/20 text-blue-400 text-xs">
-                      {dayPosts.length}
-                    </Badge>
-                  </div>
-                )}
+                <div className="space-y-1">
+                  {dayPosts.slice(0, 3).map((post) => (
+                    <button
+                      key={post.id}
+                      onClick={() => onEditPost(post)}
+                      className={`w-full text-left text-xs px-1 py-0.5 rounded truncate cursor-pointer hover:opacity-80 transition-opacity ${statusColors[post.status]}`}
+                      title={post.content}
+                      data-testid={`calendar-post-${post.id}`}
+                    >
+                      {post.content.slice(0, 20)}...
+                    </button>
+                  ))}
+                  {dayPosts.length > 3 && (
+                    <div className="text-xs text-zinc-500 text-center">
+                      +{dayPosts.length - 3} more
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })}
+        </div>
+
+        {/* Legend */}
+        <div className="flex items-center gap-4 mt-4 pt-3 border-t border-zinc-700">
+          <span className="text-xs text-zinc-500">Status:</span>
+          <div className="flex items-center gap-1">
+            <div className="w-3 h-3 rounded bg-zinc-600"></div>
+            <span className="text-xs text-zinc-400">Draft</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-3 h-3 rounded bg-blue-500"></div>
+            <span className="text-xs text-zinc-400">Scheduled</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-3 h-3 rounded bg-green-500"></div>
+            <span className="text-xs text-zinc-400">Published</span>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -704,7 +802,7 @@ function SocialMediaHubContent() {
 
         <div className="grid grid-cols-3 gap-6">
           <div className="col-span-2 space-y-4">
-            <CalendarView posts={posts} />
+            <CalendarView posts={posts} onEditPost={handleEdit} />
             <AttributionFunnel stats={stats} />
           </div>
           
