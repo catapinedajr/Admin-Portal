@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { adminAuthService } from "./admin-auth";
 import { db } from "./db";
-import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema } from "@shared/schema";
+import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, dailyFacts, dailyLessons, forumPosts, forumReplies, adImpressions, adClicks } from "@shared/schema";
 import { count, eq, sql, and, sum } from "drizzle-orm";
 
 interface AdminRequest extends Request {
@@ -2401,6 +2401,243 @@ Return ONLY the post content, nothing else.`
     } catch (error) {
       console.error("Error fetching key result history:", error);
       res.status(500).json({ message: "Failed to fetch key result history" });
+    }
+  });
+
+  // ==================== KPI Dashboard Routes ====================
+
+  // Get comprehensive KPI dashboard data
+  app.get("/api/admin/kpis", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const now = new Date();
+      const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+      const oneWeekAgoStr = oneWeekAgo.toISOString().split('T')[0];
+      const twoWeeksAgoStr = twoWeeksAgo.toISOString().split('T')[0];
+
+      // === USER METRICS ===
+      const [totalUsersResult] = await db.select({ count: count() }).from(users);
+      const totalUsers = Number(totalUsersResult?.count || 0);
+
+      // Active users (last 7 days)
+      const [activeUsersResult] = await db.select({ count: count() })
+        .from(users)
+        .where(sql`${users.lastActivityDate} >= ${oneWeekAgoStr}`);
+      const activeUsers = Number(activeUsersResult?.count || 0);
+
+      // Active users previous week (for comparison)
+      const [prevActiveUsersResult] = await db.select({ count: count() })
+        .from(users)
+        .where(sql`${users.lastActivityDate} >= ${twoWeeksAgoStr} AND ${users.lastActivityDate} < ${oneWeekAgoStr}`);
+      const prevActiveUsers = Number(prevActiveUsersResult?.count || 0);
+
+      // New signups this week
+      const [newSignupsResult] = await db.select({ count: count() })
+        .from(users)
+        .where(sql`${users.createdAt} >= ${oneWeekAgo}`);
+      const newSignups = Number(newSignupsResult?.count || 0);
+
+      // New signups previous week
+      const [prevSignupsResult] = await db.select({ count: count() })
+        .from(users)
+        .where(sql`${users.createdAt} >= ${twoWeeksAgo} AND ${users.createdAt} < ${oneWeekAgo}`);
+      const prevSignups = Number(prevSignupsResult?.count || 0);
+
+      // Average streak
+      const [avgStreakResult] = await db.select({
+        avg: sql<number>`COALESCE(AVG(${users.currentStreak}), 0)`,
+      }).from(users);
+      const avgStreak = Number(avgStreakResult?.avg || 0);
+
+      // === ENGAGEMENT METRICS ===
+      // Lesson completion rate (users who completed at least one lesson)
+      const [completedLessonsResult] = await db.select({ count: count() })
+        .from(users)
+        .where(sql`${users.completedLessons} > 0`);
+      const usersWithCompletedLessons = Number(completedLessonsResult?.count || 0);
+      const lessonCompletionRate = totalUsers > 0 ? Math.round((usersWithCompletedLessons / totalUsers) * 100) : 0;
+
+      // Total days completed
+      const [daysCompletedResult] = await db.select({ count: count() })
+        .from(userProgress)
+        .where(eq(userProgress.dayCompleted, true));
+      const totalDaysCompleted = Number(daysCompletedResult?.count || 0);
+
+      // === CONTENT METRICS ===
+      const [contentDaysResult] = await db.select({ count: count() }).from(contentDays);
+      const totalContentDays = Number(contentDaysResult?.count || 0);
+
+      const [factsResult] = await db.select({ count: count() }).from(dailyFacts);
+      const totalFacts = Number(factsResult?.count || 0);
+
+      const [lessonsResult] = await db.select({ count: count() }).from(dailyLessons);
+      const totalLessons = Number(lessonsResult?.count || 0);
+
+      // === COMMUNITY METRICS ===
+      const [forumPostsResult] = await db.select({ count: count() }).from(forumPosts);
+      const totalForumPosts = Number(forumPostsResult?.count || 0);
+
+      const [forumRepliesResult] = await db.select({ count: count() }).from(forumReplies);
+      const totalForumReplies = Number(forumRepliesResult?.count || 0);
+
+      // Posts this week
+      const [weeklyPostsResult] = await db.select({ count: count() })
+        .from(forumPosts)
+        .where(sql`${forumPosts.createdAt} >= ${oneWeekAgo}`);
+      const weeklyPosts = Number(weeklyPostsResult?.count || 0);
+
+      // === MARKETING METRICS ===
+      const [campaignsResult] = await db.select({ count: count() })
+        .from(adCampaigns)
+        .where(eq(adCampaigns.status, 'active'));
+      const activeCampaigns = Number(campaignsResult?.count || 0);
+
+      const [impressionsResult] = await db.select({ count: count() }).from(adImpressions);
+      const totalImpressions = Number(impressionsResult?.count || 0);
+
+      const [clicksResult] = await db.select({ count: count() }).from(adClicks);
+      const totalClicks = Number(clicksResult?.count || 0);
+
+      const ctr = totalImpressions > 0 ? ((totalClicks / totalImpressions) * 100).toFixed(2) : '0.00';
+
+      // === REVENUE METRICS ===
+      const [ordersResult] = await db.select({ 
+        count: count(),
+        total: sql<number>`COALESCE(SUM(CAST(${storeOrders.totalUsd} AS DECIMAL)), 0)`,
+      }).from(storeOrders).where(eq(storeOrders.status, 'paid'));
+      const totalOrders = Number(ordersResult?.count || 0);
+      const totalRevenue = Number(ordersResult?.total || 0);
+
+      // Monthly revenue
+      const [monthlyRevenueResult] = await db.select({ 
+        total: sql<number>`COALESCE(SUM(CAST(${storeOrders.totalUsd} AS DECIMAL)), 0)`,
+      }).from(storeOrders)
+        .where(sql`${storeOrders.status} = 'paid' AND ${storeOrders.createdAt} >= ${oneMonthAgo}`);
+      const monthlyRevenue = Number(monthlyRevenueResult?.total || 0);
+
+      // === PRODUCT METRICS ===
+      const [roadmapIdeasResult] = await db.select({ count: count() }).from(roadmapIdeas);
+      const totalRoadmapIdeas = Number(roadmapIdeasResult?.count || 0);
+
+      const [completedIdeasResult] = await db.select({ count: count() })
+        .from(roadmapIdeas)
+        .where(eq(roadmapIdeas.status, 'completed'));
+      const completedIdeas = Number(completedIdeasResult?.count || 0);
+
+      const [releasesResult] = await db.select({ count: count() }).from(roadmapReleases);
+      const totalReleases = Number(releasesResult?.count || 0);
+
+      res.json({
+        users: {
+          total: totalUsers,
+          active: activeUsers,
+          activeChange: prevActiveUsers > 0 ? Math.round(((activeUsers - prevActiveUsers) / prevActiveUsers) * 100) : 0,
+          newSignups: newSignups,
+          signupsChange: prevSignups > 0 ? Math.round(((newSignups - prevSignups) / prevSignups) * 100) : 0,
+          avgStreak: Math.round(avgStreak * 10) / 10,
+        },
+        engagement: {
+          lessonCompletionRate,
+          totalDaysCompleted,
+          avgLessonsPerUser: totalUsers > 0 ? Math.round((totalDaysCompleted / totalUsers) * 10) / 10 : 0,
+        },
+        content: {
+          totalDays: totalContentDays,
+          totalFacts,
+          totalLessons,
+          coveragePercent: Math.round((totalContentDays / 180) * 100),
+        },
+        community: {
+          totalPosts: totalForumPosts,
+          totalReplies: totalForumReplies,
+          weeklyPosts,
+          engagementRate: totalForumPosts > 0 ? Math.round((totalForumReplies / totalForumPosts) * 10) / 10 : 0,
+        },
+        marketing: {
+          activeCampaigns,
+          totalImpressions,
+          totalClicks,
+          ctr: parseFloat(ctr),
+        },
+        revenue: {
+          totalOrders,
+          totalRevenue: Math.round(totalRevenue * 100) / 100,
+          monthlyRevenue: Math.round(monthlyRevenue * 100) / 100,
+          avgOrderValue: totalOrders > 0 ? Math.round((totalRevenue / totalOrders) * 100) / 100 : 0,
+        },
+        product: {
+          totalIdeas: totalRoadmapIdeas,
+          completedIdeas,
+          completionRate: totalRoadmapIdeas > 0 ? Math.round((completedIdeas / totalRoadmapIdeas) * 100) : 0,
+          totalReleases,
+        },
+      });
+    } catch (error) {
+      console.error("Error fetching KPI dashboard:", error);
+      res.status(500).json({ message: "Failed to fetch KPI dashboard" });
+    }
+  });
+
+  // Get KPI trends over time
+  app.get("/api/admin/kpis/trends", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const days = parseInt(req.query.days as string) || 30;
+      const now = new Date();
+      
+      // Generate date range
+      const dateRange: string[] = [];
+      for (let i = days - 1; i >= 0; i--) {
+        const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+        dateRange.push(date.toISOString().split('T')[0]);
+      }
+
+      // User signups by date
+      const userSignups = await db.select({
+        date: sql<string>`DATE(${users.createdAt})`.as('date'),
+        count: count(),
+      })
+        .from(users)
+        .where(sql`${users.createdAt} >= ${new Date(now.getTime() - days * 24 * 60 * 60 * 1000)}`)
+        .groupBy(sql`DATE(${users.createdAt})`)
+        .orderBy(sql`DATE(${users.createdAt})`);
+
+      // Day completions by date
+      const dayCompletions = await db.select({
+        date: sql<string>`DATE(${userProgress.completedAt})`.as('date'),
+        count: count(),
+      })
+        .from(userProgress)
+        .where(sql`${userProgress.completedAt} >= ${new Date(now.getTime() - days * 24 * 60 * 60 * 1000)} AND ${userProgress.dayCompleted} = true`)
+        .groupBy(sql`DATE(${userProgress.completedAt})`)
+        .orderBy(sql`DATE(${userProgress.completedAt})`);
+
+      // Forum activity by date
+      const forumActivity = await db.select({
+        date: sql<string>`DATE(${forumPosts.createdAt})`.as('date'),
+        posts: count(),
+      })
+        .from(forumPosts)
+        .where(sql`${forumPosts.createdAt} >= ${new Date(now.getTime() - days * 24 * 60 * 60 * 1000)}`)
+        .groupBy(sql`DATE(${forumPosts.createdAt})`)
+        .orderBy(sql`DATE(${forumPosts.createdAt})`);
+
+      // Map to date range with zeros for missing dates
+      const signupsMap = new Map(userSignups.map(s => [s.date, Number(s.count)]));
+      const completionsMap = new Map(dayCompletions.map(c => [c.date, Number(c.count)]));
+      const forumMap = new Map(forumActivity.map(f => [f.date, Number(f.posts)]));
+
+      const trends = dateRange.map(date => ({
+        date,
+        signups: signupsMap.get(date) || 0,
+        completions: completionsMap.get(date) || 0,
+        forumPosts: forumMap.get(date) || 0,
+      }));
+
+      res.json(trends);
+    } catch (error) {
+      console.error("Error fetching KPI trends:", error);
+      res.status(500).json({ message: "Failed to fetch KPI trends" });
     }
   });
 }
