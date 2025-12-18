@@ -20,7 +20,22 @@ import { Progress } from "@/components/ui/progress";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import AdminLayout from "../components/AdminLayout";
-import { format, addDays, startOfWeek, startOfMonth, endOfMonth, isSameDay, isSameMonth, parseISO, addMonths, subMonths, getDay } from "date-fns";
+import { format, addDays, startOfWeek, startOfMonth, endOfMonth, isSameDay, isSameMonth, parseISO, addMonths, subMonths, getDay, isValid } from "date-fns";
+
+// Helper to safely parse dates that may be in different formats
+function safeParseDate(dateStr: string | null | undefined): Date | null {
+  if (!dateStr) return null;
+  
+  // Try parseISO first (handles ISO format)
+  let parsed = parseISO(dateStr);
+  if (isValid(parsed)) return parsed;
+  
+  // Fall back to Date constructor (handles other formats like "2025-01-12 13:30:00")
+  parsed = new Date(dateStr);
+  if (isValid(parsed)) return parsed;
+  
+  return null;
+}
 
 function AdminAuthGuard({ children }: { children: React.ReactNode }) {
   const [, setLocation] = useLocation();
@@ -163,9 +178,9 @@ function PostCard({ post, onEdit, onDelete, onMarkPosted }: {
                 <StatusIcon className="w-3 h-3 mr-1" />
                 {post.status}
               </Badge>
-              {post.scheduledAt && (
+              {post.scheduledAt && safeParseDate(post.scheduledAt) && (
                 <span className="text-xs text-zinc-500">
-                  {format(parseISO(post.scheduledAt), "MMM d, h:mm a")}
+                  {format(safeParseDate(post.scheduledAt)!, "MMM d, h:mm a")}
                 </span>
               )}
             </div>
@@ -181,7 +196,7 @@ function PostCard({ post, onEdit, onDelete, onMarkPosted }: {
 
         <div className="flex items-center justify-between mt-4 pt-3 border-t border-zinc-700">
           <span className="text-xs text-zinc-500">
-            Created {format(parseISO(post.createdAt), "MMM d, yyyy")}
+            Created {safeParseDate(post.createdAt) ? format(safeParseDate(post.createdAt)!, "MMM d, yyyy") : ""}
           </span>
           <div className="flex gap-2">
             {post.status !== 'posted' && post.status !== 'published' && onMarkPosted && (
@@ -257,8 +272,8 @@ function PostComposer({
         linkUrl: post.linkUrl || "",
         campaignId: post.campaignId?.toString() || "",
         linkedDayIndex: post.linkedDayIndex?.toString() || "",
-        scheduledAt: post.scheduledAt ? format(parseISO(post.scheduledAt), "yyyy-MM-dd") : "",
-        scheduledTime: post.scheduledAt ? format(parseISO(post.scheduledAt), "HH:mm") : "",
+        scheduledAt: post.scheduledAt && safeParseDate(post.scheduledAt) ? format(safeParseDate(post.scheduledAt)!, "yyyy-MM-dd") : "",
+        scheduledTime: post.scheduledAt && safeParseDate(post.scheduledAt) ? format(safeParseDate(post.scheduledAt)!, "HH:mm") : "",
       });
     } else {
       setFormData({
@@ -483,7 +498,7 @@ function PostComposer({
           </Button>
           <Button
             onClick={() => saveMutation.mutate()}
-            disabled={saveMutation.isPending || !formData.content.trim() || charCount > maxChars}
+            disabled={saveMutation.isPending || !formData.content.trim()}
             className="bg-orange-500 hover:bg-orange-600 text-white"
             data-testid="button-save-post"
           >
@@ -508,12 +523,13 @@ function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], o
   const calendarDays = Array.from({ length: 42 }, (_, i) => addDays(calendarStart, i));
 
   // Separate scheduled posts from unscheduled ones
-  const scheduledPosts = posts.filter(post => post.scheduledAt);
+  const scheduledPosts = posts.filter(post => post.scheduledAt && safeParseDate(post.scheduledAt));
   const unscheduledPosts = posts.filter(post => !post.scheduledAt && post.status !== 'posted');
 
   const getPostsForDay = (date: Date) => {
     return scheduledPosts.filter(post => {
-      return isSameDay(parseISO(post.scheduledAt!), date);
+      const postDate = safeParseDate(post.scheduledAt);
+      return postDate && isSameDay(postDate, date);
     });
   };
 
@@ -689,7 +705,7 @@ function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], o
                           </Badge>
                           {post.scheduledAt && (
                             <span className="text-xs text-zinc-500">
-                              {format(parseISO(post.scheduledAt), "h:mm a")}
+                              {safeParseDate(post.scheduledAt) ? format(safeParseDate(post.scheduledAt)!, "h:mm a") : ""}
                             </span>
                           )}
                         </div>
@@ -732,7 +748,7 @@ function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], o
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-zinc-300 truncate">{post.content}</p>
                     <span className="text-xs text-zinc-500">
-                      Created {format(parseISO(post.createdAt), "MMM d, yyyy")}
+                      Created {safeParseDate(post.createdAt) ? format(safeParseDate(post.createdAt)!, "MMM d, yyyy") : ""}
                     </span>
                   </div>
                   <Button
