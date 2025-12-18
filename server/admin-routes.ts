@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { adminAuthService } from "./admin-auth";
 import { db } from "./db";
-import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes } from "@shared/schema";
+import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema } from "@shared/schema";
 import { count, eq, sql, and, sum } from "drizzle-orm";
 
 interface AdminRequest extends Request {
@@ -2061,5 +2061,346 @@ Return ONLY the post content, nothing else.`
       opportunityTypes: crmOpportunityTypes,
       accountTypes: crmAccountTypes,
     });
+  });
+
+  // ==================== Product Roadmap Routes ====================
+
+  // Get roadmap stats
+  app.get("/api/admin/roadmap/stats", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const totalIdeas = await db.select({ count: count() }).from(roadmapIdeas);
+      const backlogIdeas = await db.select({ count: count() }).from(roadmapIdeas).where(eq(roadmapIdeas.status, 'backlog'));
+      const inProgressIdeas = await db.select({ count: count() }).from(roadmapIdeas).where(eq(roadmapIdeas.status, 'in_progress'));
+      const completedIdeas = await db.select({ count: count() }).from(roadmapIdeas).where(eq(roadmapIdeas.status, 'completed'));
+      const totalReleases = await db.select({ count: count() }).from(roadmapReleases);
+
+      res.json({
+        totalIdeas: totalIdeas[0]?.count || 0,
+        backlogIdeas: backlogIdeas[0]?.count || 0,
+        inProgressIdeas: inProgressIdeas[0]?.count || 0,
+        completedIdeas: completedIdeas[0]?.count || 0,
+        totalReleases: totalReleases[0]?.count || 0,
+      });
+    } catch (error) {
+      console.error("Error fetching roadmap stats:", error);
+      res.status(500).json({ message: "Failed to fetch roadmap stats" });
+    }
+  });
+
+  // Get all roadmap ideas
+  app.get("/api/admin/roadmap/ideas", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const ideas = await db.select().from(roadmapIdeas).orderBy(roadmapIdeas.createdAt);
+      res.json(ideas);
+    } catch (error) {
+      console.error("Error fetching roadmap ideas:", error);
+      res.status(500).json({ message: "Failed to fetch roadmap ideas" });
+    }
+  });
+
+  // Create roadmap idea
+  app.post("/api/admin/roadmap/ideas", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const data = insertRoadmapIdeaSchema.parse(req.body);
+      const [idea] = await db.insert(roadmapIdeas).values(data).returning();
+      res.json(idea);
+    } catch (error: any) {
+      console.error("Error creating roadmap idea:", error);
+      res.status(400).json({ message: error.message || "Failed to create roadmap idea" });
+    }
+  });
+
+  // Update roadmap idea
+  app.patch("/api/admin/roadmap/ideas/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const data = insertRoadmapIdeaSchema.partial().parse(req.body);
+      const [idea] = await db.update(roadmapIdeas)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(roadmapIdeas.id, id))
+        .returning();
+      res.json(idea);
+    } catch (error: any) {
+      console.error("Error updating roadmap idea:", error);
+      res.status(400).json({ message: error.message || "Failed to update roadmap idea" });
+    }
+  });
+
+  // Update idea status
+  app.patch("/api/admin/roadmap/ideas/:id/status", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { status } = req.body;
+      const [idea] = await db.update(roadmapIdeas)
+        .set({ status, updatedAt: new Date() })
+        .where(eq(roadmapIdeas.id, id))
+        .returning();
+      res.json(idea);
+    } catch (error) {
+      console.error("Error updating idea status:", error);
+      res.status(500).json({ message: "Failed to update idea status" });
+    }
+  });
+
+  // Delete roadmap idea
+  app.delete("/api/admin/roadmap/ideas/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await db.delete(roadmapIdeas).where(eq(roadmapIdeas.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting roadmap idea:", error);
+      res.status(500).json({ message: "Failed to delete roadmap idea" });
+    }
+  });
+
+  // Get all releases
+  app.get("/api/admin/roadmap/releases", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const releases = await db.select().from(roadmapReleases).orderBy(roadmapReleases.targetDate);
+      res.json(releases);
+    } catch (error) {
+      console.error("Error fetching releases:", error);
+      res.status(500).json({ message: "Failed to fetch releases" });
+    }
+  });
+
+  // Create release
+  app.post("/api/admin/roadmap/releases", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const data = insertRoadmapReleaseSchema.parse(req.body);
+      const [release] = await db.insert(roadmapReleases).values(data).returning();
+      res.json(release);
+    } catch (error: any) {
+      console.error("Error creating release:", error);
+      res.status(400).json({ message: error.message || "Failed to create release" });
+    }
+  });
+
+  // Update release
+  app.patch("/api/admin/roadmap/releases/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const data = insertRoadmapReleaseSchema.partial().parse(req.body);
+      const [release] = await db.update(roadmapReleases)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(roadmapReleases.id, id))
+        .returning();
+      res.json(release);
+    } catch (error: any) {
+      console.error("Error updating release:", error);
+      res.status(400).json({ message: error.message || "Failed to update release" });
+    }
+  });
+
+  // Delete release
+  app.delete("/api/admin/roadmap/releases/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await db.delete(roadmapReleases).where(eq(roadmapReleases.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting release:", error);
+      res.status(500).json({ message: "Failed to delete release" });
+    }
+  });
+
+  // ==================== Goals & OKRs Routes ====================
+
+  // Get OKR stats
+  app.get("/api/admin/okrs/stats", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const totalObjectives = await db.select({ count: count() }).from(objectives);
+      const activeObjectives = await db.select({ count: count() }).from(objectives).where(eq(objectives.status, 'active'));
+      const totalKeyResults = await db.select({ count: count() }).from(keyResults);
+      const onTrackKeyResults = await db.select({ count: count() }).from(keyResults).where(eq(keyResults.status, 'on_track'));
+      const atRiskKeyResults = await db.select({ count: count() }).from(keyResults).where(eq(keyResults.status, 'at_risk'));
+      
+      const avgProgress = await db.select({ avg: sql<number>`ROUND(AVG(${objectives.progress}))` }).from(objectives).where(eq(objectives.status, 'active'));
+
+      res.json({
+        totalObjectives: totalObjectives[0]?.count || 0,
+        activeObjectives: activeObjectives[0]?.count || 0,
+        totalKeyResults: totalKeyResults[0]?.count || 0,
+        onTrackKeyResults: onTrackKeyResults[0]?.count || 0,
+        atRiskKeyResults: atRiskKeyResults[0]?.count || 0,
+        avgProgress: avgProgress[0]?.avg || 0,
+      });
+    } catch (error) {
+      console.error("Error fetching OKR stats:", error);
+      res.status(500).json({ message: "Failed to fetch OKR stats" });
+    }
+  });
+
+  // Get all objectives with key results
+  app.get("/api/admin/okrs/objectives", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const allObjectives = await db.select().from(objectives).orderBy(objectives.createdAt);
+      const allKeyResults = await db.select().from(keyResults);
+      
+      const objectivesWithKRs = allObjectives.map(obj => ({
+        ...obj,
+        keyResults: allKeyResults.filter(kr => kr.objectiveId === obj.id),
+      }));
+      
+      res.json(objectivesWithKRs);
+    } catch (error) {
+      console.error("Error fetching objectives:", error);
+      res.status(500).json({ message: "Failed to fetch objectives" });
+    }
+  });
+
+  // Create objective
+  app.post("/api/admin/okrs/objectives", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const data = insertObjectiveSchema.parse(req.body);
+      const [objective] = await db.insert(objectives).values(data).returning();
+      res.json(objective);
+    } catch (error: any) {
+      console.error("Error creating objective:", error);
+      res.status(400).json({ message: error.message || "Failed to create objective" });
+    }
+  });
+
+  // Update objective
+  app.patch("/api/admin/okrs/objectives/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const data = insertObjectiveSchema.partial().parse(req.body);
+      const [objective] = await db.update(objectives)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(objectives.id, id))
+        .returning();
+      res.json(objective);
+    } catch (error: any) {
+      console.error("Error updating objective:", error);
+      res.status(400).json({ message: error.message || "Failed to update objective" });
+    }
+  });
+
+  // Delete objective
+  app.delete("/api/admin/okrs/objectives/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await db.delete(objectives).where(eq(objectives.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting objective:", error);
+      res.status(500).json({ message: "Failed to delete objective" });
+    }
+  });
+
+  // Create key result
+  app.post("/api/admin/okrs/key-results", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const data = insertKeyResultSchema.parse(req.body);
+      const [keyResult] = await db.insert(keyResults).values(data).returning();
+      res.json(keyResult);
+    } catch (error: any) {
+      console.error("Error creating key result:", error);
+      res.status(400).json({ message: error.message || "Failed to create key result" });
+    }
+  });
+
+  // Update key result
+  app.patch("/api/admin/okrs/key-results/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const data = insertKeyResultSchema.partial().parse(req.body);
+      const [keyResult] = await db.update(keyResults)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(keyResults.id, id))
+        .returning();
+      
+      // Recalculate objective progress
+      const [kr] = await db.select().from(keyResults).where(eq(keyResults.id, id));
+      if (kr) {
+        const allKRs = await db.select().from(keyResults).where(eq(keyResults.objectiveId, kr.objectiveId));
+        const avgProgress = Math.round(allKRs.reduce((sum, kr) => {
+          const progress = kr.targetValue > 0 ? (kr.currentValue / kr.targetValue) * 100 : 0;
+          return sum + Math.min(progress, 100);
+        }, 0) / allKRs.length);
+        
+        await db.update(objectives)
+          .set({ progress: avgProgress, updatedAt: new Date() })
+          .where(eq(objectives.id, kr.objectiveId));
+      }
+      
+      res.json(keyResult);
+    } catch (error: any) {
+      console.error("Error updating key result:", error);
+      res.status(400).json({ message: error.message || "Failed to update key result" });
+    }
+  });
+
+  // Update key result progress
+  app.post("/api/admin/okrs/key-results/:id/update", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { newValue, note, updatedBy } = req.body;
+      
+      const [kr] = await db.select().from(keyResults).where(eq(keyResults.id, id));
+      if (!kr) {
+        return res.status(404).json({ message: "Key result not found" });
+      }
+      
+      // Log the update
+      await db.insert(keyResultUpdates).values({
+        keyResultId: id,
+        previousValue: kr.currentValue,
+        newValue,
+        note,
+        updatedBy,
+      });
+      
+      // Update current value
+      const [updated] = await db.update(keyResults)
+        .set({ currentValue: newValue, updatedAt: new Date() })
+        .where(eq(keyResults.id, id))
+        .returning();
+      
+      // Recalculate objective progress
+      const allKRs = await db.select().from(keyResults).where(eq(keyResults.objectiveId, kr.objectiveId));
+      const avgProgress = Math.round(allKRs.reduce((sum, kr) => {
+        const val = kr.id === id ? newValue : kr.currentValue;
+        const progress = kr.targetValue > 0 ? (val / kr.targetValue) * 100 : 0;
+        return sum + Math.min(progress, 100);
+      }, 0) / allKRs.length);
+      
+      await db.update(objectives)
+        .set({ progress: avgProgress, updatedAt: new Date() })
+        .where(eq(objectives.id, kr.objectiveId));
+      
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Error updating key result progress:", error);
+      res.status(400).json({ message: error.message || "Failed to update key result progress" });
+    }
+  });
+
+  // Delete key result
+  app.delete("/api/admin/okrs/key-results/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await db.delete(keyResults).where(eq(keyResults.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting key result:", error);
+      res.status(500).json({ message: "Failed to delete key result" });
+    }
+  });
+
+  // Get key result history
+  app.get("/api/admin/okrs/key-results/:id/history", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updates = await db.select().from(keyResultUpdates)
+        .where(eq(keyResultUpdates.keyResultId, id))
+        .orderBy(keyResultUpdates.createdAt);
+      res.json(updates);
+    } catch (error) {
+      console.error("Error fetching key result history:", error);
+      res.status(500).json({ message: "Failed to fetch key result history" });
+    }
   });
 }
