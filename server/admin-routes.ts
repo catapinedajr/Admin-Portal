@@ -251,11 +251,26 @@ export function registerAdminRoutes(app: Express) {
         avgLessons: sql<number>`COALESCE(AVG(${users.completedLessons}), 0)`,
       }).from(users);
 
+      // Count paid users from Stripe subscriptions (active subscriptions)
+      let paidUsers = 0;
+      try {
+        const paidResult = await db.execute(sql`
+          SELECT COUNT(DISTINCT customer) as count 
+          FROM subscriptions 
+          WHERE status IN ('active', 'trialing')
+        `);
+        const rows = paidResult.rows as Array<{ count: string }>;
+        paidUsers = Number(rows[0]?.count || 0);
+      } catch {
+        // Subscriptions table may not exist yet
+        paidUsers = 0;
+      }
+
       res.json({
         totalUsers,
         activeUsers,
-        paidUsers: 0, // Placeholder until Stripe integration
-        freeUsers: totalUsers, // All users are free until Stripe
+        paidUsers,
+        freeUsers: Number(totalUsers) - paidUsers,
         newUsersThisWeek,
         newUsersThisMonth,
         averageStreak: avgResult?.avgStreak || 0,
@@ -2580,6 +2595,67 @@ Return ONLY the post content, nothing else.`;
       const [releasesResult] = await db.select({ count: count() }).from(roadmapReleases);
       const totalReleases = Number(releasesResult?.count || 0);
 
+      // === SOCIAL MEDIA METRICS ===
+      const { socialPosts } = await import('@shared/schema');
+      
+      const [draftedPostsResult] = await db.select({ count: count() })
+        .from(socialPosts)
+        .where(eq(socialPosts.contentStatus, 'drafted'));
+      const draftedPosts = Number(draftedPostsResult?.count || 0);
+
+      const [approvedPostsResult] = await db.select({ count: count() })
+        .from(socialPosts)
+        .where(eq(socialPosts.contentStatus, 'approved'));
+      const approvedPosts = Number(approvedPostsResult?.count || 0);
+
+      const [plannedPostsResult] = await db.select({ count: count() })
+        .from(socialPosts)
+        .where(eq(socialPosts.publishStatus, 'planned'));
+      const plannedPosts = Number(plannedPostsResult?.count || 0);
+
+      const [postedPostsResult] = await db.select({ count: count() })
+        .from(socialPosts)
+        .where(eq(socialPosts.publishStatus, 'posted'));
+      const postedPosts = Number(postedPostsResult?.count || 0);
+
+      const [totalSocialPostsResult] = await db.select({ count: count() }).from(socialPosts);
+      const totalSocialPosts = Number(totalSocialPostsResult?.count || 0);
+
+      // === B2B CRM METRICS ===
+      const [totalCompaniesResult] = await db.select({ count: count() }).from(crmCompanies);
+      const totalCompanies = Number(totalCompaniesResult?.count || 0);
+
+      const [activeDealsResult] = await db.select({ count: count() })
+        .from(crmDeals)
+        .where(sql`${crmDeals.stage} NOT IN ('won', 'lost')`);
+      const activeDeals = Number(activeDealsResult?.count || 0);
+
+      const [wonDealsResult] = await db.select({ count: count() })
+        .from(crmDeals)
+        .where(eq(crmDeals.stage, 'won'));
+      const wonDeals = Number(wonDealsResult?.count || 0);
+
+      const [pipelineValueResult] = await db.select({
+        total: sql<string>`COALESCE(SUM(deal_value), 0)`,
+      }).from(crmDeals)
+        .where(sql`${crmDeals.stage} NOT IN ('won', 'lost')`);
+      const pipelineValue = Number(pipelineValueResult?.total || 0);
+
+      // === GOALS & OKRs METRICS ===
+      const [totalObjectivesResult] = await db.select({ count: count() }).from(objectives);
+      const totalObjectives = Number(totalObjectivesResult?.count || 0);
+
+      const [activeObjectivesResult] = await db.select({ count: count() })
+        .from(objectives)
+        .where(eq(objectives.status, 'active'));
+      const activeObjectives = Number(activeObjectivesResult?.count || 0);
+
+      const [avgProgressResult] = await db.select({
+        avg: sql<number>`COALESCE(AVG(${objectives.progress}), 0)`,
+      }).from(objectives)
+        .where(eq(objectives.status, 'active'));
+      const avgProgress = Number(avgProgressResult?.avg || 0);
+
       res.json({
         users: {
           total: totalUsers,
@@ -2623,6 +2699,24 @@ Return ONLY the post content, nothing else.`;
           completedIdeas,
           completionRate: totalRoadmapIdeas > 0 ? Math.round((completedIdeas / totalRoadmapIdeas) * 100) : 0,
           totalReleases,
+        },
+        social: {
+          totalPosts: totalSocialPosts,
+          drafted: draftedPosts,
+          approved: approvedPosts,
+          planned: plannedPosts,
+          posted: postedPosts,
+        },
+        crm: {
+          totalCompanies,
+          activeDeals,
+          wonDeals,
+          pipelineValue: Math.round(pipelineValue * 100) / 100,
+        },
+        goals: {
+          totalObjectives,
+          activeObjectives,
+          avgProgress: Math.round(avgProgress),
         },
       });
     } catch (error) {

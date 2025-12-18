@@ -25,7 +25,11 @@ import {
   AlertCircle,
   Clock,
   Trash2,
-  Edit2
+  Edit2,
+  Send,
+  Building2,
+  Handshake,
+  Flag
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts";
@@ -83,6 +87,24 @@ interface KPIData {
     completedIdeas: number;
     completionRate: number;
     totalReleases: number;
+  };
+  social: {
+    totalPosts: number;
+    drafted: number;
+    approved: number;
+    planned: number;
+    posted: number;
+  };
+  crm: {
+    totalCompanies: number;
+    activeDeals: number;
+    wonDeals: number;
+    pipelineValue: number;
+  };
+  goals: {
+    totalObjectives: number;
+    activeObjectives: number;
+    avgProgress: number;
   };
 }
 
@@ -513,6 +535,35 @@ function KPIDashboardContent() {
               />
             </div>
 
+            {/* Social, B2B, and Goals Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <MetricCard 
+                title="Social Posts" 
+                value={kpis?.social?.totalPosts || 0} 
+                icon={Send}
+                description={`${kpis?.social?.posted || 0} posted, ${kpis?.social?.planned || 0} planned`}
+              />
+              <MetricCard 
+                title="B2B Companies" 
+                value={kpis?.crm?.totalCompanies || 0} 
+                icon={Building2}
+                description={`${kpis?.crm?.activeDeals || 0} active deals`}
+              />
+              <MetricCard 
+                title="Pipeline Value" 
+                value={`$${(kpis?.crm?.pipelineValue || 0).toLocaleString()}`} 
+                icon={Handshake}
+                description={`${kpis?.crm?.wonDeals || 0} deals won`}
+              />
+              <MetricCard 
+                title="OKR Progress" 
+                value={kpis?.goals?.avgProgress || 0} 
+                suffix="%"
+                icon={Flag}
+                description={`${kpis?.goals?.activeObjectives || 0} active objectives`}
+              />
+            </div>
+
             <Card className="bg-zinc-900 border-zinc-800">
               <CardHeader>
                 <CardTitle className="text-white">Activity Trends</CardTitle>
@@ -841,6 +892,102 @@ function KPIDashboardContent() {
                       <span className="text-zinc-400">Total Releases</span>
                       <span className="text-lg font-semibold text-orange-500">{kpis?.product.totalReleases || 0}</span>
                     </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Social Media & B2B CRM Row */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <Send className="h-5 w-5 text-blue-400" />
+                    Social Media Pipeline
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-zinc-400">{kpis?.social?.drafted || 0}</div>
+                      <div className="text-sm text-zinc-500">Drafted</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-purple-400">{kpis?.social?.approved || 0}</div>
+                      <div className="text-sm text-zinc-500">Approved</div>
+                    </div>
+                  </div>
+                  <div className="pt-4 border-t border-zinc-800 grid grid-cols-2 gap-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-400">{kpis?.social?.planned || 0}</div>
+                      <div className="text-sm text-zinc-500">Planned</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-400">{kpis?.social?.posted || 0}</div>
+                      <div className="text-sm text-zinc-500">Posted</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <Building2 className="h-5 w-5 text-orange-400" />
+                    B2B Sales Pipeline
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-white">{kpis?.crm?.totalCompanies || 0}</div>
+                      <div className="text-sm text-zinc-400">Companies</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-blue-400">{kpis?.crm?.activeDeals || 0}</div>
+                      <div className="text-sm text-zinc-400">Active Deals</div>
+                    </div>
+                  </div>
+                  <div className="pt-4 border-t border-zinc-800">
+                    <div className="flex justify-between items-center">
+                      <span className="text-zinc-400">Pipeline Value</span>
+                      <span className="text-xl font-bold text-green-400">${(kpis?.crm?.pipelineValue || 0).toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="text-zinc-400">Deals Won</span>
+                      <span className="text-lg font-semibold text-orange-500">{kpis?.crm?.wonDeals || 0}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <Flag className="h-5 w-5 text-purple-400" />
+                    Goals & OKRs
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-white">{kpis?.goals?.totalObjectives || 0}</div>
+                      <div className="text-sm text-zinc-400">Total Objectives</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-blue-400">{kpis?.goals?.activeObjectives || 0}</div>
+                      <div className="text-sm text-zinc-400">Active</div>
+                    </div>
+                  </div>
+                  <div className="pt-4 border-t border-zinc-800">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-zinc-400">Avg Progress</span>
+                      <span className="text-lg font-semibold text-white">{kpis?.goals?.avgProgress || 0}%</span>
+                    </div>
+                    <Progress 
+                      value={kpis?.goals?.avgProgress || 0} 
+                      className="h-2 bg-zinc-800"
+                    />
                   </div>
                 </CardContent>
               </Card>
