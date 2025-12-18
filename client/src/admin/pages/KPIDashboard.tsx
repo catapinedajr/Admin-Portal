@@ -19,7 +19,9 @@ import {
   Sparkles,
   PenSquare,
   FileText,
-  UserPlus
+  UserPlus,
+  GraduationCap,
+  Target
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts";
@@ -229,6 +231,78 @@ function QuickActions() {
   );
 }
 
+function OperationalHealth({ kpis }: { kpis: KPIData | undefined }) {
+  const stats = [
+    {
+      label: "Lesson Completion",
+      value: `${kpis?.engagement?.lessonCompletionRate || 0}%`,
+      icon: GraduationCap,
+      color: "text-green-400",
+      bgColor: "bg-green-500/10",
+      link: "/admin/content"
+    },
+    {
+      label: "Active Campaigns",
+      value: kpis?.marketing?.activeCampaigns || 0,
+      subValue: `${(kpis?.marketing?.ctr || 0).toFixed(1)}% CTR`,
+      icon: Megaphone,
+      color: "text-blue-400",
+      bgColor: "bg-blue-500/10",
+      link: "/admin/marketing"
+    },
+    {
+      label: "Community Engagement",
+      value: `${kpis?.community?.engagementRate || 0}%`,
+      subValue: `${kpis?.community?.totalPosts || 0} posts`,
+      icon: MessageSquare,
+      color: "text-purple-400",
+      bgColor: "bg-purple-500/10",
+      link: "/admin/content"
+    },
+    {
+      label: "Goals Progress",
+      value: `${kpis?.goals?.avgProgress || 0}%`,
+      subValue: `${kpis?.goals?.activeObjectives || 0} active`,
+      icon: Target,
+      color: "text-orange-400",
+      bgColor: "bg-orange-500/10",
+      link: "/admin/goals"
+    }
+  ];
+
+  return (
+    <Card className="bg-zinc-900/50 border-zinc-800">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm font-medium text-zinc-400 flex items-center gap-2">
+          <Activity className="h-4 w-4" />
+          Operational Health
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {stats.map((stat) => (
+            <Link key={stat.label} href={stat.link}>
+              <div 
+                className={`p-3 rounded-lg ${stat.bgColor} hover:brightness-110 transition-all cursor-pointer group`}
+                data-testid={`stat-${stat.label.toLowerCase().replace(/\s+/g, '-')}`}
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <stat.icon className={`h-4 w-4 ${stat.color}`} />
+                  <span className="text-xs text-zinc-400 group-hover:text-zinc-300">{stat.label}</span>
+                </div>
+                <div className={`text-xl font-bold ${stat.color}`}>{stat.value}</div>
+                {stat.subValue && (
+                  <div className="text-xs text-zinc-500">{stat.subValue}</div>
+                )}
+              </div>
+            </Link>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 function WeeklyWins({ kpis }: { kpis: KPIData | undefined }) {
   const wins = [];
   
@@ -347,6 +421,9 @@ function KPIDashboardContent() {
             color="purple"
           />
         </div>
+
+        {/* Operational Health - Compact operational metrics */}
+        <OperationalHealth kpis={kpis} />
 
         {/* Quick Actions + Weekly Wins Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
