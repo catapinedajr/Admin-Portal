@@ -501,6 +501,374 @@ export function registerAdminRoutes(app: Express) {
     }
   });
 
+  // ============================================
+  // MARKETING MANAGEMENT ROUTES
+  // ============================================
+  
+  // Get all advertising clients
+  app.get("/api/admin/marketing/clients", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { advertisingClients } = await import('@shared/schema');
+      const clients = await db.select().from(advertisingClients).orderBy(advertisingClients.name);
+      
+      const transformedClients = clients.map(c => ({
+        id: c.id,
+        companyName: c.name,
+        contactName: c.contactName || '',
+        email: c.contactEmail || '',
+        phone: c.contactPhone,
+        industry: null,
+        status: c.isActive ? 'active' : 'inactive',
+        notes: c.notes,
+        createdAt: c.createdAt?.toISOString(),
+      }));
+      
+      res.json(transformedClients);
+    } catch (error) {
+      console.error("Error fetching clients:", error);
+      res.status(500).json({ message: "Failed to fetch clients" });
+    }
+  });
+
+  // Create new client
+  app.post("/api/admin/marketing/clients", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { advertisingClients } = await import('@shared/schema');
+      const { companyName, contactName, email, phone, industry, notes } = req.body;
+      
+      const [client] = await db.insert(advertisingClients).values({
+        name: companyName,
+        contactName,
+        contactEmail: email,
+        contactPhone: phone || null,
+        notes: notes || null,
+        isActive: true,
+      }).returning();
+      
+      res.json(client);
+    } catch (error) {
+      console.error("Error creating client:", error);
+      res.status(500).json({ message: "Failed to create client" });
+    }
+  });
+
+  // Delete client
+  app.delete("/api/admin/marketing/clients/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { advertisingClients } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      await db.delete(advertisingClients).where(eq(advertisingClients.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting client:", error);
+      res.status(500).json({ message: "Failed to delete client" });
+    }
+  });
+
+  // Get all campaigns (optionally filtered by clientId)
+  app.get("/api/admin/marketing/campaigns", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { clientId } = req.query;
+      
+      if (clientId) {
+        const campaigns = await db.select().from(adCampaigns)
+          .where(eq(adCampaigns.clientId, parseInt(clientId as string)))
+          .orderBy(adCampaigns.name);
+        return res.json(campaigns);
+      }
+      
+      const campaigns = await db.select().from(adCampaigns).orderBy(adCampaigns.name);
+      res.json(campaigns);
+    } catch (error) {
+      console.error("Error fetching campaigns:", error);
+      res.status(500).json({ message: "Failed to fetch campaigns" });
+    }
+  });
+
+  // Create campaign
+  app.post("/api/admin/marketing/campaigns", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { name, advertiser, clientId, budgetCents, startDate, endDate, targetImpressions } = req.body;
+      
+      const [campaign] = await db.insert(adCampaigns).values({
+        name,
+        advertiser,
+        clientId: clientId || null,
+        status: 'draft',
+        budgetCents: budgetCents || 0,
+        startDate: startDate ? new Date(startDate) : null,
+        endDate: endDate ? new Date(endDate) : null,
+        targetImpressions: targetImpressions || null,
+      }).returning();
+      
+      res.json(campaign);
+    } catch (error) {
+      console.error("Error creating campaign:", error);
+      res.status(500).json({ message: "Failed to create campaign" });
+    }
+  });
+
+  // Update campaign
+  app.patch("/api/admin/marketing/campaigns/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updates: any = {};
+      
+      if (req.body.status) updates.status = req.body.status;
+      if (req.body.name) updates.name = req.body.name;
+      if (req.body.budgetCents !== undefined) updates.budgetCents = req.body.budgetCents;
+      
+      const [campaign] = await db.update(adCampaigns)
+        .set(updates)
+        .where(eq(adCampaigns.id, id))
+        .returning();
+        
+      res.json(campaign);
+    } catch (error) {
+      console.error("Error updating campaign:", error);
+      res.status(500).json({ message: "Failed to update campaign" });
+    }
+  });
+
+  // Delete campaign
+  app.delete("/api/admin/marketing/campaigns/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await db.delete(adCampaigns).where(eq(adCampaigns.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting campaign:", error);
+      res.status(500).json({ message: "Failed to delete campaign" });
+    }
+  });
+
+  // Get creatives for a campaign
+  app.get("/api/admin/marketing/creatives", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { adCreatives } = await import('@shared/schema');
+      const { campaignId } = req.query;
+      
+      if (campaignId) {
+        const creatives = await db.select().from(adCreatives)
+          .where(eq(adCreatives.campaignId, parseInt(campaignId as string)));
+        return res.json(creatives);
+      }
+      
+      const creatives = await db.select().from(adCreatives);
+      res.json(creatives);
+    } catch (error) {
+      console.error("Error fetching creatives:", error);
+      res.status(500).json({ message: "Failed to fetch creatives" });
+    }
+  });
+
+  // Create creative
+  app.post("/api/admin/marketing/creatives", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { adCreatives } = await import('@shared/schema');
+      const { campaignId, title, description, imageUrl, logoUrl, ctaText, ctaUrl, placement } = req.body;
+      
+      const [creative] = await db.insert(adCreatives).values({
+        campaignId,
+        title,
+        description,
+        imageUrl: imageUrl || null,
+        logoUrl: logoUrl || null,
+        ctaText: ctaText || 'Learn More',
+        ctaUrl,
+        placement: placement || 'in_feed',
+        isActive: true,
+      }).returning();
+      
+      res.json(creative);
+    } catch (error) {
+      console.error("Error creating creative:", error);
+      res.status(500).json({ message: "Failed to create creative" });
+    }
+  });
+
+  // Update creative
+  app.patch("/api/admin/marketing/creatives/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { adCreatives } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      const updates: any = {};
+      
+      if (req.body.isActive !== undefined) updates.isActive = req.body.isActive;
+      if (req.body.title) updates.title = req.body.title;
+      if (req.body.description) updates.description = req.body.description;
+      
+      const [creative] = await db.update(adCreatives)
+        .set(updates)
+        .where(eq(adCreatives.id, id))
+        .returning();
+        
+      res.json(creative);
+    } catch (error) {
+      console.error("Error updating creative:", error);
+      res.status(500).json({ message: "Failed to update creative" });
+    }
+  });
+
+  // Delete creative
+  app.delete("/api/admin/marketing/creatives/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { adCreatives } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      await db.delete(adCreatives).where(eq(adCreatives.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting creative:", error);
+      res.status(500).json({ message: "Failed to delete creative" });
+    }
+  });
+
+  // Get analytics
+  app.get("/api/admin/marketing/analytics", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { adImpressions, adClicks, adCreatives } = await import('@shared/schema');
+      const { campaignId } = req.query;
+      
+      if (campaignId) {
+        // Get analytics for specific campaign
+        const campaignIdNum = parseInt(campaignId as string);
+        
+        const impressionsResult = await db.select({ count: count() })
+          .from(adImpressions)
+          .where(eq(adImpressions.campaignId, campaignIdNum));
+        
+        const clicksResult = await db.select({ count: count() })
+          .from(adClicks)
+          .where(eq(adClicks.campaignId, campaignIdNum));
+        
+        const totalImpressions = impressionsResult[0]?.count || 0;
+        const totalClicks = clicksResult[0]?.count || 0;
+        const ctr = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
+        
+        return res.json({ totalImpressions, totalClicks, ctr });
+      }
+      
+      // Get overall analytics
+      const impressionsResult = await db.select({ count: count() }).from(adImpressions);
+      const clicksResult = await db.select({ count: count() }).from(adClicks);
+      
+      const totalImpressions = impressionsResult[0]?.count || 0;
+      const totalClicks = clicksResult[0]?.count || 0;
+      const ctr = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
+      
+      // Get campaigns with their stats
+      const campaigns = await db.select().from(adCampaigns).where(eq(adCampaigns.status, 'active'));
+      const campaignsWithStats = await Promise.all(campaigns.map(async (campaign) => {
+        const impressions = await db.select({ count: count() })
+          .from(adImpressions)
+          .where(eq(adImpressions.campaignId, campaign.id));
+        const clicks = await db.select({ count: count() })
+          .from(adClicks)
+          .where(eq(adClicks.campaignId, campaign.id));
+        
+        const imp = impressions[0]?.count || 0;
+        const clk = clicks[0]?.count || 0;
+        
+        return {
+          id: campaign.id,
+          name: campaign.name,
+          advertiser: campaign.advertiser,
+          impressions: imp,
+          clicks: clk,
+          ctr: imp > 0 ? (clk / imp) * 100 : 0,
+        };
+      }));
+      
+      res.json({ 
+        totalImpressions, 
+        totalClicks, 
+        ctr,
+        campaigns: campaignsWithStats 
+      });
+    } catch (error) {
+      console.error("Error fetching analytics:", error);
+      res.status(500).json({ message: "Failed to fetch analytics" });
+    }
+  });
+
+  // Get all invoices
+  app.get("/api/admin/marketing/invoices", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { invoices } = await import('@shared/schema');
+      const allInvoices = await db.select().from(invoices).orderBy(invoices.createdAt);
+      res.json(allInvoices);
+    } catch (error) {
+      console.error("Error fetching invoices:", error);
+      res.status(500).json({ message: "Failed to fetch invoices" });
+    }
+  });
+
+  // Create invoice
+  app.post("/api/admin/marketing/invoices", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { invoices } = await import('@shared/schema');
+      const { clientId, amountUsd, dueDate, notes } = req.body;
+      
+      // Generate invoice number
+      const existingInvoices = await db.select({ count: count() }).from(invoices);
+      const invoiceNum = existingInvoices[0]?.count || 0;
+      const invoiceNumber = `INV-${new Date().getFullYear()}-${String(invoiceNum + 1).padStart(4, '0')}`;
+      
+      const [invoice] = await db.insert(invoices).values({
+        clientId,
+        invoiceNumber,
+        amountUsd,
+        status: 'draft',
+        dueDate: dueDate ? new Date(dueDate) : null,
+        notes: notes || null,
+      }).returning();
+      
+      res.json(invoice);
+    } catch (error) {
+      console.error("Error creating invoice:", error);
+      res.status(500).json({ message: "Failed to create invoice" });
+    }
+  });
+
+  // Update invoice status
+  app.patch("/api/admin/marketing/invoices/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { invoices } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      const updates: any = { updatedAt: new Date() };
+      
+      if (req.body.status) {
+        updates.status = req.body.status;
+        if (req.body.status === 'paid') {
+          updates.paidAt = new Date();
+        }
+      }
+      
+      const [invoice] = await db.update(invoices)
+        .set(updates)
+        .where(eq(invoices.id, id))
+        .returning();
+        
+      res.json(invoice);
+    } catch (error) {
+      console.error("Error updating invoice:", error);
+      res.status(500).json({ message: "Failed to update invoice" });
+    }
+  });
+
+  // Delete invoice
+  app.delete("/api/admin/marketing/invoices/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { invoices } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      await db.delete(invoices).where(eq(invoices.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting invoice:", error);
+      res.status(500).json({ message: "Failed to delete invoice" });
+    }
+  });
+
   // Create initial admin (only works if no admins exist)
   app.post("/api/admin/setup", async (req, res) => {
     try {

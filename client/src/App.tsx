@@ -20,6 +20,7 @@ import LandingPage from "@/pages/LandingPage";
 import AdminLoginPage from "@/admin/pages/AdminLoginPage";
 import AdminDashboard from "@/admin/pages/AdminDashboard";
 import ContentManagement from "@/admin/pages/ContentManagement";
+import MarketingManagement from "@/admin/pages/MarketingManagement";
 
 import { AppContextProvider } from "@/components/shared/AppContextProvider";
 import Onboarding from "@/pages/onboarding";
@@ -139,8 +140,8 @@ function Router() {
         <Route path="/community" component={CommunityPage} />
         <Route path="/admin/login" component={AdminLoginPage} />
         <Route path="/admin/content" component={ContentManagement} />
+        <Route path="/admin/marketing" component={MarketingManagement} />
         <Route path="/admin" component={AdminDashboard} />
-        <Route path="/admin/ads" component={AdminAdsPage} />
         <Route path="/more" component={MorePage} />
         <Route path="/account" component={AccountPage} />
         <Route path="/wallet" component={WalletPage} />

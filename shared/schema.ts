@@ -325,6 +325,7 @@ export const adCampaigns = pgTable("ad_campaigns", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   advertiser: text("advertiser").notNull(), // Company/brand name
+  clientId: integer("client_id").references(() => advertisingClients.id), // Link to advertising client
   status: text("status").notNull().default('draft'), // draft, active, paused, completed
   startDate: timestamp("start_date"),
   endDate: timestamp("end_date"),
