@@ -2831,6 +2831,10 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
+  // Register admin routes
+  const { registerAdminRoutes } = await import("./admin-routes");
+  registerAdminRoutes(app);
+
   const httpServer = createServer(app);
   return httpServer;
 }

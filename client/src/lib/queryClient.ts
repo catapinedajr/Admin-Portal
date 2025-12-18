@@ -16,9 +16,17 @@ export async function apiRequest(
   const headers: Record<string, string> = data ? { "Content-Type": "application/json" } : {};
   
   try {
-    const sessionId = localStorage.getItem('hodlearn_session');
-    if (sessionId) {
-      headers['Authorization'] = `Bearer ${sessionId}`;
+    // Use admin session for admin routes, otherwise use consumer session
+    if (url.startsWith('/api/admin')) {
+      const adminSessionId = localStorage.getItem('admin_session');
+      if (adminSessionId) {
+        headers['Authorization'] = `Bearer ${adminSessionId}`;
+      }
+    } else {
+      const sessionId = localStorage.getItem('hodlearn_session');
+      if (sessionId) {
+        headers['Authorization'] = `Bearer ${sessionId}`;
+      }
     }
   } catch (error) {
   }
@@ -40,18 +48,27 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
+    const url = queryKey[0] as string;
     // Get auth headers if available
     const headers: Record<string, string> = {};
     
     try {
-      const sessionId = localStorage.getItem('hodlearn_session');
-      if (sessionId) {
-        headers['Authorization'] = `Bearer ${sessionId}`;
+      // Use admin session for admin routes, otherwise use consumer session
+      if (url.startsWith('/api/admin')) {
+        const adminSessionId = localStorage.getItem('admin_session');
+        if (adminSessionId) {
+          headers['Authorization'] = `Bearer ${adminSessionId}`;
+        }
+      } else {
+        const sessionId = localStorage.getItem('hodlearn_session');
+        if (sessionId) {
+          headers['Authorization'] = `Bearer ${sessionId}`;
+        }
       }
     } catch (error) {
     }
 
-    const res = await fetch(queryKey[0] as string, {
+    const res = await fetch(url, {
       headers,
       credentials: "same-origin", // Better Safari compatibility
     });
