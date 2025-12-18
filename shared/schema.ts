@@ -281,6 +281,95 @@ export const socialAccounts = pgTable("social_accounts", {
 });
 
 // ============================================
+// B2B CRM TABLES
+// ============================================
+
+// CRM opportunity types
+export const crmOpportunityTypes = ['enterprise_license', 'team_subscription', 'partnership', 'reseller'] as const;
+export type CrmOpportunityType = typeof crmOpportunityTypes[number];
+
+// CRM account types (customer segments)
+export const crmAccountTypes = ['hr_benefit', 'financial_services', 'academic_education', 'municipal_government', 'other'] as const;
+export type CrmAccountType = typeof crmAccountTypes[number];
+
+// CRM deal stages
+export const crmDealStages = ['lead', 'qualified', 'demo', 'proposal', 'negotiation', 'won', 'lost'] as const;
+export type CrmDealStage = typeof crmDealStages[number];
+
+// B2B Companies
+export const crmCompanies = pgTable("crm_companies", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  website: text("website"),
+  industry: text("industry"),
+  employeeCount: text("employee_count"), // "1-10", "11-50", "51-200", "201-500", "500+"
+  accountType: text("account_type").notNull().default("other"), // hr_benefit, financial_services, academic_education, municipal_government, other
+  address: text("address"),
+  city: text("city"),
+  state: text("state"),
+  country: text("country"),
+  notes: text("notes"),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// B2B Contacts at companies
+export const crmContacts = pgTable("crm_contacts", {
+  id: serial("id").primaryKey(),
+  companyId: integer("company_id").notNull().references(() => crmCompanies.id, { onDelete: 'cascade' }),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  email: text("email"),
+  phone: text("phone"),
+  title: text("title"), // Job title
+  isPrimary: boolean("is_primary").notNull().default(false),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// B2B Deals/Opportunities
+export const crmDeals = pgTable("crm_deals", {
+  id: serial("id").primaryKey(),
+  companyId: integer("company_id").notNull().references(() => crmCompanies.id, { onDelete: 'cascade' }),
+  contactId: integer("contact_id").references(() => crmContacts.id),
+  title: text("title").notNull(),
+  opportunityType: text("opportunity_type").notNull().default("enterprise_license"), // enterprise_license, team_subscription, partnership, reseller
+  stage: text("stage").notNull().default("lead"), // lead, qualified, demo, proposal, negotiation, won, lost
+  dealValue: decimal("deal_value", { precision: 10, scale: 2 }),
+  currency: text("currency").notNull().default("USD"),
+  contractLength: integer("contract_length"), // months
+  expectedUsers: integer("expected_users"), // number of user seats
+  probability: integer("probability").default(0), // 0-100%
+  expectedCloseDate: timestamp("expected_close_date"),
+  actualCloseDate: timestamp("actual_close_date"),
+  lostReason: text("lost_reason"), // If stage is 'lost'
+  notes: text("notes"),
+  assignedTo: integer("assigned_to").references(() => adminUsers.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// CRM Activity types
+export const crmActivityTypes = ['call', 'email', 'meeting', 'demo', 'note', 'task'] as const;
+export type CrmActivityType = typeof crmActivityTypes[number];
+
+// B2B Deal activities/notes
+export const crmActivities = pgTable("crm_activities", {
+  id: serial("id").primaryKey(),
+  dealId: integer("deal_id").notNull().references(() => crmDeals.id, { onDelete: 'cascade' }),
+  activityType: text("activity_type").notNull().default("note"), // call, email, meeting, demo, note, task
+  subject: text("subject").notNull(),
+  description: text("description"),
+  activityDate: timestamp("activity_date").notNull().defaultNow(),
+  dueDate: timestamp("due_date"), // For tasks
+  isCompleted: boolean("is_completed").notNull().default(false),
+  createdBy: integer("created_by").references(() => adminUsers.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// ============================================
 // END ADMIN PORTAL TABLES
 // ============================================
 
@@ -1336,4 +1425,57 @@ export type InsertSocialAccount = z.infer<typeof insertSocialAccountSchema>;
 export type SocialPostWithMetrics = SocialPost & {
   metrics?: SocialPostMetrics;
   signups?: number;
+};
+
+// ============================================
+// B2B CRM SCHEMAS AND TYPES
+// ============================================
+
+// CRM Company schema
+export const insertCrmCompanySchema = createInsertSchema(crmCompanies).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// CRM Contact schema
+export const insertCrmContactSchema = createInsertSchema(crmContacts).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// CRM Deal schema
+export const insertCrmDealSchema = createInsertSchema(crmDeals).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// CRM Activity schema
+export const insertCrmActivitySchema = createInsertSchema(crmActivities).omit({
+  id: true,
+  createdAt: true,
+});
+
+// CRM Types
+export type CrmCompany = typeof crmCompanies.$inferSelect;
+export type InsertCrmCompany = z.infer<typeof insertCrmCompanySchema>;
+export type CrmContact = typeof crmContacts.$inferSelect;
+export type InsertCrmContact = z.infer<typeof insertCrmContactSchema>;
+export type CrmDeal = typeof crmDeals.$inferSelect;
+export type InsertCrmDeal = z.infer<typeof insertCrmDealSchema>;
+export type CrmActivity = typeof crmActivities.$inferSelect;
+export type InsertCrmActivity = z.infer<typeof insertCrmActivitySchema>;
+
+// Extended CRM types
+export type CrmDealWithRelations = CrmDeal & {
+  company: CrmCompany;
+  contact?: CrmContact;
+  activities?: CrmActivity[];
+};
+
+export type CrmCompanyWithContacts = CrmCompany & {
+  contacts: CrmContact[];
+  deals: CrmDeal[];
 };

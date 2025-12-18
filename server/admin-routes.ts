@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { adminAuthService } from "./admin-auth";
 import { db } from "./db";
-import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, users, adCampaigns, storeProducts, storeOrders } from "@shared/schema";
+import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes } from "@shared/schema";
 import { count, eq, sql, and, sum } from "drizzle-orm";
 
 interface AdminRequest extends Request {
@@ -1784,5 +1784,282 @@ Return ONLY the post content, nothing else.`
       console.error("Error generating AI draft:", error);
       res.status(500).json({ message: "Failed to generate draft. Please try again." });
     }
+  });
+
+  // ============================================
+  // B2B CRM ENDPOINTS
+  // ============================================
+
+  // Get CRM stats
+  app.get("/api/admin/crm/stats", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const totalCompanies = await db.select({ count: count() }).from(crmCompanies);
+      const totalDeals = await db.select({ count: count() }).from(crmDeals);
+      const openDeals = await db.select({ count: count() }).from(crmDeals)
+        .where(and(
+          sql`${crmDeals.stage} NOT IN ('won', 'lost')`
+        ));
+      const wonDeals = await db.select({ count: count() }).from(crmDeals)
+        .where(eq(crmDeals.stage, 'won'));
+      const totalValue = await db.select({ sum: sum(crmDeals.dealValue) }).from(crmDeals)
+        .where(eq(crmDeals.stage, 'won'));
+
+      res.json({
+        totalCompanies: totalCompanies[0]?.count || 0,
+        totalDeals: totalDeals[0]?.count || 0,
+        openDeals: openDeals[0]?.count || 0,
+        wonDeals: wonDeals[0]?.count || 0,
+        totalWonValue: totalValue[0]?.sum || 0,
+      });
+    } catch (error) {
+      console.error("Error fetching CRM stats:", error);
+      res.status(500).json({ message: "Failed to fetch CRM stats" });
+    }
+  });
+
+  // Get all companies
+  app.get("/api/admin/crm/companies", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const companies = await db.select().from(crmCompanies).orderBy(crmCompanies.name);
+      res.json(companies);
+    } catch (error) {
+      console.error("Error fetching companies:", error);
+      res.status(500).json({ message: "Failed to fetch companies" });
+    }
+  });
+
+  // Create company
+  app.post("/api/admin/crm/companies", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const data = insertCrmCompanySchema.parse(req.body);
+      const [company] = await db.insert(crmCompanies).values(data).returning();
+      res.json(company);
+    } catch (error: any) {
+      console.error("Error creating company:", error);
+      res.status(400).json({ message: error.message || "Failed to create company" });
+    }
+  });
+
+  // Update company
+  app.patch("/api/admin/crm/companies/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const data = insertCrmCompanySchema.partial().parse(req.body);
+      const [company] = await db.update(crmCompanies)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(crmCompanies.id, id))
+        .returning();
+      res.json(company);
+    } catch (error: any) {
+      console.error("Error updating company:", error);
+      res.status(400).json({ message: error.message || "Failed to update company" });
+    }
+  });
+
+  // Get company with contacts and deals
+  app.get("/api/admin/crm/companies/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const [company] = await db.select().from(crmCompanies).where(eq(crmCompanies.id, id));
+      if (!company) {
+        return res.status(404).json({ message: "Company not found" });
+      }
+      const contacts = await db.select().from(crmContacts).where(eq(crmContacts.companyId, id));
+      const deals = await db.select().from(crmDeals).where(eq(crmDeals.companyId, id));
+      res.json({ ...company, contacts, deals });
+    } catch (error) {
+      console.error("Error fetching company:", error);
+      res.status(500).json({ message: "Failed to fetch company" });
+    }
+  });
+
+  // Create contact
+  app.post("/api/admin/crm/contacts", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const data = insertCrmContactSchema.parse(req.body);
+      const [contact] = await db.insert(crmContacts).values(data).returning();
+      res.json(contact);
+    } catch (error: any) {
+      console.error("Error creating contact:", error);
+      res.status(400).json({ message: error.message || "Failed to create contact" });
+    }
+  });
+
+  // Update contact
+  app.patch("/api/admin/crm/contacts/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const data = insertCrmContactSchema.partial().parse(req.body);
+      const [contact] = await db.update(crmContacts)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(crmContacts.id, id))
+        .returning();
+      res.json(contact);
+    } catch (error: any) {
+      console.error("Error updating contact:", error);
+      res.status(400).json({ message: error.message || "Failed to update contact" });
+    }
+  });
+
+  // Delete contact
+  app.delete("/api/admin/crm/contacts/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await db.delete(crmContacts).where(eq(crmContacts.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting contact:", error);
+      res.status(500).json({ message: "Failed to delete contact" });
+    }
+  });
+
+  // Get all deals with company info
+  app.get("/api/admin/crm/deals", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const deals = await db.select({
+        deal: crmDeals,
+        company: crmCompanies,
+        contact: crmContacts,
+      })
+        .from(crmDeals)
+        .leftJoin(crmCompanies, eq(crmDeals.companyId, crmCompanies.id))
+        .leftJoin(crmContacts, eq(crmDeals.contactId, crmContacts.id))
+        .orderBy(crmDeals.updatedAt);
+      
+      res.json(deals.map(d => ({
+        ...d.deal,
+        company: d.company,
+        contact: d.contact,
+      })));
+    } catch (error) {
+      console.error("Error fetching deals:", error);
+      res.status(500).json({ message: "Failed to fetch deals" });
+    }
+  });
+
+  // Create deal
+  app.post("/api/admin/crm/deals", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const data = insertCrmDealSchema.parse(req.body);
+      const [deal] = await db.insert(crmDeals).values(data).returning();
+      res.json(deal);
+    } catch (error: any) {
+      console.error("Error creating deal:", error);
+      res.status(400).json({ message: error.message || "Failed to create deal" });
+    }
+  });
+
+  // Update deal
+  app.patch("/api/admin/crm/deals/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const data = insertCrmDealSchema.partial().parse(req.body);
+      const [deal] = await db.update(crmDeals)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(crmDeals.id, id))
+        .returning();
+      res.json(deal);
+    } catch (error: any) {
+      console.error("Error updating deal:", error);
+      res.status(400).json({ message: error.message || "Failed to update deal" });
+    }
+  });
+
+  // Update deal stage (quick update for drag and drop)
+  app.patch("/api/admin/crm/deals/:id/stage", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { stage, lostReason } = req.body;
+      
+      const updateData: any = { stage, updatedAt: new Date() };
+      if (stage === 'won' || stage === 'lost') {
+        updateData.actualCloseDate = new Date();
+      }
+      if (stage === 'lost' && lostReason) {
+        updateData.lostReason = lostReason;
+      }
+      
+      const [deal] = await db.update(crmDeals)
+        .set(updateData)
+        .where(eq(crmDeals.id, id))
+        .returning();
+      res.json(deal);
+    } catch (error) {
+      console.error("Error updating deal stage:", error);
+      res.status(500).json({ message: "Failed to update deal stage" });
+    }
+  });
+
+  // Get deal with activities
+  app.get("/api/admin/crm/deals/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const [deal] = await db.select().from(crmDeals).where(eq(crmDeals.id, id));
+      if (!deal) {
+        return res.status(404).json({ message: "Deal not found" });
+      }
+      const [company] = await db.select().from(crmCompanies).where(eq(crmCompanies.id, deal.companyId));
+      const contact = deal.contactId ? (await db.select().from(crmContacts).where(eq(crmContacts.id, deal.contactId)))[0] : null;
+      const activities = await db.select().from(crmActivities)
+        .where(eq(crmActivities.dealId, id))
+        .orderBy(sql`${crmActivities.activityDate} DESC`);
+      
+      res.json({ ...deal, company, contact, activities });
+    } catch (error) {
+      console.error("Error fetching deal:", error);
+      res.status(500).json({ message: "Failed to fetch deal" });
+    }
+  });
+
+  // Create activity
+  app.post("/api/admin/crm/activities", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const data = insertCrmActivitySchema.parse(req.body);
+      const [activity] = await db.insert(crmActivities).values({
+        ...data,
+        createdBy: req.admin?.id,
+      }).returning();
+      res.json(activity);
+    } catch (error: any) {
+      console.error("Error creating activity:", error);
+      res.status(400).json({ message: error.message || "Failed to create activity" });
+    }
+  });
+
+  // Update activity
+  app.patch("/api/admin/crm/activities/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const data = insertCrmActivitySchema.partial().parse(req.body);
+      const [activity] = await db.update(crmActivities)
+        .set(data)
+        .where(eq(crmActivities.id, id))
+        .returning();
+      res.json(activity);
+    } catch (error: any) {
+      console.error("Error updating activity:", error);
+      res.status(400).json({ message: error.message || "Failed to update activity" });
+    }
+  });
+
+  // Delete activity
+  app.delete("/api/admin/crm/activities/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await db.delete(crmActivities).where(eq(crmActivities.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting activity:", error);
+      res.status(500).json({ message: "Failed to delete activity" });
+    }
+  });
+
+  // Get CRM dropdown options
+  app.get("/api/admin/crm/options", requireAdminAuth, async (req: AdminRequest, res) => {
+    res.json({
+      dealStages: crmDealStages,
+      opportunityTypes: crmOpportunityTypes,
+      accountTypes: crmAccountTypes,
+    });
   });
 }

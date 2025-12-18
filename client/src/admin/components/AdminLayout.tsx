@@ -10,7 +10,8 @@ import {
   ChevronRight,
   Menu,
   X,
-  Twitter
+  Twitter,
+  Building2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -27,6 +28,7 @@ const navItems = [
   { href: "/admin/marketing", label: "Marketing", icon: Megaphone },
   { href: "/admin/social", label: "Social", icon: Twitter },
   { href: "/admin/store", label: "Store", icon: ShoppingBag },
+  { href: "/admin/crm", label: "B2B CRM", icon: Building2 },
 ];
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
