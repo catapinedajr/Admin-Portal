@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import { 
   Plus, Calendar, Send, Eye, MousePointerClick, Users, TrendingUp,
   Twitter, Clock, BarChart3, ArrowRight, Edit2, Trash2, Image,
-  AlertCircle, CheckCircle2, Loader2, Link as LinkIcon
+  AlertCircle, CheckCircle2, Loader2, Link as LinkIcon, Sparkles, RefreshCw
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -284,6 +284,23 @@ function PostComposer({
   const charCount = formData.content.length;
   const charPercent = (charCount / maxChars) * 100;
 
+  const generateDraftMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/admin/social/generate-draft", {
+        dayIndex: formData.linkedDayIndex,
+        platform: formData.platform,
+      });
+      return res.json();
+    },
+    onSuccess: (data: { draft: string }) => {
+      setFormData({ ...formData, content: data.draft });
+      toast({ title: "Draft generated", description: "AI-generated content is ready for review" });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to generate draft", description: error.message, variant: "destructive" });
+    },
+  });
+
   const saveMutation = useMutation({
     mutationFn: async (status: 'draft' | 'scheduled') => {
       const scheduledAt = formData.scheduledAt && formData.scheduledTime 
@@ -334,15 +351,42 @@ function PostComposer({
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label className="text-zinc-300">Content</Label>
-              <span className={`text-xs ${charCount > maxChars ? 'text-red-400' : 'text-zinc-500'}`}>
-                {charCount}/{maxChars}
-              </span>
+              <div className="flex items-center gap-2">
+                {formData.linkedDayIndex && formData.linkedDayIndex !== "none" && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => generateDraftMutation.mutate()}
+                    disabled={generateDraftMutation.isPending}
+                    className="h-7 text-xs border-orange-500/30 text-orange-400 hover:bg-orange-500/10"
+                    data-testid="button-generate-draft"
+                  >
+                    {generateDraftMutation.isPending ? (
+                      <>
+                        <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-3 h-3 mr-1" />
+                        Generate with AI
+                      </>
+                    )}
+                  </Button>
+                )}
+                <span className={`text-xs ${charCount > maxChars ? 'text-red-400' : 'text-zinc-500'}`}>
+                  {charCount}/{maxChars}
+                </span>
+              </div>
             </div>
             <Textarea
               value={formData.content}
               onChange={(e) => setFormData({ ...formData, content: e.target.value })}
               className="bg-zinc-800 border-zinc-700 text-white min-h-[100px] resize-none"
-              placeholder="What's happening in Bitcoin today?"
+              placeholder={formData.linkedDayIndex && formData.linkedDayIndex !== "none" 
+                ? "Click 'Generate with AI' to create a draft, or write your own..." 
+                : "What's happening in Bitcoin today?"}
               data-testid="input-post-content"
             />
             <Progress 

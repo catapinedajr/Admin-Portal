@@ -1706,4 +1706,80 @@ export function registerAdminRoutes(app: Express) {
       res.status(500).json({ message: "Failed to track attribution" });
     }
   });
+
+  // AI Draft Generation using Claude
+  app.post("/api/admin/social/generate-draft", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { dayIndex, platform } = req.body;
+      
+      if (!dayIndex) {
+        return res.status(400).json({ message: "Please select a lesson to generate content from" });
+      }
+      
+      // Get the lesson content
+      const [day] = await db.select()
+        .from(contentDays)
+        .where(eq(contentDays.dayIndex, parseInt(dayIndex)));
+      
+      if (!day) {
+        return res.status(404).json({ message: "Lesson not found" });
+      }
+      
+      // Get associated lesson content if available
+      const lessons = await db.select()
+        .from(contentLessons)
+        .where(eq(contentLessons.dayIndex, parseInt(dayIndex)));
+      
+      const lessonContent = lessons.map(l => l.content).join('\n\n');
+      
+      // Build context for Claude
+      const lessonContext = `
+Day ${day.dayIndex}: ${day.title}
+Summary: ${day.summary}
+${lessonContent ? `\nLesson Content:\n${lessonContent}` : ''}
+      `.trim();
+      
+      // Platform-specific constraints
+      const platformConstraints = platform === 'twitter' 
+        ? 'Maximum 280 characters. Use engaging hooks, relevant hashtags (#Bitcoin, #BTC, etc), and a clear call-to-action.'
+        : 'Can be longer form. Include emojis and formatting as appropriate.';
+      
+      // Call Claude
+      const Anthropic = (await import('@anthropic-ai/sdk')).default;
+      const anthropic = new Anthropic();
+      
+      const message = await anthropic.messages.create({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 300,
+        messages: [
+          {
+            role: "user",
+            content: `You are a social media content creator for HODLearn, a Bitcoin education platform. Your goal is to create engaging posts that drive curiosity and signups.
+
+Create a ${platform} post based on this Bitcoin lesson:
+
+${lessonContext}
+
+Guidelines:
+- ${platformConstraints}
+- Make it engaging and accessible to beginners
+- Create urgency or curiosity without being salesy
+- Focus on one key insight from the lesson
+- End with a subtle call-to-action (learn more, start today, etc)
+- DO NOT use the word "journey" or "unlock"
+- Be authentic and conversational
+
+Return ONLY the post content, nothing else.`
+          }
+        ]
+      });
+      
+      const draft = (message.content[0] as any).text || '';
+      
+      res.json({ draft: draft.trim() });
+    } catch (error) {
+      console.error("Error generating AI draft:", error);
+      res.status(500).json({ message: "Failed to generate draft. Please try again." });
+    }
+  });
 }
