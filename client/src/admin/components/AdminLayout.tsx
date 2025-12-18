@@ -11,7 +11,9 @@ import {
   Menu,
   X,
   Twitter,
-  Building2
+  Building2,
+  Map,
+  Target
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -29,6 +31,8 @@ const navItems = [
   { href: "/admin/social", label: "Social", icon: Twitter },
   { href: "/admin/store", label: "Store", icon: ShoppingBag },
   { href: "/admin/crm", label: "B2B CRM", icon: Building2 },
+  { href: "/admin/roadmap", label: "Roadmap", icon: Map },
+  { href: "/admin/okrs", label: "Goals & OKRs", icon: Target },
 ];
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
