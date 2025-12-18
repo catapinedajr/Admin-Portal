@@ -962,7 +962,7 @@ export function registerAdminRoutes(app: Express) {
       const totalSpentCents = allCampaigns.reduce((sum, c) => sum + (c.spentCents || 0), 0);
       const budgetPacing = totalBudgetCents > 0 ? (totalSpentCents / totalBudgetCents) * 100 : 0;
       
-      // Get campaigns with their stats
+      // Get campaigns with their stats including conversions
       const campaignsWithStats = await Promise.all(activeCampaigns.map(async (campaign) => {
         const impressions = await db.select({ count: count() })
           .from(adImpressions)
@@ -971,11 +971,22 @@ export function registerAdminRoutes(app: Express) {
           .from(adClicks)
           .where(eq(adClicks.campaignId, campaign.id));
         
+        // Count conversions (user signups) attributed to this campaign
+        const conversions = await db.select({ count: count() })
+          .from(users)
+          .where(eq(users.utmCampaign, campaign.name));
+        
         const imp = impressions[0]?.count || 0;
         const clk = clicks[0]?.count || 0;
+        const conv = conversions[0]?.count || 0;
         const budgetCents = campaign.budgetCents || 0;
         const spentCents = campaign.spentCents || 0;
         const campaignBudgetPacing = budgetCents > 0 ? (spentCents / budgetCents) * 100 : 0;
+        
+        // Calculate conversion metrics
+        const conversionRate = clk > 0 ? (conv / clk) * 100 : 0;
+        const costPerClick = clk > 0 ? spentCents / clk : 0;
+        const costPerAcquisition = conv > 0 ? spentCents / conv : 0;
         
         return {
           id: campaign.id,
@@ -983,7 +994,11 @@ export function registerAdminRoutes(app: Express) {
           advertiser: campaign.advertiser,
           impressions: imp,
           clicks: clk,
+          conversions: conv,
           ctr: imp > 0 ? (clk / imp) * 100 : 0,
+          conversionRate,
+          costPerClickCents: costPerClick,
+          costPerAcquisitionCents: costPerAcquisition,
           budgetCents: campaign.budgetCents,
           spentCents: campaign.spentCents,
           budgetPacing: campaignBudgetPacing,
@@ -992,10 +1007,18 @@ export function registerAdminRoutes(app: Express) {
         };
       }));
       
+      // Calculate total conversions across all campaigns
+      const totalConversions = campaignsWithStats.reduce((sum, c) => sum + c.conversions, 0);
+      const overallConversionRate = totalClicks > 0 ? (totalConversions / totalClicks) * 100 : 0;
+      const overallCPA = totalConversions > 0 ? totalSpentCents / totalConversions : 0;
+      
       res.json({ 
         totalImpressions, 
         totalClicks, 
+        totalConversions,
         ctr,
+        overallConversionRate,
+        overallCostPerAcquisitionCents: overallCPA,
         totalBudgetCents,
         totalSpentCents,
         budgetPacing,
