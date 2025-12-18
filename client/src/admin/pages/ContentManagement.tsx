@@ -365,9 +365,9 @@ function EditDayDialog({ day, open, onOpenChange }: {
         <Tabs defaultValue="details" className="mt-4">
           <TabsList className="bg-zinc-800 border-zinc-700">
             <TabsTrigger value="details" className="data-[state=active]:bg-orange-500">Details</TabsTrigger>
-            <TabsTrigger value="lesson" className="data-[state=active]:bg-orange-500">Lesson</TabsTrigger>
-            <TabsTrigger value="questions" className="data-[state=active]:bg-orange-500">Questions ({questions?.length || 0})</TabsTrigger>
-            <TabsTrigger value="quizzes" className="data-[state=active]:bg-orange-500">Quizzes ({quizzes?.length || 0})</TabsTrigger>
+            <TabsTrigger value="questions" className="data-[state=active]:bg-orange-500">Learning Preview ({questions?.length || 0})</TabsTrigger>
+            <TabsTrigger value="lesson" className="data-[state=active]:bg-orange-500">Today's Lesson</TabsTrigger>
+            <TabsTrigger value="quizzes" className="data-[state=active]:bg-orange-500">Knowledge Check ({quizzes?.length || 0})</TabsTrigger>
           </TabsList>
 
           <TabsContent value="details" className="space-y-4 mt-4">
@@ -568,7 +568,7 @@ function EditDayDialog({ day, open, onOpenChange }: {
             <div className="flex justify-between items-center">
               <Label className="text-zinc-300 text-sm font-medium flex items-center gap-2">
                 <HelpCircle className="w-4 h-4 text-orange-500" />
-                Learning Preview Questions
+                Today's Learning Preview
               </Label>
               <div className="flex gap-2">
                 <Button
@@ -722,7 +722,7 @@ function EditDayDialog({ day, open, onOpenChange }: {
             <div className="flex justify-between items-center">
               <Label className="text-zinc-300 text-sm font-medium flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-orange-500" />
-                Quiz Questions
+                Knowledge Check Quiz
               </Label>
               <div className="flex gap-2">
                 <Button
