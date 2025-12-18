@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { adminAuthService } from "./admin-auth";
 import { db } from "./db";
-import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks } from "@shared/schema";
+import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema } from "@shared/schema";
 import { count, eq, sql, and, sum } from "drizzle-orm";
 
 interface AdminRequest extends Request {
@@ -2638,6 +2638,135 @@ Return ONLY the post content, nothing else.`
     } catch (error) {
       console.error("Error fetching KPI trends:", error);
       res.status(500).json({ message: "Failed to fetch KPI trends" });
+    }
+  });
+
+  // ==================== KPI Targets Routes ====================
+
+  // Get all KPI targets
+  app.get("/api/admin/kpis/targets", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const targets = await db.select().from(kpiTargets).orderBy(kpiTargets.dueDate);
+      res.json(targets);
+    } catch (error) {
+      console.error("Error fetching KPI targets:", error);
+      res.status(500).json({ message: "Failed to fetch KPI targets" });
+    }
+  });
+
+  // Create KPI target
+  app.post("/api/admin/kpis/targets", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const data = insertKpiTargetSchema.parse(req.body);
+      const [target] = await db.insert(kpiTargets).values(data).returning();
+      res.json(target);
+    } catch (error: any) {
+      console.error("Error creating KPI target:", error);
+      res.status(400).json({ message: error.message || "Failed to create KPI target" });
+    }
+  });
+
+  // Update KPI target
+  app.patch("/api/admin/kpis/targets/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const data = insertKpiTargetSchema.partial().parse(req.body);
+      const [target] = await db.update(kpiTargets)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(kpiTargets.id, id))
+        .returning();
+      res.json(target);
+    } catch (error: any) {
+      console.error("Error updating KPI target:", error);
+      res.status(400).json({ message: error.message || "Failed to update KPI target" });
+    }
+  });
+
+  // Delete KPI target
+  app.delete("/api/admin/kpis/targets/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await db.delete(kpiTargets).where(eq(kpiTargets.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting KPI target:", error);
+      res.status(500).json({ message: "Failed to delete KPI target" });
+    }
+  });
+
+  // Update KPI target current values (called when refreshing KPIs)
+  app.post("/api/admin/kpis/targets/refresh", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const targets = await db.select().from(kpiTargets).where(eq(kpiTargets.status, 'active'));
+      const now = new Date();
+      
+      for (const target of targets) {
+        let currentValue = 0;
+        
+        // Calculate current value based on metric key
+        switch (target.metricKey) {
+          case 'users.total': {
+            const [result] = await db.select({ count: count() }).from(users);
+            currentValue = Number(result?.count || 0);
+            break;
+          }
+          case 'users.active': {
+            const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            const [result] = await db.select({ count: count() }).from(users).where(sql`${users.lastActivityDate} >= ${oneWeekAgo}`);
+            currentValue = Number(result?.count || 0);
+            break;
+          }
+          case 'engagement.lessonCompletionRate': {
+            const [totalResult] = await db.select({ count: count() }).from(users);
+            const [completedResult] = await db.select({ count: count() }).from(users).where(sql`${users.completedLessons} > 0`);
+            const total = Number(totalResult?.count || 0);
+            const completed = Number(completedResult?.count || 0);
+            currentValue = total > 0 ? Math.round((completed / total) * 100) : 0;
+            break;
+          }
+          case 'content.coverage': {
+            const [result] = await db.select({ count: count() }).from(contentDays);
+            currentValue = Math.round((Number(result?.count || 0) / 180) * 100);
+            break;
+          }
+          case 'community.totalPosts': {
+            const [result] = await db.select({ count: count() }).from(forumPosts);
+            currentValue = Number(result?.count || 0);
+            break;
+          }
+          case 'revenue.monthly': {
+            const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+            const [result] = await db.select({ total: sql<number>`COALESCE(SUM(CAST(${storeOrders.totalUsd} AS DECIMAL)), 0)` })
+              .from(storeOrders)
+              .where(sql`${storeOrders.status} = 'paid' AND ${storeOrders.createdAt} >= ${oneMonthAgo}`);
+            currentValue = Math.round(Number(result?.total || 0));
+            break;
+          }
+          case 'product.completedIdeas': {
+            const [result] = await db.select({ count: count() }).from(roadmapIdeas).where(eq(roadmapIdeas.status, 'completed'));
+            currentValue = Number(result?.count || 0);
+            break;
+          }
+        }
+        
+        // Update status based on due date and progress
+        let status = target.status;
+        if (currentValue >= target.targetValue) {
+          status = 'achieved';
+        } else if (new Date(target.dueDate) < now && currentValue < target.targetValue) {
+          status = 'missed';
+        }
+        
+        await db.update(kpiTargets)
+          .set({ currentValue, status, updatedAt: new Date() })
+          .where(eq(kpiTargets.id, target.id));
+      }
+      
+      const updatedTargets = await db.select().from(kpiTargets).orderBy(kpiTargets.dueDate);
+      res.json(updatedTargets);
+    } catch (error) {
+      console.error("Error refreshing KPI targets:", error);
+      res.status(500).json({ message: "Failed to refresh KPI targets" });
     }
   });
 }

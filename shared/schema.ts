@@ -1551,6 +1551,32 @@ export const keyResultUpdates = pgTable("key_result_updates", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// KPI Targets - for setting measurable targets with deadlines
+export const kpiTargets = pgTable("kpi_targets", {
+  id: serial("id").primaryKey(),
+  metricKey: text("metric_key").notNull(), // e.g., 'users.active', 'revenue.monthly', 'engagement.lessonCompletionRate'
+  metricName: text("metric_name").notNull(), // Human-readable name
+  category: text("category").notNull(), // users, engagement, content, community, marketing, revenue, product
+  targetValue: integer("target_value").notNull(),
+  currentValue: integer("current_value").notNull().default(0),
+  unit: text("unit"), // e.g., '%', 'users', '$'
+  dueDate: timestamp("due_date").notNull(),
+  status: text("status").notNull().default('active'), // active, achieved, missed, cancelled
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertKpiTargetSchema = createInsertSchema(kpiTargets).omit({
+  id: true,
+  currentValue: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type KpiTarget = typeof kpiTargets.$inferSelect;
+export type InsertKpiTarget = z.infer<typeof insertKpiTargetSchema>;
+
 // Roadmap schemas
 export const insertRoadmapIdeaSchema = createInsertSchema(roadmapIdeas).omit({
   id: true,
