@@ -227,14 +227,74 @@ export function registerAdminRoutes(app: Express) {
       const { dayIndex, title, theme, readingLevel, culturalStage, lesson, quizzes, questions } = req.body;
       
       // Validate required fields
-      if (!dayIndex || !title || !theme) {
-        return res.status(400).json({ message: "Missing required fields: dayIndex, title, theme" });
+      const errors: string[] = [];
+      
+      if (typeof dayIndex !== 'number' || dayIndex < 1) {
+        errors.push("dayIndex must be a positive number");
+      }
+      if (!title || typeof title !== 'string' || title.trim().length === 0) {
+        errors.push("title is required and must be a non-empty string");
+      }
+      if (!theme || typeof theme !== 'string' || theme.trim().length === 0) {
+        errors.push("theme is required and must be a non-empty string");
+      }
+      
+      // Validate lesson if provided
+      if (lesson) {
+        if (!lesson.title || typeof lesson.title !== 'string') {
+          errors.push("lesson.title is required if lesson is provided");
+        }
+        if (!lesson.content || typeof lesson.content !== 'string') {
+          errors.push("lesson.content is required if lesson is provided");
+        }
+        if (lesson.keyTakeaways && !Array.isArray(lesson.keyTakeaways)) {
+          errors.push("lesson.keyTakeaways must be an array");
+        }
+      }
+      
+      // Validate quizzes if provided
+      if (quizzes) {
+        if (!Array.isArray(quizzes)) {
+          errors.push("quizzes must be an array");
+        } else {
+          quizzes.forEach((quiz: any, idx: number) => {
+            if (!quiz.question || typeof quiz.question !== 'string') {
+              errors.push(`quizzes[${idx}].question is required`);
+            }
+            if (!Array.isArray(quiz.options) || quiz.options.length < 2) {
+              errors.push(`quizzes[${idx}].options must be an array with at least 2 options`);
+            }
+            if (typeof quiz.correctAnswer !== 'number' || quiz.correctAnswer < 0 || quiz.correctAnswer >= (quiz.options?.length || 0)) {
+              errors.push(`quizzes[${idx}].correctAnswer must be a valid index (0 to ${(quiz.options?.length || 1) - 1})`);
+            }
+          });
+        }
+      }
+      
+      // Validate questions if provided
+      if (questions) {
+        if (!Array.isArray(questions)) {
+          errors.push("questions must be an array");
+        } else {
+          questions.forEach((q: any, idx: number) => {
+            if (!q.title || typeof q.title !== 'string') {
+              errors.push(`questions[${idx}].title is required`);
+            }
+            if (!q.content || typeof q.content !== 'string') {
+              errors.push(`questions[${idx}].content is required`);
+            }
+          });
+        }
+      }
+      
+      if (errors.length > 0) {
+        return res.status(400).json({ message: "Validation failed", errors });
       }
       
       // Check if day index already exists
       const existing = await db.select().from(contentDays).where(eq(contentDays.dayIndex, dayIndex));
       if (existing.length > 0) {
-        return res.status(400).json({ message: `Day ${dayIndex} already exists` });
+        return res.status(400).json({ message: `Day ${dayIndex} already exists`, errors: [`Day ${dayIndex} already exists`] });
       }
       
       // Create content day

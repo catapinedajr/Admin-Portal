@@ -599,6 +599,46 @@ function BulkImportDialog({ open, onOpenChange, nextDayIndex }: {
   ]
 }`;
 
+  const validateContent = (parsed: any): string[] => {
+    const errors: string[] = [];
+    
+    if (typeof parsed.dayIndex !== 'number' || parsed.dayIndex < 1) {
+      errors.push("dayIndex must be a positive number");
+    }
+    if (!parsed.title || typeof parsed.title !== 'string' || parsed.title.trim() === '') {
+      errors.push("title is required");
+    }
+    if (!parsed.theme || typeof parsed.theme !== 'string' || parsed.theme.trim() === '') {
+      errors.push("theme is required");
+    }
+    
+    if (parsed.lesson) {
+      if (!parsed.lesson.title) errors.push("lesson.title is required");
+      if (!parsed.lesson.content) errors.push("lesson.content is required");
+    }
+    
+    if (parsed.quizzes && Array.isArray(parsed.quizzes)) {
+      parsed.quizzes.forEach((quiz: any, idx: number) => {
+        if (!quiz.question) errors.push(`Quiz ${idx + 1}: question is required`);
+        if (!Array.isArray(quiz.options) || quiz.options.length < 2) {
+          errors.push(`Quiz ${idx + 1}: needs at least 2 options`);
+        }
+        if (typeof quiz.correctAnswer !== 'number' || quiz.correctAnswer < 0 || quiz.correctAnswer >= (quiz.options?.length || 0)) {
+          errors.push(`Quiz ${idx + 1}: correctAnswer is invalid`);
+        }
+      });
+    }
+    
+    if (parsed.questions && Array.isArray(parsed.questions)) {
+      parsed.questions.forEach((q: any, idx: number) => {
+        if (!q.title) errors.push(`Question ${idx + 1}: title is required`);
+        if (!q.content) errors.push(`Question ${idx + 1}: content is required`);
+      });
+    }
+    
+    return errors;
+  };
+
   const handleJsonChange = (value: string) => {
     setJsonInput(value);
     setParseError(null);
@@ -608,9 +648,10 @@ function BulkImportDialog({ open, onOpenChange, nextDayIndex }: {
     
     try {
       const parsed = JSON.parse(value);
+      const validationErrors = validateContent(parsed);
       
-      if (!parsed.dayIndex || !parsed.title || !parsed.theme) {
-        setParseError("Missing required fields: dayIndex, title, theme");
+      if (validationErrors.length > 0) {
+        setParseError(validationErrors.join("; "));
         return;
       }
       
