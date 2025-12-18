@@ -380,13 +380,13 @@ export default function UsersManagement() {
             />
             <StatsCard 
               title="Avg Streak" 
-              value={stats?.averageStreak?.toFixed(1) || 0}
+              value={typeof stats?.averageStreak === 'number' ? stats.averageStreak.toFixed(1) : (parseFloat(String(stats?.averageStreak || '0')).toFixed(1) || '0')}
               subtitle="days"
               icon={Flame}
             />
             <StatsCard 
               title="Avg Lessons" 
-              value={stats?.averageCompletedLessons?.toFixed(1) || 0}
+              value={typeof stats?.averageCompletedLessons === 'number' ? stats.averageCompletedLessons.toFixed(1) : (parseFloat(String(stats?.averageCompletedLessons || '0')).toFixed(1) || '0')}
               subtitle="per user"
               icon={BookOpen}
             />
