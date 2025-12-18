@@ -1735,7 +1735,7 @@ export function registerAdminRoutes(app: Express) {
       // Build context for Claude
       const lessonContext = `
 Day ${day.dayIndex}: ${day.title}
-Summary: ${day.summary}
+Theme: ${day.theme}
 ${lessonContent ? `\nLesson Content:\n${lessonContent}` : ''}
       `.trim();
       
@@ -1752,7 +1752,7 @@ ${lessonContent ? `\nLesson Content:\n${lessonContent}` : ''}
       });
       
       const message = await anthropic.messages.create({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-5",
         max_tokens: 300,
         messages: [
           {
