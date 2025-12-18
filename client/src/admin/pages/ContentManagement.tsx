@@ -207,16 +207,28 @@ function EditDayDialog({ day, open, onOpenChange }: {
   
   const { data: lesson, isLoading: lessonLoading } = useQuery<ContentLesson>({
     queryKey: ["/api/admin/content/lessons", day?.id],
+    queryFn: async () => {
+      const res = await apiRequest("GET", `/api/admin/content/lessons/${day?.id}`);
+      return res.json();
+    },
     enabled: !!day?.id && open,
   });
   
   const { data: quizzes, isLoading: quizzesLoading } = useQuery<ContentQuiz[]>({
     queryKey: ["/api/admin/content/quizzes", day?.id],
+    queryFn: async () => {
+      const res = await apiRequest("GET", `/api/admin/content/quizzes/${day?.id}`);
+      return res.json();
+    },
     enabled: !!day?.id && open,
   });
   
   const { data: questions, isLoading: questionsLoading } = useQuery<ContentQuestion[]>({
     queryKey: ["/api/admin/content/questions", day?.id],
+    queryFn: async () => {
+      const res = await apiRequest("GET", `/api/admin/content/questions/${day?.id}`);
+      return res.json();
+    },
     enabled: !!day?.id && open,
   });
 
