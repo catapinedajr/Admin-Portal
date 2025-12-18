@@ -25,7 +25,7 @@ import UsersManagement from "@/admin/pages/UsersManagement";
 import SocialMediaHub from "@/admin/pages/SocialMediaHub";
 import CRMManagement from "@/admin/pages/CRMManagement";
 import RoadmapManagement from "@/admin/pages/RoadmapManagement";
-import OKRManagement from "@/admin/pages/OKRManagement";
+import GoalsManagement from "@/admin/pages/GoalsManagement";
 import KPIDashboard from "@/admin/pages/KPIDashboard";
 
 import { AppContextProvider } from "@/components/shared/AppContextProvider";
@@ -152,7 +152,8 @@ function Router() {
         <Route path="/admin/social" component={SocialMediaHub} />
         <Route path="/admin/crm" component={CRMManagement} />
         <Route path="/admin/roadmap" component={RoadmapManagement} />
-        <Route path="/admin/okrs" component={OKRManagement} />
+        <Route path="/admin/goals" component={GoalsManagement} />
+        <Route path="/admin/okrs" component={GoalsManagement} />
         <Route path="/admin/kpis" component={KPIDashboard} />
         <Route path="/admin" component={KPIDashboard} />
         <Route path="/more" component={MorePage} />

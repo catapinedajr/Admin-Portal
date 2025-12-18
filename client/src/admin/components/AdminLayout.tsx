@@ -26,7 +26,7 @@ interface AdminLayoutProps {
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/okrs", label: "Goals & OKRs", icon: Target },
+  { href: "/admin/goals", label: "Goals", icon: Target },
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/content", label: "Content", icon: BookOpen },
   { href: "/admin/marketing", label: "Marketing", icon: Megaphone },
