@@ -930,6 +930,9 @@ export function registerAdminRoutes(app: Express) {
         // Get analytics for specific campaign
         const campaignIdNum = parseInt(campaignId as string);
         
+        // Get campaign details first
+        const [campaign] = await db.select().from(adCampaigns).where(eq(adCampaigns.id, campaignIdNum));
+        
         const impressionsResult = await db.select({ count: count() })
           .from(adImpressions)
           .where(eq(adImpressions.campaignId, campaignIdNum));
@@ -938,11 +941,27 @@ export function registerAdminRoutes(app: Express) {
           .from(adClicks)
           .where(eq(adClicks.campaignId, campaignIdNum));
         
+        // Count conversions (signups) attributed to this campaign
+        const conversionsResult = campaign ? await db.select({ count: count() })
+          .from(users)
+          .where(eq(users.utmCampaign, campaign.name)) : [{ count: 0 }];
+        
         const totalImpressions = impressionsResult[0]?.count || 0;
         const totalClicks = clicksResult[0]?.count || 0;
+        const totalConversions = conversionsResult[0]?.count || 0;
         const ctr = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
+        const conversionRate = totalClicks > 0 ? (totalConversions / totalClicks) * 100 : 0;
+        const spentCents = campaign?.spentCents || 0;
+        const costPerAcquisitionCents = totalConversions > 0 ? spentCents / totalConversions : 0;
         
-        return res.json({ totalImpressions, totalClicks, ctr });
+        return res.json({ 
+          totalImpressions, 
+          totalClicks, 
+          totalConversions,
+          ctr, 
+          conversionRate,
+          costPerAcquisitionCents
+        });
       }
       
       // Get overall analytics

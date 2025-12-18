@@ -49,7 +49,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/register", async (req, res) => {
     try {
       const userData = registerSchema.parse(req.body);
-      const { utmSource, utmMedium, utmCampaign, utmContent } = req.body;
+      const { utmSource, utmMedium, utmCampaign, utmContent, utmTerm } = req.body;
       
       // Check if username or email exists
       const existingUser = await authService.getUserByUsername(userData.username) || 
@@ -64,7 +64,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { user, sessionId } = await authService.register(userData);
       
       // Store UTM params on user record for marketing attribution
-      if (utmSource || utmMedium || utmCampaign || utmContent) {
+      if (utmSource || utmMedium || utmCampaign || utmContent || utmTerm) {
         try {
           await db.update(users)
             .set({
@@ -72,6 +72,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               utmMedium: utmMedium || null,
               utmCampaign: utmCampaign || null,
               utmContent: utmContent || null,
+              utmTerm: utmTerm || null,
             })
             .where(eq(users.id, user.id));
         } catch (utmError) {
