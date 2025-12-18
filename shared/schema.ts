@@ -38,6 +38,105 @@ export const passwordResetTokens = pgTable("password_reset_tokens", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+// ============================================
+// ADMIN PORTAL TABLES (Separate from consumer app)
+// ============================================
+
+// Admin users - completely separate from regular users
+export const adminUsers = pgTable("admin_users", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  passwordHash: text("password_hash").notNull(),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  role: text("role").notNull().default("admin"), // admin, super_admin
+  isActive: boolean("is_active").notNull().default(true),
+  lastLoginAt: timestamp("last_login_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Admin sessions - separate from user sessions
+export const adminSessions = pgTable("admin_sessions", {
+  id: text("id").primaryKey(), // UUID
+  adminId: integer("admin_id").notNull().references(() => adminUsers.id, { onDelete: 'cascade' }),
+  expiresAt: timestamp("expires_at").notNull(),
+  lastUsed: timestamp("last_used").notNull().defaultNow(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Advertising clients - companies that advertise with HODLearn
+export const advertisingClients = pgTable("advertising_clients", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  contactName: text("contact_name"),
+  contactEmail: text("contact_email"),
+  contactPhone: text("contact_phone"),
+  website: text("website"),
+  notes: text("notes"),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Store products
+export const storeProducts = pgTable("store_products", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+  priceUsd: decimal("price_usd", { precision: 10, scale: 2 }).notNull(),
+  priceSats: integer("price_sats"),
+  imageUrl: text("image_url"),
+  category: text("category"),
+  stockQuantity: integer("stock_quantity").notNull().default(0),
+  isActive: boolean("is_active").notNull().default(true),
+  isFeatured: boolean("is_featured").notNull().default(false),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Store orders
+export const storeOrders = pgTable("store_orders", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id),
+  status: text("status").notNull().default("pending"), // pending, paid, shipped, delivered, cancelled
+  totalUsd: decimal("total_usd", { precision: 10, scale: 2 }).notNull(),
+  shippingAddress: json("shipping_address"),
+  trackingNumber: text("tracking_number"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Store order items
+export const storeOrderItems = pgTable("store_order_items", {
+  id: serial("id").primaryKey(),
+  orderId: integer("order_id").notNull().references(() => storeOrders.id, { onDelete: 'cascade' }),
+  productId: integer("product_id").notNull().references(() => storeProducts.id),
+  quantity: integer("quantity").notNull(),
+  priceUsd: decimal("price_usd", { precision: 10, scale: 2 }).notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Invoices for advertising clients
+export const invoices = pgTable("invoices", {
+  id: serial("id").primaryKey(),
+  clientId: integer("client_id").notNull().references(() => advertisingClients.id),
+  campaignId: integer("campaign_id").references(() => adCampaigns.id),
+  invoiceNumber: text("invoice_number").notNull().unique(),
+  amountUsd: decimal("amount_usd", { precision: 10, scale: 2 }).notNull(),
+  status: text("status").notNull().default("draft"), // draft, sent, paid, overdue, cancelled
+  dueDate: timestamp("due_date"),
+  paidAt: timestamp("paid_at"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// ============================================
+// END ADMIN PORTAL TABLES
+// ============================================
+
 // Community forum categories
 export const forumCategories = pgTable("forum_categories", {
   id: serial("id").primaryKey(),
@@ -922,4 +1021,82 @@ export type InsertAdClick = z.infer<typeof insertAdClickSchema>;
 // Ad creative with campaign info for display
 export type AdCreativeWithCampaign = AdCreative & {
   campaign: AdCampaign;
+};
+
+// ============================================
+// ADMIN PORTAL SCHEMAS AND TYPES
+// ============================================
+
+// Admin user schemas
+export const insertAdminUserSchema = createInsertSchema(adminUsers).omit({
+  id: true,
+  lastLoginAt: true,
+  createdAt: true,
+});
+
+export const adminLoginSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
+
+// Advertising clients schema
+export const insertAdvertisingClientSchema = createInsertSchema(advertisingClients).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Store products schema
+export const insertStoreProductSchema = createInsertSchema(storeProducts).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Store orders schema
+export const insertStoreOrderSchema = createInsertSchema(storeOrders).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Store order items schema
+export const insertStoreOrderItemSchema = createInsertSchema(storeOrderItems).omit({
+  id: true,
+  createdAt: true,
+});
+
+// Invoices schema
+export const insertInvoiceSchema = createInsertSchema(invoices).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Admin types
+export type AdminUser = typeof adminUsers.$inferSelect;
+export type InsertAdminUser = z.infer<typeof insertAdminUserSchema>;
+export type AdminSession = typeof adminSessions.$inferSelect;
+export type AdminLoginRequest = z.infer<typeof adminLoginSchema>;
+
+// Advertising client types
+export type AdvertisingClient = typeof advertisingClients.$inferSelect;
+export type InsertAdvertisingClient = z.infer<typeof insertAdvertisingClientSchema>;
+
+// Store types
+export type StoreProduct = typeof storeProducts.$inferSelect;
+export type InsertStoreProduct = z.infer<typeof insertStoreProductSchema>;
+export type StoreOrder = typeof storeOrders.$inferSelect;
+export type InsertStoreOrder = z.infer<typeof insertStoreOrderSchema>;
+export type StoreOrderItem = typeof storeOrderItems.$inferSelect;
+export type InsertStoreOrderItem = z.infer<typeof insertStoreOrderItemSchema>;
+
+// Invoice types
+export type Invoice = typeof invoices.$inferSelect;
+export type InsertInvoice = z.infer<typeof insertInvoiceSchema>;
+
+// Extended order with items
+export type StoreOrderWithItems = StoreOrder & {
+  items: (StoreOrderItem & { product: StoreProduct })[];
+  user?: Pick<User, 'id' | 'username' | 'email'>;
 };
