@@ -25,7 +25,10 @@ import {
   Sparkles,
   Upload,
   FileJson,
-  AlertCircle
+  AlertCircle,
+  Trash2,
+  Save,
+  X
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -178,6 +181,22 @@ function EditDayDialog({ day, open, onOpenChange }: {
     isApproved: false,
   });
   
+  const [lessonForm, setLessonForm] = useState({
+    title: "",
+    content: "",
+    keyTakeaways: ["", "", ""],
+    whyItMatters: "",
+    estimatedReadTime: 3,
+  });
+  
+  const [editingQuiz, setEditingQuiz] = useState<ContentQuiz | null>(null);
+  const [newQuiz, setNewQuiz] = useState({ question: "", options: ["", "", "", ""], correctAnswer: 0, explanation: "" });
+  const [showNewQuiz, setShowNewQuiz] = useState(false);
+  
+  const [editingQuestion, setEditingQuestion] = useState<ContentQuestion | null>(null);
+  const [newQuestion, setNewQuestion] = useState({ title: "", content: "", category: "financial", icon: "💰" });
+  const [showNewQuestion, setShowNewQuestion] = useState(false);
+  
   const { data: lesson, isLoading: lessonLoading } = useQuery<ContentLesson>({
     queryKey: ["/api/admin/content/lessons", day?.id],
     enabled: !!day?.id && open,
@@ -200,11 +219,99 @@ function EditDayDialog({ day, open, onOpenChange }: {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/content/days"] });
-      toast({ title: "Content day updated successfully" });
-      onOpenChange(false);
+      toast({ title: "Day details updated" });
     },
     onError: (error: Error) => {
       toast({ title: "Failed to update", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const saveLessonMutation = useMutation({
+    mutationFn: async (data: typeof lessonForm) => {
+      const res = await apiRequest("PUT", `/api/admin/content/lessons/${day?.id}`, {
+        ...data,
+        keyTakeaways: data.keyTakeaways.filter(t => t.trim() !== ""),
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/lessons", day?.id] });
+      toast({ title: "Lesson saved" });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to save lesson", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const createQuizMutation = useMutation({
+    mutationFn: async (data: typeof newQuiz) => {
+      const res = await apiRequest("POST", `/api/admin/content/quizzes/${day?.id}`, data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/quizzes", day?.id] });
+      toast({ title: "Quiz added" });
+      setNewQuiz({ question: "", options: ["", "", "", ""], correctAnswer: 0, explanation: "" });
+      setShowNewQuiz(false);
+    },
+  });
+
+  const updateQuizMutation = useMutation({
+    mutationFn: async ({ id, ...data }: Partial<ContentQuiz> & { id: number }) => {
+      const res = await apiRequest("PATCH", `/api/admin/content/quizzes/${id}`, data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/quizzes", day?.id] });
+      toast({ title: "Quiz updated" });
+      setEditingQuiz(null);
+    },
+  });
+
+  const deleteQuizMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await apiRequest("DELETE", `/api/admin/content/quizzes/${id}`);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/quizzes", day?.id] });
+      toast({ title: "Quiz deleted" });
+    },
+  });
+
+  const createQuestionMutation = useMutation({
+    mutationFn: async (data: typeof newQuestion) => {
+      const res = await apiRequest("POST", `/api/admin/content/questions/${day?.id}`, data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/questions", day?.id] });
+      toast({ title: "Question added" });
+      setNewQuestion({ title: "", content: "", category: "financial", icon: "💰" });
+      setShowNewQuestion(false);
+    },
+  });
+
+  const updateQuestionMutation = useMutation({
+    mutationFn: async ({ id, ...data }: Partial<ContentQuestion> & { id: number }) => {
+      const res = await apiRequest("PATCH", `/api/admin/content/questions/${id}`, data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/questions", day?.id] });
+      toast({ title: "Question updated" });
+      setEditingQuestion(null);
+    },
+  });
+
+  const deleteQuestionMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await apiRequest("DELETE", `/api/admin/content/questions/${id}`);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/questions", day?.id] });
+      toast({ title: "Question deleted" });
     },
   });
 
@@ -221,6 +328,18 @@ function EditDayDialog({ day, open, onOpenChange }: {
     }
   }, [day]);
 
+  useEffect(() => {
+    if (lesson) {
+      setLessonForm({
+        title: lesson.title,
+        content: lesson.content,
+        keyTakeaways: lesson.keyTakeaways?.length >= 3 ? lesson.keyTakeaways : [...(lesson.keyTakeaways || []), "", "", ""].slice(0, 3),
+        whyItMatters: lesson.whyItMatters || "",
+        estimatedReadTime: lesson.estimatedReadTime,
+      });
+    }
+  }, [lesson]);
+
   if (!day) return null;
 
   const isLoading = lessonLoading || quizzesLoading || questionsLoading;
@@ -231,7 +350,7 @@ function EditDayDialog({ day, open, onOpenChange }: {
         <DialogHeader>
           <DialogTitle className="text-white">Edit Day {day.dayIndex}</DialogTitle>
           <DialogDescription className="text-zinc-400">
-            Manage content for this curriculum day
+            Manage all content for this curriculum day
           </DialogDescription>
         </DialogHeader>
         
@@ -239,8 +358,8 @@ function EditDayDialog({ day, open, onOpenChange }: {
           <TabsList className="bg-zinc-800 border-zinc-700">
             <TabsTrigger value="details" className="data-[state=active]:bg-orange-500">Details</TabsTrigger>
             <TabsTrigger value="lesson" className="data-[state=active]:bg-orange-500">Lesson</TabsTrigger>
-            <TabsTrigger value="questions" className="data-[state=active]:bg-orange-500">Questions</TabsTrigger>
-            <TabsTrigger value="quizzes" className="data-[state=active]:bg-orange-500">Quizzes</TabsTrigger>
+            <TabsTrigger value="questions" className="data-[state=active]:bg-orange-500">Questions ({questions?.length || 0})</TabsTrigger>
+            <TabsTrigger value="quizzes" className="data-[state=active]:bg-orange-500">Quizzes ({quizzes?.length || 0})</TabsTrigger>
           </TabsList>
 
           <TabsContent value="details" className="space-y-4 mt-4">
@@ -303,70 +422,160 @@ function EditDayDialog({ day, open, onOpenChange }: {
             </div>
 
             <div className="flex justify-end gap-2 pt-4">
-              <Button variant="outline" onClick={() => onOpenChange(false)} className="border-zinc-700 text-zinc-300">
-                Cancel
-              </Button>
               <Button 
                 onClick={() => updateDayMutation.mutate(formData)}
                 className="bg-orange-500 hover:bg-orange-600"
                 disabled={updateDayMutation.isPending}
               >
-                {updateDayMutation.isPending ? "Saving..." : "Save Changes"}
+                <Save className="w-4 h-4 mr-2" />
+                {updateDayMutation.isPending ? "Saving..." : "Save Details"}
               </Button>
             </div>
           </TabsContent>
 
-          <TabsContent value="lesson" className="mt-4">
-            {isLoading ? (
-              <div className="flex justify-center py-8">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-500"></div>
-              </div>
-            ) : lesson ? (
-              <Card className="bg-zinc-800 border-zinc-700">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <BookOpen className="w-5 h-5 text-orange-500" />
-                    {lesson.title}
-                  </CardTitle>
-                  <CardDescription className="flex items-center gap-2 text-zinc-400">
-                    <Clock className="w-4 h-4" />
-                    {lesson.estimatedReadTime} min read
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label className="text-zinc-400 text-xs uppercase">Content</Label>
-                    <p className="text-zinc-300 mt-1 whitespace-pre-wrap text-sm leading-relaxed">{lesson.content}</p>
+          <TabsContent value="lesson" className="mt-4 space-y-4">
+            <Card className="bg-zinc-800 border-zinc-700">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-orange-500" />
+                  {lesson ? "Edit Lesson" : "Create Lesson"}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-zinc-300">Lesson Title</Label>
+                    <Input 
+                      value={lessonForm.title}
+                      onChange={(e) => setLessonForm({ ...lessonForm, title: e.target.value })}
+                      className="bg-zinc-900 border-zinc-700 text-white"
+                      placeholder="Enter lesson title..."
+                    />
                   </div>
-                  
-                  {lesson.keyTakeaways && lesson.keyTakeaways.length > 0 && (
-                    <div>
-                      <Label className="text-zinc-400 text-xs uppercase">Key Takeaways</Label>
-                      <ul className="mt-1 space-y-1">
-                        {lesson.keyTakeaways.map((takeaway, i) => (
-                          <li key={i} className="text-sm text-zinc-300 flex items-start gap-2">
-                            <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                            {takeaway}
-                          </li>
-                        ))}
-                      </ul>
+                  <div className="space-y-2">
+                    <Label className="text-zinc-300">Read Time (minutes)</Label>
+                    <Input 
+                      type="number"
+                      value={lessonForm.estimatedReadTime}
+                      onChange={(e) => setLessonForm({ ...lessonForm, estimatedReadTime: parseInt(e.target.value) || 3 })}
+                      className="bg-zinc-900 border-zinc-700 text-white"
+                      min={1}
+                      max={30}
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-zinc-300">Lesson Content</Label>
+                  <Textarea 
+                    value={lessonForm.content}
+                    onChange={(e) => setLessonForm({ ...lessonForm, content: e.target.value })}
+                    className="bg-zinc-900 border-zinc-700 text-white min-h-[200px]"
+                    placeholder="Write the full lesson content here..."
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-zinc-300">Key Takeaways (3 points)</Label>
+                  {lessonForm.keyTakeaways.map((takeaway, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <Input 
+                        value={takeaway}
+                        onChange={(e) => {
+                          const updated = [...lessonForm.keyTakeaways];
+                          updated[i] = e.target.value;
+                          setLessonForm({ ...lessonForm, keyTakeaways: updated });
+                        }}
+                        className="bg-zinc-900 border-zinc-700 text-white"
+                        placeholder={`Key takeaway ${i + 1}...`}
+                      />
                     </div>
-                  )}
-                  
-                  {lesson.whyItMatters && (
-                    <div>
-                      <Label className="text-zinc-400 text-xs uppercase">Why It Matters</Label>
-                      <p className="text-zinc-300 mt-1 text-sm">{lesson.whyItMatters}</p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="text-center py-8 text-zinc-400">No lesson content for this day</div>
-            )}
+                  ))}
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-zinc-300">Why It Matters</Label>
+                  <Textarea 
+                    value={lessonForm.whyItMatters}
+                    onChange={(e) => setLessonForm({ ...lessonForm, whyItMatters: e.target.value })}
+                    className="bg-zinc-900 border-zinc-700 text-white min-h-[100px]"
+                    placeholder="Explain why this lesson matters to the learner..."
+                  />
+                </div>
+                
+                <div className="flex justify-end pt-4">
+                  <Button 
+                    onClick={() => saveLessonMutation.mutate(lessonForm)}
+                    className="bg-orange-500 hover:bg-orange-600"
+                    disabled={saveLessonMutation.isPending || !lessonForm.title || !lessonForm.content}
+                  >
+                    <Save className="w-4 h-4 mr-2" />
+                    {saveLessonMutation.isPending ? "Saving..." : "Save Lesson"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
-          <TabsContent value="questions" className="mt-4">
+          <TabsContent value="questions" className="mt-4 space-y-4">
+            <div className="flex justify-between items-center">
+              <Label className="text-zinc-300 text-sm">Learning Preview Questions</Label>
+              <Button 
+                size="sm" 
+                onClick={() => setShowNewQuestion(true)}
+                className="bg-orange-500 hover:bg-orange-600"
+              >
+                <Plus className="w-4 h-4 mr-1" /> Add Question
+              </Button>
+            </div>
+
+            {showNewQuestion && (
+              <Card className="bg-zinc-800 border-orange-500/50">
+                <CardContent className="p-4 space-y-3">
+                  <Input 
+                    value={newQuestion.title}
+                    onChange={(e) => setNewQuestion({ ...newQuestion, title: e.target.value })}
+                    className="bg-zinc-900 border-zinc-700 text-white"
+                    placeholder="Question title..."
+                  />
+                  <Textarea 
+                    value={newQuestion.content}
+                    onChange={(e) => setNewQuestion({ ...newQuestion, content: e.target.value })}
+                    className="bg-zinc-900 border-zinc-700 text-white"
+                    placeholder="Question content..."
+                  />
+                  <div className="flex gap-2">
+                    <Input 
+                      value={newQuestion.category}
+                      onChange={(e) => setNewQuestion({ ...newQuestion, category: e.target.value })}
+                      className="bg-zinc-900 border-zinc-700 text-white"
+                      placeholder="Category (e.g., financial)"
+                    />
+                    <Input 
+                      value={newQuestion.icon}
+                      onChange={(e) => setNewQuestion({ ...newQuestion, icon: e.target.value })}
+                      className="bg-zinc-900 border-zinc-700 text-white w-20"
+                      placeholder="Icon"
+                    />
+                  </div>
+                  <div className="flex justify-end gap-2">
+                    <Button variant="ghost" size="sm" onClick={() => setShowNewQuestion(false)}>
+                      <X className="w-4 h-4" />
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      onClick={() => createQuestionMutation.mutate(newQuestion)}
+                      disabled={createQuestionMutation.isPending || !newQuestion.title || !newQuestion.content}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      <Save className="w-4 h-4 mr-1" /> Save
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {isLoading ? (
               <div className="flex justify-center py-8">
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-500"></div>
@@ -376,29 +585,138 @@ function EditDayDialog({ day, open, onOpenChange }: {
                 {questions.map((q, idx) => (
                   <Card key={q.id} className="bg-zinc-800 border-zinc-700">
                     <CardContent className="p-4">
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center text-orange-500 font-bold text-sm">
-                          {idx + 1}
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="text-white font-medium">{q.title}</h4>
-                          <p className="text-sm text-zinc-400 mt-1">{q.content}</p>
-                          <div className="flex items-center gap-2 mt-2 text-xs text-zinc-500">
-                            <Badge variant="outline" className="border-zinc-600 text-zinc-400">{q.category}</Badge>
-                            <span>{q.icon}</span>
+                      {editingQuestion?.id === q.id ? (
+                        <div className="space-y-3">
+                          <Input 
+                            value={editingQuestion.title}
+                            onChange={(e) => setEditingQuestion({ ...editingQuestion, title: e.target.value })}
+                            className="bg-zinc-900 border-zinc-700 text-white"
+                          />
+                          <Textarea 
+                            value={editingQuestion.content}
+                            onChange={(e) => setEditingQuestion({ ...editingQuestion, content: e.target.value })}
+                            className="bg-zinc-900 border-zinc-700 text-white"
+                          />
+                          <div className="flex gap-2">
+                            <Input 
+                              value={editingQuestion.category}
+                              onChange={(e) => setEditingQuestion({ ...editingQuestion, category: e.target.value })}
+                              className="bg-zinc-900 border-zinc-700 text-white"
+                            />
+                            <Input 
+                              value={editingQuestion.icon}
+                              onChange={(e) => setEditingQuestion({ ...editingQuestion, icon: e.target.value })}
+                              className="bg-zinc-900 border-zinc-700 text-white w-20"
+                            />
+                          </div>
+                          <div className="flex justify-end gap-2">
+                            <Button variant="ghost" size="sm" onClick={() => setEditingQuestion(null)}>Cancel</Button>
+                            <Button 
+                              size="sm" 
+                              onClick={() => updateQuestionMutation.mutate(editingQuestion)}
+                              className="bg-green-600 hover:bg-green-700"
+                            >
+                              Save
+                            </Button>
                           </div>
                         </div>
-                      </div>
+                      ) : (
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center text-orange-500 font-bold text-sm">
+                            {idx + 1}
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="text-white font-medium">{q.title}</h4>
+                            <p className="text-sm text-zinc-400 mt-1">{q.content}</p>
+                            <div className="flex items-center gap-2 mt-2 text-xs text-zinc-500">
+                              <Badge variant="outline" className="border-zinc-600 text-zinc-400">{q.category}</Badge>
+                              <span>{q.icon}</span>
+                            </div>
+                          </div>
+                          <div className="flex gap-1">
+                            <Button variant="ghost" size="sm" onClick={() => setEditingQuestion(q)}>
+                              <Edit className="w-4 h-4 text-zinc-400" />
+                            </Button>
+                            <Button variant="ghost" size="sm" onClick={() => deleteQuestionMutation.mutate(q.id)}>
+                              <Trash2 className="w-4 h-4 text-red-400" />
+                            </Button>
+                          </div>
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 text-zinc-400">No questions for this day</div>
+              <div className="text-center py-8 text-zinc-400">No questions for this day. Add some above!</div>
             )}
           </TabsContent>
 
-          <TabsContent value="quizzes" className="mt-4">
+          <TabsContent value="quizzes" className="mt-4 space-y-4">
+            <div className="flex justify-between items-center">
+              <Label className="text-zinc-300 text-sm">Quiz Questions</Label>
+              <Button 
+                size="sm" 
+                onClick={() => setShowNewQuiz(true)}
+                className="bg-orange-500 hover:bg-orange-600"
+              >
+                <Plus className="w-4 h-4 mr-1" /> Add Quiz
+              </Button>
+            </div>
+
+            {showNewQuiz && (
+              <Card className="bg-zinc-800 border-orange-500/50">
+                <CardContent className="p-4 space-y-3">
+                  <Input 
+                    value={newQuiz.question}
+                    onChange={(e) => setNewQuiz({ ...newQuiz, question: e.target.value })}
+                    className="bg-zinc-900 border-zinc-700 text-white"
+                    placeholder="Question..."
+                  />
+                  <div className="grid grid-cols-2 gap-2">
+                    {newQuiz.options.map((opt, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <input 
+                          type="radio" 
+                          checked={newQuiz.correctAnswer === i}
+                          onChange={() => setNewQuiz({ ...newQuiz, correctAnswer: i })}
+                        />
+                        <Input 
+                          value={opt}
+                          onChange={(e) => {
+                            const updated = [...newQuiz.options];
+                            updated[i] = e.target.value;
+                            setNewQuiz({ ...newQuiz, options: updated });
+                          }}
+                          className="bg-zinc-900 border-zinc-700 text-white"
+                          placeholder={`Option ${String.fromCharCode(65 + i)}`}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <Textarea 
+                    value={newQuiz.explanation}
+                    onChange={(e) => setNewQuiz({ ...newQuiz, explanation: e.target.value })}
+                    className="bg-zinc-900 border-zinc-700 text-white"
+                    placeholder="Explanation for correct answer..."
+                  />
+                  <div className="flex justify-end gap-2">
+                    <Button variant="ghost" size="sm" onClick={() => setShowNewQuiz(false)}>
+                      <X className="w-4 h-4" />
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      onClick={() => createQuizMutation.mutate(newQuiz)}
+                      disabled={createQuizMutation.isPending || !newQuiz.question || newQuiz.options.some(o => !o)}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      <Save className="w-4 h-4 mr-1" /> Save
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {isLoading ? (
               <div className="flex justify-center py-8">
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-500"></div>
@@ -408,27 +726,84 @@ function EditDayDialog({ day, open, onOpenChange }: {
                 {quizzes.map((quiz, idx) => (
                   <Card key={quiz.id} className="bg-zinc-800 border-zinc-700">
                     <CardContent className="p-4">
-                      <p className="text-white font-medium mb-3">Q{idx + 1}: {quiz.question}</p>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {quiz.options.map((opt, i) => (
-                          <div 
-                            key={i} 
-                            className={`p-2 rounded text-sm ${i === quiz.correctAnswer ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-zinc-900 text-zinc-400'}`}
-                          >
-                            <span className="font-bold mr-2">{String.fromCharCode(65 + i)}.</span>
-                            {opt}
+                      {editingQuiz?.id === quiz.id ? (
+                        <div className="space-y-3">
+                          <Input 
+                            value={editingQuiz.question}
+                            onChange={(e) => setEditingQuiz({ ...editingQuiz, question: e.target.value })}
+                            className="bg-zinc-900 border-zinc-700 text-white"
+                          />
+                          <div className="grid grid-cols-2 gap-2">
+                            {editingQuiz.options.map((opt, i) => (
+                              <div key={i} className="flex items-center gap-2">
+                                <input 
+                                  type="radio" 
+                                  checked={editingQuiz.correctAnswer === i}
+                                  onChange={() => setEditingQuiz({ ...editingQuiz, correctAnswer: i })}
+                                />
+                                <Input 
+                                  value={opt}
+                                  onChange={(e) => {
+                                    const updated = [...editingQuiz.options];
+                                    updated[i] = e.target.value;
+                                    setEditingQuiz({ ...editingQuiz, options: updated });
+                                  }}
+                                  className="bg-zinc-900 border-zinc-700 text-white"
+                                />
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                      <div className="mt-3 p-2 bg-zinc-900 rounded text-xs text-zinc-400">
-                        <span className="text-zinc-500">Explanation:</span> {quiz.explanation}
-                      </div>
+                          <Textarea 
+                            value={editingQuiz.explanation}
+                            onChange={(e) => setEditingQuiz({ ...editingQuiz, explanation: e.target.value })}
+                            className="bg-zinc-900 border-zinc-700 text-white"
+                          />
+                          <div className="flex justify-end gap-2">
+                            <Button variant="ghost" size="sm" onClick={() => setEditingQuiz(null)}>Cancel</Button>
+                            <Button 
+                              size="sm" 
+                              onClick={() => updateQuizMutation.mutate(editingQuiz)}
+                              className="bg-green-600 hover:bg-green-700"
+                            >
+                              Save
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div>
+                          <div className="flex items-start justify-between">
+                            <p className="text-white font-medium mb-3">Q{idx + 1}: {quiz.question}</p>
+                            <div className="flex gap-1">
+                              <Button variant="ghost" size="sm" onClick={() => setEditingQuiz(quiz)}>
+                                <Edit className="w-4 h-4 text-zinc-400" />
+                              </Button>
+                              <Button variant="ghost" size="sm" onClick={() => deleteQuizMutation.mutate(quiz.id)}>
+                                <Trash2 className="w-4 h-4 text-red-400" />
+                              </Button>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {quiz.options.map((opt, i) => (
+                              <div 
+                                key={i} 
+                                className={`p-2 rounded text-sm ${i === quiz.correctAnswer ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-zinc-900 text-zinc-400'}`}
+                              >
+                                <span className="font-bold mr-2">{String.fromCharCode(65 + i)}.</span>
+                                {opt}
+                              </div>
+                            ))}
+                          </div>
+                          <div className="mt-3 p-2 bg-zinc-900 rounded text-xs text-zinc-400">
+                            <span className="text-zinc-500">Explanation:</span> {quiz.explanation}
+                          </div>
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 text-zinc-400">No quizzes for this day</div>
+              <div className="text-center py-8 text-zinc-400">No quizzes for this day. Add some above!</div>
             )}
           </TabsContent>
         </Tabs>

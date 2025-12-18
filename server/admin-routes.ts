@@ -165,6 +165,123 @@ export function registerAdminRoutes(app: Express) {
     }
   });
 
+  // Create or update lesson for a day (upsert)
+  app.put("/api/admin/content/lessons/:dayId", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const dayId = parseInt(req.params.dayId);
+      const { title, content, keyTakeaways, whyItMatters, estimatedReadTime } = req.body;
+      
+      // Check if lesson exists
+      const [existing] = await db.select().from(contentLessons).where(eq(contentLessons.dayId, dayId));
+      
+      if (existing) {
+        const [updated] = await db.update(contentLessons)
+          .set({ title, content, keyTakeaways: keyTakeaways || [], whyItMatters, estimatedReadTime: estimatedReadTime || 3 })
+          .where(eq(contentLessons.dayId, dayId))
+          .returning();
+        res.json(updated);
+      } else {
+        const [created] = await db.insert(contentLessons)
+          .values({ dayId, title, content, keyTakeaways: keyTakeaways || [], whyItMatters, estimatedReadTime: estimatedReadTime || 3 })
+          .returning();
+        res.json(created);
+      }
+    } catch (error) {
+      console.error("Error saving lesson:", error);
+      res.status(500).json({ message: "Failed to save lesson" });
+    }
+  });
+
+  // Create a new quiz
+  app.post("/api/admin/content/quizzes/:dayId", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const dayId = parseInt(req.params.dayId);
+      const { question, options, correctAnswer, explanation } = req.body;
+      
+      const [created] = await db.insert(contentQuizzes)
+        .values({ dayId, question, options, correctAnswer, explanation: explanation || "" })
+        .returning();
+      res.json(created);
+    } catch (error) {
+      console.error("Error creating quiz:", error);
+      res.status(500).json({ message: "Failed to create quiz" });
+    }
+  });
+
+  // Update a quiz
+  app.patch("/api/admin/content/quizzes/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { question, options, correctAnswer, explanation } = req.body;
+      
+      const [updated] = await db.update(contentQuizzes)
+        .set({ question, options, correctAnswer, explanation })
+        .where(eq(contentQuizzes.id, id))
+        .returning();
+      res.json(updated);
+    } catch (error) {
+      console.error("Error updating quiz:", error);
+      res.status(500).json({ message: "Failed to update quiz" });
+    }
+  });
+
+  // Delete a quiz
+  app.delete("/api/admin/content/quizzes/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await db.delete(contentQuizzes).where(eq(contentQuizzes.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting quiz:", error);
+      res.status(500).json({ message: "Failed to delete quiz" });
+    }
+  });
+
+  // Create a new question
+  app.post("/api/admin/content/questions/:dayId", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const dayId = parseInt(req.params.dayId);
+      const { title, content, category, icon, orderIndex } = req.body;
+      
+      const [created] = await db.insert(contentSetUpQuestions)
+        .values({ dayId, title, content, category: category || "general", icon: icon || "💡", orderIndex: orderIndex || 0 })
+        .returning();
+      res.json(created);
+    } catch (error) {
+      console.error("Error creating question:", error);
+      res.status(500).json({ message: "Failed to create question" });
+    }
+  });
+
+  // Update a question
+  app.patch("/api/admin/content/questions/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { title, content, category, icon, orderIndex } = req.body;
+      
+      const [updated] = await db.update(contentSetUpQuestions)
+        .set({ title, content, category, icon, orderIndex })
+        .where(eq(contentSetUpQuestions.id, id))
+        .returning();
+      res.json(updated);
+    } catch (error) {
+      console.error("Error updating question:", error);
+      res.status(500).json({ message: "Failed to update question" });
+    }
+  });
+
+  // Delete a question
+  app.delete("/api/admin/content/questions/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await db.delete(contentSetUpQuestions).where(eq(contentSetUpQuestions.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting question:", error);
+      res.status(500).json({ message: "Failed to delete question" });
+    }
+  });
+
   // Update a content day
   app.patch("/api/admin/content/days/:id", requireAdminAuth, async (req: AdminRequest, res) => {
     try {
