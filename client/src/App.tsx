@@ -21,6 +21,7 @@ import AdminLoginPage from "@/admin/pages/AdminLoginPage";
 import AdminDashboard from "@/admin/pages/AdminDashboard";
 import ContentManagement from "@/admin/pages/ContentManagement";
 import MarketingManagement from "@/admin/pages/MarketingManagement";
+import StoreManagement from "@/admin/pages/StoreManagement";
 
 import { AppContextProvider } from "@/components/shared/AppContextProvider";
 import Onboarding from "@/pages/onboarding";
@@ -141,6 +142,7 @@ function Router() {
         <Route path="/admin/login" component={AdminLoginPage} />
         <Route path="/admin/content" component={ContentManagement} />
         <Route path="/admin/marketing" component={MarketingManagement} />
+        <Route path="/admin/store" component={StoreManagement} />
         <Route path="/admin" component={AdminDashboard} />
         <Route path="/more" component={MorePage} />
         <Route path="/account" component={AccountPage} />

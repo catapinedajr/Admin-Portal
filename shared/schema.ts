@@ -118,6 +118,72 @@ export const storeOrderItems = pgTable("store_order_items", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+// Affiliate products - external products with affiliate links (hardware wallets, books, etc.)
+export const affiliateProducts = pgTable("affiliate_products", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+  category: text("category").notNull(), // hardware_wallet, book, course, software
+  affiliateUrl: text("affiliate_url").notNull(),
+  imageUrl: text("image_url"),
+  vendor: text("vendor"), // Ledger, Trezor, Amazon, etc.
+  commissionPercent: decimal("commission_percent", { precision: 5, scale: 2 }),
+  commissionFlat: decimal("commission_flat", { precision: 10, scale: 2 }),
+  priceUsd: decimal("price_usd", { precision: 10, scale: 2 }),
+  isActive: boolean("is_active").notNull().default(true),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Affiliate clicks - track clicks on affiliate links
+export const affiliateClicks = pgTable("affiliate_clicks", {
+  id: serial("id").primaryKey(),
+  productId: integer("product_id").notNull().references(() => affiliateProducts.id, { onDelete: 'cascade' }),
+  userId: integer("user_id").references(() => users.id),
+  sessionId: text("session_id"),
+  converted: boolean("converted").notNull().default(false),
+  conversionValue: decimal("conversion_value", { precision: 10, scale: 2 }),
+  clickedAt: timestamp("clicked_at").notNull().defaultNow(),
+  convertedAt: timestamp("converted_at"),
+});
+
+// Referral partners - companies we refer users to (exchanges, BTC IRAs, etc.)
+export const referralPartners = pgTable("referral_partners", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  category: text("category").notNull(), // exchange, btc_ira, lending, custody
+  description: text("description"),
+  referralUrl: text("referral_url").notNull(),
+  logoUrl: text("logo_url"),
+  contactName: text("contact_name"),
+  contactEmail: text("contact_email"),
+  referralFeeType: text("referral_fee_type").notNull().default("flat"), // flat, percent, tiered
+  referralFeeAmount: decimal("referral_fee_amount", { precision: 10, scale: 2 }),
+  referralFeePercent: decimal("referral_fee_percent", { precision: 5, scale: 2 }),
+  payoutFrequency: text("payout_frequency").default("monthly"), // weekly, monthly, quarterly
+  isActive: boolean("is_active").notNull().default(true),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Referral signups - track user signups through referral partners
+export const referralSignups = pgTable("referral_signups", {
+  id: serial("id").primaryKey(),
+  partnerId: integer("partner_id").notNull().references(() => referralPartners.id, { onDelete: 'cascade' }),
+  userId: integer("user_id").references(() => users.id),
+  referralCode: text("referral_code"),
+  status: text("status").notNull().default("pending"), // pending, verified, paid, rejected
+  signupDate: timestamp("signup_date").notNull().defaultNow(),
+  verifiedAt: timestamp("verified_at"),
+  estimatedValue: decimal("estimated_value", { precision: 10, scale: 2 }),
+  actualPayout: decimal("actual_payout", { precision: 10, scale: 2 }),
+  paidAt: timestamp("paid_at"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 // Invoices for advertising clients
 export const invoices = pgTable("invoices", {
   id: serial("id").primaryKey(),
@@ -1074,6 +1140,32 @@ export const insertInvoiceSchema = createInsertSchema(invoices).omit({
   updatedAt: true,
 });
 
+// Affiliate products schema
+export const insertAffiliateProductSchema = createInsertSchema(affiliateProducts).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Affiliate clicks schema
+export const insertAffiliateClickSchema = createInsertSchema(affiliateClicks).omit({
+  id: true,
+  clickedAt: true,
+});
+
+// Referral partners schema
+export const insertReferralPartnerSchema = createInsertSchema(referralPartners).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Referral signups schema
+export const insertReferralSignupSchema = createInsertSchema(referralSignups).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Admin types
 export type AdminUser = typeof adminUsers.$inferSelect;
 export type InsertAdminUser = z.infer<typeof insertAdminUserSchema>;
@@ -1101,3 +1193,15 @@ export type StoreOrderWithItems = StoreOrder & {
   items: (StoreOrderItem & { product: StoreProduct })[];
   user?: Pick<User, 'id' | 'username' | 'email'>;
 };
+
+// Affiliate types
+export type AffiliateProduct = typeof affiliateProducts.$inferSelect;
+export type InsertAffiliateProduct = z.infer<typeof insertAffiliateProductSchema>;
+export type AffiliateClick = typeof affiliateClicks.$inferSelect;
+export type InsertAffiliateClick = z.infer<typeof insertAffiliateClickSchema>;
+
+// Referral types
+export type ReferralPartner = typeof referralPartners.$inferSelect;
+export type InsertReferralPartner = z.infer<typeof insertReferralPartnerSchema>;
+export type ReferralSignup = typeof referralSignups.$inferSelect;
+export type InsertReferralSignup = z.infer<typeof insertReferralSignupSchema>;

@@ -2,7 +2,7 @@ import type { Express, Request, Response, NextFunction } from "express";
 import { adminAuthService } from "./admin-auth";
 import { db } from "./db";
 import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, users, adCampaigns, storeProducts } from "@shared/schema";
-import { count, eq, sql } from "drizzle-orm";
+import { count, eq, sql, and, sum } from "drizzle-orm";
 
 interface AdminRequest extends Request {
   admin?: any;
@@ -866,6 +866,360 @@ export function registerAdminRoutes(app: Express) {
     } catch (error) {
       console.error("Error deleting invoice:", error);
       res.status(500).json({ message: "Failed to delete invoice" });
+    }
+  });
+
+  // ============================================
+  // STORE MANAGEMENT ROUTES
+  // ============================================
+
+  // Get all affiliate products
+  app.get("/api/admin/store/affiliates", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { affiliateProducts } = await import('@shared/schema');
+      const products = await db.select().from(affiliateProducts).orderBy(affiliateProducts.sortOrder);
+      res.json(products);
+    } catch (error) {
+      console.error("Error fetching affiliate products:", error);
+      res.status(500).json({ message: "Failed to fetch affiliate products" });
+    }
+  });
+
+  // Get affiliate stats
+  app.get("/api/admin/store/affiliates/stats", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { affiliateProducts, affiliateClicks } = await import('@shared/schema');
+      const products = await db.select().from(affiliateProducts);
+      
+      const stats = await Promise.all(products.map(async (product) => {
+        const clicksResult = await db.select({ count: count() })
+          .from(affiliateClicks)
+          .where(eq(affiliateClicks.productId, product.id));
+        
+        const conversionsResult = await db.select({ count: count() })
+          .from(affiliateClicks)
+          .where(and(
+            eq(affiliateClicks.productId, product.id),
+            eq(affiliateClicks.converted, true)
+          ));
+        
+        const revenueResult = await db.select({ sum: sum(affiliateClicks.conversionValue) })
+          .from(affiliateClicks)
+          .where(and(
+            eq(affiliateClicks.productId, product.id),
+            eq(affiliateClicks.converted, true)
+          ));
+        
+        return {
+          productId: product.id,
+          clicks: clicksResult[0]?.count || 0,
+          conversions: conversionsResult[0]?.count || 0,
+          revenue: parseFloat(revenueResult[0]?.sum || '0'),
+        };
+      }));
+      
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching affiliate stats:", error);
+      res.status(500).json({ message: "Failed to fetch affiliate stats" });
+    }
+  });
+
+  // Create affiliate product
+  app.post("/api/admin/store/affiliates", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { affiliateProducts } = await import('@shared/schema');
+      const { name, description, category, affiliateUrl, imageUrl, vendor, commissionPercent, priceUsd } = req.body;
+      
+      if (!name || !category || !affiliateUrl) {
+        return res.status(400).json({ message: "Name, category, and affiliate URL are required" });
+      }
+      
+      const [product] = await db.insert(affiliateProducts).values({
+        name,
+        description: description || null,
+        category,
+        affiliateUrl,
+        imageUrl: imageUrl || null,
+        vendor: vendor || null,
+        commissionPercent: commissionPercent != null ? String(commissionPercent) : null,
+        priceUsd: priceUsd != null ? String(priceUsd) : null,
+        isActive: true,
+        sortOrder: 0,
+      }).returning();
+      
+      res.json(product);
+    } catch (error) {
+      console.error("Error creating affiliate product:", error);
+      res.status(500).json({ message: "Failed to create affiliate product" });
+    }
+  });
+
+  // Update affiliate product
+  app.patch("/api/admin/store/affiliates/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { affiliateProducts } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      const updates: any = { updatedAt: new Date() };
+      
+      if (req.body.name) updates.name = req.body.name;
+      if (req.body.description !== undefined) updates.description = req.body.description;
+      if (req.body.category) updates.category = req.body.category;
+      if (req.body.affiliateUrl) updates.affiliateUrl = req.body.affiliateUrl;
+      if (req.body.imageUrl !== undefined) updates.imageUrl = req.body.imageUrl;
+      if (req.body.vendor !== undefined) updates.vendor = req.body.vendor;
+      if (req.body.commissionPercent !== undefined) updates.commissionPercent = req.body.commissionPercent != null ? String(req.body.commissionPercent) : null;
+      if (req.body.priceUsd !== undefined) updates.priceUsd = req.body.priceUsd != null ? String(req.body.priceUsd) : null;
+      if (req.body.isActive !== undefined) updates.isActive = req.body.isActive;
+      
+      const [product] = await db.update(affiliateProducts)
+        .set(updates)
+        .where(eq(affiliateProducts.id, id))
+        .returning();
+        
+      res.json(product);
+    } catch (error) {
+      console.error("Error updating affiliate product:", error);
+      res.status(500).json({ message: "Failed to update affiliate product" });
+    }
+  });
+
+  // Delete affiliate product
+  app.delete("/api/admin/store/affiliates/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { affiliateProducts } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      await db.delete(affiliateProducts).where(eq(affiliateProducts.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting affiliate product:", error);
+      res.status(500).json({ message: "Failed to delete affiliate product" });
+    }
+  });
+
+  // Get all referral partners
+  app.get("/api/admin/store/referrals", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { referralPartners } = await import('@shared/schema');
+      const partners = await db.select().from(referralPartners).orderBy(referralPartners.name);
+      res.json(partners);
+    } catch (error) {
+      console.error("Error fetching referral partners:", error);
+      res.status(500).json({ message: "Failed to fetch referral partners" });
+    }
+  });
+
+  // Get referral signups
+  app.get("/api/admin/store/referrals/signups", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { referralSignups } = await import('@shared/schema');
+      const signups = await db.select().from(referralSignups).orderBy(referralSignups.signupDate);
+      res.json(signups);
+    } catch (error) {
+      console.error("Error fetching referral signups:", error);
+      res.status(500).json({ message: "Failed to fetch referral signups" });
+    }
+  });
+
+  // Create referral partner
+  app.post("/api/admin/store/referrals", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { referralPartners } = await import('@shared/schema');
+      const { 
+        name, category, description, referralUrl, logoUrl, 
+        contactName, contactEmail, referralFeeType, 
+        referralFeeAmount, referralFeePercent, payoutFrequency, notes 
+      } = req.body;
+      
+      if (!name || !category || !referralUrl) {
+        return res.status(400).json({ message: "Name, category, and referral URL are required" });
+      }
+      
+      const [partner] = await db.insert(referralPartners).values({
+        name,
+        category,
+        description: description || null,
+        referralUrl,
+        logoUrl: logoUrl || null,
+        contactName: contactName || null,
+        contactEmail: contactEmail || null,
+        referralFeeType: referralFeeType || 'flat',
+        referralFeeAmount: referralFeeAmount != null ? String(referralFeeAmount) : null,
+        referralFeePercent: referralFeePercent != null ? String(referralFeePercent) : null,
+        payoutFrequency: payoutFrequency || 'monthly',
+        isActive: true,
+        notes: notes || null,
+      }).returning();
+      
+      res.json(partner);
+    } catch (error) {
+      console.error("Error creating referral partner:", error);
+      res.status(500).json({ message: "Failed to create referral partner" });
+    }
+  });
+
+  // Update referral partner
+  app.patch("/api/admin/store/referrals/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { referralPartners } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      const updates: any = { updatedAt: new Date() };
+      
+      if (req.body.name) updates.name = req.body.name;
+      if (req.body.category) updates.category = req.body.category;
+      if (req.body.description !== undefined) updates.description = req.body.description;
+      if (req.body.referralUrl) updates.referralUrl = req.body.referralUrl;
+      if (req.body.logoUrl !== undefined) updates.logoUrl = req.body.logoUrl;
+      if (req.body.contactName !== undefined) updates.contactName = req.body.contactName;
+      if (req.body.contactEmail !== undefined) updates.contactEmail = req.body.contactEmail;
+      if (req.body.referralFeeType) updates.referralFeeType = req.body.referralFeeType;
+      if (req.body.referralFeeAmount !== undefined) updates.referralFeeAmount = req.body.referralFeeAmount != null ? String(req.body.referralFeeAmount) : null;
+      if (req.body.referralFeePercent !== undefined) updates.referralFeePercent = req.body.referralFeePercent != null ? String(req.body.referralFeePercent) : null;
+      if (req.body.payoutFrequency) updates.payoutFrequency = req.body.payoutFrequency;
+      if (req.body.isActive !== undefined) updates.isActive = req.body.isActive;
+      if (req.body.notes !== undefined) updates.notes = req.body.notes;
+      
+      const [partner] = await db.update(referralPartners)
+        .set(updates)
+        .where(eq(referralPartners.id, id))
+        .returning();
+        
+      res.json(partner);
+    } catch (error) {
+      console.error("Error updating referral partner:", error);
+      res.status(500).json({ message: "Failed to update referral partner" });
+    }
+  });
+
+  // Delete referral partner
+  app.delete("/api/admin/store/referrals/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { referralPartners } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      await db.delete(referralPartners).where(eq(referralPartners.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting referral partner:", error);
+      res.status(500).json({ message: "Failed to delete referral partner" });
+    }
+  });
+
+  // Get all inventory products
+  app.get("/api/admin/store/inventory", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { storeProducts } = await import('@shared/schema');
+      const products = await db.select().from(storeProducts).orderBy(storeProducts.sortOrder);
+      res.json(products);
+    } catch (error) {
+      console.error("Error fetching inventory products:", error);
+      res.status(500).json({ message: "Failed to fetch inventory products" });
+    }
+  });
+
+  // Create inventory product
+  app.post("/api/admin/store/inventory", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { storeProducts } = await import('@shared/schema');
+      const { name, description, priceUsd, priceSats, imageUrl, category, stockQuantity, isFeatured } = req.body;
+      
+      if (!name || priceUsd == null) {
+        return res.status(400).json({ message: "Name and price are required" });
+      }
+      
+      const [product] = await db.insert(storeProducts).values({
+        name,
+        description: description || null,
+        priceUsd: String(priceUsd),
+        priceSats: priceSats != null ? Number(priceSats) : null,
+        imageUrl: imageUrl || null,
+        category: category || null,
+        stockQuantity: stockQuantity != null ? Number(stockQuantity) : 0,
+        isActive: true,
+        isFeatured: isFeatured || false,
+        sortOrder: 0,
+      }).returning();
+      
+      res.json(product);
+    } catch (error) {
+      console.error("Error creating inventory product:", error);
+      res.status(500).json({ message: "Failed to create inventory product" });
+    }
+  });
+
+  // Update inventory product
+  app.patch("/api/admin/store/inventory/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { storeProducts } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      const updates: any = { updatedAt: new Date() };
+      
+      if (req.body.name) updates.name = req.body.name;
+      if (req.body.description !== undefined) updates.description = req.body.description;
+      if (req.body.priceUsd !== undefined) updates.priceUsd = req.body.priceUsd != null ? String(req.body.priceUsd) : null;
+      if (req.body.priceSats !== undefined) updates.priceSats = req.body.priceSats != null ? Number(req.body.priceSats) : null;
+      if (req.body.imageUrl !== undefined) updates.imageUrl = req.body.imageUrl;
+      if (req.body.category !== undefined) updates.category = req.body.category;
+      if (req.body.stockQuantity !== undefined) updates.stockQuantity = req.body.stockQuantity != null ? Number(req.body.stockQuantity) : 0;
+      if (req.body.isActive !== undefined) updates.isActive = req.body.isActive;
+      if (req.body.isFeatured !== undefined) updates.isFeatured = req.body.isFeatured;
+      
+      const [product] = await db.update(storeProducts)
+        .set(updates)
+        .where(eq(storeProducts.id, id))
+        .returning();
+        
+      res.json(product);
+    } catch (error) {
+      console.error("Error updating inventory product:", error);
+      res.status(500).json({ message: "Failed to update inventory product" });
+    }
+  });
+
+  // Delete inventory product
+  app.delete("/api/admin/store/inventory/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { storeProducts } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      await db.delete(storeProducts).where(eq(storeProducts.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting inventory product:", error);
+      res.status(500).json({ message: "Failed to delete inventory product" });
+    }
+  });
+
+  // Get all orders
+  app.get("/api/admin/store/orders", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { storeOrders } = await import('@shared/schema');
+      const orders = await db.select().from(storeOrders).orderBy(storeOrders.createdAt);
+      res.json(orders);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      res.status(500).json({ message: "Failed to fetch orders" });
+    }
+  });
+
+  // Update order status
+  app.patch("/api/admin/store/orders/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { storeOrders } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      const updates: any = { updatedAt: new Date() };
+      
+      if (req.body.status) updates.status = req.body.status;
+      if (req.body.trackingNumber !== undefined) updates.trackingNumber = req.body.trackingNumber;
+      if (req.body.notes !== undefined) updates.notes = req.body.notes;
+      
+      const [order] = await db.update(storeOrders)
+        .set(updates)
+        .where(eq(storeOrders.id, id))
+        .returning();
+        
+      res.json(order);
+    } catch (error) {
+      console.error("Error updating order:", error);
+      res.status(500).json({ message: "Failed to update order" });
     }
   });
 
