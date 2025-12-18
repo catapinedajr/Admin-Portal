@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect, useMemo } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { 
-  Plus, Calendar, Send, Eye, MousePointerClick, Users, TrendingUp,
-  Twitter, Clock, BarChart3, ArrowRight, Edit2, Trash2, Image,
-  AlertCircle, CheckCircle2, Loader2, Link as LinkIcon, Sparkles, RefreshCw,
-  ChevronLeft, ChevronRight
+  Plus, Calendar, Send, MousePointerClick, Users, TrendingUp,
+  Twitter, Clock, ArrowRight, Edit2, Trash2,
+  AlertCircle, CheckCircle2, Loader2, Link as LinkIcon, Sparkles,
+  ChevronLeft, ChevronRight, X
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,27 +15,59 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Progress } from "@/components/ui/progress";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import AdminLayout from "../components/AdminLayout";
-import { format, addDays, startOfWeek, startOfMonth, endOfMonth, isSameDay, isSameMonth, parseISO, addMonths, subMonths, getDay, isValid } from "date-fns";
+import { format, addDays, startOfWeek, startOfMonth, isSameDay, isSameMonth, parseISO, addMonths, subMonths } from "date-fns";
 
-// Helper to safely parse dates that may be in different formats
-function safeParseDate(dateStr: string | null | undefined): Date | null {
-  if (!dateStr) return null;
-  
-  // Try parseISO first (handles ISO format)
-  let parsed = parseISO(dateStr);
-  if (isValid(parsed)) return parsed;
-  
-  // Fall back to Date constructor (handles other formats like "2025-01-12 13:30:00")
-  parsed = new Date(dateStr);
-  if (isValid(parsed)) return parsed;
-  
-  return null;
+// ============================================
+// TYPES
+// ============================================
+
+interface SocialPost {
+  id: number;
+  platform: string;
+  content: string;
+  imageUrl: string | null;
+  linkUrl: string | null;
+  campaignId: number | null;
+  linkedDayIndex: number | null;
+  status: string;
+  scheduledAt: string | null;
+  publishedAt: string | null;
+  createdAt: string;
 }
+
+interface SocialPostWithMetrics extends SocialPost {
+  metrics?: {
+    impressions: number;
+    clicks: number;
+    engagements: number;
+  } | null;
+  signups?: number;
+}
+
+interface Campaign {
+  id: number;
+  name: string;
+}
+
+interface ContentDay {
+  id: number;
+  dayIndex: number;
+  title: string;
+}
+
+interface SocialStats {
+  planned: number;
+  posted: number;
+  totalClicks: number;
+  totalSignups: number;
+}
+
+// ============================================
+// AUTH GUARD
+// ============================================
 
 function AdminAuthGuard({ children }: { children: React.ReactNode }) {
   const [, setLocation] = useLocation();
@@ -63,66 +95,22 @@ function AdminAuthGuard({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-interface SocialPost {
-  id: number;
-  platform: string;
-  content: string;
-  imageUrl: string | null;
-  linkUrl: string | null;
-  campaignId: number | null;
-  linkedDayIndex: number | null;
-  status: string;
-  scheduledAt: string | null;
-  publishedAt: string | null;
-  externalPostId: string | null;
-  utmContent: string | null;
-  errorMessage: string | null;
-  createdAt: string;
-}
+// ============================================
+// STAT CARD
+// ============================================
 
-interface SocialPostWithMetrics extends SocialPost {
-  metrics?: {
-    impressions: number;
-    clicks: number;
-    engagements: number;
-    likes: number;
-    retweets: number;
-    replies: number;
-  };
-  signups?: number;
-}
-
-interface SocialStats {
-  planned: number;
-  posted: number;
-  totalClicks: number;
-  totalSignups: number;
-  avgEngagement: number;
-}
-
-interface Campaign {
-  id: number;
-  name: string;
-}
-
-interface ContentDay {
-  id: number;
-  dayIndex: number;
-  title: string;
-}
-
-function StatCard({ title, value, icon: Icon, subtext, color = "orange" }: {
-  title: string;
-  value: string | number;
-  icon: any;
+function StatCard({ title, value, icon: Icon, color, subtext }: { 
+  title: string; 
+  value: number | string; 
+  icon: any; 
+  color: string;
   subtext?: string;
-  color?: "orange" | "green" | "blue" | "purple";
 }) {
-  const colorClasses = {
-    orange: "bg-orange-500/20 text-orange-500",
-    green: "bg-green-500/20 text-green-400",
+  const colorClasses: Record<string, string> = {
     blue: "bg-blue-500/20 text-blue-400",
+    green: "bg-green-500/20 text-green-400",
     purple: "bg-purple-500/20 text-purple-400",
+    orange: "bg-orange-500/20 text-orange-400",
   };
 
   return (
@@ -130,12 +118,12 @@ function StatCard({ title, value, icon: Icon, subtext, color = "orange" }: {
       <CardContent className="p-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-zinc-400">{title}</p>
-            <p className="text-2xl font-bold text-white mt-1">{value}</p>
-            {subtext && <p className="text-xs text-zinc-500 mt-1">{subtext}</p>}
+            <p className="text-zinc-400 text-sm">{title}</p>
+            <p className="text-2xl font-bold text-white">{value}</p>
+            {subtext && <p className="text-xs text-zinc-500">{subtext}</p>}
           </div>
-          <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${colorClasses[color]}`}>
-            <Icon className="w-6 h-6" />
+          <div className={`p-3 rounded-lg ${colorClasses[color]}`}>
+            <Icon className="w-5 h-5" />
           </div>
         </div>
       </CardContent>
@@ -143,13 +131,22 @@ function StatCard({ title, value, icon: Icon, subtext, color = "orange" }: {
   );
 }
 
-function PostCard({ post, onEdit, onDelete, onMarkPosted }: { 
+// ============================================
+// POST CARD (for list view)
+// ============================================
+
+function PostCard({ 
+  post, 
+  onEdit, 
+  onDelete, 
+  onMarkPosted 
+}: { 
   post: SocialPostWithMetrics; 
   onEdit: () => void;
   onDelete: () => void;
-  onMarkPosted?: () => void;
+  onMarkPosted: () => void;
 }) {
-  const statusColors: Record<string, string> = {
+  const statusStyles: Record<string, string> = {
     planned: "bg-blue-500/20 text-blue-400 border-blue-500/30",
     posted: "bg-green-500/20 text-green-400 border-green-500/30",
     draft: "bg-zinc-600/20 text-zinc-400 border-zinc-500/30",
@@ -157,30 +154,28 @@ function PostCard({ post, onEdit, onDelete, onMarkPosted }: {
     published: "bg-green-500/20 text-green-400 border-green-500/30",
   };
 
-  const statusIcons: Record<string, any> = {
-    planned: Clock,
-    posted: CheckCircle2,
-    draft: Edit2,
-    scheduled: Clock,
-    published: CheckCircle2,
-  };
-
-  const StatusIcon = statusIcons[post.status] || Clock;
+  const scheduledDate = post.scheduledAt ? parseISO(post.scheduledAt) : null;
+  const createdDate = parseISO(post.createdAt);
+  const canMarkPosted = post.status !== 'posted' && post.status !== 'published';
 
   return (
     <Card className="bg-zinc-800/50 border-zinc-700 hover:border-zinc-600 transition-all" data-testid={`card-post-${post.id}`}>
       <CardContent className="p-4">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-2 flex-wrap">
               <Twitter className="w-4 h-4 text-blue-400" />
-              <Badge className={statusColors[post.status] || statusColors.planned}>
-                <StatusIcon className="w-3 h-3 mr-1" />
+              <Badge className={statusStyles[post.status] || statusStyles.planned}>
+                {post.status === 'posted' || post.status === 'published' ? (
+                  <CheckCircle2 className="w-3 h-3 mr-1" />
+                ) : (
+                  <Clock className="w-3 h-3 mr-1" />
+                )}
                 {post.status}
               </Badge>
-              {post.scheduledAt && safeParseDate(post.scheduledAt) && (
+              {scheduledDate && (
                 <span className="text-xs text-zinc-500">
-                  {format(safeParseDate(post.scheduledAt)!, "MMM d, h:mm a")}
+                  {format(scheduledDate, "MMM d, h:mm a")}
                 </span>
               )}
             </div>
@@ -196,10 +191,10 @@ function PostCard({ post, onEdit, onDelete, onMarkPosted }: {
 
         <div className="flex items-center justify-between mt-4 pt-3 border-t border-zinc-700">
           <span className="text-xs text-zinc-500">
-            Created {safeParseDate(post.createdAt) ? format(safeParseDate(post.createdAt)!, "MMM d, yyyy") : ""}
+            Created {format(createdDate, "MMM d, yyyy")}
           </span>
           <div className="flex gap-2">
-            {post.status !== 'posted' && post.status !== 'published' && onMarkPosted && (
+            {canMarkPosted && (
               <Button 
                 variant="ghost" 
                 size="sm" 
@@ -236,15 +231,19 @@ function PostCard({ post, onEdit, onDelete, onMarkPosted }: {
   );
 }
 
+// ============================================
+// POST COMPOSER DIALOG
+// ============================================
+
 function PostComposer({ 
   open, 
-  onOpenChange, 
+  onClose, 
   post,
   campaigns,
   contentDays 
 }: { 
   open: boolean; 
-  onOpenChange: (open: boolean) => void;
+  onClose: () => void;
   post?: SocialPost | null;
   campaigns: Campaign[];
   contentDays: ContentDay[];
@@ -255,135 +254,131 @@ function PostComposer({
   const [formData, setFormData] = useState({
     content: "",
     platform: "twitter",
-    imageUrl: "",
     linkUrl: "",
     campaignId: "",
     linkedDayIndex: "",
-    scheduledAt: "",
+    scheduledDate: "",
     scheduledTime: "",
   });
 
+  // Reset form when dialog opens/closes or post changes
   useEffect(() => {
-    if (post) {
-      setFormData({
-        content: post.content,
-        platform: post.platform,
-        imageUrl: post.imageUrl || "",
-        linkUrl: post.linkUrl || "",
-        campaignId: post.campaignId?.toString() || "",
-        linkedDayIndex: post.linkedDayIndex?.toString() || "",
-        scheduledAt: post.scheduledAt && safeParseDate(post.scheduledAt) ? format(safeParseDate(post.scheduledAt)!, "yyyy-MM-dd") : "",
-        scheduledTime: post.scheduledAt && safeParseDate(post.scheduledAt) ? format(safeParseDate(post.scheduledAt)!, "HH:mm") : "",
-      });
-    } else {
-      setFormData({
-        content: "",
-        platform: "twitter",
-        imageUrl: "",
-        linkUrl: "",
-        campaignId: "",
-        linkedDayIndex: "",
-        scheduledAt: "",
-        scheduledTime: "",
-      });
+    if (open) {
+      if (post) {
+        const scheduledDate = post.scheduledAt ? parseISO(post.scheduledAt) : null;
+        setFormData({
+          content: post.content,
+          platform: post.platform,
+          linkUrl: post.linkUrl || "",
+          campaignId: post.campaignId?.toString() || "",
+          linkedDayIndex: post.linkedDayIndex?.toString() || "",
+          scheduledDate: scheduledDate ? format(scheduledDate, "yyyy-MM-dd") : "",
+          scheduledTime: scheduledDate ? format(scheduledDate, "HH:mm") : "",
+        });
+      } else {
+        setFormData({
+          content: "",
+          platform: "twitter",
+          linkUrl: "",
+          campaignId: "",
+          linkedDayIndex: "",
+          scheduledDate: "",
+          scheduledTime: "",
+        });
+      }
     }
-  }, [post, open]);
+  }, [open, post]);
 
   const charCount = formData.content.length;
-  const charPercent = (charCount / maxChars) * 100;
-
-  const generateDraftMutation = useMutation({
-    mutationFn: async () => {
-      const res = await apiRequest("POST", "/api/admin/social/generate-draft", {
-        dayIndex: formData.linkedDayIndex,
-        platform: formData.platform,
-      });
-      return res.json();
-    },
-    onSuccess: (data: { draft: string }) => {
-      setFormData({ ...formData, content: data.draft });
-      toast({ title: "Draft generated", description: "AI-generated content is ready for review" });
-    },
-    onError: (error: Error) => {
-      toast({ title: "Failed to generate draft", description: error.message, variant: "destructive" });
-    },
-  });
+  const isOverLimit = charCount > maxChars;
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      const scheduledAt = formData.scheduledAt && formData.scheduledTime 
-        ? new Date(`${formData.scheduledAt}T${formData.scheduledTime}`).toISOString()
-        : null;
+      // Build scheduledAt from date + time
+      let scheduledAt: string | null = null;
+      if (formData.scheduledDate) {
+        const timeStr = formData.scheduledTime || "12:00";
+        scheduledAt = new Date(`${formData.scheduledDate}T${timeStr}`).toISOString();
+      }
 
       const payload = {
-        ...formData,
-        status: 'planned',
+        content: formData.content,
+        platform: formData.platform,
+        linkUrl: formData.linkUrl || null,
+        campaignId: formData.campaignId ? parseInt(formData.campaignId) : null,
+        linkedDayIndex: formData.linkedDayIndex ? parseInt(formData.linkedDayIndex) : null,
         scheduledAt,
-        campaignId: formData.campaignId && formData.campaignId !== "none" ? parseInt(formData.campaignId) : null,
-        linkedDayIndex: formData.linkedDayIndex && formData.linkedDayIndex !== "none" ? parseInt(formData.linkedDayIndex) : null,
+        status: scheduledAt ? 'planned' : 'planned', // Always save as planned
       };
 
       if (post) {
-        const res = await apiRequest("PATCH", `/api/admin/social/posts/${post.id}`, payload);
-        return res.json();
+        await apiRequest("PATCH", `/api/admin/social/posts/${post.id}`, payload);
       } else {
-        const res = await apiRequest("POST", "/api/admin/social/posts", payload);
-        return res.json();
+        await apiRequest("POST", "/api/admin/social/posts", payload);
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/social/posts"] });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/social/stats"] });
-      toast({ title: post ? "Post updated" : "Post saved" });
-      onOpenChange(false);
+      toast({ title: post ? "Post updated" : "Post created" });
+      onClose();
     },
     onError: (error: Error) => {
       toast({ title: "Failed to save post", description: error.message, variant: "destructive" });
     },
   });
 
+  const generateMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/admin/social/generate-draft", {
+        linkedDayIndex: formData.linkedDayIndex ? parseInt(formData.linkedDayIndex) : null,
+        campaignId: formData.campaignId ? parseInt(formData.campaignId) : null,
+      });
+      return response.json();
+    },
+    onSuccess: (data) => {
+      if (data.draft) {
+        setFormData(prev => ({ ...prev, content: data.draft }));
+        toast({ title: "Draft generated!" });
+      }
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to generate draft", description: error.message, variant: "destructive" });
+    },
+  });
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-zinc-900 border-zinc-800 max-w-lg">
+    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
+      <DialogContent className="bg-zinc-900 border-zinc-700 text-white max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-white flex items-center gap-2">
-            <Twitter className="w-5 h-5 text-blue-400" />
-            {post ? "Edit Post" : "Create Post"}
-          </DialogTitle>
+          <DialogTitle className="text-white">{post ? "Edit Post" : "Create New Post"}</DialogTitle>
           <DialogDescription className="text-zinc-400">
-            Compose and schedule your social media post
+            {post ? "Update your social media post" : "Compose a new post for X/Twitter"}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 pt-4">
+        <div className="space-y-4">
+          {/* Content */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label className="text-zinc-300">Content</Label>
               <div className="flex items-center gap-2">
-                {formData.linkedDayIndex && formData.linkedDayIndex !== "none" && (
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => generateDraftMutation.mutate()}
-                    disabled={generateDraftMutation.isPending}
-                    className="h-7 text-xs border-orange-500/30 text-orange-400 hover:bg-orange-500/10"
-                    data-testid="button-generate-draft"
-                  >
-                    {generateDraftMutation.isPending ? (
-                      <>
-                        <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                        Generating...
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="w-3 h-3 mr-1" />
-                        Generate with AI
-                      </>
-                    )}
-                  </Button>
-                )}
-                <span className={`text-xs ${charCount > maxChars ? 'text-red-400' : 'text-zinc-500'}`}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => generateMutation.mutate()}
+                  disabled={generateMutation.isPending}
+                  className="text-orange-400 hover:text-orange-300 hover:bg-orange-500/10 h-7"
+                  data-testid="button-generate-draft"
+                >
+                  {generateMutation.isPending ? (
+                    <Loader2 className="w-3 h-3 animate-spin mr-1" />
+                  ) : (
+                    <Sparkles className="w-3 h-3 mr-1" />
+                  )}
+                  AI Draft
+                </Button>
+                <span className={`text-xs ${isOverLimit ? "text-red-400" : "text-zinc-500"}`}>
                   {charCount}/{maxChars}
                 </span>
               </div>
@@ -391,33 +386,55 @@ function PostComposer({
             <Textarea
               value={formData.content}
               onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-              className="bg-zinc-800 border-zinc-700 text-white min-h-[100px] resize-none"
-              placeholder={formData.linkedDayIndex && formData.linkedDayIndex !== "none" 
-                ? "Click 'Generate with AI' to create a draft, or write your own..." 
-                : "What's happening in Bitcoin today?"}
-              data-testid="input-post-content"
+              className={`bg-zinc-800 border-zinc-700 text-white min-h-[120px] ${isOverLimit ? "border-red-500" : ""}`}
+              placeholder="What's happening?"
+              data-testid="textarea-content"
             />
-            <Progress 
-              value={Math.min(charPercent, 100)} 
-              className={`h-1 ${charCount > maxChars ? '[&>div]:bg-red-500' : '[&>div]:bg-orange-500'}`}
-            />
+            {isOverLimit && (
+              <p className="text-xs text-red-400">Content exceeds {maxChars} character limit</p>
+            )}
           </div>
 
+          {/* Schedule Date & Time */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-zinc-300">Link to Lesson</Label>
+              <Label className="text-zinc-300">Schedule Date</Label>
+              <Input
+                type="date"
+                value={formData.scheduledDate}
+                onChange={(e) => setFormData({ ...formData, scheduledDate: e.target.value })}
+                className="bg-zinc-800 border-zinc-700 text-white"
+                data-testid="input-schedule-date"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-zinc-300">Time</Label>
+              <Input
+                type="time"
+                value={formData.scheduledTime}
+                onChange={(e) => setFormData({ ...formData, scheduledTime: e.target.value })}
+                className="bg-zinc-800 border-zinc-700 text-white"
+                data-testid="input-schedule-time"
+              />
+            </div>
+          </div>
+
+          {/* Link Day & Campaign */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-zinc-300">Link to Day</Label>
               <Select 
                 value={formData.linkedDayIndex} 
                 onValueChange={(v) => setFormData({ ...formData, linkedDayIndex: v })}
               >
-                <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white" data-testid="select-linked-day">
-                  <SelectValue placeholder="Select lesson" />
+                <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white" data-testid="select-day">
+                  <SelectValue placeholder="Select day" />
                 </SelectTrigger>
-                <SelectContent className="bg-zinc-800 border-zinc-700">
+                <SelectContent className="bg-zinc-800 border-zinc-700 max-h-[200px]">
                   <SelectItem value="none">None</SelectItem>
-                  {contentDays.map((day) => (
-                    <SelectItem key={day.dayIndex} value={day.dayIndex.toString()}>
-                      Day {day.dayIndex}: {day.title.slice(0, 30)}...
+                  {contentDays.slice(0, 30).map((day) => (
+                    <SelectItem key={day.id} value={day.dayIndex.toString()}>
+                      Day {day.dayIndex}: {day.title}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -445,6 +462,7 @@ function PostComposer({
             </div>
           </div>
 
+          {/* Link URL */}
           <div className="space-y-2">
             <Label className="text-zinc-300">Custom Link URL (optional)</Label>
             <Input
@@ -455,42 +473,12 @@ function PostComposer({
               data-testid="input-link-url"
             />
           </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="text-zinc-300">Schedule Date</Label>
-              <Input
-                type="date"
-                value={formData.scheduledAt}
-                onChange={(e) => setFormData({ ...formData, scheduledAt: e.target.value })}
-                className="bg-zinc-800 border-zinc-700 text-white"
-                data-testid="input-schedule-date"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-zinc-300">Time</Label>
-              <Input
-                type="time"
-                value={formData.scheduledTime}
-                onChange={(e) => setFormData({ ...formData, scheduledTime: e.target.value })}
-                className="bg-zinc-800 border-zinc-700 text-white"
-                data-testid="input-schedule-time"
-              />
-            </div>
-          </div>
-
-          {formData.linkedDayIndex && (
-            <div className="bg-zinc-800/50 rounded-lg p-3 text-xs text-zinc-400">
-              <span className="text-orange-400 font-medium">UTM tracking enabled:</span> Link will include 
-              unique tracking code for attribution
-            </div>
-          )}
         </div>
 
         <DialogFooter className="gap-2">
           <Button
             variant="outline"
-            onClick={() => onOpenChange(false)}
+            onClick={onClose}
             className="border-zinc-700 text-zinc-300 hover:bg-zinc-800"
             data-testid="button-cancel"
           >
@@ -502,8 +490,12 @@ function PostComposer({
             className="bg-orange-500 hover:bg-orange-600 text-white"
             data-testid="button-save-post"
           >
-            {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Clock className="w-4 h-4 mr-2" />}
-            {formData.scheduledAt ? 'Save & Schedule' : 'Save Post'}
+            {saveMutation.isPending ? (
+              <Loader2 className="w-4 h-4 animate-spin mr-2" />
+            ) : (
+              <Clock className="w-4 h-4 mr-2" />
+            )}
+            {formData.scheduledDate ? 'Save & Schedule' : 'Save Post'}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -511,47 +503,74 @@ function PostComposer({
   );
 }
 
-function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], onEditPost: (post: SocialPost) => void }) {
+// ============================================
+// CALENDAR COMPONENT
+// ============================================
+
+function SocialCalendar({ 
+  posts, 
+  selectedDate, 
+  onSelectDate,
+  onEditPost 
+}: { 
+  posts: SocialPostWithMetrics[];
+  selectedDate: Date | null;
+  onSelectDate: (date: Date | null) => void;
+  onEditPost: (post: SocialPost) => void;
+}) {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const monthStart = startOfMonth(currentMonth);
   const calendarStart = startOfWeek(monthStart, { weekStartsOn: 0 });
   
-  // Generate 6 weeks of days (42 days) to cover any month layout
-  const calendarDays = Array.from({ length: 42 }, (_, i) => addDays(calendarStart, i));
+  // Generate 6 weeks of days (42 days)
+  const calendarDays = useMemo(() => 
+    Array.from({ length: 42 }, (_, i) => addDays(calendarStart, i)),
+    [calendarStart.getTime()]
+  );
 
-  // Separate scheduled posts from unscheduled ones
-  const scheduledPosts = posts.filter(post => post.scheduledAt && safeParseDate(post.scheduledAt));
-  const unscheduledPosts = posts.filter(post => !post.scheduledAt && post.status !== 'posted');
-
-  const getPostsForDay = (date: Date) => {
-    return scheduledPosts.filter(post => {
-      const postDate = safeParseDate(post.scheduledAt);
-      return postDate && isSameDay(postDate, date);
+  // Build a map of date string -> posts for fast lookup
+  const postsByDate = useMemo(() => {
+    const map: Record<string, SocialPostWithMetrics[]> = {};
+    posts.forEach(post => {
+      if (post.scheduledAt) {
+        try {
+          const date = parseISO(post.scheduledAt);
+          const key = format(date, "yyyy-MM-dd");
+          if (!map[key]) map[key] = [];
+          map[key].push(post);
+        } catch (e) {
+          // Skip invalid dates
+        }
+      }
     });
-  };
+    return map;
+  }, [posts]);
 
-  const selectedDayPosts = selectedDate ? getPostsForDay(selectedDate) : [];
+  // Posts without scheduled dates
+  const unscheduledPosts = useMemo(() => 
+    posts.filter(p => !p.scheduledAt && p.status !== 'posted' && p.status !== 'published'),
+    [posts]
+  );
+
+  // Posts for selected date
+  const selectedDayPosts = useMemo(() => {
+    if (!selectedDate) return [];
+    const key = format(selectedDate, "yyyy-MM-dd");
+    return postsByDate[key] || [];
+  }, [selectedDate, postsByDate]);
 
   const goToPrevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
   const goToNextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
   const goToToday = () => {
     setCurrentMonth(today);
-    setSelectedDate(today);
-  };
-
-  const statusColors: Record<string, string> = {
-    planned: "bg-blue-500",
-    posted: "bg-green-500",
-    draft: "bg-zinc-600",
-    scheduled: "bg-blue-500",
-    published: "bg-green-500",
+    onSelectDate(today);
   };
 
   return (
     <div className="space-y-4">
+      {/* Calendar Card */}
       <Card className="bg-zinc-800/50 border-zinc-700">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
@@ -606,17 +625,23 @@ function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], o
           {/* Calendar grid */}
           <div className="grid grid-cols-7 gap-1">
             {calendarDays.map((day) => {
-              const dayPosts = getPostsForDay(day);
+              const dateKey = format(day, "yyyy-MM-dd");
+              const dayPosts = postsByDate[dateKey] || [];
               const isToday = isSameDay(day, today);
               const isCurrentMonth = isSameMonth(day, currentMonth);
               const isSelected = selectedDate && isSameDay(day, selectedDate);
-              const hasPlanned = dayPosts.some(p => p.status === 'planned' || p.status === 'scheduled' || p.status === 'draft');
-              const hasPosted = dayPosts.some(p => p.status === 'posted' || p.status === 'published');
+              
+              const hasPlanned = dayPosts.some(p => 
+                p.status === 'planned' || p.status === 'scheduled' || p.status === 'draft'
+              );
+              const hasPosted = dayPosts.some(p => 
+                p.status === 'posted' || p.status === 'published'
+              );
               
               return (
                 <button 
-                  key={day.toISOString()} 
-                  onClick={() => setSelectedDate(day)}
+                  key={dateKey}
+                  onClick={() => onSelectDate(day)}
                   className={`min-h-[60px] p-2 rounded-lg border transition-all cursor-pointer ${
                     isSelected
                       ? 'bg-orange-500/30 border-orange-500 ring-1 ring-orange-500'
@@ -626,7 +651,7 @@ function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], o
                           ? 'bg-zinc-800/50 border-zinc-700/50 hover:border-zinc-500 hover:bg-zinc-700/50' 
                           : 'bg-zinc-900/30 border-transparent opacity-40'
                   }`}
-                  data-testid={`calendar-day-${format(day, 'yyyy-MM-dd')}`}
+                  data-testid={`calendar-day-${dateKey}`}
                 >
                   <div className={`text-sm font-medium ${
                     isSelected ? 'text-orange-400' : isToday ? 'text-orange-400' : isCurrentMonth ? 'text-white' : 'text-zinc-600'
@@ -634,17 +659,17 @@ function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], o
                     {format(day, "d")}
                   </div>
                   
-                  {/* Event indicators */}
+                  {/* Status indicators */}
                   {dayPosts.length > 0 && (
-                    <div className="flex items-center justify-center gap-1 mt-1">
-                      {hasPosted && <div className="w-2 h-2 rounded-full bg-green-500" title="Posted"></div>}
-                      {hasPlanned && <div className="w-2 h-2 rounded-full bg-blue-500" title="Planned"></div>}
-                    </div>
-                  )}
-                  {dayPosts.length > 0 && (
-                    <div className="text-xs text-zinc-400 text-center mt-0.5">
-                      {dayPosts.length} post{dayPosts.length !== 1 ? 's' : ''}
-                    </div>
+                    <>
+                      <div className="flex items-center justify-center gap-1 mt-1">
+                        {hasPosted && <div className="w-2 h-2 rounded-full bg-green-500" title="Posted"></div>}
+                        {hasPlanned && <div className="w-2 h-2 rounded-full bg-blue-500" title="Planned"></div>}
+                      </div>
+                      <div className="text-xs text-zinc-400 text-center mt-0.5">
+                        {dayPosts.length} post{dayPosts.length !== 1 ? 's' : ''}
+                      </div>
+                    </>
                   )}
                 </button>
               );
@@ -666,7 +691,7 @@ function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], o
         </CardContent>
       </Card>
 
-      {/* Day Detail Panel */}
+      {/* Selected Day Detail Panel */}
       {selectedDate && (
         <Card className="bg-zinc-800/50 border-zinc-700">
           <CardHeader className="pb-2">
@@ -677,10 +702,10 @@ function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], o
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setSelectedDate(null)}
-                className="text-zinc-400 hover:text-white"
+                onClick={() => onSelectDate(null)}
+                className="text-zinc-400 hover:text-white h-8 w-8 p-0"
               >
-                <Trash2 className="w-4 h-4" />
+                <X className="w-4 h-4" />
               </Button>
             </div>
           </CardHeader>
@@ -700,12 +725,16 @@ function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], o
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <Badge className={`${statusColors[post.status]} text-white text-xs`}>
+                          <Badge className={`text-xs ${
+                            post.status === 'posted' || post.status === 'published' 
+                              ? 'bg-green-500/20 text-green-400' 
+                              : 'bg-blue-500/20 text-blue-400'
+                          }`}>
                             {post.status}
                           </Badge>
                           {post.scheduledAt && (
                             <span className="text-xs text-zinc-500">
-                              {safeParseDate(post.scheduledAt) ? format(safeParseDate(post.scheduledAt)!, "h:mm a") : ""}
+                              {format(parseISO(post.scheduledAt), "h:mm a")}
                             </span>
                           )}
                         </div>
@@ -748,7 +777,7 @@ function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], o
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-zinc-300 truncate">{post.content}</p>
                     <span className="text-xs text-zinc-500">
-                      Created {safeParseDate(post.createdAt) ? format(safeParseDate(post.createdAt)!, "MMM d, yyyy") : ""}
+                      Created {format(parseISO(post.createdAt), "MMM d, yyyy")}
                     </span>
                   </div>
                   <Button
@@ -771,13 +800,17 @@ function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], o
   );
 }
 
+// ============================================
+// ATTRIBUTION FUNNEL
+// ============================================
+
 function AttributionFunnel({ stats }: { stats: SocialStats | undefined }) {
   if (!stats) return null;
 
-  const impressions = stats.posted * 1000; // Estimated
+  const impressions = stats.posted * 1000;
   const clicks = stats.totalClicks;
   const signups = stats.totalSignups;
-  const dayOneComplete = Math.round(signups * 0.35); // Estimated 35% completion
+  const dayOneComplete = Math.round(signups * 0.35);
 
   const clickRate = impressions > 0 ? ((clicks / impressions) * 100).toFixed(1) : "0";
   const signupRate = clicks > 0 ? ((signups / clicks) * 100).toFixed(1) : "0";
@@ -821,12 +854,18 @@ function AttributionFunnel({ stats }: { stats: SocialStats | undefined }) {
   );
 }
 
+// ============================================
+// MAIN PAGE COMPONENT
+// ============================================
+
 function SocialMediaHubContent() {
   const { toast } = useToast();
   const [composerOpen, setComposerOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<SocialPost | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
+  // Data queries
   const { data: posts = [], isLoading: postsLoading } = useQuery<SocialPostWithMetrics[]>({
     queryKey: ["/api/admin/social/posts"],
   });
@@ -843,6 +882,7 @@ function SocialMediaHubContent() {
     queryKey: ["/api/admin/content/days"],
   });
 
+  // Mutations
   const deleteMutation = useMutation({
     mutationFn: async (postId: number) => {
       await apiRequest("DELETE", `/api/admin/social/posts/${postId}`);
@@ -864,30 +904,33 @@ function SocialMediaHubContent() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/social/posts"] });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/social/stats"] });
-      toast({ title: "Marked as posted", description: "Post status updated" });
+      toast({ title: "Marked as posted" });
     },
     onError: (error: Error) => {
       toast({ title: "Failed to update status", description: error.message, variant: "destructive" });
     },
   });
 
-  const filteredPosts = statusFilter === "all" 
-    ? posts 
-    : posts.filter(p => p.status === statusFilter);
+  // Filter posts for list view
+  const filteredPosts = useMemo(() => {
+    if (statusFilter === "all") return posts;
+    return posts.filter(p => p.status === statusFilter);
+  }, [posts, statusFilter]);
 
-  const handleEdit = (post: SocialPost) => {
+  const handleEditPost = (post: SocialPost) => {
     setEditingPost(post);
     setComposerOpen(true);
   };
 
-  const handleCloseComposer = (open: boolean) => {
-    setComposerOpen(open);
-    if (!open) setEditingPost(null);
+  const handleCloseComposer = () => {
+    setComposerOpen(false);
+    setEditingPost(null);
   };
 
   return (
     <AdminLayout>
       <div className="p-6 space-y-6">
+        {/* Header */}
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-white">Social Media Hub</h1>
@@ -903,40 +946,27 @@ function SocialMediaHubContent() {
           </Button>
         </div>
 
+        {/* Stats */}
         <div className="grid grid-cols-4 gap-4">
-          <StatCard
-            title="Planned"
-            value={stats?.planned || 0}
-            icon={Clock}
-            color="blue"
-          />
-          <StatCard
-            title="Posted"
-            value={stats?.posted || 0}
-            icon={Send}
-            color="green"
-          />
-          <StatCard
-            title="Total Clicks"
-            value={stats?.totalClicks?.toLocaleString() || 0}
-            icon={MousePointerClick}
-            color="purple"
-          />
-          <StatCard
-            title="Signups"
-            value={stats?.totalSignups || 0}
-            icon={Users}
-            subtext="From social"
-            color="orange"
-          />
+          <StatCard title="Planned" value={stats?.planned || 0} icon={Clock} color="blue" />
+          <StatCard title="Posted" value={stats?.posted || 0} icon={Send} color="green" />
+          <StatCard title="Total Clicks" value={stats?.totalClicks?.toLocaleString() || 0} icon={MousePointerClick} color="purple" />
+          <StatCard title="Signups" value={stats?.totalSignups || 0} icon={Users} subtext="From social" color="orange" />
         </div>
 
+        {/* Main Content */}
         <div className="grid grid-cols-3 gap-6">
-          <div className="col-span-2 space-y-4">
-            <CalendarView posts={posts} onEditPost={handleEdit} />
-            <AttributionFunnel stats={stats} />
+          {/* Calendar (2 cols) */}
+          <div className="col-span-2">
+            <SocialCalendar 
+              posts={posts} 
+              selectedDate={selectedDate}
+              onSelectDate={setSelectedDate}
+              onEditPost={handleEditPost}
+            />
           </div>
-          
+
+          {/* Post List (1 col) */}
           <div className="space-y-4">
             <Card className="bg-zinc-800/50 border-zinc-700">
               <CardHeader className="pb-2">
@@ -976,7 +1006,7 @@ function SocialMediaHubContent() {
                     <PostCard 
                       key={post.id} 
                       post={post} 
-                      onEdit={() => handleEdit(post)}
+                      onEdit={() => handleEditPost(post)}
                       onDelete={() => deleteMutation.mutate(post.id)}
                       onMarkPosted={() => markPostedMutation.mutate(post.id)}
                     />
@@ -984,13 +1014,16 @@ function SocialMediaHubContent() {
                 )}
               </CardContent>
             </Card>
+
+            <AttributionFunnel stats={stats} />
           </div>
         </div>
       </div>
 
+      {/* Post Composer Dialog */}
       <PostComposer
         open={composerOpen}
-        onOpenChange={handleCloseComposer}
+        onClose={handleCloseComposer}
         post={editingPost}
         campaigns={campaigns}
         contentDays={contentDays}
@@ -998,6 +1031,10 @@ function SocialMediaHubContent() {
     </AdminLayout>
   );
 }
+
+// ============================================
+// EXPORT
+// ============================================
 
 export default function SocialMediaHub() {
   return (
