@@ -509,148 +509,271 @@ function PostComposer({
 function CalendarView({ posts, onEditPost }: { posts: SocialPostWithMetrics[], onEditPost: (post: SocialPost) => void }) {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const monthStart = startOfMonth(currentMonth);
-  const monthEnd = endOfMonth(currentMonth);
   const calendarStart = startOfWeek(monthStart, { weekStartsOn: 0 });
   
   // Generate 6 weeks of days (42 days) to cover any month layout
   const calendarDays = Array.from({ length: 42 }, (_, i) => addDays(calendarStart, i));
 
+  // Separate scheduled posts from unscheduled drafts
+  const scheduledPosts = posts.filter(post => post.scheduledAt);
+  const unscheduledDrafts = posts.filter(post => !post.scheduledAt && post.status === 'draft');
+
   const getPostsForDay = (date: Date) => {
-    return posts.filter(post => {
-      if (!post.scheduledAt) return false;
-      return isSameDay(parseISO(post.scheduledAt), date);
+    return scheduledPosts.filter(post => {
+      return isSameDay(parseISO(post.scheduledAt!), date);
     });
   };
 
+  const selectedDayPosts = selectedDate ? getPostsForDay(selectedDate) : [];
+
   const goToPrevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
   const goToNextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
-  const goToToday = () => setCurrentMonth(today);
+  const goToToday = () => {
+    setCurrentMonth(today);
+    setSelectedDate(today);
+  };
 
   const statusColors: Record<string, string> = {
-    draft: "bg-zinc-600 text-zinc-200",
-    scheduled: "bg-blue-500 text-white",
-    published: "bg-green-500 text-white",
-    failed: "bg-red-500 text-white",
+    draft: "bg-zinc-600",
+    scheduled: "bg-blue-500",
+    published: "bg-green-500",
+    failed: "bg-red-500",
+  };
+
+  const statusTextColors: Record<string, string> = {
+    draft: "text-zinc-300",
+    scheduled: "text-blue-400",
+    published: "text-green-400",
+    failed: "text-red-400",
   };
 
   return (
-    <Card className="bg-zinc-800/50 border-zinc-700">
-      <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-white text-lg flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-orange-500" />
-            Content Calendar
-          </CardTitle>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={goToPrevMonth}
-              className="text-zinc-400 hover:text-white h-8 w-8 p-0"
-              data-testid="button-prev-month"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={goToToday}
-              className="text-zinc-400 hover:text-white text-sm px-2"
-              data-testid="button-today"
-            >
-              Today
-            </Button>
-            <span className="text-white font-medium min-w-[140px] text-center">
-              {format(currentMonth, "MMMM yyyy")}
-            </span>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={goToNextMonth}
-              className="text-zinc-400 hover:text-white h-8 w-8 p-0"
-              data-testid="button-next-month"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        {/* Day headers */}
-        <div className="grid grid-cols-7 gap-1 mb-2">
-          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-            <div key={day} className="text-xs text-zinc-500 text-center font-medium py-1">
-              {day}
-            </div>
-          ))}
-        </div>
-        
-        {/* Calendar grid */}
-        <div className="grid grid-cols-7 gap-1">
-          {calendarDays.map((day) => {
-            const dayPosts = getPostsForDay(day);
-            const isToday = isSameDay(day, today);
-            const isCurrentMonth = isSameMonth(day, currentMonth);
-            
-            return (
-              <div 
-                key={day.toISOString()} 
-                className={`min-h-[80px] p-1 rounded-lg border transition-colors ${
-                  isToday 
-                    ? 'bg-orange-500/20 border-orange-500/50' 
-                    : isCurrentMonth 
-                      ? 'bg-zinc-800/50 border-zinc-700/50 hover:border-zinc-600' 
-                      : 'bg-zinc-900/30 border-transparent'
-                }`}
+    <div className="space-y-4">
+      <Card className="bg-zinc-800/50 border-zinc-700">
+        <CardHeader className="pb-2">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-white text-lg flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-orange-500" />
+              Content Calendar
+            </CardTitle>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={goToPrevMonth}
+                className="text-zinc-400 hover:text-white h-8 w-8 p-0"
+                data-testid="button-prev-month"
               >
-                <div className={`text-xs font-medium mb-1 ${
-                  isToday ? 'text-orange-400' : isCurrentMonth ? 'text-zinc-300' : 'text-zinc-600'
-                }`}>
-                  {format(day, "d")}
-                </div>
-                <div className="space-y-1">
-                  {dayPosts.slice(0, 3).map((post) => (
-                    <button
-                      key={post.id}
-                      onClick={() => onEditPost(post)}
-                      className={`w-full text-left text-xs px-1 py-0.5 rounded truncate cursor-pointer hover:opacity-80 transition-opacity ${statusColors[post.status]}`}
-                      title={post.content}
-                      data-testid={`calendar-post-${post.id}`}
-                    >
-                      {post.content.slice(0, 20)}...
-                    </button>
-                  ))}
-                  {dayPosts.length > 3 && (
-                    <div className="text-xs text-zinc-500 text-center">
-                      +{dayPosts.length - 3} more
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={goToToday}
+                className="text-zinc-400 hover:text-white text-sm px-2"
+                data-testid="button-today"
+              >
+                Today
+              </Button>
+              <span className="text-white font-medium min-w-[140px] text-center">
+                {format(currentMonth, "MMMM yyyy")}
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={goToNextMonth}
+                className="text-zinc-400 hover:text-white h-8 w-8 p-0"
+                data-testid="button-next-month"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {/* Day headers */}
+          <div className="grid grid-cols-7 gap-1 mb-2">
+            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+              <div key={day} className="text-xs text-zinc-500 text-center font-medium py-1">
+                {day}
+              </div>
+            ))}
+          </div>
+          
+          {/* Calendar grid */}
+          <div className="grid grid-cols-7 gap-1">
+            {calendarDays.map((day) => {
+              const dayPosts = getPostsForDay(day);
+              const isToday = isSameDay(day, today);
+              const isCurrentMonth = isSameMonth(day, currentMonth);
+              const isSelected = selectedDate && isSameDay(day, selectedDate);
+              const hasScheduled = dayPosts.some(p => p.status === 'scheduled');
+              const hasPublished = dayPosts.some(p => p.status === 'published');
+              const hasDraft = dayPosts.some(p => p.status === 'draft');
+              
+              return (
+                <button 
+                  key={day.toISOString()} 
+                  onClick={() => setSelectedDate(day)}
+                  className={`min-h-[60px] p-2 rounded-lg border transition-all cursor-pointer ${
+                    isSelected
+                      ? 'bg-orange-500/30 border-orange-500 ring-1 ring-orange-500'
+                      : isToday 
+                        ? 'bg-orange-500/10 border-orange-500/50 hover:bg-orange-500/20' 
+                        : isCurrentMonth 
+                          ? 'bg-zinc-800/50 border-zinc-700/50 hover:border-zinc-500 hover:bg-zinc-700/50' 
+                          : 'bg-zinc-900/30 border-transparent opacity-40'
+                  }`}
+                  data-testid={`calendar-day-${format(day, 'yyyy-MM-dd')}`}
+                >
+                  <div className={`text-sm font-medium ${
+                    isSelected ? 'text-orange-400' : isToday ? 'text-orange-400' : isCurrentMonth ? 'text-white' : 'text-zinc-600'
+                  }`}>
+                    {format(day, "d")}
+                  </div>
+                  
+                  {/* Event indicators */}
+                  {dayPosts.length > 0 && (
+                    <div className="flex items-center justify-center gap-1 mt-1">
+                      {hasPublished && <div className="w-2 h-2 rounded-full bg-green-500" title="Published"></div>}
+                      {hasScheduled && <div className="w-2 h-2 rounded-full bg-blue-500" title="Scheduled"></div>}
+                      {hasDraft && <div className="w-2 h-2 rounded-full bg-zinc-500" title="Draft"></div>}
                     </div>
                   )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                  {dayPosts.length > 0 && (
+                    <div className="text-xs text-zinc-400 text-center mt-0.5">
+                      {dayPosts.length} post{dayPosts.length !== 1 ? 's' : ''}
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
 
-        {/* Legend */}
-        <div className="flex items-center gap-4 mt-4 pt-3 border-t border-zinc-700">
-          <span className="text-xs text-zinc-500">Status:</span>
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded bg-zinc-600"></div>
-            <span className="text-xs text-zinc-400">Draft</span>
+          {/* Legend */}
+          <div className="flex items-center gap-4 mt-4 pt-3 border-t border-zinc-700">
+            <span className="text-xs text-zinc-500">Status:</span>
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 rounded-full bg-zinc-500"></div>
+              <span className="text-xs text-zinc-400">Draft</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+              <span className="text-xs text-zinc-400">Scheduled</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 rounded-full bg-green-500"></div>
+              <span className="text-xs text-zinc-400">Published</span>
+            </div>
           </div>
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded bg-blue-500"></div>
-            <span className="text-xs text-zinc-400">Scheduled</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded bg-green-500"></div>
-            <span className="text-xs text-zinc-400">Published</span>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+
+      {/* Day Detail Panel */}
+      {selectedDate && (
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-white text-lg">
+                {format(selectedDate, "EEEE, MMMM d, yyyy")}
+              </CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSelectedDate(null)}
+                className="text-zinc-400 hover:text-white"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {selectedDayPosts.length === 0 ? (
+              <div className="text-center py-6 text-zinc-500">
+                <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                <p>No posts scheduled for this day</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {selectedDayPosts.map((post) => (
+                  <div
+                    key={post.id}
+                    className="p-3 bg-zinc-900/50 rounded-lg border border-zinc-700 hover:border-zinc-600 transition-colors"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Badge className={`${statusColors[post.status]} text-white text-xs`}>
+                            {post.status}
+                          </Badge>
+                          {post.scheduledAt && (
+                            <span className="text-xs text-zinc-500">
+                              {format(parseISO(post.scheduledAt), "h:mm a")}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm text-zinc-300 line-clamp-2">{post.content}</p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onEditPost(post)}
+                        className="text-zinc-400 hover:text-orange-400"
+                        data-testid={`button-edit-day-post-${post.id}`}
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Unscheduled Drafts */}
+      {unscheduledDrafts.length > 0 && (
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-white text-lg flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-zinc-500" />
+              Unscheduled Drafts ({unscheduledDrafts.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {unscheduledDrafts.map((post) => (
+                <div
+                  key={post.id}
+                  className="p-3 bg-zinc-900/50 rounded-lg border border-zinc-700 hover:border-zinc-600 transition-colors flex items-center justify-between gap-3"
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-zinc-300 truncate">{post.content}</p>
+                    <span className="text-xs text-zinc-500">
+                      Created {format(parseISO(post.createdAt), "MMM d, yyyy")}
+                    </span>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onEditPost(post)}
+                    className="border-orange-500/30 text-orange-400 hover:bg-orange-500/10 shrink-0"
+                    data-testid={`button-schedule-draft-${post.id}`}
+                  >
+                    <Clock className="w-4 h-4 mr-1" />
+                    Schedule
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
   );
 }
 
