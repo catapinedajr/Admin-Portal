@@ -1047,27 +1047,52 @@ function BulkImportDialog({ open, onOpenChange, nextDayIndex }: {
   "theme": "Bitcoin basics",
   "readingLevel": "8th grade",
   "culturalStage": "Normie → Pre-coiner",
-  "lesson": {
-    "title": "Lesson Title",
-    "content": "Full lesson content goes here...",
-    "keyTakeaways": ["Takeaway 1", "Takeaway 2", "Takeaway 3"],
-    "whyItMatters": "Explanation of why this matters...",
-    "estimatedReadTime": 3
-  },
-  "quizzes": [
-    {
-      "question": "What is the question?",
-      "options": ["Option A", "Option B", "Option C", "Option D"],
-      "correctAnswer": 0,
-      "explanation": "Why this answer is correct..."
-    }
-  ],
+  
   "questions": [
     {
-      "title": "Setup Question Title",
-      "content": "Question content for user reflection...",
-      "category": "financial",
-      "icon": "💰"
+      "title": "Why does your grocery bill keep getting bigger?",
+      "content": "Understanding the hidden force that makes everything more expensive",
+      "category": "Problem Recognition",
+      "icon": "shopping-cart"
+    },
+    {
+      "title": "What happens when governments create new money?",
+      "content": "Exploring the effects of money printing on your purchasing power",
+      "category": "Problem Recognition",
+      "icon": "printer"
+    },
+    {
+      "title": "How can you protect your purchasing power?",
+      "content": "Discovering Bitcoin as a solution to money debasement",
+      "category": "Problem Recognition",
+      "icon": "shield"
+    }
+  ],
+  
+  "lesson": {
+    "title": "Your Money is Being Secretly Devalued",
+    "content": "Have you noticed that your grocery bill keeps getting bigger, even when you buy the same items? Or that the rent keeps going up year after year? This isn't just bad luck—it's a predictable result of how modern money works...",
+    "keyTakeaways": [
+      "Inflation is not random - it's caused by expanding the money supply",
+      "Your savings lose purchasing power over time when held in fiat currency",
+      "Bitcoin's fixed supply of 21 million coins makes it resistant to debasement"
+    ],
+    "whyItMatters": "Understanding inflation is the first step to protecting your wealth. When you see how traditional money loses value over time, you can make informed decisions about how to store and grow your hard-earned money.",
+    "estimatedReadTime": 4
+  },
+  
+  "quizzes": [
+    {
+      "question": "What is the primary cause of rising prices over time?",
+      "options": ["Greedy corporations", "Supply chain issues", "Expansion of the money supply", "Consumer demand"],
+      "correctAnswer": 2,
+      "explanation": "While other factors can affect prices temporarily, the consistent rise in prices over decades is primarily caused by the expansion of the money supply. When more money chases the same goods, prices rise."
+    },
+    {
+      "question": "How many Bitcoin will ever exist?",
+      "options": ["Unlimited", "21 million", "100 million", "1 billion"],
+      "correctAnswer": 1,
+      "explanation": "Bitcoin has a hard cap of 21 million coins that will ever exist, making it resistant to the kind of supply expansion that causes inflation in traditional currencies."
     }
   ]
 }`;
@@ -1163,7 +1188,7 @@ function BulkImportDialog({ open, onOpenChange, nextDayIndex }: {
             Bulk Import Content
           </DialogTitle>
           <DialogDescription className="text-zinc-400">
-            Paste JSON from your Claude conversations to import a complete day with lesson, quizzes, and questions
+            Paste JSON from Claude to import a complete day. Maps to Learn page: questions → Learning Preview, lesson → Today's Lesson, quizzes → Knowledge Check
           </DialogDescription>
         </DialogHeader>
         
@@ -1219,16 +1244,16 @@ function BulkImportDialog({ open, onOpenChange, nextDayIndex }: {
                 </div>
                 <div className="flex items-center gap-4 mt-2 pt-2 border-t border-zinc-700">
                   <span className="text-zinc-400">
+                    <HelpCircle className="w-4 h-4 inline mr-1" />
+                    {parsedContent.questions?.length || 0} Learning Preview
+                  </span>
+                  <span className="text-zinc-400">
                     <BookOpen className="w-4 h-4 inline mr-1" />
-                    {parsedContent.lesson ? "1 lesson" : "No lesson"}
+                    {parsedContent.lesson ? "Today's Lesson" : "No lesson"}
                   </span>
                   <span className="text-zinc-400">
                     <CheckCircle className="w-4 h-4 inline mr-1" />
-                    {parsedContent.quizzes?.length || 0} quizzes
-                  </span>
-                  <span className="text-zinc-400">
-                    <HelpCircle className="w-4 h-4 inline mr-1" />
-                    {parsedContent.questions?.length || 0} questions
+                    {parsedContent.quizzes?.length || 0} Knowledge Check
                   </span>
                 </div>
               </CardContent>
