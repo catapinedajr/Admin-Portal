@@ -200,6 +200,87 @@ export const invoices = pgTable("invoices", {
 });
 
 // ============================================
+// SOCIAL MEDIA MANAGEMENT TABLES
+// ============================================
+
+// Social media platform connections
+export const socialPlatformStatusTypes = ['draft', 'scheduled', 'published', 'failed'] as const;
+export type SocialPostStatus = typeof socialPlatformStatusTypes[number];
+
+export const socialPlatformTypes = ['twitter', 'linkedin', 'instagram', 'facebook'] as const;
+export type SocialPlatform = typeof socialPlatformTypes[number];
+
+// Social media posts
+export const socialPosts = pgTable("social_posts", {
+  id: serial("id").primaryKey(),
+  platform: text("platform").notNull().default("twitter"), // twitter, linkedin, instagram, facebook
+  content: text("content").notNull(),
+  imageUrl: text("image_url"),
+  linkUrl: text("link_url"),
+  campaignId: integer("campaign_id").references(() => adCampaigns.id),
+  linkedDayIndex: integer("linked_day_index"), // Link to curriculum day for content sourcing
+  status: text("status").notNull().default("draft"), // draft, scheduled, published, failed
+  scheduledAt: timestamp("scheduled_at"),
+  publishedAt: timestamp("published_at"),
+  externalPostId: text("external_post_id"), // ID from Twitter/X API
+  utmSource: text("utm_source").default("social"),
+  utmMedium: text("utm_medium"),
+  utmCampaign: text("utm_campaign"),
+  utmContent: text("utm_content"), // Unique per post for attribution
+  errorMessage: text("error_message"),
+  createdBy: integer("created_by").references(() => adminUsers.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Social post metrics - synced from platform APIs
+export const socialPostMetrics = pgTable("social_post_metrics", {
+  id: serial("id").primaryKey(),
+  postId: integer("post_id").notNull().references(() => socialPosts.id, { onDelete: 'cascade' }),
+  impressions: integer("impressions").notNull().default(0),
+  engagements: integer("engagements").notNull().default(0), // likes + retweets + replies
+  likes: integer("likes").notNull().default(0),
+  retweets: integer("retweets").notNull().default(0),
+  replies: integer("replies").notNull().default(0),
+  clicks: integer("clicks").notNull().default(0),
+  profileClicks: integer("profile_clicks").notNull().default(0),
+  videoViews: integer("video_views").notNull().default(0),
+  syncedAt: timestamp("synced_at").notNull().defaultNow(),
+});
+
+// Attribution events - track user journey from social to signup
+export const attributionEvents = pgTable("attribution_events", {
+  id: serial("id").primaryKey(),
+  postId: integer("post_id").references(() => socialPosts.id),
+  campaignId: integer("campaign_id").references(() => adCampaigns.id),
+  userId: integer("user_id").references(() => users.id),
+  eventType: text("event_type").notNull(), // click, signup, day_complete, subscription
+  utmSource: text("utm_source"),
+  utmMedium: text("utm_medium"),
+  utmCampaign: text("utm_campaign"),
+  utmContent: text("utm_content"),
+  sessionId: text("session_id"),
+  dayIndex: integer("day_index"), // For day_complete events
+  metadata: json("metadata"), // Additional event-specific data
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Twitter/X account connection
+export const socialAccounts = pgTable("social_accounts", {
+  id: serial("id").primaryKey(),
+  platform: text("platform").notNull().default("twitter"),
+  accountName: text("account_name").notNull(),
+  accountHandle: text("account_handle"),
+  accessToken: text("access_token"), // Encrypted
+  refreshToken: text("refresh_token"), // Encrypted
+  tokenExpiresAt: timestamp("token_expires_at"),
+  isActive: boolean("is_active").notNull().default(true),
+  lastSyncAt: timestamp("last_sync_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// ============================================
 // END ADMIN PORTAL TABLES
 // ============================================
 
@@ -1210,3 +1291,49 @@ export type ReferralPartner = typeof referralPartners.$inferSelect;
 export type InsertReferralPartner = z.infer<typeof insertReferralPartnerSchema>;
 export type ReferralSignup = typeof referralSignups.$inferSelect;
 export type InsertReferralSignup = z.infer<typeof insertReferralSignupSchema>;
+
+// ============================================
+// SOCIAL MEDIA SCHEMAS AND TYPES
+// ============================================
+
+// Social posts schema
+export const insertSocialPostSchema = createInsertSchema(socialPosts).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Social post metrics schema
+export const insertSocialPostMetricsSchema = createInsertSchema(socialPostMetrics).omit({
+  id: true,
+  syncedAt: true,
+});
+
+// Attribution events schema
+export const insertAttributionEventSchema = createInsertSchema(attributionEvents).omit({
+  id: true,
+  createdAt: true,
+});
+
+// Social accounts schema
+export const insertSocialAccountSchema = createInsertSchema(socialAccounts).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Social media types
+export type SocialPost = typeof socialPosts.$inferSelect;
+export type InsertSocialPost = z.infer<typeof insertSocialPostSchema>;
+export type SocialPostMetrics = typeof socialPostMetrics.$inferSelect;
+export type InsertSocialPostMetrics = z.infer<typeof insertSocialPostMetricsSchema>;
+export type AttributionEvent = typeof attributionEvents.$inferSelect;
+export type InsertAttributionEvent = z.infer<typeof insertAttributionEventSchema>;
+export type SocialAccount = typeof socialAccounts.$inferSelect;
+export type InsertSocialAccount = z.infer<typeof insertSocialAccountSchema>;
+
+// Extended social post with metrics
+export type SocialPostWithMetrics = SocialPost & {
+  metrics?: SocialPostMetrics;
+  signups?: number;
+};
