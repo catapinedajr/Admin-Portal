@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { adminAuthService } from "./admin-auth";
 import { db } from "./db";
-import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, users, adCampaigns, storeProducts } from "@shared/schema";
+import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, users, adCampaigns, storeProducts, storeOrders } from "@shared/schema";
 import { count, eq, sql, and, sum } from "drizzle-orm";
 
 interface AdminRequest extends Request {
@@ -99,6 +99,93 @@ export function registerAdminRoutes(app: Express) {
     } catch (error) {
       console.error("Error fetching admin stats:", error);
       res.status(500).json({ message: "Failed to fetch stats" });
+    }
+  });
+
+  // Time-series KPI data for dashboard charts
+  app.get("/api/admin/stats/timeseries", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const days = parseInt(req.query.days as string) || 30;
+      const now = new Date();
+      
+      // Generate date range
+      const dateRange: string[] = [];
+      for (let i = days - 1; i >= 0; i--) {
+        const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+        dateRange.push(date.toISOString().split('T')[0]);
+      }
+
+      // User signups by date
+      const userSignups = await db.select({
+        date: sql<string>`DATE(${users.createdAt})`.as('date'),
+        count: count(),
+      })
+        .from(users)
+        .where(sql`${users.createdAt} >= ${new Date(now.getTime() - days * 24 * 60 * 60 * 1000)}`)
+        .groupBy(sql`DATE(${users.createdAt})`)
+        .orderBy(sql`DATE(${users.createdAt})`);
+
+      // Marketing spend by date (from campaigns)
+      const campaignSpend = await db.select({
+        date: sql<string>`DATE(${adCampaigns.startDate})`.as('date'),
+        spend: sql<number>`COALESCE(SUM(${adCampaigns.spentCents}), 0)`.as('spend'),
+        budget: sql<number>`COALESCE(SUM(${adCampaigns.budgetCents}), 0)`.as('budget'),
+      })
+        .from(adCampaigns)
+        .where(sql`${adCampaigns.startDate} >= ${new Date(now.getTime() - days * 24 * 60 * 60 * 1000)}`)
+        .groupBy(sql`DATE(${adCampaigns.startDate})`)
+        .orderBy(sql`DATE(${adCampaigns.startDate})`);
+
+      // Store revenue by date (from orders)
+      const storeRevenue = await db.select({
+        date: sql<string>`DATE(${storeOrders.createdAt})`.as('date'),
+        revenue: sql<number>`COALESCE(SUM(CAST(${storeOrders.totalUsd} AS DECIMAL)), 0)`.as('revenue'),
+        orders: count(),
+      })
+        .from(storeOrders)
+        .where(sql`${storeOrders.createdAt} >= ${new Date(now.getTime() - days * 24 * 60 * 60 * 1000)} AND ${storeOrders.status} IN ('paid', 'shipped', 'delivered')`)
+        .groupBy(sql`DATE(${storeOrders.createdAt})`)
+        .orderBy(sql`DATE(${storeOrders.createdAt})`);
+
+      // Build response with all dates filled in
+      // Convert cents to dollars for marketing data to match revenue format
+      const signupsMap = new Map(userSignups.map(s => [s.date, Number(s.count)]));
+      const spendMap = new Map(campaignSpend.map(s => [s.date, { 
+        spend: Number(s.spend) / 100, // Convert cents to dollars
+        budget: Number(s.budget) / 100 // Convert cents to dollars
+      }]));
+      const revenueMap = new Map(storeRevenue.map(r => [r.date, { revenue: Number(r.revenue), orders: Number(r.orders) }]));
+
+      const timeseries = dateRange.map(date => ({
+        date,
+        signups: signupsMap.get(date) || 0,
+        marketingSpend: spendMap.get(date)?.spend || 0,
+        marketingBudget: spendMap.get(date)?.budget || 0,
+        revenue: revenueMap.get(date)?.revenue || 0,
+        orders: revenueMap.get(date)?.orders || 0,
+      }));
+
+      // Calculate cumulative values
+      let cumulativeUsers = 0;
+      let cumulativeRevenue = 0;
+      let cumulativeSpend = 0;
+
+      const timeseriesWithCumulative = timeseries.map(day => {
+        cumulativeUsers += day.signups;
+        cumulativeRevenue += day.revenue;
+        cumulativeSpend += day.marketingSpend;
+        return {
+          ...day,
+          cumulativeUsers,
+          cumulativeRevenue,
+          cumulativeSpend,
+        };
+      });
+
+      res.json(timeseriesWithCumulative);
+    } catch (error) {
+      console.error("Error fetching timeseries stats:", error);
+      res.status(500).json({ message: "Failed to fetch timeseries stats" });
     }
   });
 
