@@ -1739,34 +1739,32 @@ export function registerAdminRoutes(app: Express) {
   // AI Draft Generation using Claude
   app.post("/api/admin/social/generate-draft", requireAdminAuth, async (req: AdminRequest, res) => {
     try {
-      const { dayIndex, platform } = req.body;
+      // Accept both dayIndex and linkedDayIndex for flexibility
+      const dayIndex = req.body.dayIndex || req.body.linkedDayIndex;
+      const platform = req.body.platform || 'twitter';
       
-      if (!dayIndex) {
-        return res.status(400).json({ message: "Please select a lesson to generate content from" });
-      }
+      let lessonContext = '';
       
-      // Get the day content by dayIndex
-      const [day] = await db.select()
-        .from(contentDays)
-        .where(eq(contentDays.dayIndex, parseInt(dayIndex)));
-      
-      if (!day) {
-        return res.status(404).json({ message: "Lesson not found" });
-      }
-      
-      // Get associated lesson content using the day's ID (not dayIndex)
-      const lessons = await db.select()
-        .from(contentLessons)
-        .where(eq(contentLessons.dayId, day.id));
-      
-      const lessonContent = lessons.map(l => l.content).join('\n\n');
-      
-      // Build context for Claude
-      const lessonContext = `
+      // If a day is specified, get lesson content
+      if (dayIndex) {
+        const [day] = await db.select()
+          .from(contentDays)
+          .where(eq(contentDays.dayIndex, parseInt(dayIndex)));
+        
+        if (day) {
+          const lessons = await db.select()
+            .from(contentLessons)
+            .where(eq(contentLessons.dayId, day.id));
+          
+          const lessonContent = lessons.map(l => l.content).join('\n\n');
+          
+          lessonContext = `
 Day ${day.dayIndex}: ${day.title}
 Theme: ${day.theme}
 ${lessonContent ? `\nLesson Content:\n${lessonContent}` : ''}
-      `.trim();
+          `.trim();
+        }
+      }
       
       // Platform-specific constraints
       const platformConstraints = platform === 'twitter' 
@@ -1780,13 +1778,9 @@ ${lessonContent ? `\nLesson Content:\n${lessonContent}` : ''}
         baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
       });
       
-      const message = await anthropic.messages.create({
-        model: "claude-sonnet-4-5",
-        max_tokens: 300,
-        messages: [
-          {
-            role: "user",
-            content: `You are a social media content creator for HODLearn, a Bitcoin education platform. Your goal is to create engaging posts that drive curiosity and signups.
+      // Build prompt based on whether we have lesson context
+      const prompt = lessonContext 
+        ? `You are a social media content creator for HODLearn, a Bitcoin education platform. Your goal is to create engaging posts that drive curiosity and signups.
 
 Create a ${platform} post based on this Bitcoin lesson:
 
@@ -1802,6 +1796,29 @@ Guidelines:
 - Be authentic and conversational
 
 Return ONLY the post content, nothing else.`
+        : `You are a social media content creator for HODLearn, a Bitcoin education platform. Your goal is to create engaging posts that drive curiosity and signups.
+
+Create an engaging ${platform} post about Bitcoin that would appeal to young professionals who are curious about Bitcoin but haven't started learning yet.
+
+Guidelines:
+- ${platformConstraints}
+- Focus on ONE of these angles: inflation protection, financial sovereignty, generational wealth, or getting started
+- Make it engaging and accessible to beginners
+- Create urgency or curiosity without being salesy
+- End with a subtle call-to-action
+- DO NOT use the word "journey" or "unlock"
+- Be authentic and conversational
+- Include relevant hashtags like #Bitcoin #BTC #FinancialFreedom
+
+Return ONLY the post content, nothing else.`;
+      
+      const message = await anthropic.messages.create({
+        model: "claude-sonnet-4-5",
+        max_tokens: 300,
+        messages: [
+          {
+            role: "user",
+            content: prompt
           }
         ]
       });
