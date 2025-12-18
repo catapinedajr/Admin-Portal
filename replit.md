@@ -68,3 +68,6 @@ This is a full-stack web application designed for daily learning and knowledge a
 - **PostgreSQL (Neon serverless)**: Primary data persistence.
 - **CoinGecko API**: Real-time Bitcoin price data integration.
 - **OpenAI API**: Previously used for content generation (now relies on static content after an architectural change).
+
+## Known Issues / Future Improvements
+- **Users Management - Paid Users Count**: Currently hardcoded as 0. Needs to pull from Stripe subscription data to show accurate paid user counts.
