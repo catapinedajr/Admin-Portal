@@ -1469,4 +1469,241 @@ export function registerAdminRoutes(app: Express) {
       res.status(400).json({ message: error.message || "Setup failed" });
     }
   });
+
+  // ============================================
+  // SOCIAL MEDIA MANAGEMENT ROUTES
+  // ============================================
+
+  // Get social media stats
+  app.get("/api/admin/social/stats", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { socialPosts, socialPostMetrics, attributionEvents } = await import('@shared/schema');
+      
+      const [scheduledResult] = await db.select({ count: count() })
+        .from(socialPosts)
+        .where(eq(socialPosts.status, 'scheduled'));
+      
+      const [publishedResult] = await db.select({ count: count() })
+        .from(socialPosts)
+        .where(eq(socialPosts.status, 'published'));
+      
+      const [clicksResult] = await db.select({ 
+        total: sql<number>`COALESCE(SUM(${socialPostMetrics.clicks}), 0)` 
+      }).from(socialPostMetrics);
+      
+      const [signupsResult] = await db.select({ count: count() })
+        .from(attributionEvents)
+        .where(eq(attributionEvents.eventType, 'signup'));
+
+      res.json({
+        scheduled: scheduledResult?.count || 0,
+        published: publishedResult?.count || 0,
+        totalClicks: Number(clicksResult?.total) || 0,
+        totalSignups: signupsResult?.count || 0,
+        avgEngagement: 0,
+      });
+    } catch (error) {
+      console.error("Error fetching social stats:", error);
+      res.status(500).json({ message: "Failed to fetch social stats" });
+    }
+  });
+
+  // Get all social posts
+  app.get("/api/admin/social/posts", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { socialPosts, socialPostMetrics, attributionEvents } = await import('@shared/schema');
+      const { desc } = await import('drizzle-orm');
+      
+      const posts = await db.select()
+        .from(socialPosts)
+        .orderBy(desc(socialPosts.createdAt));
+      
+      // Get metrics for published posts
+      const postsWithMetrics = await Promise.all(posts.map(async (post) => {
+        let metrics = null;
+        let signups = 0;
+        
+        if (post.status === 'published') {
+          const [metricsResult] = await db.select()
+            .from(socialPostMetrics)
+            .where(eq(socialPostMetrics.postId, post.id));
+          metrics = metricsResult || null;
+          
+          const [signupsResult] = await db.select({ count: count() })
+            .from(attributionEvents)
+            .where(and(
+              eq(attributionEvents.postId, post.id),
+              eq(attributionEvents.eventType, 'signup')
+            ));
+          signups = signupsResult?.count || 0;
+        }
+        
+        return { ...post, metrics, signups };
+      }));
+      
+      res.json(postsWithMetrics);
+    } catch (error) {
+      console.error("Error fetching social posts:", error);
+      res.status(500).json({ message: "Failed to fetch social posts" });
+    }
+  });
+
+  // Create social post
+  app.post("/api/admin/social/posts", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { socialPosts } = await import('@shared/schema');
+      const { v4: uuidv4 } = await import('uuid');
+      
+      const { content, platform, imageUrl, linkUrl, campaignId, linkedDayIndex, status, scheduledAt } = req.body;
+      
+      if (!content || !content.trim()) {
+        return res.status(400).json({ message: "Content is required" });
+      }
+      
+      // Generate unique UTM content for attribution tracking
+      const utmContent = `post_${uuidv4().slice(0, 8)}`;
+      
+      const [post] = await db.insert(socialPosts).values({
+        content: content.trim(),
+        platform: platform || 'twitter',
+        imageUrl: imageUrl || null,
+        linkUrl: linkUrl || null,
+        campaignId: campaignId || null,
+        linkedDayIndex: linkedDayIndex || null,
+        status: status || 'draft',
+        scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
+        utmSource: 'social',
+        utmMedium: platform || 'twitter',
+        utmCampaign: campaignId ? `campaign_${campaignId}` : 'organic',
+        utmContent,
+        createdBy: req.admin.id,
+      }).returning();
+      
+      res.json(post);
+    } catch (error) {
+      console.error("Error creating social post:", error);
+      res.status(500).json({ message: "Failed to create social post" });
+    }
+  });
+
+  // Update social post
+  app.patch("/api/admin/social/posts/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { socialPosts } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      
+      const updates: any = { updatedAt: new Date() };
+      
+      if (req.body.content) updates.content = req.body.content.trim();
+      if (req.body.platform) updates.platform = req.body.platform;
+      if (req.body.imageUrl !== undefined) updates.imageUrl = req.body.imageUrl || null;
+      if (req.body.linkUrl !== undefined) updates.linkUrl = req.body.linkUrl || null;
+      if (req.body.campaignId !== undefined) updates.campaignId = req.body.campaignId || null;
+      if (req.body.linkedDayIndex !== undefined) updates.linkedDayIndex = req.body.linkedDayIndex || null;
+      if (req.body.status) updates.status = req.body.status;
+      if (req.body.scheduledAt !== undefined) {
+        updates.scheduledAt = req.body.scheduledAt ? new Date(req.body.scheduledAt) : null;
+      }
+      
+      // Update UTM campaign if campaign changes
+      if (req.body.campaignId !== undefined) {
+        updates.utmCampaign = req.body.campaignId ? `campaign_${req.body.campaignId}` : 'organic';
+      }
+      
+      const [post] = await db.update(socialPosts)
+        .set(updates)
+        .where(eq(socialPosts.id, id))
+        .returning();
+      
+      res.json(post);
+    } catch (error) {
+      console.error("Error updating social post:", error);
+      res.status(500).json({ message: "Failed to update social post" });
+    }
+  });
+
+  // Delete social post
+  app.delete("/api/admin/social/posts/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { socialPosts } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      
+      await db.delete(socialPosts).where(eq(socialPosts.id, id));
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting social post:", error);
+      res.status(500).json({ message: "Failed to delete social post" });
+    }
+  });
+
+  // Publish social post (mark as published - actual Twitter posting requires API keys)
+  app.post("/api/admin/social/posts/:id/publish", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { socialPosts, socialPostMetrics } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      
+      // Update post status to published
+      const [post] = await db.update(socialPosts)
+        .set({
+          status: 'published',
+          publishedAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .where(eq(socialPosts.id, id))
+        .returning();
+      
+      // Create initial metrics record
+      await db.insert(socialPostMetrics).values({
+        postId: id,
+        impressions: 0,
+        engagements: 0,
+        likes: 0,
+        retweets: 0,
+        replies: 0,
+        clicks: 0,
+        profileClicks: 0,
+        videoViews: 0,
+      });
+      
+      res.json(post);
+    } catch (error) {
+      console.error("Error publishing social post:", error);
+      res.status(500).json({ message: "Failed to publish social post" });
+    }
+  });
+
+  // Track attribution event (for UTM tracking)
+  app.post("/api/admin/social/attribution", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { attributionEvents, socialPosts } = await import('@shared/schema');
+      const { eventType, utmSource, utmMedium, utmCampaign, utmContent, userId, dayIndex, metadata } = req.body;
+      
+      // Find post by UTM content if provided
+      let postId = null;
+      if (utmContent) {
+        const [post] = await db.select({ id: socialPosts.id })
+          .from(socialPosts)
+          .where(eq(socialPosts.utmContent, utmContent));
+        postId = post?.id || null;
+      }
+      
+      const [event] = await db.insert(attributionEvents).values({
+        postId,
+        eventType,
+        utmSource: utmSource || null,
+        utmMedium: utmMedium || null,
+        utmCampaign: utmCampaign || null,
+        utmContent: utmContent || null,
+        userId: userId || null,
+        dayIndex: dayIndex || null,
+        metadata: metadata || null,
+      }).returning();
+      
+      res.json(event);
+    } catch (error) {
+      console.error("Error tracking attribution:", error);
+      res.status(500).json({ message: "Failed to track attribution" });
+    }
+  });
 }

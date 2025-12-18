@@ -140,14 +140,30 @@ export function AuthPage() {
 
   const registerMutation = useMutation({
     mutationFn: async (data: RegisterForm) => {
-      const response = await apiRequest('POST', '/api/auth/register', data);
+      let utmData = null;
+      try {
+        const stored = localStorage.getItem('hodlearn_utm');
+        if (stored) {
+          utmData = JSON.parse(stored);
+        }
+      } catch (e) {}
+      
+      const payload = {
+        ...data,
+        utmSource: utmData?.utm_source || null,
+        utmMedium: utmData?.utm_medium || null,
+        utmCampaign: utmData?.utm_campaign || null,
+        utmContent: utmData?.utm_content || null,
+      };
+      
+      const response = await apiRequest('POST', '/api/auth/register', payload);
       return await response.json() as AuthResponse;
     },
     onSuccess: (data) => {
-      // Store session in localStorage
       try {
         localStorage.setItem('hodlearn_session', data.sessionId);
         localStorage.setItem('hodlearn_user', JSON.stringify(data.user));
+        localStorage.removeItem('hodlearn_utm');
       } catch (error) {
       }
       
@@ -156,7 +172,6 @@ export function AuthPage() {
         description: `Account created for ${data.user.username}`,
       });
       
-      // Use React Router navigation to prevent white screen flash
       setLocation('/');
     },
     onError: (error: any) => {

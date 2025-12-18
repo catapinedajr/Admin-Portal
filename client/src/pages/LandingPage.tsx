@@ -1,4 +1,5 @@
 import { useLocation } from "wouter";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Users, Gamepad2, TrendingUp, BookOpen, Shield, MessageCircle } from "lucide-react";
@@ -14,9 +15,35 @@ function getDeviceType(): 'ios' | 'android' | 'desktop' {
   return 'desktop';
 }
 
+function captureUtmParams() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const utmSource = params.get('utm_source');
+    const utmMedium = params.get('utm_medium');
+    const utmCampaign = params.get('utm_campaign');
+    const utmContent = params.get('utm_content');
+    
+    if (utmSource || utmMedium || utmCampaign || utmContent) {
+      const utmData = {
+        utm_source: utmSource,
+        utm_medium: utmMedium,
+        utm_campaign: utmCampaign,
+        utm_content: utmContent,
+        captured_at: new Date().toISOString(),
+      };
+      localStorage.setItem('hodlearn_utm', JSON.stringify(utmData));
+    }
+  } catch (e) {
+  }
+}
+
 export default function LandingPage() {
   const [, setLocation] = useLocation();
   const deviceType = getDeviceType();
+  
+  useEffect(() => {
+    captureUtmParams();
+  }, []);
 
   const appStoreUrl = "https://apps.apple.com/app/hodlearn";
   const playStoreUrl = "https://play.google.com/store/apps/details?id=com.hodlearn";

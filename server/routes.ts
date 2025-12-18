@@ -49,6 +49,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/register", async (req, res) => {
     try {
       const userData = registerSchema.parse(req.body);
+      const { utmSource, utmMedium, utmCampaign, utmContent } = req.body;
       
       // Check if username or email exists
       const existingUser = await authService.getUserByUsername(userData.username) || 
@@ -62,6 +63,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const { user, sessionId } = await authService.register(userData);
       const { passwordHash, ...userResponse } = user;
+      
+      // Track attribution event if UTM params are present
+      if (utmSource || utmContent) {
+        try {
+          const { attributionEvents, socialPosts } = await import('@shared/schema');
+          
+          // Find post by UTM content if provided
+          let postId = null;
+          if (utmContent) {
+            const [post] = await db.select({ id: socialPosts.id })
+              .from(socialPosts)
+              .where(eq(socialPosts.utmContent, utmContent));
+            postId = post?.id || null;
+          }
+          
+          await db.insert(attributionEvents).values({
+            postId,
+            eventType: 'signup',
+            userId: user.id,
+            utmSource: utmSource || null,
+            utmMedium: utmMedium || null,
+            utmCampaign: utmCampaign || null,
+            utmContent: utmContent || null,
+          });
+        } catch (attrError) {
+          console.error("Attribution tracking error:", attrError);
+        }
+      }
       
       res.json({
         user: userResponse,

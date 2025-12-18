@@ -23,6 +23,7 @@ import ContentManagement from "@/admin/pages/ContentManagement";
 import MarketingManagement from "@/admin/pages/MarketingManagement";
 import StoreManagement from "@/admin/pages/StoreManagement";
 import UsersManagement from "@/admin/pages/UsersManagement";
+import SocialMediaHub from "@/admin/pages/SocialMediaHub";
 
 import { AppContextProvider } from "@/components/shared/AppContextProvider";
 import Onboarding from "@/pages/onboarding";
@@ -145,6 +146,7 @@ function Router() {
         <Route path="/admin/marketing" component={MarketingManagement} />
         <Route path="/admin/store" component={StoreManagement} />
         <Route path="/admin/users" component={UsersManagement} />
+        <Route path="/admin/social" component={SocialMediaHub} />
         <Route path="/admin" component={AdminDashboard} />
         <Route path="/more" component={MorePage} />
         <Route path="/account" component={AccountPage} />

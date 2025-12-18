@@ -9,7 +9,8 @@ import {
   LogOut,
   ChevronRight,
   Menu,
-  X
+  X,
+  Twitter
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -24,6 +25,7 @@ const navItems = [
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/content", label: "Content", icon: BookOpen },
   { href: "/admin/marketing", label: "Marketing", icon: Megaphone },
+  { href: "/admin/social", label: "Social", icon: Twitter },
   { href: "/admin/store", label: "Store", icon: ShoppingBag },
 ];
 
