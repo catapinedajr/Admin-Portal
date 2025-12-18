@@ -18,7 +18,6 @@ import AdminAdsPage from "@/pages/AdminAdsPage";
 import LandingPage from "@/pages/LandingPage";
 
 import AdminLoginPage from "@/admin/pages/AdminLoginPage";
-import AdminDashboard from "@/admin/pages/AdminDashboard";
 import ContentManagement from "@/admin/pages/ContentManagement";
 import MarketingManagement from "@/admin/pages/MarketingManagement";
 import StoreManagement from "@/admin/pages/StoreManagement";
@@ -155,7 +154,7 @@ function Router() {
         <Route path="/admin/roadmap" component={RoadmapManagement} />
         <Route path="/admin/okrs" component={OKRManagement} />
         <Route path="/admin/kpis" component={KPIDashboard} />
-        <Route path="/admin" component={AdminDashboard} />
+        <Route path="/admin" component={KPIDashboard} />
         <Route path="/more" component={MorePage} />
         <Route path="/account" component={AccountPage} />
         <Route path="/wallet" component={WalletPage} />

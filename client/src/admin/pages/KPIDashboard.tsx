@@ -29,12 +29,19 @@ import {
   Send,
   Building2,
   Handshake,
-  Flag
+  Flag,
+  Rocket,
+  Trophy,
+  Sparkles,
+  ArrowUpRight,
+  PenSquare,
+  FileText,
+  UserPlus
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts";
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -415,6 +422,206 @@ function MetricCard({
   );
 }
 
+function HeroMetric({ 
+  title, 
+  value, 
+  change, 
+  icon: Icon,
+  color = "orange",
+  sparklineData
+}: { 
+  title: string; 
+  value: number | string; 
+  change?: number;
+  icon: any;
+  color?: "orange" | "green" | "blue" | "purple";
+  sparklineData?: number[];
+}) {
+  const isPositive = change !== undefined && change >= 0;
+  const colorClasses = {
+    orange: "from-orange-500/20 to-transparent border-orange-500/30 text-orange-500",
+    green: "from-green-500/20 to-transparent border-green-500/30 text-green-500",
+    blue: "from-blue-500/20 to-transparent border-blue-500/30 text-blue-500",
+    purple: "from-purple-500/20 to-transparent border-purple-500/30 text-purple-500"
+  };
+  const iconColors = { orange: "text-orange-500", green: "text-green-500", blue: "text-blue-500", purple: "text-purple-500" };
+
+  return (
+    <Card className={`bg-gradient-to-br ${colorClasses[color]} border relative overflow-hidden`} data-testid={`hero-metric-${title.toLowerCase().replace(/\s+/g, '-')}`}>
+      <CardContent className="pt-6">
+        <div className="flex items-start justify-between">
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-zinc-400">{title}</p>
+            <div className="text-4xl font-bold text-white tracking-tight">
+              {typeof value === 'number' ? value.toLocaleString() : value}
+            </div>
+            {change !== undefined && (
+              <div className={`flex items-center gap-1 text-sm font-medium ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
+                {isPositive ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
+                <span>{isPositive ? '+' : ''}{change}% this week</span>
+              </div>
+            )}
+          </div>
+          <div className={`p-3 rounded-xl bg-zinc-800/50 ${iconColors[color]}`}>
+            <Icon className="h-6 w-6" />
+          </div>
+        </div>
+        {sparklineData && sparklineData.length > 0 && (
+          <div className="mt-4 h-12">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={sparklineData.map((v, i) => ({ value: v, index: i }))}>
+                <defs>
+                  <linearGradient id={`gradient-${color}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={color === 'orange' ? '#f97316' : color === 'green' ? '#22c55e' : color === 'blue' ? '#3b82f6' : '#a855f7'} stopOpacity={0.3} />
+                    <stop offset="100%" stopColor={color === 'orange' ? '#f97316' : color === 'green' ? '#22c55e' : color === 'blue' ? '#3b82f6' : '#a855f7'} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <Area type="monotone" dataKey="value" stroke={color === 'orange' ? '#f97316' : color === 'green' ? '#22c55e' : color === 'blue' ? '#3b82f6' : '#a855f7'} fill={`url(#gradient-${color})`} strokeWidth={2} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function CircularProgress({ value, size = 120, label, sublabel, id }: { value: number; size?: number; label: string; sublabel?: string; id?: string }) {
+  const radius = (size - 12) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (Math.min(value, 100) / 100) * circumference;
+  const gradientId = id || `progressGradient-${label.toLowerCase().replace(/\s+/g, '-')}`;
+  
+  return (
+    <div className="flex flex-col items-center justify-center" data-testid={`circular-progress-${label.toLowerCase().replace(/\s+/g, '-')}`}>
+      <div className="relative" style={{ width: size, height: size }}>
+        <svg className="transform -rotate-90" width={size} height={size}>
+          <defs>
+            <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#f97316" />
+              <stop offset="100%" stopColor="#fb923c" />
+            </linearGradient>
+          </defs>
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            fill="none"
+            stroke="#27272a"
+            strokeWidth="8"
+          />
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            fill="none"
+            stroke={`url(#${gradientId})`}
+            strokeWidth="8"
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={strokeDashoffset}
+            className="transition-all duration-1000 ease-out"
+          />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="text-2xl font-bold text-white">{Math.round(value)}%</span>
+        </div>
+      </div>
+      <p className="mt-2 text-sm font-medium text-white">{label}</p>
+      {sublabel && <p className="text-xs text-zinc-500">{sublabel}</p>}
+    </div>
+  );
+}
+
+function QuickActions() {
+  return (
+    <Card className="bg-zinc-900 border-zinc-800">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-white flex items-center gap-2 text-lg">
+          <Rocket className="h-5 w-5 text-orange-500" />
+          Quick Actions
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <Link href="/admin/marketing" className="block">
+            <div className="w-full h-auto py-3 flex flex-col items-center gap-2 border border-zinc-700 rounded-md hover:border-orange-500/50 hover:bg-orange-500/10 transition-colors cursor-pointer" data-testid="quick-action-campaign">
+              <Megaphone className="h-5 w-5 text-orange-400" />
+              <span className="text-xs text-zinc-300">Add Campaign</span>
+            </div>
+          </Link>
+          <Link href="/admin/social" className="block">
+            <div className="w-full h-auto py-3 flex flex-col items-center gap-2 border border-zinc-700 rounded-md hover:border-blue-500/50 hover:bg-blue-500/10 transition-colors cursor-pointer" data-testid="quick-action-post">
+              <PenSquare className="h-5 w-5 text-blue-400" />
+              <span className="text-xs text-zinc-300">Schedule Post</span>
+            </div>
+          </Link>
+          <Link href="/admin/crm" className="block">
+            <div className="w-full h-auto py-3 flex flex-col items-center gap-2 border border-zinc-700 rounded-md hover:border-green-500/50 hover:bg-green-500/10 transition-colors cursor-pointer" data-testid="quick-action-deal">
+              <Handshake className="h-5 w-5 text-green-400" />
+              <span className="text-xs text-zinc-300">Log Deal</span>
+            </div>
+          </Link>
+          <Link href="/admin/content" className="block">
+            <div className="w-full h-auto py-3 flex flex-col items-center gap-2 border border-zinc-700 rounded-md hover:border-purple-500/50 hover:bg-purple-500/10 transition-colors cursor-pointer" data-testid="quick-action-content">
+              <FileText className="h-5 w-5 text-purple-400" />
+              <span className="text-xs text-zinc-300">Create Content</span>
+            </div>
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function WeeklyWins({ kpis }: { kpis: KPIData | undefined }) {
+  const wins = [];
+  
+  if (kpis?.users.newSignups && kpis.users.newSignups > 0) {
+    wins.push({ icon: UserPlus, text: `${kpis.users.newSignups} new users joined this week`, color: "text-green-400" });
+  }
+  if (kpis?.users.signupsChange && kpis.users.signupsChange > 0) {
+    wins.push({ icon: TrendingUp, text: `User signups up ${kpis.users.signupsChange}% vs last week`, color: "text-blue-400" });
+  }
+  if (kpis?.community.weeklyPosts && kpis.community.weeklyPosts > 0) {
+    wins.push({ icon: MessageSquare, text: `${kpis.community.weeklyPosts} community posts this week`, color: "text-purple-400" });
+  }
+  if (kpis?.crm?.wonDeals && kpis.crm.wonDeals > 0) {
+    wins.push({ icon: Trophy, text: `${kpis.crm.wonDeals} deals closed won`, color: "text-orange-400" });
+  }
+  if (kpis?.social?.posted && kpis.social.posted > 0) {
+    wins.push({ icon: Send, text: `${kpis.social.posted} social posts published`, color: "text-blue-400" });
+  }
+  
+  if (wins.length === 0) {
+    wins.push({ icon: Sparkles, text: "Keep pushing - your wins are coming!", color: "text-zinc-400" });
+  }
+
+  return (
+    <Card className="bg-gradient-to-br from-orange-500/10 via-zinc-900 to-zinc-900 border-orange-500/20">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-white flex items-center gap-2 text-lg">
+          <Trophy className="h-5 w-5 text-orange-500" />
+          This Week's Wins
+          <Sparkles className="h-4 w-4 text-orange-400 ml-auto" />
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-3">
+          {wins.slice(0, 4).map((win, idx) => (
+            <div key={idx} className="flex items-center gap-3 text-sm">
+              <div className={`p-1.5 rounded-lg bg-zinc-800/50 ${win.color}`}>
+                <win.icon className="h-4 w-4" />
+              </div>
+              <span className="text-zinc-300">{win.text}</span>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 function KPIDashboardContent() {
   const [trendDays, setTrendDays] = useState(30);
 
@@ -456,8 +663,8 @@ function KPIDashboardContent() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white" data-testid="heading-kpi-dashboard">KPI Dashboard</h1>
-            <p className="text-zinc-400">Real-time metrics from your database</p>
+            <h1 className="text-3xl font-bold text-white" data-testid="heading-dashboard">Dashboard</h1>
+            <p className="text-zinc-400">Your business at a glance</p>
           </div>
           <Button 
             variant="outline" 
@@ -481,39 +688,135 @@ function KPIDashboardContent() {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
+            {/* Hero Metrics - Large, prominent KPIs */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <MetricCard 
+              <HeroMetric 
                 title="Total Users" 
                 value={kpis?.users.total || 0} 
-                icon={Users} 
+                change={kpis?.users.signupsChange}
+                icon={Users}
+                color="orange"
+                sparklineData={trends?.map(t => t.signups) || []}
               />
-              <MetricCard 
-                title="Active Users (7d)" 
+              <HeroMetric 
+                title="Monthly Revenue" 
+                value={`$${(kpis?.revenue.monthlyRevenue || 0).toLocaleString()}`}
+                icon={DollarSign}
+                color="green"
+              />
+              <HeroMetric 
+                title="Active Users" 
                 value={kpis?.users.active || 0} 
                 change={kpis?.users.activeChange}
-                icon={Activity} 
+                icon={Activity}
+                color="blue"
               />
-              <MetricCard 
-                title="New Signups" 
-                value={kpis?.users.newSignups || 0} 
-                change={kpis?.users.signupsChange}
-                icon={TrendingUp} 
+              <HeroMetric 
+                title="Pipeline Value" 
+                value={`$${(kpis?.crm?.pipelineValue || 0).toLocaleString()}`}
+                icon={Handshake}
+                color="purple"
               />
+            </div>
+
+            {/* Quick Actions + Weekly Wins Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <QuickActions />
+              <WeeklyWins kpis={kpis} />
+            </div>
+
+            {/* Progress Rings + Additional Metrics */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-white text-lg">Key Progress</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-3 gap-4">
+                    <CircularProgress 
+                      value={kpis?.content.coveragePercent || 0} 
+                      size={100} 
+                      label="Content"
+                      sublabel={`${kpis?.content.totalDays || 0}/180 days`}
+                    />
+                    <CircularProgress 
+                      value={kpis?.engagement.lessonCompletionRate || 0} 
+                      size={100} 
+                      label="Completion"
+                      sublabel="Users learning"
+                    />
+                    <CircularProgress 
+                      value={kpis?.goals?.avgProgress || 0} 
+                      size={100} 
+                      label="OKRs"
+                      sublabel={`${kpis?.goals?.activeObjectives || 0} active`}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-white text-lg flex items-center gap-2">
+                    <Send className="h-5 w-5 text-blue-400" />
+                    Social Pipeline
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-4 gap-2 text-center">
+                    <div>
+                      <div className="text-2xl font-bold text-zinc-400">{kpis?.social?.drafted || 0}</div>
+                      <div className="text-xs text-zinc-500">Drafted</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-purple-400">{kpis?.social?.approved || 0}</div>
+                      <div className="text-xs text-zinc-500">Approved</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-blue-400">{kpis?.social?.planned || 0}</div>
+                      <div className="text-xs text-zinc-500">Planned</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-green-400">{kpis?.social?.posted || 0}</div>
+                      <div className="text-xs text-zinc-500">Posted</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-white text-lg flex items-center gap-2">
+                    <Building2 className="h-5 w-5 text-orange-400" />
+                    B2B Sales
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-zinc-400">Companies</span>
+                      <span className="text-xl font-bold text-white">{kpis?.crm?.totalCompanies || 0}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-zinc-400">Active Deals</span>
+                      <span className="text-xl font-bold text-blue-400">{kpis?.crm?.activeDeals || 0}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-zinc-400">Won</span>
+                      <span className="text-xl font-bold text-green-400">{kpis?.crm?.wonDeals || 0}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Additional Quick Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <MetricCard 
                 title="Avg Streak" 
                 value={kpis?.users.avgStreak || 0} 
                 suffix=" days"
                 icon={Zap} 
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <MetricCard 
-                title="Lesson Completion" 
-                value={kpis?.engagement.lessonCompletionRate || 0} 
-                suffix="%"
-                icon={BookOpen}
-                description="Users who completed 1+ lessons"
               />
               <MetricCard 
                 title="Community Posts" 
@@ -522,45 +825,16 @@ function KPIDashboardContent() {
                 description={`${kpis?.community.weeklyPosts || 0} this week`}
               />
               <MetricCard 
-                title="Monthly Revenue" 
-                value={`$${kpis?.revenue.monthlyRevenue?.toFixed(2) || '0.00'}`} 
-                icon={DollarSign} 
+                title="Active Campaigns" 
+                value={kpis?.marketing.activeCampaigns || 0} 
+                icon={Megaphone}
+                description={`${((kpis?.marketing.ctr || 0)).toFixed(1)}% CTR`}
               />
               <MetricCard 
-                title="Content Coverage" 
-                value={kpis?.content.coveragePercent || 0} 
-                suffix="%"
-                icon={Target}
-                description={`${kpis?.content.totalDays || 0}/180 days`}
-              />
-            </div>
-
-            {/* Social, B2B, and Goals Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <MetricCard 
-                title="Social Posts" 
-                value={kpis?.social?.totalPosts || 0} 
-                icon={Send}
-                description={`${kpis?.social?.posted || 0} posted, ${kpis?.social?.planned || 0} planned`}
-              />
-              <MetricCard 
-                title="B2B Companies" 
-                value={kpis?.crm?.totalCompanies || 0} 
-                icon={Building2}
-                description={`${kpis?.crm?.activeDeals || 0} active deals`}
-              />
-              <MetricCard 
-                title="Pipeline Value" 
-                value={`$${(kpis?.crm?.pipelineValue || 0).toLocaleString()}`} 
-                icon={Handshake}
-                description={`${kpis?.crm?.wonDeals || 0} deals won`}
-              />
-              <MetricCard 
-                title="OKR Progress" 
-                value={kpis?.goals?.avgProgress || 0} 
-                suffix="%"
-                icon={Flag}
-                description={`${kpis?.goals?.activeObjectives || 0} active objectives`}
+                title="Product Ideas" 
+                value={kpis?.product.totalIdeas || 0} 
+                icon={Rocket}
+                description={`${kpis?.product.completedIdeas || 0} completed`}
               />
             </div>
 
