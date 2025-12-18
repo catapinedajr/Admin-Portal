@@ -22,8 +22,12 @@ import {
   Search,
   GraduationCap,
   Users,
-  Sparkles
+  Sparkles,
+  Upload,
+  FileJson,
+  AlertCircle
 } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ContentDay {
   id: number;
@@ -554,11 +558,193 @@ function CreateDayDialog({ open, onOpenChange, nextDayIndex }: {
   );
 }
 
+function BulkImportDialog({ open, onOpenChange, nextDayIndex }: { 
+  open: boolean; 
+  onOpenChange: (open: boolean) => void;
+  nextDayIndex: number;
+}) {
+  const { toast } = useToast();
+  const [jsonInput, setJsonInput] = useState("");
+  const [parseError, setParseError] = useState<string | null>(null);
+  const [parsedContent, setParsedContent] = useState<any>(null);
+
+  const sampleJson = `{
+  "dayIndex": ${nextDayIndex},
+  "title": "Your Compelling Title Here!",
+  "theme": "Bitcoin basics",
+  "readingLevel": "8th grade",
+  "culturalStage": "Normie → Pre-coiner",
+  "lesson": {
+    "title": "Lesson Title",
+    "content": "Full lesson content goes here...",
+    "keyTakeaways": ["Takeaway 1", "Takeaway 2", "Takeaway 3"],
+    "whyItMatters": "Explanation of why this matters...",
+    "estimatedReadTime": 3
+  },
+  "quizzes": [
+    {
+      "question": "What is the question?",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correctAnswer": 0,
+      "explanation": "Why this answer is correct..."
+    }
+  ],
+  "questions": [
+    {
+      "title": "Setup Question Title",
+      "content": "Question content for user reflection...",
+      "category": "financial",
+      "icon": "💰"
+    }
+  ]
+}`;
+
+  const handleJsonChange = (value: string) => {
+    setJsonInput(value);
+    setParseError(null);
+    setParsedContent(null);
+    
+    if (!value.trim()) return;
+    
+    try {
+      const parsed = JSON.parse(value);
+      
+      if (!parsed.dayIndex || !parsed.title || !parsed.theme) {
+        setParseError("Missing required fields: dayIndex, title, theme");
+        return;
+      }
+      
+      setParsedContent(parsed);
+    } catch (e: any) {
+      setParseError(`Invalid JSON: ${e.message}`);
+    }
+  };
+
+  const importMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/admin/content/bulk-import", data);
+      return res.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/days"] });
+      toast({ 
+        title: "Content imported successfully!",
+        description: `Day ${data.day.dayIndex} created with ${data.summary.quizzesCreated} quizzes and ${data.summary.questionsCreated} questions`
+      });
+      onOpenChange(false);
+      setJsonInput("");
+      setParsedContent(null);
+    },
+    onError: (error: Error) => {
+      toast({ title: "Import failed", description: error.message, variant: "destructive" });
+    },
+  });
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="bg-zinc-900 border-zinc-800 max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="text-white flex items-center gap-2">
+            <Upload className="w-5 h-5 text-orange-500" />
+            Bulk Import Content
+          </DialogTitle>
+          <DialogDescription className="text-zinc-400">
+            Paste JSON from your Claude conversations to import a complete day with lesson, quizzes, and questions
+          </DialogDescription>
+        </DialogHeader>
+        
+        <div className="space-y-4 py-4">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label className="text-zinc-300">JSON Content</Label>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleJsonChange(sampleJson)}
+                className="text-xs text-orange-500 hover:text-orange-400"
+              >
+                <FileJson className="w-3 h-3 mr-1" />
+                Load Sample
+              </Button>
+            </div>
+            <Textarea
+              value={jsonInput}
+              onChange={(e) => handleJsonChange(e.target.value)}
+              placeholder="Paste your JSON content here..."
+              className="bg-zinc-800 border-zinc-700 text-white font-mono text-sm min-h-[300px]"
+            />
+          </div>
+
+          {parseError && (
+            <Alert className="bg-red-500/10 border-red-500/30">
+              <AlertCircle className="w-4 h-4 text-red-500" />
+              <AlertDescription className="text-red-400">{parseError}</AlertDescription>
+            </Alert>
+          )}
+
+          {parsedContent && (
+            <Card className="bg-zinc-800 border-zinc-700">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm text-green-400 flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4" />
+                  Preview - Ready to Import
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="text-zinc-500">Day:</span>
+                  <span className="text-white font-medium">{parsedContent.dayIndex}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-zinc-500">Title:</span>
+                  <span className="text-white">{parsedContent.title}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-zinc-500">Theme:</span>
+                  <span className="text-zinc-300">{parsedContent.theme}</span>
+                </div>
+                <div className="flex items-center gap-4 mt-2 pt-2 border-t border-zinc-700">
+                  <span className="text-zinc-400">
+                    <BookOpen className="w-4 h-4 inline mr-1" />
+                    {parsedContent.lesson ? "1 lesson" : "No lesson"}
+                  </span>
+                  <span className="text-zinc-400">
+                    <CheckCircle className="w-4 h-4 inline mr-1" />
+                    {parsedContent.quizzes?.length || 0} quizzes
+                  </span>
+                  <span className="text-zinc-400">
+                    <HelpCircle className="w-4 h-4 inline mr-1" />
+                    {parsedContent.questions?.length || 0} questions
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          <div className="flex justify-end gap-2 pt-4">
+            <Button variant="outline" onClick={() => onOpenChange(false)} className="border-zinc-700 text-zinc-300">
+              Cancel
+            </Button>
+            <Button 
+              onClick={() => importMutation.mutate(parsedContent)}
+              className="bg-orange-500 hover:bg-orange-600"
+              disabled={importMutation.isPending || !parsedContent}
+            >
+              {importMutation.isPending ? "Importing..." : "Import Content"}
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export default function ContentManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [editingDay, setEditingDay] = useState<ContentDay | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
 
   const { data: contentDays, isLoading } = useQuery<ContentDay[]>({
     queryKey: ["/api/admin/content/days"],
@@ -586,14 +772,25 @@ export default function ContentManagement() {
               <h1 className="text-2xl font-bold text-white">Content Management</h1>
               <p className="text-zinc-400">Manage daily curriculum content ({contentDays?.length || 0} days)</p>
             </div>
-            <Button 
-              className="bg-orange-500 hover:bg-orange-600" 
-              onClick={() => setCreateDialogOpen(true)}
-              data-testid="button-add-day"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Add Day
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                variant="outline"
+                className="border-zinc-700 text-zinc-300 hover:bg-zinc-800" 
+                onClick={() => setImportDialogOpen(true)}
+                data-testid="button-import-content"
+              >
+                <Upload className="w-4 h-4 mr-2" />
+                Import
+              </Button>
+              <Button 
+                className="bg-orange-500 hover:bg-orange-600" 
+                onClick={() => setCreateDialogOpen(true)}
+                data-testid="button-add-day"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Day
+              </Button>
+            </div>
           </div>
 
           <div className="relative">
@@ -636,6 +833,12 @@ export default function ContentManagement() {
           <CreateDayDialog 
             open={createDialogOpen} 
             onOpenChange={setCreateDialogOpen}
+            nextDayIndex={nextDayIndex}
+          />
+          
+          <BulkImportDialog 
+            open={importDialogOpen} 
+            onOpenChange={setImportDialogOpen}
             nextDayIndex={nextDayIndex}
           />
         </div>

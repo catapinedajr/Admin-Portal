@@ -221,6 +221,109 @@ export function registerAdminRoutes(app: Express) {
     }
   });
 
+  // Bulk import content (day + lesson + quizzes + questions)
+  app.post("/api/admin/content/bulk-import", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { dayIndex, title, theme, readingLevel, culturalStage, lesson, quizzes, questions } = req.body;
+      
+      // Validate required fields
+      if (!dayIndex || !title || !theme) {
+        return res.status(400).json({ message: "Missing required fields: dayIndex, title, theme" });
+      }
+      
+      // Check if day index already exists
+      const existing = await db.select().from(contentDays).where(eq(contentDays.dayIndex, dayIndex));
+      if (existing.length > 0) {
+        return res.status(400).json({ message: `Day ${dayIndex} already exists` });
+      }
+      
+      // Create content day
+      const [createdDay] = await db.insert(contentDays)
+        .values({
+          dayIndex,
+          title,
+          theme,
+          readingLevel: readingLevel || "8th grade",
+          culturalStage: culturalStage || "Normie → Pre-coiner",
+          isActive: true,
+          isApproved: false,
+        })
+        .returning();
+      
+      let createdLesson = null;
+      let createdQuizzes: any[] = [];
+      let createdQuestions: any[] = [];
+      
+      // Create lesson if provided
+      if (lesson && lesson.title && lesson.content) {
+        [createdLesson] = await db.insert(contentLessons)
+          .values({
+            dayId: createdDay.id,
+            title: lesson.title,
+            content: lesson.content,
+            keyTakeaways: lesson.keyTakeaways || [],
+            whyItMatters: lesson.whyItMatters || null,
+            estimatedReadTime: lesson.estimatedReadTime || 3,
+          })
+          .returning();
+      }
+      
+      // Create quizzes if provided
+      if (quizzes && Array.isArray(quizzes) && quizzes.length > 0) {
+        for (const quiz of quizzes) {
+          if (quiz.question && quiz.options && quiz.correctAnswer !== undefined) {
+            const [createdQuiz] = await db.insert(contentQuizzes)
+              .values({
+                dayId: createdDay.id,
+                question: quiz.question,
+                options: quiz.options,
+                correctAnswer: quiz.correctAnswer,
+                explanation: quiz.explanation || "",
+              })
+              .returning();
+            createdQuizzes.push(createdQuiz);
+          }
+        }
+      }
+      
+      // Create questions if provided
+      if (questions && Array.isArray(questions) && questions.length > 0) {
+        for (let i = 0; i < questions.length; i++) {
+          const q = questions[i];
+          if (q.title && q.content) {
+            const [createdQ] = await db.insert(contentSetUpQuestions)
+              .values({
+                dayId: createdDay.id,
+                title: q.title,
+                content: q.content,
+                category: q.category || "general",
+                icon: q.icon || "💡",
+                orderIndex: i,
+              })
+              .returning();
+            createdQuestions.push(createdQ);
+          }
+        }
+      }
+      
+      res.json({
+        success: true,
+        day: createdDay,
+        lesson: createdLesson,
+        quizzes: createdQuizzes,
+        questions: createdQuestions,
+        summary: {
+          lessonCreated: !!createdLesson,
+          quizzesCreated: createdQuizzes.length,
+          questionsCreated: createdQuestions.length,
+        }
+      });
+    } catch (error) {
+      console.error("Error in bulk import:", error);
+      res.status(500).json({ message: "Failed to import content" });
+    }
+  });
+
   // Create initial admin (only works if no admins exist)
   app.post("/api/admin/setup", async (req, res) => {
     try {
