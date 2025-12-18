@@ -169,12 +169,14 @@ export function registerAdminRoutes(app: Express) {
   app.patch("/api/admin/content/days/:id", requireAdminAuth, async (req: AdminRequest, res) => {
     try {
       const id = parseInt(req.params.id);
-      const { title, theme, isActive, isApproved } = req.body;
+      const { title, theme, readingLevel, culturalStage, isActive, isApproved } = req.body;
       
       const [updated] = await db.update(contentDays)
         .set({ 
           title, 
-          theme, 
+          theme,
+          readingLevel,
+          culturalStage, 
           isActive, 
           isApproved,
           updatedAt: new Date(),
@@ -186,6 +188,36 @@ export function registerAdminRoutes(app: Express) {
     } catch (error) {
       console.error("Error updating content day:", error);
       res.status(500).json({ message: "Failed to update content day" });
+    }
+  });
+
+  // Create a new content day
+  app.post("/api/admin/content/days", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { dayIndex, title, theme, readingLevel, culturalStage } = req.body;
+      
+      // Check if day index already exists
+      const existing = await db.select().from(contentDays).where(eq(contentDays.dayIndex, dayIndex));
+      if (existing.length > 0) {
+        return res.status(400).json({ message: `Day ${dayIndex} already exists` });
+      }
+      
+      const [created] = await db.insert(contentDays)
+        .values({
+          dayIndex,
+          title,
+          theme,
+          readingLevel: readingLevel || "8th grade",
+          culturalStage: culturalStage || "Normie → Pre-coiner",
+          isActive: true,
+          isApproved: false,
+        })
+        .returning();
+      
+      res.json(created);
+    } catch (error) {
+      console.error("Error creating content day:", error);
+      res.status(500).json({ message: "Failed to create content day" });
     }
   });
 

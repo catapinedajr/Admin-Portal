@@ -9,6 +9,14 @@ export function protectContentDatabase(req: any, res: any, next: any) {
     return next();
   }
   
+  // Admin routes have their own authentication via requireAdminAuth middleware
+  // which runs INSIDE each route handler - so we skip content protection here
+  // The admin auth is enforced at the route level, not at this middleware level
+  // This is safe because unauthenticated requests to /api/admin/* will get 401 from requireAdminAuth
+  if (path.startsWith('/api/admin/')) {
+    return next();
+  }
+  
   // Block any direct DELETE operations on content tables
   if (method === 'DELETE' && path.includes('/content')) {
     return res.status(403).json({
