@@ -1225,7 +1225,7 @@ function AIGenerateDialog({ open, onOpenChange, nextDayIndex }: {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-zinc-900 border-zinc-800 max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent className="bg-zinc-900 border-zinc-800 max-w-4xl h-[85vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-white flex items-center gap-2">
             <Wand2 className="w-5 h-5 text-orange-500" />
@@ -1387,7 +1387,7 @@ function AIGenerateDialog({ open, onOpenChange, nextDayIndex }: {
                     <Label className="text-zinc-300">Setup Questions (3 curiosity-building questions)</Label>
                     {editedContent.setup_questions?.map((q, idx) => (
                       <div key={idx} className="flex items-start gap-2">
-                        <span className="text-lg mt-1">{q.icon || '💡'}</span>
+                        <span className="text-xs text-zinc-500 w-6 mt-2">Q{idx + 1}</span>
                         <Textarea 
                           value={q.content}
                           onChange={(e) => {
@@ -1506,11 +1506,8 @@ function AIGenerateDialog({ open, onOpenChange, nextDayIndex }: {
                     <div className="space-y-4 mb-6">
                       <h3 className="text-sm font-medium text-orange-400">Before you start...</h3>
                       {editedContent.setup_questions?.map((q, idx) => (
-                        <div key={idx} className="bg-zinc-900 rounded-lg p-4 border border-zinc-800">
-                          <div className="flex items-start gap-3">
-                            <span className="text-lg">{q.icon || '💡'}</span>
-                            <p className="text-sm text-zinc-300">{q.content}</p>
-                          </div>
+                        <div key={idx} className="bg-zinc-900 rounded-lg p-3 border border-zinc-800">
+                          <p className="text-sm text-zinc-300">{q.content}</p>
                         </div>
                       ))}
                     </div>
