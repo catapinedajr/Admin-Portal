@@ -1619,6 +1619,7 @@ export type InsertKpiTarget = z.infer<typeof insertKpiTargetSchema>;
 // Roadmap schemas
 export const insertRoadmapIdeaSchema = createInsertSchema(roadmapIdeas).omit({
   id: true,
+  votes: true,
   createdAt: true,
   updatedAt: true,
 });
