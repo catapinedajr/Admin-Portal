@@ -35,6 +35,7 @@ import {
   Lock,
   Unlock,
   Eye,
+  FileText,
   Smartphone,
   ChevronDown,
   ChevronRight,
@@ -1131,6 +1132,7 @@ function AIGenerateDialog({ open, onOpenChange, nextDayIndex }: {
   const [step, setStep] = useState<'input' | 'generating' | 'preview'>('input');
   const [generatedData, setGeneratedData] = useState<GenerateResponse | null>(null);
   const [editedContent, setEditedContent] = useState<GeneratedContent | null>(null);
+  const [viewMode, setViewMode] = useState<'edit' | 'preview'>('edit');
 
   useEffect(() => {
     setDayIndex(nextDayIndex);
@@ -1143,6 +1145,7 @@ function AIGenerateDialog({ open, onOpenChange, nextDayIndex }: {
       setEditedContent(null);
       setThemeOverride("");
       setNotes("");
+      setViewMode('edit');
     }
   }, [open]);
 
@@ -1323,17 +1326,37 @@ function AIGenerateDialog({ open, onOpenChange, nextDayIndex }: {
                   {generatedData.context.priorDaysUsed > 0 && ` • ${generatedData.context.priorDaysUsed} prior days used for context`}
                 </span>
               </div>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={handleRegenerate}
-                disabled={generateMutation.isPending}
-                className="border-zinc-700 text-zinc-300"
-                data-testid="button-regenerate"
-              >
-                <RefreshCw className="w-3 h-3 mr-1" />
-                Regenerate
-              </Button>
+              <div className="flex items-center gap-2">
+                <div className="flex bg-zinc-800 rounded-lg p-0.5">
+                  <button
+                    onClick={() => setViewMode('edit')}
+                    className={`px-3 py-1 text-xs rounded-md transition-colors ${viewMode === 'edit' ? 'bg-orange-500 text-white' : 'text-zinc-400 hover:text-white'}`}
+                    data-testid="button-view-edit"
+                  >
+                    <FileText className="w-3 h-3 inline mr-1" />
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => setViewMode('preview')}
+                    className={`px-3 py-1 text-xs rounded-md transition-colors ${viewMode === 'preview' ? 'bg-orange-500 text-white' : 'text-zinc-400 hover:text-white'}`}
+                    data-testid="button-view-preview"
+                  >
+                    <Eye className="w-3 h-3 inline mr-1" />
+                    Preview
+                  </button>
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={handleRegenerate}
+                  disabled={generateMutation.isPending}
+                  className="border-zinc-700 text-zinc-300"
+                  data-testid="button-regenerate"
+                >
+                  <RefreshCw className="w-3 h-3 mr-1" />
+                  Regenerate
+                </Button>
+              </div>
             </div>
 
             {!generatedData.validation.passed && (
@@ -1348,133 +1371,222 @@ function AIGenerateDialog({ open, onOpenChange, nextDayIndex }: {
             )}
 
             <ScrollArea className="flex-1 pr-4">
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <Label className="text-zinc-300">Title</Label>
-                  <Input 
-                    value={editedContent.title}
-                    onChange={(e) => setEditedContent({...editedContent, title: e.target.value})}
-                    className="bg-zinc-800 border-zinc-700 text-white"
-                    data-testid="input-title"
-                  />
-                  <span className="text-xs text-zinc-500">{editedContent.title.length}/60 characters</span>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-zinc-300">Setup Questions</Label>
-                  {editedContent.setup_questions.map((q, idx) => (
-                    <div key={idx} className="bg-zinc-800 rounded-lg p-3 space-y-2">
-                      <Input 
-                        value={q.title}
-                        onChange={(e) => {
-                          const updated = [...editedContent.setup_questions];
-                          updated[idx] = {...updated[idx], title: e.target.value};
-                          setEditedContent({...editedContent, setup_questions: updated});
-                        }}
-                        className="bg-zinc-700 border-zinc-600 text-white text-sm"
-                        placeholder="Question title"
-                      />
-                      <Textarea 
-                        value={q.content}
-                        onChange={(e) => {
-                          const updated = [...editedContent.setup_questions];
-                          updated[idx] = {...updated[idx], content: e.target.value};
-                          setEditedContent({...editedContent, setup_questions: updated});
-                        }}
-                        className="bg-zinc-700 border-zinc-600 text-white text-sm min-h-[60px]"
-                        placeholder="Question content"
-                      />
-                    </div>
-                  ))}
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-zinc-300">Lesson Content</Label>
-                  <Textarea 
-                    value={editedContent.lesson.content}
-                    onChange={(e) => setEditedContent({
-                      ...editedContent, 
-                      lesson: {...editedContent.lesson, content: e.target.value}
-                    })}
-                    className="bg-zinc-800 border-zinc-700 text-white min-h-[200px]"
-                    data-testid="input-lesson-content"
-                  />
-                  <span className="text-xs text-zinc-500">
-                    {editedContent.lesson.content.split(/\s+/).length} words (target: 300-1200)
-                  </span>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-zinc-300">Key Takeaways</Label>
-                  {editedContent.lesson.keyTakeaways.map((takeaway, idx) => (
+              {viewMode === 'edit' ? (
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <Label className="text-zinc-300">Title</Label>
                     <Input 
-                      key={idx}
-                      value={takeaway}
-                      onChange={(e) => {
-                        const updated = [...editedContent.lesson.keyTakeaways];
-                        updated[idx] = e.target.value;
-                        setEditedContent({
-                          ...editedContent, 
-                          lesson: {...editedContent.lesson, keyTakeaways: updated}
-                        });
-                      }}
-                      className="bg-zinc-800 border-zinc-700 text-white text-sm"
-                      placeholder={`Takeaway ${idx + 1}`}
+                      value={editedContent.title}
+                      onChange={(e) => setEditedContent({...editedContent, title: e.target.value})}
+                      className="bg-zinc-800 border-zinc-700 text-white"
+                      data-testid="input-title"
                     />
-                  ))}
-                </div>
+                    <span className="text-xs text-zinc-500">{editedContent.title.length}/60 characters</span>
+                  </div>
 
-                <div className="space-y-2">
-                  <Label className="text-zinc-300">Why It Matters</Label>
-                  <Textarea 
-                    value={editedContent.lesson.whyItMatters}
-                    onChange={(e) => setEditedContent({
-                      ...editedContent, 
-                      lesson: {...editedContent.lesson, whyItMatters: e.target.value}
-                    })}
-                    className="bg-zinc-800 border-zinc-700 text-white min-h-[80px]"
-                    data-testid="input-why-it-matters"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-zinc-300">Quiz Questions</Label>
-                  {editedContent.quiz_questions.map((q, idx) => (
-                    <div key={idx} className="bg-zinc-800 rounded-lg p-3 space-y-2">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-zinc-500 w-6">Q{idx + 1}</span>
+                  <div className="space-y-2">
+                    <Label className="text-zinc-300">Setup Questions</Label>
+                    {editedContent.setup_questions.map((q, idx) => (
+                      <div key={idx} className="bg-zinc-800 rounded-lg p-3 space-y-2">
                         <Input 
-                          value={q.question}
+                          value={q.title}
                           onChange={(e) => {
-                            const updated = [...editedContent.quiz_questions];
-                            updated[idx] = {...updated[idx], question: e.target.value};
-                            setEditedContent({...editedContent, quiz_questions: updated});
+                            const updated = [...editedContent.setup_questions];
+                            updated[idx] = {...updated[idx], title: e.target.value};
+                            setEditedContent({...editedContent, setup_questions: updated});
                           }}
-                          className="bg-zinc-700 border-zinc-600 text-white text-sm flex-1"
+                          className="bg-zinc-700 border-zinc-600 text-white text-sm"
+                          placeholder="Question title"
+                        />
+                        <Textarea 
+                          value={q.content}
+                          onChange={(e) => {
+                            const updated = [...editedContent.setup_questions];
+                            updated[idx] = {...updated[idx], content: e.target.value};
+                            setEditedContent({...editedContent, setup_questions: updated});
+                          }}
+                          className="bg-zinc-700 border-zinc-600 text-white text-sm min-h-[60px]"
+                          placeholder="Question content"
                         />
                       </div>
-                      <div className="grid grid-cols-2 gap-2 pl-8">
-                        {['A', 'B', 'C', 'D'].map((letter, optIdx) => (
-                          <div key={letter} className="flex items-center gap-2">
-                            <span className={`text-xs w-4 ${q.correctAnswer === optIdx ? 'text-green-400 font-bold' : 'text-zinc-500'}`}>
-                              {letter}
-                            </span>
-                            <Input 
-                              value={q[`option${letter}` as keyof typeof q] as string}
-                              onChange={(e) => {
-                                const updated = [...editedContent.quiz_questions];
-                                updated[idx] = {...updated[idx], [`option${letter}`]: e.target.value};
-                                setEditedContent({...editedContent, quiz_questions: updated});
-                              }}
-                              className="bg-zinc-700 border-zinc-600 text-white text-xs"
-                            />
+                    ))}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-zinc-300">Lesson Content</Label>
+                    <Textarea 
+                      value={editedContent.lesson.content}
+                      onChange={(e) => setEditedContent({
+                        ...editedContent, 
+                        lesson: {...editedContent.lesson, content: e.target.value}
+                      })}
+                      className="bg-zinc-800 border-zinc-700 text-white min-h-[200px]"
+                      data-testid="input-lesson-content"
+                    />
+                    <span className="text-xs text-zinc-500">
+                      {editedContent.lesson.content.split(/\s+/).length} words (target: 300-1200)
+                    </span>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-zinc-300">Key Takeaways</Label>
+                    {editedContent.lesson.keyTakeaways?.map((takeaway, idx) => (
+                      <Input 
+                        key={idx}
+                        value={takeaway}
+                        onChange={(e) => {
+                          const updated = [...editedContent.lesson.keyTakeaways];
+                          updated[idx] = e.target.value;
+                          setEditedContent({
+                            ...editedContent, 
+                            lesson: {...editedContent.lesson, keyTakeaways: updated}
+                          });
+                        }}
+                        className="bg-zinc-800 border-zinc-700 text-white text-sm"
+                        placeholder={`Takeaway ${idx + 1}`}
+                      />
+                    ))}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-zinc-300">Why It Matters</Label>
+                    <Textarea 
+                      value={editedContent.lesson.whyItMatters}
+                      onChange={(e) => setEditedContent({
+                        ...editedContent, 
+                        lesson: {...editedContent.lesson, whyItMatters: e.target.value}
+                      })}
+                      className="bg-zinc-800 border-zinc-700 text-white min-h-[80px]"
+                      data-testid="input-why-it-matters"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-zinc-300">Quiz Questions</Label>
+                    {editedContent.quiz_questions?.map((q, idx) => (
+                      <div key={idx} className="bg-zinc-800 rounded-lg p-3 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-zinc-500 w-6">Q{idx + 1}</span>
+                          <Input 
+                            value={q.question}
+                            onChange={(e) => {
+                              const updated = [...editedContent.quiz_questions];
+                              updated[idx] = {...updated[idx], question: e.target.value};
+                              setEditedContent({...editedContent, quiz_questions: updated});
+                            }}
+                            className="bg-zinc-700 border-zinc-600 text-white text-sm flex-1"
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 pl-8">
+                          {['A', 'B', 'C', 'D'].map((letter, optIdx) => (
+                            <div key={letter} className="flex items-center gap-2">
+                              <span className={`text-xs w-4 ${q.correctAnswer === optIdx ? 'text-green-400 font-bold' : 'text-zinc-500'}`}>
+                                {letter}
+                              </span>
+                              <Input 
+                                value={q[`option${letter}` as keyof typeof q] as string}
+                                onChange={(e) => {
+                                  const updated = [...editedContent.quiz_questions];
+                                  updated[idx] = {...updated[idx], [`option${letter}`]: e.target.value};
+                                  setEditedContent({...editedContent, quiz_questions: updated});
+                                }}
+                                className="bg-zinc-700 border-zinc-600 text-white text-xs"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  <div className="text-center text-xs text-zinc-500 mb-4">
+                    <Smartphone className="w-4 h-4 inline mr-1" />
+                    App Preview - How users will see this content
+                  </div>
+                  
+                  <div className="bg-zinc-950 rounded-2xl p-6 border border-zinc-800 max-w-md mx-auto">
+                    <div className="text-center mb-6">
+                      <Badge className="bg-orange-500/20 text-orange-400 mb-2">Day {dayIndex}</Badge>
+                      <h2 className="text-xl font-bold text-white">{editedContent.title}</h2>
+                      <p className="text-sm text-zinc-400 mt-1">{editedContent.theme}</p>
+                    </div>
+
+                    <div className="space-y-4 mb-6">
+                      <h3 className="text-sm font-medium text-orange-400">Before you start...</h3>
+                      {editedContent.setup_questions?.map((q, idx) => (
+                        <div key={idx} className="bg-zinc-900 rounded-lg p-4 border border-zinc-800">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-lg">{q.icon}</span>
+                            <span className="text-sm font-medium text-white">{q.title}</span>
                           </div>
-                        ))}
+                          <p className="text-sm text-zinc-400">{q.content}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="bg-zinc-900 rounded-lg p-4 border border-zinc-800 mb-6">
+                      <h3 className="text-sm font-medium text-orange-400 mb-3 flex items-center gap-2">
+                        <BookOpen className="w-4 h-4" />
+                        Today's Lesson
+                      </h3>
+                      <div className="prose prose-sm prose-invert max-w-none">
+                        <div className="text-sm text-zinc-300 whitespace-pre-wrap leading-relaxed">
+                          {editedContent.lesson.content?.substring(0, 500)}
+                          {editedContent.lesson.content?.length > 500 && '...'}
+                        </div>
                       </div>
                     </div>
-                  ))}
+
+                    <div className="bg-orange-500/10 rounded-lg p-4 border border-orange-500/30 mb-6">
+                      <h3 className="text-sm font-medium text-orange-400 mb-2 flex items-center gap-2">
+                        <Sparkles className="w-4 h-4" />
+                        Key Takeaways
+                      </h3>
+                      <ul className="space-y-2">
+                        {editedContent.lesson.keyTakeaways?.map((takeaway, idx) => (
+                          <li key={idx} className="flex items-start gap-2 text-sm text-zinc-300">
+                            <Check className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
+                            {takeaway}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="bg-zinc-900 rounded-lg p-4 border border-zinc-800 mb-6">
+                      <h3 className="text-sm font-medium text-orange-400 mb-2">Why It Matters</h3>
+                      <p className="text-sm text-zinc-300">{editedContent.lesson.whyItMatters}</p>
+                    </div>
+
+                    <div className="space-y-4">
+                      <h3 className="text-sm font-medium text-orange-400 flex items-center gap-2">
+                        <HelpCircle className="w-4 h-4" />
+                        Quiz ({editedContent.quiz_questions?.length || 0} questions)
+                      </h3>
+                      {editedContent.quiz_questions?.map((q, idx) => (
+                        <div key={idx} className="bg-zinc-900 rounded-lg p-4 border border-zinc-800">
+                          <p className="text-sm font-medium text-white mb-3">{idx + 1}. {q.question}</p>
+                          <div className="space-y-2">
+                            {['A', 'B', 'C', 'D'].map((letter, optIdx) => (
+                              <div 
+                                key={letter} 
+                                className={`p-2 rounded text-sm ${q.correctAnswer === optIdx 
+                                  ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+                                  : 'bg-zinc-800 text-zinc-400'}`}
+                              >
+                                <span className="font-medium mr-2">{letter}.</span>
+                                {q[`option${letter}` as keyof typeof q]}
+                              </div>
+                            ))}
+                          </div>
+                          <p className="text-xs text-zinc-500 mt-2 italic">{q.explanation}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
             </ScrollArea>
 
             <div className="flex justify-between gap-2 pt-4 border-t border-zinc-800 mt-4">
