@@ -38,7 +38,12 @@ import {
   Smartphone,
   ChevronDown,
   ChevronRight,
-  Calendar
+  Calendar,
+  Wand2,
+  RefreshCw,
+  Check,
+  XCircle,
+  Loader2
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -1067,6 +1072,435 @@ function EditDayDialog({ day, open, onOpenChange }: {
   );
 }
 
+interface GeneratedContent {
+  title: string;
+  theme: string;
+  readingLevel: string;
+  culturalStage: string;
+  setup_questions: Array<{
+    title: string;
+    content: string;
+    category: string;
+    icon: string;
+  }>;
+  lesson: {
+    title: string;
+    content: string;
+    keyTakeaways: string[];
+    whyItMatters: string;
+    estimatedReadTime: number;
+  };
+  quiz_questions: Array<{
+    question: string;
+    optionA: string;
+    optionB: string;
+    optionC: string;
+    optionD: string;
+    correctAnswer: number;
+    explanation: string;
+  }>;
+}
+
+interface GenerateResponse {
+  success: boolean;
+  dayIndex: number;
+  content: GeneratedContent;
+  validation: {
+    passed: boolean;
+    issues: string[];
+  };
+  context: {
+    cycle: number;
+    week: number;
+    dayInWeek: number;
+    isWeeklyRecap: boolean;
+    theme: string;
+    priorDaysUsed: number;
+  };
+}
+
+function AIGenerateDialog({ open, onOpenChange, nextDayIndex }: { 
+  open: boolean; 
+  onOpenChange: (open: boolean) => void;
+  nextDayIndex: number;
+}) {
+  const { toast } = useToast();
+  const [dayIndex, setDayIndex] = useState(nextDayIndex);
+  const [themeOverride, setThemeOverride] = useState("");
+  const [notes, setNotes] = useState("");
+  const [step, setStep] = useState<'input' | 'generating' | 'preview'>('input');
+  const [generatedData, setGeneratedData] = useState<GenerateResponse | null>(null);
+  const [editedContent, setEditedContent] = useState<GeneratedContent | null>(null);
+
+  useEffect(() => {
+    setDayIndex(nextDayIndex);
+  }, [nextDayIndex]);
+
+  useEffect(() => {
+    if (!open) {
+      setStep('input');
+      setGeneratedData(null);
+      setEditedContent(null);
+      setThemeOverride("");
+      setNotes("");
+    }
+  }, [open]);
+
+  const generateMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/admin/content/generate-draft", {
+        dayIndex,
+        theme: themeOverride || undefined,
+        notes: notes || undefined
+      });
+      return res.json() as Promise<GenerateResponse>;
+    },
+    onSuccess: (data) => {
+      setGeneratedData(data);
+      setEditedContent(data.content);
+      setStep('preview');
+    },
+    onError: (error: Error) => {
+      toast({ title: "Generation failed", description: error.message, variant: "destructive" });
+      setStep('input');
+    },
+  });
+
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      if (!editedContent) throw new Error("No content to save");
+      
+      const payload = {
+        dayIndex,
+        title: editedContent.title,
+        theme: editedContent.theme,
+        readingLevel: editedContent.readingLevel,
+        culturalStage: editedContent.culturalStage,
+        questions: editedContent.setup_questions.map((q, idx) => ({
+          title: q.title,
+          content: q.content,
+          category: q.category,
+          icon: q.icon,
+          orderIndex: idx
+        })),
+        lesson: {
+          title: editedContent.lesson.title,
+          content: editedContent.lesson.content,
+          keyTakeaways: editedContent.lesson.keyTakeaways,
+          whyItMatters: editedContent.lesson.whyItMatters,
+          estimatedReadTime: editedContent.lesson.estimatedReadTime
+        },
+        quizzes: editedContent.quiz_questions.map(q => ({
+          question: q.question,
+          options: [q.optionA, q.optionB, q.optionC, q.optionD],
+          correctAnswer: q.correctAnswer,
+          explanation: q.explanation
+        }))
+      };
+      
+      const res = await apiRequest("POST", "/api/admin/content/bulk-import", payload);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/days"] });
+      toast({ title: "Content saved successfully!" });
+      onOpenChange(false);
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to save", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const handleGenerate = () => {
+    setStep('generating');
+    generateMutation.mutate();
+  };
+
+  const handleRegenerate = () => {
+    setStep('generating');
+    generateMutation.mutate();
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="bg-zinc-900 border-zinc-800 max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogHeader>
+          <DialogTitle className="text-white flex items-center gap-2">
+            <Wand2 className="w-5 h-5 text-orange-500" />
+            AI Content Generator
+          </DialogTitle>
+          <DialogDescription className="text-zinc-400">
+            Generate curriculum content using AI based on the Content Creation Framework
+          </DialogDescription>
+        </DialogHeader>
+        
+        {step === 'input' && (
+          <div className="space-y-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-zinc-300">Day Number</Label>
+                <Input 
+                  type="number"
+                  value={dayIndex}
+                  onChange={(e) => setDayIndex(parseInt(e.target.value) || nextDayIndex)}
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  data-testid="input-day-number"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-zinc-300">Theme Override (optional)</Label>
+                <Input 
+                  value={themeOverride}
+                  onChange={(e) => setThemeOverride(e.target.value)}
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  placeholder="Leave empty for auto-suggested theme"
+                  data-testid="input-theme-override"
+                />
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label className="text-zinc-300">Additional Notes (optional)</Label>
+              <Textarea 
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                className="bg-zinc-800 border-zinc-700 text-white min-h-[80px]"
+                placeholder="Any specific guidance for this day's content (e.g., 'focus on security concerns', 'tie into recent news about ETFs')"
+                data-testid="input-notes"
+              />
+            </div>
+
+            <div className="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
+              <h4 className="text-sm font-medium text-zinc-300 mb-2">What will be generated:</h4>
+              <ul className="text-xs text-zinc-400 space-y-1">
+                <li className="flex items-center gap-2"><Check className="w-3 h-3 text-green-500" /> Urgency-driven title (under 60 chars)</li>
+                <li className="flex items-center gap-2"><Check className="w-3 h-3 text-green-500" /> 3 setup questions (curiosity building)</li>
+                <li className="flex items-center gap-2"><Check className="w-3 h-3 text-green-500" /> Lesson content (300-1200 words, 8th grade level)</li>
+                <li className="flex items-center gap-2"><Check className="w-3 h-3 text-green-500" /> 4 quiz questions with explanations</li>
+                <li className="flex items-center gap-2"><Check className="w-3 h-3 text-green-500" /> Key takeaways and "Why It Matters"</li>
+              </ul>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-4">
+              <Button variant="outline" onClick={() => onOpenChange(false)} className="border-zinc-700 text-zinc-300">
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleGenerate}
+                className="bg-orange-500 hover:bg-orange-600"
+                data-testid="button-generate"
+              >
+                <Wand2 className="w-4 h-4 mr-2" />
+                Generate Content
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {step === 'generating' && (
+          <div className="flex flex-col items-center justify-center py-12 space-y-4">
+            <Loader2 className="w-12 h-12 text-orange-500 animate-spin" />
+            <div className="text-center">
+              <p className="text-white font-medium">Generating Day {dayIndex} Content...</p>
+              <p className="text-zinc-400 text-sm mt-1">This usually takes 30-60 seconds</p>
+            </div>
+          </div>
+        )}
+
+        {step === 'preview' && generatedData && editedContent && (
+          <div className="flex-1 overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-4">
+                <Badge className={generatedData.validation.passed ? "bg-green-500/20 text-green-400" : "bg-yellow-500/20 text-yellow-400"}>
+                  {generatedData.validation.passed ? (
+                    <><Check className="w-3 h-3 mr-1" /> All checks passed</>
+                  ) : (
+                    <><AlertCircle className="w-3 h-3 mr-1" /> {generatedData.validation.issues.length} issues</>
+                  )}
+                </Badge>
+                <span className="text-xs text-zinc-500">
+                  Cycle {generatedData.context.cycle} • Week {generatedData.context.week} • Day {generatedData.context.dayInWeek}
+                  {generatedData.context.priorDaysUsed > 0 && ` • ${generatedData.context.priorDaysUsed} prior days used for context`}
+                </span>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleRegenerate}
+                disabled={generateMutation.isPending}
+                className="border-zinc-700 text-zinc-300"
+                data-testid="button-regenerate"
+              >
+                <RefreshCw className="w-3 h-3 mr-1" />
+                Regenerate
+              </Button>
+            </div>
+
+            {!generatedData.validation.passed && (
+              <Alert className="bg-yellow-500/10 border-yellow-500/30 mb-4">
+                <AlertCircle className="w-4 h-4 text-yellow-500" />
+                <AlertDescription className="text-yellow-400 text-sm">
+                  {generatedData.validation.issues.map((issue, i) => (
+                    <span key={i} className="block">{issue}</span>
+                  ))}
+                </AlertDescription>
+              </Alert>
+            )}
+
+            <ScrollArea className="flex-1 pr-4">
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <Label className="text-zinc-300">Title</Label>
+                  <Input 
+                    value={editedContent.title}
+                    onChange={(e) => setEditedContent({...editedContent, title: e.target.value})}
+                    className="bg-zinc-800 border-zinc-700 text-white"
+                    data-testid="input-title"
+                  />
+                  <span className="text-xs text-zinc-500">{editedContent.title.length}/60 characters</span>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-zinc-300">Setup Questions</Label>
+                  {editedContent.setup_questions.map((q, idx) => (
+                    <div key={idx} className="bg-zinc-800 rounded-lg p-3 space-y-2">
+                      <Input 
+                        value={q.title}
+                        onChange={(e) => {
+                          const updated = [...editedContent.setup_questions];
+                          updated[idx] = {...updated[idx], title: e.target.value};
+                          setEditedContent({...editedContent, setup_questions: updated});
+                        }}
+                        className="bg-zinc-700 border-zinc-600 text-white text-sm"
+                        placeholder="Question title"
+                      />
+                      <Textarea 
+                        value={q.content}
+                        onChange={(e) => {
+                          const updated = [...editedContent.setup_questions];
+                          updated[idx] = {...updated[idx], content: e.target.value};
+                          setEditedContent({...editedContent, setup_questions: updated});
+                        }}
+                        className="bg-zinc-700 border-zinc-600 text-white text-sm min-h-[60px]"
+                        placeholder="Question content"
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-zinc-300">Lesson Content</Label>
+                  <Textarea 
+                    value={editedContent.lesson.content}
+                    onChange={(e) => setEditedContent({
+                      ...editedContent, 
+                      lesson: {...editedContent.lesson, content: e.target.value}
+                    })}
+                    className="bg-zinc-800 border-zinc-700 text-white min-h-[200px]"
+                    data-testid="input-lesson-content"
+                  />
+                  <span className="text-xs text-zinc-500">
+                    {editedContent.lesson.content.split(/\s+/).length} words (target: 300-1200)
+                  </span>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-zinc-300">Key Takeaways</Label>
+                  {editedContent.lesson.keyTakeaways.map((takeaway, idx) => (
+                    <Input 
+                      key={idx}
+                      value={takeaway}
+                      onChange={(e) => {
+                        const updated = [...editedContent.lesson.keyTakeaways];
+                        updated[idx] = e.target.value;
+                        setEditedContent({
+                          ...editedContent, 
+                          lesson: {...editedContent.lesson, keyTakeaways: updated}
+                        });
+                      }}
+                      className="bg-zinc-800 border-zinc-700 text-white text-sm"
+                      placeholder={`Takeaway ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-zinc-300">Why It Matters</Label>
+                  <Textarea 
+                    value={editedContent.lesson.whyItMatters}
+                    onChange={(e) => setEditedContent({
+                      ...editedContent, 
+                      lesson: {...editedContent.lesson, whyItMatters: e.target.value}
+                    })}
+                    className="bg-zinc-800 border-zinc-700 text-white min-h-[80px]"
+                    data-testid="input-why-it-matters"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-zinc-300">Quiz Questions</Label>
+                  {editedContent.quiz_questions.map((q, idx) => (
+                    <div key={idx} className="bg-zinc-800 rounded-lg p-3 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-zinc-500 w-6">Q{idx + 1}</span>
+                        <Input 
+                          value={q.question}
+                          onChange={(e) => {
+                            const updated = [...editedContent.quiz_questions];
+                            updated[idx] = {...updated[idx], question: e.target.value};
+                            setEditedContent({...editedContent, quiz_questions: updated});
+                          }}
+                          className="bg-zinc-700 border-zinc-600 text-white text-sm flex-1"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 pl-8">
+                        {['A', 'B', 'C', 'D'].map((letter, optIdx) => (
+                          <div key={letter} className="flex items-center gap-2">
+                            <span className={`text-xs w-4 ${q.correctAnswer === optIdx ? 'text-green-400 font-bold' : 'text-zinc-500'}`}>
+                              {letter}
+                            </span>
+                            <Input 
+                              value={q[`option${letter}` as keyof typeof q] as string}
+                              onChange={(e) => {
+                                const updated = [...editedContent.quiz_questions];
+                                updated[idx] = {...updated[idx], [`option${letter}`]: e.target.value};
+                                setEditedContent({...editedContent, quiz_questions: updated});
+                              }}
+                              className="bg-zinc-700 border-zinc-600 text-white text-xs"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </ScrollArea>
+
+            <div className="flex justify-between gap-2 pt-4 border-t border-zinc-800 mt-4">
+              <Button variant="outline" onClick={() => onOpenChange(false)} className="border-zinc-700 text-zinc-300">
+                Cancel
+              </Button>
+              <Button 
+                onClick={() => saveMutation.mutate()}
+                className="bg-orange-500 hover:bg-orange-600"
+                disabled={saveMutation.isPending}
+                data-testid="button-save-content"
+              >
+                {saveMutation.isPending ? (
+                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Saving...</>
+                ) : (
+                  <><Save className="w-4 h-4 mr-2" /> Save Content</>
+                )}
+              </Button>
+            </div>
+          </div>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function CreateDayDialog({ open, onOpenChange, nextDayIndex }: { 
   open: boolean; 
   onOpenChange: (open: boolean) => void;
@@ -1460,6 +1894,7 @@ export default function ContentManagement() {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [aiGenerateDialogOpen, setAiGenerateDialogOpen] = useState(false);
   const [expandedWeeks, setExpandedWeeks] = useState<Set<number>>(new Set([1]));
   const [selectedWeek, setSelectedWeek] = useState<number | null>(1);
 
@@ -1518,6 +1953,15 @@ export default function ContentManagement() {
               >
                 <Upload className="w-4 h-4 mr-2" />
                 Import
+              </Button>
+              <Button 
+                variant="outline"
+                className="border-orange-500/50 text-orange-400 hover:bg-orange-500/10 hover:border-orange-500" 
+                onClick={() => setAiGenerateDialogOpen(true)}
+                data-testid="button-ai-generate"
+              >
+                <Wand2 className="w-4 h-4 mr-2" />
+                AI Generate
               </Button>
               <Button 
                 className="bg-orange-500 hover:bg-orange-600" 
@@ -1677,6 +2121,12 @@ export default function ContentManagement() {
           <BulkImportDialog 
             open={importDialogOpen} 
             onOpenChange={setImportDialogOpen}
+            nextDayIndex={nextDayIndex}
+          />
+          
+          <AIGenerateDialog 
+            open={aiGenerateDialogOpen} 
+            onOpenChange={setAiGenerateDialogOpen}
             nextDayIndex={nextDayIndex}
           />
         </div>
