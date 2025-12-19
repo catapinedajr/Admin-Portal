@@ -604,6 +604,7 @@ function CRMManagementContent() {
                     <span className="font-medium text-white">Lost</span>
                     <span className="text-sm text-white/80">{getStageDeals('lost').length}</span>
                   </div>
+                  <p className="text-sm text-white/70 mt-1">{formatCurrency(getStageValue('lost'))}</p>
                 </div>
                 <div className="bg-zinc-900 border border-zinc-800 border-t-0 rounded-b-lg p-2 min-h-[400px] space-y-2">
                   {getStageDeals('lost').slice(0, 5).map(deal => (
