@@ -51,7 +51,16 @@ interface Client {
   contactName: string;
   email: string;
   phone: string | null;
+  website: string | null;
   industry: string | null;
+  companyType: string | null;
+  taxId: string | null;
+  paymentTerms: string | null;
+  billingStreet: string | null;
+  billingCity: string | null;
+  billingState: string | null;
+  billingZip: string | null;
+  billingCountry: string | null;
   status: string;
   notes: string | null;
   createdAt: string;
@@ -68,6 +77,12 @@ interface Campaign {
   startDate: string;
   endDate: string | null;
   targetImpressions: number | null;
+  feeType: string;
+  agreedRateCents: number | null;
+  revenueSharePercent: number | null;
+  paymentStatus: string;
+  invoiceReference: string | null;
+  paidAmountCents: number;
 }
 
 interface Creative {
@@ -131,9 +146,27 @@ function NewClientDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
     contactName: "",
     email: "",
     phone: "",
+    website: "",
     industry: "",
+    companyType: "",
+    taxId: "",
+    paymentTerms: "",
+    billingStreet: "",
+    billingCity: "",
+    billingState: "",
+    billingZip: "",
+    billingCountry: "",
     notes: "",
   });
+
+  const resetForm = () => {
+    setFormData({
+      companyName: "", contactName: "", email: "", phone: "", website: "",
+      industry: "", companyType: "", taxId: "", paymentTerms: "",
+      billingStreet: "", billingCity: "", billingState: "", billingZip: "", billingCountry: "",
+      notes: "",
+    });
+  };
 
   const createMutation = useMutation({
     mutationFn: async () => {
@@ -144,7 +177,7 @@ function NewClientDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
       queryClient.invalidateQueries({ queryKey: ["/api/admin/marketing/clients"] });
       toast({ title: "Client created successfully" });
       onOpenChange(false);
-      setFormData({ companyName: "", contactName: "", email: "", phone: "", industry: "", notes: "" });
+      resetForm();
     },
     onError: (error: Error) => {
       toast({ title: "Failed to create client", description: error.message, variant: "destructive" });
@@ -153,51 +186,105 @@ function NewClientDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-zinc-900 border-zinc-800 max-w-md">
+      <DialogContent className="bg-zinc-900 border-zinc-800 max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-white flex items-center gap-2">
             <Building2 className="w-5 h-5 text-orange-500" />
             Add New Client
           </DialogTitle>
           <DialogDescription className="text-zinc-400">
-            Add a new advertising client to manage their campaigns
+            Add a new advertising client with complete business details
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4 pt-4">
-          <div className="space-y-2">
-            <Label className="text-zinc-300">Company Name *</Label>
-            <Input
-              value={formData.companyName}
-              onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-              className="bg-zinc-800 border-zinc-700 text-white"
-              placeholder="Bitcoin Hardware Co."
-              data-testid="input-company-name"
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="text-zinc-300">Contact Name *</Label>
-              <Input
-                value={formData.contactName}
-                onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
-                className="bg-zinc-800 border-zinc-700 text-white"
-                placeholder="John Smith"
-                data-testid="input-contact-name"
-              />
+        <div className="space-y-6 pt-4">
+          {/* Basic Info Section */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-medium text-zinc-300 border-b border-zinc-700 pb-2">Company Information</h4>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-zinc-300">Company Name *</Label>
+                <Input
+                  value={formData.companyName}
+                  onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  placeholder="Bitcoin Hardware Co."
+                  data-testid="input-company-name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-zinc-300">Website</Label>
+                <Input
+                  value={formData.website}
+                  onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  placeholder="https://company.com"
+                  data-testid="input-website"
+                />
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label className="text-zinc-300">Email *</Label>
-              <Input
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="bg-zinc-800 border-zinc-700 text-white"
-                placeholder="john@company.com"
-                data-testid="input-client-email"
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-zinc-300">Company Type</Label>
+                <Select value={formData.companyType} onValueChange={(v) => setFormData({ ...formData, companyType: v })}>
+                  <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white" data-testid="select-company-type">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-800 border-zinc-700">
+                    <SelectItem value="startup">Startup</SelectItem>
+                    <SelectItem value="smb">Small/Medium Business</SelectItem>
+                    <SelectItem value="enterprise">Enterprise</SelectItem>
+                    <SelectItem value="agency">Agency</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-zinc-300">Industry</Label>
+                <Select value={formData.industry} onValueChange={(v) => setFormData({ ...formData, industry: v })}>
+                  <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white" data-testid="select-industry">
+                    <SelectValue placeholder="Select industry" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-800 border-zinc-700">
+                    <SelectItem value="hardware_wallet">Hardware Wallet</SelectItem>
+                    <SelectItem value="exchange">Exchange</SelectItem>
+                    <SelectItem value="custody">Custody</SelectItem>
+                    <SelectItem value="education">Education</SelectItem>
+                    <SelectItem value="mining">Mining</SelectItem>
+                    <SelectItem value="software">Software</SelectItem>
+                    <SelectItem value="fintech">Fintech</SelectItem>
+                    <SelectItem value="media">Media</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+
+          {/* Contact Section */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-medium text-zinc-300 border-b border-zinc-700 pb-2">Primary Contact</h4>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-zinc-300">Contact Name *</Label>
+                <Input
+                  value={formData.contactName}
+                  onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  placeholder="John Smith"
+                  data-testid="input-contact-name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-zinc-300">Email *</Label>
+                <Input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  placeholder="john@company.com"
+                  data-testid="input-client-email"
+                />
+              </div>
+            </div>
             <div className="space-y-2">
               <Label className="text-zinc-300">Phone</Label>
               <Input
@@ -208,24 +295,94 @@ function NewClientDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
                 data-testid="input-phone"
               />
             </div>
+          </div>
+
+          {/* Billing Section */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-medium text-zinc-300 border-b border-zinc-700 pb-2">Billing Information</h4>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-zinc-300">Tax ID / VAT Number</Label>
+                <Input
+                  value={formData.taxId}
+                  onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  placeholder="XX-XXXXXXX"
+                  data-testid="input-tax-id"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-zinc-300">Payment Terms</Label>
+                <Select value={formData.paymentTerms} onValueChange={(v) => setFormData({ ...formData, paymentTerms: v })}>
+                  <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white" data-testid="select-payment-terms">
+                    <SelectValue placeholder="Select terms" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-800 border-zinc-700">
+                    <SelectItem value="due_on_receipt">Due on Receipt</SelectItem>
+                    <SelectItem value="net_15">Net 15</SelectItem>
+                    <SelectItem value="net_30">Net 30</SelectItem>
+                    <SelectItem value="net_60">Net 60</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
             <div className="space-y-2">
-              <Label className="text-zinc-300">Industry</Label>
-              <Select value={formData.industry} onValueChange={(v) => setFormData({ ...formData, industry: v })}>
-                <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white" data-testid="select-industry">
-                  <SelectValue placeholder="Select industry" />
-                </SelectTrigger>
-                <SelectContent className="bg-zinc-800 border-zinc-700">
-                  <SelectItem value="hardware_wallet">Hardware Wallet</SelectItem>
-                  <SelectItem value="exchange">Exchange</SelectItem>
-                  <SelectItem value="custody">Custody</SelectItem>
-                  <SelectItem value="education">Education</SelectItem>
-                  <SelectItem value="mining">Mining</SelectItem>
-                  <SelectItem value="software">Software</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label className="text-zinc-300">Street Address</Label>
+              <Input
+                value={formData.billingStreet}
+                onChange={(e) => setFormData({ ...formData, billingStreet: e.target.value })}
+                className="bg-zinc-800 border-zinc-700 text-white"
+                placeholder="123 Main Street, Suite 100"
+                data-testid="input-billing-street"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-zinc-300">City</Label>
+                <Input
+                  value={formData.billingCity}
+                  onChange={(e) => setFormData({ ...formData, billingCity: e.target.value })}
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  placeholder="San Francisco"
+                  data-testid="input-billing-city"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-zinc-300">State / Province</Label>
+                <Input
+                  value={formData.billingState}
+                  onChange={(e) => setFormData({ ...formData, billingState: e.target.value })}
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  placeholder="CA"
+                  data-testid="input-billing-state"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-zinc-300">ZIP / Postal Code</Label>
+                <Input
+                  value={formData.billingZip}
+                  onChange={(e) => setFormData({ ...formData, billingZip: e.target.value })}
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  placeholder="94102"
+                  data-testid="input-billing-zip"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-zinc-300">Country</Label>
+                <Input
+                  value={formData.billingCountry}
+                  onChange={(e) => setFormData({ ...formData, billingCountry: e.target.value })}
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  placeholder="United States"
+                  data-testid="input-billing-country"
+                />
+              </div>
             </div>
           </div>
+
+          {/* Notes */}
           <div className="space-y-2">
             <Label className="text-zinc-300">Notes</Label>
             <Textarea
@@ -237,6 +394,7 @@ function NewClientDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
               data-testid="input-notes"
             />
           </div>
+
           <div className="flex justify-end gap-2 pt-4">
             <Button variant="outline" onClick={() => onOpenChange(false)} className="border-zinc-700 text-zinc-300">
               Cancel
@@ -563,7 +721,20 @@ function NewCampaignDialog({ open, onOpenChange, clients }: { open: boolean; onO
     startDate: "",
     endDate: "",
     targetImpressions: "",
+    feeType: "cpc",
+    agreedRate: "",
+    revenueSharePercent: "",
+    paymentStatus: "pending",
+    invoiceReference: "",
   });
+
+  const resetForm = () => {
+    setFormData({
+      name: "", advertiser: "", clientId: "", budget: "", startDate: "", endDate: "",
+      targetImpressions: "", feeType: "cpc", agreedRate: "", revenueSharePercent: "",
+      paymentStatus: "pending", invoiceReference: "",
+    });
+  };
 
   const createMutation = useMutation({
     mutationFn: async () => {
@@ -575,6 +746,11 @@ function NewCampaignDialog({ open, onOpenChange, clients }: { open: boolean; onO
         startDate: formData.startDate || new Date().toISOString().split('T')[0],
         endDate: formData.endDate || null,
         targetImpressions: formData.targetImpressions ? parseInt(formData.targetImpressions) : null,
+        feeType: formData.feeType,
+        agreedRateCents: formData.agreedRate ? Math.round(parseFloat(formData.agreedRate) * 100) : null,
+        revenueSharePercent: formData.revenueSharePercent ? parseInt(formData.revenueSharePercent) : null,
+        paymentStatus: formData.paymentStatus,
+        invoiceReference: formData.invoiceReference || null,
       });
       return res.json();
     },
@@ -582,95 +758,196 @@ function NewCampaignDialog({ open, onOpenChange, clients }: { open: boolean; onO
       queryClient.invalidateQueries({ queryKey: ["/api/admin/marketing/campaigns"] });
       toast({ title: "Campaign created successfully" });
       onOpenChange(false);
-      setFormData({ name: "", advertiser: "", clientId: "", budget: "", startDate: "", endDate: "", targetImpressions: "" });
+      resetForm();
     },
     onError: (error: Error) => {
       toast({ title: "Failed to create campaign", description: error.message, variant: "destructive" });
     },
   });
 
+  const getFeeLabel = () => {
+    switch (formData.feeType) {
+      case 'cpc': return 'Cost per Click (USD)';
+      case 'cpm': return 'Cost per 1000 Impressions (USD)';
+      case 'flat_fee': return 'Flat Fee Amount (USD)';
+      case 'monthly_retainer': return 'Monthly Retainer (USD)';
+      case 'revenue_share': return 'Revenue Share %';
+      default: return 'Rate (USD)';
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-zinc-900 border-zinc-800 max-w-md">
+      <DialogContent className="bg-zinc-900 border-zinc-800 max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-white">Create Ad Campaign</DialogTitle>
+          <DialogDescription className="text-zinc-400">
+            Set up a new advertising campaign with pricing and payment terms
+          </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4 pt-4">
-          <div className="space-y-2">
-            <Label className="text-zinc-300">Campaign Name *</Label>
-            <Input
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="bg-zinc-800 border-zinc-700 text-white"
-              placeholder="Q1 Awareness Campaign"
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-6 pt-4">
+          {/* Basic Info */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-medium text-zinc-300 border-b border-zinc-700 pb-2">Campaign Details</h4>
             <div className="space-y-2">
-              <Label className="text-zinc-300">Advertiser *</Label>
+              <Label className="text-zinc-300">Campaign Name *</Label>
               <Input
-                value={formData.advertiser}
-                onChange={(e) => setFormData({ ...formData, advertiser: e.target.value })}
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="bg-zinc-800 border-zinc-700 text-white"
-                placeholder="Company Name"
+                placeholder="Q1 Awareness Campaign"
+                data-testid="input-campaign-name"
               />
             </div>
-            <div className="space-y-2">
-              <Label className="text-zinc-300">Client</Label>
-              <Select value={formData.clientId} onValueChange={(v) => setFormData({ ...formData, clientId: v })}>
-                <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
-                  <SelectValue placeholder="Select client" />
-                </SelectTrigger>
-                <SelectContent className="bg-zinc-800 border-zinc-700">
-                  {clients.map((client) => (
-                    <SelectItem key={client.id} value={client.id.toString()}>{client.companyName}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-zinc-300">Advertiser *</Label>
+                <Input
+                  value={formData.advertiser}
+                  onChange={(e) => setFormData({ ...formData, advertiser: e.target.value })}
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  placeholder="Company Name"
+                  data-testid="input-advertiser"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-zinc-300">Client</Label>
+                <Select value={formData.clientId} onValueChange={(v) => setFormData({ ...formData, clientId: v })}>
+                  <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white" data-testid="select-client">
+                    <SelectValue placeholder="Select client" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-800 border-zinc-700">
+                    {clients.map((client) => (
+                      <SelectItem key={client.id} value={client.id.toString()}>{client.companyName}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="text-zinc-300">Budget (USD)</Label>
-              <Input
-                type="number"
-                value={formData.budget}
-                onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                className="bg-zinc-800 border-zinc-700 text-white"
-                placeholder="1000"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-zinc-300">Target Impressions</Label>
-              <Input
-                type="number"
-                value={formData.targetImpressions}
-                onChange={(e) => setFormData({ ...formData, targetImpressions: e.target.value })}
-                className="bg-zinc-800 border-zinc-700 text-white"
-                placeholder="10000"
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="text-zinc-300">Start Date</Label>
-              <Input
-                type="date"
-                value={formData.startDate}
-                onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                className="bg-zinc-800 border-zinc-700 text-white"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-zinc-300">End Date</Label>
-              <Input
-                type="date"
-                value={formData.endDate}
-                onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-                className="bg-zinc-800 border-zinc-700 text-white"
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-zinc-300">Start Date</Label>
+                <Input
+                  type="date"
+                  value={formData.startDate}
+                  onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  data-testid="input-start-date"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-zinc-300">End Date</Label>
+                <Input
+                  type="date"
+                  value={formData.endDate}
+                  onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  data-testid="input-end-date"
+                />
+              </div>
             </div>
           </div>
+
+          {/* Pricing Section */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-medium text-zinc-300 border-b border-zinc-700 pb-2">Pricing & Fee Structure</h4>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-zinc-300">Fee Type *</Label>
+                <Select value={formData.feeType} onValueChange={(v) => setFormData({ ...formData, feeType: v })}>
+                  <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white" data-testid="select-fee-type">
+                    <SelectValue placeholder="Select fee type" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-800 border-zinc-700">
+                    <SelectItem value="cpc">Cost per Click (CPC)</SelectItem>
+                    <SelectItem value="cpm">Cost per 1000 Impressions (CPM)</SelectItem>
+                    <SelectItem value="flat_fee">Flat Fee</SelectItem>
+                    <SelectItem value="monthly_retainer">Monthly Retainer</SelectItem>
+                    <SelectItem value="revenue_share">Revenue Share</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-zinc-300">{getFeeLabel()}</Label>
+                {formData.feeType === 'revenue_share' ? (
+                  <Input
+                    type="number"
+                    value={formData.revenueSharePercent}
+                    onChange={(e) => setFormData({ ...formData, revenueSharePercent: e.target.value })}
+                    className="bg-zinc-800 border-zinc-700 text-white"
+                    placeholder="e.g., 15"
+                    data-testid="input-revenue-share"
+                  />
+                ) : (
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={formData.agreedRate}
+                    onChange={(e) => setFormData({ ...formData, agreedRate: e.target.value })}
+                    className="bg-zinc-800 border-zinc-700 text-white"
+                    placeholder={formData.feeType === 'cpc' ? '0.50' : formData.feeType === 'cpm' ? '5.00' : '1000'}
+                    data-testid="input-agreed-rate"
+                  />
+                )}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-zinc-300">Total Budget (USD)</Label>
+                <Input
+                  type="number"
+                  value={formData.budget}
+                  onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  placeholder="1000"
+                  data-testid="input-budget"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-zinc-300">Target Impressions</Label>
+                <Input
+                  type="number"
+                  value={formData.targetImpressions}
+                  onChange={(e) => setFormData({ ...formData, targetImpressions: e.target.value })}
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  placeholder="10000"
+                  data-testid="input-target-impressions"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Payment Section */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-medium text-zinc-300 border-b border-zinc-700 pb-2">Payment Status</h4>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-zinc-300">Payment Status</Label>
+                <Select value={formData.paymentStatus} onValueChange={(v) => setFormData({ ...formData, paymentStatus: v })}>
+                  <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white" data-testid="select-payment-status">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-800 border-zinc-700">
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="invoiced">Invoiced</SelectItem>
+                    <SelectItem value="paid">Paid</SelectItem>
+                    <SelectItem value="overdue">Overdue</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-zinc-300">Invoice Reference</Label>
+                <Input
+                  value={formData.invoiceReference}
+                  onChange={(e) => setFormData({ ...formData, invoiceReference: e.target.value })}
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  placeholder="INV-2024-001"
+                  data-testid="input-invoice-reference"
+                />
+              </div>
+            </div>
+          </div>
+
           <div className="flex justify-end gap-2 pt-4">
             <Button variant="outline" onClick={() => onOpenChange(false)} className="border-zinc-700 text-zinc-300">
               Cancel
@@ -679,6 +956,7 @@ function NewCampaignDialog({ open, onOpenChange, clients }: { open: boolean; onO
               onClick={() => createMutation.mutate()}
               disabled={!formData.name || !formData.advertiser || createMutation.isPending}
               className="bg-orange-500 hover:bg-orange-600"
+              data-testid="button-create-campaign"
             >
               {createMutation.isPending ? "Creating..." : "Create Campaign"}
             </Button>

@@ -79,6 +79,17 @@ export const advertisingClients = pgTable("advertising_clients", {
   contactEmail: text("contact_email"),
   contactPhone: text("contact_phone"),
   website: text("website"),
+  // Business metadata
+  companyType: text("company_type"), // e.g., 'startup', 'enterprise', 'agency', 'smb'
+  industry: text("industry"), // e.g., 'fintech', 'crypto', 'education', 'media'
+  taxId: text("tax_id"), // Tax ID / VAT number
+  paymentTerms: text("payment_terms"), // e.g., 'net_15', 'net_30', 'net_60', 'due_on_receipt'
+  // Billing address
+  billingStreet: text("billing_street"),
+  billingCity: text("billing_city"),
+  billingState: text("billing_state"),
+  billingZip: text("billing_zip"),
+  billingCountry: text("billing_country"),
   notes: text("notes"),
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -229,6 +240,7 @@ export const socialPosts = pgTable("social_posts", {
   linkUrl: text("link_url"),
   campaignId: integer("campaign_id").references(() => adCampaigns.id),
   linkedDayIndex: integer("linked_day_index"), // Link to curriculum day for content sourcing
+  status: text("status"), // Legacy status field (kept for data compatibility)
   contentStatus: text("content_status").notNull().default("drafted"), // drafted, approved
   publishStatus: text("publish_status").notNull().default("planned"), // planned, posted
   scheduledAt: timestamp("scheduled_at"),
@@ -462,9 +474,14 @@ export const curatedVideos = pgTable("curated_videos", {
 export const userVideoEngagement = pgTable("user_video_engagement", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
-  videoId: integer("video_id").notNull(),
+  videoId: text("video_id").notNull(), // Text to match database (YouTube video IDs are strings)
   watchedAt: timestamp("watched_at").notNull().defaultNow(),
   progressPercent: integer("progress_percent").notNull().default(0), // 0-100
+  completed: boolean("completed").notNull().default(false),
+  completedAt: timestamp("completed_at"),
+  rewardEarned: integer("reward_earned").notNull().default(0),
+  totalWatchTime: integer("total_watch_time").notNull().default(0),
+  lastPosition: integer("last_position").notNull().default(0),
 });
 
 // Success stories
@@ -576,10 +593,21 @@ export const adCampaigns = pgTable("ad_campaigns", {
   status: text("status").notNull().default('draft'), // draft, active, paused, completed
   startDate: timestamp("start_date"),
   endDate: timestamp("end_date"),
+  // Budget and spend tracking
   budgetCents: integer("budget_cents"), // Total budget in cents
   spentCents: integer("spent_cents").notNull().default(0),
+  // Fee structure
+  feeType: text("fee_type").notNull().default('cpc'), // 'cpc', 'cpm', 'flat_fee', 'monthly_retainer', 'revenue_share'
+  agreedRateCents: integer("agreed_rate_cents"), // Agreed rate in cents (e.g., CPC rate, flat fee, monthly rate)
+  revenueSharePercent: integer("revenue_share_percent"), // For revenue share deals (e.g., 10 = 10%)
+  // Legacy pricing fields (kept for compatibility)
   costPerClickCents: integer("cost_per_click_cents"), // CPC pricing
   costPerImpressionCents: integer("cost_per_impression_cents"), // CPM pricing (per 1000)
+  // Payment tracking
+  paymentStatus: text("payment_status").notNull().default('pending'), // 'pending', 'invoiced', 'paid', 'overdue'
+  invoiceReference: text("invoice_reference"), // External invoice number/reference
+  paidAmountCents: integer("paid_amount_cents").notNull().default(0), // Amount paid so far
+  // Campaign goals
   targetImpressions: integer("target_impressions"), // Campaign goal
   targetClicks: integer("target_clicks"),
   createdAt: timestamp("created_at").notNull().defaultNow(),

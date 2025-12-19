@@ -729,7 +729,16 @@ export function registerAdminRoutes(app: Express) {
         contactName: c.contactName || '',
         email: c.contactEmail || '',
         phone: c.contactPhone,
-        industry: null,
+        website: c.website,
+        industry: c.industry,
+        companyType: c.companyType,
+        taxId: c.taxId,
+        paymentTerms: c.paymentTerms,
+        billingStreet: c.billingStreet,
+        billingCity: c.billingCity,
+        billingState: c.billingState,
+        billingZip: c.billingZip,
+        billingCountry: c.billingCountry,
         status: c.isActive ? 'active' : 'inactive',
         notes: c.notes,
         createdAt: c.createdAt?.toISOString(),
@@ -746,13 +755,26 @@ export function registerAdminRoutes(app: Express) {
   app.post("/api/admin/marketing/clients", requireAdminAuth, async (req: AdminRequest, res) => {
     try {
       const { advertisingClients } = await import('@shared/schema');
-      const { companyName, contactName, email, phone, industry, notes } = req.body;
+      const { 
+        companyName, contactName, email, phone, website, industry, companyType,
+        taxId, paymentTerms, billingStreet, billingCity, billingState, billingZip, billingCountry, notes 
+      } = req.body;
       
       const [client] = await db.insert(advertisingClients).values({
         name: companyName,
         contactName,
         contactEmail: email,
         contactPhone: phone || null,
+        website: website || null,
+        industry: industry || null,
+        companyType: companyType || null,
+        taxId: taxId || null,
+        paymentTerms: paymentTerms || null,
+        billingStreet: billingStreet || null,
+        billingCity: billingCity || null,
+        billingState: billingState || null,
+        billingZip: billingZip || null,
+        billingCountry: billingCountry || null,
         notes: notes || null,
         isActive: true,
       }).returning();
@@ -800,7 +822,10 @@ export function registerAdminRoutes(app: Express) {
   // Create campaign
   app.post("/api/admin/marketing/campaigns", requireAdminAuth, async (req: AdminRequest, res) => {
     try {
-      const { name, advertiser, clientId, budgetCents, startDate, endDate, targetImpressions } = req.body;
+      const { 
+        name, advertiser, clientId, budgetCents, startDate, endDate, targetImpressions,
+        feeType, agreedRateCents, revenueSharePercent, paymentStatus, invoiceReference
+      } = req.body;
       
       const [campaign] = await db.insert(adCampaigns).values({
         name,
@@ -811,6 +836,11 @@ export function registerAdminRoutes(app: Express) {
         startDate: startDate ? new Date(startDate) : null,
         endDate: endDate ? new Date(endDate) : null,
         targetImpressions: targetImpressions || null,
+        feeType: feeType || 'cpc',
+        agreedRateCents: agreedRateCents || null,
+        revenueSharePercent: revenueSharePercent || null,
+        paymentStatus: paymentStatus || 'pending',
+        invoiceReference: invoiceReference || null,
       }).returning();
       
       res.json(campaign);
