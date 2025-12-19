@@ -703,12 +703,12 @@ function RoadmapManagementContent() {
               </div>
               <div>
                 <Label className="text-zinc-300">Target Release</Label>
-                <Select value={ideaForm.targetRelease} onValueChange={(v) => setIdeaForm(f => ({ ...f, targetRelease: v }))}>
+                <Select value={ideaForm.targetRelease || "none"} onValueChange={(v) => setIdeaForm(f => ({ ...f, targetRelease: v === "none" ? "" : v }))}>
                   <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white mt-1">
                     <SelectValue placeholder="Select release" />
                   </SelectTrigger>
                   <SelectContent className="bg-zinc-800 border-zinc-700">
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="none">None</SelectItem>
                     {releases.map(r => (
                       <SelectItem key={r.id} value={r.version}>v{r.version} - {r.name}</SelectItem>
                     ))}
@@ -719,12 +719,12 @@ function RoadmapManagementContent() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label className="text-zinc-300">Effort</Label>
-                <Select value={ideaForm.effort} onValueChange={(v) => setIdeaForm(f => ({ ...f, effort: v }))}>
+                <Select value={ideaForm.effort || "none"} onValueChange={(v) => setIdeaForm(f => ({ ...f, effort: v === "none" ? "" : v }))}>
                   <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white mt-1">
                     <SelectValue placeholder="Estimate effort" />
                   </SelectTrigger>
                   <SelectContent className="bg-zinc-800 border-zinc-700">
-                    <SelectItem value="">Not estimated</SelectItem>
+                    <SelectItem value="none">Not estimated</SelectItem>
                     {EFFORTS.map(e => (
                       <SelectItem key={e.value} value={e.value}>{e.label}</SelectItem>
                     ))}
@@ -733,12 +733,12 @@ function RoadmapManagementContent() {
               </div>
               <div>
                 <Label className="text-zinc-300">Impact</Label>
-                <Select value={ideaForm.impact} onValueChange={(v) => setIdeaForm(f => ({ ...f, impact: v }))}>
+                <Select value={ideaForm.impact || "none"} onValueChange={(v) => setIdeaForm(f => ({ ...f, impact: v === "none" ? "" : v }))}>
                   <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white mt-1">
                     <SelectValue placeholder="Expected impact" />
                   </SelectTrigger>
                   <SelectContent className="bg-zinc-800 border-zinc-700">
-                    <SelectItem value="">Not assessed</SelectItem>
+                    <SelectItem value="none">Not assessed</SelectItem>
                     {IMPACTS.map(i => (
                       <SelectItem key={i.value} value={i.value}>{i.label}</SelectItem>
                     ))}
