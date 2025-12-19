@@ -713,6 +713,212 @@ export function registerAdminRoutes(app: Express) {
     }
   });
 
+  // AI Content Generation - Generate draft for a new day
+  app.post("/api/admin/content/generate-draft", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { dayIndex, theme, notes } = req.body;
+      
+      if (typeof dayIndex !== 'number' || dayIndex < 1) {
+        return res.status(400).json({ message: "dayIndex must be a positive number" });
+      }
+      
+      // Check if day already exists
+      const existing = await db.select().from(contentDays).where(eq(contentDays.dayIndex, dayIndex));
+      if (existing.length > 0) {
+        return res.status(400).json({ message: `Day ${dayIndex} already exists. Use edit instead.` });
+      }
+      
+      // Retrieve prior day summaries for context (last 7 days)
+      const { contentDaySummaries } = await import('@shared/schema');
+      const priorDays = await db.select()
+        .from(contentDaySummaries)
+        .where(sql`${contentDaySummaries.dayIndex} >= ${dayIndex - 7} AND ${contentDaySummaries.dayIndex} < ${dayIndex}`)
+        .orderBy(contentDaySummaries.dayIndex);
+      
+      // Build context from prior days
+      let priorContext = '';
+      if (priorDays.length > 0) {
+        priorContext = priorDays.map(d => 
+          `Day ${d.dayIndex}: ${d.synopsis}\nKey concepts: ${d.keyConcepts?.join(', ') || 'none'}`
+        ).join('\n\n');
+      }
+      
+      // Calculate position in curriculum
+      const cycle = Math.ceil(dayIndex / 90);
+      const weekNumber = Math.ceil(dayIndex / 7);
+      const dayInWeek = ((dayIndex - 1) % 7) + 1;
+      const isWeeklyRecap = dayInWeek === 7;
+      
+      // Determine month theme based on cycle
+      const cycleThemes: Record<number, string[]> = {
+        1: ['Problem Recognition & Motivation', 'Bitcoin Basics & Properties', 'Implementation & Security'],
+        2: ['Economic Theory & History', 'Network Effects & Adoption', 'Investment & Portfolio Theory'],
+        3: ['Global Monetary Systems', 'Technology Deep Dives', 'Future Scenarios & Predictions'],
+        4: ['Institutional Adoption', 'Regulatory & Policy', 'Bitcoin Maximalism vs. Alternatives'],
+      };
+      const monthInCycle = Math.ceil(((dayIndex - 1) % 90 + 1) / 30);
+      const cycleNumber = Math.min(cycle, 4);
+      const suggestedTheme = theme || cycleThemes[cycleNumber]?.[monthInCycle - 1] || 'Bitcoin Fundamentals';
+      
+      // Build the comprehensive prompt with Content Creation Framework
+      const systemPrompt = `You are a Bitcoin education content creator for HODLearn, creating daily lessons for working professionals.
+
+## CONTENT PHILOSOPHY
+**Target**: Working professionals seeking financial understanding and security
+**Approach**: "Conviction Through Curiosity" - build Bitcoin conviction through immediate financial relevance
+**Tone**: Professional urgency without technical overwhelm (8th grade reading level)
+
+## CURRICULUM POSITION
+- Day ${dayIndex} of 180-day curriculum
+- Week ${weekNumber}, Day ${dayInWeek} of week
+- Cycle ${cycleNumber} (${cycleNumber === 1 ? 'Foundation' : cycleNumber === 2 ? 'Intermediate' : cycleNumber === 3 ? 'Advanced' : 'Expert'})
+- Theme: ${suggestedTheme}
+${isWeeklyRecap ? '- THIS IS DAY 7: Weekly recap - synthesize the week\'s progression' : ''}
+
+${priorContext ? `## PRIOR LESSONS FOR CONTEXT
+${priorContext}
+
+Build naturally on these concepts without using phrases like "Yesterday we learned" or "Building on our previous discussion".` : '## FIRST DAYS OF CURRICULUM\nThis is early in the curriculum - establish foundational concepts.'}
+
+${notes ? `## ADDITIONAL NOTES FROM CREATOR
+${notes}` : ''}
+
+## OUTPUT REQUIREMENTS
+Create a complete day of content with this EXACT JSON structure:
+
+{
+  "title": "Urgency-driven headline under 60 characters with power words (Stolen, Hidden, Secret, Crisis, Destroy, Protect)",
+  "theme": "${suggestedTheme}",
+  "readingLevel": "8th grade",
+  "culturalStage": "Normie → Pre-coiner",
+  "setup_questions": [
+    {"title": "Personal Impact", "content": "Question about personal financial experience (under 100 chars)", "category": "curiosity", "icon": "💰"},
+    {"title": "System Reveal", "content": "Question revealing systemic issue (under 100 chars)", "category": "curiosity", "icon": "🏦"},
+    {"title": "Future Solution", "content": "Question hinting at Bitcoin solution (under 100 chars)", "category": "curiosity", "icon": "🔮"}
+  ],
+  "lesson": {
+    "title": "Same as day title",
+    "content": "300-1200 word narrative with:\n- Hook: Open with relatable professional scenario\n- Problem: Reveal the hidden financial threat\n- **Bold Section Headers** to break up content\n- Paragraph breaks every 2-3 sentences\n- Simple explanation with concrete examples and real numbers\n- Bitcoin solution preview\n- Sentences under 15 words\n- No jargon - use 'government money printing' not 'monetary expansion'",
+    "keyTakeaways": ["Max 12 words each", "Three memorable points", "No technical jargon"],
+    "whyItMatters": "Must mention Bitcoin specifically. Template: This matters because [threat] affects [concern], and understanding [Bitcoin solution] helps you [action].",
+    "estimatedReadTime": 3
+  },
+  "quiz_questions": [
+    {"question": "Fact recall question", "optionA": "Option A", "optionB": "Option B", "optionC": "Option C", "optionD": "Option D", "correctAnswer": 0, "explanation": "Why this is correct"},
+    {"question": "Concept application question", "optionA": "Option A", "optionB": "Option B", "optionC": "Option C", "optionD": "Option D", "correctAnswer": 1, "explanation": "Why this is correct"},
+    {"question": "Bitcoin vs traditional comparison", "optionA": "Option A", "optionB": "Option B", "optionC": "Option C", "optionD": "Option D", "correctAnswer": 2, "explanation": "Why this is correct"},
+    {"question": "Future implications question", "optionA": "Option A", "optionB": "Option B", "optionC": "Option C", "optionD": "Option D", "correctAnswer": 0, "explanation": "Why this is correct"}
+  ]
+}
+
+## QUALITY CHECKLIST (must pass all)
+- [ ] Title under 60 characters with emotional hook
+- [ ] 3 setup questions, each under 100 characters
+- [ ] Lesson is 300-1200 words at 8th grade reading level
+- [ ] Bold headers every 2-3 paragraphs
+- [ ] 3 key takeaways, each max 12 words
+- [ ] Why it matters explicitly mentions Bitcoin
+- [ ] 4 quiz questions with optionA/B/C/D format
+- [ ] No banned phrases: "Yesterday we learned", "Building on our previous discussion", "As we discovered in Day X"
+- [ ] Content builds Bitcoin conviction through immediate relevance
+
+Return ONLY the JSON object, no markdown code blocks or additional text.`;
+
+      // Call Claude
+      const Anthropic = (await import('@anthropic-ai/sdk')).default;
+      const anthropic = new Anthropic({
+        apiKey: process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
+        baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
+      });
+      
+      const message = await anthropic.messages.create({
+        model: "claude-sonnet-4-5",
+        max_tokens: 4000,
+        messages: [
+          {
+            role: "user",
+            content: systemPrompt
+          }
+        ]
+      });
+      
+      const responseText = (message.content[0] as any).text || '';
+      
+      // Parse the JSON response
+      let generatedContent;
+      try {
+        // Remove any markdown code blocks if present
+        const cleanJson = responseText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+        generatedContent = JSON.parse(cleanJson);
+      } catch (parseError) {
+        console.error("Failed to parse AI response:", responseText);
+        return res.status(500).json({ 
+          message: "AI generated invalid JSON. Please try again.",
+          rawResponse: responseText.substring(0, 500)
+        });
+      }
+      
+      // Run basic validation checks
+      const validationIssues: string[] = [];
+      
+      if (generatedContent.title?.length > 60) {
+        validationIssues.push(`Title is ${generatedContent.title.length} characters (max 60)`);
+      }
+      
+      if (!generatedContent.setup_questions || generatedContent.setup_questions.length !== 3) {
+        validationIssues.push("Must have exactly 3 setup questions");
+      }
+      
+      const lessonWordCount = generatedContent.lesson?.content?.split(/\s+/).length || 0;
+      if (lessonWordCount < 300 || lessonWordCount > 1200) {
+        validationIssues.push(`Lesson is ${lessonWordCount} words (should be 300-1200)`);
+      }
+      
+      if (!generatedContent.lesson?.keyTakeaways || generatedContent.lesson.keyTakeaways.length !== 3) {
+        validationIssues.push("Must have exactly 3 key takeaways");
+      }
+      
+      if (!generatedContent.lesson?.whyItMatters?.toLowerCase().includes('bitcoin')) {
+        validationIssues.push("Why It Matters must mention Bitcoin");
+      }
+      
+      if (!generatedContent.quiz_questions || generatedContent.quiz_questions.length !== 4) {
+        validationIssues.push("Must have exactly 4 quiz questions");
+      }
+      
+      // Check for banned phrases
+      const bannedPhrases = ['yesterday we learned', 'building on our previous', 'as we discovered in day'];
+      const contentLower = JSON.stringify(generatedContent).toLowerCase();
+      for (const phrase of bannedPhrases) {
+        if (contentLower.includes(phrase)) {
+          validationIssues.push(`Contains banned phrase: "${phrase}"`);
+        }
+      }
+      
+      res.json({
+        success: true,
+        dayIndex,
+        content: generatedContent,
+        validation: {
+          passed: validationIssues.length === 0,
+          issues: validationIssues
+        },
+        context: {
+          cycle: cycleNumber,
+          week: weekNumber,
+          dayInWeek,
+          isWeeklyRecap,
+          theme: suggestedTheme,
+          priorDaysUsed: priorDays.length
+        }
+      });
+      
+    } catch (error) {
+      console.error("Error generating content draft:", error);
+      res.status(500).json({ message: "Failed to generate content. Please try again." });
+    }
+  });
+
   // ============================================
   // MARKETING MANAGEMENT ROUTES
   // ============================================

@@ -842,6 +842,17 @@ export const contentGenerationSteps = pgTable("content_generation_steps", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+// AI Content Generation - Day Summaries for context retrieval
+export const contentDaySummaries = pgTable("content_day_summaries", {
+  id: serial("id").primaryKey(),
+  dayId: integer("day_id").notNull().references(() => contentDays.id).unique(),
+  dayIndex: integer("day_index").notNull(), // Denormalized for quick queries
+  synopsis: text("synopsis").notNull(), // 2-3 sentence summary of the lesson
+  keyConcepts: text("key_concepts").array().notNull(), // Array of concepts introduced
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -950,6 +961,12 @@ export const insertContentMetadataSchema = createInsertSchema(contentMetadata).o
 export const insertContentGenerationStepsSchema = createInsertSchema(contentGenerationSteps).omit({
   id: true,
   createdAt: true,
+});
+
+export const insertContentDaySummarySchema = createInsertSchema(contentDaySummaries).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
 });
 
 // Email collection table for progressive access
@@ -1111,6 +1128,9 @@ export type ContentMetadata = typeof contentMetadata.$inferSelect;
 export type InsertContentMetadata = z.infer<typeof insertContentMetadataSchema>;
 export type ContentGenerationSteps = typeof contentGenerationSteps.$inferSelect;
 export type InsertContentGenerationSteps = z.infer<typeof insertContentGenerationStepsSchema>;
+
+export type ContentDaySummary = typeof contentDaySummaries.$inferSelect;
+export type InsertContentDaySummary = z.infer<typeof insertContentDaySummarySchema>;
 
 // Enhanced content types for API responses
 export type DailyContentSetUpQuestion = ContentSetUpQuestion;
