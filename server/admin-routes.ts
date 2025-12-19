@@ -927,7 +927,36 @@ Return ONLY the JSON object, no markdown code blocks or additional text.`;
       try {
         // Remove any markdown code blocks if present
         const cleanJson = responseText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-        generatedContent = JSON.parse(cleanJson);
+        const rawContent = JSON.parse(cleanJson);
+        
+        // Normalize field names (handle both camelCase and snake_case from AI)
+        generatedContent = {
+          title: rawContent.title,
+          theme: rawContent.theme,
+          readingLevel: rawContent.readingLevel || rawContent.reading_level || "8th grade",
+          culturalStage: rawContent.culturalStage || rawContent.cultural_stage || "Normie → Pre-coiner",
+          setup_questions: (rawContent.setup_questions || []).map((q: any) => ({
+            content: q.content || q.question || q.title || '',
+            category: q.category || 'curiosity',
+            icon: q.icon || '💡'
+          })),
+          lesson: {
+            title: rawContent.lesson?.title || rawContent.title,
+            content: rawContent.lesson?.content || '',
+            keyTakeaways: rawContent.lesson?.keyTakeaways || rawContent.lesson?.key_takeaways || [],
+            whyItMatters: rawContent.lesson?.whyItMatters || rawContent.lesson?.why_it_matters || '',
+            estimatedReadTime: rawContent.lesson?.estimatedReadTime || rawContent.lesson?.estimated_read_time || 3
+          },
+          quiz_questions: (rawContent.quiz_questions || rawContent.quizQuestions || []).map((q: any) => ({
+            question: q.question,
+            optionA: q.optionA || q.option_a || q.options?.[0] || '',
+            optionB: q.optionB || q.option_b || q.options?.[1] || '',
+            optionC: q.optionC || q.option_c || q.options?.[2] || '',
+            optionD: q.optionD || q.option_d || q.options?.[3] || '',
+            correctAnswer: q.correctAnswer ?? q.correct_answer ?? 0,
+            explanation: q.explanation || ''
+          }))
+        };
       } catch (parseError) {
         console.error("Failed to parse AI response:", responseText);
         return res.status(500).json({ 

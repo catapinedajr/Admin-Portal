@@ -1079,7 +1079,6 @@ interface GeneratedContent {
   readingLevel: string;
   culturalStage: string;
   setup_questions: Array<{
-    title: string;
     content: string;
     category: string;
     icon: string;
@@ -1180,7 +1179,7 @@ function AIGenerateDialog({ open, onOpenChange, nextDayIndex }: {
         readingLevel: editedContent.readingLevel,
         culturalStage: editedContent.culturalStage,
         questions: editedContent.setup_questions.map((q, idx) => ({
-          title: q.title,
+          title: `Question ${idx + 1}`,
           content: q.content,
           category: q.category,
           icon: q.icon,
@@ -1385,19 +1384,10 @@ function AIGenerateDialog({ open, onOpenChange, nextDayIndex }: {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-zinc-300">Setup Questions</Label>
-                    {editedContent.setup_questions.map((q, idx) => (
-                      <div key={idx} className="bg-zinc-800 rounded-lg p-3 space-y-2">
-                        <Input 
-                          value={q.title}
-                          onChange={(e) => {
-                            const updated = [...editedContent.setup_questions];
-                            updated[idx] = {...updated[idx], title: e.target.value};
-                            setEditedContent({...editedContent, setup_questions: updated});
-                          }}
-                          className="bg-zinc-700 border-zinc-600 text-white text-sm"
-                          placeholder="Question title"
-                        />
+                    <Label className="text-zinc-300">Setup Questions (3 curiosity-building questions)</Label>
+                    {editedContent.setup_questions?.map((q, idx) => (
+                      <div key={idx} className="flex items-start gap-2">
+                        <span className="text-lg mt-1">{q.icon || '💡'}</span>
                         <Textarea 
                           value={q.content}
                           onChange={(e) => {
@@ -1405,8 +1395,8 @@ function AIGenerateDialog({ open, onOpenChange, nextDayIndex }: {
                             updated[idx] = {...updated[idx], content: e.target.value};
                             setEditedContent({...editedContent, setup_questions: updated});
                           }}
-                          className="bg-zinc-700 border-zinc-600 text-white text-sm min-h-[60px]"
-                          placeholder="Question content"
+                          className="bg-zinc-800 border-zinc-700 text-white text-sm min-h-[60px] flex-1"
+                          placeholder={`Question ${idx + 1}`}
                         />
                       </div>
                     ))}
@@ -1517,11 +1507,10 @@ function AIGenerateDialog({ open, onOpenChange, nextDayIndex }: {
                       <h3 className="text-sm font-medium text-orange-400">Before you start...</h3>
                       {editedContent.setup_questions?.map((q, idx) => (
                         <div key={idx} className="bg-zinc-900 rounded-lg p-4 border border-zinc-800">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-lg">{q.icon}</span>
-                            <span className="text-sm font-medium text-white">{q.title}</span>
+                          <div className="flex items-start gap-3">
+                            <span className="text-lg">{q.icon || '💡'}</span>
+                            <p className="text-sm text-zinc-300">{q.content}</p>
                           </div>
-                          <p className="text-sm text-zinc-400">{q.content}</p>
                         </div>
                       ))}
                     </div>
