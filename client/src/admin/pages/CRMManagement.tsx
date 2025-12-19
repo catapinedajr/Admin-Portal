@@ -589,7 +589,7 @@ function CRMManagementContent() {
                   </div>
                   <p className="text-sm text-white/70 mt-1">{formatCurrency(getStageValue('won'))}</p>
                 </div>
-                <div className="bg-zinc-900 border border-zinc-800 border-t-0 rounded-b-lg p-2 min-h-[200px] space-y-2">
+                <div className="bg-zinc-900 border border-zinc-800 border-t-0 rounded-b-lg p-2 min-h-[400px] space-y-2">
                   {getStageDeals('won').slice(0, 5).map(deal => (
                     <div key={deal.id} className="text-sm p-2 bg-zinc-800 rounded">
                       <p className="text-white truncate">{deal.title}</p>
@@ -605,7 +605,7 @@ function CRMManagementContent() {
                     <span className="text-sm text-white/80">{getStageDeals('lost').length}</span>
                   </div>
                 </div>
-                <div className="bg-zinc-900 border border-zinc-800 border-t-0 rounded-b-lg p-2 min-h-[200px] space-y-2">
+                <div className="bg-zinc-900 border border-zinc-800 border-t-0 rounded-b-lg p-2 min-h-[400px] space-y-2">
                   {getStageDeals('lost').slice(0, 5).map(deal => (
                     <div key={deal.id} className="text-sm p-2 bg-zinc-800 rounded">
                       <p className="text-white truncate">{deal.title}</p>
