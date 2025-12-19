@@ -2803,7 +2803,11 @@ Return ONLY the post content, nothing else.`;
   // Create KPI target
   app.post("/api/admin/kpis/targets", requireAdminAuth, async (req: AdminRequest, res) => {
     try {
-      const data = insertKpiTargetSchema.parse(req.body);
+      const body = {
+        ...req.body,
+        dueDate: req.body.dueDate ? new Date(req.body.dueDate) : undefined,
+      };
+      const data = insertKpiTargetSchema.parse(body);
       const [target] = await db.insert(kpiTargets).values(data).returning();
       res.json(target);
     } catch (error: any) {
@@ -2816,7 +2820,11 @@ Return ONLY the post content, nothing else.`;
   app.patch("/api/admin/kpis/targets/:id", requireAdminAuth, async (req: AdminRequest, res) => {
     try {
       const id = parseInt(req.params.id);
-      const data = insertKpiTargetSchema.partial().parse(req.body);
+      const body = {
+        ...req.body,
+        dueDate: req.body.dueDate ? new Date(req.body.dueDate) : undefined,
+      };
+      const data = insertKpiTargetSchema.partial().parse(body);
       const [target] = await db.update(kpiTargets)
         .set({ ...data, updatedAt: new Date() })
         .where(eq(kpiTargets.id, id))
