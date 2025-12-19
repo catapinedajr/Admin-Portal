@@ -11,6 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { 
@@ -33,7 +35,10 @@ import {
   Lock,
   Unlock,
   Eye,
-  Smartphone
+  Smartphone,
+  ChevronDown,
+  ChevronRight,
+  Calendar
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -1430,12 +1435,33 @@ function BulkImportDialog({ open, onOpenChange, nextDayIndex }: {
   );
 }
 
+function getWeekNumber(dayIndex: number): number {
+  return Math.ceil(dayIndex / 7);
+}
+
+function getDaysForWeek(days: ContentDay[], weekNumber: number): ContentDay[] {
+  const startDay = (weekNumber - 1) * 7 + 1;
+  const endDay = weekNumber * 7;
+  return days.filter(d => d.dayIndex >= startDay && d.dayIndex <= endDay).sort((a, b) => a.dayIndex - b.dayIndex);
+}
+
+function getWeekStats(days: ContentDay[]): { live: number; approved: number; review: number; draft: number } {
+  return {
+    live: days.filter(d => d.status === 'live').length,
+    approved: days.filter(d => d.status === 'approved').length,
+    review: days.filter(d => d.status === 'review').length,
+    draft: days.filter(d => d.status === 'draft').length,
+  };
+}
+
 export default function ContentManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [editingDay, setEditingDay] = useState<ContentDay | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [expandedWeeks, setExpandedWeeks] = useState<Set<number>>(new Set([1]));
+  const [selectedWeek, setSelectedWeek] = useState<number | null>(1);
 
   const { data: contentDays, isLoading } = useQuery<ContentDay[]>({
     queryKey: ["/api/admin/content/days"],
@@ -1448,11 +1474,31 @@ export default function ContentManagement() {
   );
 
   const nextDayIndex = contentDays ? Math.max(...contentDays.map(d => d.dayIndex), 0) + 1 : 1;
+  
+  const totalWeeks = contentDays ? Math.ceil(Math.max(...contentDays.map(d => d.dayIndex), 0) / 7) : 0;
+  const weeks = Array.from({ length: Math.max(totalWeeks, 26) }, (_, i) => i + 1);
+
+  const toggleWeek = (weekNumber: number) => {
+    setExpandedWeeks(prev => {
+      const next = new Set(prev);
+      if (next.has(weekNumber)) {
+        next.delete(weekNumber);
+      } else {
+        next.add(weekNumber);
+      }
+      return next;
+    });
+    setSelectedWeek(weekNumber);
+  };
 
   const handleEdit = (day: ContentDay) => {
     setEditingDay(day);
     setEditDialogOpen(true);
   };
+
+  const daysToShow = selectedWeek && !searchQuery 
+    ? getDaysForWeek(filteredDays || [], selectedWeek)
+    : filteredDays;
 
   return (
     <AdminAuthGuard>
@@ -1495,24 +1541,125 @@ export default function ContentManagement() {
             />
           </div>
 
-          <div className="grid grid-cols-1 gap-4">
-            {isLoading ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+          <div className="flex gap-6">
+            <div className="w-64 flex-shrink-0">
+              <Card className="bg-zinc-900 border-zinc-800">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-white text-sm flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-orange-500" />
+                    Weeks
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-2">
+                  <ScrollArea className="h-[600px]">
+                    <div className="space-y-1">
+                      {weeks.map(weekNum => {
+                        const weekDays = getDaysForWeek(contentDays || [], weekNum);
+                        const stats = getWeekStats(weekDays);
+                        const isExpanded = expandedWeeks.has(weekNum);
+                        const isSelected = selectedWeek === weekNum;
+                        const hasContent = weekDays.length > 0;
+                        
+                        return (
+                          <Collapsible 
+                            key={weekNum} 
+                            open={isExpanded}
+                            onOpenChange={() => toggleWeek(weekNum)}
+                          >
+                            <CollapsibleTrigger asChild>
+                              <button
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-left transition-colors ${
+                                  isSelected 
+                                    ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' 
+                                    : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
+                                }`}
+                                data-testid={`button-week-${weekNum}`}
+                              >
+                                <div className="flex items-center gap-2">
+                                  {isExpanded ? (
+                                    <ChevronDown className="w-4 h-4" />
+                                  ) : (
+                                    <ChevronRight className="w-4 h-4" />
+                                  )}
+                                  <span className="font-medium">Week {weekNum}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  {hasContent && (
+                                    <>
+                                      {stats.live > 0 && (
+                                        <span className="w-2 h-2 rounded-full bg-green-500" title={`${stats.live} live`} />
+                                      )}
+                                      {stats.approved > 0 && (
+                                        <span className="w-2 h-2 rounded-full bg-blue-500" title={`${stats.approved} approved`} />
+                                      )}
+                                      {stats.review > 0 && (
+                                        <span className="w-2 h-2 rounded-full bg-yellow-500" title={`${stats.review} in review`} />
+                                      )}
+                                      {stats.draft > 0 && (
+                                        <span className="w-2 h-2 rounded-full bg-zinc-500" title={`${stats.draft} draft`} />
+                                      )}
+                                    </>
+                                  )}
+                                  <span className="text-xs ml-1">{weekDays.length}/7</span>
+                                </div>
+                              </button>
+                            </CollapsibleTrigger>
+                            <CollapsibleContent>
+                              <div className="ml-6 mt-1 space-y-1">
+                                {weekDays.length > 0 ? (
+                                  weekDays.map(day => {
+                                    const statusConfig = STATUS_CONFIG[day.status] || STATUS_CONFIG.draft;
+                                    return (
+                                      <button
+                                        key={day.id}
+                                        onClick={() => handleEdit(day)}
+                                        className="w-full flex items-center justify-between px-2 py-1.5 rounded text-left text-sm text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors"
+                                        data-testid={`button-day-${day.dayIndex}`}
+                                      >
+                                        <span className="truncate">Day {day.dayIndex}</span>
+                                        <span className={`w-2 h-2 rounded-full ${statusConfig.bgColor.replace('/20', '')}`} />
+                                      </button>
+                                    );
+                                  })
+                                ) : (
+                                  <div className="text-xs text-zinc-600 px-2 py-1">No days yet</div>
+                                )}
+                              </div>
+                            </CollapsibleContent>
+                          </Collapsible>
+                        );
+                      })}
+                    </div>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="flex-1">
+              <div className="grid grid-cols-1 gap-4">
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+                  </div>
+                ) : daysToShow && daysToShow.length > 0 ? (
+                  daysToShow.map((day) => (
+                    <ContentDayCard 
+                      key={day.id} 
+                      day={day} 
+                      onEdit={() => handleEdit(day)}
+                    />
+                  ))
+                ) : (
+                  <div className="text-center py-12 text-zinc-400">
+                    {searchQuery 
+                      ? "No content days match your search" 
+                      : selectedWeek 
+                        ? `No content for Week ${selectedWeek} yet. Click 'Add Day' to create content.`
+                        : "No content days found. Click 'Add Day' to create your first one."}
+                  </div>
+                )}
               </div>
-            ) : filteredDays && filteredDays.length > 0 ? (
-              filteredDays.map((day) => (
-                <ContentDayCard 
-                  key={day.id} 
-                  day={day} 
-                  onEdit={() => handleEdit(day)}
-                />
-              ))
-            ) : (
-              <div className="text-center py-12 text-zinc-400">
-                {searchQuery ? "No content days match your search" : "No content days found. Click 'Add Day' to create your first one."}
-              </div>
-            )}
+            </div>
           </div>
 
           <EditDayDialog 
