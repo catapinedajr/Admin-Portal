@@ -29,6 +29,79 @@ const requireAdminAuth = async (req: AdminRequest, res: Response, next: NextFunc
   }
 };
 
+// Auto-generate summary when content is approved (for AI context in future lessons)
+async function generateDaySummary(dayId: number): Promise<void> {
+  try {
+    const { contentDaySummaries } = await import('@shared/schema');
+    const Anthropic = (await import('@anthropic-ai/sdk')).default;
+    
+    // Fetch the day's content
+    const [day] = await db.select().from(contentDays).where(eq(contentDays.id, dayId));
+    if (!day) return;
+    
+    const [lesson] = await db.select().from(contentLessons).where(eq(contentLessons.dayId, dayId));
+    if (!lesson) return;
+    
+    // Generate summary using Claude
+    const client = new Anthropic();
+    const response = await client.messages.create({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 500,
+      messages: [{
+        role: "user",
+        content: `Summarize this Bitcoin education lesson for curriculum continuity. Provide:
+1. A 1-2 sentence synopsis of the main topic/concept taught
+2. 3-5 key concepts as a comma-separated list (for reference in future lessons)
+
+LESSON TITLE: ${lesson.title}
+THEME: ${day.theme}
+CONTENT:
+${lesson.content}
+
+Respond in this exact JSON format:
+{
+  "synopsis": "Brief summary of what the lesson teaches",
+  "keyConcepts": ["concept1", "concept2", "concept3"]
+}`
+      }]
+    });
+    
+    const textContent = response.content.find(c => c.type === 'text');
+    if (!textContent || textContent.type !== 'text') return;
+    
+    // Parse the response
+    const jsonMatch = textContent.text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) return;
+    
+    const summary = JSON.parse(jsonMatch[0]);
+    
+    // Check if summary exists, update or insert
+    const existing = await db.select().from(contentDaySummaries).where(eq(contentDaySummaries.dayId, dayId));
+    
+    if (existing.length > 0) {
+      await db.update(contentDaySummaries)
+        .set({
+          synopsis: summary.synopsis,
+          keyConcepts: summary.keyConcepts,
+          updatedAt: new Date()
+        })
+        .where(eq(contentDaySummaries.dayId, dayId));
+    } else {
+      await db.insert(contentDaySummaries).values({
+        dayId,
+        dayIndex: day.dayIndex,
+        synopsis: summary.synopsis,
+        keyConcepts: summary.keyConcepts
+      });
+    }
+    
+    console.log(`Summary generated for Day ${day.dayIndex}: ${summary.synopsis.substring(0, 50)}...`);
+  } catch (error) {
+    console.error('Failed to generate day summary:', error);
+    throw error;
+  }
+}
+
 export function registerAdminRoutes(app: Express) {
   // Admin login
   app.post("/api/admin/login", async (req, res) => {
@@ -501,6 +574,11 @@ export function registerAdminRoutes(app: Express) {
       if (status === 'approved') {
         updates.approvedAt = new Date();
         updates.approvedBy = req.admin?.email || 'admin';
+        
+        // Auto-generate summary for AI context (non-blocking)
+        generateDaySummary(id).catch(err => {
+          console.error(`Failed to generate summary for day ${id}:`, err);
+        });
       }
       
       // Set publishedAt when status changes to live
