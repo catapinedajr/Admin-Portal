@@ -26,6 +26,64 @@ Migrate the HODLearn Admin Portal from Replit development environment to AWS pro
 | **Product Roadmap** | Feature ideas with effort/impact scoring, release management, status tracking |
 | **Goals Management** | OKRs (Objectives & Key Results) and KPI targets with progress tracking |
 
+### Data Surface Mapping
+
+Understanding which modules share data with the consumer app is critical for migration planning. Some modules require production data parity; others can be seeded independently.
+
+#### Consumer-Facing Modules (Require Data Migration Parity)
+
+These modules read/write data that directly impacts what consumers see in the HODLearn app:
+
+| Module | Consumer App Connection | Shared Tables |
+|--------|------------------------|---------------|
+| **Content Management** | Directly feeds the 180-day curriculum users see daily | `content_days`, `content_lessons`, `content_facts`, `content_quizzes`, `content_set_up_questions` |
+| **Users Management** | Views/manages the same user records consumers use to login | `users`, `user_sessions`, `user_progress`, `user_quiz_answers`, `daily_activities` |
+| **Community/Forums** | Shared forum posts, replies, votes visible to consumers | `forum_categories`, `forum_posts`, `forum_replies`, `forum_votes`, `user_karma` |
+| **KPI Dashboard** | Reads from consumer tables (no writes, but depends on consumer data existing) | Aggregates from user/content/community tables |
+
+⚠️ **Migration Note:** These tables must be migrated with production data intact. Any data loss affects consumer experience.
+
+#### Admin-Only Modules (No Consumer App Mapping)
+
+These modules are purely internal operations with no direct consumer-facing impact:
+
+| Module | Purpose | Tables (Can Be Seeded Fresh) |
+|--------|---------|------------------------------|
+| **Marketing Hub** | Internal advertiser management, campaign analytics | `advertising_clients`, `ad_campaigns`, `ad_creatives`, `ad_impressions`, `ad_clicks` |
+| **Social Media Hub** | Internal post scheduling for X/LinkedIn - not user-facing | `social_posts`, `social_post_metrics`, `social_accounts`, `attribution_events` |
+| **Store Management** | Affiliate/referral tracking, inventory management | `affiliate_products`, `affiliate_clicks`, `referral_partners`, `referral_signups`, `store_products`, `store_orders` |
+| **B2B CRM** | Sales pipeline, company relationships | `crm_companies`, `crm_contacts`, `crm_deals`, `crm_activities` |
+| **Product Roadmap** | Internal feature planning | `roadmap_ideas`, `roadmap_releases` |
+| **Goals Management** | Internal OKRs and KPI targets | `objectives`, `key_results`, `key_result_updates`, `kpi_targets` |
+
+✅ **Migration Note:** These tables can be initialized empty or with seed data. No production data dependency.
+
+#### Consumer Learning Content (Require Data Migration Parity)
+
+These supplementary tables enhance the consumer learning experience:
+
+| Tables | Consumer Usage |
+|--------|----------------|
+| `conviction_content` | Quotes and videos shown to users during learning |
+| `knowledge_areas` | Progress tracking displayed to consumers |
+| `curated_videos`, `video_categories`, `video_subcategories` | Video library accessible to consumers |
+| `user_video_engagement` | Tracks consumer video watch progress |
+| `daily_discussions` | Day-linked community discussions visible to consumers |
+
+⚠️ **Migration Note:** These tables directly affect consumer features. Migrate with production data.
+
+#### Admin Analytics Tables (Can Be Seeded Fresh)
+
+These tables provide market data and analytics for admin dashboards only:
+
+| Tables | Purpose |
+|--------|---------|
+| `bitcoin_price` | Historical price cache (consumer app fetches live from CoinGecko API) |
+| `treasury_companies`, `sovereign_adoption` | Market research data for admin insights |
+| `success_stories`, `story_features` | Success story moderation (admin curation only) |
+
+✅ **Migration Note:** These can be initialized empty. Consumer app doesn't depend on them.
+
 ### Tech Stack
 
 | Layer | Technology |
