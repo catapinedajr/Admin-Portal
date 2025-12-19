@@ -55,6 +55,7 @@ interface RoadmapIdea {
   effort: string | null;
   impact: string | null;
   targetRelease: string | null;
+  targetQuarter: string | null;
   requestedBy: string | null;
   assignedTo: string | null;
   createdAt: string;
@@ -120,6 +121,19 @@ const IMPACTS = [
   { value: 'critical', label: 'Critical' },
 ];
 
+const generateQuarterOptions = () => {
+  const currentYear = new Date().getFullYear();
+  const quarters = [];
+  for (let year = currentYear; year <= currentYear + 2; year++) {
+    for (let q = 1; q <= 4; q++) {
+      quarters.push({ value: `Q${q} ${year}`, label: `Q${q} ${year}` });
+    }
+  }
+  return quarters;
+};
+
+const QUARTERS = generateQuarterOptions();
+
 function RoadmapManagementContent() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("kanban");
@@ -129,6 +143,7 @@ function RoadmapManagementContent() {
   const [editingRelease, setEditingRelease] = useState<RoadmapRelease | null>(null);
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [filterPriority, setFilterPriority] = useState<string>("all");
+  const [filterQuarter, setFilterQuarter] = useState<string>("all");
 
   const [ideaForm, setIdeaForm] = useState({
     title: '',
@@ -139,6 +154,7 @@ function RoadmapManagementContent() {
     effort: '',
     impact: '',
     targetRelease: '',
+    targetQuarter: '',
     requestedBy: '',
     assignedTo: '',
   });
@@ -241,7 +257,7 @@ function RoadmapManagementContent() {
     setIdeaForm({
       title: '', description: '', category: 'feature', priority: 'medium',
       status: 'backlog', effort: '', impact: '', targetRelease: '',
-      requestedBy: '', assignedTo: '',
+      targetQuarter: '', requestedBy: '', assignedTo: '',
     });
   };
 
@@ -262,6 +278,7 @@ function RoadmapManagementContent() {
       effort: idea.effort || '',
       impact: idea.impact || '',
       targetRelease: idea.targetRelease || '',
+      targetQuarter: idea.targetQuarter || '',
       requestedBy: idea.requestedBy || '',
       assignedTo: idea.assignedTo || '',
     });
@@ -287,6 +304,7 @@ function RoadmapManagementContent() {
       effort: ideaForm.effort || null,
       impact: ideaForm.impact || null,
       targetRelease: ideaForm.targetRelease || null,
+      targetQuarter: ideaForm.targetQuarter || null,
       requestedBy: ideaForm.requestedBy || null,
       assignedTo: ideaForm.assignedTo || null,
     };
@@ -315,6 +333,7 @@ function RoadmapManagementContent() {
   const filteredIdeas = ideas.filter(idea => {
     if (filterCategory !== 'all' && idea.category !== filterCategory) return false;
     if (filterPriority !== 'all' && idea.priority !== filterPriority) return false;
+    if (filterQuarter !== 'all' && idea.targetQuarter !== filterQuarter) return false;
     return true;
   });
 
@@ -455,11 +474,22 @@ function RoadmapManagementContent() {
                   ))}
                 </SelectContent>
               </Select>
-              {(filterCategory !== 'all' || filterPriority !== 'all') && (
+              <Select value={filterQuarter} onValueChange={setFilterQuarter}>
+                <SelectTrigger className="w-40 bg-zinc-800 border-zinc-700 text-white">
+                  <SelectValue placeholder="Quarter" />
+                </SelectTrigger>
+                <SelectContent className="bg-zinc-800 border-zinc-700">
+                  <SelectItem value="all">All Quarters</SelectItem>
+                  {QUARTERS.map(q => (
+                    <SelectItem key={q.value} value={q.value}>{q.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {(filterCategory !== 'all' || filterPriority !== 'all' || filterQuarter !== 'all') && (
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => { setFilterCategory('all'); setFilterPriority('all'); }}
+                  onClick={() => { setFilterCategory('all'); setFilterPriority('all'); setFilterQuarter('all'); }}
                   className="text-zinc-400 hover:text-white"
                 >
                   Clear Filters
@@ -486,6 +516,9 @@ function RoadmapManagementContent() {
                       >
                         <CardContent className="p-3">
                           <h4 className="font-medium text-white text-sm">{idea.title}</h4>
+                          {idea.targetQuarter && (
+                            <span className="text-xs text-orange-400 mt-1 block">{idea.targetQuarter}</span>
+                          )}
                           <div className="flex flex-wrap items-center gap-1 mt-2">
                             <Badge variant="secondary" className="text-xs">
                               {CATEGORIES.find(c => c.value === idea.category)?.label}
@@ -533,6 +566,11 @@ function RoadmapManagementContent() {
                             <Badge variant="outline" className={PRIORITIES.find(p => p.value === idea.priority)?.color}>
                               {idea.priority}
                             </Badge>
+                            {idea.targetQuarter && (
+                              <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30">
+                                {idea.targetQuarter}
+                              </Badge>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -702,15 +740,15 @@ function RoadmapManagementContent() {
                 </Select>
               </div>
               <div>
-                <Label className="text-zinc-300">Target Release</Label>
-                <Select value={ideaForm.targetRelease || "none"} onValueChange={(v) => setIdeaForm(f => ({ ...f, targetRelease: v === "none" ? "" : v }))}>
+                <Label className="text-zinc-300">Target Quarter</Label>
+                <Select value={ideaForm.targetQuarter || "none"} onValueChange={(v) => setIdeaForm(f => ({ ...f, targetQuarter: v === "none" ? "" : v }))}>
                   <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white mt-1">
-                    <SelectValue placeholder="Select release" />
+                    <SelectValue placeholder="Select quarter" />
                   </SelectTrigger>
                   <SelectContent className="bg-zinc-800 border-zinc-700">
-                    <SelectItem value="none">None</SelectItem>
-                    {releases.map(r => (
-                      <SelectItem key={r.id} value={r.version}>v{r.version} - {r.name}</SelectItem>
+                    <SelectItem value="none">Not scheduled</SelectItem>
+                    {QUARTERS.map(q => (
+                      <SelectItem key={q.value} value={q.value}>{q.label}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>

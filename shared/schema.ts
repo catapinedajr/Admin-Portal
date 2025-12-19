@@ -1551,6 +1551,7 @@ export const roadmapIdeas = pgTable("roadmap_ideas", {
   effort: text("effort"),
   impact: text("impact"),
   targetRelease: text("target_release"),
+  targetQuarter: text("target_quarter"),
   requestedBy: text("requested_by"),
   assignedTo: text("assigned_to"),
   createdAt: timestamp("created_at").defaultNow(),
