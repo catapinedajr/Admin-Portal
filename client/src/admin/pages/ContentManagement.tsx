@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -234,6 +235,12 @@ function EditDayDialog({ day, open, onOpenChange }: {
   const [showPreview, setShowPreview] = useState(false);
   const [showNewQuestion, setShowNewQuestion] = useState(false);
   
+  // Delete confirmation state
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteStep, setDeleteStep] = useState(1);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deleteAcknowledged, setDeleteAcknowledged] = useState(false);
+  
   const { data: lesson, isLoading: lessonLoading } = useQuery<ContentLesson>({
     queryKey: ["/api/admin/content/lessons", day?.id],
     queryFn: async () => {
@@ -363,6 +370,29 @@ function EditDayDialog({ day, open, onOpenChange }: {
       toast({ title: "Question deleted" });
     },
   });
+
+  const deleteDayMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("DELETE", `/api/admin/content/days/${day?.id}`);
+      return res.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/days"] });
+      toast({ title: `Day ${data.deletedDayIndex} deleted successfully` });
+      onOpenChange(false);
+      resetDeleteState();
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to delete", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const resetDeleteState = () => {
+    setShowDeleteConfirm(false);
+    setDeleteStep(1);
+    setDeleteConfirmText("");
+    setDeleteAcknowledged(false);
+  };
 
   useEffect(() => {
     if (day) {
@@ -541,6 +571,31 @@ function EditDayDialog({ day, open, onOpenChange }: {
                 </Button>
               </div>
             )}
+
+            {/* Delete Section */}
+            <div className="border-t border-zinc-800 pt-4 mt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-zinc-400">Danger Zone</p>
+                  <p className="text-xs text-zinc-500 mt-1">
+                    {day.status === 'live' 
+                      ? "Change status to Draft and save before deleting" 
+                      : "Delete this day and all its content"}
+                  </p>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowDeleteConfirm(true)}
+                  disabled={day.status === 'live'}
+                  className="border-red-500/50 text-red-400 hover:bg-red-500/10 hover:text-red-300 disabled:opacity-50"
+                  data-testid="button-delete-day"
+                >
+                  <Trash2 className="w-4 h-4 mr-1" />
+                  Delete Day
+                </Button>
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="lesson" className="mt-4 space-y-4">
@@ -1069,6 +1124,79 @@ function EditDayDialog({ day, open, onOpenChange }: {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteConfirm} onOpenChange={(open) => { if (!open) resetDeleteState(); else setShowDeleteConfirm(true); }}>
+        <AlertDialogContent className="bg-zinc-900 border-zinc-800">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-red-500" />
+              Delete Day {day?.dayIndex}?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-zinc-400">
+              {deleteStep === 1 && (
+                <div className="space-y-3">
+                  <p>This will permanently delete:</p>
+                  <ul className="list-disc list-inside space-y-1 text-zinc-300">
+                    <li>The day "{day?.title}"</li>
+                    <li>{lesson ? "1 lesson" : "No lessons"}</li>
+                    <li>{quizzes?.length || 0} quiz question(s)</li>
+                    <li>{questions?.length || 0} setup question(s)</li>
+                  </ul>
+                  <p className="text-red-400 font-medium mt-4">This action cannot be undone.</p>
+                </div>
+              )}
+              {deleteStep === 2 && (
+                <div className="space-y-4">
+                  <p>To confirm deletion, type <span className="font-mono text-orange-400">Day {day?.dayIndex}</span> below:</p>
+                  <Input
+                    value={deleteConfirmText}
+                    onChange={(e) => setDeleteConfirmText(e.target.value)}
+                    placeholder={`Type "Day ${day?.dayIndex}" to confirm`}
+                    className="bg-zinc-800 border-zinc-700 text-white"
+                    data-testid="input-delete-confirm"
+                  />
+                  <label className="flex items-start gap-2 text-zinc-300">
+                    <input
+                      type="checkbox"
+                      checked={deleteAcknowledged}
+                      onChange={(e) => setDeleteAcknowledged(e.target.checked)}
+                      className="mt-1 rounded"
+                    />
+                    <span className="text-sm">I understand this will permanently delete all content for this day and cannot be undone.</span>
+                  </label>
+                </div>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={resetDeleteState}
+              className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700"
+            >
+              Cancel
+            </AlertDialogCancel>
+            {deleteStep === 1 && (
+              <Button
+                onClick={() => setDeleteStep(2)}
+                className="bg-red-600 hover:bg-red-700 text-white"
+              >
+                Continue
+              </Button>
+            )}
+            {deleteStep === 2 && (
+              <Button
+                onClick={() => deleteDayMutation.mutate()}
+                disabled={deleteConfirmText !== `Day ${day?.dayIndex}` || !deleteAcknowledged || deleteDayMutation.isPending}
+                className="bg-red-600 hover:bg-red-700 text-white disabled:opacity-50"
+                data-testid="button-confirm-delete"
+              >
+                {deleteDayMutation.isPending ? "Deleting..." : "Delete Forever"}
+              </Button>
+            )}
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }

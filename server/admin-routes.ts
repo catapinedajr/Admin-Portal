@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { adminAuthService } from "./admin-auth";
 import { db } from "./db";
-import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema } from "@shared/schema";
+import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema } from "@shared/schema";
 import { count, eq, sql, and, sum } from "drizzle-orm";
 
 interface AdminRequest extends Request {
@@ -595,6 +595,68 @@ export function registerAdminRoutes(app: Express) {
     } catch (error) {
       console.error("Error updating content day:", error);
       res.status(500).json({ message: "Failed to update content day" });
+    }
+  });
+
+  // Get impact summary for deleting a day
+  app.get("/api/admin/content/days/:id/impact", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      const [day] = await db.select().from(contentDays).where(eq(contentDays.id, id));
+      if (!day) {
+        return res.status(404).json({ message: "Day not found" });
+      }
+      
+      const lessons = await db.select().from(contentLessons).where(eq(contentLessons.dayId, id));
+      const quizzes = await db.select().from(contentQuizzes).where(eq(contentQuizzes.dayId, id));
+      const questions = await db.select().from(contentSetUpQuestions).where(eq(contentSetUpQuestions.dayId, id));
+      const summaries = await db.select().from(contentDaySummaries).where(eq(contentDaySummaries.dayId, id));
+      
+      res.json({
+        day,
+        counts: {
+          lessons: lessons.length,
+          quizzes: quizzes.length,
+          questions: questions.length,
+          summaries: summaries.length,
+        }
+      });
+    } catch (error) {
+      console.error("Error getting day impact:", error);
+      res.status(500).json({ message: "Failed to get day impact" });
+    }
+  });
+
+  // Delete a content day (cascade deletes all related content)
+  app.delete("/api/admin/content/days/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      // Get the day first to check status
+      const [day] = await db.select().from(contentDays).where(eq(contentDays.id, id));
+      if (!day) {
+        return res.status(404).json({ message: "Day not found" });
+      }
+      
+      // Block deletion of live content
+      if (day.status === 'live') {
+        return res.status(400).json({ 
+          message: "Cannot delete live content. Please change status to Draft first." 
+        });
+      }
+      
+      // Cascade delete all related content
+      await db.delete(contentDaySummaries).where(eq(contentDaySummaries.dayId, id));
+      await db.delete(contentQuizzes).where(eq(contentQuizzes.dayId, id));
+      await db.delete(contentSetUpQuestions).where(eq(contentSetUpQuestions.dayId, id));
+      await db.delete(contentLessons).where(eq(contentLessons.dayId, id));
+      await db.delete(contentDays).where(eq(contentDays.id, id));
+      
+      res.json({ success: true, deletedDayIndex: day.dayIndex });
+    } catch (error) {
+      console.error("Error deleting content day:", error);
+      res.status(500).json({ message: "Failed to delete content day" });
     }
   });
 
