@@ -78,6 +78,7 @@ export { default as BookOpen } from "lucide-react/dist/esm/icons/book-open";
 export { default as Book } from "lucide-react/dist/esm/icons/book";
 export { default as FileText } from "lucide-react/dist/esm/icons/file-text";
 export { default as Image } from "lucide-react/dist/esm/icons/image";
+export { default as ImageOff } from "lucide-react/dist/esm/icons/image-off";
 export { default as Video } from "lucide-react/dist/esm/icons/video";
 
 // Communication

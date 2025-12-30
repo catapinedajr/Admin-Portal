@@ -6,7 +6,7 @@ import { db } from "./db";
 import { communityStorage } from "./community";
 import { authService } from "./auth";
 import { registerWalletRoutes } from "./wallet-routes";
-import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentGenerationSteps, userQuizAnswers, registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, dailyDiscussions, users, adCampaigns, adCreatives, adImpressions, adClicks } from "@shared/schema";
+import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentGenerationSteps, userQuizAnswers, registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, dailyDiscussions, users, adCampaigns, adCreatives, adImpressions, adClicks, affiliateProducts, affiliateClicks, referralPartners, storeProducts } from "@shared/schema";
 import { eq, sql, desc, and } from "drizzle-orm";
 import { v4 as uuidv4 } from 'uuid';
 import { randomUUID } from 'crypto';
@@ -2828,6 +2828,122 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     } catch (error) {
       console.error("Error fetching analytics:", error);
       res.status(500).json({ message: "Failed to fetch analytics" });
+    }
+  });
+
+  // ============================================
+  // PUBLIC STORE API ENDPOINTS
+  // ============================================
+
+  // Get all active store products (affiliates, referrals, inventory)
+  app.get("/api/store/products", async (req, res) => {
+    try {
+      // Fetch active affiliate products (books, hardware wallets, courses)
+      const affiliates = await db.select()
+        .from(affiliateProducts)
+        .where(eq(affiliateProducts.isActive, true))
+        .orderBy(desc(affiliateProducts.sortOrder));
+
+      // Fetch active referral partners (exchanges, BTC IRAs)
+      const referrals = await db.select()
+        .from(referralPartners)
+        .where(eq(referralPartners.isActive, true));
+
+      // Fetch active inventory products (merch)
+      const inventory = await db.select()
+        .from(storeProducts)
+        .where(and(
+          eq(storeProducts.isActive, true),
+          sql`${storeProducts.stockQuantity} > 0`
+        ))
+        .orderBy(desc(storeProducts.isFeatured), storeProducts.sortOrder);
+
+      // Map to unified product format for frontend
+      const products = [
+        ...affiliates.map(p => ({
+          id: `affiliate-${p.id}`,
+          type: 'affiliate' as const,
+          name: p.name,
+          description: p.description,
+          category: p.category,
+          priceUsd: p.priceUsd,
+          imageUrl: p.imageUrl,
+          url: p.affiliateUrl,
+          vendor: p.vendor,
+          isFeatured: false,
+        })),
+        ...referrals.map(p => ({
+          id: `referral-${p.id}`,
+          type: 'referral' as const,
+          name: p.name,
+          description: p.description,
+          category: p.category,
+          priceUsd: null,
+          imageUrl: p.logoUrl,
+          url: p.referralUrl,
+          vendor: null,
+          isFeatured: false,
+        })),
+        ...inventory.map(p => ({
+          id: `inventory-${p.id}`,
+          type: 'inventory' as const,
+          name: p.name,
+          description: p.description,
+          category: p.category || 'merch',
+          priceUsd: p.priceUsd,
+          imageUrl: p.imageUrl,
+          url: null,
+          vendor: 'HODLearn',
+          isFeatured: p.isFeatured,
+        })),
+      ];
+
+      res.json({ products });
+    } catch (error) {
+      console.error("Error fetching store products:", error);
+      res.status(500).json({ message: "Failed to fetch products" });
+    }
+  });
+
+  // Track affiliate/referral click with deduplication
+  app.post("/api/store/click/:productId", async (req, res) => {
+    try {
+      const { productId } = req.params;
+      const sessionId = req.headers['x-session-id'] as string || req.ip || 'anonymous';
+      
+      // Parse product ID (format: "affiliate-123" or "referral-456")
+      const [type, id] = productId.split('-');
+      const numericId = parseInt(id);
+      
+      if (isNaN(numericId)) {
+        return res.status(400).json({ message: "Invalid product ID" });
+      }
+
+      if (type === 'affiliate') {
+        // Check for recent click from same session (within 1 hour)
+        const recentClick = await db.select()
+          .from(affiliateClicks)
+          .where(and(
+            eq(affiliateClicks.productId, numericId),
+            eq(affiliateClicks.sessionId, sessionId),
+            sql`${affiliateClicks.clickedAt} > NOW() - INTERVAL '1 hour'`
+          ))
+          .limit(1);
+
+        // Only record if no recent click
+        if (recentClick.length === 0) {
+          await db.insert(affiliateClicks).values({
+            productId: numericId,
+            sessionId,
+          });
+        }
+      }
+      // Note: Referral clicks could be tracked similarly with a referralClicks table
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error tracking click:", error);
+      res.status(500).json({ message: "Failed to track click" });
     }
   });
 

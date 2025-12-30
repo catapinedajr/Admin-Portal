@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useLocation } from "wouter";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Info, 
   ShoppingCart, 
@@ -18,17 +20,127 @@ import {
   Package,
   Star,
   ExternalLink,
-  Gift
+  Gift,
+  AlertCircle,
+  ImageOff
 } from "@/lib/icons";
+import { apiRequest } from "@/lib/queryClient";
+
+interface StoreProduct {
+  id: string;
+  type: 'affiliate' | 'referral' | 'inventory';
+  name: string;
+  description: string | null;
+  category: string;
+  priceUsd: string | null;
+  imageUrl: string | null;
+  url: string | null;
+  vendor: string | null;
+  isFeatured: boolean;
+}
 
 interface MoreSectionProps {
   moreSubTab: string;
   setMoreSubTab: (tab: string) => void;
 }
 
+function getCategoryIcon(category: string) {
+  switch (category) {
+    case 'book':
+    case 'course':
+      return BookOpen;
+    case 'hardware_wallet':
+    case 'software':
+      return Shield;
+    case 'exchange':
+      return TrendingUp;
+    case 'btc_ira':
+    case 'lending':
+    case 'custody':
+      return Wallet;
+    default:
+      return Package;
+  }
+}
+
+function mapBackendCategory(category: string): string {
+  switch (category) {
+    case 'book':
+    case 'course':
+      return 'books';
+    case 'hardware_wallet':
+    case 'software':
+      return 'hardware';
+    case 'exchange':
+      return 'exchanges';
+    case 'btc_ira':
+    case 'lending':
+    case 'custody':
+      return 'ira';
+    case 'apparel':
+    case 'accessories':
+    case 'stickers':
+    case 'merch':
+    case 'other':
+      return 'merch';
+    default:
+      return 'all';
+  }
+}
+
+function ProductImage({ src, alt }: { src: string | null; alt: string }) {
+  const [error, setError] = useState(false);
+  
+  if (!src || error) {
+    return (
+      <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
+        <ImageOff className="w-6 h-6 text-orange-500/50" />
+      </div>
+    );
+  }
+  
+  return (
+    <img 
+      src={src} 
+      alt={alt} 
+      className="w-12 h-12 rounded-lg object-cover"
+      onError={() => setError(true)}
+    />
+  );
+}
+
 export default function MoreSection({ moreSubTab, setMoreSubTab }: MoreSectionProps) {
   const [, setLocation] = useLocation();
   const [storeCategory, setStoreCategory] = useState("all");
+  
+  // Fetch store products from API
+  const { data: storeData, isLoading, error } = useQuery<{ products: StoreProduct[] }>({
+    queryKey: ['/api/store/products'],
+    enabled: moreSubTab === 'store',
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+  });
+
+  // Track clicks
+  const trackClickMutation = useMutation({
+    mutationFn: async (productId: string) => {
+      await apiRequest('POST', `/api/store/click/${productId}`);
+    },
+  });
+
+  const handleProductClick = (product: StoreProduct) => {
+    trackClickMutation.mutate(product.id);
+    if (product.url) {
+      window.open(product.url, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  // Filter products by category
+  const filteredProducts = storeData?.products.filter(p => 
+    storeCategory === 'all' || mapBackendCategory(p.category) === storeCategory
+  ) || [];
+
+  // Get categories that have products
+  const categoriesWithProducts = new Set(storeData?.products.map(p => mapBackendCategory(p.category)) || []);
   
   return (
     <div className="space-y-6">
@@ -113,321 +225,123 @@ export default function MoreSection({ moreSubTab, setMoreSubTab }: MoreSectionPr
           </Card>
 
           {/* Products Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            
-            {/* Books */}
-            {(storeCategory === "all" || storeCategory === "books") && (
-              <>
-                <Card className="bg-zinc-800/50 border-zinc-700 hover:border-orange-500/50 transition-colors">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="text-2xl mb-2">📚</div>
-                        <CardTitle className="text-lg text-white">The Bitcoin Standard</CardTitle>
-                        <p className="text-zinc-400 text-sm">by Saifedean Ammous</p>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className="text-sm text-zinc-300">4.8</span>
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[1, 2, 3, 4].map((i) => (
+                <Card key={i} className="bg-zinc-800/50 border-zinc-700">
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      <Skeleton className="w-12 h-12 rounded-lg" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-5 w-3/4" />
+                        <Skeleton className="h-4 w-1/2" />
                       </div>
                     </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-zinc-300 text-sm mb-3">The definitive guide to Bitcoin's role as sound money</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold text-white">$24.99</span>
-                      <Button size="sm" className="bg-orange-600 hover:bg-orange-700 text-white">
-                        Buy Now
-                        <ExternalLink className="w-3 h-3 ml-1" />
-                      </Button>
+                    <Skeleton className="h-4 w-full mt-3" />
+                    <div className="flex justify-between items-center mt-4">
+                      <Skeleton className="h-6 w-16" />
+                      <Skeleton className="h-8 w-24" />
                     </div>
                   </CardContent>
                 </Card>
-
-                <Card className="bg-zinc-800/50 border-zinc-700 hover:border-orange-500/50 transition-colors">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="text-2xl mb-2">📖</div>
-                        <CardTitle className="text-lg text-white">Broken Money</CardTitle>
-                        <p className="text-zinc-400 text-sm">by Lyn Alden</p>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className="text-sm text-zinc-300">4.9</span>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-zinc-300 text-sm mb-3">How our monetary system is failing and how Bitcoin fixes it</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold text-white">$28.95</span>
-                      <Button size="sm" className="bg-orange-600 hover:bg-orange-700 text-white">
-                        Buy Now
-                        <ExternalLink className="w-3 h-3 ml-1" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </>
-            )}
-
-            {/* Hardware */}
-            {(storeCategory === "all" || storeCategory === "hardware") && (
-              <>
-                <Card className="bg-zinc-800/50 border-zinc-700 hover:border-orange-500/50 transition-colors">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="text-2xl mb-2">🔒</div>
-                        <CardTitle className="text-lg text-white">Ledger Nano X</CardTitle>
-                        <div className="flex gap-1 mt-1">
-                          <Badge variant="secondary" className="bg-zinc-700 text-zinc-300 text-xs">Bluetooth</Badge>
-                          <Badge variant="secondary" className="bg-zinc-700 text-zinc-300 text-xs">100+ Coins</Badge>
+              ))}
+            </div>
+          ) : error ? (
+            <Card className="bg-red-950/30 border-red-800">
+              <CardContent className="p-6 text-center">
+                <AlertCircle className="w-8 h-8 text-red-400 mx-auto mb-3" />
+                <h4 className="text-lg font-semibold text-white mb-2">Unable to load products</h4>
+                <p className="text-zinc-400 text-sm">Please try again later.</p>
+              </CardContent>
+            </Card>
+          ) : filteredProducts.length === 0 ? (
+            <Card className="bg-zinc-900/50 border-zinc-700">
+              <CardContent className="p-6 text-center">
+                <Package className="w-8 h-8 text-zinc-500 mx-auto mb-3" />
+                <h4 className="text-lg font-semibold text-white mb-2">No products yet</h4>
+                <p className="text-zinc-400 text-sm">
+                  {storeCategory === 'all' 
+                    ? "Check back soon for trusted Bitcoin resources." 
+                    : `No ${storeCategory} products available yet.`}
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {filteredProducts.map((product) => {
+                const CategoryIcon = getCategoryIcon(product.category);
+                const isExternal = product.type === 'affiliate' || product.type === 'referral';
+                
+                return (
+                  <Card 
+                    key={product.id} 
+                    className="bg-zinc-800/50 border-zinc-700 hover:border-orange-500/50 transition-colors cursor-pointer"
+                    onClick={() => isExternal && handleProductClick(product)}
+                    data-testid={`card-product-${product.id}`}
+                  >
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start gap-3">
+                          <ProductImage src={product.imageUrl} alt={product.name} />
+                          <div>
+                            <CardTitle className="text-lg text-white">{product.name}</CardTitle>
+                            {product.vendor && (
+                              <p className="text-zinc-400 text-sm">{product.vendor}</p>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className="text-sm text-zinc-300">4.5</span>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-zinc-300 text-sm mb-3">Bluetooth-enabled hardware wallet with mobile app support</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold text-white">$149.00</span>
-                      <Button size="sm" className="bg-orange-600 hover:bg-orange-700 text-white">
-                        Shop Now
-                        <ExternalLink className="w-3 h-3 ml-1" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-zinc-800/50 border-zinc-700 hover:border-orange-500/50 transition-colors">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="text-2xl mb-2">🛡️</div>
-                        <CardTitle className="text-lg text-white">Trezor Model T</CardTitle>
-                        <div className="flex gap-1 mt-1">
-                          <Badge variant="secondary" className="bg-zinc-700 text-zinc-300 text-xs">Touchscreen</Badge>
-                          <Badge variant="secondary" className="bg-zinc-700 text-zinc-300 text-xs">Open Source</Badge>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className="text-sm text-zinc-300">4.7</span>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-zinc-300 text-sm mb-3">Touchscreen hardware wallet with advanced security features</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold text-white">$219.00</span>
-                      <Button size="sm" className="bg-orange-600 hover:bg-orange-700 text-white">
-                        Shop Now
-                        <ExternalLink className="w-3 h-3 ml-1" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </>
-            )}
-
-            {/* Exchanges */}
-            {(storeCategory === "all" || storeCategory === "exchanges") && (
-              <>
-                <Card className="bg-zinc-800/50 border-zinc-700 hover:border-orange-500/50 transition-colors">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="text-2xl mb-2">🏔️</div>
-                        <CardTitle className="text-lg text-white">River Financial</CardTitle>
-                        <Badge className="bg-green-500/10 text-green-400 border-green-500/20 mt-1">
-                          $25 Bitcoin bonus
-                        </Badge>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className="text-sm text-zinc-300">4.9</span>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-zinc-300 text-sm mb-3">Bitcoin-only exchange with zero trading fees</p>
-                    <div className="flex gap-1 mb-3">
-                      <Badge variant="secondary" className="bg-zinc-700 text-zinc-300 text-xs">Bitcoin Only</Badge>
-                      <Badge variant="secondary" className="bg-zinc-700 text-zinc-300 text-xs">Zero Fees</Badge>
-                    </div>
-                    <Button size="sm" className="w-full bg-orange-600 hover:bg-orange-700 text-white">
-                      Get Bonus
-                      <ExternalLink className="w-3 h-3 ml-1" />
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-zinc-800/50 border-zinc-700 hover:border-orange-500/50 transition-colors">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="text-2xl mb-2">🦢</div>
-                        <CardTitle className="text-lg text-white">Swan Bitcoin</CardTitle>
-                        <Badge className="bg-green-500/10 text-green-400 border-green-500/20 mt-1">
-                          $10 Bitcoin bonus
-                        </Badge>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className="text-sm text-zinc-300">4.8</span>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-zinc-300 text-sm mb-3">Dollar-cost averaging made simple with automatic buys</p>
-                    <div className="flex gap-1 mb-3">
-                      <Badge variant="secondary" className="bg-zinc-700 text-zinc-300 text-xs">Auto DCA</Badge>
-                      <Badge variant="secondary" className="bg-zinc-700 text-zinc-300 text-xs">Low Fees</Badge>
-                    </div>
-                    <Button size="sm" className="w-full bg-orange-600 hover:bg-orange-700 text-white">
-                      Get Bonus
-                      <ExternalLink className="w-3 h-3 ml-1" />
-                    </Button>
-                  </CardContent>
-                </Card>
-              </>
-            )}
-
-            {/* Bitcoin IRA */}
-            {(storeCategory === "all" || storeCategory === "ira") && (
-              <>
-                <Card className="bg-zinc-800/50 border-zinc-700 hover:border-orange-500/50 transition-colors">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="text-2xl mb-2">🏦</div>
-                        <CardTitle className="text-lg text-white">Bitcoin IRA</CardTitle>
-                        <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20 mt-1">
-                          Free consultation
-                        </Badge>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className="text-sm text-zinc-300">4.6</span>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-zinc-300 text-sm mb-3">Self-directed IRA with Bitcoin and cryptocurrency options</p>
-                    <div className="flex gap-1 mb-3">
-                      <Badge variant="secondary" className="bg-zinc-700 text-zinc-300 text-xs">Tax Advantaged</Badge>
-                      <Badge variant="secondary" className="bg-zinc-700 text-zinc-300 text-xs">Secure Storage</Badge>
-                    </div>
-                    <Button size="sm" className="w-full bg-orange-600 hover:bg-orange-700 text-white">
-                      Learn More
-                      <ExternalLink className="w-3 h-3 ml-1" />
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-zinc-800/50 border-zinc-700 hover:border-orange-500/50 transition-colors">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="text-2xl mb-2">📈</div>
-                        <CardTitle className="text-lg text-white">iTrustCapital</CardTitle>
-                        <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20 mt-1">
-                          No setup fees
-                        </Badge>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className="text-sm text-zinc-300">4.4</span>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-zinc-300 text-sm mb-3">Real-time trading platform for crypto IRAs</p>
-                    <div className="flex gap-1 mb-3">
-                      <Badge variant="secondary" className="bg-zinc-700 text-zinc-300 text-xs">Real-Time Trading</Badge>
-                      <Badge variant="secondary" className="bg-zinc-700 text-zinc-300 text-xs">Low Fees</Badge>
-                    </div>
-                    <Button size="sm" className="w-full bg-orange-600 hover:bg-orange-700 text-white">
-                      Learn More
-                      <ExternalLink className="w-3 h-3 ml-1" />
-                    </Button>
-                  </CardContent>
-                </Card>
-              </>
-            )}
-
-            {/* Merchandise */}
-            {(storeCategory === "all" || storeCategory === "merch") && (
-              <>
-                <Card className="bg-zinc-800/50 border-zinc-700 hover:border-orange-500/50 transition-colors">
-                  <CardHeader className="pb-3">
-                    <div>
-                      <div className="text-2xl mb-2">👕</div>
-                      <CardTitle className="text-lg text-white">HODLearn T-Shirt</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-zinc-300 text-sm mb-3">Premium cotton tee with HODLearn logo</p>
-                    <div className="mb-3">
-                      <p className="text-xs text-zinc-400 mb-2">Available Sizes:</p>
-                      <div className="flex gap-1">
-                        {["S", "M", "L", "XL", "XXL"].map((size) => (
-                          <Badge key={size} variant="outline" className="border-zinc-600 text-zinc-300 text-xs">
-                            {size}
+                        <div className="flex flex-col items-end gap-1">
+                          {product.isFeatured && (
+                            <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-xs">
+                              Featured
+                            </Badge>
+                          )}
+                          <Badge variant="secondary" className="bg-zinc-700 text-zinc-300 text-xs capitalize">
+                            {product.category.replace('_', ' ')}
                           </Badge>
-                        ))}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold text-white">$24.99</span>
-                      <Button size="sm" className="bg-orange-600 hover:bg-orange-700 text-white">
-                        Add to Cart
-                        <ShoppingCart className="w-3 h-3 ml-1" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-zinc-800/50 border-zinc-700 hover:border-orange-500/50 transition-colors">
-                  <CardHeader className="pb-3">
-                    <div>
-                      <div className="text-2xl mb-2">🧢</div>
-                      <CardTitle className="text-lg text-white">21 Million Cap</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-zinc-300 text-sm mb-3">Adjustable cap celebrating Bitcoin's fixed supply</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold text-white">$29.99</span>
-                      <Button size="sm" className="bg-orange-600 hover:bg-orange-700 text-white">
-                        Add to Cart
-                        <ShoppingCart className="w-3 h-3 ml-1" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </>
-            )}
-          </div>
-
-          {/* Coming Soon Notice */}
-          <Card className="bg-zinc-900/50 border-zinc-700">
-            <CardContent className="p-4 text-center">
-              <h4 className="text-lg font-bold text-white mb-2">Store Coming Soon</h4>
-              <p className="text-zinc-300 text-sm mb-3">
-                We're working on integrating real affiliate links and a complete shopping experience. 
-                These products showcase what will be available.
-              </p>
-              <Badge className="bg-orange-500/10 text-orange-400 border-orange-500/20">
-                Development Preview
-              </Badge>
-            </CardContent>
-          </Card>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      {product.description && (
+                        <p className="text-zinc-300 text-sm mb-3 line-clamp-2">{product.description}</p>
+                      )}
+                      <div className="flex items-center justify-between">
+                        {product.priceUsd ? (
+                          <span className="text-lg font-bold text-white">
+                            ${parseFloat(product.priceUsd).toFixed(2)}
+                          </span>
+                        ) : (
+                          <span className="text-sm text-zinc-400">Free to sign up</span>
+                        )}
+                        {isExternal ? (
+                          <Button 
+                            size="sm" 
+                            className="bg-orange-600 hover:bg-orange-700 text-white"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleProductClick(product);
+                            }}
+                          >
+                            {product.type === 'affiliate' ? 'Shop Now' : 'Learn More'}
+                            <ExternalLink className="w-3 h-3 ml-1" />
+                          </Button>
+                        ) : (
+                          <Button 
+                            size="sm" 
+                            className="bg-orange-600 hover:bg-orange-700 text-white"
+                          >
+                            Add to Cart
+                            <ShoppingCart className="w-3 h-3 ml-1" />
+                          </Button>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 
