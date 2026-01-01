@@ -91,7 +91,7 @@ export default function HomePage() {
                 onClick={() => setLocation('/wallet')}
                 size="sm"
                 className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-600 px-2.5 py-1.5"
-                title="Bitcoin Learning Wallet"
+                title="HODLearn Points"
               >
                 <Wallet className="w-4 h-4" />
                 <span className="sr-only">Wallet</span>
@@ -124,7 +124,7 @@ export default function HomePage() {
       <main className="max-w-6xl mx-auto px-4 py-6 pb-32">
         <div className="space-y-4">
 
-          {/* Bitcoin Learning Wallet Summary */}
+          {/* HODLearn Points Summary */}
           <WalletSummaryCard />
 
           {/* Home Learning Cards */}

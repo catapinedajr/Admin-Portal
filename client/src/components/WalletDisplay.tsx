@@ -82,7 +82,7 @@ export default function WalletDisplay() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Coins className="w-5 h-5 text-orange-500" />
-            Bitcoin Learning Wallet
+            HODLearn Points
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -102,7 +102,7 @@ export default function WalletDisplay() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Coins className="w-5 h-5 text-orange-500" />
-            Bitcoin Learning Wallet
+            HODLearn Points
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -136,7 +136,7 @@ export default function WalletDisplay() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Coins className="w-6 h-6" />
-            Bitcoin Learning Wallet
+            HODLearn Points
           </CardTitle>
         </CardHeader>
         <CardContent>

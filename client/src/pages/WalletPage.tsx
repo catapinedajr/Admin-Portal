@@ -149,7 +149,7 @@ export default function WalletPage() {
                   onClick={() => setLocation('/wallet')}
                   size="sm"
                   className="bg-orange-500 hover:bg-orange-600 text-white border border-orange-500 hover:border-orange-600 px-2.5 py-1.5"
-                  title="Bitcoin Learning Wallet"
+                  title="HODLearn Points"
                 >
                   <Coins className="w-4 h-4" />
                   <span className="sr-only">Wallet</span>
@@ -182,7 +182,7 @@ export default function WalletPage() {
               >
                 <ArrowLeft className="w-4 h-4" />
               </Button>
-              <h1 className="text-xl font-semibold">Bitcoin Learning Wallet</h1>
+              <h1 className="text-xl font-semibold">HODLearn Points</h1>
             </div>
             
             <div className="space-y-4">
@@ -246,7 +246,7 @@ export default function WalletPage() {
                   onClick={() => setLocation('/wallet')}
                   size="sm"
                   className="bg-orange-500 hover:bg-orange-600 text-white border border-orange-500 hover:border-orange-600 px-2.5 py-1.5"
-                  title="Bitcoin Learning Wallet"
+                  title="HODLearn Points"
                 >
                   <Coins className="w-4 h-4" />
                   <span className="sr-only">Wallet</span>
@@ -278,7 +278,7 @@ export default function WalletPage() {
               >
                 <ArrowLeft className="w-4 h-4" />
               </Button>
-              <h1 className="text-xl font-semibold">Bitcoin Learning Wallet</h1>
+              <h1 className="text-xl font-semibold">HODLearn Points</h1>
             </div>
             
             <Card>
@@ -355,7 +355,7 @@ export default function WalletPage() {
                 onClick={() => setLocation('/wallet')}
                 size="sm"
                 className="bg-orange-500 hover:bg-orange-600 text-white border border-orange-500 hover:border-orange-600 px-2.5 py-1.5"
-                title="Bitcoin Learning Wallet"
+                title="HODLearn Points"
               >
                 <Wallet className="w-4 h-4" />
                 <span className="sr-only">Wallet</span>
@@ -379,7 +379,7 @@ export default function WalletPage() {
             >
               <ArrowLeft className="w-4 h-4" />
             </Button>
-            <h1 className="text-xl font-semibold">Bitcoin Learning Wallet</h1>
+            <h1 className="text-xl font-semibold">HODLearn Points</h1>
           </div>
 
           {/* Sub-Navigation Tabs */}

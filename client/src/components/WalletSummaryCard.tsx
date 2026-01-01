@@ -83,7 +83,7 @@ export default function WalletSummaryCard() {
                 <Wallet className="w-6 h-6 text-orange-500 group-hover:animate-pulse" />
               </div>
               <div>
-                <div className="text-sm font-medium text-orange-400">Bitcoin Learning Wallet</div>
+                <div className="text-sm font-medium text-orange-400">HODLearn Points</div>
                 <div className="text-xs text-gray-500">Start earning points</div>
               </div>
             </div>
@@ -107,7 +107,7 @@ export default function WalletSummaryCard() {
                 <Wallet className="w-6 h-6 text-orange-500 group-hover:animate-pulse" />
               </div>
               <div>
-                <div className="text-sm font-medium text-orange-400 mb-1">Bitcoin Learning Wallet</div>
+                <div className="text-sm font-medium text-orange-400 mb-1">HODLearn Points</div>
                 <div className="text-xs text-gray-500">Educational Portfolio</div>
               </div>
             </div>
