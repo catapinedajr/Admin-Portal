@@ -61,9 +61,9 @@ export default function HomeSection({
 
   // Define milestone markers with rewards
   const milestones = [
-    { days: 7, reward: "2,000 sats", icon: Star, color: "text-blue-400", bgColor: "bg-blue-500/20", borderColor: "border-blue-500/30" },
-    { days: 30, reward: "10,000 sats", icon: Trophy, color: "text-purple-400", bgColor: "bg-purple-500/20", borderColor: "border-purple-500/30" },
-    { days: 365, reward: "100,000 sats", icon: Crown, color: "text-yellow-400", bgColor: "bg-yellow-500/20", borderColor: "border-yellow-500/30" }
+    { days: 7, reward: "2,000 points", icon: Star, color: "text-blue-400", bgColor: "bg-blue-500/20", borderColor: "border-blue-500/30" },
+    { days: 30, reward: "10,000 points", icon: Trophy, color: "text-purple-400", bgColor: "bg-purple-500/20", borderColor: "border-purple-500/30" },
+    { days: 365, reward: "100,000 points", icon: Crown, color: "text-yellow-400", bgColor: "bg-yellow-500/20", borderColor: "border-yellow-500/30" }
   ];
 
   // Find next milestone

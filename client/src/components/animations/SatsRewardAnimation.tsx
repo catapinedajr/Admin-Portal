@@ -39,7 +39,7 @@ export default function SatsRewardAnimation({ isActive, satsAmount, onComplete }
         {/* Reward text appears with bounce */}
         <div className="absolute top-16 left-1/2 transform -translate-x-1/2 animate-bounce-in">
           <div className="text-lg font-bold text-orange-400 whitespace-nowrap">
-            +{satsAmount} sats
+            +{satsAmount} points
           </div>
         </div>
       </div>

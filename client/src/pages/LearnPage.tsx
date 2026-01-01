@@ -272,7 +272,7 @@ function LearnPage() {
                     {/* Title */}
                     <div className="text-center">
                       <h3 className="text-sm font-medium text-orange-400">Your Learning Progress</h3>
-                      <p className="text-xs text-zinc-500">Satoshis earned from daily lessons</p>
+                      <p className="text-xs text-zinc-500">HODLearn Points earned from daily lessons</p>
                     </div>
                     
                     <div className="flex items-center justify-between">
@@ -282,7 +282,7 @@ function LearnPage() {
                         </div>
                         <div>
                           <div className="text-lg font-bold text-orange-400">
-                            {(walletData as any)?.totalSatoshisEarned?.toLocaleString() || 0} sats
+                            {(walletData as any)?.totalSatoshisEarned?.toLocaleString() || 0} points
                           </div>
                           <div className="text-xs text-zinc-400">
                             ≈ ${((walletData as any)?.totalUsdValue || 0).toFixed(2)} USD
@@ -309,7 +309,7 @@ function LearnPage() {
                   <div className="animate-bounce">
                     <div className="flex items-center gap-2 bg-green-500/90 text-white px-3 py-2 rounded-full shadow-lg">
                       <Sparkles className="w-4 h-4" />
-                      <span className="font-bold">+{earnedSats} sats!</span>
+                      <span className="font-bold">+{earnedSats} points!</span>
                     </div>
                   </div>
                 </div>
@@ -468,7 +468,7 @@ function LearnPage() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm text-zinc-400">
                       <span>Daily Challenge</span>
-                      <span>100 sats per correct answer</span>
+                      <span>100 points per correct answer</span>
                     </div>
                     <div className="w-full bg-zinc-700 rounded-full h-1">
                       <div 

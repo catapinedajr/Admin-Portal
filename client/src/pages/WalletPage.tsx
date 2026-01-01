@@ -288,7 +288,7 @@ export default function WalletPage() {
                 </div>
                 <h2 className="text-lg font-semibold mb-2">Start Your Bitcoin Journey</h2>
                 <p className="text-gray-400 mb-4">
-                  Complete lessons and answer quiz questions to earn satoshis and track your progress.
+                  Complete lessons and answer quiz questions to earn HODLearn Points and track your progress.
                 </p>
                 <Button onClick={() => setLocation('/learn')} className="bg-orange-500 hover:bg-orange-600">
                   Start Learning
@@ -421,7 +421,7 @@ export default function WalletPage() {
             
             <div className="space-y-2">
               <div className="text-3xl font-bold text-white">
-                {formatSats(walletData.totalSatoshisEarned)} sats
+                {formatSats(walletData.totalSatoshisEarned)} <span className="text-orange-400">points</span>
               </div>
               <div className="text-lg text-gray-300">
                 = {formatBTC(walletData.totalSatoshisEarned)} BTC
@@ -431,6 +431,13 @@ export default function WalletPage() {
               </div>
             </div>
 
+            {/* Educational explainer about HODLearn Points */}
+            <div className="p-3 bg-zinc-800/50 rounded-lg border border-zinc-700">
+              <p className="text-xs text-zinc-400 text-center">
+                HODLearn Points are pegged to Bitcoin's price so you can learn to think in Bitcoin's native unit.
+              </p>
+            </div>
+
             <Button
               variant="outline"
               size="sm"
@@ -438,18 +445,18 @@ export default function WalletPage() {
               className="text-xs gap-1"
             >
               <Info className="w-3 h-3" />
-              Why think in sats?
+              How do points work?
             </Button>
 
             {showSatsEducation && (
               <div className="mt-4 p-4 bg-zinc-800/50 rounded-lg text-left">
-                <h3 className="font-semibold mb-2">Understanding Bitcoin Units</h3>
+                <h3 className="font-semibold mb-2">Understanding HODLearn Points</h3>
                 <div className="space-y-2 text-sm text-gray-300">
-                  <p>• 1 Bitcoin = 100,000,000 satoshis (sats)</p>
-                  <p>• Satoshis are Bitcoin's smallest unit</p>
-                  <p>• Like cents to dollars, sats to Bitcoin</p>
-                  <p>• As Bitcoin grows, thinking in sats becomes natural</p>
-                  <p>• Your {formatSats(walletData.totalSatoshisEarned)} sats = {formatBTC(walletData.totalSatoshisEarned)} BTC</p>
+                  <p>• HODLearn Points track your learning progress</p>
+                  <p>• Points are pegged to Bitcoin's smallest unit (satoshis)</p>
+                  <p>• 1 Bitcoin = 100,000,000 satoshis</p>
+                  <p>• This helps you learn to think in Bitcoin terms</p>
+                  <p>• Your {formatSats(walletData.totalSatoshisEarned)} points = {formatBTC(walletData.totalSatoshisEarned)} BTC equivalent</p>
                 </div>
               </div>
             )}
@@ -467,7 +474,7 @@ export default function WalletPage() {
             </div>
             <div className="space-y-1">
               <div className="text-lg font-semibold">
-                {formatSats(walletData.weeklyEarnings)} sats
+                {formatSats(walletData.weeklyEarnings)} points
               </div>
               <div className="text-xs text-gray-400">
                 = {formatBTC(walletData.weeklyEarnings)} BTC
@@ -484,7 +491,7 @@ export default function WalletPage() {
             </div>
             <div className="space-y-1">
               <div className="text-lg font-semibold">
-                {formatSats(walletData.monthlyEarnings)} sats
+                {formatSats(walletData.monthlyEarnings)} points
               </div>
               <div className="text-xs text-gray-400">
                 = {formatBTC(walletData.monthlyEarnings)} BTC
@@ -537,7 +544,7 @@ export default function WalletPage() {
             <div className="text-center py-8 text-gray-400">
               <Target className="w-8 h-8 mx-auto mb-2" />
               <p>No earnings yet</p>
-              <p className="text-sm">Complete lessons to start earning satoshis</p>
+              <p className="text-sm">Complete lessons to start earning points</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -554,7 +561,7 @@ export default function WalletPage() {
                   </div>
                   <div className="text-right">
                     <div className="text-sm font-semibold text-green-500">
-                      +{formatSats(earning.satoshisEarned)} sats
+                      +{formatSats(earning.satoshisEarned)} points
                     </div>
                     <div className="text-xs text-gray-400">
                       {formatDate(earning.earnedAt)} • {formatTime(earning.earnedAt)}
@@ -578,7 +585,7 @@ export default function WalletPage() {
               </div>
             </div>
             <div className="text-right">
-              <div className="text-sm text-gray-400">Your sats at current price</div>
+              <div className="text-sm text-gray-400">Your points at current price</div>
               <div className="text-lg font-semibold text-orange-500">
                 ${formatUsd(walletData.totalUsdValue)}
               </div>
@@ -592,7 +599,7 @@ export default function WalletPage() {
                 <CardContent className="p-6 text-center">
                   <h3 className="font-semibold mb-2">Keep Learning, Keep Earning</h3>
                   <p className="text-gray-400 mb-4 text-sm">
-                    Complete daily lessons and quizzes to earn more satoshis and build your Bitcoin knowledge.
+                    Complete daily lessons and quizzes to earn more HODLearn Points and build your Bitcoin knowledge.
                   </p>
                   <Button onClick={() => setLocation('/learn')} className="bg-orange-500 hover:bg-orange-600">
                     Continue Learning
@@ -603,12 +610,12 @@ export default function WalletPage() {
           ) : (
             /* Rewards Tab Content */
             <div className="space-y-6">
-              {/* How to Earn Sats */}
+              {/* How to Earn Points */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Star className="w-5 h-5 text-orange-500" />
-                    How to Stack Sats
+                    How to Earn Points
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -622,7 +629,7 @@ export default function WalletPage() {
                         <div className="font-semibold text-sm mb-1">Answer Quiz Questions</div>
                         <div className="text-xs text-gray-400 mb-2">Test your Bitcoin knowledge</div>
                         <div className="flex items-center gap-2">
-                          <Badge variant="secondary" className="text-xs">100 sats per correct answer</Badge>
+                          <Badge variant="secondary" className="text-xs">100 points per correct answer</Badge>
                         </div>
                       </div>
                     </div>
@@ -636,7 +643,7 @@ export default function WalletPage() {
                         <div className="font-semibold text-sm mb-1">Complete Daily Quiz</div>
                         <div className="text-xs text-gray-400 mb-2">Finish all questions in a day</div>
                         <div className="flex items-center gap-2">
-                          <Badge variant="secondary" className="text-xs">500 sats completion bonus</Badge>
+                          <Badge variant="secondary" className="text-xs">500 points completion bonus</Badge>
                         </div>
                       </div>
                     </div>
@@ -666,7 +673,7 @@ export default function WalletPage() {
                         </div>
                       </div>
                       <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/20">
-                        2,000 sats
+                        2,000 points
                       </Badge>
                     </div>
 
@@ -682,7 +689,7 @@ export default function WalletPage() {
                         </div>
                       </div>
                       <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/20">
-                        10,000 sats
+                        10,000 points
                       </Badge>
                     </div>
 
@@ -698,26 +705,26 @@ export default function WalletPage() {
                         </div>
                       </div>
                       <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/20">
-                        100,000 sats
+                        100,000 points
                       </Badge>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Why Think in Sats */}
+              {/* Why Points are Pegged to Bitcoin */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Info className="w-5 h-5 text-orange-500" />
-                    Why Think in Sats?
+                    Why Points Track Bitcoin?
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-3 text-sm text-gray-300">
-                    <p>• <strong>Future-focused:</strong> As Bitcoin grows, sats become the standard unit</p>
+                    <p>• <strong>Learn Bitcoin thinking:</strong> Points are pegged to satoshis (Bitcoin's smallest unit)</p>
                     <p>• <strong>Psychological advantage:</strong> Earning thousands feels better than earning 0.00001</p>
-                    <p>• <strong>Global standard:</strong> Lightning Network and apps use sats</p>
+                    <p>• <strong>Real-world prep:</strong> When you buy real Bitcoin, you'll already think in sats</p>
                     <p>• <strong>Precision:</strong> No decimal confusion - whole numbers only</p>
                   </div>
                   
@@ -736,7 +743,7 @@ export default function WalletPage() {
                 <CardContent className="p-6 text-center">
                   <h3 className="font-semibold mb-2">Ready to Start Earning?</h3>
                   <p className="text-gray-400 mb-4 text-sm">
-                    Complete your first lesson and quiz to earn your first satoshis.
+                    Complete your first lesson and quiz to earn your first HODLearn Points.
                   </p>
                   <Button onClick={() => setLocation('/learn')} className="bg-orange-500 hover:bg-orange-600">
                     Start Learning Today

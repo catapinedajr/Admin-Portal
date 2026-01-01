@@ -84,7 +84,7 @@ export default function WalletSummaryCard() {
               </div>
               <div>
                 <div className="text-sm font-medium text-orange-400">Bitcoin Learning Wallet</div>
-                <div className="text-xs text-gray-500">Start earning satoshis</div>
+                <div className="text-xs text-gray-500">Start earning points</div>
               </div>
             </div>
             <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-orange-400 transition-colors" />
@@ -130,7 +130,7 @@ export default function WalletSummaryCard() {
                   <span className="text-2xl font-bold text-white">
                     {formatSats(walletData.totalSatoshisEarned)}
                   </span>
-                  <span className="text-sm text-orange-400 font-medium">sats</span>
+                  <span className="text-sm text-orange-400 font-medium">points</span>
                 </div>
                 <div className="text-sm text-gray-500">
                   ≈ ${formatUsd(walletData.totalUsdValue)}
@@ -157,7 +157,7 @@ export default function WalletSummaryCard() {
           <div className="space-y-2 pt-2 border-t border-zinc-700/50">
             <div className="flex items-center justify-between">
               <div className="text-xs text-gray-400">
-                Keep learning to stack more sats
+                Keep learning to earn more points
               </div>
               <div className="flex items-center gap-1 text-xs text-orange-400">
                 <span>View Details</span>

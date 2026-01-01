@@ -527,7 +527,7 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning, dayComple
               <Trophy className="w-16 h-16 mx-auto mb-4 text-yellow-500" />
               <h3 className="text-2xl font-bold text-white mb-2">Quiz Complete!</h3>
               <p className="text-green-200 mb-4">
-                Well done! You've earned {questions.length * 100} sats total.
+                Well done! You've earned {questions.length * 100} HODLearn Points!
               </p>
               <div className="text-green-300 text-sm">
                 Your Bitcoin conviction is growing!

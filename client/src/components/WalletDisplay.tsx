@@ -114,7 +114,7 @@ export default function WalletDisplay() {
             className="w-full mt-4"
             disabled={earnSatsMutation.isPending}
           >
-            Test Earning +100 sats
+            Test Earning +100 points
           </Button>
         </CardContent>
       </Card>
@@ -143,7 +143,7 @@ export default function WalletDisplay() {
           <div className="space-y-4">
             <div>
               <div className="text-3xl font-bold">
-                {formatSats(walletData?.totalSatoshisEarned || 0)} sats
+                {formatSats(walletData?.totalSatoshisEarned || 0)} points
               </div>
               <div className="text-orange-100">
                 ≈ ${formatUsd(walletData?.totalUsdValue || 0)} USD
@@ -174,7 +174,7 @@ export default function WalletDisplay() {
             <div className="text-2xl font-bold text-orange-500">
               {formatSats(walletData?.weeklyEarnings || 0)}
             </div>
-            <div className="text-sm text-muted-foreground">sats earned</div>
+            <div className="text-sm text-muted-foreground">points earned</div>
           </CardContent>
         </Card>
 
@@ -186,7 +186,7 @@ export default function WalletDisplay() {
             <div className="text-2xl font-bold text-orange-500">
               {formatSats(walletData?.monthlyEarnings || 0)}
             </div>
-            <div className="text-sm text-muted-foreground">sats earned</div>
+            <div className="text-sm text-muted-foreground">points earned</div>
           </CardContent>
         </Card>
       </div>
@@ -202,7 +202,7 @@ export default function WalletDisplay() {
               walletData.recentEarnings.map((earning) => (
                 <div key={earning.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div>
-                    <div className="font-medium">+{formatSats(earning.satoshisEarned)} sats</div>
+                    <div className="font-medium">+{formatSats(earning.satoshisEarned)} points</div>
                     <div className="text-sm text-muted-foreground">
                       {earning.description || earning.earningType}
                     </div>
@@ -219,7 +219,7 @@ export default function WalletDisplay() {
               ))
             ) : (
               <div className="text-center text-muted-foreground py-4">
-                No earnings yet. Complete quizzes to earn sats!
+                No earnings yet. Complete quizzes to earn points!
               </div>
             )}
           </div>
@@ -270,7 +270,7 @@ export default function WalletDisplay() {
             className="w-full"
             disabled={earnSatsMutation.isPending}
           >
-            {earnSatsMutation.isPending ? 'Earning...' : 'Test Earning +100 sats'}
+            {earnSatsMutation.isPending ? 'Earning...' : 'Test Earning +100 points'}
           </Button>
         </CardContent>
       </Card>

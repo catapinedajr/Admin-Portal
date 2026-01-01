@@ -35,7 +35,7 @@ export function PWAInstallButton() {
         description: (
           <div className="space-y-2 text-sm leading-relaxed">
             <div className="text-lg font-bold text-green-400">
-              +10,000 sats added to your wallet!
+              +10,000 points added to your wallet!
             </div>
             <div className="text-zinc-300">
               HODLearn is now installed on your home screen.
@@ -81,7 +81,7 @@ export function PWAInstallButton() {
     const handleAppInstalled = () => {
       setIsInstalled(true);
       setDeferredPrompt(null);
-      // Award the 10,000 sats bonus
+      // Award the 10,000 points bonus
       awardPWABonus.mutate();
     };
 
@@ -98,7 +98,7 @@ export function PWAInstallButton() {
     if (!deferredPrompt) {
       // Show detailed manual installation instructions for Safari/unsupported browsers
       toast({
-        title: '🎉 Install HODLearn & Earn 10,000 Sats!',
+        title: '🎉 Install HODLearn & Earn 10,000 Points!',
         description: (
           <div className="space-y-3 text-sm leading-relaxed">
             <div>
@@ -122,7 +122,7 @@ export function PWAInstallButton() {
             </div>
             
             <div className="pt-2 border-t border-zinc-600">
-              <strong className="text-green-400">Reward:</strong> Get instant 10,000 sats bonus ($1.18 value) added to your wallet when installation is complete!
+              <strong className="text-green-400">Reward:</strong> Get instant 10,000 points bonus ($1.18 value) added to your wallet when installation is complete!
             </div>
           </div>
         ),
@@ -154,13 +154,13 @@ export function PWAInstallButton() {
       onClick={handleInstallClick}
       size="sm"
       className="bg-orange-500 hover:bg-orange-600 text-white border-orange-600 hover:border-orange-700 px-2.5 py-1.5 animate-pulse hover:animate-none relative overflow-hidden"
-      title="Download to Home Screen - Get 10,000 sats bonus ($1.18 value)!"
+      title="Download to Home Screen - Get 10,000 points bonus ($1.18 value)!"
     >
       {/* Flashing effect overlay */}
       <div className="absolute inset-0 bg-orange-300 opacity-30 animate-ping"></div>
       
       <Download className="w-4 h-4 relative z-10" />
-      <span className="sr-only">Download to Home Screen - Get 10,000 sats bonus!</span>
+      <span className="sr-only">Download to Home Screen - Get 10,000 points bonus!</span>
     </Button>
   );
 }

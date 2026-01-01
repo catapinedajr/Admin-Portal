@@ -41,9 +41,9 @@ export default function StreakCounter() {
 
   // Calculate next milestone and progress
   const getNextMilestone = (streak: number) => {
-    if (streak < 7) return { target: 7, reward: "2,000 sats", icon: Target };
-    if (streak < 30) return { target: 30, reward: "10,000 sats", icon: Star };
-    if (streak < 365) return { target: 365, reward: "100,000 sats", icon: Trophy };
+    if (streak < 7) return { target: 7, reward: "2,000 points", icon: Target };
+    if (streak < 30) return { target: 30, reward: "10,000 points", icon: Star };
+    if (streak < 365) return { target: 365, reward: "100,000 points", icon: Trophy };
     return { target: 365, reward: "Ultimate HODLer", icon: Trophy };
   };
 
