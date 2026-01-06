@@ -45,7 +45,9 @@ import {
   RefreshCw,
   Check,
   XCircle,
-  Loader2
+  Loader2,
+  Settings,
+  RotateCcw
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -74,6 +76,45 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bgColor: str
   approved: { label: 'Approved', color: 'text-blue-400', bgColor: 'bg-blue-500/20', borderColor: 'border-blue-500/30' },
   live: { label: 'Live', color: 'text-green-400', bgColor: 'bg-green-500/20', borderColor: 'border-green-500/30' },
 };
+
+const DEFAULT_CONTENT_AI_INSTRUCTIONS = `You are a Bitcoin education content creator for HODLearn, creating daily lessons for working professionals.
+
+## CONTENT PHILOSOPHY
+**Target**: Working professionals seeking financial understanding and security
+**Approach**: "Conviction Through Curiosity" - build Bitcoin conviction through immediate financial relevance
+**Tone**: Professional urgency without technical overwhelm (8th grade reading level)
+
+## EVERGREEN CONTENT GUIDELINES (CRITICAL)
+Your content must remain relevant for years, not months. Follow these rules strictly:
+
+**DO:**
+- Focus on Bitcoin fundamentals that never change (cryptography, proof-of-work, halving mechanics, sound money principles)
+- Use relative time references ("since Bitcoin's creation", "over a decade", "multiple market cycles")
+- Teach principles and "why" rather than specific events
+- Use historical examples with context (don't assume reader knows the timeline)
+- Explain concepts that will be true in 5+ years
+
+**DON'T:**
+- Reference specific Bitcoin prices (no "$60,000" or "all-time highs")
+- Mention specific years for recent events ("in 2024", "last year")
+- Reference current events, news, or regulatory actions
+- Include time-sensitive statistics that will become outdated
+- Use phrases like "currently", "recently", "right now", "as of today"
+
+## OUTPUT REQUIREMENTS
+Create content with this structure:
+- Title: Urgency-driven headline under 60 characters with power words
+- 3 setup questions: Each under 100 characters, curiosity building
+- Lesson: 300-1200 words at 8th grade reading level with bold headers
+- 3 key takeaways: Max 12 words each
+- Why it matters: Must mention Bitcoin specifically
+- 4 quiz questions: Multiple choice with explanations
+
+## QUALITY CHECKLIST
+- Title under 60 characters with emotional hook
+- Content builds Bitcoin conviction through immediate relevance
+- EVERGREEN: No specific prices, years, or current events mentioned
+- EVERGREEN: Uses relative time references only`;
 
 interface ContentLesson {
   id: number;
@@ -1249,6 +1290,260 @@ interface GenerateResponse {
   };
 }
 
+interface AiInstructionsData {
+  type: string;
+  name: string;
+  instructions: string;
+  isLocked: boolean;
+  exists: boolean;
+  updatedAt?: string;
+}
+
+function AIInstructionsEditor({ type, defaultInstructions }: { type: 'content' | 'social'; defaultInstructions: string }) {
+  const { toast } = useToast();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [editedInstructions, setEditedInstructions] = useState("");
+  const [showUnlockConfirm, setShowUnlockConfirm] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
+
+  const { data: instructionsData, isLoading } = useQuery<AiInstructionsData>({
+    queryKey: ["/api/admin/ai-instructions", type],
+    queryFn: async () => {
+      const res = await fetch(`/api/admin/ai-instructions/${type}`, { credentials: 'include' });
+      return res.json();
+    },
+  });
+
+  useEffect(() => {
+    if (instructionsData?.exists) {
+      setEditedInstructions(instructionsData.instructions);
+    } else {
+      setEditedInstructions(defaultInstructions);
+    }
+    setHasChanges(false);
+  }, [instructionsData, defaultInstructions]);
+
+  const handleTextChange = (value: string) => {
+    setEditedInstructions(value);
+    const originalValue = instructionsData?.exists ? instructionsData.instructions : defaultInstructions;
+    setHasChanges(value !== originalValue);
+  };
+
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", `/api/admin/ai-instructions/${type}`, {
+        name: type === 'content' ? 'Content AI Instructions' : 'Social AI Instructions',
+        instructions: editedInstructions
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/ai-instructions", type] });
+      toast({ title: "Instructions saved successfully!" });
+      setHasChanges(false);
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to save", description: error.message, variant: "destructive" });
+    }
+  });
+
+  const lockMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", `/api/admin/ai-instructions/${type}/lock`, {});
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/ai-instructions", type] });
+      toast({ title: "Instructions locked" });
+    }
+  });
+
+  const unlockMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", `/api/admin/ai-instructions/${type}/unlock`, { confirmed: true });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/ai-instructions", type] });
+      toast({ title: "Instructions unlocked" });
+      setShowUnlockConfirm(false);
+    }
+  });
+
+  const resetMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", `/api/admin/ai-instructions/${type}/reset`, { confirmed: true });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/ai-instructions", type] });
+      setEditedInstructions(defaultInstructions);
+      toast({ title: "Instructions reset to default" });
+      setShowResetConfirm(false);
+      setHasChanges(false);
+    }
+  });
+
+  const isLocked = instructionsData?.isLocked ?? true;
+  const isUsingDefault = !instructionsData?.exists;
+
+  return (
+    <>
+      <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
+        <Card className="bg-zinc-900 border-zinc-800">
+          <CollapsibleTrigger asChild>
+            <CardHeader className="cursor-pointer hover:bg-zinc-800/50 transition-colors py-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {isExpanded ? <ChevronDown className="w-4 h-4 text-zinc-400" /> : <ChevronRight className="w-4 h-4 text-zinc-400" />}
+                  <Settings className="w-4 h-4 text-orange-500" />
+                  <CardTitle className="text-white text-sm">
+                    {type === 'content' ? 'Content AI Instructions' : 'Social AI Instructions'}
+                  </CardTitle>
+                </div>
+                <div className="flex items-center gap-2">
+                  {isUsingDefault && (
+                    <Badge className="bg-zinc-700 text-zinc-300 text-xs">Using Default</Badge>
+                  )}
+                  {isLocked ? (
+                    <Badge className="bg-red-500/20 text-red-400 text-xs"><Lock className="w-3 h-3 mr-1" />Locked</Badge>
+                  ) : (
+                    <Badge className="bg-green-500/20 text-green-400 text-xs"><Unlock className="w-3 h-3 mr-1" />Unlocked</Badge>
+                  )}
+                </div>
+              </div>
+            </CardHeader>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <CardContent className="pt-0 space-y-4">
+              {isLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="w-6 h-6 text-orange-500 animate-spin" />
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs text-zinc-500">
+                      {instructionsData?.updatedAt && `Last updated: ${new Date(instructionsData.updatedAt).toLocaleDateString()}`}
+                    </div>
+                    <div className="flex gap-2">
+                      {isLocked ? (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setShowUnlockConfirm(true)}
+                          className="border-zinc-700 text-zinc-300 text-xs"
+                          data-testid="button-unlock-instructions"
+                        >
+                          <Unlock className="w-3 h-3 mr-1" />
+                          Unlock to Edit
+                        </Button>
+                      ) : (
+                        <>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowResetConfirm(true)}
+                            className="border-zinc-700 text-zinc-300 text-xs"
+                            data-testid="button-reset-instructions"
+                          >
+                            <RotateCcw className="w-3 h-3 mr-1" />
+                            Reset to Default
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => lockMutation.mutate()}
+                            disabled={lockMutation.isPending}
+                            className="border-zinc-700 text-zinc-300 text-xs"
+                            data-testid="button-lock-instructions"
+                          >
+                            <Lock className="w-3 h-3 mr-1" />
+                            Lock
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <Textarea
+                    value={editedInstructions}
+                    onChange={(e) => handleTextChange(e.target.value)}
+                    disabled={isLocked}
+                    className={`bg-zinc-800 border-zinc-700 text-white font-mono text-xs min-h-[300px] ${isLocked ? 'opacity-60 cursor-not-allowed' : ''}`}
+                    placeholder="AI Instructions..."
+                    data-testid="input-ai-instructions"
+                  />
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs text-zinc-500">
+                      Available placeholders: <code className="bg-zinc-800 px-1 rounded">${'{dayIndex}'}</code>, <code className="bg-zinc-800 px-1 rounded">${'{theme}'}</code>, <code className="bg-zinc-800 px-1 rounded">${'{weekNumber}'}</code>
+                    </div>
+                    {!isLocked && hasChanges && (
+                      <Button
+                        onClick={() => saveMutation.mutate()}
+                        disabled={saveMutation.isPending}
+                        className="bg-orange-500 hover:bg-orange-600 text-xs"
+                        data-testid="button-save-instructions"
+                      >
+                        {saveMutation.isPending ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Save className="w-3 h-3 mr-1" />}
+                        Save Changes
+                      </Button>
+                    )}
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
+
+      <AlertDialog open={showUnlockConfirm} onOpenChange={setShowUnlockConfirm}>
+        <AlertDialogContent className="bg-zinc-900 border-zinc-800">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Unlock AI Instructions?</AlertDialogTitle>
+            <AlertDialogDescription className="text-zinc-400">
+              Are you sure you want to unlock these instructions for editing? Changes to AI instructions will affect all future content generation.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-zinc-700 text-zinc-300">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => unlockMutation.mutate()}
+              className="bg-orange-500 hover:bg-orange-600"
+              data-testid="button-confirm-unlock"
+            >
+              Yes, Unlock
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={showResetConfirm} onOpenChange={setShowResetConfirm}>
+        <AlertDialogContent className="bg-zinc-900 border-zinc-800">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Reset to Default Instructions?</AlertDialogTitle>
+            <AlertDialogDescription className="text-zinc-400">
+              Are you sure you want to reset to the default AI instructions? This will delete all custom changes.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-zinc-700 text-zinc-300">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => resetMutation.mutate()}
+              className="bg-red-500 hover:bg-red-600"
+              data-testid="button-confirm-reset"
+            >
+              Yes, Reset
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+}
+
 function AIGenerateDialog({ open, onOpenChange, nextDayIndex }: { 
   open: boolean; 
   onOpenChange: (open: boolean) => void;
@@ -2362,6 +2657,8 @@ export default function ContentManagement() {
               data-testid="input-search-content"
             />
           </div>
+
+          <AIInstructionsEditor type="content" defaultInstructions={DEFAULT_CONTENT_AI_INSTRUCTIONS} />
 
           <div className="flex gap-6">
             <div className="w-72 flex-shrink-0">
