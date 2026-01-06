@@ -16,7 +16,10 @@ import {
   Map,
   Target,
   BarChart3,
-  Settings
+  Settings,
+  Plug,
+  CreditCard,
+  Archive
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -26,18 +29,47 @@ interface AdminLayoutProps {
   children: React.ReactNode;
 }
 
-const navItems = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/goals", label: "Goals", icon: Target },
-  { href: "/admin/users", label: "Users", icon: Users },
-  { href: "/admin/content", label: "Content", icon: BookOpen },
-  { href: "/admin/marketing", label: "Marketing", icon: Megaphone },
-  { href: "/admin/social", label: "Social", icon: Twitter },
-  { href: "/admin/store", label: "Store", icon: ShoppingBag },
-  { href: "/admin/crm", label: "B2B CRM", icon: Building2 },
-  { href: "/admin/roadmap", label: "Roadmap", icon: Map },
-  { href: "/admin/settings", label: "Settings", icon: Settings, superAdminOnly: true },
-  { href: "/admin/team", label: "Team", icon: UserCog, superAdminOnly: true },
+interface NavItem {
+  href: string;
+  label: string;
+  icon: any;
+  superAdminOnly?: boolean;
+}
+
+interface NavSection {
+  title: string;
+  items: NavItem[];
+}
+
+const navSections: NavSection[] = [
+  {
+    title: "Overview",
+    items: [
+      { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+      { href: "/admin/goals", label: "Goals", icon: Target },
+    ]
+  },
+  {
+    title: "Operations",
+    items: [
+      { href: "/admin/users", label: "Users", icon: Users },
+      { href: "/admin/content", label: "Content", icon: BookOpen },
+      { href: "/admin/marketing", label: "Marketing", icon: Megaphone },
+      { href: "/admin/social", label: "Social", icon: Twitter },
+      { href: "/admin/store", label: "Store", icon: ShoppingBag },
+      { href: "/admin/crm", label: "B2B CRM", icon: Building2 },
+      { href: "/admin/roadmap", label: "Roadmap", icon: Map },
+    ]
+  },
+  {
+    title: "Admin",
+    items: [
+      { href: "/admin/team", label: "Team", icon: UserCog, superAdminOnly: true },
+      { href: "/admin/integrations", label: "Integrations", icon: Plug, superAdminOnly: true },
+      { href: "/admin/revenue", label: "Revenue", icon: CreditCard, superAdminOnly: true },
+      { href: "/admin/data-governance", label: "Data Governance", icon: Archive, superAdminOnly: true },
+    ]
+  }
 ];
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
@@ -49,9 +81,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     retry: false,
   });
 
-  const filteredNavItems = navItems.filter(item => 
-    !item.superAdminOnly || admin?.role === 'super_admin'
-  );
+  const getFilteredSections = () => {
+    return navSections.map(section => ({
+      ...section,
+      items: section.items.filter(item => 
+        !item.superAdminOnly || admin?.role === 'super_admin'
+      )
+    })).filter(section => section.items.length > 0);
+  };
 
   const handleLogout = async () => {
     const sessionId = localStorage.getItem("admin_session");
@@ -101,26 +138,35 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-1">
-            {filteredNavItems.map((item) => (
-              <Link 
-                key={item.href} 
-                href={item.href}
-                onClick={() => setSidebarOpen(false)}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
-                  isActive(item.href)
-                    ? "bg-orange-500/20 text-orange-500"
-                    : "text-zinc-400 hover:text-white hover:bg-zinc-800"
-                )}
-                data-testid={`nav-${item.label.toLowerCase()}`}
-              >
-                <item.icon className="w-5 h-5" />
-                <span>{item.label}</span>
-                {isActive(item.href) && (
-                  <ChevronRight className="w-4 h-4 ml-auto" />
-                )}
-              </Link>
+          <nav className="flex-1 p-4 space-y-4 overflow-y-auto">
+            {getFilteredSections().map((section) => (
+              <div key={section.title}>
+                <p className="px-3 mb-2 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                  {section.title}
+                </p>
+                <div className="space-y-1">
+                  {section.items.map((item) => (
+                    <Link 
+                      key={item.href} 
+                      href={item.href}
+                      onClick={() => setSidebarOpen(false)}
+                      className={cn(
+                        "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
+                        isActive(item.href)
+                          ? "bg-orange-500/20 text-orange-500"
+                          : "text-zinc-400 hover:text-white hover:bg-zinc-800"
+                      )}
+                      data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                    >
+                      <item.icon className="w-5 h-5" />
+                      <span>{item.label}</span>
+                      {isActive(item.href) && (
+                        <ChevronRight className="w-4 h-4 ml-auto" />
+                      )}
+                    </Link>
+                  ))}
+                </div>
+              </div>
             ))}
           </nav>
 

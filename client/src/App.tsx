@@ -28,7 +28,9 @@ import CRMManagement from "@/admin/pages/CRMManagement";
 import RoadmapManagement from "@/admin/pages/RoadmapManagement";
 import GoalsManagement from "@/admin/pages/GoalsManagement";
 import KPIDashboard from "@/admin/pages/KPIDashboard";
-import SettingsManagement from "@/admin/pages/SettingsManagement";
+import IntegrationsManagement from "@/admin/pages/IntegrationsManagement";
+import RevenueControls from "@/admin/pages/RevenueControls";
+import DataGovernance from "@/admin/pages/DataGovernance";
 
 import { AppContextProvider } from "@/components/shared/AppContextProvider";
 import Onboarding from "@/pages/onboarding";
@@ -157,8 +159,10 @@ function Router() {
         <Route path="/admin/goals" component={GoalsManagement} />
         <Route path="/admin/okrs" component={GoalsManagement} />
         <Route path="/admin/kpis" component={KPIDashboard} />
-        <Route path="/admin/settings" component={SettingsManagement} />
         <Route path="/admin/team" component={AdminUsersManagement} />
+        <Route path="/admin/integrations" component={IntegrationsManagement} />
+        <Route path="/admin/revenue" component={RevenueControls} />
+        <Route path="/admin/data-governance" component={DataGovernance} />
         <Route path="/admin" component={KPIDashboard} />
         <Route path="/more" component={MorePage} />
         <Route path="/account" component={AccountPage} />
