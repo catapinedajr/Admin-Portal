@@ -960,8 +960,8 @@ export function registerAdminRoutes(app: Express) {
       const cycleNumber = Math.min(cycle, 4);
       const suggestedTheme = theme || cycleThemes[cycleNumber]?.[monthInCycle - 1] || 'Bitcoin Fundamentals';
       
-      // Build the comprehensive prompt with Content Creation Framework
-      const systemPrompt = `You are a Bitcoin education content creator for HODLearn, creating daily lessons for working professionals.
+      // Load custom AI instructions from database, or use defaults
+      let baseInstructions = `You are a Bitcoin education content creator for HODLearn, creating daily lessons for working professionals.
 
 ## CONTENT PHILOSOPHY
 **Target**: Working professionals seeking financial understanding and security
@@ -983,7 +983,23 @@ Your content must remain relevant for years, not months. Follow these rules stri
 - Mention specific years for recent events ("in 2024", "last year")
 - Reference current events, news, or regulatory actions
 - Include time-sensitive statistics that will become outdated
-- Use phrases like "currently", "recently", "right now", "as of today"
+- Use phrases like "currently", "recently", "right now", "as of today"`;
+
+      // Try to load custom instructions from database
+      try {
+        const customInstructions = await db.select()
+          .from(aiInstructions)
+          .where(eq(aiInstructions.type, 'content'));
+        if (customInstructions.length > 0 && customInstructions[0].instructions) {
+          baseInstructions = customInstructions[0].instructions;
+        }
+      } catch (e) {
+        // Use default instructions if table doesn't exist or query fails
+        console.log("Using default content AI instructions");
+      }
+
+      // Build the comprehensive prompt with Content Creation Framework
+      const systemPrompt = `${baseInstructions}
 
 **FRESHNESS CLASSIFICATION:**
 After creating content, assess whether it is:
@@ -2435,40 +2451,52 @@ ${lessonContent ? `\nLesson Content:\n${lessonContent}` : ''}
         ? 'Maximum 280 characters. Use engaging hooks, relevant hashtags (#Bitcoin, #BTC, etc), and a clear call-to-action.'
         : 'Can be longer form. Include emojis and formatting as appropriate.';
       
+      // Load custom AI instructions from database, or use defaults
+      let baseInstructions = `You are a social media content creator for HODLearn, a Bitcoin education platform. Your goal is to create engaging posts that drive curiosity and signups.
+
+Guidelines:
+- ${platformConstraints}
+- Make it engaging and accessible to beginners
+- Create urgency or curiosity without being salesy
+- End with a subtle call-to-action
+- DO NOT use the word "journey" or "unlock"
+- Be authentic and conversational`;
+
+      // Try to load custom instructions from database
+      try {
+        const customInstructions = await db.select()
+          .from(aiInstructions)
+          .where(eq(aiInstructions.type, 'social'));
+        if (customInstructions.length > 0 && customInstructions[0].instructions) {
+          baseInstructions = `${customInstructions[0].instructions}
+
+Platform constraints: ${platformConstraints}`;
+        }
+      } catch (e) {
+        // Use default instructions if table doesn't exist or query fails
+        console.log("Using default social AI instructions");
+      }
+      
       // Call Claude (production-ready client)
       const anthropic = await createAnthropicClient();
       
       // Build prompt based on whether we have lesson context
       const prompt = lessonContext 
-        ? `You are a social media content creator for HODLearn, a Bitcoin education platform. Your goal is to create engaging posts that drive curiosity and signups.
+        ? `${baseInstructions}
 
 Create a ${platform} post based on this Bitcoin lesson:
 
 ${lessonContext}
 
-Guidelines:
-- ${platformConstraints}
-- Make it engaging and accessible to beginners
-- Create urgency or curiosity without being salesy
-- Focus on one key insight from the lesson
-- End with a subtle call-to-action (learn more, start today, etc)
-- DO NOT use the word "journey" or "unlock"
-- Be authentic and conversational
+Focus on one key insight from the lesson.
 
 Return ONLY the post content, nothing else.`
-        : `You are a social media content creator for HODLearn, a Bitcoin education platform. Your goal is to create engaging posts that drive curiosity and signups.
+        : `${baseInstructions}
 
 Create an engaging ${platform} post about Bitcoin that would appeal to young professionals who are curious about Bitcoin but haven't started learning yet.
 
-Guidelines:
-- ${platformConstraints}
-- Focus on ONE of these angles: inflation protection, financial sovereignty, generational wealth, or getting started
-- Make it engaging and accessible to beginners
-- Create urgency or curiosity without being salesy
-- End with a subtle call-to-action
-- DO NOT use the word "journey" or "unlock"
-- Be authentic and conversational
-- Include relevant hashtags like #Bitcoin #BTC #FinancialFreedom
+Focus on ONE of these angles: inflation protection, financial sovereignty, generational wealth, or getting started.
+Include relevant hashtags like #Bitcoin #BTC #FinancialFreedom
 
 Return ONLY the post content, nothing else.`;
       

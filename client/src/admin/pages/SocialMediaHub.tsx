@@ -169,12 +169,8 @@ function AIInstructionsEditor({ type, defaultInstructions }: { type: 'content' |
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
 
-  const { data: instructionsData, isLoading } = useQuery<AiInstructionsData>({
-    queryKey: ["/api/admin/ai-instructions", type],
-    queryFn: async () => {
-      const res = await fetch(`/api/admin/ai-instructions/${type}`, { credentials: 'include' });
-      return res.json();
-    },
+  const { data: instructionsData, isLoading, error: instructionsError } = useQuery<AiInstructionsData>({
+    queryKey: [`/api/admin/ai-instructions/${type}`],
   });
 
   useEffect(() => {
@@ -201,7 +197,7 @@ function AIInstructionsEditor({ type, defaultInstructions }: { type: 'content' |
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/ai-instructions", type] });
+      queryClient.invalidateQueries({ queryKey: [`/api/admin/ai-instructions/${type}`] });
       toast({ title: "Instructions saved successfully!" });
       setHasChanges(false);
     },
@@ -216,7 +212,7 @@ function AIInstructionsEditor({ type, defaultInstructions }: { type: 'content' |
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/ai-instructions", type] });
+      queryClient.invalidateQueries({ queryKey: [`/api/admin/ai-instructions/${type}`] });
       toast({ title: "Instructions locked" });
     }
   });
@@ -227,7 +223,7 @@ function AIInstructionsEditor({ type, defaultInstructions }: { type: 'content' |
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/ai-instructions", type] });
+      queryClient.invalidateQueries({ queryKey: [`/api/admin/ai-instructions/${type}`] });
       toast({ title: "Instructions unlocked" });
       setShowUnlockConfirm(false);
     }
@@ -239,7 +235,7 @@ function AIInstructionsEditor({ type, defaultInstructions }: { type: 'content' |
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/ai-instructions", type] });
+      queryClient.invalidateQueries({ queryKey: [`/api/admin/ai-instructions/${type}`] });
       setEditedInstructions(defaultInstructions);
       toast({ title: "Instructions reset to default" });
       setShowResetConfirm(false);
@@ -282,6 +278,13 @@ function AIInstructionsEditor({ type, defaultInstructions }: { type: 'content' |
               {isLoading ? (
                 <div className="flex items-center justify-center py-8">
                   <Loader2 className="w-6 h-6 text-orange-500 animate-spin" />
+                </div>
+              ) : instructionsError ? (
+                <div className="p-4 border border-red-500/30 bg-red-500/10 rounded-md">
+                  <div className="flex items-center gap-2 text-red-400 text-sm">
+                    <AlertCircle className="w-4 h-4" />
+                    Failed to load AI instructions. Please refresh the page.
+                  </div>
                 </div>
               ) : (
                 <>
