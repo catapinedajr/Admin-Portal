@@ -117,6 +117,10 @@ function SettingsContent() {
     queryKey: ["/api/admin/settings"],
   });
 
+  const { data: securityStatus } = useQuery<{ isDefaultEncryptionKey: boolean; isProduction: boolean }>({
+    queryKey: ["/api/admin/settings/security-status"],
+  });
+
   const saveMutation = useMutation({
     mutationFn: async (data: { key: string; value: string; description: string }) => {
       return apiRequest('POST', '/api/admin/settings', data);
@@ -209,6 +213,33 @@ function SettingsContent() {
         </Button>
       </div>
 
+      {securityStatus?.isDefaultEncryptionKey && (
+        <Card className={securityStatus.isProduction 
+          ? "bg-red-900/30 border-red-700" 
+          : "bg-yellow-900/30 border-yellow-700"
+        }>
+          <CardContent className="p-4">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className={`w-6 h-6 mt-0.5 shrink-0 ${
+                securityStatus.isProduction ? 'text-red-400' : 'text-yellow-400'
+              }`} />
+              <div>
+                <p className={`font-semibold ${securityStatus.isProduction ? 'text-red-300' : 'text-yellow-300'}`}>
+                  {securityStatus.isProduction 
+                    ? 'CRITICAL: Production using default encryption key!'
+                    : 'Development: Using default encryption key'
+                  }
+                </p>
+                <p className="text-sm text-zinc-400 mt-1">
+                  Set <code className="bg-zinc-700 px-1 rounded">SETTINGS_ENCRYPTION_KEY</code> environment 
+                  variable with a strong 32+ character secret before deploying to production.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <Card className="bg-zinc-800/30 border-zinc-700">
         <CardHeader>
           <CardTitle className="text-lg text-white flex items-center gap-2">
@@ -218,15 +249,14 @@ function SettingsContent() {
         </CardHeader>
         <CardContent>
           <div className="flex items-start gap-3 text-sm text-zinc-400">
-            <AlertTriangle className="w-5 h-5 text-yellow-500 mt-0.5 shrink-0" />
+            <Check className={`w-5 h-5 mt-0.5 shrink-0 ${securityStatus?.isDefaultEncryptionKey ? 'text-zinc-500' : 'text-green-500'}`} />
             <div>
               <p className="mb-2">
                 API keys are encrypted using AES-256-GCM before storage. Only masked values are displayed in the UI.
               </p>
-              <p>
-                For production environments, set <code className="bg-zinc-700 px-1 rounded">SETTINGS_ENCRYPTION_KEY</code> environment 
-                variable with a strong 32+ character secret.
-              </p>
+              {!securityStatus?.isDefaultEncryptionKey && (
+                <p className="text-green-400 text-sm">Custom encryption key configured.</p>
+              )}
             </div>
           </div>
         </CardContent>

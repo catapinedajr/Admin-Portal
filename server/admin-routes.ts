@@ -12,6 +12,12 @@ interface AdminRequest extends Request {
 // Encryption settings for database-stored API keys
 const ENCRYPTION_KEY = process.env.SETTINGS_ENCRYPTION_KEY || 'hodlearn-default-key-change-in-prod-32';
 const ALGORITHM = 'aes-256-gcm';
+const IS_DEFAULT_ENCRYPTION_KEY = !process.env.SETTINGS_ENCRYPTION_KEY;
+
+// Log warning at startup if using default encryption key
+if (IS_DEFAULT_ENCRYPTION_KEY && process.env.NODE_ENV === 'production') {
+  console.warn('⚠️  SECURITY WARNING: Using default encryption key for API secrets. Set SETTINGS_ENCRYPTION_KEY environment variable for production security.');
+}
 
 function decryptSettingValue(encryptedText: string): string {
   const parts = encryptedText.split(':');
@@ -3403,6 +3409,14 @@ Return ONLY the post content, nothing else.`;
     }
     next();
   };
+
+  // Get security status for settings
+  app.get("/api/admin/settings/security-status", requireAdminAuth, requireSuperAdmin, async (req: AdminRequest, res: Response) => {
+    res.json({
+      isDefaultEncryptionKey: IS_DEFAULT_ENCRYPTION_KEY,
+      isProduction: process.env.NODE_ENV === 'production',
+    });
+  });
 
   // Get all settings (returns only masked values)
   app.get("/api/admin/settings", requireAdminAuth, requireSuperAdmin, async (req: AdminRequest, res: Response) => {
