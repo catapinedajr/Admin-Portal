@@ -1,7 +1,8 @@
 import type { Express, Request, Response, NextFunction } from "express";
+import { randomBytes, createCipheriv, createDecipheriv, scryptSync } from "crypto";
 import { adminAuthService } from "./admin-auth";
 import { db } from "./db";
-import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema } from "@shared/schema";
+import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema, systemSettings } from "@shared/schema";
 import { count, eq, sql, and, sum } from "drizzle-orm";
 
 interface AdminRequest extends Request {
@@ -3340,6 +3341,144 @@ Return ONLY the post content, nothing else.`;
     } catch (error) {
       console.error("Error refreshing KPI targets:", error);
       res.status(500).json({ message: "Failed to refresh KPI targets" });
+    }
+  });
+
+  // ============================================
+  // SYSTEM SETTINGS (Super Admin Only)
+  // ============================================
+
+  const ENCRYPTION_KEY = process.env.SETTINGS_ENCRYPTION_KEY || 'hodlearn-default-key-change-in-prod-32';
+  const ALGORITHM = 'aes-256-gcm';
+
+  function encryptValue(text: string): string {
+    const key = scryptSync(ENCRYPTION_KEY, 'salt', 32);
+    const iv = randomBytes(16);
+    const cipher = createCipheriv(ALGORITHM, key, iv);
+    let encrypted = cipher.update(text, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    const authTag = cipher.getAuthTag();
+    return iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted;
+  }
+
+  function decryptValue(encryptedText: string): string {
+    const parts = encryptedText.split(':');
+    if (parts.length !== 3) throw new Error('Invalid encrypted format');
+    const key = scryptSync(ENCRYPTION_KEY, 'salt', 32);
+    const iv = Buffer.from(parts[0], 'hex');
+    const authTag = Buffer.from(parts[1], 'hex');
+    const encrypted = parts[2];
+    const decipher = createDecipheriv(ALGORITHM, key, iv);
+    decipher.setAuthTag(authTag);
+    let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
+  }
+
+  function maskApiKey(key: string): string {
+    if (key.length <= 8) return '****';
+    return key.substring(0, 4) + '...' + key.substring(key.length - 4);
+  }
+
+  const requireSuperAdmin = async (req: AdminRequest, res: Response, next: NextFunction) => {
+    if (!req.admin) {
+      return res.status(401).json({ message: "Admin authentication required" });
+    }
+    if (req.admin.role !== 'super_admin') {
+      return res.status(403).json({ message: "Super admin access required for this action" });
+    }
+    next();
+  };
+
+  // Get all settings (returns only masked values)
+  app.get("/api/admin/settings", requireAdminAuth, requireSuperAdmin, async (req: AdminRequest, res: Response) => {
+    try {
+      const settings = await db.select({
+        id: systemSettings.id,
+        key: systemSettings.key,
+        maskedValue: systemSettings.maskedValue,
+        description: systemSettings.description,
+        category: systemSettings.category,
+        updatedAt: systemSettings.updatedAt,
+      }).from(systemSettings);
+      
+      res.json(settings);
+    } catch (error) {
+      console.error("Error fetching settings:", error);
+      res.status(500).json({ message: "Failed to fetch settings" });
+    }
+  });
+
+  // Create or update a setting
+  app.post("/api/admin/settings", requireAdminAuth, requireSuperAdmin, async (req: AdminRequest, res: Response) => {
+    try {
+      const { key, value, description, category = 'api_keys' } = req.body;
+      
+      if (!key || !value) {
+        return res.status(400).json({ message: "Key and value are required" });
+      }
+      
+      const encryptedValue = encryptValue(value);
+      const maskedValue = maskApiKey(value);
+      
+      const existing = await db.select().from(systemSettings).where(eq(systemSettings.key, key));
+      
+      if (existing.length > 0) {
+        await db.update(systemSettings)
+          .set({
+            encryptedValue,
+            maskedValue,
+            description,
+            category,
+            updatedBy: req.admin.id,
+            updatedAt: new Date(),
+          })
+          .where(eq(systemSettings.key, key));
+      } else {
+        await db.insert(systemSettings).values({
+          key,
+          encryptedValue,
+          maskedValue,
+          description,
+          category,
+          updatedBy: req.admin.id,
+        });
+      }
+      
+      res.json({ message: "Setting saved successfully", key, maskedValue });
+    } catch (error) {
+      console.error("Error saving setting:", error);
+      res.status(500).json({ message: "Failed to save setting" });
+    }
+  });
+
+  // Delete a setting
+  app.delete("/api/admin/settings/:key", requireAdminAuth, requireSuperAdmin, async (req: AdminRequest, res: Response) => {
+    try {
+      const { key } = req.params;
+      await db.delete(systemSettings).where(eq(systemSettings.key, key));
+      res.json({ message: "Setting deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting setting:", error);
+      res.status(500).json({ message: "Failed to delete setting" });
+    }
+  });
+
+  // Get decrypted value for internal use (used by createAnthropicClient)
+  app.get("/api/admin/settings/:key/decrypt", requireAdminAuth, requireSuperAdmin, async (req: AdminRequest, res: Response) => {
+    try {
+      const { key } = req.params;
+      const [setting] = await db.select().from(systemSettings).where(eq(systemSettings.key, key));
+      
+      if (!setting) {
+        return res.status(404).json({ message: "Setting not found" });
+      }
+      
+      const decryptedValue = decryptValue(setting.encryptedValue);
+      res.json({ key, value: decryptedValue });
+    } catch (error) {
+      console.error("Error decrypting setting:", error);
+      res.status(500).json({ message: "Failed to decrypt setting" });
     }
   });
 }
