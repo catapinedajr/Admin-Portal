@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import { 
   Settings, Key, Shield, AlertTriangle, Check, Eye, EyeOff, Plus, Trash2,
   Twitter, Linkedin, Instagram, Facebook, CheckCircle2, XCircle, Loader2, Power, RefreshCw,
-  CreditCard, Lock, Unlock, DollarSign, Sparkles, Calculator, TrendingUp, ShieldCheck, Gauge
+  CreditCard, Lock, Unlock, DollarSign, Sparkles, Calculator, TrendingUp, ShieldCheck, Gauge, Wallet, ArrowLeftRight, Coins, FileText
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -902,11 +902,14 @@ interface StripeStatus {
 }
 
 const FEATURE_ICONS: Record<string, any> = {
-  dca_calculator: Calculator,
-  hodl_simulator: TrendingUp,
-  transaction_simulator: DollarSign,
-  inflation_calculator: Gauge,
-  security_training: ShieldCheck,
+  safety: ShieldCheck,
+  wallet: Wallet,
+  transactions: FileText,
+  transfer: ArrowLeftRight,
+  hodl: TrendingUp,
+  dca: Calculator,
+  inflation: Gauge,
+  fees: Coins,
 };
 
 function PaywallSection() {

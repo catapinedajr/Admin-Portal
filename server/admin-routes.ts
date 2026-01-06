@@ -4156,13 +4156,16 @@ Return ONLY the post content, nothing else.`;
   // PAYWALL SETTINGS MANAGEMENT
   // ============================================
 
-  // Available premium features configuration
+  // Available premium features configuration - all 8 simulators
   const AVAILABLE_FEATURES = [
-    { key: 'dca_calculator', label: 'DCA Calculator', description: 'Dollar-cost averaging simulation tool' },
-    { key: 'hodl_simulator', label: 'HODL Simulator', description: 'Long-term holding projection tool' },
-    { key: 'transaction_simulator', label: 'Transaction Simulator', description: 'Bitcoin transaction practice tool' },
-    { key: 'inflation_calculator', label: 'Inflation Calculator', description: 'Purchasing power comparison tool' },
-    { key: 'security_training', label: 'Security Training', description: 'Bitcoin security best practices module' },
+    { key: 'safety', label: 'Safety Training', description: 'Bitcoin security best practices module' },
+    { key: 'wallet', label: 'Wallet Simulator', description: 'Wallet creation and recovery practice' },
+    { key: 'transactions', label: 'Transactions Simulator', description: 'Bitcoin transaction building practice' },
+    { key: 'transfer', label: 'Transfer Simulator', description: 'Practice sending and receiving Bitcoin' },
+    { key: 'hodl', label: 'HODL Simulator', description: 'Long-term holding projection tool' },
+    { key: 'dca', label: 'DCA Calculator', description: 'Dollar-cost averaging simulation' },
+    { key: 'inflation', label: 'Inflation Calculator', description: 'Purchasing power comparison tool' },
+    { key: 'fees', label: 'Fees Simulator', description: 'Transaction fee optimization practice' },
   ];
 
   // Get paywall settings
@@ -4177,7 +4180,7 @@ Return ONLY the post content, nothing else.`;
           id: null,
           freeDayThreshold: 7,
           paywallEnabled: true,
-          premiumFeatures: ['dca_calculator', 'hodl_simulator', 'transaction_simulator', 'inflation_calculator', 'security_training'],
+          premiumFeatures: ['wallet', 'transactions', 'transfer', 'hodl', 'dca', 'inflation', 'fees'],
           paywallTitle: 'Unlock Your Bitcoin Education',
           paywallMessage: 'Subscribe to access all 336 days of Bitcoin mastery and premium tools.',
           availableFeatures: AVAILABLE_FEATURES,
@@ -4225,7 +4228,7 @@ Return ONLY the post content, nothing else.`;
         await db.insert(paywallSettings).values({
           freeDayThreshold: freeDayThreshold ?? 7,
           paywallEnabled: paywallEnabled ?? true,
-          premiumFeatures: premiumFeatures ?? ['dca_calculator', 'hodl_simulator', 'transaction_simulator', 'inflation_calculator', 'security_training'],
+          premiumFeatures: premiumFeatures ?? ['wallet', 'transactions', 'transfer', 'hodl', 'dca', 'inflation', 'fees'],
           paywallTitle: paywallTitle ?? 'Unlock Your Bitcoin Education',
           paywallMessage: paywallMessage ?? 'Subscribe to access all 336 days of Bitcoin mastery and premium tools.',
           updatedBy: req.admin?.id,
