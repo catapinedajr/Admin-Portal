@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { 
   Plus, Building2, Users, DollarSign, TrendingUp,
-  Trash2, Edit2, Phone, Mail, ChevronRight, GripVertical,
+  Archive, Edit2, Phone, Mail, ChevronRight, GripVertical,
   Calendar, MessageSquare, CheckCircle, Clock, Target
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -222,6 +222,33 @@ function CRMManagementContent() {
       setEditingCompany(null);
       resetCompanyForm();
       toast({ title: "Company updated successfully" });
+    },
+  });
+
+  const archiveCompanyMutation = useMutation({
+    mutationFn: (id: number) => apiRequest("POST", `/api/admin/archive/crm-companies/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/crm/companies"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/crm/stats"] });
+      setShowCompanyModal(false);
+      setEditingCompany(null);
+      toast({ title: "Company archived", description: "It can be restored from the archive anytime." });
+    },
+    onError: (error: any) => {
+      toast({ title: "Error", description: error.message || "Failed to archive company.", variant: "destructive" });
+    },
+  });
+
+  const archiveDealMutation = useMutation({
+    mutationFn: (id: number) => apiRequest("POST", `/api/admin/archive/crm-deals/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/crm/deals"] });
+      setShowDealModal(false);
+      setEditingDeal(null);
+      toast({ title: "Deal archived", description: "It can be restored from the archive anytime." });
+    },
+    onError: (error: any) => {
+      toast({ title: "Error", description: error.message || "Failed to archive deal.", variant: "destructive" });
     },
   });
 
@@ -801,16 +828,32 @@ function CRMManagementContent() {
                 rows={3}
               />
             </div>
-            <div className="flex justify-end gap-2">
-              <Button variant="ghost" onClick={() => setShowCompanyModal(false)}>Cancel</Button>
-              <Button 
-                onClick={handleCompanySubmit}
-                disabled={!companyForm.name || createCompanyMutation.isPending || updateCompanyMutation.isPending}
-                className="bg-orange-500 hover:bg-orange-600"
-                data-testid="button-save-company"
-              >
-                {editingCompany ? 'Update' : 'Create'} Company
-              </Button>
+            <div className="flex justify-between gap-2">
+              <div>
+                {editingCompany && (
+                  <Button 
+                    variant="outline"
+                    onClick={() => archiveCompanyMutation.mutate(editingCompany.id)}
+                    disabled={archiveCompanyMutation.isPending}
+                    className="border-orange-500/50 text-orange-400 hover:bg-orange-500/20"
+                    data-testid="button-archive-company"
+                  >
+                    <Archive className="w-4 h-4 mr-2" />
+                    Archive
+                  </Button>
+                )}
+              </div>
+              <div className="flex gap-2">
+                <Button variant="ghost" onClick={() => setShowCompanyModal(false)}>Cancel</Button>
+                <Button 
+                  onClick={handleCompanySubmit}
+                  disabled={!companyForm.name || createCompanyMutation.isPending || updateCompanyMutation.isPending}
+                  className="bg-orange-500 hover:bg-orange-600"
+                  data-testid="button-save-company"
+                >
+                  {editingCompany ? 'Update' : 'Create'} Company
+                </Button>
+              </div>
             </div>
           </div>
         </DialogContent>
@@ -936,16 +979,32 @@ function CRMManagementContent() {
                 rows={3}
               />
             </div>
-            <div className="flex justify-end gap-2">
-              <Button variant="ghost" onClick={() => setShowDealModal(false)}>Cancel</Button>
-              <Button 
-                onClick={handleDealSubmit}
-                disabled={!dealForm.title || !dealForm.companyId || createDealMutation.isPending || updateDealMutation.isPending}
-                className="bg-orange-500 hover:bg-orange-600"
-                data-testid="button-save-deal"
-              >
-                {editingDeal ? 'Update' : 'Create'} Deal
-              </Button>
+            <div className="flex justify-between gap-2">
+              <div>
+                {editingDeal && (
+                  <Button 
+                    variant="outline"
+                    onClick={() => archiveDealMutation.mutate(editingDeal.id)}
+                    disabled={archiveDealMutation.isPending}
+                    className="border-orange-500/50 text-orange-400 hover:bg-orange-500/20"
+                    data-testid="button-archive-deal"
+                  >
+                    <Archive className="w-4 h-4 mr-2" />
+                    Archive
+                  </Button>
+                )}
+              </div>
+              <div className="flex gap-2">
+                <Button variant="ghost" onClick={() => setShowDealModal(false)}>Cancel</Button>
+                <Button 
+                  onClick={handleDealSubmit}
+                  disabled={!dealForm.title || !dealForm.companyId || createDealMutation.isPending || updateDealMutation.isPending}
+                  className="bg-orange-500 hover:bg-orange-600"
+                  data-testid="button-save-deal"
+                >
+                  {editingDeal ? 'Update' : 'Create'} Deal
+                </Button>
+              </div>
             </div>
           </div>
         </DialogContent>
