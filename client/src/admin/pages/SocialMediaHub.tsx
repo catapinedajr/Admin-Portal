@@ -1334,6 +1334,9 @@ function SocialMediaHubContent() {
   const [editingPost, setEditingPost] = useState<SocialPost | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  
+  // Integration manager for feature gating
+  const integrations = useIntegrationManager();
 
   // Data queries
   const { data: posts = [], isLoading: postsLoading } = useQuery<SocialPostWithMetrics[]>({
@@ -1444,19 +1447,42 @@ function SocialMediaHubContent() {
           <StatCard title="Posted" value={stats?.posted || 0} icon={Send} color="green" />
         </div>
 
-        {/* No API Mode Info Banner */}
-        <div className="flex items-start gap-3 p-4 bg-zinc-800/50 border border-zinc-700 rounded-lg">
-          <Info className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-          <div>
-            <p className="text-sm text-zinc-300">
-              <span className="font-medium text-white">Manual Mode Active</span> — Use this hub to plan, draft, and organize your social content. 
-              Copy posts to clipboard and publish manually to your platforms.
-            </p>
-            <p className="text-xs text-zinc-500 mt-1">
-              Live analytics and auto-posting will unlock when you connect social APIs in Settings.
-            </p>
+        {/* Mode Status Banner */}
+        {integrations.hasAnyActiveIntegration ? (
+          <div className="flex items-start gap-3 p-4 bg-green-900/20 border border-green-700 rounded-lg">
+            <Zap className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-zinc-300">
+                  <span className="font-medium text-green-400">API Mode Active</span> — Connected platforms: {integrations.getConnectedPlatforms().map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(', ')}
+                </p>
+                <a href="/admin/settings" className="text-xs text-orange-400 hover:text-orange-300 flex items-center gap-1">
+                  Manage <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+              <p className="text-xs text-zinc-500 mt-1">
+                Auto-posting and live analytics are available for connected platforms.
+              </p>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex items-start gap-3 p-4 bg-zinc-800/50 border border-zinc-700 rounded-lg">
+            <Info className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-zinc-300">
+                  <span className="font-medium text-white">Manual Mode Active</span> — Use this hub to plan, draft, and organize your social content.
+                </p>
+                <a href="/admin/settings" className="text-xs text-orange-400 hover:text-orange-300 flex items-center gap-1">
+                  Connect APIs <Power className="w-3 h-3" />
+                </a>
+              </div>
+              <p className="text-xs text-zinc-500 mt-1">
+                Copy posts to clipboard and publish manually. Connect social APIs in Settings to unlock auto-posting.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Main Content */}
         <div className="grid grid-cols-3 gap-6">

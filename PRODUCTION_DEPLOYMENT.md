@@ -63,6 +63,10 @@ VITE_STRIPE_PUBLIC_KEY=pk_live_your-stripe-public-key
 # Admin Configuration
 ADMIN_EMAIL=admin@hodlearn.com
 ADMIN_PASSWORD=your-secure-admin-password
+
+# Encryption Key (Required - for API credentials stored in database)
+# Generate with: openssl rand -hex 32
+SETTINGS_ENCRYPTION_KEY=your-64-character-hex-encryption-key
 ```
 
 ### Optional Variables
@@ -284,11 +288,70 @@ The application expects these products:
 
 ---
 
+## Security & Secrets Management
+
+### AWS Secrets Manager (Recommended)
+
+For production deployments, store sensitive credentials in AWS Secrets Manager rather than environment variables:
+
+```bash
+# Create secrets in AWS Secrets Manager
+aws secretsmanager create-secret \
+  --name hodlearn/production/database \
+  --secret-string '{"DATABASE_URL":"postgresql://..."}'
+
+aws secretsmanager create-secret \
+  --name hodlearn/production/encryption \
+  --secret-string '{"SETTINGS_ENCRYPTION_KEY":"your-64-char-hex-key"}'
+
+aws secretsmanager create-secret \
+  --name hodlearn/production/stripe \
+  --secret-string '{"STRIPE_SECRET_KEY":"sk_live_...","STRIPE_WEBHOOK_SECRET":"whsec_..."}'
+
+aws secretsmanager create-secret \
+  --name hodlearn/production/anthropic \
+  --secret-string '{"ANTHROPIC_API_KEY":"sk-ant-..."}'
+```
+
+### Encryption Key Generation
+
+The `SETTINGS_ENCRYPTION_KEY` is required for securely storing API credentials in the database (e.g., social media API keys). Generate a secure key:
+
+```bash
+# Generate 64-character hex key
+openssl rand -hex 32
+```
+
+**Important**: 
+- Never use the default fallback key in production
+- Store this key in AWS Secrets Manager
+- The application will log a security warning if running in production without this variable set
+
+### Social Media Integrations
+
+Social media API credentials (Twitter, LinkedIn, Instagram, Facebook) are stored encrypted in the database via the admin Settings page. The encryption uses:
+
+- **Algorithm**: AES-256-GCM (authenticated encryption)
+- **Key Derivation**: scrypt with unique random salt per credential
+- **Format**: `salt:iv:authTag:encryptedData` (4-part hex string)
+
+To manage integrations:
+1. Navigate to Admin > Settings > Social Integrations
+2. Click "Connect" for each platform
+3. Enter API credentials (bearer token, API key/secret)
+4. Click "Validate" to test the connection
+5. Credentials are encrypted before storage
+
+**Audit Logging**: All credential operations (create, update, delete, validate) are logged with admin ID and timestamp.
+
+---
+
 ## Post-Deployment Checklist
 
 ### Security
 
 - [ ] HTTPS enabled with valid SSL certificate
+- [ ] `SETTINGS_ENCRYPTION_KEY` set (not using fallback)
 - [ ] Database uses SSL connection (`?sslmode=require`)
 - [ ] Environment variables stored in AWS Secrets Manager
 - [ ] Rate limiting configured
