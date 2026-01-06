@@ -6,7 +6,7 @@ import {
   Twitter, Clock, ArrowRight, Edit2, Trash2,
   AlertCircle, CheckCircle2, Loader2, Link as LinkIcon, Sparkles,
   ChevronLeft, ChevronRight, X, Settings, Lock, Unlock, Save, RotateCcw,
-  Copy, Info, FileEdit, CalendarCheck
+  Copy, Info, FileEdit, CalendarCheck, ExternalLink
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import AdminLayout from "../components/AdminLayout";
@@ -429,6 +430,7 @@ function StatCard({ title, value, icon: Icon, color, subtext }: {
     green: "bg-green-500/20 text-green-400",
     purple: "bg-purple-500/20 text-purple-400",
     orange: "bg-orange-500/20 text-orange-400",
+    zinc: "bg-zinc-600/20 text-zinc-400",
   };
 
   return (
@@ -463,10 +465,12 @@ function PostCard({
   post: SocialPostWithMetrics; 
   onEdit: () => void;
   onDelete: () => void;
-  onMarkPosted: () => void;
+  onMarkPosted: (livePostUrl?: string) => void;
   onApprove: () => void;
 }) {
   const { toast } = useToast();
+  const [showMarkPostedDialog, setShowMarkPostedDialog] = useState(false);
+  const [livePostUrl, setLivePostUrl] = useState("");
   
   const handleCopyToClipboard = async () => {
     try {
@@ -475,6 +479,12 @@ function PostCard({
     } catch (err) {
       toast({ title: "Failed to copy", variant: "destructive" });
     }
+  };
+
+  const handleMarkPosted = () => {
+    onMarkPosted(livePostUrl || undefined);
+    setShowMarkPostedDialog(false);
+    setLivePostUrl("");
   };
 
   // Content status styles: drafted (gray), approved (purple)
@@ -532,6 +542,17 @@ function PostCard({
                 <span className="truncate">{post.linkUrl}</span>
               </div>
             )}
+            {(post as any).livePostUrl && (
+              <a 
+                href={(post as any).livePostUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 mt-2 text-xs text-green-400 hover:text-green-300"
+              >
+                <ExternalLink className="w-3 h-3" />
+                <span className="truncate">View live post</span>
+              </a>
+            )}
           </div>
         </div>
 
@@ -563,16 +584,52 @@ function PostCard({
               </Button>
             )}
             {canMarkPosted && (
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={onMarkPosted}
-                className="text-green-400 hover:text-green-300 hover:bg-green-500/10"
-                data-testid={`button-mark-posted-${post.id}`}
-              >
-                <CheckCircle2 className="w-4 h-4 mr-1" />
-                Mark Posted
-              </Button>
+              <Popover open={showMarkPostedDialog} onOpenChange={setShowMarkPostedDialog}>
+                <PopoverTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-green-400 hover:text-green-300 hover:bg-green-500/10"
+                    data-testid={`button-mark-posted-${post.id}`}
+                  >
+                    <CheckCircle2 className="w-4 h-4 mr-1" />
+                    Mark Posted
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80 bg-zinc-800 border-zinc-700" align="end">
+                  <div className="space-y-3">
+                    <div className="space-y-1">
+                      <Label className="text-zinc-300 text-sm">Live Post URL (optional)</Label>
+                      <Input
+                        value={livePostUrl}
+                        onChange={(e) => setLivePostUrl(e.target.value)}
+                        className="bg-zinc-900 border-zinc-700 text-white text-sm"
+                        placeholder="https://x.com/yourhandle/status/..."
+                        data-testid={`input-live-url-${post.id}`}
+                      />
+                      <p className="text-xs text-zinc-500">Paste the link to your published post</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setShowMarkPostedDialog(false)}
+                        className="flex-1 border-zinc-700 text-zinc-300"
+                      >
+                        Cancel
+                      </Button>
+                      <Button 
+                        size="sm"
+                        onClick={handleMarkPosted}
+                        className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                        data-testid={`button-confirm-posted-${post.id}`}
+                      >
+                        Confirm Posted
+                      </Button>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
             )}
             <Button 
               variant="ghost" 
@@ -627,6 +684,8 @@ function PostComposer({
     linkedDayIndex: "",
     scheduledDate: "",
     scheduledTime: "",
+    notes: "",
+    ctaGoal: "",
   });
 
   // Reset form when dialog opens/closes or post changes
@@ -642,6 +701,8 @@ function PostComposer({
           linkedDayIndex: post.linkedDayIndex?.toString() || "",
           scheduledDate: scheduledDate ? format(scheduledDate, "yyyy-MM-dd") : "",
           scheduledTime: scheduledDate ? format(scheduledDate, "HH:mm") : "",
+          notes: (post as any).notes || "",
+          ctaGoal: (post as any).ctaGoal || "",
         });
       } else {
         setFormData({
@@ -652,6 +713,8 @@ function PostComposer({
           linkedDayIndex: "",
           scheduledDate: "",
           scheduledTime: "",
+          notes: "",
+          ctaGoal: "",
         });
       }
     }
@@ -676,6 +739,8 @@ function PostComposer({
         campaignId: formData.campaignId ? parseInt(formData.campaignId) : null,
         linkedDayIndex: formData.linkedDayIndex ? parseInt(formData.linkedDayIndex) : null,
         scheduledAt,
+        notes: formData.notes || null,
+        ctaGoal: formData.ctaGoal || null,
         contentStatus: 'drafted', // New posts start as drafted
         publishStatus: 'planned', // New posts start as planned
       };
@@ -840,6 +905,38 @@ function PostComposer({
               className="bg-zinc-800 border-zinc-700 text-white"
               placeholder="https://hodlearn.com/..."
               data-testid="input-link-url"
+            />
+          </div>
+
+          {/* CTA Goal */}
+          <div className="space-y-2">
+            <Label className="text-zinc-300">CTA Goal (optional)</Label>
+            <Select
+              value={formData.ctaGoal}
+              onValueChange={(value) => setFormData({ ...formData, ctaGoal: value })}
+            >
+              <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white" data-testid="select-cta-goal">
+                <SelectValue placeholder="Select goal..." />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-800 border-zinc-700">
+                <SelectItem value="awareness">Brand Awareness</SelectItem>
+                <SelectItem value="app_signup">App Signup</SelectItem>
+                <SelectItem value="newsletter">Newsletter Subscribe</SelectItem>
+                <SelectItem value="engagement">Engagement</SelectItem>
+                <SelectItem value="traffic">Website Traffic</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Notes */}
+          <div className="space-y-2">
+            <Label className="text-zinc-300">Internal Notes (optional)</Label>
+            <Textarea
+              value={formData.notes}
+              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+              className="bg-zinc-800 border-zinc-700 text-white min-h-[60px]"
+              placeholder="Notes for your team..."
+              data-testid="input-notes"
             />
           </div>
         </div>
@@ -1270,8 +1367,11 @@ function SocialMediaHubContent() {
   });
 
   const markPostedMutation = useMutation({
-    mutationFn: async (postId: number) => {
-      await apiRequest("PATCH", `/api/admin/social/posts/${postId}`, { publishStatus: 'posted' });
+    mutationFn: async ({ postId, livePostUrl }: { postId: number; livePostUrl?: string }) => {
+      await apiRequest("PATCH", `/api/admin/social/posts/${postId}`, { 
+        publishStatus: 'posted',
+        livePostUrl: livePostUrl || null
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/social/posts"] });
@@ -1411,7 +1511,7 @@ function SocialMediaHubContent() {
                       post={post} 
                       onEdit={() => handleEditPost(post)}
                       onDelete={() => deleteMutation.mutate(post.id)}
-                      onMarkPosted={() => markPostedMutation.mutate(post.id)}
+                      onMarkPosted={(livePostUrl) => markPostedMutation.mutate({ postId: post.id, livePostUrl })}
                       onApprove={() => approveMutation.mutate(post.id)}
                     />
                   ))

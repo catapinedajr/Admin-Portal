@@ -246,6 +246,10 @@ export const socialPosts = pgTable("social_posts", {
   scheduledAt: timestamp("scheduled_at"),
   publishedAt: timestamp("published_at"),
   externalPostId: text("external_post_id"), // ID from Twitter/X API
+  // Manual tracking fields for no-API workflow
+  livePostUrl: text("live_post_url"), // URL to the actual posted content on the platform
+  notes: text("notes"), // Admin notes about the post
+  ctaGoal: text("cta_goal"), // The CTA/goal for this post (e.g., "app signup", "newsletter", "awareness")
   utmSource: text("utm_source").default("social"),
   utmMedium: text("utm_medium"),
   utmCampaign: text("utm_campaign"),
