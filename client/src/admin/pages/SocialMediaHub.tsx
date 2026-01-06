@@ -5,7 +5,7 @@ import {
   Plus, Calendar, Send, MousePointerClick, Users, TrendingUp,
   Twitter, Clock, ArrowRight, Edit2, Trash2,
   AlertCircle, CheckCircle2, Loader2, Link as LinkIcon, Sparkles,
-  ChevronLeft, ChevronRight, X
+  ChevronLeft, ChevronRight, X, Settings, Lock, Unlock, Save, RotateCcw
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -96,6 +98,312 @@ function AdminAuthGuard({ children }: { children: React.ReactNode }) {
 
   if (!adminUser) return null;
   return <>{children}</>;
+}
+
+// ============================================
+// AI INSTRUCTIONS DEFAULTS
+// ============================================
+
+const DEFAULT_SOCIAL_AI_INSTRUCTIONS = `You are a social media content creator for HODLearn, a Bitcoin education platform targeting working professionals.
+
+## CONTENT PHILOSOPHY
+**Target**: Working professionals interested in learning about Bitcoin
+**Approach**: Curiosity-driven hooks that lead to educational content
+**Tone**: Professional, engaging, and never preachy or "moon-bro" culture
+
+## PLATFORM GUIDELINES
+**Twitter/X**: 
+- Hook in first line (under 40 characters)
+- Clear call-to-action
+- Use relevant Bitcoin hashtags sparingly
+- Link to HODLearn lesson when relevant
+
+## EVERGREEN CONTENT GUIDELINES (CRITICAL)
+Your content must remain relevant for months or years. Follow these rules strictly:
+
+**DO:**
+- Focus on timeless Bitcoin principles and fundamentals
+- Use curiosity hooks that don't reference current events
+- Ask thought-provoking questions about money and financial freedom
+- Reference historical Bitcoin milestones with context
+- Promote educational content over price speculation
+
+**DON'T:**
+- Reference specific Bitcoin prices or "ATH" (all-time high)
+- Mention current events, regulations, or news
+- Use time-sensitive language ("today", "this week", "recently")
+- Include specific years for recent events
+- Make price predictions or speculation
+
+## OUTPUT REQUIREMENTS
+Create social posts that:
+- Spark curiosity without clickbait
+- Drive traffic to HODLearn lessons
+- Build the HODLearn brand as the trusted Bitcoin education source
+- Include appropriate hashtags for discoverability
+
+## QUALITY CHECKLIST
+- Hook under 40 characters that creates curiosity
+- Clear value proposition for the reader
+- EVERGREEN: No prices, dates, or current events
+- Call-to-action that drives engagement`;
+
+// ============================================
+// AI INSTRUCTIONS EDITOR
+// ============================================
+
+interface AiInstructionsData {
+  type: string;
+  name: string;
+  instructions: string;
+  isLocked: boolean;
+  exists: boolean;
+  updatedAt?: string;
+}
+
+function AIInstructionsEditor({ type, defaultInstructions }: { type: 'content' | 'social'; defaultInstructions: string }) {
+  const { toast } = useToast();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [editedInstructions, setEditedInstructions] = useState("");
+  const [showUnlockConfirm, setShowUnlockConfirm] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
+
+  const { data: instructionsData, isLoading } = useQuery<AiInstructionsData>({
+    queryKey: ["/api/admin/ai-instructions", type],
+    queryFn: async () => {
+      const res = await fetch(`/api/admin/ai-instructions/${type}`, { credentials: 'include' });
+      return res.json();
+    },
+  });
+
+  useEffect(() => {
+    if (instructionsData?.exists) {
+      setEditedInstructions(instructionsData.instructions);
+    } else {
+      setEditedInstructions(defaultInstructions);
+    }
+    setHasChanges(false);
+  }, [instructionsData, defaultInstructions]);
+
+  const handleTextChange = (value: string) => {
+    setEditedInstructions(value);
+    const originalValue = instructionsData?.exists ? instructionsData.instructions : defaultInstructions;
+    setHasChanges(value !== originalValue);
+  };
+
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", `/api/admin/ai-instructions/${type}`, {
+        name: type === 'content' ? 'Content AI Instructions' : 'Social AI Instructions',
+        instructions: editedInstructions
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/ai-instructions", type] });
+      toast({ title: "Instructions saved successfully!" });
+      setHasChanges(false);
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to save", description: error.message, variant: "destructive" });
+    }
+  });
+
+  const lockMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", `/api/admin/ai-instructions/${type}/lock`, {});
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/ai-instructions", type] });
+      toast({ title: "Instructions locked" });
+    }
+  });
+
+  const unlockMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", `/api/admin/ai-instructions/${type}/unlock`, { confirmed: true });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/ai-instructions", type] });
+      toast({ title: "Instructions unlocked" });
+      setShowUnlockConfirm(false);
+    }
+  });
+
+  const resetMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", `/api/admin/ai-instructions/${type}/reset`, { confirmed: true });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/ai-instructions", type] });
+      setEditedInstructions(defaultInstructions);
+      toast({ title: "Instructions reset to default" });
+      setShowResetConfirm(false);
+      setHasChanges(false);
+    }
+  });
+
+  const isLocked = instructionsData?.isLocked ?? true;
+  const isUsingDefault = !instructionsData?.exists;
+
+  return (
+    <>
+      <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
+        <Card className="bg-zinc-900 border-zinc-800">
+          <CollapsibleTrigger asChild>
+            <CardHeader className="cursor-pointer hover:bg-zinc-800/50 transition-colors py-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {isExpanded ? <ChevronRight className="w-4 h-4 text-zinc-400 rotate-90" /> : <ChevronRight className="w-4 h-4 text-zinc-400" />}
+                  <Settings className="w-4 h-4 text-orange-500" />
+                  <CardTitle className="text-white text-sm">
+                    {type === 'content' ? 'Content AI Instructions' : 'Social AI Instructions'}
+                  </CardTitle>
+                </div>
+                <div className="flex items-center gap-2">
+                  {isUsingDefault && (
+                    <Badge className="bg-zinc-700 text-zinc-300 text-xs">Using Default</Badge>
+                  )}
+                  {isLocked ? (
+                    <Badge className="bg-red-500/20 text-red-400 text-xs"><Lock className="w-3 h-3 mr-1" />Locked</Badge>
+                  ) : (
+                    <Badge className="bg-green-500/20 text-green-400 text-xs"><Unlock className="w-3 h-3 mr-1" />Unlocked</Badge>
+                  )}
+                </div>
+              </div>
+            </CardHeader>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <CardContent className="pt-0 space-y-4">
+              {isLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="w-6 h-6 text-orange-500 animate-spin" />
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs text-zinc-500">
+                      {instructionsData?.updatedAt && `Last updated: ${new Date(instructionsData.updatedAt).toLocaleDateString()}`}
+                    </div>
+                    <div className="flex gap-2">
+                      {isLocked ? (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setShowUnlockConfirm(true)}
+                          className="border-zinc-700 text-zinc-300 text-xs"
+                          data-testid="button-unlock-social-instructions"
+                        >
+                          <Unlock className="w-3 h-3 mr-1" />
+                          Unlock to Edit
+                        </Button>
+                      ) : (
+                        <>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowResetConfirm(true)}
+                            className="border-zinc-700 text-zinc-300 text-xs"
+                            data-testid="button-reset-social-instructions"
+                          >
+                            <RotateCcw className="w-3 h-3 mr-1" />
+                            Reset to Default
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => lockMutation.mutate()}
+                            disabled={lockMutation.isPending}
+                            className="border-zinc-700 text-zinc-300 text-xs"
+                            data-testid="button-lock-social-instructions"
+                          >
+                            <Lock className="w-3 h-3 mr-1" />
+                            Lock
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <Textarea
+                    value={editedInstructions}
+                    onChange={(e) => handleTextChange(e.target.value)}
+                    disabled={isLocked}
+                    className={`bg-zinc-800 border-zinc-700 text-white font-mono text-xs min-h-[300px] ${isLocked ? 'opacity-60 cursor-not-allowed' : ''}`}
+                    placeholder="AI Instructions..."
+                    data-testid="input-social-ai-instructions"
+                  />
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs text-zinc-500">
+                      These instructions guide AI when generating social media posts.
+                    </div>
+                    {!isLocked && hasChanges && (
+                      <Button
+                        onClick={() => saveMutation.mutate()}
+                        disabled={saveMutation.isPending}
+                        className="bg-orange-500 hover:bg-orange-600 text-xs"
+                        data-testid="button-save-social-instructions"
+                      >
+                        {saveMutation.isPending ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Save className="w-3 h-3 mr-1" />}
+                        Save Changes
+                      </Button>
+                    )}
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
+
+      <AlertDialog open={showUnlockConfirm} onOpenChange={setShowUnlockConfirm}>
+        <AlertDialogContent className="bg-zinc-900 border-zinc-800">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Unlock AI Instructions?</AlertDialogTitle>
+            <AlertDialogDescription className="text-zinc-400">
+              Are you sure you want to unlock these instructions for editing? Changes to AI instructions will affect all future social media content generation.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-zinc-700 text-zinc-300">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => unlockMutation.mutate()}
+              className="bg-orange-500 hover:bg-orange-600"
+              data-testid="button-confirm-unlock-social"
+            >
+              Yes, Unlock
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={showResetConfirm} onOpenChange={setShowResetConfirm}>
+        <AlertDialogContent className="bg-zinc-900 border-zinc-800">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Reset to Default Instructions?</AlertDialogTitle>
+            <AlertDialogDescription className="text-zinc-400">
+              Are you sure you want to reset to the default AI instructions? This will delete all custom changes.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-zinc-700 text-zinc-300">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => resetMutation.mutate()}
+              className="bg-red-500 hover:bg-red-600"
+              data-testid="button-confirm-reset-social"
+            >
+              Yes, Reset
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
 }
 
 // ============================================
@@ -1003,6 +1311,8 @@ function SocialMediaHubContent() {
           <StatCard title="Total Clicks" value={stats?.totalClicks?.toLocaleString() || 0} icon={MousePointerClick} color="purple" />
           <StatCard title="Signups" value={stats?.totalSignups || 0} icon={Users} subtext="From social" color="orange" />
         </div>
+
+        <AIInstructionsEditor type="social" defaultInstructions={DEFAULT_SOCIAL_AI_INSTRUCTIONS} />
 
         {/* Main Content */}
         <div className="grid grid-cols-3 gap-6">
