@@ -1793,12 +1793,15 @@ export const paywallSettings = pgTable("paywall_settings", {
   freeDayThreshold: integer("free_day_threshold").notNull().default(7), // Days 1-7 free by default
   paywallEnabled: boolean("paywall_enabled").notNull().default(true),
   // Feature-level paywall (JSON array of feature keys that require subscription)
+  // Valid keys: safety, wallet, transactions, transfer, hodl, dca, inflation, fees
   premiumFeatures: json("premium_features").$type<string[]>().default([
-    'dca_calculator',
-    'hodl_simulator', 
-    'transaction_simulator',
-    'inflation_calculator',
-    'security_training'
+    'wallet',
+    'transactions', 
+    'transfer',
+    'hodl',
+    'dca',
+    'inflation',
+    'fees'
   ]),
   // Messaging
   paywallTitle: text("paywall_title").default("Unlock Your Bitcoin Education"),

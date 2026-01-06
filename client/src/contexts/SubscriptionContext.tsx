@@ -1,6 +1,15 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 export type SubscriptionTier = 'free' | 'premium';
+
+interface PaywallConfig {
+  freeDayThreshold: number;
+  paywallEnabled: boolean;
+  premiumFeatures: string[];
+  paywallTitle: string;
+  paywallMessage: string;
+}
 
 interface SubscriptionContextType {
   subscriptionTier: SubscriptionTier;
@@ -10,23 +19,19 @@ interface SubscriptionContextType {
   canAccessDay: (dayIndex: number) => boolean;
   canAccessSimulator: (simulatorId: string) => boolean;
   toggleSubscription: () => void;
+  paywallConfig: PaywallConfig | null;
+  isPaywallConfigLoading: boolean;
 }
 
 const SubscriptionContext = createContext<SubscriptionContextType | undefined>(undefined);
 
-const FREE_TIER_MAX_DAY = 6; // Days 0-6 are free (7 days total)
-
-const FREE_TIER_SIMULATORS = [
-  'inflation', // Basic inflation calculator
-  'dca' // Basic DCA calculator
-];
-
-const PREMIUM_SIMULATORS = [
-  'transaction', // Transaction builder
-  'hodl', // HODL strategy comparison
-  'settlement', // Settlement speed comparison
-  'mining' // Mining economics (if we had it)
-];
+const DEFAULT_PAYWALL_CONFIG: PaywallConfig = {
+  freeDayThreshold: 7,
+  paywallEnabled: true,
+  premiumFeatures: ['wallet', 'transactions', 'transfer', 'hodl', 'dca', 'inflation', 'fees'],
+  paywallTitle: 'Unlock Your Bitcoin Education',
+  paywallMessage: 'Subscribe to access all 336 days of Bitcoin mastery and premium tools.',
+};
 
 interface SubscriptionProviderProps {
   children: ReactNode;
@@ -35,7 +40,14 @@ interface SubscriptionProviderProps {
 export function SubscriptionProvider({ children }: SubscriptionProviderProps) {
   const [subscriptionTier, setSubscriptionTierState] = useState<SubscriptionTier>('free');
 
-  // Load subscription state from localStorage on mount
+  const { data: paywallConfig, isLoading: isPaywallConfigLoading } = useQuery<PaywallConfig>({
+    queryKey: ['/api/paywall-config'],
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
+  const effectiveConfig = paywallConfig || DEFAULT_PAYWALL_CONFIG;
+
   useEffect(() => {
     const savedTier = localStorage.getItem('hodlearn_subscription_tier') as SubscriptionTier;
     if (savedTier && (savedTier === 'free' || savedTier === 'premium')) {
@@ -45,7 +57,6 @@ export function SubscriptionProvider({ children }: SubscriptionProviderProps) {
     }
   }, []);
 
-  // Save subscription state to localStorage when it changes
   const setSubscriptionTier = (tier: SubscriptionTier) => {
     setSubscriptionTierState(tier);
     localStorage.setItem('hodlearn_subscription_tier', tier);
@@ -57,13 +68,15 @@ export function SubscriptionProvider({ children }: SubscriptionProviderProps) {
   };
 
   const canAccessDay = (dayIndex: number): boolean => {
+    if (!effectiveConfig.paywallEnabled) return true;
     if (subscriptionTier === 'premium') return true;
-    return dayIndex <= FREE_TIER_MAX_DAY;
+    return dayIndex <= effectiveConfig.freeDayThreshold;
   };
 
   const canAccessSimulator = (simulatorId: string): boolean => {
+    if (!effectiveConfig.paywallEnabled) return true;
     if (subscriptionTier === 'premium') return true;
-    return FREE_TIER_SIMULATORS.includes(simulatorId);
+    return !effectiveConfig.premiumFeatures.includes(simulatorId);
   };
 
   const contextValue: SubscriptionContextType = {
@@ -73,7 +86,9 @@ export function SubscriptionProvider({ children }: SubscriptionProviderProps) {
     isPremiumTier: subscriptionTier === 'premium',
     canAccessDay,
     canAccessSimulator,
-    toggleSubscription
+    toggleSubscription,
+    paywallConfig: effectiveConfig,
+    isPaywallConfigLoading,
   };
 
   return (

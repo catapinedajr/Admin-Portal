@@ -6,7 +6,7 @@ import { db } from "./db";
 import { communityStorage } from "./community";
 import { authService } from "./auth";
 import { registerWalletRoutes } from "./wallet-routes";
-import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentGenerationSteps, userQuizAnswers, registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, dailyDiscussions, users, adCampaigns, adCreatives, adImpressions, adClicks, affiliateProducts, affiliateClicks, referralPartners, storeProducts } from "@shared/schema";
+import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentGenerationSteps, userQuizAnswers, registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, dailyDiscussions, users, adCampaigns, adCreatives, adImpressions, adClicks, affiliateProducts, affiliateClicks, referralPartners, storeProducts, paywallSettings } from "@shared/schema";
 import { eq, sql, desc, and } from "drizzle-orm";
 import { v4 as uuidv4 } from 'uuid';
 import { randomUUID } from 'crypto';
@@ -107,6 +107,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Logout error:", error);
       res.status(500).json({ message: "Logout failed" });
+    }
+  });
+
+  // ============================================
+  // PUBLIC PAYWALL SETTINGS (for user-facing app)
+  // ============================================
+  
+  // Get paywall configuration (public - used by SubscriptionContext)
+  app.get("/api/paywall-config", async (req, res) => {
+    try {
+      const [settings] = await db.select().from(paywallSettings);
+      
+      if (!settings) {
+        // Return defaults if not configured
+        return res.json({
+          freeDayThreshold: 7,
+          paywallEnabled: true,
+          premiumFeatures: ['wallet', 'transactions', 'transfer', 'hodl', 'dca', 'inflation', 'fees'],
+          paywallTitle: 'Unlock Your Bitcoin Education',
+          paywallMessage: 'Subscribe to access all 336 days of Bitcoin mastery and premium tools.',
+        });
+      }
+      
+      // Return only the settings needed for client-side paywall logic
+      res.json({
+        freeDayThreshold: settings.freeDayThreshold,
+        paywallEnabled: settings.paywallEnabled,
+        premiumFeatures: settings.premiumFeatures,
+        paywallTitle: settings.paywallTitle,
+        paywallMessage: settings.paywallMessage,
+      });
+    } catch (error) {
+      console.error("Error fetching paywall config:", error);
+      // Return safe defaults on error
+      res.json({
+        freeDayThreshold: 7,
+        paywallEnabled: true,
+        premiumFeatures: ['wallet', 'transactions', 'transfer', 'hodl', 'dca', 'inflation', 'fees'],
+        paywallTitle: 'Unlock Your Bitcoin Education',
+        paywallMessage: 'Subscribe to access all 336 days of Bitcoin mastery and premium tools.',
+      });
     }
   });
 

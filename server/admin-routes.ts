@@ -1,5 +1,6 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { randomBytes, createCipheriv, createDecipheriv, scryptSync } from "crypto";
+import { z } from "zod";
 import { adminAuthService } from "./admin-auth";
 import { db } from "./db";
 import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema, systemSettings, aiInstructions, insertAiInstructionsSchema, socialIntegrations, paywallSettings } from "@shared/schema";
@@ -4197,15 +4198,29 @@ Return ONLY the post content, nothing else.`;
     }
   });
 
+  // Valid simulator/feature keys
+  const VALID_FEATURE_KEYS = ['safety', 'wallet', 'transactions', 'transfer', 'hodl', 'dca', 'inflation', 'fees'];
+  
+  // Zod schema for paywall settings validation
+  const paywallSettingsUpdateSchema = z.object({
+    freeDayThreshold: z.number().int().min(0).max(336).optional(),
+    paywallEnabled: z.boolean().optional(),
+    premiumFeatures: z.array(z.enum(['safety', 'wallet', 'transactions', 'transfer', 'hodl', 'dca', 'inflation', 'fees'])).optional(),
+    paywallTitle: z.string().min(1).max(200).optional(),
+    paywallMessage: z.string().min(1).max(1000).optional(),
+  });
+
   // Save paywall settings
   app.post("/api/admin/paywall", requireAdminAuth, requireSuperAdmin, async (req: AdminRequest, res: Response) => {
     try {
-      const { freeDayThreshold, paywallEnabled, premiumFeatures, paywallTitle, paywallMessage } = req.body;
-      
-      // Validate freeDayThreshold
-      if (freeDayThreshold !== undefined && (freeDayThreshold < 0 || freeDayThreshold > 336)) {
-        return res.status(400).json({ message: "Free day threshold must be between 0 and 336" });
+      // Validate request body with Zod
+      const parseResult = paywallSettingsUpdateSchema.safeParse(req.body);
+      if (!parseResult.success) {
+        const errors = parseResult.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ');
+        return res.status(400).json({ message: `Validation failed: ${errors}` });
       }
+      
+      const { freeDayThreshold, paywallEnabled, premiumFeatures, paywallTitle, paywallMessage } = parseResult.data;
       
       // Check if settings exist
       const [existing] = await db.select().from(paywallSettings);
@@ -4253,26 +4268,58 @@ Return ONLY the post content, nothing else.`;
   // Get Stripe connection status and stats
   app.get("/api/admin/stripe/status", requireAdminAuth, async (req: AdminRequest, res: Response) => {
     try {
-      // Check if we have Stripe products synced
+      // Check if Stripe tables exist first
+      const tableCheck = await db.execute(sql`
+        SELECT EXISTS (
+          SELECT FROM information_schema.tables 
+          WHERE table_schema = 'public' AND table_name = 'products'
+        ) as products_exists,
+        EXISTS (
+          SELECT FROM information_schema.tables 
+          WHERE table_schema = 'public' AND table_name = 'prices'
+        ) as prices_exists,
+        EXISTS (
+          SELECT FROM information_schema.tables 
+          WHERE table_schema = 'public' AND table_name = 'subscriptions'
+        ) as subscriptions_exists
+      `);
+      
+      const tablesExist = tableCheck.rows[0];
+      
+      if (!tablesExist?.products_exists || !tablesExist?.prices_exists) {
+        return res.json({
+          connected: false,
+          productCount: 0,
+          priceCount: 0,
+          activeSubscriptions: 0,
+          message: "Stripe integration pending. Run Stripe sync to initialize.",
+        });
+      }
+      
+      // Tables exist, fetch counts
       const productCount = await db.execute(sql`SELECT COUNT(*) as count FROM products`);
       const priceCount = await db.execute(sql`SELECT COUNT(*) as count FROM prices`);
-      const subscriptionCount = await db.execute(sql`SELECT COUNT(*) as count FROM subscriptions WHERE status = 'active'`);
+      
+      let activeSubscriptions = 0;
+      if (tablesExist?.subscriptions_exists) {
+        const subscriptionCount = await db.execute(sql`SELECT COUNT(*) as count FROM subscriptions WHERE status = 'active'`);
+        activeSubscriptions = Number(subscriptionCount.rows[0]?.count || 0);
+      }
       
       res.json({
         connected: true,
         productCount: Number(productCount.rows[0]?.count || 0),
         priceCount: Number(priceCount.rows[0]?.count || 0),
-        activeSubscriptions: Number(subscriptionCount.rows[0]?.count || 0),
+        activeSubscriptions,
       });
     } catch (error) {
       console.error("Error fetching Stripe status:", error);
-      // Return disconnected status if tables don't exist
       res.json({
         connected: false,
         productCount: 0,
         priceCount: 0,
         activeSubscriptions: 0,
-        error: "Stripe tables not initialized",
+        error: "Unable to check Stripe status",
       });
     }
   });
