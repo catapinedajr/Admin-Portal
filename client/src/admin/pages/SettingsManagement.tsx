@@ -93,6 +93,7 @@ interface SystemSetting {
 
 const API_KEY_PRESETS = [
   { key: 'ANTHROPIC_API_KEY', description: 'Anthropic Claude API key for AI content generation' },
+  { key: 'OPENAI_API_KEY', description: 'OpenAI API key for DALL-E image generation' },
   { key: 'STRIPE_SECRET_KEY', description: 'Stripe secret key for payment processing' },
   { key: 'STRIPE_WEBHOOK_SECRET', description: 'Stripe webhook signing secret' },
 ];
