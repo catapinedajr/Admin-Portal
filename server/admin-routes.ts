@@ -9,12 +9,30 @@ interface AdminRequest extends Request {
   admin?: any;
 }
 
+// Encryption settings for database-stored API keys
+const ENCRYPTION_KEY = process.env.SETTINGS_ENCRYPTION_KEY || 'hodlearn-default-key-change-in-prod-32';
+const ALGORITHM = 'aes-256-gcm';
+
+function decryptSettingValue(encryptedText: string): string {
+  const parts = encryptedText.split(':');
+  if (parts.length !== 3) throw new Error('Invalid encrypted format');
+  const key = scryptSync(ENCRYPTION_KEY, 'salt', 32);
+  const iv = Buffer.from(parts[0], 'hex');
+  const authTag = Buffer.from(parts[1], 'hex');
+  const encrypted = parts[2];
+  const decipher = createDecipheriv(ALGORITHM, key, iv);
+  decipher.setAuthTag(authTag);
+  let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+  return decrypted;
+}
+
 // Helper function to create Anthropic client with environment-aware API key handling
-// Works in both Replit (AI_INTEGRATIONS_*) and production (ANTHROPIC_API_KEY)
+// Priority: 1) Replit AI Integrations, 2) Environment variable, 3) Database-stored key
 async function createAnthropicClient() {
   const Anthropic = (await import('@anthropic-ai/sdk')).default;
   
-  // Replit AI Integrations (development)
+  // 1. Replit AI Integrations (development)
   if (process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY) {
     return new Anthropic({
       apiKey: process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
@@ -22,14 +40,27 @@ async function createAnthropicClient() {
     });
   }
   
-  // Production (AWS) - uses standard ANTHROPIC_API_KEY
+  // 2. Production environment variable (AWS)
   if (process.env.ANTHROPIC_API_KEY) {
     return new Anthropic({
       apiKey: process.env.ANTHROPIC_API_KEY,
     });
   }
   
-  throw new Error('No Anthropic API key configured. Set AI_INTEGRATIONS_ANTHROPIC_API_KEY (Replit) or ANTHROPIC_API_KEY (production).');
+  // 3. Database-stored key (set via admin Settings page)
+  try {
+    const [setting] = await db.select().from(systemSettings).where(eq(systemSettings.key, 'ANTHROPIC_API_KEY'));
+    if (setting) {
+      const decryptedKey = decryptSettingValue(setting.encryptedValue);
+      return new Anthropic({
+        apiKey: decryptedKey,
+      });
+    }
+  } catch (error) {
+    console.error('Failed to retrieve API key from database:', error);
+  }
+  
+  throw new Error('No Anthropic API key configured. Set via: 1) Replit AI Integration, 2) ANTHROPIC_API_KEY env var, or 3) Admin Settings page.');
 }
 
 const requireAdminAuth = async (req: AdminRequest, res: Response, next: NextFunction) => {
@@ -3348,10 +3379,7 @@ Return ONLY the post content, nothing else.`;
   // SYSTEM SETTINGS (Super Admin Only)
   // ============================================
 
-  const ENCRYPTION_KEY = process.env.SETTINGS_ENCRYPTION_KEY || 'hodlearn-default-key-change-in-prod-32';
-  const ALGORITHM = 'aes-256-gcm';
-
-  function encryptValue(text: string): string {
+  function encryptSettingValue(text: string): string {
     const key = scryptSync(ENCRYPTION_KEY, 'salt', 32);
     const iv = randomBytes(16);
     const cipher = createCipheriv(ALGORITHM, key, iv);
@@ -3359,20 +3387,6 @@ Return ONLY the post content, nothing else.`;
     encrypted += cipher.final('hex');
     const authTag = cipher.getAuthTag();
     return iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted;
-  }
-
-  function decryptValue(encryptedText: string): string {
-    const parts = encryptedText.split(':');
-    if (parts.length !== 3) throw new Error('Invalid encrypted format');
-    const key = scryptSync(ENCRYPTION_KEY, 'salt', 32);
-    const iv = Buffer.from(parts[0], 'hex');
-    const authTag = Buffer.from(parts[1], 'hex');
-    const encrypted = parts[2];
-    const decipher = createDecipheriv(ALGORITHM, key, iv);
-    decipher.setAuthTag(authTag);
-    let decrypted = decipher.update(encrypted, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
   }
 
   function maskApiKey(key: string): string {
@@ -3418,7 +3432,7 @@ Return ONLY the post content, nothing else.`;
         return res.status(400).json({ message: "Key and value are required" });
       }
       
-      const encryptedValue = encryptValue(value);
+      const encryptedValue = encryptSettingValue(value);
       const maskedValue = maskApiKey(value);
       
       const existing = await db.select().from(systemSettings).where(eq(systemSettings.key, key));
@@ -3474,7 +3488,7 @@ Return ONLY the post content, nothing else.`;
         return res.status(404).json({ message: "Setting not found" });
       }
       
-      const decryptedValue = decryptValue(setting.encryptedValue);
+      const decryptedValue = decryptSettingValue(setting.encryptedValue);
       res.json({ key, value: decryptedValue });
     } catch (error) {
       console.error("Error decrypting setting:", error);
