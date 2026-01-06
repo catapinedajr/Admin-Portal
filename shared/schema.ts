@@ -71,6 +71,16 @@ export const adminSessions = pgTable("admin_sessions", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+// Admin password reset tokens
+export const adminPasswordResetTokens = pgTable("admin_password_reset_tokens", {
+  id: serial("id").primaryKey(),
+  adminId: integer("admin_id").notNull().references(() => adminUsers.id, { onDelete: 'cascade' }),
+  token: text("token").notNull().unique(),
+  expiresAt: timestamp("expires_at").notNull(),
+  usedAt: timestamp("used_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 // Advertising clients - companies that advertise with HODLearn
 export const advertisingClients = pgTable("advertising_clients", {
   id: serial("id").primaryKey(),

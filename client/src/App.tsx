@@ -22,6 +22,7 @@ import ContentManagement from "@/admin/pages/ContentManagement";
 import MarketingManagement from "@/admin/pages/MarketingManagement";
 import StoreManagement from "@/admin/pages/StoreManagement";
 import UsersManagement from "@/admin/pages/UsersManagement";
+import AdminUsersManagement from "@/admin/pages/AdminUsersManagement";
 import SocialMediaHub from "@/admin/pages/SocialMediaHub";
 import CRMManagement from "@/admin/pages/CRMManagement";
 import RoadmapManagement from "@/admin/pages/RoadmapManagement";
@@ -92,7 +93,7 @@ function NewUserRedirect() {
   const [, setLocation] = useLocation();
   
   // Get user's current day progress
-  const { data: nextAvailableDay, isLoading: dayLoading } = useQuery({
+  const { data: nextAvailableDay, isLoading: dayLoading } = useQuery<{ dayIndex: number }>({
     queryKey: ['/api/next-available-day', 1],
     retry: false,
   });
@@ -157,6 +158,7 @@ function Router() {
         <Route path="/admin/okrs" component={GoalsManagement} />
         <Route path="/admin/kpis" component={KPIDashboard} />
         <Route path="/admin/settings" component={SettingsManagement} />
+        <Route path="/admin/team" component={AdminUsersManagement} />
         <Route path="/admin" component={KPIDashboard} />
         <Route path="/more" component={MorePage} />
         <Route path="/account" component={AccountPage} />

@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import path from "path";
+import rateLimit from "express-rate-limit";
 import { storage } from "./storage";
 import { db } from "./db";
 import { communityStorage } from "./community";
@@ -12,6 +13,41 @@ import { v4 as uuidv4 } from 'uuid';
 import { randomUUID } from 'crypto';
 import { validateContentMiddleware, validateContent, performFrameworkChecks } from "./content-validation";
 import { protectContentDatabase, ensureFrameworkCompliance, approvalTracker, logContentOperation } from "./database-protection";
+
+// Rate limiting configurations for production security
+const authRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // 5 attempts per 15 minutes for auth endpoints
+  message: { message: "Too many login attempts. Please try again in 15 minutes." },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true, // Don't count successful logins
+});
+
+const adminAuthRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // 5 attempts per 15 minutes for admin login
+  message: { message: "Too many admin login attempts. Please try again in 15 minutes." },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+});
+
+const apiRateLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 100, // 100 requests per minute for authenticated API
+  message: { message: "Too many requests. Please slow down." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const publicRateLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 200, // 200 requests per minute for public endpoints
+  message: { message: "Too many requests. Please slow down." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // Simplified - no authentication needed
 function setDefaultUser(req: any, res: any, next: any) {
@@ -44,6 +80,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(401).json({ message: "Authentication failed" });
     }
   };
+
+  // Apply rate limiting to authentication routes (strict limits for security)
+  app.use("/api/auth/login", authRateLimiter);
+  app.use("/api/auth/register", authRateLimiter);
+  app.use("/api/auth/forgot-password", authRateLimiter);
+  app.use("/api/auth/reset-password", authRateLimiter);
 
   // Authentication routes
   app.post("/api/auth/register", async (req, res) => {

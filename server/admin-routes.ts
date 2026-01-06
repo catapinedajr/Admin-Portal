@@ -1,9 +1,20 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { randomBytes, createCipheriv, createDecipheriv, scryptSync } from "crypto";
+import rateLimit from "express-rate-limit";
 import { z } from "zod";
 import { adminAuthService } from "./admin-auth";
 import { db } from "./db";
-import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema, systemSettings, aiInstructions, insertAiInstructionsSchema, socialIntegrations, paywallSettings } from "@shared/schema";
+
+// Rate limiter for admin login (strict security)
+const adminLoginRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // 5 attempts per 15 minutes
+  message: { message: "Too many login attempts. Please try again in 15 minutes." },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+});
+import { adminLoginSchema, adminUsers, adminSessions, adminPasswordResetTokens, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema, systemSettings, aiInstructions, insertAiInstructionsSchema, socialIntegrations, paywallSettings } from "@shared/schema";
 import { count, eq, sql, and, sum, isNull } from "drizzle-orm";
 
 interface AdminRequest extends Request {
@@ -210,6 +221,10 @@ Respond in this exact JSON format:
 }
 
 export function registerAdminRoutes(app: Express) {
+  // Apply rate limiting to admin login (security)
+  app.use("/api/admin/login", adminLoginRateLimiter);
+  app.use("/api/admin/setup", adminLoginRateLimiter);
+  
   // Admin login
   app.post("/api/admin/login", async (req, res) => {
     try {
@@ -248,6 +263,134 @@ export function registerAdminRoutes(app: Express) {
     } catch (error) {
       console.error("Admin logout error:", error);
       res.status(500).json({ message: "Logout failed" });
+    }
+  });
+
+  // Admin forgot password - request reset token
+  app.post("/api/admin/forgot-password", adminLoginRateLimiter, async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+      
+      // Find admin by email
+      const [admin] = await db.select().from(adminUsers).where(eq(adminUsers.email, email));
+      
+      // Always return success to prevent email enumeration attacks
+      if (!admin || !admin.isActive) {
+        console.log(`Password reset requested for non-existent/inactive admin: ${email}`);
+        return res.json({ 
+          success: true, 
+          message: "If an account with that email exists, a reset link has been sent." 
+        });
+      }
+      
+      // Generate secure reset token
+      const token = randomBytes(32).toString('hex');
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour expiry
+      
+      // Delete any existing tokens for this admin
+      await db.delete(adminPasswordResetTokens).where(eq(adminPasswordResetTokens.adminId, admin.id));
+      
+      // Store new token
+      await db.insert(adminPasswordResetTokens).values({
+        adminId: admin.id,
+        token,
+        expiresAt,
+      });
+      
+      // In production, this would send an email
+      // For now, log the reset URL (remove in production!)
+      const resetUrl = `/admin/reset-password?token=${token}`;
+      console.log(`\n========================================`);
+      console.log(`PASSWORD RESET REQUESTED FOR: ${email}`);
+      console.log(`Reset URL: ${resetUrl}`);
+      console.log(`Token expires: ${expiresAt.toISOString()}`);
+      console.log(`========================================\n`);
+      
+      res.json({ 
+        success: true, 
+        message: "If an account with that email exists, a reset link has been sent.",
+        // Only include token in development for testing
+        ...(process.env.NODE_ENV === 'development' && { 
+          devToken: token,
+          devResetUrl: resetUrl
+        })
+      });
+    } catch (error) {
+      console.error("Forgot password error:", error);
+      res.status(500).json({ message: "Failed to process request" });
+    }
+  });
+
+  // Admin reset password - use token to set new password
+  app.post("/api/admin/reset-password", adminLoginRateLimiter, async (req, res) => {
+    try {
+      const { token, newPassword } = req.body;
+      
+      if (!token || !newPassword) {
+        return res.status(400).json({ message: "Token and new password are required" });
+      }
+      
+      if (newPassword.length < 8) {
+        return res.status(400).json({ message: "Password must be at least 8 characters" });
+      }
+      
+      // Find valid, unused token
+      const [resetToken] = await db.select()
+        .from(adminPasswordResetTokens)
+        .where(eq(adminPasswordResetTokens.token, token));
+      
+      if (!resetToken) {
+        return res.status(400).json({ message: "Invalid or expired reset token" });
+      }
+      
+      // Check if token is expired
+      if (new Date() > resetToken.expiresAt) {
+        await db.delete(adminPasswordResetTokens).where(eq(adminPasswordResetTokens.id, resetToken.id));
+        return res.status(400).json({ message: "Reset token has expired. Please request a new one." });
+      }
+      
+      // Check if token was already used
+      if (resetToken.usedAt) {
+        return res.status(400).json({ message: "This reset token has already been used" });
+      }
+      
+      // SECURITY: Verify the admin account is still active before allowing password reset
+      const [adminAccount] = await db.select().from(adminUsers).where(eq(adminUsers.id, resetToken.adminId));
+      if (!adminAccount || !adminAccount.isActive) {
+        await db.delete(adminPasswordResetTokens).where(eq(adminPasswordResetTokens.id, resetToken.id));
+        return res.status(400).json({ message: "This account has been deactivated. Contact a super admin." });
+      }
+      
+      // Hash new password
+      const bcrypt = await import('bcryptjs');
+      const passwordHash = await bcrypt.hash(newPassword, 10);
+      
+      // Update admin password
+      await db.update(adminUsers)
+        .set({ passwordHash })
+        .where(eq(adminUsers.id, resetToken.adminId));
+      
+      // Mark token as used
+      await db.update(adminPasswordResetTokens)
+        .set({ usedAt: new Date() })
+        .where(eq(adminPasswordResetTokens.id, resetToken.id));
+      
+      // Invalidate all existing sessions for security
+      await db.delete(adminSessions).where(eq(adminSessions.adminId, resetToken.adminId));
+      
+      console.log(`Password reset successful for admin ID: ${resetToken.adminId}`);
+      
+      res.json({ 
+        success: true, 
+        message: "Password has been reset successfully. Please log in with your new password." 
+      });
+    } catch (error) {
+      console.error("Reset password error:", error);
+      res.status(500).json({ message: "Failed to reset password" });
     }
   });
 
@@ -2188,6 +2331,174 @@ Return ONLY the JSON object, no markdown code blocks or additional text.`;
     } catch (error: any) {
       console.error("Admin setup error:", error);
       res.status(400).json({ message: error.message || "Setup failed" });
+    }
+  });
+
+  // ============================================
+  // ADMIN USER MANAGEMENT ROUTES (Super Admin Only)
+  // ============================================
+
+  // Middleware for super admin check (used inline before definition below)
+  const requireSuperAdminInline = async (req: AdminRequest, res: Response, next: NextFunction) => {
+    if (!req.admin || req.admin.role !== 'super_admin') {
+      return res.status(403).json({ message: "Super admin access required" });
+    }
+    next();
+  };
+
+  // Get all admin users
+  app.get("/api/admin/admin-users", requireAdminAuth, requireSuperAdminInline, async (req: AdminRequest, res) => {
+    try {
+      const admins = await db.select({
+        id: adminUsers.id,
+        email: adminUsers.email,
+        firstName: adminUsers.firstName,
+        lastName: adminUsers.lastName,
+        role: adminUsers.role,
+        isActive: adminUsers.isActive,
+        lastLoginAt: adminUsers.lastLoginAt,
+        createdAt: adminUsers.createdAt,
+      }).from(adminUsers).orderBy(adminUsers.createdAt);
+      
+      res.json(admins);
+    } catch (error) {
+      console.error("Error fetching admin users:", error);
+      res.status(500).json({ message: "Failed to fetch admin users" });
+    }
+  });
+
+  // Zod schema for creating admin users
+  const createAdminSchema = z.object({
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    firstName: z.string().min(1, "First name is required").max(100),
+    lastName: z.string().min(1, "Last name is required").max(100),
+    role: z.enum(['admin', 'super_admin']).default('admin'),
+  });
+
+  // Create new admin user
+  app.post("/api/admin/admin-users", requireAdminAuth, requireSuperAdminInline, async (req: AdminRequest, res) => {
+    try {
+      // Validate input with Zod
+      const validatedData = createAdminSchema.parse(req.body);
+      const { email, password, firstName, lastName, role } = validatedData;
+      
+      // Check if email already exists
+      const [existing] = await db.select().from(adminUsers).where(eq(adminUsers.email, email));
+      if (existing) {
+        return res.status(400).json({ message: "An admin with this email already exists" });
+      }
+      
+      // Create the admin
+      const admin = await adminAuthService.createAdmin(email, password, firstName, lastName, role);
+      
+      res.json({
+        id: admin.id,
+        email: admin.email,
+        firstName: admin.firstName,
+        lastName: admin.lastName,
+        role: admin.role,
+        isActive: admin.isActive,
+        createdAt: admin.createdAt,
+      });
+    } catch (error: any) {
+      console.error("Error creating admin user:", error);
+      res.status(500).json({ message: error.message || "Failed to create admin user" });
+    }
+  });
+
+  // Zod schema for updating admin users
+  const updateAdminSchema = z.object({
+    firstName: z.string().min(1).max(100).optional(),
+    lastName: z.string().min(1).max(100).optional(),
+    role: z.enum(['admin', 'super_admin']).optional(),
+    isActive: z.boolean().optional(),
+    newPassword: z.string().min(8, "Password must be at least 8 characters").optional(),
+  });
+
+  // Update admin user
+  app.patch("/api/admin/admin-users/:id", requireAdminAuth, requireSuperAdminInline, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      // Validate input with Zod
+      const validatedData = updateAdminSchema.parse(req.body);
+      const { firstName, lastName, role, isActive, newPassword } = validatedData;
+      
+      // Prevent self-demotion from super_admin
+      if (req.admin?.id === id && role && role !== 'super_admin') {
+        return res.status(400).json({ message: "You cannot demote yourself from super admin" });
+      }
+      
+      // Prevent self-deactivation
+      if (req.admin?.id === id && isActive === false) {
+        return res.status(400).json({ message: "You cannot deactivate your own account" });
+      }
+      
+      const updates: any = {};
+      if (firstName !== undefined) updates.firstName = firstName;
+      if (lastName !== undefined) updates.lastName = lastName;
+      if (role !== undefined) updates.role = role;
+      if (isActive !== undefined) updates.isActive = isActive;
+      
+      // Handle password update if provided
+      if (newPassword) {
+        const bcrypt = await import('bcryptjs');
+        updates.passwordHash = await bcrypt.hash(newPassword, 10);
+      }
+      
+      const [updated] = await db.update(adminUsers)
+        .set(updates)
+        .where(eq(adminUsers.id, id))
+        .returning({
+          id: adminUsers.id,
+          email: adminUsers.email,
+          firstName: adminUsers.firstName,
+          lastName: adminUsers.lastName,
+          role: adminUsers.role,
+          isActive: adminUsers.isActive,
+          lastLoginAt: adminUsers.lastLoginAt,
+          createdAt: adminUsers.createdAt,
+        });
+      
+      if (!updated) {
+        return res.status(404).json({ message: "Admin user not found" });
+      }
+      
+      res.json(updated);
+    } catch (error) {
+      console.error("Error updating admin user:", error);
+      res.status(500).json({ message: "Failed to update admin user" });
+    }
+  });
+
+  // Delete/deactivate admin user
+  app.delete("/api/admin/admin-users/:id", requireAdminAuth, requireSuperAdminInline, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      // Prevent self-deletion
+      if (req.admin?.id === id) {
+        return res.status(400).json({ message: "You cannot delete your own account" });
+      }
+      
+      // Soft delete by deactivating instead of hard delete
+      const [deactivated] = await db.update(adminUsers)
+        .set({ isActive: false })
+        .where(eq(adminUsers.id, id))
+        .returning();
+      
+      if (!deactivated) {
+        return res.status(404).json({ message: "Admin user not found" });
+      }
+      
+      // Invalidate all sessions for this admin
+      await db.delete(adminSessions).where(eq(adminSessions.adminId, id));
+      
+      res.json({ success: true, message: "Admin user deactivated" });
+    } catch (error) {
+      console.error("Error deleting admin user:", error);
+      res.status(500).json({ message: "Failed to delete admin user" });
     }
   });
 

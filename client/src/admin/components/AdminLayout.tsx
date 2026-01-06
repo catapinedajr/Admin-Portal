@@ -6,6 +6,7 @@ import {
   Megaphone, 
   ShoppingBag,
   Users,
+  UserCog,
   LogOut,
   ChevronRight,
   Menu,
@@ -36,6 +37,7 @@ const navItems = [
   { href: "/admin/crm", label: "B2B CRM", icon: Building2 },
   { href: "/admin/roadmap", label: "Roadmap", icon: Map },
   { href: "/admin/settings", label: "Settings", icon: Settings, superAdminOnly: true },
+  { href: "/admin/team", label: "Team", icon: UserCog, superAdminOnly: true },
 ];
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
