@@ -292,7 +292,7 @@ export const attributionEvents = pgTable("attribution_events", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-// Twitter/X account connection
+// Twitter/X account connection (OAuth-based)
 export const socialAccounts = pgTable("social_accounts", {
   id: serial("id").primaryKey(),
   platform: text("platform").notNull().default("twitter"),
@@ -303,6 +303,27 @@ export const socialAccounts = pgTable("social_accounts", {
   tokenExpiresAt: timestamp("token_expires_at"),
   isActive: boolean("is_active").notNull().default(true),
   lastSyncAt: timestamp("last_sync_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Self-service social API integrations (API key-based)
+export const socialIntegrations = pgTable("social_integrations", {
+  id: serial("id").primaryKey(),
+  platform: text("platform").notNull(), // twitter, linkedin, instagram, facebook
+  displayName: text("display_name").notNull(), // User-friendly name like "Twitter/X API"
+  apiKey: text("api_key"), // Encrypted - main API key
+  apiSecret: text("api_secret"), // Encrypted - API secret if required
+  bearerToken: text("bearer_token"), // Encrypted - Bearer token for API access
+  accessToken: text("access_token"), // Encrypted - OAuth access token
+  accessTokenSecret: text("access_token_secret"), // Encrypted - OAuth access token secret
+  webhookSecret: text("webhook_secret"), // Encrypted - Webhook verification secret
+  accountHandle: text("account_handle"), // Connected account handle (e.g., @hodlearn)
+  isActive: boolean("is_active").notNull().default(false),
+  isValidated: boolean("is_validated").notNull().default(false), // Has the API been tested successfully
+  lastValidatedAt: timestamp("last_validated_at"),
+  lastError: text("last_error"), // Last error message from validation
+  features: json("features"), // Array of enabled features: ['auto_post', 'analytics', 'replies']
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

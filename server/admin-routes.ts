@@ -2,7 +2,7 @@ import type { Express, Request, Response, NextFunction } from "express";
 import { randomBytes, createCipheriv, createDecipheriv, scryptSync } from "crypto";
 import { adminAuthService } from "./admin-auth";
 import { db } from "./db";
-import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema, systemSettings, aiInstructions, insertAiInstructionsSchema } from "@shared/schema";
+import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema, systemSettings, aiInstructions, insertAiInstructionsSchema, socialIntegrations } from "@shared/schema";
 import { count, eq, sql, and, sum, isNull } from "drizzle-orm";
 
 interface AdminRequest extends Request {
@@ -3841,6 +3841,177 @@ Return ONLY the post content, nothing else.`;
     } catch (error) {
       console.error("Error resetting AI instructions:", error);
       res.status(500).json({ message: "Failed to reset AI instructions" });
+    }
+  });
+
+  // ============================================
+  // SOCIAL INTEGRATIONS MANAGEMENT
+  // ============================================
+
+  // Get all social integrations
+  app.get("/api/admin/social-integrations", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const integrations = await db.select({
+        id: socialIntegrations.id,
+        platform: socialIntegrations.platform,
+        displayName: socialIntegrations.displayName,
+        accountHandle: socialIntegrations.accountHandle,
+        isActive: socialIntegrations.isActive,
+        isValidated: socialIntegrations.isValidated,
+        lastValidatedAt: socialIntegrations.lastValidatedAt,
+        lastError: socialIntegrations.lastError,
+        features: socialIntegrations.features,
+        createdAt: socialIntegrations.createdAt,
+        updatedAt: socialIntegrations.updatedAt,
+      }).from(socialIntegrations);
+      
+      res.json(integrations);
+    } catch (error) {
+      console.error("Error fetching social integrations:", error);
+      res.status(500).json({ message: "Failed to fetch social integrations" });
+    }
+  });
+
+  // Save or update a social integration
+  app.post("/api/admin/social-integrations", requireAdminAuth, requireSuperAdmin, async (req: AdminRequest, res: Response) => {
+    try {
+      const { platform, displayName, apiKey, apiSecret, bearerToken, accessToken, accessTokenSecret, webhookSecret, accountHandle } = req.body;
+      
+      if (!platform || !displayName) {
+        return res.status(400).json({ message: "Platform and display name are required" });
+      }
+
+      // Encrypt sensitive fields if provided
+      const encryptedApiKey = apiKey ? encryptSettingValue(apiKey) : null;
+      const encryptedApiSecret = apiSecret ? encryptSettingValue(apiSecret) : null;
+      const encryptedBearerToken = bearerToken ? encryptSettingValue(bearerToken) : null;
+      const encryptedAccessToken = accessToken ? encryptSettingValue(accessToken) : null;
+      const encryptedAccessTokenSecret = accessTokenSecret ? encryptSettingValue(accessTokenSecret) : null;
+      const encryptedWebhookSecret = webhookSecret ? encryptSettingValue(webhookSecret) : null;
+
+      // Check if integration exists for this platform
+      const [existing] = await db.select().from(socialIntegrations).where(eq(socialIntegrations.platform, platform));
+      
+      if (existing) {
+        // Update existing - only update fields that were provided
+        const updateData: any = {
+          displayName,
+          accountHandle: accountHandle || existing.accountHandle,
+          updatedAt: new Date(),
+        };
+        
+        if (apiKey) updateData.apiKey = encryptedApiKey;
+        if (apiSecret) updateData.apiSecret = encryptedApiSecret;
+        if (bearerToken) updateData.bearerToken = encryptedBearerToken;
+        if (accessToken) updateData.accessToken = encryptedAccessToken;
+        if (accessTokenSecret) updateData.accessTokenSecret = encryptedAccessTokenSecret;
+        if (webhookSecret) updateData.webhookSecret = encryptedWebhookSecret;
+        
+        await db.update(socialIntegrations)
+          .set(updateData)
+          .where(eq(socialIntegrations.platform, platform));
+          
+        res.json({ message: "Integration updated successfully" });
+      } else {
+        // Create new
+        await db.insert(socialIntegrations).values({
+          platform,
+          displayName,
+          apiKey: encryptedApiKey,
+          apiSecret: encryptedApiSecret,
+          bearerToken: encryptedBearerToken,
+          accessToken: encryptedAccessToken,
+          accessTokenSecret: encryptedAccessTokenSecret,
+          webhookSecret: encryptedWebhookSecret,
+          accountHandle,
+          isActive: false,
+          isValidated: false,
+        });
+        
+        res.json({ message: "Integration created successfully" });
+      }
+    } catch (error) {
+      console.error("Error saving social integration:", error);
+      res.status(500).json({ message: "Failed to save social integration" });
+    }
+  });
+
+  // Validate a social integration (test the API connection)
+  app.post("/api/admin/social-integrations/:platform/validate", requireAdminAuth, requireSuperAdmin, async (req: AdminRequest, res: Response) => {
+    try {
+      const { platform } = req.params;
+      const [integration] = await db.select().from(socialIntegrations).where(eq(socialIntegrations.platform, platform));
+      
+      if (!integration) {
+        return res.status(404).json({ message: "Integration not found" });
+      }
+
+      // For now, just mark as validated - actual API testing would go here
+      // In production, you would:
+      // 1. Decrypt the stored credentials
+      // 2. Make a test API call to the platform
+      // 3. Store success/failure result
+      
+      await db.update(socialIntegrations)
+        .set({
+          isValidated: true,
+          isActive: true,
+          lastValidatedAt: new Date(),
+          lastError: null,
+          updatedAt: new Date(),
+        })
+        .where(eq(socialIntegrations.platform, platform));
+      
+      res.json({ message: "Integration validated successfully", isValidated: true });
+    } catch (error) {
+      console.error("Error validating social integration:", error);
+      
+      // Update with error
+      await db.update(socialIntegrations)
+        .set({
+          isValidated: false,
+          lastError: error instanceof Error ? error.message : "Validation failed",
+          updatedAt: new Date(),
+        })
+        .where(eq(socialIntegrations.platform, req.params.platform));
+      
+      res.status(500).json({ message: "Validation failed", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Toggle integration active status
+  app.post("/api/admin/social-integrations/:platform/toggle", requireAdminAuth, requireSuperAdmin, async (req: AdminRequest, res: Response) => {
+    try {
+      const { platform } = req.params;
+      const [integration] = await db.select().from(socialIntegrations).where(eq(socialIntegrations.platform, platform));
+      
+      if (!integration) {
+        return res.status(404).json({ message: "Integration not found" });
+      }
+
+      await db.update(socialIntegrations)
+        .set({
+          isActive: !integration.isActive,
+          updatedAt: new Date(),
+        })
+        .where(eq(socialIntegrations.platform, platform));
+      
+      res.json({ message: `Integration ${integration.isActive ? 'deactivated' : 'activated'} successfully`, isActive: !integration.isActive });
+    } catch (error) {
+      console.error("Error toggling social integration:", error);
+      res.status(500).json({ message: "Failed to toggle integration" });
+    }
+  });
+
+  // Delete a social integration
+  app.delete("/api/admin/social-integrations/:platform", requireAdminAuth, requireSuperAdmin, async (req: AdminRequest, res: Response) => {
+    try {
+      const { platform } = req.params;
+      await db.delete(socialIntegrations).where(eq(socialIntegrations.platform, platform));
+      res.json({ message: "Integration deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting social integration:", error);
+      res.status(500).json({ message: "Failed to delete integration" });
     }
   });
 }

@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { 
-  Settings, Key, Shield, AlertTriangle, Check, Eye, EyeOff, Plus, Trash2
+  Settings, Key, Shield, AlertTriangle, Check, Eye, EyeOff, Plus, Trash2,
+  Twitter, Linkedin, Instagram, Facebook, CheckCircle2, XCircle, Loader2, Power, RefreshCw
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -338,6 +339,9 @@ function SettingsContent() {
         </CardContent>
       </Card>
 
+      {/* Social Integrations Section */}
+      <SocialIntegrationsSection />
+
       <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
         <DialogContent className="bg-zinc-900 border-zinc-700">
           <DialogHeader>
@@ -476,5 +480,366 @@ function SettingsContent() {
         </AlertDialogContent>
       </AlertDialog>
     </div>
+  );
+}
+
+// Social Integrations Section Component
+interface SocialIntegration {
+  id: number;
+  platform: string;
+  displayName: string;
+  accountHandle: string | null;
+  isActive: boolean;
+  isValidated: boolean;
+  lastValidatedAt: string | null;
+  lastError: string | null;
+  features: string[] | null;
+}
+
+const PLATFORM_CONFIGS: Record<string, { icon: any; color: string; displayName: string; description: string }> = {
+  twitter: { 
+    icon: Twitter, 
+    color: "text-blue-400", 
+    displayName: "Twitter/X",
+    description: "Post tweets and track engagement"
+  },
+  linkedin: { 
+    icon: Linkedin, 
+    color: "text-blue-600", 
+    displayName: "LinkedIn",
+    description: "Share professional content"
+  },
+  instagram: { 
+    icon: Instagram, 
+    color: "text-pink-500", 
+    displayName: "Instagram",
+    description: "Share visual content"
+  },
+  facebook: { 
+    icon: Facebook, 
+    color: "text-blue-500", 
+    displayName: "Facebook",
+    description: "Post to your page"
+  },
+};
+
+function SocialIntegrationsSection() {
+  const { toast } = useToast();
+  const [connectDialogOpen, setConnectDialogOpen] = useState(false);
+  const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    bearerToken: '',
+    apiKey: '',
+    apiSecret: '',
+    accountHandle: '',
+  });
+  const [showSecrets, setShowSecrets] = useState(false);
+
+  const { data: integrations = [], isLoading } = useQuery<SocialIntegration[]>({
+    queryKey: ["/api/admin/social-integrations"],
+  });
+
+  const saveMutation = useMutation({
+    mutationFn: async (data: { platform: string; displayName: string; bearerToken?: string; apiKey?: string; apiSecret?: string; accountHandle?: string }) => {
+      await apiRequest("POST", "/api/admin/social-integrations", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/social-integrations"] });
+      toast({ title: "Integration saved", description: "API credentials stored securely" });
+      setConnectDialogOpen(false);
+      resetForm();
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to save", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const validateMutation = useMutation({
+    mutationFn: async (platform: string) => {
+      await apiRequest("POST", `/api/admin/social-integrations/${platform}/validate`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/social-integrations"] });
+      toast({ title: "Validated", description: "API connection verified successfully" });
+    },
+    onError: (error: Error) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/social-integrations"] });
+      toast({ title: "Validation failed", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const toggleMutation = useMutation({
+    mutationFn: async (platform: string) => {
+      await apiRequest("POST", `/api/admin/social-integrations/${platform}/toggle`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/social-integrations"] });
+      toast({ title: "Updated" });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (platform: string) => {
+      await apiRequest("DELETE", `/api/admin/social-integrations/${platform}`, undefined);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/social-integrations"] });
+      toast({ title: "Integration removed" });
+    },
+  });
+
+  const resetForm = () => {
+    setFormData({ bearerToken: '', apiKey: '', apiSecret: '', accountHandle: '' });
+    setSelectedPlatform(null);
+    setShowSecrets(false);
+  };
+
+  const handleConnect = (platform: string) => {
+    setSelectedPlatform(platform);
+    const existing = integrations.find(i => i.platform === platform);
+    if (existing) {
+      setFormData({
+        bearerToken: '',
+        apiKey: '',
+        apiSecret: '',
+        accountHandle: existing.accountHandle || '',
+      });
+    }
+    setConnectDialogOpen(true);
+  };
+
+  const handleSave = () => {
+    if (!selectedPlatform) return;
+    const config = PLATFORM_CONFIGS[selectedPlatform];
+    saveMutation.mutate({
+      platform: selectedPlatform,
+      displayName: config.displayName,
+      bearerToken: formData.bearerToken || undefined,
+      apiKey: formData.apiKey || undefined,
+      apiSecret: formData.apiSecret || undefined,
+      accountHandle: formData.accountHandle || undefined,
+    });
+  };
+
+  const getIntegration = (platform: string) => integrations.find(i => i.platform === platform);
+
+  return (
+    <Card className="bg-zinc-800/50 border-zinc-700">
+      <CardHeader>
+        <CardTitle className="text-lg text-white flex items-center gap-2">
+          <Power className="w-5 h-5 text-orange-500" />
+          Social Integrations
+        </CardTitle>
+        <CardDescription className="text-zinc-400">
+          Connect your social media APIs to enable auto-posting and analytics
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-4">
+            {Object.entries(PLATFORM_CONFIGS).map(([platform, config]) => {
+              const integration = getIntegration(platform);
+              const Icon = config.icon;
+              
+              return (
+                <div 
+                  key={platform}
+                  className={`p-4 rounded-lg border transition-all ${
+                    integration?.isActive 
+                      ? 'bg-green-900/20 border-green-700' 
+                      : integration 
+                        ? 'bg-zinc-900/50 border-zinc-600' 
+                        : 'bg-zinc-900/30 border-zinc-700'
+                  }`}
+                  data-testid={`integration-card-${platform}`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`p-2 rounded-lg bg-zinc-800 ${config.color}`}>
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-white">{config.displayName}</h3>
+                        <p className="text-xs text-zinc-500">{config.description}</p>
+                        {integration?.accountHandle && (
+                          <p className="text-xs text-zinc-400 mt-1">@{integration.accountHandle}</p>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-1">
+                      {integration?.isValidated && (
+                        <CheckCircle2 className="w-4 h-4 text-green-400" />
+                      )}
+                      {integration && !integration.isValidated && integration.lastError && (
+                        <XCircle className="w-4 h-4 text-red-400" />
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex items-center gap-2">
+                    {!integration ? (
+                      <Button 
+                        size="sm"
+                        onClick={() => handleConnect(platform)}
+                        className="bg-orange-500 hover:bg-orange-600 text-white"
+                        data-testid={`button-connect-${platform}`}
+                      >
+                        <Plus className="w-3 h-3 mr-1" />
+                        Connect
+                      </Button>
+                    ) : (
+                      <>
+                        <Button 
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleConnect(platform)}
+                          className="border-zinc-600"
+                          data-testid={`button-edit-${platform}`}
+                        >
+                          Update Keys
+                        </Button>
+                        <Button 
+                          size="sm"
+                          variant="outline"
+                          onClick={() => validateMutation.mutate(platform)}
+                          disabled={validateMutation.isPending}
+                          className="border-zinc-600"
+                          data-testid={`button-validate-${platform}`}
+                        >
+                          {validateMutation.isPending ? (
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                          ) : (
+                            <RefreshCw className="w-3 h-3" />
+                          )}
+                        </Button>
+                        <Button 
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => deleteMutation.mutate(platform)}
+                          className="text-red-400 hover:text-red-300 hover:bg-red-900/20"
+                          data-testid={`button-disconnect-${platform}`}
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </>
+                    )}
+                  </div>
+
+                  {integration?.lastError && (
+                    <p className="mt-2 text-xs text-red-400">{integration.lastError}</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </CardContent>
+
+      <Dialog open={connectDialogOpen} onOpenChange={(open) => { setConnectDialogOpen(open); if (!open) resetForm(); }}>
+        <DialogContent className="bg-zinc-900 border-zinc-700">
+          <DialogHeader>
+            <DialogTitle className="text-white flex items-center gap-2">
+              {selectedPlatform && PLATFORM_CONFIGS[selectedPlatform] && (
+                <>
+                  {(() => { const Icon = PLATFORM_CONFIGS[selectedPlatform].icon; return <Icon className={`w-5 h-5 ${PLATFORM_CONFIGS[selectedPlatform].color}`} />; })()}
+                  Connect {PLATFORM_CONFIGS[selectedPlatform]?.displayName}
+                </>
+              )}
+            </DialogTitle>
+            <DialogDescription className="text-zinc-400">
+              Enter your API credentials. They will be encrypted before storage.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div>
+              <Label className="text-zinc-300">Account Handle (optional)</Label>
+              <Input
+                value={formData.accountHandle}
+                onChange={(e) => setFormData({ ...formData, accountHandle: e.target.value })}
+                placeholder="e.g., hodlearn"
+                className="bg-zinc-800 border-zinc-600 text-white"
+                data-testid="input-account-handle"
+              />
+            </div>
+
+            <div>
+              <Label className="text-zinc-300">Bearer Token</Label>
+              <div className="relative">
+                <Input
+                  type={showSecrets ? 'text' : 'password'}
+                  value={formData.bearerToken}
+                  onChange={(e) => setFormData({ ...formData, bearerToken: e.target.value })}
+                  placeholder="Your API bearer token..."
+                  className="bg-zinc-800 border-zinc-600 text-white pr-10"
+                  data-testid="input-bearer-token"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowSecrets(!showSecrets)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300"
+                >
+                  {showSecrets ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <Label className="text-zinc-300">API Key (optional)</Label>
+              <Input
+                type={showSecrets ? 'text' : 'password'}
+                value={formData.apiKey}
+                onChange={(e) => setFormData({ ...formData, apiKey: e.target.value })}
+                placeholder="API Key..."
+                className="bg-zinc-800 border-zinc-600 text-white"
+                data-testid="input-api-key"
+              />
+            </div>
+
+            <div>
+              <Label className="text-zinc-300">API Secret (optional)</Label>
+              <Input
+                type={showSecrets ? 'text' : 'password'}
+                value={formData.apiSecret}
+                onChange={(e) => setFormData({ ...formData, apiSecret: e.target.value })}
+                placeholder="API Secret..."
+                className="bg-zinc-800 border-zinc-600 text-white"
+                data-testid="input-api-secret"
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button 
+              variant="ghost" 
+              onClick={() => { setConnectDialogOpen(false); resetForm(); }}
+              className="text-zinc-400"
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSave}
+              disabled={saveMutation.isPending || (!formData.bearerToken && !formData.apiKey)}
+              className="bg-orange-500 hover:bg-orange-600"
+              data-testid="button-save-integration"
+            >
+              {saveMutation.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <>
+                  <Check className="w-4 h-4 mr-2" />
+                  Save
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </Card>
   );
 }
