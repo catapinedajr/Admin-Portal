@@ -8,6 +8,29 @@ interface AdminRequest extends Request {
   admin?: any;
 }
 
+// Helper function to create Anthropic client with environment-aware API key handling
+// Works in both Replit (AI_INTEGRATIONS_*) and production (ANTHROPIC_API_KEY)
+async function createAnthropicClient() {
+  const Anthropic = (await import('@anthropic-ai/sdk')).default;
+  
+  // Replit AI Integrations (development)
+  if (process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY) {
+    return new Anthropic({
+      apiKey: process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
+      baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
+    });
+  }
+  
+  // Production (AWS) - uses standard ANTHROPIC_API_KEY
+  if (process.env.ANTHROPIC_API_KEY) {
+    return new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY,
+    });
+  }
+  
+  throw new Error('No Anthropic API key configured. Set AI_INTEGRATIONS_ANTHROPIC_API_KEY (Replit) or ANTHROPIC_API_KEY (production).');
+}
+
 const requireAdminAuth = async (req: AdminRequest, res: Response, next: NextFunction) => {
   try {
     const sessionId = req.headers.authorization?.replace('Bearer ', '');
@@ -33,7 +56,6 @@ const requireAdminAuth = async (req: AdminRequest, res: Response, next: NextFunc
 async function generateDaySummary(dayId: number): Promise<void> {
   try {
     const { contentDaySummaries } = await import('@shared/schema');
-    const Anthropic = (await import('@anthropic-ai/sdk')).default;
     
     // Fetch the day's content
     const [day] = await db.select().from(contentDays).where(eq(contentDays.id, dayId));
@@ -42,8 +64,8 @@ async function generateDaySummary(dayId: number): Promise<void> {
     const [lesson] = await db.select().from(contentLessons).where(eq(contentLessons.dayId, dayId));
     if (!lesson) return;
     
-    // Generate summary using Claude
-    const client = new Anthropic();
+    // Generate summary using Claude (production-ready client)
+    const client = await createAnthropicClient();
     const response = await client.messages.create({
       model: "claude-sonnet-4-20250514",
       max_tokens: 500,
@@ -964,15 +986,11 @@ Create a complete day of content with this EXACT JSON structure:
 
 Return ONLY the JSON object, no markdown code blocks or additional text.`;
 
-      // Call Claude
-      const Anthropic = (await import('@anthropic-ai/sdk')).default;
-      const anthropic = new Anthropic({
-        apiKey: process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
-        baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
-      });
+      // Call Claude (production-ready client)
+      const anthropic = await createAnthropicClient();
       
       const message = await anthropic.messages.create({
-        model: "claude-sonnet-4-5",
+        model: "claude-sonnet-4-20250514",
         max_tokens: 4000,
         messages: [
           {
@@ -2197,12 +2215,8 @@ ${lessonContent ? `\nLesson Content:\n${lessonContent}` : ''}
         ? 'Maximum 280 characters. Use engaging hooks, relevant hashtags (#Bitcoin, #BTC, etc), and a clear call-to-action.'
         : 'Can be longer form. Include emojis and formatting as appropriate.';
       
-      // Call Claude using Replit AI Integrations env vars
-      const Anthropic = (await import('@anthropic-ai/sdk')).default;
-      const anthropic = new Anthropic({
-        apiKey: process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
-        baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
-      });
+      // Call Claude (production-ready client)
+      const anthropic = await createAnthropicClient();
       
       // Build prompt based on whether we have lesson context
       const prompt = lessonContext 
@@ -2239,7 +2253,7 @@ Guidelines:
 Return ONLY the post content, nothing else.`;
       
       const message = await anthropic.messages.create({
-        model: "claude-sonnet-4-5",
+        model: "claude-sonnet-4-20250514",
         max_tokens: 300,
         messages: [
           {
