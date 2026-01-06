@@ -255,7 +255,7 @@ function AIInstructionsEditor({ type, defaultInstructions }: { type: 'content' |
         data-testid={`button-open-${type}-ai-instructions`}
       >
         <Settings className="w-4 h-4 mr-2 text-orange-500" />
-        AI Instructions
+        Social AI Instructions
         {isLocked ? (
           <Badge className="ml-2 bg-red-500/20 text-red-400 text-xs"><Lock className="w-3 h-3 mr-1" />Locked</Badge>
         ) : (
