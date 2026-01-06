@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { 
   Plus, Calendar, Send, MousePointerClick, Users, TrendingUp,
-  Twitter, Clock, ArrowRight, Edit2, Trash2,
+  Twitter, Linkedin, Instagram, Facebook, Clock, ArrowRight, Edit2, Trash2,
   AlertCircle, CheckCircle2, Loader2, Link as LinkIcon, Sparkles,
   ChevronLeft, ChevronRight, X, Settings, Lock, Unlock, Save, RotateCcw,
   Copy, Info, FileEdit, CalendarCheck, ExternalLink, Power, Zap
@@ -507,13 +507,25 @@ function PostCard({
   const canMarkPosted = publishStatus !== 'posted';
   const canApprove = contentStatus !== 'approved';
 
+  // Get platform icon component
+  const getPlatformIcon = () => {
+    const iconMap: Record<string, { icon: any; color: string }> = {
+      twitter: { icon: Twitter, color: "text-blue-400" },
+      linkedin: { icon: Linkedin, color: "text-blue-600" },
+      instagram: { icon: Instagram, color: "text-pink-500" },
+      facebook: { icon: Facebook, color: "text-blue-500" },
+    };
+    return iconMap[post.platform] || iconMap.twitter;
+  };
+  const { icon: PlatformIcon, color: platformColor } = getPlatformIcon();
+
   return (
     <Card className="bg-zinc-800/50 border-zinc-700 hover:border-zinc-600 transition-all" data-testid={`card-post-${post.id}`}>
       <CardContent className="p-4">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2 flex-wrap">
-              <Twitter className="w-4 h-4 text-blue-400" />
+              <PlatformIcon className={`w-4 h-4 ${platformColor}`} />
               <Badge className={contentStatusStyles[contentStatus] || contentStatusStyles.drafted}>
                 {contentStatus === 'approved' ? (
                   <CheckCircle2 className="w-3 h-3 mr-1" />
@@ -661,6 +673,14 @@ function PostCard({
 // POST COMPOSER DIALOG
 // ============================================
 
+// Platform configuration with icons and limits
+const PLATFORM_CONFIG: Record<string, { icon: any; label: string; maxChars: number; color: string }> = {
+  twitter: { icon: Twitter, label: "Twitter/X", maxChars: 280, color: "text-blue-400" },
+  linkedin: { icon: Linkedin, label: "LinkedIn", maxChars: 3000, color: "text-blue-600" },
+  instagram: { icon: Instagram, label: "Instagram", maxChars: 2200, color: "text-pink-500" },
+  facebook: { icon: Facebook, label: "Facebook", maxChars: 63206, color: "text-blue-500" },
+};
+
 function PostComposer({ 
   open, 
   onClose, 
@@ -675,7 +695,9 @@ function PostComposer({
   contentDays: ContentDay[];
 }) {
   const { toast } = useToast();
-  const maxChars = 280;
+  
+  // Dynamic max chars based on platform
+  const getMaxChars = (platform: string) => PLATFORM_CONFIG[platform]?.maxChars || 280;
   
   const [formData, setFormData] = useState({
     content: "",
@@ -721,8 +743,10 @@ function PostComposer({
     }
   }, [open, post]);
 
+  const maxChars = getMaxChars(formData.platform);
   const charCount = formData.content.length;
   const isOverLimit = charCount > maxChars;
+  const currentPlatformConfig = PLATFORM_CONFIG[formData.platform] || PLATFORM_CONFIG.twitter;
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -768,6 +792,7 @@ function PostComposer({
       const response = await apiRequest("POST", "/api/admin/social/generate-draft", {
         linkedDayIndex: formData.linkedDayIndex ? parseInt(formData.linkedDayIndex) : null,
         campaignId: formData.campaignId ? parseInt(formData.campaignId) : null,
+        platform: formData.platform,
       });
       return response.json();
     },
@@ -788,11 +813,44 @@ function PostComposer({
         <DialogHeader>
           <DialogTitle className="text-white">{post ? "Edit Post" : "Create New Post"}</DialogTitle>
           <DialogDescription className="text-zinc-400">
-            {post ? "Update your social media post" : "Compose a new post for X/Twitter"}
+            {post ? "Update your social media post" : "Compose a new post for your chosen platform"}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
+          {/* Platform Selector */}
+          <div className="space-y-2">
+            <Label className="text-zinc-300">Platform</Label>
+            <div className="flex gap-2">
+              {Object.entries(PLATFORM_CONFIG).map(([key, config]) => {
+                const Icon = config.icon;
+                const isSelected = formData.platform === key;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setFormData({ ...formData, platform: key })}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-all ${
+                      isSelected 
+                        ? 'border-orange-500 bg-orange-500/10 text-white' 
+                        : 'border-zinc-700 bg-zinc-800 text-zinc-400 hover:border-zinc-600'
+                    }`}
+                    data-testid={`button-platform-${key}`}
+                  >
+                    <Icon className={`w-4 h-4 ${isSelected ? config.color : ''}`} />
+                    <span className="text-sm">{config.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-xs text-zinc-500">
+              {formData.platform === 'twitter' && 'Short, punchy content with hashtags. Max 280 characters.'}
+              {formData.platform === 'linkedin' && 'Professional thought leadership. Max 3,000 characters.'}
+              {formData.platform === 'instagram' && 'Visual-focused caption with emojis. Max 2,200 characters.'}
+              {formData.platform === 'facebook' && 'Community engagement style. Longer content allowed.'}
+            </p>
+          </div>
+
           {/* Content */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -1122,15 +1180,26 @@ function SocialCalendar({
                     {format(day, "d")}
                   </div>
                   
-                  {/* Status indicators */}
+                  {/* Platform & Status indicators */}
                   {dayPosts.length > 0 && (
                     <>
-                      <div className="flex items-center justify-center gap-1 mt-1">
-                        {hasPosted && <div className="w-2 h-2 rounded-full bg-green-500" title="Posted"></div>}
-                        {hasPlanned && <div className="w-2 h-2 rounded-full bg-blue-500" title="Planned"></div>}
+                      {/* Platform icons row */}
+                      <div className="flex items-center justify-center gap-0.5 mt-1">
+                        {Array.from(new Set(dayPosts.map(p => p.platform))).map(platform => {
+                          const iconConfig: Record<string, { icon: any; color: string }> = {
+                            twitter: { icon: Twitter, color: "text-blue-400" },
+                            linkedin: { icon: Linkedin, color: "text-blue-600" },
+                            instagram: { icon: Instagram, color: "text-pink-500" },
+                            facebook: { icon: Facebook, color: "text-blue-500" },
+                          };
+                          const { icon: Icon, color } = iconConfig[platform] || iconConfig.twitter;
+                          return <Icon key={platform} className={`w-3 h-3 ${color}`} />;
+                        })}
                       </div>
-                      <div className="text-xs text-zinc-400 text-center mt-0.5">
-                        {dayPosts.length} post{dayPosts.length !== 1 ? 's' : ''}
+                      {/* Status dots */}
+                      <div className="flex items-center justify-center gap-1 mt-0.5">
+                        {hasPosted && <div className="w-1.5 h-1.5 rounded-full bg-green-500" title="Posted"></div>}
+                        {hasPlanned && <div className="w-1.5 h-1.5 rounded-full bg-blue-500" title="Planned"></div>}
                       </div>
                     </>
                   )}

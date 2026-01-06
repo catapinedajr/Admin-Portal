@@ -2481,9 +2481,13 @@ ${lessonContent ? `\nLesson Content:\n${lessonContent}` : ''}
       }
       
       // Platform-specific constraints
-      const platformConstraints = platform === 'twitter' 
-        ? 'Maximum 280 characters. Use engaging hooks, relevant hashtags (#Bitcoin, #BTC, etc), and a clear call-to-action.'
-        : 'Can be longer form. Include emojis and formatting as appropriate.';
+      const platformConstraintsMap: Record<string, string> = {
+        twitter: 'Maximum 280 characters. Short, punchy hook in first line. Use 1-2 relevant hashtags (#Bitcoin, #BTC). Clear call-to-action. No emojis overload.',
+        linkedin: 'Maximum 3000 characters. Professional, thought-leadership tone. Start with a bold statement or question. Use line breaks for readability. Include industry insights. End with a question to drive engagement.',
+        instagram: 'Maximum 2200 characters. Casual, visual-first caption style. Use emojis strategically (2-4 per post). Include relevant hashtags at the end (5-10). Storytelling format works well.',
+        facebook: 'Community-focused, conversational tone. Can be longer-form. Ask questions to encourage comments. Share personal insights or stories. Include a clear call-to-action.',
+      };
+      const platformConstraints = platformConstraintsMap[platform] || platformConstraintsMap.twitter;
       
       // Load custom AI instructions from database, or use defaults
       let baseInstructions = `You are a social media content creator for HODLearn, a Bitcoin education platform. Your goal is to create engaging posts that drive curiosity and signups.
