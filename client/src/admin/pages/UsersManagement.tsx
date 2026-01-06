@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { 
   Users, UserCheck, UserX, Crown, Clock, TrendingUp,
   Search, Filter, ChevronRight, Calendar, Activity,
-  Mail, Award, Flame, BookOpen
+  Mail, Award, Flame, BookOpen, Archive
 } from "lucide-react";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -159,6 +161,21 @@ function UserDetailDialog({ user, open, onOpenChange }: {
   open: boolean; 
   onOpenChange: (open: boolean) => void;
 }) {
+  const { toast } = useToast();
+  
+  const archiveUserMutation = useMutation({
+    mutationFn: (id: number) => apiRequest("POST", `/api/admin/archive/users/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users/stats"] });
+      onOpenChange(false);
+      toast({ title: "User archived", description: "User can be restored from the archive anytime." });
+    },
+    onError: (error: any) => {
+      toast({ title: "Error", description: error.message || "Failed to archive user.", variant: "destructive" });
+    },
+  });
+  
   if (!user) return null;
   
   const isActive = user.lastActivityDate && 
@@ -283,6 +300,19 @@ function UserDetailDialog({ user, open, onOpenChange }: {
               </div>
             </div>
           )}
+          
+          <div className="border-t border-zinc-800 pt-4">
+            <Button 
+              variant="outline"
+              onClick={() => archiveUserMutation.mutate(user.id)}
+              disabled={archiveUserMutation.isPending}
+              className="w-full border-orange-500/50 text-orange-400 hover:bg-orange-500/20"
+              data-testid="button-archive-user"
+            >
+              <Archive className="w-4 h-4 mr-2" />
+              Archive User
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
