@@ -14,7 +14,8 @@ import {
   Building2,
   Map,
   Target,
-  BarChart3
+  BarChart3,
+  Settings
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -34,16 +35,21 @@ const navItems = [
   { href: "/admin/store", label: "Store", icon: ShoppingBag },
   { href: "/admin/crm", label: "B2B CRM", icon: Building2 },
   { href: "/admin/roadmap", label: "Roadmap", icon: Map },
+  { href: "/admin/settings", label: "Settings", icon: Settings, superAdminOnly: true },
 ];
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const [location, setLocation] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const { data: admin } = useQuery<{ firstName: string; lastName: string; email: string }>({
+  const { data: admin } = useQuery<{ firstName: string; lastName: string; email: string; role: string }>({
     queryKey: ["/api/admin/me"],
     retry: false,
   });
+
+  const filteredNavItems = navItems.filter(item => 
+    !item.superAdminOnly || admin?.role === 'super_admin'
+  );
 
   const handleLogout = async () => {
     const sessionId = localStorage.getItem("admin_session");
@@ -94,7 +100,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
           {/* Navigation */}
           <nav className="flex-1 p-4 space-y-1">
-            {navItems.map((item) => (
+            {filteredNavItems.map((item) => (
               <Link 
                 key={item.href} 
                 href={item.href}
