@@ -1733,3 +1733,27 @@ export const systemSettings = pgTable("system_settings", {
 });
 
 export type SystemSetting = typeof systemSettings.$inferSelect;
+
+// ============================================
+// AI INSTRUCTIONS (Editable prompt templates)
+// ============================================
+
+export const aiInstructions = pgTable("ai_instructions", {
+  id: serial("id").primaryKey(),
+  type: text("type").notNull().unique(), // 'content' | 'social'
+  name: text("name").notNull(),
+  instructions: text("instructions").notNull(),
+  isLocked: boolean("is_locked").notNull().default(true),
+  updatedBy: integer("updated_by").references(() => adminUsers.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertAiInstructionsSchema = createInsertSchema(aiInstructions).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type AiInstructions = typeof aiInstructions.$inferSelect;
+export type InsertAiInstructions = z.infer<typeof insertAiInstructionsSchema>;
