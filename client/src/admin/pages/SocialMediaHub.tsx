@@ -569,16 +569,18 @@ function PostCard({
           </div>
         </div>
 
-        <div className="flex items-center justify-between mt-4 pt-3 border-t border-zinc-700">
-          <span className="text-xs text-zinc-500">
-            Created {format(createdDate, "MMM d, yyyy")}
-          </span>
-          <div className="flex gap-2">
+        <div className="mt-4 pt-3 border-t border-zinc-700">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-zinc-500">
+              Created {format(createdDate, "MMM d, yyyy")}
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-1">
             <Button 
               variant="ghost" 
               size="sm" 
               onClick={handleCopyToClipboard}
-              className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10"
+              className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 h-8 px-2"
               data-testid={`button-copy-${post.id}`}
             >
               <Copy className="w-4 h-4 mr-1" />
@@ -589,7 +591,7 @@ function PostCard({
                 variant="ghost" 
                 size="sm" 
                 onClick={onApprove}
-                className="text-purple-400 hover:text-purple-300 hover:bg-purple-500/10"
+                className="text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 h-8 px-2"
                 data-testid={`button-approve-${post.id}`}
               >
                 <CheckCircle2 className="w-4 h-4 mr-1" />
@@ -602,11 +604,11 @@ function PostCard({
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="text-green-400 hover:text-green-300 hover:bg-green-500/10"
+                    className="text-green-400 hover:text-green-300 hover:bg-green-500/10 h-8 px-2"
                     data-testid={`button-mark-posted-${post.id}`}
                   >
                     <CheckCircle2 className="w-4 h-4 mr-1" />
-                    Mark Posted
+                    Posted
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-80 bg-zinc-800 border-zinc-700" align="end">
@@ -648,7 +650,7 @@ function PostCard({
               variant="ghost" 
               size="sm" 
               onClick={onEdit}
-              className="text-zinc-400 hover:text-white"
+              className="text-zinc-400 hover:text-white h-8 px-2"
               data-testid={`button-edit-post-${post.id}`}
             >
               <Edit2 className="w-4 h-4" />
@@ -657,7 +659,7 @@ function PostCard({
               variant="ghost" 
               size="sm" 
               onClick={onDelete}
-              className="text-zinc-400 hover:text-red-400"
+              className="text-zinc-400 hover:text-red-400 h-8 px-2"
               data-testid={`button-delete-post-${post.id}`}
             >
               <Trash2 className="w-4 h-4" />
@@ -809,7 +811,7 @@ function PostComposer({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="bg-zinc-900 border-zinc-700 text-white max-w-lg">
+      <DialogContent className="bg-zinc-900 border-zinc-700 text-white max-w-xl sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle className="text-white">{post ? "Edit Post" : "Create New Post"}</DialogTitle>
           <DialogDescription className="text-zinc-400">
@@ -821,7 +823,7 @@ function PostComposer({
           {/* Platform Selector */}
           <div className="space-y-2">
             <Label className="text-zinc-300">Platform</Label>
-            <div className="flex gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {Object.entries(PLATFORM_CONFIG).map(([key, config]) => {
                 const Icon = config.icon;
                 const isSelected = formData.platform === key;
@@ -830,7 +832,7 @@ function PostComposer({
                     key={key}
                     type="button"
                     onClick={() => setFormData({ ...formData, platform: key })}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-all ${
+                    className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg border transition-all ${
                       isSelected 
                         ? 'border-orange-500 bg-orange-500/10 text-white' 
                         : 'border-zinc-700 bg-zinc-800 text-zinc-400 hover:border-zinc-600'
