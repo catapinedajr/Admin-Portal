@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -354,6 +355,218 @@ function NewAffiliateDialog({ open, onOpenChange }: { open: boolean; onOpenChang
   );
 }
 
+function EditAffiliateDialog({ affiliate, open, onOpenChange }: { affiliate: AffiliateProduct | null; open: boolean; onOpenChange: (open: boolean) => void }) {
+  const { toast } = useToast();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    category: "hardware_wallet",
+    affiliateUrl: "",
+    imageUrl: "",
+    vendor: "",
+    commissionPercent: "",
+    priceUsd: "",
+    isActive: true,
+  });
+
+  useEffect(() => {
+    if (affiliate) {
+      setFormData({
+        name: affiliate.name,
+        description: affiliate.description || "",
+        category: affiliate.category,
+        affiliateUrl: affiliate.affiliateUrl,
+        imageUrl: affiliate.imageUrl || "",
+        vendor: affiliate.vendor || "",
+        commissionPercent: affiliate.commissionPercent || "",
+        priceUsd: affiliate.priceUsd || "",
+        isActive: affiliate.isActive,
+      });
+    }
+  }, [affiliate]);
+
+  const updateMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("PATCH", `/api/admin/store/affiliates/${affiliate?.id}`, {
+        ...formData,
+        commissionPercent: formData.commissionPercent ? parseFloat(formData.commissionPercent) : null,
+        priceUsd: formData.priceUsd ? parseFloat(formData.priceUsd) : null,
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/store/affiliates"] });
+      toast({ title: "Affiliate product updated" });
+      onOpenChange(false);
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to update", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("DELETE", `/api/admin/store/affiliates/${affiliate?.id}`);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/store/affiliates"] });
+      toast({ title: "Affiliate product deleted" });
+      onOpenChange(false);
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to delete", description: error.message, variant: "destructive" });
+    },
+  });
+
+  if (!affiliate) return null;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="bg-zinc-900 border-zinc-800 max-w-md">
+        <DialogHeader>
+          <DialogTitle className="text-white flex items-center gap-2">
+            <Link2 className="w-5 h-5 text-orange-500" />
+            Edit Affiliate Product
+          </DialogTitle>
+          <DialogDescription className="text-zinc-400">
+            Update affiliate product details
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4 pt-4 max-h-[60vh] overflow-y-auto">
+          <div className="space-y-2">
+            <Label className="text-zinc-300">Product Name *</Label>
+            <Input
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="bg-zinc-800 border-zinc-700 text-white"
+              data-testid="input-edit-affiliate-name"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-zinc-300">Category *</Label>
+            <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })}>
+              <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-800 border-zinc-700">
+                {AFFILIATE_CATEGORIES.map((cat) => (
+                  <SelectItem key={cat.value} value={cat.value} className="text-white">{cat.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-zinc-300">Affiliate URL *</Label>
+            <Input
+              value={formData.affiliateUrl}
+              onChange={(e) => setFormData({ ...formData, affiliateUrl: e.target.value })}
+              className="bg-zinc-800 border-zinc-700 text-white"
+              data-testid="input-edit-affiliate-url"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-zinc-300">Vendor</Label>
+            <Input
+              value={formData.vendor}
+              onChange={(e) => setFormData({ ...formData, vendor: e.target.value })}
+              className="bg-zinc-800 border-zinc-700 text-white"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-zinc-300">Price (USD)</Label>
+              <Input
+                type="number"
+                step="0.01"
+                value={formData.priceUsd}
+                onChange={(e) => setFormData({ ...formData, priceUsd: e.target.value })}
+                className="bg-zinc-800 border-zinc-700 text-white"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-zinc-300">Commission %</Label>
+              <Input
+                type="number"
+                step="0.01"
+                value={formData.commissionPercent}
+                onChange={(e) => setFormData({ ...formData, commissionPercent: e.target.value })}
+                className="bg-zinc-800 border-zinc-700 text-white"
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-zinc-300">Image URL</Label>
+            <Input
+              value={formData.imageUrl}
+              onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+              className="bg-zinc-800 border-zinc-700 text-white"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-zinc-300">Description</Label>
+            <Textarea
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              className="bg-zinc-800 border-zinc-700 text-white"
+              rows={3}
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={formData.isActive}
+              onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+              className="rounded border-zinc-600 bg-zinc-800"
+              id="affiliate-active"
+            />
+            <Label htmlFor="affiliate-active" className="text-zinc-300">Active</Label>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => updateMutation.mutate()}
+              disabled={!formData.name || !formData.affiliateUrl || updateMutation.isPending}
+              className="flex-1 bg-orange-500 hover:bg-orange-600"
+              data-testid="button-update-affiliate"
+            >
+              {updateMutation.isPending ? "Saving..." : "Save Changes"}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => setShowDeleteConfirm(true)}
+              disabled={deleteMutation.isPending}
+              data-testid="button-delete-affiliate"
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent className="bg-zinc-900 border-zinc-800">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Delete Affiliate Product</AlertDialogTitle>
+            <AlertDialogDescription className="text-zinc-400">
+              Are you sure you want to delete "{affiliate?.name}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-zinc-800 text-white border-zinc-700 hover:bg-zinc-700">Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              className="bg-red-600 hover:bg-red-700"
+              onClick={() => { deleteMutation.mutate(); setShowDeleteConfirm(false); }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </Dialog>
+  );
+}
+
 function ReferralPartnerCard({ partner, signupCount, onEdit }: { partner: ReferralPartner; signupCount: number; onEdit: () => void }) {
   return (
     <Card 
@@ -587,6 +800,246 @@ function NewReferralPartnerDialog({ open, onOpenChange }: { open: boolean; onOpe
   );
 }
 
+function EditReferralPartnerDialog({ partner, open, onOpenChange }: { partner: ReferralPartner | null; open: boolean; onOpenChange: (open: boolean) => void }) {
+  const { toast } = useToast();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    category: "exchange",
+    description: "",
+    referralUrl: "",
+    logoUrl: "",
+    contactName: "",
+    contactEmail: "",
+    referralFeeType: "flat",
+    referralFeeAmount: "",
+    referralFeePercent: "",
+    payoutFrequency: "monthly",
+    notes: "",
+    isActive: true,
+  });
+
+  useEffect(() => {
+    if (partner) {
+      setFormData({
+        name: partner.name,
+        category: partner.category,
+        description: partner.description || "",
+        referralUrl: partner.referralUrl,
+        logoUrl: partner.logoUrl || "",
+        contactName: partner.contactName || "",
+        contactEmail: partner.contactEmail || "",
+        referralFeeType: partner.referralFeeType,
+        referralFeeAmount: partner.referralFeeAmount || "",
+        referralFeePercent: partner.referralFeePercent || "",
+        payoutFrequency: partner.payoutFrequency || "monthly",
+        notes: partner.notes || "",
+        isActive: partner.isActive,
+      });
+    }
+  }, [partner]);
+
+  const updateMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("PATCH", `/api/admin/store/referrals/${partner?.id}`, {
+        ...formData,
+        referralFeeAmount: formData.referralFeeAmount ? parseFloat(formData.referralFeeAmount) : null,
+        referralFeePercent: formData.referralFeePercent ? parseFloat(formData.referralFeePercent) : null,
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/store/referrals"] });
+      toast({ title: "Partner updated" });
+      onOpenChange(false);
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to update", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("DELETE", `/api/admin/store/referrals/${partner?.id}`);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/store/referrals"] });
+      toast({ title: "Partner deleted" });
+      onOpenChange(false);
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to delete", description: error.message, variant: "destructive" });
+    },
+  });
+
+  if (!partner) return null;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="bg-zinc-900 border-zinc-800 max-w-md">
+        <DialogHeader>
+          <DialogTitle className="text-white flex items-center gap-2">
+            <Building2 className="w-5 h-5 text-blue-500" />
+            Edit Referral Partner
+          </DialogTitle>
+          <DialogDescription className="text-zinc-400">
+            Update partner details
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4 pt-4 max-h-[60vh] overflow-y-auto">
+          <div className="space-y-2">
+            <Label className="text-zinc-300">Partner Name *</Label>
+            <Input
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="bg-zinc-800 border-zinc-700 text-white"
+              data-testid="input-edit-partner-name"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-zinc-300">Category *</Label>
+            <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })}>
+              <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-800 border-zinc-700">
+                {REFERRAL_CATEGORIES.map((cat) => (
+                  <SelectItem key={cat.value} value={cat.value} className="text-white">{cat.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-zinc-300">Referral URL *</Label>
+            <Input
+              value={formData.referralUrl}
+              onChange={(e) => setFormData({ ...formData, referralUrl: e.target.value })}
+              className="bg-zinc-800 border-zinc-700 text-white"
+              data-testid="input-edit-referral-url"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-zinc-300">Contact Name</Label>
+              <Input
+                value={formData.contactName}
+                onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
+                className="bg-zinc-800 border-zinc-700 text-white"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-zinc-300">Contact Email</Label>
+              <Input
+                type="email"
+                value={formData.contactEmail}
+                onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
+                className="bg-zinc-800 border-zinc-700 text-white"
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-zinc-300">Fee Type</Label>
+            <Select value={formData.referralFeeType} onValueChange={(v) => setFormData({ ...formData, referralFeeType: v })}>
+              <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-800 border-zinc-700">
+                <SelectItem value="flat" className="text-white">Flat Fee</SelectItem>
+                <SelectItem value="percent" className="text-white">Percentage</SelectItem>
+                <SelectItem value="tiered" className="text-white">Tiered</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-zinc-300">Fee Amount ($)</Label>
+              <Input
+                type="number"
+                step="0.01"
+                value={formData.referralFeeAmount}
+                onChange={(e) => setFormData({ ...formData, referralFeeAmount: e.target.value })}
+                className="bg-zinc-800 border-zinc-700 text-white"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-zinc-300">Fee Percent (%)</Label>
+              <Input
+                type="number"
+                step="0.01"
+                value={formData.referralFeePercent}
+                onChange={(e) => setFormData({ ...formData, referralFeePercent: e.target.value })}
+                className="bg-zinc-800 border-zinc-700 text-white"
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-zinc-300">Payout Frequency</Label>
+            <Select value={formData.payoutFrequency} onValueChange={(v) => setFormData({ ...formData, payoutFrequency: v })}>
+              <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-800 border-zinc-700">
+                <SelectItem value="weekly" className="text-white">Weekly</SelectItem>
+                <SelectItem value="monthly" className="text-white">Monthly</SelectItem>
+                <SelectItem value="quarterly" className="text-white">Quarterly</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={formData.isActive}
+              onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+              className="rounded border-zinc-600 bg-zinc-800"
+              id="partner-active"
+            />
+            <Label htmlFor="partner-active" className="text-zinc-300">Active</Label>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => updateMutation.mutate()}
+              disabled={!formData.name || !formData.referralUrl || updateMutation.isPending}
+              className="flex-1 bg-blue-500 hover:bg-blue-600"
+              data-testid="button-update-partner"
+            >
+              {updateMutation.isPending ? "Saving..." : "Save Changes"}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => setShowDeleteConfirm(true)}
+              disabled={deleteMutation.isPending}
+              data-testid="button-delete-partner"
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent className="bg-zinc-900 border-zinc-800">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Delete Referral Partner</AlertDialogTitle>
+            <AlertDialogDescription className="text-zinc-400">
+              Are you sure you want to delete "{partner?.name}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-zinc-800 text-white border-zinc-700 hover:bg-zinc-700">Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              className="bg-red-600 hover:bg-red-700"
+              onClick={() => { deleteMutation.mutate(); setShowDeleteConfirm(false); }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </Dialog>
+  );
+}
+
 function InventoryProductCard({ product, onEdit }: { product: InventoryProduct; onEdit: () => void }) {
   const stockStatus = product.stockQuantity <= 0 ? 'out' : product.stockQuantity <= 5 ? 'low' : 'good';
   
@@ -782,6 +1235,222 @@ function NewInventoryProductDialog({ open, onOpenChange }: { open: boolean; onOp
   );
 }
 
+function EditInventoryProductDialog({ product, open, onOpenChange }: { product: InventoryProduct | null; open: boolean; onOpenChange: (open: boolean) => void }) {
+  const { toast } = useToast();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    priceUsd: "",
+    priceSats: "",
+    imageUrl: "",
+    category: "apparel",
+    stockQuantity: "0",
+    isFeatured: false,
+    isActive: true,
+  });
+
+  useEffect(() => {
+    if (product) {
+      setFormData({
+        name: product.name,
+        description: product.description || "",
+        priceUsd: product.priceUsd,
+        priceSats: product.priceSats?.toString() || "",
+        imageUrl: product.imageUrl || "",
+        category: product.category || "apparel",
+        stockQuantity: product.stockQuantity.toString(),
+        isFeatured: product.isFeatured,
+        isActive: product.isActive,
+      });
+    }
+  }, [product]);
+
+  const updateMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("PATCH", `/api/admin/store/inventory/${product?.id}`, {
+        ...formData,
+        priceUsd: parseFloat(formData.priceUsd),
+        priceSats: formData.priceSats ? parseInt(formData.priceSats) : null,
+        stockQuantity: parseInt(formData.stockQuantity),
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/store/inventory"] });
+      toast({ title: "Product updated" });
+      onOpenChange(false);
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to update", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("DELETE", `/api/admin/store/inventory/${product?.id}`);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/store/inventory"] });
+      toast({ title: "Product deleted" });
+      onOpenChange(false);
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to delete", description: error.message, variant: "destructive" });
+    },
+  });
+
+  if (!product) return null;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="bg-zinc-900 border-zinc-800 max-w-md">
+        <DialogHeader>
+          <DialogTitle className="text-white flex items-center gap-2">
+            <Package className="w-5 h-5 text-purple-500" />
+            Edit Product
+          </DialogTitle>
+          <DialogDescription className="text-zinc-400">
+            Update product details
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4 pt-4 max-h-[60vh] overflow-y-auto">
+          <div className="space-y-2">
+            <Label className="text-zinc-300">Product Name *</Label>
+            <Input
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="bg-zinc-800 border-zinc-700 text-white"
+              data-testid="input-edit-product-name"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-zinc-300">Category</Label>
+            <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })}>
+              <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-800 border-zinc-700">
+                {INVENTORY_CATEGORIES.map((cat) => (
+                  <SelectItem key={cat.value} value={cat.value} className="text-white">{cat.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-zinc-300">Price (USD) *</Label>
+              <Input
+                type="number"
+                step="0.01"
+                value={formData.priceUsd}
+                onChange={(e) => setFormData({ ...formData, priceUsd: e.target.value })}
+                className="bg-zinc-800 border-zinc-700 text-white"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-zinc-300">Price (Sats)</Label>
+              <Input
+                type="number"
+                value={formData.priceSats}
+                onChange={(e) => setFormData({ ...formData, priceSats: e.target.value })}
+                className="bg-zinc-800 border-zinc-700 text-white"
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-zinc-300">Stock Quantity</Label>
+            <Input
+              type="number"
+              value={formData.stockQuantity}
+              onChange={(e) => setFormData({ ...formData, stockQuantity: e.target.value })}
+              className="bg-zinc-800 border-zinc-700 text-white"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-zinc-300">Image URL</Label>
+            <Input
+              value={formData.imageUrl}
+              onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+              className="bg-zinc-800 border-zinc-700 text-white"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-zinc-300">Description</Label>
+            <Textarea
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              className="bg-zinc-800 border-zinc-700 text-white"
+              rows={3}
+            />
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={formData.isActive}
+                onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                className="rounded border-zinc-600 bg-zinc-800"
+                id="product-active"
+              />
+              <Label htmlFor="product-active" className="text-zinc-300">Active</Label>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={formData.isFeatured}
+                onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
+                className="rounded border-zinc-600 bg-zinc-800"
+                id="product-featured"
+              />
+              <Label htmlFor="product-featured" className="text-zinc-300">Featured</Label>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => updateMutation.mutate()}
+              disabled={!formData.name || !formData.priceUsd || updateMutation.isPending}
+              className="flex-1 bg-purple-500 hover:bg-purple-600"
+              data-testid="button-update-product"
+            >
+              {updateMutation.isPending ? "Saving..." : "Save Changes"}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => setShowDeleteConfirm(true)}
+              disabled={deleteMutation.isPending}
+              data-testid="button-delete-product"
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent className="bg-zinc-900 border-zinc-800">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Delete Inventory Product</AlertDialogTitle>
+            <AlertDialogDescription className="text-zinc-400">
+              Are you sure you want to delete "{product?.name}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-zinc-800 text-white border-zinc-700 hover:bg-zinc-700">Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              className="bg-red-600 hover:bg-red-700"
+              onClick={() => { deleteMutation.mutate(); setShowDeleteConfirm(false); }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </Dialog>
+  );
+}
+
 function OrderCard({ order }: { order: StoreOrder }) {
   const statusColors: Record<string, string> = {
     pending: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
@@ -832,6 +1501,7 @@ function OrderCard({ order }: { order: StoreOrder }) {
 
 function AffiliatesTab() {
   const [showNewDialog, setShowNewDialog] = useState(false);
+  const [editingAffiliate, setEditingAffiliate] = useState<AffiliateProduct | null>(null);
   
   const { data: affiliates, isLoading } = useQuery<AffiliateProduct[]>({
     queryKey: ["/api/admin/store/affiliates"],
@@ -981,19 +1651,25 @@ function AffiliatesTab() {
               key={product.id}
               product={product}
               stats={stats?.find(s => s.productId === product.id)}
-              onEdit={() => {}}
+              onEdit={() => setEditingAffiliate(product)}
             />
           ))}
         </div>
       )}
 
       <NewAffiliateDialog open={showNewDialog} onOpenChange={setShowNewDialog} />
+      <EditAffiliateDialog 
+        affiliate={editingAffiliate} 
+        open={!!editingAffiliate} 
+        onOpenChange={(open) => !open && setEditingAffiliate(null)} 
+      />
     </div>
   );
 }
 
 function ReferralsTab() {
   const [showNewDialog, setShowNewDialog] = useState(false);
+  const [editingPartner, setEditingPartner] = useState<ReferralPartner | null>(null);
   
   const { data: partners, isLoading } = useQuery<ReferralPartner[]>({
     queryKey: ["/api/admin/store/referrals"],
@@ -1100,19 +1776,25 @@ function ReferralsTab() {
               key={partner.id}
               partner={partner}
               signupCount={signupsByPartner[partner.id] || 0}
-              onEdit={() => {}}
+              onEdit={() => setEditingPartner(partner)}
             />
           ))}
         </div>
       )}
 
       <NewReferralPartnerDialog open={showNewDialog} onOpenChange={setShowNewDialog} />
+      <EditReferralPartnerDialog 
+        partner={editingPartner} 
+        open={!!editingPartner} 
+        onOpenChange={(open) => !open && setEditingPartner(null)} 
+      />
     </div>
   );
 }
 
 function InventoryTab() {
   const [showNewDialog, setShowNewDialog] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<InventoryProduct | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   
   const { data: products, isLoading } = useQuery<InventoryProduct[]>({
@@ -1317,11 +1999,17 @@ function InventoryTab() {
             <InventoryProductCard
               key={product.id}
               product={product}
-              onEdit={() => {}}
+              onEdit={() => setEditingProduct(product)}
             />
           ))}
         </div>
       )}
+
+      <EditInventoryProductDialog 
+        product={editingProduct} 
+        open={!!editingProduct} 
+        onOpenChange={(open) => !open && setEditingProduct(null)} 
+      />
 
       <div className="pt-6 border-t border-zinc-800">
         <div className="flex items-center justify-between mb-4">

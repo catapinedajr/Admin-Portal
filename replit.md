@@ -67,7 +67,21 @@ This is a full-stack web application designed for daily learning and knowledge a
 ### Services & APIs
 - **PostgreSQL (Neon serverless)**: Primary data persistence.
 - **CoinGecko API**: Real-time Bitcoin price data integration.
-- **OpenAI API**: Previously used for content generation (now relies on static content after an architectural change).
+- **Anthropic Claude API**: AI-powered content generation for curriculum and social media (uses `AI_INTEGRATIONS_ANTHROPIC_API_KEY` in Replit, `ANTHROPIC_API_KEY` in production).
+- **Stripe**: Payment processing and subscription management.
+
+## Admin Portal
+- **URL**: `/admin`
+- **Default Credentials**: admin@hodlearn.com / admin123 (change immediately in production)
+- **Portals**: Content Management, Marketing (B2B), Store (E-commerce), Social Media, Users, B2B CRM, Product Roadmap, KPI Dashboard, Goals
+
+## Production Deployment
+See `PRODUCTION_DEPLOYMENT.md` for comprehensive AWS deployment instructions including:
+- Environment variable configuration
+- Database setup and migrations
+- Stripe and Anthropic API integration
+- Docker deployment guide
+- Post-deployment checklist
 
 ## Known Issues / Future Improvements
-- No current known issues. Paid Users count now pulls from Stripe subscriptions table.
+- No current known issues. All admin portal CRUD operations are fully functional.
