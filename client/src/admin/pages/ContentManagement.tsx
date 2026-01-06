@@ -1301,7 +1301,7 @@ interface AiInstructionsData {
 
 function AIInstructionsEditor({ type, defaultInstructions }: { type: 'content' | 'social'; defaultInstructions: string }) {
   const { toast } = useToast();
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [editedInstructions, setEditedInstructions] = useState("");
   const [showUnlockConfirm, setShowUnlockConfirm] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
@@ -1386,121 +1386,124 @@ function AIInstructionsEditor({ type, defaultInstructions }: { type: 'content' |
 
   return (
     <>
-      <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
-        <Card className="bg-zinc-900 border-zinc-800">
-          <CollapsibleTrigger asChild>
-            <CardHeader className="cursor-pointer hover:bg-zinc-800/50 transition-colors py-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  {isExpanded ? <ChevronDown className="w-4 h-4 text-zinc-400" /> : <ChevronRight className="w-4 h-4 text-zinc-400" />}
-                  <Settings className="w-4 h-4 text-orange-500" />
-                  <CardTitle className="text-white text-sm">
-                    {type === 'content' ? 'Content AI Instructions' : 'Social AI Instructions'}
-                  </CardTitle>
-                </div>
-                <div className="flex items-center gap-2">
-                  {isUsingDefault && (
-                    <Badge className="bg-zinc-700 text-zinc-300 text-xs">Using Default</Badge>
-                  )}
-                  {isLocked ? (
-                    <Badge className="bg-red-500/20 text-red-400 text-xs"><Lock className="w-3 h-3 mr-1" />Locked</Badge>
-                  ) : (
-                    <Badge className="bg-green-500/20 text-green-400 text-xs"><Unlock className="w-3 h-3 mr-1" />Unlocked</Badge>
-                  )}
-                </div>
+      <Button
+        variant="outline"
+        onClick={() => setIsOpen(true)}
+        className="border-zinc-700 text-zinc-300 hover:bg-zinc-800"
+        data-testid={`button-open-${type}-ai-instructions`}
+      >
+        <Settings className="w-4 h-4 mr-2 text-orange-500" />
+        {type === 'content' ? 'Content AI Instructions' : 'Social AI Instructions'}
+        {isLocked ? (
+          <Badge className="ml-2 bg-red-500/20 text-red-400 text-xs"><Lock className="w-3 h-3 mr-1" />Locked</Badge>
+        ) : (
+          <Badge className="ml-2 bg-green-500/20 text-green-400 text-xs"><Unlock className="w-3 h-3 mr-1" />Unlocked</Badge>
+        )}
+      </Button>
+
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="bg-zinc-900 border-zinc-800 max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-white flex items-center gap-2">
+              <Settings className="w-5 h-5 text-orange-500" />
+              {type === 'content' ? 'Content AI Instructions' : 'Social AI Instructions'}
+              {isUsingDefault && (
+                <Badge className="bg-zinc-700 text-zinc-300 text-xs">Using Default</Badge>
+              )}
+            </DialogTitle>
+            <DialogDescription className="text-zinc-400">
+              Customize the AI instructions used when generating {type === 'content' ? 'daily curriculum content' : 'social media posts'}.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            {isLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="w-6 h-6 text-orange-500 animate-spin" />
               </div>
-            </CardHeader>
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <CardContent className="pt-0 space-y-4">
-              {isLoading ? (
-                <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-6 h-6 text-orange-500 animate-spin" />
-                </div>
-              ) : instructionsError ? (
-                <Alert className="border-red-500/30 bg-red-500/10">
-                  <AlertCircle className="w-4 h-4 text-red-500" />
-                  <AlertDescription className="text-red-400">
-                    Failed to load AI instructions. Please refresh the page.
-                  </AlertDescription>
-                </Alert>
-              ) : (
-                <>
-                  <div className="flex items-center justify-between">
-                    <div className="text-xs text-zinc-500">
-                      {instructionsData?.updatedAt && `Last updated: ${new Date(instructionsData.updatedAt).toLocaleDateString()}`}
-                    </div>
-                    <div className="flex gap-2">
-                      {isLocked ? (
+            ) : instructionsError ? (
+              <Alert className="border-red-500/30 bg-red-500/10">
+                <AlertCircle className="w-4 h-4 text-red-500" />
+                <AlertDescription className="text-red-400">
+                  Failed to load AI instructions. Please refresh the page.
+                </AlertDescription>
+              </Alert>
+            ) : (
+              <>
+                <div className="flex items-center justify-between">
+                  <div className="text-xs text-zinc-500">
+                    {instructionsData?.updatedAt && `Last updated: ${new Date(instructionsData.updatedAt).toLocaleDateString()}`}
+                  </div>
+                  <div className="flex gap-2">
+                    {isLocked ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowUnlockConfirm(true)}
+                        className="border-zinc-700 text-zinc-300 text-xs"
+                        data-testid="button-unlock-instructions"
+                      >
+                        <Unlock className="w-3 h-3 mr-1" />
+                        Unlock to Edit
+                      </Button>
+                    ) : (
+                      <>
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setShowUnlockConfirm(true)}
+                          onClick={() => setShowResetConfirm(true)}
                           className="border-zinc-700 text-zinc-300 text-xs"
-                          data-testid="button-unlock-instructions"
+                          data-testid="button-reset-instructions"
                         >
-                          <Unlock className="w-3 h-3 mr-1" />
-                          Unlock to Edit
+                          <RotateCcw className="w-3 h-3 mr-1" />
+                          Reset to Default
                         </Button>
-                      ) : (
-                        <>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setShowResetConfirm(true)}
-                            className="border-zinc-700 text-zinc-300 text-xs"
-                            data-testid="button-reset-instructions"
-                          >
-                            <RotateCcw className="w-3 h-3 mr-1" />
-                            Reset to Default
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => lockMutation.mutate()}
-                            disabled={lockMutation.isPending}
-                            className="border-zinc-700 text-zinc-300 text-xs"
-                            data-testid="button-lock-instructions"
-                          >
-                            <Lock className="w-3 h-3 mr-1" />
-                            Lock
-                          </Button>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <Textarea
-                    value={editedInstructions}
-                    onChange={(e) => handleTextChange(e.target.value)}
-                    disabled={isLocked}
-                    className={`bg-zinc-800 border-zinc-700 text-white font-mono text-xs min-h-[300px] ${isLocked ? 'opacity-60 cursor-not-allowed' : ''}`}
-                    placeholder="AI Instructions..."
-                    data-testid="input-ai-instructions"
-                  />
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="text-xs text-zinc-500">
-                      Available placeholders: <code className="bg-zinc-800 px-1 rounded">${'{dayIndex}'}</code>, <code className="bg-zinc-800 px-1 rounded">${'{theme}'}</code>, <code className="bg-zinc-800 px-1 rounded">${'{weekNumber}'}</code>
-                    </div>
-                    {!isLocked && hasChanges && (
-                      <Button
-                        onClick={() => saveMutation.mutate()}
-                        disabled={saveMutation.isPending}
-                        className="bg-orange-500 hover:bg-orange-600 text-xs"
-                        data-testid="button-save-instructions"
-                      >
-                        {saveMutation.isPending ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Save className="w-3 h-3 mr-1" />}
-                        Save Changes
-                      </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => lockMutation.mutate()}
+                          disabled={lockMutation.isPending}
+                          className="border-zinc-700 text-zinc-300 text-xs"
+                          data-testid="button-lock-instructions"
+                        >
+                          <Lock className="w-3 h-3 mr-1" />
+                          Lock
+                        </Button>
+                      </>
                     )}
                   </div>
-                </>
-              )}
-            </CardContent>
-          </CollapsibleContent>
-        </Card>
-      </Collapsible>
+                </div>
+                
+                <Textarea
+                  value={editedInstructions}
+                  onChange={(e) => handleTextChange(e.target.value)}
+                  disabled={isLocked}
+                  className={`bg-zinc-800 border-zinc-700 text-white font-mono text-xs min-h-[350px] ${isLocked ? 'opacity-60 cursor-not-allowed' : ''}`}
+                  placeholder="AI Instructions..."
+                  data-testid="input-ai-instructions"
+                />
+                
+                <div className="flex items-center justify-between">
+                  <div className="text-xs text-zinc-500">
+                    These instructions guide AI when generating {type === 'content' ? 'daily lessons' : 'social posts'}.
+                  </div>
+                  {!isLocked && hasChanges && (
+                    <Button
+                      onClick={() => saveMutation.mutate()}
+                      disabled={saveMutation.isPending}
+                      className="bg-orange-500 hover:bg-orange-600 text-xs"
+                      data-testid="button-save-instructions"
+                    >
+                      {saveMutation.isPending ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Save className="w-3 h-3 mr-1" />}
+                      Save Changes
+                    </Button>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <AlertDialog open={showUnlockConfirm} onOpenChange={setShowUnlockConfirm}>
         <AlertDialogContent className="bg-zinc-900 border-zinc-800">
@@ -2621,6 +2624,7 @@ export default function ContentManagement() {
               <p className="text-zinc-400">Manage daily curriculum content ({contentDays?.length || 0} days)</p>
             </div>
             <div className="flex gap-2">
+              <AIInstructionsEditor type="content" defaultInstructions={DEFAULT_CONTENT_AI_INSTRUCTIONS} />
               <Button 
                 variant="outline"
                 className="border-zinc-700 text-zinc-300 hover:bg-zinc-800" 
@@ -2660,8 +2664,6 @@ export default function ContentManagement() {
               data-testid="input-search-content"
             />
           </div>
-
-          <AIInstructionsEditor type="content" defaultInstructions={DEFAULT_CONTENT_AI_INSTRUCTIONS} />
 
           <div className="flex gap-6">
             <div className="w-72 flex-shrink-0">
