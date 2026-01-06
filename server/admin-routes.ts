@@ -2,7 +2,7 @@ import type { Express, Request, Response, NextFunction } from "express";
 import { randomBytes, createCipheriv, createDecipheriv, scryptSync } from "crypto";
 import { adminAuthService } from "./admin-auth";
 import { db } from "./db";
-import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema, systemSettings } from "@shared/schema";
+import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema, systemSettings, aiInstructions, insertAiInstructionsSchema } from "@shared/schema";
 import { count, eq, sql, and, sum, isNull } from "drizzle-orm";
 
 interface AdminRequest extends Request {
@@ -3689,6 +3689,130 @@ Return ONLY the post content, nothing else.`;
     } catch (error) {
       console.error("Error decrypting setting:", error);
       res.status(500).json({ message: "Failed to decrypt setting" });
+    }
+  });
+
+  // ============================================
+  // AI INSTRUCTIONS MANAGEMENT
+  // ============================================
+
+  // Get AI instructions by type
+  app.get("/api/admin/ai-instructions/:type", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { type } = req.params;
+      const [instructions] = await db.select().from(aiInstructions).where(eq(aiInstructions.type, type));
+      
+      if (!instructions) {
+        return res.json({ type, instructions: null, isLocked: true, exists: false });
+      }
+      
+      res.json({ ...instructions, exists: true });
+    } catch (error) {
+      console.error("Error fetching AI instructions:", error);
+      res.status(500).json({ message: "Failed to fetch AI instructions" });
+    }
+  });
+
+  // Save AI instructions (create or update)
+  app.post("/api/admin/ai-instructions/:type", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { type } = req.params;
+      const { name, instructions: instructionsText } = req.body;
+      
+      if (!instructionsText) {
+        return res.status(400).json({ message: "Instructions text is required" });
+      }
+      
+      // Check if locked
+      const [existing] = await db.select().from(aiInstructions).where(eq(aiInstructions.type, type));
+      
+      if (existing?.isLocked) {
+        return res.status(403).json({ message: "Instructions are locked. Unlock before editing." });
+      }
+      
+      if (existing) {
+        // Update existing
+        await db.update(aiInstructions)
+          .set({
+            name: name || existing.name,
+            instructions: instructionsText,
+            updatedBy: req.admin?.id,
+            updatedAt: new Date(),
+          })
+          .where(eq(aiInstructions.type, type));
+      } else {
+        // Create new
+        await db.insert(aiInstructions).values({
+          type,
+          name: name || `${type.charAt(0).toUpperCase() + type.slice(1)} AI Instructions`,
+          instructions: instructionsText,
+          isLocked: false,
+          updatedBy: req.admin?.id,
+        });
+      }
+      
+      const [updated] = await db.select().from(aiInstructions).where(eq(aiInstructions.type, type));
+      res.json({ message: "Instructions saved successfully", ...updated });
+    } catch (error) {
+      console.error("Error saving AI instructions:", error);
+      res.status(500).json({ message: "Failed to save AI instructions" });
+    }
+  });
+
+  // Lock AI instructions
+  app.post("/api/admin/ai-instructions/:type/lock", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { type } = req.params;
+      
+      await db.update(aiInstructions)
+        .set({ isLocked: true, updatedBy: req.admin?.id, updatedAt: new Date() })
+        .where(eq(aiInstructions.type, type));
+      
+      res.json({ message: "Instructions locked successfully", isLocked: true });
+    } catch (error) {
+      console.error("Error locking AI instructions:", error);
+      res.status(500).json({ message: "Failed to lock AI instructions" });
+    }
+  });
+
+  // Unlock AI instructions (with confirmation)
+  app.post("/api/admin/ai-instructions/:type/unlock", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { type } = req.params;
+      const { confirmed } = req.body;
+      
+      if (!confirmed) {
+        return res.status(400).json({ message: "Confirmation required to unlock", requiresConfirmation: true });
+      }
+      
+      await db.update(aiInstructions)
+        .set({ isLocked: false, updatedBy: req.admin?.id, updatedAt: new Date() })
+        .where(eq(aiInstructions.type, type));
+      
+      res.json({ message: "Instructions unlocked successfully", isLocked: false });
+    } catch (error) {
+      console.error("Error unlocking AI instructions:", error);
+      res.status(500).json({ message: "Failed to unlock AI instructions" });
+    }
+  });
+
+  // Reset AI instructions to default
+  app.post("/api/admin/ai-instructions/:type/reset", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { type } = req.params;
+      const { confirmed } = req.body;
+      
+      if (!confirmed) {
+        return res.status(400).json({ message: "Confirmation required to reset", requiresConfirmation: true });
+      }
+      
+      // Delete the custom instructions (will fall back to hardcoded default)
+      await db.delete(aiInstructions).where(eq(aiInstructions.type, type));
+      
+      res.json({ message: "Instructions reset to default successfully" });
+    } catch (error) {
+      console.error("Error resetting AI instructions:", error);
+      res.status(500).json({ message: "Failed to reset AI instructions" });
     }
   });
 }
