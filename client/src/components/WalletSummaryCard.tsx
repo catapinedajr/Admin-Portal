@@ -108,7 +108,7 @@ export default function WalletSummaryCard() {
               </div>
               <div>
                 <div className="text-sm font-medium text-orange-400 mb-1">HODLearn Points</div>
-                <div className="text-xs text-gray-500">Educational Portfolio</div>
+                <div className="text-xs text-gray-500">1 point = 1 satoshi (pegged to BTC)</div>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -137,7 +137,7 @@ export default function WalletSummaryCard() {
                 </div>
               </div>
               <div className="text-xs text-gray-400">
-                {formatBTC(walletData.totalSatoshisEarned)} BTC
+                = {formatBTC(walletData.totalSatoshisEarned)} BTC equivalent
               </div>
             </div>
             
@@ -157,7 +157,7 @@ export default function WalletSummaryCard() {
           <div className="space-y-2 pt-2 border-t border-zinc-700/50">
             <div className="flex items-center justify-between">
               <div className="text-xs text-gray-400">
-                Keep learning to earn more points
+                Learn to think in Bitcoin's native unit
               </div>
               <div className="flex items-center gap-1 text-xs text-orange-400">
                 <span>View Details</span>
