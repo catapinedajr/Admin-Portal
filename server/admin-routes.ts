@@ -15,13 +15,25 @@ const ENCRYPTION_KEY = process.env.SETTINGS_ENCRYPTION_KEY || 'hodlearn-default-
 const ALGORITHM = 'aes-256-gcm';
 const IS_DEFAULT_ENCRYPTION_KEY = !process.env.SETTINGS_ENCRYPTION_KEY;
 
-// Production safety: Block credential operations if using default key in production
+// Production safety: FAIL-FAST if using default key in production
 const ENCRYPTION_KEY_REQUIRED_IN_PROD = IS_DEFAULT_ENCRYPTION_KEY && process.env.NODE_ENV === 'production';
 
 if (ENCRYPTION_KEY_REQUIRED_IN_PROD) {
-  console.error('🛑 CRITICAL: SETTINGS_ENCRYPTION_KEY environment variable is required in production.');
-  console.error('   Set this via AWS Secrets Manager or environment configuration.');
-  console.warn('⚠️  SECURITY WARNING: Credential encryption/decryption operations will be blocked until key is set.');
+  console.error('');
+  console.error('╔══════════════════════════════════════════════════════════════════════╗');
+  console.error('║  🛑 CRITICAL SECURITY ERROR: SETTINGS_ENCRYPTION_KEY NOT SET         ║');
+  console.error('║                                                                      ║');
+  console.error('║  The application CANNOT start in production mode without a secure   ║');
+  console.error('║  encryption key for storing API credentials.                         ║');
+  console.error('║                                                                      ║');
+  console.error('║  To fix:                                                             ║');
+  console.error('║  1. Generate a 32+ character random key                              ║');
+  console.error('║  2. Set SETTINGS_ENCRYPTION_KEY in AWS Secrets Manager               ║');
+  console.error('║  3. Restart the application                                          ║');
+  console.error('╚══════════════════════════════════════════════════════════════════════╝');
+  console.error('');
+  // Fail-fast: Exit in production if encryption key not set
+  process.exit(1);
 }
 
 // Enhanced encryption with per-secret random salt (format: salt:iv:authTag:encrypted)
