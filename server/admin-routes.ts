@@ -2236,7 +2236,10 @@ Return ONLY the JSON object, no markdown code blocks or additional text.`;
   app.get("/api/admin/store/inventory", requireAdminAuth, async (req: AdminRequest, res) => {
     try {
       const { storeProducts } = await import('@shared/schema');
-      const products = await db.select().from(storeProducts).orderBy(storeProducts.sortOrder);
+      const showArchived = req.query.showArchived === 'true';
+      const products = showArchived
+        ? await db.select().from(storeProducts).orderBy(storeProducts.sortOrder)
+        : await db.select().from(storeProducts).where(isNull(storeProducts.archivedAt)).orderBy(storeProducts.sortOrder);
       res.json(products);
     } catch (error) {
       console.error("Error fetching inventory products:", error);
@@ -2320,7 +2323,10 @@ Return ONLY the JSON object, no markdown code blocks or additional text.`;
   app.get("/api/admin/store/orders", requireAdminAuth, async (req: AdminRequest, res) => {
     try {
       const { storeOrders } = await import('@shared/schema');
-      const orders = await db.select().from(storeOrders).orderBy(storeOrders.createdAt);
+      const showArchived = req.query.showArchived === 'true';
+      const orders = showArchived
+        ? await db.select().from(storeOrders).orderBy(storeOrders.createdAt)
+        : await db.select().from(storeOrders).where(isNull(storeOrders.archivedAt)).orderBy(storeOrders.createdAt);
       res.json(orders);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -3046,7 +3052,10 @@ Return ONLY the post content, nothing else.`;
   // Get all companies
   app.get("/api/admin/crm/companies", requireAdminAuth, async (req: AdminRequest, res) => {
     try {
-      const companies = await db.select().from(crmCompanies).orderBy(crmCompanies.name);
+      const showArchived = req.query.showArchived === 'true';
+      const companies = showArchived
+        ? await db.select().from(crmCompanies).orderBy(crmCompanies.name)
+        : await db.select().from(crmCompanies).where(isNull(crmCompanies.archivedAt)).orderBy(crmCompanies.name);
       res.json(companies);
     } catch (error) {
       console.error("Error fetching companies:", error);
