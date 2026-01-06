@@ -14,12 +14,13 @@ const ENCRYPTION_KEY = process.env.SETTINGS_ENCRYPTION_KEY || 'hodlearn-default-
 const ALGORITHM = 'aes-256-gcm';
 const IS_DEFAULT_ENCRYPTION_KEY = !process.env.SETTINGS_ENCRYPTION_KEY;
 
-// Production safety: Block startup if using default key in production
-if (IS_DEFAULT_ENCRYPTION_KEY && process.env.NODE_ENV === 'production') {
+// Production safety: Block credential operations if using default key in production
+const ENCRYPTION_KEY_REQUIRED_IN_PROD = IS_DEFAULT_ENCRYPTION_KEY && process.env.NODE_ENV === 'production';
+
+if (ENCRYPTION_KEY_REQUIRED_IN_PROD) {
   console.error('🛑 CRITICAL: SETTINGS_ENCRYPTION_KEY environment variable is required in production.');
   console.error('   Set this via AWS Secrets Manager or environment configuration.');
-  // In production, we log but don't crash - allows existing data to work
-  console.warn('⚠️  SECURITY WARNING: Using fallback encryption key. This is NOT secure for production.');
+  console.warn('⚠️  SECURITY WARNING: Credential encryption/decryption operations will be blocked until key is set.');
 }
 
 // Enhanced encryption with per-secret random salt (format: salt:iv:authTag:encrypted)
@@ -3903,13 +3904,19 @@ Return ONLY the post content, nothing else.`;
   // Save or update a social integration
   app.post("/api/admin/social-integrations", requireAdminAuth, requireSuperAdmin, async (req: AdminRequest, res: Response) => {
     try {
+      // Block credential operations in production without proper encryption key
+      if (ENCRYPTION_KEY_REQUIRED_IN_PROD) {
+        console.error(`[Security] Blocked credential save attempt - SETTINGS_ENCRYPTION_KEY not set in production`);
+        return res.status(503).json({ message: "Credential storage unavailable. Server configuration required." });
+      }
+      
       const { platform, displayName, apiKey, apiSecret, bearerToken, accessToken, accessTokenSecret, webhookSecret, accountHandle } = req.body;
       
       if (!platform || !displayName) {
         return res.status(400).json({ message: "Platform and display name are required" });
       }
 
-      // Encrypt sensitive fields if provided
+      // Encrypt sensitive fields if provided (uses new secure format with per-secret salt)
       const encryptedApiKey = apiKey ? encryptSettingValue(apiKey) : null;
       const encryptedApiSecret = apiSecret ? encryptSettingValue(apiSecret) : null;
       const encryptedBearerToken = bearerToken ? encryptSettingValue(bearerToken) : null;
@@ -4062,6 +4069,9 @@ Return ONLY the post content, nothing else.`;
       }
     } catch (error) {
       console.error("Error validating social integration:", error);
+      
+      // Audit log for failure
+      console.log(`[Audit] Social integration ${platform} validation FAILED (exception) by admin ${req.admin?.id}`);
       
       // Update with sanitized error
       try {
