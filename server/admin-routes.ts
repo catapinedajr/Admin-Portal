@@ -4807,35 +4807,155 @@ Return ONLY the post content, nothing else.`;
   });
 
   // ==================== ARCHIVE/RESTORE ENDPOINTS ====================
-  // Generic archive endpoint for multiple entity types
-  const archivableEntities: Record<string, { table: any; name: string }> = {
-    'users': { table: users, name: 'User' },
-    'admin-users': { table: adminUsers, name: 'Admin User' },
-    'advertising-clients': { table: advertisingClients, name: 'Advertising Client' },
-    'store-products': { table: storeProducts, name: 'Store Product' },
-    'store-orders': { table: storeOrders, name: 'Store Order' },
-    'affiliate-products': { table: affiliateProducts, name: 'Affiliate Product' },
-    'referral-partners': { table: referralPartners, name: 'Referral Partner' },
-    'referral-signups': { table: referralSignups, name: 'Referral Signup' },
-    'invoices': { table: invoices, name: 'Invoice' },
-    'social-posts': { table: socialPosts, name: 'Social Post' },
-    'social-accounts': { table: socialAccounts, name: 'Social Account' },
-    'social-integrations': { table: socialIntegrations, name: 'Social Integration' },
-    'crm-companies': { table: crmCompanies, name: 'CRM Company' },
-    'crm-contacts': { table: crmContacts, name: 'CRM Contact' },
-    'crm-deals': { table: crmDeals, name: 'CRM Deal' },
-    'crm-activities': { table: crmActivities, name: 'CRM Activity' },
-    'forum-categories': { table: forumCategories, name: 'Forum Category' },
-    'forum-posts': { table: forumPosts, name: 'Forum Post' },
-    'forum-replies': { table: forumReplies, name: 'Forum Reply' },
-    'ad-campaigns': { table: adCampaigns, name: 'Ad Campaign' },
-    'content-days': { table: contentDays, name: 'Content Day' },
-    'roadmap-ideas': { table: roadmapIdeas, name: 'Roadmap Idea' },
-    'roadmap-releases': { table: roadmapReleases, name: 'Roadmap Release' },
-    'objectives': { table: objectives, name: 'Objective' },
-    'key-results': { table: keyResults, name: 'Key Result' },
-    'kpi-targets': { table: kpiTargets, name: 'KPI Target' },
+  // Define archivable entities with name field for display
+  interface ArchivableEntity {
+    table: any;
+    name: string;
+    displayField: string; // Field to use for item name in archive list
+    detailsField?: string; // Optional field for additional details
+  }
+  
+  const archivableEntities: Record<string, ArchivableEntity> = {
+    'users': { table: users, name: 'User', displayField: 'username', detailsField: 'email' },
+    'admin-users': { table: adminUsers, name: 'Admin User', displayField: 'name', detailsField: 'email' },
+    'advertising-clients': { table: advertisingClients, name: 'Advertising Client', displayField: 'name' },
+    'store-products': { table: storeProducts, name: 'Store Product', displayField: 'name', detailsField: 'sku' },
+    'store-orders': { table: storeOrders, name: 'Store Order', displayField: 'orderNumber' },
+    'affiliate-products': { table: affiliateProducts, name: 'Affiliate Product', displayField: 'name' },
+    'referral-partners': { table: referralPartners, name: 'Referral Partner', displayField: 'name' },
+    'referral-signups': { table: referralSignups, name: 'Referral Signup', displayField: 'id' },
+    'invoices': { table: invoices, name: 'Invoice', displayField: 'invoiceNumber' },
+    'social-posts': { table: socialPosts, name: 'Social Post', displayField: 'title' },
+    'social-accounts': { table: socialAccounts, name: 'Social Account', displayField: 'accountName' },
+    'social-integrations': { table: socialIntegrations, name: 'Social Integration', displayField: 'platform' },
+    'crm-companies': { table: crmCompanies, name: 'CRM Company', displayField: 'name', detailsField: 'industry' },
+    'crm-contacts': { table: crmContacts, name: 'CRM Contact', displayField: 'email' },
+    'crm-deals': { table: crmDeals, name: 'CRM Deal', displayField: 'title', detailsField: 'stage' },
+    'crm-activities': { table: crmActivities, name: 'CRM Activity', displayField: 'type' },
+    'forum-categories': { table: forumCategories, name: 'Forum Category', displayField: 'name' },
+    'forum-posts': { table: forumPosts, name: 'Forum Post', displayField: 'title' },
+    'forum-replies': { table: forumReplies, name: 'Forum Reply', displayField: 'id' },
+    'ad-campaigns': { table: adCampaigns, name: 'Ad Campaign', displayField: 'name' },
+    'content-days': { table: contentDays, name: 'Content Day', displayField: 'dayNumber' },
+    'roadmap-ideas': { table: roadmapIdeas, name: 'Roadmap Idea', displayField: 'title' },
+    'roadmap-releases': { table: roadmapReleases, name: 'Roadmap Release', displayField: 'version' },
+    'objectives': { table: objectives, name: 'Objective', displayField: 'title' },
+    'key-results': { table: keyResults, name: 'Key Result', displayField: 'title' },
+    'kpi-targets': { table: kpiTargets, name: 'KPI Target', displayField: 'name' },
   };
+
+  // Unified archive listing endpoint - returns all archived items across all types
+  app.get("/api/admin/archive", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { type } = req.query;
+      const archivedItems: Array<{
+        id: number;
+        entityType: string;
+        name: string;
+        archivedAt: string;
+        details?: string;
+      }> = [];
+
+      const entityTypes = type && type !== 'all' 
+        ? { [type as string]: archivableEntities[type as string] }
+        : archivableEntities;
+
+      for (const [entityType, entity] of Object.entries(entityTypes)) {
+        if (!entity) continue;
+        
+        try {
+          const items = await db.select()
+            .from(entity.table)
+            .where(sql`${entity.table.archivedAt} IS NOT NULL`);
+          
+          for (const item of items) {
+            const displayValue = (item as any)[entity.displayField];
+            const detailsValue = entity.detailsField ? (item as any)[entity.detailsField] : undefined;
+            
+            archivedItems.push({
+              id: (item as any).id,
+              entityType,
+              name: displayValue ? String(displayValue) : `${entity.name} #${(item as any).id}`,
+              archivedAt: (item as any).archivedAt,
+              details: detailsValue ? String(detailsValue) : undefined,
+            });
+          }
+        } catch (err) {
+          // Skip entities that might not have archivedAt column
+          console.log(`Skipping ${entityType}: ${err}`);
+        }
+      }
+
+      // Sort by archivedAt date descending
+      archivedItems.sort((a, b) => 
+        new Date(b.archivedAt).getTime() - new Date(a.archivedAt).getTime()
+      );
+
+      res.json(archivedItems);
+    } catch (error) {
+      console.error("Error fetching archived items:", error);
+      res.status(500).json({ message: "Failed to fetch archived items" });
+    }
+  });
+
+  // Restore endpoint with path that matches frontend expectations
+  app.post("/api/admin/archive/:entityType/:id/restore", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { entityType, id } = req.params;
+      const entity = archivableEntities[entityType];
+      
+      if (!entity) {
+        return res.status(400).json({ message: `Unknown entity type: ${entityType}` });
+      }
+
+      const itemId = parseInt(id);
+      if (isNaN(itemId)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+
+      await db.update(entity.table)
+        .set({ archivedAt: null })
+        .where(eq(entity.table.id, itemId));
+
+      res.json({ message: `${entity.name} restored successfully` });
+    } catch (error) {
+      console.error("Error restoring item:", error);
+      res.status(500).json({ message: "Failed to restore item" });
+    }
+  });
+
+  // Permanent delete endpoint with path that matches frontend expectations
+  app.delete("/api/admin/archive/:entityType/:id", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { entityType, id } = req.params;
+      const entity = archivableEntities[entityType];
+      
+      if (!entity) {
+        return res.status(400).json({ message: `Unknown entity type: ${entityType}` });
+      }
+
+      const itemId = parseInt(id);
+      if (isNaN(itemId)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+
+      // Only allow permanent deletion of items that are already archived
+      const [item] = await db.select()
+        .from(entity.table)
+        .where(and(eq(entity.table.id, itemId), sql`${entity.table.archivedAt} IS NOT NULL`));
+
+      if (!item) {
+        return res.status(404).json({ message: "Item not found or not archived. Archive first before permanent deletion." });
+      }
+
+      await db.delete(entity.table).where(eq(entity.table.id, itemId));
+
+      res.json({ message: `${entity.name} permanently deleted` });
+    } catch (error) {
+      console.error("Error permanently deleting item:", error);
+      res.status(500).json({ message: "Failed to permanently delete item" });
+    }
+  });
 
   // Archive an item (soft delete)
   app.post("/api/admin/archive/:entityType/:id", requireAdminAuth, async (req: AdminRequest, res: Response) => {
