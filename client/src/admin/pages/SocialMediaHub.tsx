@@ -6,8 +6,9 @@ import {
   Twitter, Clock, ArrowRight, Edit2, Trash2,
   AlertCircle, CheckCircle2, Loader2, Link as LinkIcon, Sparkles,
   ChevronLeft, ChevronRight, X, Settings, Lock, Unlock, Save, RotateCcw,
-  Copy, Info, FileEdit, CalendarCheck, ExternalLink
+  Copy, Info, FileEdit, CalendarCheck, ExternalLink, Power, Zap
 } from "lucide-react";
+import { useIntegrationManager } from "../hooks/useIntegrationManager";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
