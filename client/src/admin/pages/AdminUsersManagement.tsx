@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { 
   UserCog, Plus, Shield, ShieldCheck, Mail, Calendar,
-  Clock, Trash2, Edit, X, Check, Eye, EyeOff
+  Clock, Archive, ArchiveRestore, Edit, X, Check, Eye, EyeOff
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -89,12 +89,14 @@ function AdminUserCard({
   admin, 
   currentUserId,
   onEdit, 
-  onDeactivate 
+  onArchive,
+  onRestore 
 }: { 
   admin: AdminUser; 
   currentUserId: number;
   onEdit: () => void; 
-  onDeactivate: () => void;
+  onArchive?: () => void;
+  onRestore?: () => void;
 }) {
   const isCurrentUser = admin.id === currentUserId;
   
@@ -166,15 +168,26 @@ function AdminUserCard({
             >
               <Edit className="w-4 h-4" />
             </Button>
-            {!isCurrentUser && admin.isActive && (
+            {!isCurrentUser && admin.isActive && onArchive && (
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="text-red-400 hover:text-red-300"
-                onClick={onDeactivate}
-                data-testid={`button-deactivate-admin-${admin.id}`}
+                className="text-orange-400 hover:text-orange-300"
+                onClick={onArchive}
+                data-testid={`button-archive-admin-${admin.id}`}
               >
-                <Trash2 className="w-4 h-4" />
+                <Archive className="w-4 h-4" />
+              </Button>
+            )}
+            {!isCurrentUser && !admin.isActive && onRestore && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-green-400 hover:text-green-300"
+                onClick={onRestore}
+                data-testid={`button-restore-admin-${admin.id}`}
+              >
+                <ArchiveRestore className="w-4 h-4" />
               </Button>
             )}
           </div>
@@ -245,17 +258,31 @@ export default function AdminUsersManagement() {
     },
   });
 
-  const deactivateMutation = useMutation({
+  const archiveMutation = useMutation({
     mutationFn: async (id: number) => {
-      const res = await apiRequest('DELETE', `/api/admin/admin-users/${id}`);
+      const res = await apiRequest('POST', `/api/admin/archive/admin-users/${id}`);
       return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/admin-users"] });
-      toast({ title: "Admin Deactivated", description: "Admin user has been deactivated and logged out." });
+      toast({ title: "Admin Archived", description: "Admin user has been archived. They can be restored anytime." });
     },
     onError: (error: any) => {
-      toast({ title: "Error", description: error.message || "Failed to deactivate admin user.", variant: "destructive" });
+      toast({ title: "Error", description: error.message || "Failed to archive admin user.", variant: "destructive" });
+    },
+  });
+
+  const restoreMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await apiRequest('POST', `/api/admin/restore/admin-users/${id}`);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/admin-users"] });
+      toast({ title: "Admin Restored", description: "Admin user has been restored from archive." });
+    },
+    onError: (error: any) => {
+      toast({ title: "Error", description: error.message || "Failed to restore admin user.", variant: "destructive" });
     },
   });
 
@@ -373,7 +400,7 @@ export default function AdminUsersManagement() {
                       admin={admin}
                       currentUserId={currentAdmin?.id || 0}
                       onEdit={() => handleEditClick(admin)}
-                      onDeactivate={() => deactivateMutation.mutate(admin.id)}
+                      onArchive={() => archiveMutation.mutate(admin.id)}
                     />
                   ))}
                 </div>
@@ -389,7 +416,7 @@ export default function AdminUsersManagement() {
                         admin={admin}
                         currentUserId={currentAdmin?.id || 0}
                         onEdit={() => handleEditClick(admin)}
-                        onDeactivate={() => {}}
+                        onRestore={() => restoreMutation.mutate(admin.id)}
                       />
                     ))}
                   </div>
