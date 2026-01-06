@@ -14,6 +14,16 @@ const adminLoginRateLimiter = rateLimit({
   legacyHeaders: false,
   skipSuccessfulRequests: true,
 });
+
+// Rate limiter for AI image generation (cost control)
+const imageGenerationRateLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 50, // 50 images per hour per user
+  message: { message: "Image generation limit reached. Please try again later." },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req: AdminRequest) => req.admin?.id?.toString() || req.ip || 'unknown',
+});
 import { adminLoginSchema, adminUsers, adminSessions, adminPasswordResetTokens, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema, systemSettings, aiInstructions, insertAiInstructionsSchema, socialIntegrations, paywallSettings } from "@shared/schema";
 import { count, eq, sql, and, sum, isNull } from "drizzle-orm";
 
@@ -125,6 +135,42 @@ async function createAnthropicClient() {
   }
   
   throw new Error('No Anthropic API key configured. Set via: 1) Replit AI Integration, 2) ANTHROPIC_API_KEY env var, or 3) Admin Settings page.');
+}
+
+// Helper function to create OpenAI client with environment-aware API key handling
+// Priority: 1) Replit AI Integrations, 2) Environment variable, 3) Database-stored key
+async function createOpenAIClient() {
+  const OpenAI = (await import('openai')).default;
+  
+  // 1. Replit AI Integrations (development)
+  if (process.env.AI_INTEGRATIONS_OPENAI_API_KEY) {
+    return new OpenAI({
+      apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+      baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+    });
+  }
+  
+  // 2. Production environment variable (AWS)
+  if (process.env.OPENAI_API_KEY) {
+    return new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+  }
+  
+  // 3. Database-stored key (set via admin Settings page)
+  try {
+    const [setting] = await db.select().from(systemSettings).where(eq(systemSettings.key, 'OPENAI_API_KEY'));
+    if (setting) {
+      const decryptedKey = decryptSettingValue(setting.encryptedValue);
+      return new OpenAI({
+        apiKey: decryptedKey,
+      });
+    }
+  } catch (error) {
+    console.error('Failed to retrieve OpenAI API key from database:', error);
+  }
+  
+  throw new Error('No OpenAI API key configured. Set via: 1) Replit AI Integration, 2) OPENAI_API_KEY env var, or 3) Admin Settings page.');
 }
 
 const requireAdminAuth = async (req: AdminRequest, res: Response, next: NextFunction) => {
@@ -2879,6 +2925,90 @@ Return ONLY the post content, nothing else.`;
     } catch (error) {
       console.error("Error generating AI draft:", error);
       res.status(500).json({ message: "Failed to generate draft. Please try again." });
+    }
+  });
+
+  // Zod schema for image generation
+  const imageGenerationSchema = z.object({
+    prompt: z.string().min(1, "Prompt is required").max(1000, "Prompt must be under 1000 characters"),
+    style: z.enum(['professional', 'educational', 'dynamic', 'minimal', 'custom']).default('professional'),
+    size: z.enum(['1024x1024', '1792x1024', '1024x1792']).default('1024x1024'),
+  });
+
+  // AI Image Generation using DALL-E 3
+  app.post("/api/admin/social/generate-image", requireAdminAuth, imageGenerationRateLimiter, async (req: AdminRequest, res) => {
+    try {
+      // Validate input with Zod
+      let validatedInput;
+      try {
+        validatedInput = imageGenerationSchema.parse(req.body);
+      } catch (zodError: any) {
+        const message = zodError.errors?.[0]?.message || "Invalid input";
+        return res.status(400).json({ message });
+      }
+      const { prompt, style, size } = validatedInput;
+      const imageSize = size;
+      
+      // Style presets for Bitcoin/financial content
+      const stylePresets: Record<string, string> = {
+        'professional': 'Clean, modern, professional style. Minimalist design with subtle orange and black color scheme.',
+        'educational': 'Educational infographic style. Clear, informative visuals with easy-to-understand imagery.',
+        'dynamic': 'Dynamic, energetic design with bold colors and movement. Modern and eye-catching.',
+        'minimal': 'Ultra-minimalist design. Simple shapes, lots of whitespace, subtle details.',
+        'custom': '', // User provides their own style
+      };
+      
+      const styleGuide = style && stylePresets[style] 
+        ? stylePresets[style] 
+        : stylePresets['professional'];
+      
+      // Construct the full prompt with style guidance
+      const fullPrompt = `${prompt}. ${styleGuide} No text, no words, no letters, no numbers in the image. Bitcoin orange color: #F7931A. Professional quality, suitable for social media.`;
+      
+      // Create OpenAI client
+      const openai = await createOpenAIClient();
+      
+      // Generate image with DALL-E 3
+      const response = await openai.images.generate({
+        model: 'dall-e-3',
+        prompt: fullPrompt,
+        n: 1,
+        size: imageSize as '1024x1024' | '1792x1024' | '1024x1792',
+        quality: 'standard',
+        response_format: 'url',
+      });
+      
+      if (!response.data || response.data.length === 0) {
+        throw new Error('No image generated');
+      }
+      
+      const imageUrl = response.data[0]?.url;
+      const revisedPrompt = response.data[0]?.revised_prompt;
+      
+      if (!imageUrl) {
+        throw new Error('No image URL in response');
+      }
+      
+      res.json({ 
+        imageUrl,
+        revisedPrompt,
+        size: imageSize,
+      });
+    } catch (error: any) {
+      console.error("Error generating image:", error);
+      
+      // Handle specific OpenAI errors
+      if (error.code === 'content_policy_violation') {
+        return res.status(400).json({ message: "Image prompt was rejected by content policy. Please try a different prompt." });
+      }
+      if (error.code === 'rate_limit_exceeded') {
+        return res.status(429).json({ message: "Rate limit exceeded. Please wait a moment and try again." });
+      }
+      if (error.message?.includes('No OpenAI API key')) {
+        return res.status(400).json({ message: "OpenAI API key not configured. Please add it in Settings → API Keys." });
+      }
+      
+      res.status(500).json({ message: "Failed to generate image. Please try again." });
     }
   });
 

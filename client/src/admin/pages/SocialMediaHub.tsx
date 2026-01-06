@@ -6,7 +6,7 @@ import {
   Twitter, Linkedin, Instagram, Facebook, Clock, ArrowRight, Edit2, Trash2,
   AlertCircle, CheckCircle2, Loader2, Link as LinkIcon, Sparkles,
   ChevronLeft, ChevronRight, X, Settings, Lock, Unlock, Save, RotateCcw,
-  Copy, Info, FileEdit, CalendarCheck, ExternalLink, Power, Zap
+  Copy, Info, FileEdit, CalendarCheck, ExternalLink, Power, Zap, Image, Wand2
 } from "lucide-react";
 import { useIntegrationManager } from "../hooks/useIntegrationManager";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -712,6 +712,13 @@ function PostComposer({
     notes: "",
     ctaGoal: "",
   });
+  
+  // Image generation state
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imagePrompt, setImagePrompt] = useState("");
+  const [imageStyle, setImageStyle] = useState("professional");
+  const [imageSize, setImageSize] = useState("1024x1024");
+  const [showImageGenerator, setShowImageGenerator] = useState(false);
 
   // Reset form when dialog opens/closes or post changes
   useEffect(() => {
@@ -729,6 +736,7 @@ function PostComposer({
           notes: (post as any).notes || "",
           ctaGoal: (post as any).ctaGoal || "",
         });
+        setImageUrl(post.imageUrl || null);
       } else {
         setFormData({
           content: "",
@@ -741,6 +749,9 @@ function PostComposer({
           notes: "",
           ctaGoal: "",
         });
+        setImageUrl(null);
+        setImagePrompt("");
+        setShowImageGenerator(false);
       }
     }
   }, [open, post]);
@@ -763,6 +774,7 @@ function PostComposer({
         content: formData.content,
         platform: formData.platform,
         linkUrl: formData.linkUrl || null,
+        imageUrl: imageUrl || null,
         campaignId: formData.campaignId ? parseInt(formData.campaignId) : null,
         linkedDayIndex: formData.linkedDayIndex ? parseInt(formData.linkedDayIndex) : null,
         scheduledAt,
@@ -806,6 +818,27 @@ function PostComposer({
     },
     onError: (error: Error) => {
       toast({ title: "Failed to generate draft", description: error.message, variant: "destructive" });
+    },
+  });
+  
+  // Image generation mutation
+  const generateImageMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/admin/social/generate-image", {
+        prompt: imagePrompt,
+        style: imageStyle,
+        size: imageSize,
+      });
+      return response.json();
+    },
+    onSuccess: (data) => {
+      if (data.imageUrl) {
+        setImageUrl(data.imageUrl);
+        toast({ title: "Image generated!", description: "You can now save the post with this image." });
+      }
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to generate image", description: error.message, variant: "destructive" });
     },
   });
 
@@ -887,6 +920,117 @@ function PostComposer({
             />
             {isOverLimit && (
               <p className="text-xs text-red-400">Content exceeds {maxChars} character limit</p>
+            )}
+          </div>
+
+          {/* Image Section */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label className="text-zinc-300 flex items-center gap-2">
+                <Image className="w-4 h-4" />
+                Image
+              </Label>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowImageGenerator(!showImageGenerator)}
+                className="text-orange-400 hover:text-orange-300 hover:bg-orange-500/10 h-7"
+                data-testid="button-toggle-image-generator"
+              >
+                <Wand2 className="w-3 h-3 mr-1" />
+                {showImageGenerator ? "Hide Generator" : "AI Generate"}
+              </Button>
+            </div>
+            
+            {/* Image Preview */}
+            {imageUrl && (
+              <div className="relative">
+                <img 
+                  src={imageUrl} 
+                  alt="Generated post image" 
+                  className="w-full max-h-48 object-cover rounded-lg border border-zinc-700"
+                />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setImageUrl(null)}
+                  className="absolute top-2 right-2 bg-zinc-900/80 hover:bg-zinc-800 text-white h-7 px-2"
+                  data-testid="button-remove-image"
+                >
+                  <X className="w-3 h-3 mr-1" />
+                  Remove
+                </Button>
+              </div>
+            )}
+            
+            {/* Image Generator Panel */}
+            {showImageGenerator && (
+              <div className="bg-zinc-800/50 rounded-lg p-4 space-y-3 border border-zinc-700">
+                <div className="space-y-2">
+                  <Label className="text-zinc-400 text-sm">Image Prompt</Label>
+                  <Textarea
+                    value={imagePrompt}
+                    onChange={(e) => setImagePrompt(e.target.value)}
+                    placeholder="Describe the image you want to generate... e.g., 'A Bitcoin coin glowing with orange light on a dark background'"
+                    className="bg-zinc-800 border-zinc-600 text-white min-h-[80px] text-sm"
+                    data-testid="textarea-image-prompt"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label className="text-zinc-400 text-sm">Style</Label>
+                    <Select value={imageStyle} onValueChange={setImageStyle}>
+                      <SelectTrigger className="bg-zinc-800 border-zinc-600 text-white h-9" data-testid="select-image-style">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-zinc-800 border-zinc-700">
+                        <SelectItem value="professional">Professional</SelectItem>
+                        <SelectItem value="educational">Educational</SelectItem>
+                        <SelectItem value="dynamic">Dynamic</SelectItem>
+                        <SelectItem value="minimal">Minimal</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-zinc-400 text-sm">Size</Label>
+                    <Select value={imageSize} onValueChange={setImageSize}>
+                      <SelectTrigger className="bg-zinc-800 border-zinc-600 text-white h-9" data-testid="select-image-size">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-zinc-800 border-zinc-700">
+                        <SelectItem value="1024x1024">Square (1:1)</SelectItem>
+                        <SelectItem value="1792x1024">Landscape (16:9)</SelectItem>
+                        <SelectItem value="1024x1792">Portrait (9:16)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
+                <Button
+                  onClick={() => generateImageMutation.mutate()}
+                  disabled={generateImageMutation.isPending || !imagePrompt.trim()}
+                  className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white"
+                  data-testid="button-generate-image"
+                >
+                  {generateImageMutation.isPending ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Wand2 className="w-4 h-4 mr-2" />
+                      Generate Image
+                    </>
+                  )}
+                </Button>
+                
+                <p className="text-xs text-zinc-500 text-center">
+                  Images are generated using DALL-E 3. Standard quality, ~$0.04 per image.
+                </p>
+              </div>
             )}
           </div>
 
