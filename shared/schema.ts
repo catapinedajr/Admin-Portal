@@ -1782,3 +1782,38 @@ export const insertAiInstructionsSchema = createInsertSchema(aiInstructions).omi
 
 export type AiInstructions = typeof aiInstructions.$inferSelect;
 export type InsertAiInstructions = z.infer<typeof insertAiInstructionsSchema>;
+
+// ============================================
+// PAYWALL SETTINGS (Admin-configurable access control)
+// ============================================
+
+export const paywallSettings = pgTable("paywall_settings", {
+  id: serial("id").primaryKey(),
+  // Content paywall
+  freeDayThreshold: integer("free_day_threshold").notNull().default(7), // Days 1-7 free by default
+  paywallEnabled: boolean("paywall_enabled").notNull().default(true),
+  // Feature-level paywall (JSON array of feature keys that require subscription)
+  premiumFeatures: json("premium_features").$type<string[]>().default([
+    'dca_calculator',
+    'hodl_simulator', 
+    'transaction_simulator',
+    'inflation_calculator',
+    'security_training'
+  ]),
+  // Messaging
+  paywallTitle: text("paywall_title").default("Unlock Your Bitcoin Education"),
+  paywallMessage: text("paywall_message").default("Subscribe to access all 336 days of Bitcoin mastery and premium tools."),
+  // Tracking
+  updatedBy: integer("updated_by").references(() => adminUsers.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertPaywallSettingsSchema = createInsertSchema(paywallSettings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type PaywallSettings = typeof paywallSettings.$inferSelect;
+export type InsertPaywallSettings = z.infer<typeof insertPaywallSettingsSchema>;

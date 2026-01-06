@@ -2,7 +2,7 @@ import type { Express, Request, Response, NextFunction } from "express";
 import { randomBytes, createCipheriv, createDecipheriv, scryptSync } from "crypto";
 import { adminAuthService } from "./admin-auth";
 import { db } from "./db";
-import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema, systemSettings, aiInstructions, insertAiInstructionsSchema, socialIntegrations } from "@shared/schema";
+import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema, systemSettings, aiInstructions, insertAiInstructionsSchema, socialIntegrations, paywallSettings } from "@shared/schema";
 import { count, eq, sql, and, sum, isNull } from "drizzle-orm";
 
 interface AdminRequest extends Request {
@@ -4149,6 +4149,147 @@ Return ONLY the post content, nothing else.`;
     } catch (error) {
       console.error("Error deleting social integration:", error);
       res.status(500).json({ message: "Failed to remove integration" });
+    }
+  });
+
+  // ============================================
+  // PAYWALL SETTINGS MANAGEMENT
+  // ============================================
+
+  // Available premium features configuration
+  const AVAILABLE_FEATURES = [
+    { key: 'dca_calculator', label: 'DCA Calculator', description: 'Dollar-cost averaging simulation tool' },
+    { key: 'hodl_simulator', label: 'HODL Simulator', description: 'Long-term holding projection tool' },
+    { key: 'transaction_simulator', label: 'Transaction Simulator', description: 'Bitcoin transaction practice tool' },
+    { key: 'inflation_calculator', label: 'Inflation Calculator', description: 'Purchasing power comparison tool' },
+    { key: 'security_training', label: 'Security Training', description: 'Bitcoin security best practices module' },
+  ];
+
+  // Get paywall settings
+  app.get("/api/admin/paywall", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      // Get settings or return defaults
+      const [settings] = await db.select().from(paywallSettings);
+      
+      if (!settings) {
+        // Return default settings
+        return res.json({
+          id: null,
+          freeDayThreshold: 7,
+          paywallEnabled: true,
+          premiumFeatures: ['dca_calculator', 'hodl_simulator', 'transaction_simulator', 'inflation_calculator', 'security_training'],
+          paywallTitle: 'Unlock Your Bitcoin Education',
+          paywallMessage: 'Subscribe to access all 336 days of Bitcoin mastery and premium tools.',
+          availableFeatures: AVAILABLE_FEATURES,
+        });
+      }
+      
+      res.json({
+        ...settings,
+        availableFeatures: AVAILABLE_FEATURES,
+      });
+    } catch (error) {
+      console.error("Error fetching paywall settings:", error);
+      res.status(500).json({ message: "Failed to fetch paywall settings" });
+    }
+  });
+
+  // Save paywall settings
+  app.post("/api/admin/paywall", requireAdminAuth, requireSuperAdmin, async (req: AdminRequest, res: Response) => {
+    try {
+      const { freeDayThreshold, paywallEnabled, premiumFeatures, paywallTitle, paywallMessage } = req.body;
+      
+      // Validate freeDayThreshold
+      if (freeDayThreshold !== undefined && (freeDayThreshold < 0 || freeDayThreshold > 336)) {
+        return res.status(400).json({ message: "Free day threshold must be between 0 and 336" });
+      }
+      
+      // Check if settings exist
+      const [existing] = await db.select().from(paywallSettings);
+      
+      if (existing) {
+        // Update existing
+        await db.update(paywallSettings)
+          .set({
+            freeDayThreshold: freeDayThreshold ?? existing.freeDayThreshold,
+            paywallEnabled: paywallEnabled ?? existing.paywallEnabled,
+            premiumFeatures: premiumFeatures ?? existing.premiumFeatures,
+            paywallTitle: paywallTitle ?? existing.paywallTitle,
+            paywallMessage: paywallMessage ?? existing.paywallMessage,
+            updatedBy: req.admin?.id,
+            updatedAt: new Date(),
+          })
+          .where(eq(paywallSettings.id, existing.id));
+      } else {
+        // Create new
+        await db.insert(paywallSettings).values({
+          freeDayThreshold: freeDayThreshold ?? 7,
+          paywallEnabled: paywallEnabled ?? true,
+          premiumFeatures: premiumFeatures ?? ['dca_calculator', 'hodl_simulator', 'transaction_simulator', 'inflation_calculator', 'security_training'],
+          paywallTitle: paywallTitle ?? 'Unlock Your Bitcoin Education',
+          paywallMessage: paywallMessage ?? 'Subscribe to access all 336 days of Bitcoin mastery and premium tools.',
+          updatedBy: req.admin?.id,
+        });
+      }
+      
+      // Audit log
+      console.log(`[Audit] Paywall settings updated by admin ${req.admin?.id}: threshold=${freeDayThreshold}, enabled=${paywallEnabled}`);
+      
+      const [updated] = await db.select().from(paywallSettings);
+      res.json({ 
+        message: "Paywall settings saved successfully",
+        ...updated,
+        availableFeatures: AVAILABLE_FEATURES,
+      });
+    } catch (error) {
+      console.error("Error saving paywall settings:", error);
+      res.status(500).json({ message: "Failed to save paywall settings" });
+    }
+  });
+
+  // Get Stripe connection status and stats
+  app.get("/api/admin/stripe/status", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      // Check if we have Stripe products synced
+      const productCount = await db.execute(sql`SELECT COUNT(*) as count FROM products`);
+      const priceCount = await db.execute(sql`SELECT COUNT(*) as count FROM prices`);
+      const subscriptionCount = await db.execute(sql`SELECT COUNT(*) as count FROM subscriptions WHERE status = 'active'`);
+      
+      res.json({
+        connected: true,
+        productCount: Number(productCount.rows[0]?.count || 0),
+        priceCount: Number(priceCount.rows[0]?.count || 0),
+        activeSubscriptions: Number(subscriptionCount.rows[0]?.count || 0),
+      });
+    } catch (error) {
+      console.error("Error fetching Stripe status:", error);
+      // Return disconnected status if tables don't exist
+      res.json({
+        connected: false,
+        productCount: 0,
+        priceCount: 0,
+        activeSubscriptions: 0,
+        error: "Stripe tables not initialized",
+      });
+    }
+  });
+
+  // Get Stripe products list
+  app.get("/api/admin/stripe/products", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const products = await db.execute(sql`
+        SELECT p.id, p.name, p.description, p.active, 
+               pr.id as price_id, pr.unit_amount, pr.currency, pr.recurring_interval
+        FROM products p
+        LEFT JOIN prices pr ON pr.product_id = p.id AND pr.active = true
+        ORDER BY p.created DESC
+        LIMIT 50
+      `);
+      
+      res.json(products.rows);
+    } catch (error) {
+      console.error("Error fetching Stripe products:", error);
+      res.json([]);
     }
   });
 }
