@@ -5,7 +5,8 @@ import {
   Plus, Calendar, Send, MousePointerClick, Users, TrendingUp,
   Twitter, Clock, ArrowRight, Edit2, Trash2,
   AlertCircle, CheckCircle2, Loader2, Link as LinkIcon, Sparkles,
-  ChevronLeft, ChevronRight, X, Settings, Lock, Unlock, Save, RotateCcw
+  ChevronLeft, ChevronRight, X, Settings, Lock, Unlock, Save, RotateCcw,
+  Copy, Info, FileEdit, CalendarCheck
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -465,6 +466,17 @@ function PostCard({
   onMarkPosted: () => void;
   onApprove: () => void;
 }) {
+  const { toast } = useToast();
+  
+  const handleCopyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(post.content);
+      toast({ title: "Copied to clipboard!", description: "Ready to paste into your social platform" });
+    } catch (err) {
+      toast({ title: "Failed to copy", variant: "destructive" });
+    }
+  };
+
   // Content status styles: drafted (gray), approved (purple)
   const contentStatusStyles: Record<string, string> = {
     drafted: "bg-zinc-600/20 text-zinc-400 border-zinc-500/30",
@@ -528,6 +540,16 @@ function PostCard({
             Created {format(createdDate, "MMM d, yyyy")}
           </span>
           <div className="flex gap-2">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleCopyToClipboard}
+              className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10"
+              data-testid={`button-copy-${post.id}`}
+            >
+              <Copy className="w-4 h-4 mr-1" />
+              Copy
+            </Button>
             {canApprove && (
               <Button 
                 variant="ghost" 
@@ -1315,10 +1337,24 @@ function SocialMediaHubContent() {
 
         {/* Stats */}
         <div className="grid grid-cols-4 gap-4">
-          <StatCard title="Planned" value={stats?.planned || 0} icon={Clock} color="blue" />
+          <StatCard title="Drafts" value={stats?.drafted || 0} icon={FileEdit} color="zinc" subtext="Need review" />
+          <StatCard title="Approved" value={stats?.approved || 0} icon={CheckCircle2} color="purple" subtext="Ready to post" />
+          <StatCard title="Scheduled" value={stats?.planned || 0} icon={CalendarCheck} color="blue" />
           <StatCard title="Posted" value={stats?.posted || 0} icon={Send} color="green" />
-          <StatCard title="Total Clicks" value={stats?.totalClicks?.toLocaleString() || 0} icon={MousePointerClick} color="purple" />
-          <StatCard title="Signups" value={stats?.totalSignups || 0} icon={Users} subtext="From social" color="orange" />
+        </div>
+
+        {/* No API Mode Info Banner */}
+        <div className="flex items-start gap-3 p-4 bg-zinc-800/50 border border-zinc-700 rounded-lg">
+          <Info className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm text-zinc-300">
+              <span className="font-medium text-white">Manual Mode Active</span> — Use this hub to plan, draft, and organize your social content. 
+              Copy posts to clipboard and publish manually to your platforms.
+            </p>
+            <p className="text-xs text-zinc-500 mt-1">
+              Live analytics and auto-posting will unlock when you connect social APIs in Settings.
+            </p>
+          </div>
         </div>
 
         {/* Main Content */}
