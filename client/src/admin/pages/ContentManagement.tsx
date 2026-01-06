@@ -2095,14 +2095,66 @@ function BulkImportDialog({ open, onOpenChange, nextDayIndex }: {
   );
 }
 
+const DAYS_PER_WEEK = 7;
+const WEEKS_PER_MONTH = 4;
+const MONTHS_PER_YEAR = 12;
+const DAYS_PER_MONTH = DAYS_PER_WEEK * WEEKS_PER_MONTH; // 28 days
+const DAYS_PER_YEAR = DAYS_PER_MONTH * MONTHS_PER_YEAR; // 336 days
+
+function getYearNumber(dayIndex: number): number {
+  return Math.ceil(dayIndex / DAYS_PER_YEAR);
+}
+
+function getMonthNumber(dayIndex: number): number {
+  const dayInYear = ((dayIndex - 1) % DAYS_PER_YEAR) + 1;
+  return Math.ceil(dayInYear / DAYS_PER_MONTH);
+}
+
 function getWeekNumber(dayIndex: number): number {
-  return Math.ceil(dayIndex / 7);
+  return Math.ceil(dayIndex / DAYS_PER_WEEK);
+}
+
+function getWeekInMonth(dayIndex: number): number {
+  const dayInYear = ((dayIndex - 1) % DAYS_PER_YEAR) + 1;
+  const dayInMonth = ((dayInYear - 1) % DAYS_PER_MONTH) + 1;
+  return Math.ceil(dayInMonth / DAYS_PER_WEEK);
+}
+
+function getDaysForYear(days: ContentDay[], yearNumber: number): ContentDay[] {
+  const startDay = (yearNumber - 1) * DAYS_PER_YEAR + 1;
+  const endDay = yearNumber * DAYS_PER_YEAR;
+  return days.filter(d => d.dayIndex >= startDay && d.dayIndex <= endDay).sort((a, b) => a.dayIndex - b.dayIndex);
+}
+
+function getDaysForMonth(days: ContentDay[], yearNumber: number, monthNumber: number): ContentDay[] {
+  const yearStart = (yearNumber - 1) * DAYS_PER_YEAR;
+  const startDay = yearStart + (monthNumber - 1) * DAYS_PER_MONTH + 1;
+  const endDay = yearStart + monthNumber * DAYS_PER_MONTH;
+  return days.filter(d => d.dayIndex >= startDay && d.dayIndex <= endDay).sort((a, b) => a.dayIndex - b.dayIndex);
 }
 
 function getDaysForWeek(days: ContentDay[], weekNumber: number): ContentDay[] {
-  const startDay = (weekNumber - 1) * 7 + 1;
-  const endDay = weekNumber * 7;
+  const startDay = (weekNumber - 1) * DAYS_PER_WEEK + 1;
+  const endDay = weekNumber * DAYS_PER_WEEK;
   return days.filter(d => d.dayIndex >= startDay && d.dayIndex <= endDay).sort((a, b) => a.dayIndex - b.dayIndex);
+}
+
+function getDaysForWeekInMonth(days: ContentDay[], yearNumber: number, monthNumber: number, weekInMonth: number): ContentDay[] {
+  const yearStart = (yearNumber - 1) * DAYS_PER_YEAR;
+  const monthStart = yearStart + (monthNumber - 1) * DAYS_PER_MONTH;
+  const startDay = monthStart + (weekInMonth - 1) * DAYS_PER_WEEK + 1;
+  const endDay = monthStart + weekInMonth * DAYS_PER_WEEK;
+  return days.filter(d => d.dayIndex >= startDay && d.dayIndex <= endDay).sort((a, b) => a.dayIndex - b.dayIndex);
+}
+
+function getContentStats(days: ContentDay[]): { live: number; approved: number; review: number; draft: number; total: number } {
+  return {
+    live: days.filter(d => d.status === 'live').length,
+    approved: days.filter(d => d.status === 'approved').length,
+    review: days.filter(d => d.status === 'review').length,
+    draft: days.filter(d => d.status === 'draft').length,
+    total: days.length,
+  };
 }
 
 function getWeekStats(days: ContentDay[]): { live: number; approved: number; review: number; draft: number } {
@@ -2121,8 +2173,10 @@ export default function ContentManagement() {
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [aiGenerateDialogOpen, setAiGenerateDialogOpen] = useState(false);
-  const [expandedWeeks, setExpandedWeeks] = useState<Set<number>>(new Set([1]));
-  const [selectedWeek, setSelectedWeek] = useState<number | null>(1);
+  const [expandedYears, setExpandedYears] = useState<Set<number>>(new Set([1]));
+  const [expandedMonths, setExpandedMonths] = useState<Set<string>>(new Set(['1-1'])); // "year-month" format
+  const [expandedWeeks, setExpandedWeeks] = useState<Set<string>>(new Set(['1-1-1'])); // "year-month-week" format
+  const [selectedLevel, setSelectedLevel] = useState<{ type: 'year' | 'month' | 'week'; year: number; month?: number; week?: number } | null>({ type: 'week', year: 1, month: 1, week: 1 });
 
   const { data: contentDays, isLoading } = useQuery<ContentDay[]>({
     queryKey: ["/api/admin/content/days"],
@@ -2136,20 +2190,71 @@ export default function ContentManagement() {
 
   const nextDayIndex = contentDays ? Math.max(...contentDays.map(d => d.dayIndex), 0) + 1 : 1;
   
-  const totalWeeks = contentDays ? Math.ceil(Math.max(...contentDays.map(d => d.dayIndex), 0) / 7) : 0;
-  const weeks = Array.from({ length: Math.max(totalWeeks, 26) }, (_, i) => i + 1);
+  const maxDayIndex = contentDays ? Math.max(...contentDays.map(d => d.dayIndex), 0) : 0;
+  const totalYears = Math.max(Math.ceil(maxDayIndex / DAYS_PER_YEAR), 1);
+  const years = Array.from({ length: totalYears }, (_, i) => i + 1);
 
-  const toggleWeek = (weekNumber: number) => {
-    setExpandedWeeks(prev => {
+  const toggleYear = (yearNum: number) => {
+    setExpandedYears(prev => {
       const next = new Set(prev);
-      if (next.has(weekNumber)) {
-        next.delete(weekNumber);
+      if (next.has(yearNum)) {
+        next.delete(yearNum);
       } else {
-        next.add(weekNumber);
+        next.add(yearNum);
       }
       return next;
     });
-    setSelectedWeek(weekNumber);
+    setSelectedLevel({ type: 'year', year: yearNum });
+  };
+
+  const toggleMonth = (yearNum: number, monthNum: number) => {
+    const key = `${yearNum}-${monthNum}`;
+    setExpandedMonths(prev => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
+    setSelectedLevel({ type: 'month', year: yearNum, month: monthNum });
+  };
+
+  const toggleWeek = (yearNum: number, monthNum: number, weekNum: number) => {
+    const key = `${yearNum}-${monthNum}-${weekNum}`;
+    setExpandedWeeks(prev => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
+    setSelectedLevel({ type: 'week', year: yearNum, month: monthNum, week: weekNum });
+  };
+
+  const expandAll = () => {
+    setExpandedYears(new Set(years));
+    const allMonths = new Set<string>();
+    const allWeeks = new Set<string>();
+    years.forEach(y => {
+      for (let m = 1; m <= MONTHS_PER_YEAR; m++) {
+        allMonths.add(`${y}-${m}`);
+        for (let w = 1; w <= WEEKS_PER_MONTH; w++) {
+          allWeeks.add(`${y}-${m}-${w}`);
+        }
+      }
+    });
+    setExpandedMonths(allMonths);
+    setExpandedWeeks(allWeeks);
+  };
+
+  const collapseAll = () => {
+    setExpandedYears(new Set());
+    setExpandedMonths(new Set());
+    setExpandedWeeks(new Set());
   };
 
   const handleEdit = (day: ContentDay) => {
@@ -2157,9 +2262,25 @@ export default function ContentManagement() {
     setEditDialogOpen(true);
   };
 
-  const daysToShow = selectedWeek && !searchQuery 
-    ? getDaysForWeek(filteredDays || [], selectedWeek)
-    : filteredDays;
+  const getDaysToShow = (): ContentDay[] => {
+    if (searchQuery) {
+      return filteredDays || [];
+    }
+    if (!selectedLevel) return filteredDays || [];
+    
+    switch (selectedLevel.type) {
+      case 'year':
+        return getDaysForYear(filteredDays || [], selectedLevel.year);
+      case 'month':
+        return getDaysForMonth(filteredDays || [], selectedLevel.year, selectedLevel.month!);
+      case 'week':
+        return getDaysForWeekInMonth(filteredDays || [], selectedLevel.year, selectedLevel.month!, selectedLevel.week!);
+      default:
+        return filteredDays || [];
+    }
+  };
+
+  const daysToShow = getDaysToShow();
 
   return (
     <AdminAuthGuard>
@@ -2212,88 +2333,180 @@ export default function ContentManagement() {
           </div>
 
           <div className="flex gap-6">
-            <div className="w-64 flex-shrink-0">
+            <div className="w-72 flex-shrink-0">
               <Card className="bg-zinc-900 border-zinc-800">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-white text-sm flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-orange-500" />
-                    Weeks
-                  </CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-white text-sm flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-orange-500" />
+                      Curriculum
+                    </CardTitle>
+                    <div className="flex gap-1">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={expandAll}
+                        className="h-6 px-2 text-xs text-zinc-400 hover:text-white"
+                        data-testid="button-expand-all"
+                      >
+                        Expand
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={collapseAll}
+                        className="h-6 px-2 text-xs text-zinc-400 hover:text-white"
+                        data-testid="button-collapse-all"
+                      >
+                        Collapse
+                      </Button>
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent className="p-2">
                   <ScrollArea className="h-[600px]">
                     <div className="space-y-1">
-                      {weeks.map(weekNum => {
-                        const weekDays = getDaysForWeek(contentDays || [], weekNum);
-                        const stats = getWeekStats(weekDays);
-                        const isExpanded = expandedWeeks.has(weekNum);
-                        const isSelected = selectedWeek === weekNum;
-                        const hasContent = weekDays.length > 0;
+                      {years.map(yearNum => {
+                        const yearDays = getDaysForYear(contentDays || [], yearNum);
+                        const yearStats = getContentStats(yearDays);
+                        const isYearExpanded = expandedYears.has(yearNum);
+                        const isYearSelected = selectedLevel?.type === 'year' && selectedLevel.year === yearNum;
                         
                         return (
-                          <Collapsible 
-                            key={weekNum} 
-                            open={isExpanded}
-                            onOpenChange={() => toggleWeek(weekNum)}
-                          >
+                          <Collapsible key={yearNum} open={isYearExpanded}>
                             <CollapsibleTrigger asChild>
                               <button
+                                onClick={() => toggleYear(yearNum)}
                                 className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-left transition-colors ${
-                                  isSelected 
+                                  isYearSelected 
                                     ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' 
-                                    : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
+                                    : 'text-zinc-300 hover:bg-zinc-800'
                                 }`}
-                                data-testid={`button-week-${weekNum}`}
+                                data-testid={`button-year-${yearNum}`}
                               >
                                 <div className="flex items-center gap-2">
-                                  {isExpanded ? (
-                                    <ChevronDown className="w-4 h-4" />
-                                  ) : (
-                                    <ChevronRight className="w-4 h-4" />
-                                  )}
-                                  <span className="font-medium">Week {weekNum}</span>
+                                  {isYearExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                                  <span className="font-semibold">Year {yearNum}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                  {hasContent && (
+                                  {yearStats.total > 0 && (
                                     <>
-                                      {stats.live > 0 && (
-                                        <span className="w-2 h-2 rounded-full bg-green-500" title={`${stats.live} live`} />
-                                      )}
-                                      {stats.approved > 0 && (
-                                        <span className="w-2 h-2 rounded-full bg-blue-500" title={`${stats.approved} approved`} />
-                                      )}
-                                      {stats.review > 0 && (
-                                        <span className="w-2 h-2 rounded-full bg-yellow-500" title={`${stats.review} in review`} />
-                                      )}
-                                      {stats.draft > 0 && (
-                                        <span className="w-2 h-2 rounded-full bg-zinc-500" title={`${stats.draft} draft`} />
-                                      )}
+                                      {yearStats.live > 0 && <span className="w-2 h-2 rounded-full bg-green-500" title={`${yearStats.live} live`} />}
+                                      {yearStats.approved > 0 && <span className="w-2 h-2 rounded-full bg-blue-500" title={`${yearStats.approved} approved`} />}
+                                      {yearStats.review > 0 && <span className="w-2 h-2 rounded-full bg-yellow-500" title={`${yearStats.review} in review`} />}
+                                      {yearStats.draft > 0 && <span className="w-2 h-2 rounded-full bg-zinc-500" title={`${yearStats.draft} draft`} />}
                                     </>
                                   )}
-                                  <span className="text-xs ml-1">{weekDays.length}/7</span>
+                                  <span className="text-xs ml-1 text-zinc-500">{yearStats.total}/{DAYS_PER_YEAR}</span>
                                 </div>
                               </button>
                             </CollapsibleTrigger>
                             <CollapsibleContent>
-                              <div className="ml-6 mt-1 space-y-1">
-                                {weekDays.length > 0 ? (
-                                  weekDays.map(day => {
-                                    const statusConfig = STATUS_CONFIG[day.status] || STATUS_CONFIG.draft;
-                                    return (
-                                      <button
-                                        key={day.id}
-                                        onClick={() => handleEdit(day)}
-                                        className="w-full flex items-center justify-between px-2 py-1.5 rounded text-left text-sm text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors"
-                                        data-testid={`button-day-${day.dayIndex}`}
-                                      >
-                                        <span className="truncate">Day {day.dayIndex}</span>
-                                        <span className={`w-2 h-2 rounded-full ${statusConfig.bgColor.replace('/20', '')}`} />
-                                      </button>
-                                    );
-                                  })
-                                ) : (
-                                  <div className="text-xs text-zinc-600 px-2 py-1">No days yet</div>
-                                )}
+                              <div className="ml-3 mt-1 space-y-1">
+                                {Array.from({ length: MONTHS_PER_YEAR }, (_, i) => i + 1).map(monthNum => {
+                                  const monthDays = getDaysForMonth(contentDays || [], yearNum, monthNum);
+                                  const monthStats = getContentStats(monthDays);
+                                  const monthKey = `${yearNum}-${monthNum}`;
+                                  const isMonthExpanded = expandedMonths.has(monthKey);
+                                  const isMonthSelected = selectedLevel?.type === 'month' && selectedLevel.year === yearNum && selectedLevel.month === monthNum;
+                                  
+                                  return (
+                                    <Collapsible key={monthKey} open={isMonthExpanded}>
+                                      <CollapsibleTrigger asChild>
+                                        <button
+                                          onClick={() => toggleMonth(yearNum, monthNum)}
+                                          className={`w-full flex items-center justify-between px-2 py-1.5 rounded text-left transition-colors ${
+                                            isMonthSelected 
+                                              ? 'bg-orange-500/15 text-orange-400' 
+                                              : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
+                                          }`}
+                                          data-testid={`button-month-${yearNum}-${monthNum}`}
+                                        >
+                                          <div className="flex items-center gap-2">
+                                            {isMonthExpanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+                                            <span className="font-medium text-sm">Month {monthNum}</span>
+                                          </div>
+                                          <div className="flex items-center gap-1">
+                                            {monthStats.total > 0 && (
+                                              <>
+                                                {monthStats.live > 0 && <span className="w-1.5 h-1.5 rounded-full bg-green-500" />}
+                                                {monthStats.approved > 0 && <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />}
+                                                {monthStats.review > 0 && <span className="w-1.5 h-1.5 rounded-full bg-yellow-500" />}
+                                                {monthStats.draft > 0 && <span className="w-1.5 h-1.5 rounded-full bg-zinc-500" />}
+                                              </>
+                                            )}
+                                            <span className="text-xs text-zinc-600">{monthStats.total}/{DAYS_PER_MONTH}</span>
+                                          </div>
+                                        </button>
+                                      </CollapsibleTrigger>
+                                      <CollapsibleContent>
+                                        <div className="ml-4 mt-1 space-y-1">
+                                          {Array.from({ length: WEEKS_PER_MONTH }, (_, i) => i + 1).map(weekNum => {
+                                            const weekDays = getDaysForWeekInMonth(contentDays || [], yearNum, monthNum, weekNum);
+                                            const weekStats = getWeekStats(weekDays);
+                                            const weekKey = `${yearNum}-${monthNum}-${weekNum}`;
+                                            const isWeekExpanded = expandedWeeks.has(weekKey);
+                                            const isWeekSelected = selectedLevel?.type === 'week' && selectedLevel.year === yearNum && selectedLevel.month === monthNum && selectedLevel.week === weekNum;
+                                            
+                                            return (
+                                              <Collapsible key={weekKey} open={isWeekExpanded}>
+                                                <CollapsibleTrigger asChild>
+                                                  <button
+                                                    onClick={() => toggleWeek(yearNum, monthNum, weekNum)}
+                                                    className={`w-full flex items-center justify-between px-2 py-1 rounded text-left transition-colors ${
+                                                      isWeekSelected 
+                                                        ? 'bg-orange-500/10 text-orange-400' 
+                                                        : 'text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300'
+                                                    }`}
+                                                    data-testid={`button-week-${yearNum}-${monthNum}-${weekNum}`}
+                                                  >
+                                                    <div className="flex items-center gap-1">
+                                                      {isWeekExpanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+                                                      <span className="text-xs">Week {weekNum}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-0.5">
+                                                      {weekDays.length > 0 && (
+                                                        <>
+                                                          {weekStats.live > 0 && <span className="w-1.5 h-1.5 rounded-full bg-green-500" />}
+                                                          {weekStats.approved > 0 && <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />}
+                                                          {weekStats.review > 0 && <span className="w-1.5 h-1.5 rounded-full bg-yellow-500" />}
+                                                          {weekStats.draft > 0 && <span className="w-1.5 h-1.5 rounded-full bg-zinc-500" />}
+                                                        </>
+                                                      )}
+                                                      <span className="text-xs text-zinc-600 ml-1">{weekDays.length}/7</span>
+                                                    </div>
+                                                  </button>
+                                                </CollapsibleTrigger>
+                                                <CollapsibleContent>
+                                                  <div className="ml-4 mt-1 space-y-0.5">
+                                                    {weekDays.length > 0 ? (
+                                                      weekDays.map(day => {
+                                                        const statusConfig = STATUS_CONFIG[day.status] || STATUS_CONFIG.draft;
+                                                        return (
+                                                          <button
+                                                            key={day.id}
+                                                            onClick={() => handleEdit(day)}
+                                                            className="w-full flex items-center justify-between px-2 py-1 rounded text-left text-xs text-zinc-500 hover:bg-zinc-800 hover:text-white transition-colors"
+                                                            data-testid={`button-day-${day.dayIndex}`}
+                                                          >
+                                                            <span className="truncate">Day {day.dayIndex}</span>
+                                                            <span className={`w-1.5 h-1.5 rounded-full ${statusConfig.bgColor.replace('/20', '')}`} />
+                                                          </button>
+                                                        );
+                                                      })
+                                                    ) : (
+                                                      <div className="text-xs text-zinc-700 px-2 py-0.5">Empty</div>
+                                                    )}
+                                                  </div>
+                                                </CollapsibleContent>
+                                              </Collapsible>
+                                            );
+                                          })}
+                                        </div>
+                                      </CollapsibleContent>
+                                    </Collapsible>
+                                  );
+                                })}
                               </div>
                             </CollapsibleContent>
                           </Collapsible>
@@ -2323,8 +2536,8 @@ export default function ContentManagement() {
                   <div className="text-center py-12 text-zinc-400">
                     {searchQuery 
                       ? "No content days match your search" 
-                      : selectedWeek 
-                        ? `No content for Week ${selectedWeek} yet. Click 'Add Day' to create content.`
+                      : selectedLevel 
+                        ? `No content for this ${selectedLevel.type} yet. Click 'Add Day' to create content.`
                         : "No content days found. Click 'Add Day' to create your first one."}
                   </div>
                 )}
