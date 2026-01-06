@@ -1236,6 +1236,7 @@ interface GenerateResponse {
   validation: {
     passed: boolean;
     issues: string[];
+    evergreenWarnings?: string[];
   };
   context: {
     cycle: number;
@@ -1244,6 +1245,7 @@ interface GenerateResponse {
     isWeeklyRecap: boolean;
     theme: string;
     priorDaysUsed: number;
+    freshnessType?: string;
   };
 }
 
@@ -1448,6 +1450,23 @@ function AIGenerateDialog({ open, onOpenChange, nextDayIndex }: {
                     <><AlertCircle className="w-3 h-3 mr-1" /> {generatedData.validation.issues.length} issues</>
                   )}
                 </Badge>
+                {generatedData.context.freshnessType && (
+                  <Badge className={
+                    generatedData.context.freshnessType === 'evergreen' 
+                      ? "bg-green-500/20 text-green-400" 
+                      : generatedData.context.freshnessType === 'review_annually'
+                        ? "bg-blue-500/20 text-blue-400"
+                        : "bg-yellow-500/20 text-yellow-400"
+                  }>
+                    {generatedData.context.freshnessType === 'evergreen' ? '🌲 Evergreen' : 
+                     generatedData.context.freshnessType === 'review_annually' ? '📅 Annual Review' : '📆 Quarterly Review'}
+                  </Badge>
+                )}
+                {(generatedData.validation.evergreenWarnings?.length ?? 0) > 0 && (
+                  <Badge className="bg-orange-500/20 text-orange-400">
+                    <AlertCircle className="w-3 h-3 mr-1" /> {generatedData.validation.evergreenWarnings?.length} freshness warnings
+                  </Badge>
+                )}
                 <span className="text-xs text-zinc-500">
                   Cycle {generatedData.context.cycle} • Week {generatedData.context.week} • Day {generatedData.context.dayInWeek}
                   {generatedData.context.priorDaysUsed > 0 && ` • ${generatedData.context.priorDaysUsed} prior days used for context`}
@@ -1492,6 +1511,18 @@ function AIGenerateDialog({ open, onOpenChange, nextDayIndex }: {
                 <AlertDescription className="text-yellow-400 text-sm">
                   {generatedData.validation.issues.map((issue, i) => (
                     <span key={i} className="block">{issue}</span>
+                  ))}
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {(generatedData.validation.evergreenWarnings?.length ?? 0) > 0 && (
+              <Alert className="bg-orange-500/10 border-orange-500/30 mb-4">
+                <AlertCircle className="w-4 h-4 text-orange-500" />
+                <AlertDescription className="text-orange-400 text-sm">
+                  <span className="font-medium block mb-1">Freshness Warnings (may require manual review):</span>
+                  {generatedData.validation.evergreenWarnings?.map((warning, i) => (
+                    <span key={i} className="block text-xs">{warning}</span>
                   ))}
                 </AlertDescription>
               </Alert>
