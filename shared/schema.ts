@@ -1687,3 +1687,21 @@ export type InsertKeyResultUpdate = z.infer<typeof insertKeyResultUpdateSchema>;
 export type ObjectiveWithKeyResults = Objective & {
   keyResults: KeyResult[];
 };
+
+// ============================================
+// SYSTEM SETTINGS (Admin-configurable secrets)
+// ============================================
+
+export const systemSettings = pgTable("system_settings", {
+  id: serial("id").primaryKey(),
+  key: text("key").notNull().unique(),
+  encryptedValue: text("encrypted_value").notNull(),
+  maskedValue: text("masked_value").notNull(),
+  description: text("description"),
+  category: text("category").notNull().default("api_keys"),
+  updatedBy: integer("updated_by").references(() => adminUsers.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export type SystemSetting = typeof systemSettings.$inferSelect;
