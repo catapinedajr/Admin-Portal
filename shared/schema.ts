@@ -24,6 +24,7 @@ export const users = pgTable("users", {
   utmTerm: text("utm_term"),
   referralCampaignId: integer("referral_campaign_id"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // Clean session management with automatic cleanup
@@ -60,6 +61,7 @@ export const adminUsers = pgTable("admin_users", {
   isActive: boolean("is_active").notNull().default(true),
   lastLoginAt: timestamp("last_login_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // Admin sessions - separate from user sessions
@@ -104,6 +106,7 @@ export const advertisingClients = pgTable("advertising_clients", {
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // Store products
@@ -121,6 +124,7 @@ export const storeProducts = pgTable("store_products", {
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // Store orders
@@ -134,6 +138,7 @@ export const storeOrders = pgTable("store_orders", {
   notes: text("notes"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // Store order items
@@ -162,6 +167,7 @@ export const affiliateProducts = pgTable("affiliate_products", {
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // Affiliate clicks - track clicks on affiliate links
@@ -194,6 +200,7 @@ export const referralPartners = pgTable("referral_partners", {
   notes: text("notes"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // Referral signups - track user signups through referral partners
@@ -210,6 +217,7 @@ export const referralSignups = pgTable("referral_signups", {
   paidAt: timestamp("paid_at"),
   notes: text("notes"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // Invoices for advertising clients
@@ -225,6 +233,7 @@ export const invoices = pgTable("invoices", {
   notes: text("notes"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // ============================================
@@ -268,6 +277,7 @@ export const socialPosts = pgTable("social_posts", {
   createdBy: integer("created_by").references(() => adminUsers.id),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // Social post metrics - synced from platform APIs
@@ -315,6 +325,7 @@ export const socialAccounts = pgTable("social_accounts", {
   lastSyncAt: timestamp("last_sync_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // Self-service social API integrations (API key-based)
@@ -336,6 +347,7 @@ export const socialIntegrations = pgTable("social_integrations", {
   features: json("features"), // Array of enabled features: ['auto_post', 'analytics', 'replies']
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // ============================================
@@ -370,6 +382,7 @@ export const crmCompanies = pgTable("crm_companies", {
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // B2B Contacts at companies
@@ -385,6 +398,7 @@ export const crmContacts = pgTable("crm_contacts", {
   notes: text("notes"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // B2B Deals/Opportunities
@@ -407,6 +421,7 @@ export const crmDeals = pgTable("crm_deals", {
   assignedTo: integer("assigned_to").references(() => adminUsers.id),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // CRM Activity types
@@ -425,6 +440,7 @@ export const crmActivities = pgTable("crm_activities", {
   isCompleted: boolean("is_completed").notNull().default(false),
   createdBy: integer("created_by").references(() => adminUsers.id),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // ============================================
@@ -442,6 +458,7 @@ export const forumCategories = pgTable("forum_categories", {
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // Post flair types for categorization
@@ -468,6 +485,7 @@ export const forumPosts = pgTable("forum_posts", {
   lastReplyUserId: integer("last_reply_user_id"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // Forum post replies
@@ -479,6 +497,7 @@ export const forumReplies = pgTable("forum_replies", {
   isDeleted: boolean("is_deleted").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // Enhanced curated video content with better categorization
@@ -647,6 +666,7 @@ export const adCampaigns = pgTable("ad_campaigns", {
   targetClicks: integer("target_clicks"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // Ad Creatives (the actual ad content)
@@ -664,6 +684,7 @@ export const adCreatives = pgTable("ad_creatives", {
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // Ad Impressions tracking
@@ -822,6 +843,7 @@ export const contentDays = pgTable("content_days", {
   lastReviewedAt: timestamp("last_reviewed_at"), // When content was last reviewed for freshness
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // Curriculum structure for organizing themes and topics
@@ -860,6 +882,7 @@ export const contentLessons = pgTable("content_lessons", {
   whyItMatters: text("why_it_matters"), // "Why This Matters" section content
   estimatedReadTime: integer("estimated_read_time").notNull().default(3), // minutes
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 export const contentQuizzes = pgTable("content_quizzes", {
@@ -870,6 +893,7 @@ export const contentQuizzes = pgTable("content_quizzes", {
   correctAnswer: integer("correct_answer").notNull(),
   explanation: text("explanation").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 export const contentMetadata = pgTable("content_metadata", {
@@ -1619,6 +1643,7 @@ export const roadmapIdeas = pgTable("roadmap_ideas", {
   assignedTo: text("assigned_to"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 export const roadmapReleases = pgTable("roadmap_releases", {
@@ -1631,6 +1656,7 @@ export const roadmapReleases = pgTable("roadmap_releases", {
   releaseDate: timestamp("release_date"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // ==================== Goals & OKRs Tables ====================
@@ -1648,6 +1674,7 @@ export const objectives = pgTable("objectives", {
   ownerName: text("owner_name"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 export const keyResults = pgTable("key_results", {
@@ -1662,6 +1689,7 @@ export const keyResults = pgTable("key_results", {
   status: text("status").notNull().default('on_track'),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 export const keyResultUpdates = pgTable("key_result_updates", {
@@ -1688,6 +1716,7 @@ export const kpiTargets = pgTable("kpi_targets", {
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 export const insertKpiTargetSchema = createInsertSchema(kpiTargets).omit({
