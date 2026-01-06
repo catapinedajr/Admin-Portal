@@ -24,7 +24,7 @@ const imageGenerationRateLimiter = rateLimit({
   legacyHeaders: false,
   keyGenerator: (req: AdminRequest) => req.admin?.id?.toString() || req.ip || 'unknown',
 });
-import { adminLoginSchema, adminUsers, adminSessions, adminPasswordResetTokens, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema, systemSettings, aiInstructions, insertAiInstructionsSchema, socialIntegrations, paywallSettings } from "@shared/schema";
+import { adminLoginSchema, adminUsers, adminSessions, adminPasswordResetTokens, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema, systemSettings, aiInstructions, insertAiInstructionsSchema, socialIntegrations, paywallSettings, advertisingClients, affiliateProducts, referralPartners, referralSignups, invoices, socialPosts, socialAccounts, forumCategories } from "@shared/schema";
 import { count, eq, sql, and, sum, isNull } from "drizzle-orm";
 
 interface AdminRequest extends Request {
@@ -4793,6 +4793,150 @@ Return ONLY the post content, nothing else.`;
     } catch (error) {
       console.error("Error fetching Stripe products:", error);
       res.json([]);
+    }
+  });
+
+  // ==================== ARCHIVE/RESTORE ENDPOINTS ====================
+  // Generic archive endpoint for multiple entity types
+  const archivableEntities: Record<string, { table: any; name: string }> = {
+    'users': { table: users, name: 'User' },
+    'admin-users': { table: adminUsers, name: 'Admin User' },
+    'advertising-clients': { table: advertisingClients, name: 'Advertising Client' },
+    'store-products': { table: storeProducts, name: 'Store Product' },
+    'store-orders': { table: storeOrders, name: 'Store Order' },
+    'affiliate-products': { table: affiliateProducts, name: 'Affiliate Product' },
+    'referral-partners': { table: referralPartners, name: 'Referral Partner' },
+    'referral-signups': { table: referralSignups, name: 'Referral Signup' },
+    'invoices': { table: invoices, name: 'Invoice' },
+    'social-posts': { table: socialPosts, name: 'Social Post' },
+    'social-accounts': { table: socialAccounts, name: 'Social Account' },
+    'social-integrations': { table: socialIntegrations, name: 'Social Integration' },
+    'crm-companies': { table: crmCompanies, name: 'CRM Company' },
+    'crm-contacts': { table: crmContacts, name: 'CRM Contact' },
+    'crm-deals': { table: crmDeals, name: 'CRM Deal' },
+    'crm-activities': { table: crmActivities, name: 'CRM Activity' },
+    'forum-categories': { table: forumCategories, name: 'Forum Category' },
+    'forum-posts': { table: forumPosts, name: 'Forum Post' },
+    'forum-replies': { table: forumReplies, name: 'Forum Reply' },
+    'ad-campaigns': { table: adCampaigns, name: 'Ad Campaign' },
+    'content-days': { table: contentDays, name: 'Content Day' },
+    'roadmap-ideas': { table: roadmapIdeas, name: 'Roadmap Idea' },
+    'roadmap-releases': { table: roadmapReleases, name: 'Roadmap Release' },
+    'objectives': { table: objectives, name: 'Objective' },
+    'key-results': { table: keyResults, name: 'Key Result' },
+    'kpi-targets': { table: kpiTargets, name: 'KPI Target' },
+  };
+
+  // Archive an item (soft delete)
+  app.post("/api/admin/archive/:entityType/:id", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { entityType, id } = req.params;
+      const entity = archivableEntities[entityType];
+      
+      if (!entity) {
+        return res.status(400).json({ message: `Unknown entity type: ${entityType}` });
+      }
+
+      const itemId = parseInt(id);
+      if (isNaN(itemId)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+
+      await db.update(entity.table)
+        .set({ archivedAt: new Date() })
+        .where(eq(entity.table.id, itemId));
+
+      res.json({ message: `${entity.name} archived successfully` });
+    } catch (error) {
+      console.error("Error archiving item:", error);
+      res.status(500).json({ message: "Failed to archive item" });
+    }
+  });
+
+  // Restore an archived item
+  app.post("/api/admin/restore/:entityType/:id", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { entityType, id } = req.params;
+      const entity = archivableEntities[entityType];
+      
+      if (!entity) {
+        return res.status(400).json({ message: `Unknown entity type: ${entityType}` });
+      }
+
+      const itemId = parseInt(id);
+      if (isNaN(itemId)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+
+      await db.update(entity.table)
+        .set({ archivedAt: null })
+        .where(eq(entity.table.id, itemId));
+
+      res.json({ message: `${entity.name} restored successfully` });
+    } catch (error) {
+      console.error("Error restoring item:", error);
+      res.status(500).json({ message: "Failed to restore item" });
+    }
+  });
+
+  // Get archived items for an entity type
+  app.get("/api/admin/archived/:entityType", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { entityType } = req.params;
+      const entity = archivableEntities[entityType];
+      
+      if (!entity) {
+        return res.status(400).json({ message: `Unknown entity type: ${entityType}` });
+      }
+
+      const archivedItems = await db.select()
+        .from(entity.table)
+        .where(sql`${entity.table.archivedAt} IS NOT NULL`)
+        .orderBy(sql`${entity.table.archivedAt} DESC`);
+
+      res.json(archivedItems);
+    } catch (error) {
+      console.error("Error fetching archived items:", error);
+      res.status(500).json({ message: "Failed to fetch archived items" });
+    }
+  });
+
+  // Permanently delete an archived item (requires confirmation)
+  app.delete("/api/admin/permanent-delete/:entityType/:id", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { entityType, id } = req.params;
+      const { confirmDelete } = req.body;
+      
+      if (confirmDelete !== true) {
+        return res.status(400).json({ message: "Deletion requires explicit confirmation" });
+      }
+
+      const entity = archivableEntities[entityType];
+      
+      if (!entity) {
+        return res.status(400).json({ message: `Unknown entity type: ${entityType}` });
+      }
+
+      const itemId = parseInt(id);
+      if (isNaN(itemId)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+
+      // Only allow permanent deletion of items that are already archived
+      const [item] = await db.select()
+        .from(entity.table)
+        .where(and(eq(entity.table.id, itemId), sql`${entity.table.archivedAt} IS NOT NULL`));
+
+      if (!item) {
+        return res.status(404).json({ message: "Item not found or not archived. Archive first before permanent deletion." });
+      }
+
+      await db.delete(entity.table).where(eq(entity.table.id, itemId));
+
+      res.json({ message: `${entity.name} permanently deleted` });
+    } catch (error) {
+      console.error("Error permanently deleting item:", error);
+      res.status(500).json({ message: "Failed to permanently delete item" });
     }
   });
 }
