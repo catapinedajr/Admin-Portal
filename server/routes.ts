@@ -593,95 +593,9 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  // Insert Claude Day 1 content route
-  app.post("/api/insert-claude-day1", async (req, res) => {
-    try {
-      console.log(`🧠 Inserting Claude-quality Day 1 content...`);
-      
-      const { insertClaudeDay1Content } = await import("./insert-claude-day1-route");
-      const result = await insertClaudeDay1Content();
-      
-      res.json(result);
-    } catch (error) {
-      console.error('Claude Day 1 insertion error:', error);
-      res.status(500).json({ 
-        message: "Failed to insert Claude Day 1 content", 
-        error: error instanceof Error ? error.message : "Unknown error"
-      });
-    }
-  });
-
-  // Claude content generation route (for testing)
-  app.post("/api/generate-claude-content/:dayIndex", async (req, res) => {
-    try {
-      const dayIndex = parseInt(req.params.dayIndex);
-      if (isNaN(dayIndex) || dayIndex < 1 || dayIndex > 180) {
-        return res.status(400).json({ message: "Invalid day index. Must be 1-180." });
-      }
-
-      console.log(`🧠 Starting Claude content generation for Day ${dayIndex}...`);
-      
-      const { generateDay1Content, saveDayContentToDatabase } = await import("./claude-content-generator");
-      console.log(`✓ Claude content generator imported successfully`);
-      
-      // Generate content using Claude's curated approach
-      const content = generateDay1Content();
-      console.log(`✓ Content generated:`, { 
-        facts: content.dailyFacts.length, 
-        lesson: content.lesson.title,
-        quizzes: content.quizQuestions.length 
-      });
-      
-      // Save to database
-      await saveDayContentToDatabase(dayIndex, content);
-      console.log(`✓ Content saved to database`);
-      
-      res.json({ 
-        message: `Claude content generated successfully for Day ${dayIndex}`,
-        content: content
-      });
-    } catch (error) {
-      console.error('Claude content generation error:', error);
-      res.status(500).json({ 
-        message: "Failed to generate Claude content", 
-        error: error instanceof Error ? error.message : "Unknown error"
-      });
-    }
-  });
-
-  // OpenAI content generation route (for comparison)
-  app.post("/api/generate-content/:dayIndex", async (req, res) => {
-    try {
-      const dayIndex = parseInt(req.params.dayIndex);
-      if (isNaN(dayIndex) || dayIndex < 1 || dayIndex > 180) {
-        return res.status(400).json({ message: "Invalid day index. Must be 1-180." });
-      }
-
-      console.log(`🤖 Starting OpenAI content generation for Day ${dayIndex}...`);
-      
-      const { generateDayContent, saveDayContentToDatabase } = await import("./content-generator");
-      console.log(`✓ OpenAI content generator imported successfully`);
-      
-      // Generate content using OpenAI
-      const content = await generateDayContent(dayIndex);
-      console.log(`✓ Content generated:`, { fact: content.dailyFact.title, lesson: content.lesson.title });
-      
-      // Save to database
-      await saveDayContentToDatabase(dayIndex, content);
-      console.log(`✓ Content saved to database`);
-      
-      res.json({ 
-        message: `OpenAI content generated successfully for Day ${dayIndex}`,
-        content: content
-      });
-    } catch (error) {
-      console.error('OpenAI content generation error:', error);
-      res.status(500).json({ 
-        message: "Failed to generate OpenAI content", 
-        error: error instanceof Error ? error.message : "Unknown error"
-      });
-    }
-  });
+  // NOTE: Legacy content generation routes removed
+  // AI content generation is now handled via /api/admin/content/generate-draft in admin-routes.ts
+  // which uses proper authentication and the Anthropic Claude API directly
 
 
 
