@@ -22,7 +22,8 @@ const imageGenerationRateLimiter = rateLimit({
   message: { message: "Image generation limit reached. Please try again later." },
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req: AdminRequest) => req.admin?.id?.toString() || req.ip || 'unknown',
+  keyGenerator: (req: AdminRequest) => req.admin?.id?.toString() || 'anonymous',
+  validate: { xForwardedForHeader: false, default: true },
 });
 import { adminLoginSchema, adminUsers, adminSessions, adminPasswordResetTokens, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema, systemSettings, aiInstructions, insertAiInstructionsSchema, socialIntegrations, paywallSettings, advertisingClients, affiliateProducts, referralPartners, referralSignups, invoices, socialPosts, socialAccounts, forumCategories } from "@shared/schema";
 import { count, eq, sql, and, sum, isNull } from "drizzle-orm";

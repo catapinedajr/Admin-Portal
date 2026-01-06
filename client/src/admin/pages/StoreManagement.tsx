@@ -5,7 +5,7 @@ import {
   Plus, Link2, Building2, Package, ShoppingCart, 
   Trash2, ExternalLink, DollarSign, MousePointerClick,
   TrendingUp, Users, CheckCircle, Clock, XCircle,
-  Edit2, ChevronRight, AlertTriangle, Banknote
+  Edit2, ChevronRight, AlertTriangle, Banknote, Archive, ArchiveRestore
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -1286,18 +1286,18 @@ function EditInventoryProductDialog({ product, open, onOpenChange }: { product: 
     },
   });
 
-  const deleteMutation = useMutation({
+  const archiveMutation = useMutation({
     mutationFn: async () => {
-      const res = await apiRequest("DELETE", `/api/admin/store/inventory/${product?.id}`);
+      const res = await apiRequest("POST", `/api/admin/archive/store-products/${product?.id}`);
       return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/store/inventory"] });
-      toast({ title: "Product deleted" });
+      toast({ title: "Product archived", description: "It can be restored from the archive anytime." });
       onOpenChange(false);
     },
     onError: (error: Error) => {
-      toast({ title: "Failed to delete", description: error.message, variant: "destructive" });
+      toast({ title: "Failed to archive", description: error.message, variant: "destructive" });
     },
   });
 
@@ -1417,12 +1417,13 @@ function EditInventoryProductDialog({ product, open, onOpenChange }: { product: 
               {updateMutation.isPending ? "Saving..." : "Save Changes"}
             </Button>
             <Button
-              variant="destructive"
+              variant="outline"
               onClick={() => setShowDeleteConfirm(true)}
-              disabled={deleteMutation.isPending}
-              data-testid="button-delete-product"
+              disabled={archiveMutation.isPending}
+              className="border-orange-500/50 text-orange-400 hover:bg-orange-500/20"
+              data-testid="button-archive-product"
             >
-              <Trash2 className="w-4 h-4" />
+              <Archive className="w-4 h-4" />
             </Button>
           </div>
         </div>
@@ -1431,18 +1432,18 @@ function EditInventoryProductDialog({ product, open, onOpenChange }: { product: 
       <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
         <AlertDialogContent className="bg-zinc-900 border-zinc-800">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-white">Delete Inventory Product</AlertDialogTitle>
+            <AlertDialogTitle className="text-white">Archive Product</AlertDialogTitle>
             <AlertDialogDescription className="text-zinc-400">
-              Are you sure you want to delete "{product?.name}"? This action cannot be undone.
+              Are you sure you want to archive "{product?.name}"? Archived items can be restored anytime from the archive view.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel className="bg-zinc-800 text-white border-zinc-700 hover:bg-zinc-700">Cancel</AlertDialogCancel>
             <AlertDialogAction 
-              className="bg-red-600 hover:bg-red-700"
-              onClick={() => { deleteMutation.mutate(); setShowDeleteConfirm(false); }}
+              className="bg-orange-600 hover:bg-orange-700"
+              onClick={() => { archiveMutation.mutate(); setShowDeleteConfirm(false); }}
             >
-              Delete
+              Archive
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
