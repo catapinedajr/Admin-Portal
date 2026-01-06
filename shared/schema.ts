@@ -780,6 +780,25 @@ export const contentDays = pgTable("content_days", {
   approvedBy: text("approved_by"), // admin who approved the content
   approvedAt: timestamp("approved_at"), // when content was approved
   publishedAt: timestamp("published_at"), // when content went live
+  // Curriculum structure fields
+  monthlyTheme: text("monthly_theme"), // Theme for the month this day belongs to
+  weeklyTopic: text("weekly_topic"), // Topic for the week this day belongs to
+  freshnessType: text("freshness_type").notNull().default('evergreen'), // 'evergreen', 'review_quarterly', 'review_annually'
+  lastReviewedAt: timestamp("last_reviewed_at"), // When content was last reviewed for freshness
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Curriculum structure for organizing themes and topics
+export const curriculumStructure = pgTable("curriculum_structure", {
+  id: serial("id").primaryKey(),
+  yearNumber: integer("year_number").notNull(),
+  monthNumber: integer("month_number").notNull(), // 1-12 within the year
+  weekNumber: integer("week_number"), // 1-4 within the month (null for month-level entries)
+  type: text("type").notNull(), // 'theme' for monthly, 'topic' for weekly
+  name: text("name").notNull(), // The theme or topic name
+  description: text("description"), // Optional description
+  learningObjectives: json("learning_objectives").$type<string[]>(), // What users should learn
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -969,6 +988,12 @@ export const insertContentDaySummarySchema = createInsertSchema(contentDaySummar
   updatedAt: true,
 });
 
+export const insertCurriculumStructureSchema = createInsertSchema(curriculumStructure).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Email collection table for progressive access
 export const emailCollections = pgTable("email_collections", {
   id: serial("id").primaryKey(),
@@ -1131,6 +1156,9 @@ export type InsertContentGenerationSteps = z.infer<typeof insertContentGeneratio
 
 export type ContentDaySummary = typeof contentDaySummaries.$inferSelect;
 export type InsertContentDaySummary = z.infer<typeof insertContentDaySummarySchema>;
+
+export type CurriculumStructure = typeof curriculumStructure.$inferSelect;
+export type InsertCurriculumStructure = z.infer<typeof insertCurriculumStructureSchema>;
 
 // Enhanced content types for API responses
 export type DailyContentSetUpQuestion = ContentSetUpQuestion;
