@@ -3,7 +3,7 @@ import { randomBytes, createCipheriv, createDecipheriv, scryptSync } from "crypt
 import { adminAuthService } from "./admin-auth";
 import { db } from "./db";
 import { adminLoginSchema, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema, systemSettings } from "@shared/schema";
-import { count, eq, sql, and, sum } from "drizzle-orm";
+import { count, eq, sql, and, sum, isNull } from "drizzle-orm";
 
 interface AdminRequest extends Request {
   admin?: any;
@@ -968,6 +968,29 @@ export function registerAdminRoutes(app: Express) {
 **Approach**: "Conviction Through Curiosity" - build Bitcoin conviction through immediate financial relevance
 **Tone**: Professional urgency without technical overwhelm (8th grade reading level)
 
+## EVERGREEN CONTENT GUIDELINES (CRITICAL)
+Your content must remain relevant for years, not months. Follow these rules strictly:
+
+**DO:**
+- Focus on Bitcoin fundamentals that never change (cryptography, proof-of-work, halving mechanics, sound money principles)
+- Use relative time references ("since Bitcoin's creation", "over a decade", "multiple market cycles")
+- Teach principles and "why" rather than specific events
+- Use historical examples with context (don't assume reader knows the timeline)
+- Explain concepts that will be true in 5+ years
+
+**DON'T:**
+- Reference specific Bitcoin prices (no "$60,000" or "all-time highs")
+- Mention specific years for recent events ("in 2024", "last year")
+- Reference current events, news, or regulatory actions
+- Include time-sensitive statistics that will become outdated
+- Use phrases like "currently", "recently", "right now", "as of today"
+
+**FRESHNESS CLASSIFICATION:**
+After creating content, assess whether it is:
+- "evergreen" - Content about fundamentals that won't need updates (cryptography, monetary theory, how Bitcoin works)
+- "review_annually" - Content referencing adoption trends or technology evolution that may need minor updates
+- "review_quarterly" - Content touching on market dynamics or regulatory concepts (avoid this category when possible)
+
 ## CURRICULUM POSITION
 - Day ${dayIndex} of 180-day curriculum
 - Week ${weekNumber}, Day ${dayInWeek} of week
@@ -991,6 +1014,7 @@ Create a complete day of content with this EXACT JSON structure:
   "theme": "${suggestedTheme}",
   "readingLevel": "8th grade",
   "culturalStage": "Normie → Pre-coiner",
+  "freshnessType": "evergreen | review_annually | review_quarterly (based on content nature)",
   "setup_questions": [
     {"title": "Personal Impact", "content": "Question about personal financial experience (under 100 chars)", "category": "curiosity", "icon": "💰"},
     {"title": "System Reveal", "content": "Question revealing systemic issue (under 100 chars)", "category": "curiosity", "icon": "🏦"},
@@ -998,7 +1022,7 @@ Create a complete day of content with this EXACT JSON structure:
   ],
   "lesson": {
     "title": "Same as day title",
-    "content": "300-1200 word narrative with:\n- Hook: Open with relatable professional scenario\n- Problem: Reveal the hidden financial threat\n- **Bold Section Headers** to break up content\n- Paragraph breaks every 2-3 sentences\n- Simple explanation with concrete examples and real numbers\n- Bitcoin solution preview\n- Sentences under 15 words\n- No jargon - use 'government money printing' not 'monetary expansion'",
+    "content": "300-1200 word narrative with:\n- Hook: Open with relatable professional scenario\n- Problem: Reveal the hidden financial threat\n- **Bold Section Headers** to break up content\n- Paragraph breaks every 2-3 sentences\n- Simple explanation with concrete examples and real numbers\n- Bitcoin solution preview\n- Sentences under 15 words\n- No jargon - use 'government money printing' not 'monetary expansion'\n- NO specific prices, years, or current events",
     "keyTakeaways": ["Max 12 words each", "Three memorable points", "No technical jargon"],
     "whyItMatters": "Must mention Bitcoin specifically. Template: This matters because [threat] affects [concern], and understanding [Bitcoin solution] helps you [action].",
     "estimatedReadTime": 3
@@ -1021,6 +1045,9 @@ Create a complete day of content with this EXACT JSON structure:
 - [ ] 4 quiz questions with optionA/B/C/D format
 - [ ] No banned phrases: "Yesterday we learned", "Building on our previous discussion", "As we discovered in Day X"
 - [ ] Content builds Bitcoin conviction through immediate relevance
+- [ ] EVERGREEN: No specific prices, years, or current events mentioned
+- [ ] EVERGREEN: Uses relative time references only
+- [ ] freshnessType field is set appropriately (prefer "evergreen")
 
 Return ONLY the JSON object, no markdown code blocks or additional text.`;
 
@@ -1048,11 +1075,14 @@ Return ONLY the JSON object, no markdown code blocks or additional text.`;
         const rawContent = JSON.parse(cleanJson);
         
         // Normalize field names (handle both camelCase and snake_case from AI)
+        const freshnessValue = rawContent.freshnessType || rawContent.freshness_type || 'evergreen';
+        const validFreshnessTypes = ['evergreen', 'review_annually', 'review_quarterly'];
         generatedContent = {
           title: rawContent.title,
           theme: rawContent.theme,
           readingLevel: rawContent.readingLevel || rawContent.reading_level || "8th grade",
           culturalStage: rawContent.culturalStage || rawContent.cultural_stage || "Normie → Pre-coiner",
+          freshnessType: validFreshnessTypes.includes(freshnessValue) ? freshnessValue : 'evergreen',
           setup_questions: (rawContent.setup_questions || []).map((q: any) => ({
             content: q.content || q.question || q.title || '',
             category: q.category || 'curiosity',
@@ -1120,13 +1150,37 @@ Return ONLY the JSON object, no markdown code blocks or additional text.`;
         }
       }
       
+      // Check for non-evergreen content patterns (warnings, not failures)
+      const evergreenWarnings: string[] = [];
+      const datedPatterns = [
+        /\$\d{1,3}(,\d{3})*(\.\d{2})?/g, // Dollar amounts like $50,000
+        /\b20[12]\d\b/g, // Years 2010-2029
+        /\blast year\b/gi,
+        /\bthis year\b/gi,
+        /\bcurrently\b/gi,
+        /\brecently\b/gi,
+        /\bright now\b/gi,
+        /\bas of today\b/gi,
+        /\ball-time high\b/gi,
+        /\ball time high\b/gi,
+      ];
+      
+      const lessonContent = generatedContent.lesson?.content || '';
+      for (const pattern of datedPatterns) {
+        const matches = lessonContent.match(pattern);
+        if (matches) {
+          evergreenWarnings.push(`Content contains potentially dated reference: "${matches[0]}"`);
+        }
+      }
+      
       res.json({
         success: true,
         dayIndex,
         content: generatedContent,
         validation: {
           passed: validationIssues.length === 0,
-          issues: validationIssues
+          issues: validationIssues,
+          evergreenWarnings: evergreenWarnings,
         },
         context: {
           cycle: cycleNumber,
@@ -1134,13 +1188,141 @@ Return ONLY the JSON object, no markdown code blocks or additional text.`;
           dayInWeek,
           isWeeklyRecap,
           theme: suggestedTheme,
-          priorDaysUsed: priorDays.length
+          priorDaysUsed: priorDays.length,
+          freshnessType: generatedContent.freshnessType
         }
       });
       
     } catch (error) {
       console.error("Error generating content draft:", error);
       res.status(500).json({ message: "Failed to generate content. Please try again." });
+    }
+  });
+
+  // ============================================
+  // CURRICULUM STRUCTURE ROUTES
+  // ============================================
+
+  // Get all curriculum structure entries
+  app.get("/api/admin/curriculum", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { curriculumStructure } = await import('@shared/schema');
+      const structure = await db.select().from(curriculumStructure)
+        .orderBy(curriculumStructure.yearNumber, curriculumStructure.monthNumber, curriculumStructure.weekNumber);
+      res.json(structure);
+    } catch (error) {
+      console.error("Error fetching curriculum structure:", error);
+      res.status(500).json({ message: "Failed to fetch curriculum structure" });
+    }
+  });
+
+  // Create or update curriculum structure entry
+  app.post("/api/admin/curriculum", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { curriculumStructure } = await import('@shared/schema');
+      const { yearNumber, monthNumber, weekNumber, type, name, description, learningObjectives } = req.body;
+      
+      // Check if entry exists
+      const existing = await db.select().from(curriculumStructure).where(
+        and(
+          eq(curriculumStructure.yearNumber, yearNumber),
+          eq(curriculumStructure.monthNumber, monthNumber),
+          weekNumber ? eq(curriculumStructure.weekNumber, weekNumber) : isNull(curriculumStructure.weekNumber)
+        )
+      );
+      
+      if (existing.length > 0) {
+        // Update existing
+        const [updated] = await db.update(curriculumStructure)
+          .set({ name, description, learningObjectives, type, updatedAt: new Date() })
+          .where(eq(curriculumStructure.id, existing[0].id))
+          .returning();
+        return res.json(updated);
+      }
+      
+      // Create new
+      const [created] = await db.insert(curriculumStructure).values({
+        yearNumber,
+        monthNumber,
+        weekNumber: weekNumber || null,
+        type,
+        name,
+        description,
+        learningObjectives,
+      }).returning();
+      
+      res.json(created);
+    } catch (error) {
+      console.error("Error saving curriculum structure:", error);
+      res.status(500).json({ message: "Failed to save curriculum structure" });
+    }
+  });
+
+  // Delete curriculum structure entry
+  app.delete("/api/admin/curriculum/:id", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { curriculumStructure } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      await db.delete(curriculumStructure).where(eq(curriculumStructure.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting curriculum structure:", error);
+      res.status(500).json({ message: "Failed to delete curriculum structure" });
+    }
+  });
+
+  // Get theme/topic for a specific day position
+  app.get("/api/admin/curriculum/for-day/:dayIndex", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { curriculumStructure } = await import('@shared/schema');
+      const dayIndex = parseInt(req.params.dayIndex);
+      
+      // Calculate year, month, week from day index
+      const DAYS_PER_WEEK = 7;
+      const WEEKS_PER_MONTH = 4;
+      const MONTHS_PER_YEAR = 12;
+      const DAYS_PER_MONTH = DAYS_PER_WEEK * WEEKS_PER_MONTH; // 28 days
+      const DAYS_PER_YEAR = DAYS_PER_MONTH * MONTHS_PER_YEAR; // 336 days
+      
+      const yearNumber = Math.ceil(dayIndex / DAYS_PER_YEAR);
+      const dayInYear = ((dayIndex - 1) % DAYS_PER_YEAR) + 1;
+      const monthNumber = Math.ceil(dayInYear / DAYS_PER_MONTH);
+      const dayInMonth = ((dayInYear - 1) % DAYS_PER_MONTH) + 1;
+      const weekNumber = Math.ceil(dayInMonth / DAYS_PER_WEEK);
+      
+      // Get monthly theme
+      const [monthlyTheme] = await db.select().from(curriculumStructure).where(
+        and(
+          eq(curriculumStructure.yearNumber, yearNumber),
+          eq(curriculumStructure.monthNumber, monthNumber),
+          eq(curriculumStructure.type, 'theme')
+        )
+      );
+      
+      // Get weekly topic
+      const [weeklyTopic] = await db.select().from(curriculumStructure).where(
+        and(
+          eq(curriculumStructure.yearNumber, yearNumber),
+          eq(curriculumStructure.monthNumber, monthNumber),
+          eq(curriculumStructure.weekNumber, weekNumber),
+          eq(curriculumStructure.type, 'topic')
+        )
+      );
+      
+      res.json({
+        dayIndex,
+        yearNumber,
+        monthNumber,
+        weekNumber,
+        monthlyTheme: monthlyTheme?.name || null,
+        monthlyDescription: monthlyTheme?.description || null,
+        weeklyTopic: weeklyTopic?.name || null,
+        weeklyDescription: weeklyTopic?.description || null,
+        learningObjectives: weeklyTopic?.learningObjectives || monthlyTheme?.learningObjectives || [],
+      });
+    } catch (error) {
+      console.error("Error fetching curriculum for day:", error);
+      res.status(500).json({ message: "Failed to fetch curriculum for day" });
     }
   });
 
