@@ -171,8 +171,8 @@ function PaywallSection() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Revenue Controls</h1>
-          <p className="text-zinc-400">Manage subscriptions, paywall settings, and premium features</p>
+          <h1 className="text-2xl font-bold text-white">Paywall Settings</h1>
+          <p className="text-zinc-400">Control access to premium content and subscription features</p>
         </div>
         {hasChanges && (
           <Button

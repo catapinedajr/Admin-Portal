@@ -18,7 +18,7 @@ import {
   BarChart3,
   Settings,
   Plug,
-  CreditCard,
+  Lock,
   Archive
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -66,7 +66,7 @@ const navSections: NavSection[] = [
     items: [
       { href: "/admin/team", label: "Team", icon: UserCog, superAdminOnly: true },
       { href: "/admin/integrations", label: "Integrations", icon: Plug, superAdminOnly: true },
-      { href: "/admin/revenue", label: "Revenue", icon: CreditCard, superAdminOnly: true },
+      { href: "/admin/revenue", label: "Paywall", icon: Lock, superAdminOnly: true },
       { href: "/admin/data-governance", label: "Data Governance", icon: Archive, superAdminOnly: true },
     ]
   }
