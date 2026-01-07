@@ -25,9 +25,15 @@ export function InviteFriendsCard() {
 
   const handleCopyCode = async () => {
     if (referralData?.code) {
-      await navigator.clipboard.writeText(referralData.code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      try {
+        await navigator.clipboard.writeText(referralData.code);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+        console.log('Clipboard API not available in this context - will work on HTTPS');
+      }
     }
   };
 
@@ -39,8 +45,10 @@ export function InviteFriendsCard() {
           text: `Learn Bitcoin with me! Use my referral code ${referralData.code} to get bonus points.`,
           url: referralData.shareUrl,
         });
-      } catch (err) {
-        handleCopyCode();
+      } catch (err: any) {
+        if (err.name !== 'AbortError') {
+          handleCopyCode();
+        }
       }
     } else {
       handleCopyCode();
