@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Gift, Copy, Check, Share2, ArrowRight } from "@/lib/icons";
 
@@ -50,10 +50,12 @@ export function InviteFriendsCard() {
   if (isLoading) {
     return (
       <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border-orange-500/20">
-        <CardContent className="p-6">
-          <div className="animate-pulse space-y-3">
-            <div className="h-6 bg-zinc-700 rounded w-1/2"></div>
-            <div className="h-10 bg-zinc-700 rounded"></div>
+        <CardContent className="p-4">
+          <div className="animate-pulse flex items-center gap-3">
+            <div className="w-9 h-9 bg-zinc-700 rounded-lg"></div>
+            <div className="flex-1 h-10 bg-zinc-700 rounded"></div>
+            <div className="w-12 h-12 bg-zinc-700 rounded"></div>
+            <div className="w-12 h-12 bg-zinc-700 rounded"></div>
           </div>
         </CardContent>
       </Card>
@@ -62,50 +64,49 @@ export function InviteFriendsCard() {
 
   return (
     <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border-orange-500/20">
-      <CardHeader className="pb-2">
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <Gift className="w-5 h-5 text-orange-500" />
-          Invite Friends, Earn Points
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <p className="text-sm text-zinc-400">
-          Share your code and you both earn 50 points when they sign up!
-        </p>
+      <CardContent className="p-4">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="p-2 bg-orange-500/20 rounded-lg shrink-0">
+            <Gift className="w-5 h-5 text-orange-500" />
+          </div>
+          <div className="flex-1">
+            <p className="font-semibold text-white">Invite Friends, Earn Points</p>
+            <p className="text-xs text-zinc-400">Share & you both earn 50 points!</p>
+          </div>
+        </div>
         
         <div className="flex items-center gap-2">
-          <div className="flex-1 bg-zinc-800 rounded-lg p-3 font-mono text-lg text-center text-orange-400 border border-zinc-700">
+          <div className="flex-1 bg-zinc-800 rounded-lg px-4 py-3 font-mono text-lg text-orange-400 border border-zinc-700">
             {referralData?.code || '---'}
           </div>
           <Button
             onClick={handleCopyCode}
             variant="outline"
             size="icon"
-            className="h-12 w-12 border-zinc-700"
+            className="h-12 w-12 border-zinc-700 hover:bg-zinc-700 hover:border-orange-500/50"
             data-testid="button-copy-referral"
           >
             {copied ? <Check className="w-5 h-5 text-green-500" /> : <Copy className="w-5 h-5" />}
           </Button>
+          <Button
+            onClick={handleShare}
+            size="icon"
+            className="h-12 w-12 bg-orange-500 hover:bg-orange-600"
+            data-testid="button-share-referral"
+          >
+            <Share2 className="w-5 h-5" />
+          </Button>
         </div>
 
-        <Button
-          onClick={handleShare}
-          className="w-full bg-orange-500 hover:bg-orange-600"
-          data-testid="button-share-referral"
-        >
-          <Share2 className="w-4 h-4 mr-2" />
-          Share with Friends
-        </Button>
-
         {referralData?.stats && referralData.stats.totalReferrals > 0 && (
-          <div className="flex items-center justify-between pt-2 border-t border-zinc-700/50">
-            <div className="text-center">
-              <p className="text-lg font-bold text-white">{referralData.stats.totalReferrals}</p>
-              <p className="text-xs text-zinc-500">Friends Joined</p>
+          <div className="flex items-center gap-4 mt-3 pt-3 border-t border-zinc-700/50">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold text-white">{referralData.stats.totalReferrals}</span>
+              <span className="text-xs text-zinc-500">friends joined</span>
             </div>
-            <div className="text-center">
-              <p className="text-lg font-bold text-orange-400">{referralData.stats.totalPointsEarned}</p>
-              <p className="text-xs text-zinc-500">Points Earned</p>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold text-orange-400">{referralData.stats.totalPointsEarned}</span>
+              <span className="text-xs text-zinc-500">pts earned</span>
             </div>
           </div>
         )}
