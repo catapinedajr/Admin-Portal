@@ -22,7 +22,9 @@ import {
   ExternalLink,
   Gift,
   AlertCircle,
-  ImageOff
+  ImageOff,
+  FileText,
+  Lock
 } from "@/lib/icons";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -405,6 +407,37 @@ export default function MoreSection({ moreSubTab, setMoreSubTab }: MoreSectionPr
               </CardContent>
             </Card>
           </div>
+
+          {/* Legal Section */}
+          <Card className="bg-zinc-900 border-zinc-800">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-zinc-400">Legal</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <button
+                onClick={() => setLocation('/terms')}
+                className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-zinc-800 transition-colors text-left"
+                data-testid="link-terms-of-service"
+              >
+                <FileText className="w-5 h-5 text-zinc-400" />
+                <div>
+                  <p className="text-sm font-medium text-white">Terms of Service</p>
+                  <p className="text-xs text-zinc-500">Usage terms and conditions</p>
+                </div>
+              </button>
+              <button
+                onClick={() => setLocation('/privacy')}
+                className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-zinc-800 transition-colors text-left"
+                data-testid="link-privacy-policy"
+              >
+                <Lock className="w-5 h-5 text-zinc-400" />
+                <div>
+                  <p className="text-sm font-medium text-white">Privacy Policy</p>
+                  <p className="text-xs text-zinc-500">How we protect your data</p>
+                </div>
+              </button>
+            </CardContent>
+          </Card>
         </div>
       )}
     </div>

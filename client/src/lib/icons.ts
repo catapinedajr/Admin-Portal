@@ -115,3 +115,6 @@ export { default as Bitcoin } from "lucide-react/dist/esm/icons/bitcoin";
 export { default as Package } from "lucide-react/dist/esm/icons/package";
 export { default as ExternalLink } from "lucide-react/dist/esm/icons/external-link";
 export { default as Gift } from "lucide-react/dist/esm/icons/gift";
+export { default as Copy } from "lucide-react/dist/esm/icons/copy";
+export { default as Check } from "lucide-react/dist/esm/icons/check";
+export { default as Share2 } from "lucide-react/dist/esm/icons/share-2";

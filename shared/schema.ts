@@ -23,6 +23,9 @@ export const users = pgTable("users", {
   utmContent: text("utm_content"),
   utmTerm: text("utm_term"),
   referralCampaignId: integer("referral_campaign_id"),
+  // Referral tracking
+  referralCode: text("referral_code").unique(), // User's personal referral code
+  referredByUserId: integer("referred_by_user_id"), // Who referred this user
   createdAt: timestamp("created_at").notNull().defaultNow(),
   archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
@@ -1134,6 +1137,47 @@ export const streakInsurance = pgTable("streak_insurance", {
   date: text("date").notNull(), // YYYY-MM-DD format
 });
 
+// ============================================
+// REFERRAL SYSTEM
+// ============================================
+
+// Referral codes - users can have custom codes for campaigns
+export const referralCodes = pgTable("referral_codes", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  code: text("code").notNull().unique(), // The referral code (e.g., "JOHN50")
+  campaign: text("campaign"), // Optional campaign name for tracking
+  maxUses: integer("max_uses"), // Optional limit on uses (null = unlimited)
+  usesCount: integer("uses_count").notNull().default(0), // Current number of uses
+  expiresAt: timestamp("expires_at"), // Optional expiration
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Referral events - track what happens when referees hit milestones
+export const referralEvents = pgTable("referral_events", {
+  id: serial("id").primaryKey(),
+  referrerUserId: integer("referrer_user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  refereeUserId: integer("referee_user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  referralCodeId: integer("referral_code_id").references(() => referralCodes.id),
+  eventType: text("event_type").notNull(), // 'signup', 'streak_7', 'subscription'
+  referrerPointsAwarded: integer("referrer_points_awarded").notNull().default(0),
+  refereePointsAwarded: integer("referee_points_awarded").notNull().default(0),
+  metadata: json("metadata"), // Additional event data
+  occurredAt: timestamp("occurred_at").notNull().defaultNow(),
+});
+
+export const insertReferralCodeSchema = createInsertSchema(referralCodes).omit({
+  id: true,
+  usesCount: true,
+  createdAt: true,
+});
+
+export const insertReferralEventSchema = createInsertSchema(referralEvents).omit({
+  id: true,
+  occurredAt: true,
+});
+
 export const insertUserWalletProgressSchema = createInsertSchema(userWalletProgress).omit({
   id: true,
   createdAt: true,
@@ -1172,6 +1216,10 @@ export type StreakReward = typeof streakRewards.$inferSelect;
 export type InsertStreakReward = z.infer<typeof insertStreakRewardSchema>;
 export type StreakInsurance = typeof streakInsurance.$inferSelect;
 export type InsertStreakInsurance = z.infer<typeof insertStreakInsuranceSchema>;
+export type ReferralCode = typeof referralCodes.$inferSelect;
+export type InsertReferralCode = z.infer<typeof insertReferralCodeSchema>;
+export type ReferralEvent = typeof referralEvents.$inferSelect;
+export type InsertReferralEvent = z.infer<typeof insertReferralEventSchema>;
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;

@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import { 
   Users, UserCheck, UserX, Crown, Clock, TrendingUp,
   Search, Filter, ChevronRight, Calendar, Activity,
-  Mail, Award, Flame, BookOpen, Archive
+  Mail, Award, Flame, BookOpen, Archive, Gift, Share2
 } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -319,12 +319,35 @@ function UserDetailDialog({ user, open, onOpenChange }: {
   );
 }
 
+interface ReferralStats {
+  totalReferrals: number;
+  totalEvents: number;
+  totalPointsAwarded: number;
+  topReferrers: Array<{
+    userId: number;
+    firstName: string;
+    lastName: string;
+    referralCount: number;
+  }>;
+}
+
+interface ReferralEvent {
+  id: number;
+  eventType: string;
+  referrerPointsAwarded: number;
+  refereePointsAwarded: number;
+  occurredAt: string;
+  referrerUserId: number;
+  refereeUserId: number;
+}
+
 export default function UsersManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [tierFilter, setTierFilter] = useState<string>("all");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'users' | 'referrals'>('users');
 
   const { data: users = [], isLoading: usersLoading } = useQuery<User[]>({
     queryKey: ["/api/admin/users"],
@@ -332,6 +355,16 @@ export default function UsersManagement() {
 
   const { data: stats } = useQuery<UserStats>({
     queryKey: ["/api/admin/users/stats"],
+  });
+
+  const { data: referralStats } = useQuery<ReferralStats>({
+    queryKey: ["/api/admin/referrals/stats"],
+    enabled: activeTab === 'referrals',
+  });
+
+  const { data: referralEventsData } = useQuery<{ events: ReferralEvent[] }>({
+    queryKey: ["/api/admin/referrals/events"],
+    enabled: activeTab === 'referrals',
   });
 
   const filteredUsers = users.filter(user => {
@@ -371,6 +404,20 @@ export default function UsersManagement() {
             </div>
           </div>
 
+          {/* Tabs */}
+          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'users' | 'referrals')}>
+            <TabsList className="bg-zinc-800 border-zinc-700">
+              <TabsTrigger value="users" className="data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-400">
+                <Users className="w-4 h-4 mr-2" />
+                Users
+              </TabsTrigger>
+              <TabsTrigger value="referrals" className="data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-400">
+                <Gift className="w-4 h-4 mr-2" />
+                Referrals
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="users" className="mt-6 space-y-6">
           {/* Stats Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <StatsCard 
@@ -491,6 +538,125 @@ export default function UsersManagement() {
               Showing {filteredUsers.length} of {users.length} users
             </p>
           )}
+            </TabsContent>
+
+            <TabsContent value="referrals" className="mt-6 space-y-6">
+              {/* Referral Stats */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <StatsCard 
+                  title="Total Referrals" 
+                  value={referralStats?.totalReferrals || 0}
+                  icon={Share2}
+                />
+                <StatsCard 
+                  title="Milestone Events" 
+                  value={referralStats?.totalEvents || 0}
+                  icon={Award}
+                />
+                <StatsCard 
+                  title="Points Awarded" 
+                  value={(referralStats?.totalPointsAwarded || 0).toLocaleString()}
+                  icon={Gift}
+                />
+                <StatsCard 
+                  title="Top Referrers" 
+                  value={referralStats?.topReferrers?.length || 0}
+                  icon={Crown}
+                />
+              </div>
+
+              {/* Top Referrers */}
+              <Card className="bg-zinc-800/50 border-zinc-700">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <Crown className="w-5 h-5 text-orange-500" />
+                    Top Referrers
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {referralStats?.topReferrers?.length ? (
+                    <div className="space-y-3">
+                      {referralStats.topReferrers.map((referrer, index) => (
+                        <div key={referrer.userId} className="flex items-center justify-between p-3 bg-zinc-900/50 rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                              index === 0 ? 'bg-yellow-500/20 text-yellow-400' :
+                              index === 1 ? 'bg-zinc-400/20 text-zinc-300' :
+                              index === 2 ? 'bg-orange-700/20 text-orange-600' :
+                              'bg-zinc-700/50 text-zinc-400'
+                            }`}>
+                              {index + 1}
+                            </div>
+                            <div>
+                              <p className="text-white font-medium">{referrer.firstName} {referrer.lastName}</p>
+                            </div>
+                          </div>
+                          <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30">
+                            {referrer.referralCount} referrals
+                          </Badge>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-zinc-500">
+                      <Share2 className="w-12 h-12 mx-auto mb-3 text-zinc-600" />
+                      <p>No referrals yet</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Recent Referral Events */}
+              <Card className="bg-zinc-800/50 border-zinc-700">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-orange-500" />
+                    Recent Referral Activity
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {referralEventsData?.events?.length ? (
+                    <div className="space-y-3 max-h-96 overflow-y-auto">
+                      {referralEventsData.events.slice(0, 20).map((event) => (
+                        <div key={event.id} className="flex items-center justify-between p-3 bg-zinc-900/50 rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <div className={`p-2 rounded-lg ${
+                              event.eventType === 'signup' ? 'bg-green-500/20' :
+                              event.eventType === 'streak_7' ? 'bg-orange-500/20' :
+                              'bg-blue-500/20'
+                            }`}>
+                              {event.eventType === 'signup' ? <UserCheck className="w-4 h-4 text-green-500" /> :
+                               event.eventType === 'streak_7' ? <Flame className="w-4 h-4 text-orange-500" /> :
+                               <Crown className="w-4 h-4 text-blue-500" />}
+                            </div>
+                            <div>
+                              <p className="text-white text-sm font-medium capitalize">
+                                {event.eventType.replace('_', ' ')} Milestone
+                              </p>
+                              <p className="text-xs text-zinc-500">
+                                {new Date(event.occurredAt).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-orange-400 text-sm font-medium">
+                              +{event.referrerPointsAwarded + event.refereePointsAwarded} pts
+                            </p>
+                            <p className="text-xs text-zinc-500">total awarded</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-zinc-500">
+                      <Activity className="w-12 h-12 mx-auto mb-3 text-zinc-600" />
+                      <p>No referral activity yet</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
 
         <UserDetailDialog 

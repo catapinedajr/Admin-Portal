@@ -157,7 +157,7 @@ export default function WalletSummaryCard() {
           <div className="space-y-2 pt-2 border-t border-zinc-700/50">
             <div className="flex items-center justify-between">
               <div className="text-xs text-gray-400">
-                Learn to think in Bitcoin's native unit
+                Educational rewards for tracking your progress
               </div>
               <div className="flex items-center gap-1 text-xs text-orange-400">
                 <span>View Details</span>
