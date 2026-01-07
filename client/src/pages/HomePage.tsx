@@ -4,6 +4,7 @@ import { useLocation } from "wouter";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { Crown, Gem, Gamepad2, MoreHorizontal, User as UserIcon, Users, MessageSquare, TrendingUp, ArrowRight, Shield, TrendingDown, Award, Coins, Wallet } from "@/lib/icons";
+import { InviteFriendsCard } from "@/components/InviteFriendsCard";
 import BitcoinPriceDisplay from "@/components/BitcoinPriceDisplay";
 import WalletDisplay from "@/components/WalletDisplay";
 import WalletSummaryCard from "@/components/WalletSummaryCard";
@@ -135,6 +136,9 @@ export default function HomePage() {
             dailyFacts={dailyFacts}
             setActiveSection={setActiveSection}
           />
+
+          {/* Invite Friends */}
+          <InviteFriendsCard />
 
           {/* Quick Actions Grid - Streamlined with Streak Achievement Style */}
           <div className="grid grid-cols-3 gap-3">
