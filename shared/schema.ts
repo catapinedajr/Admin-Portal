@@ -1907,3 +1907,130 @@ export const insertPaywallSettingsSchema = createInsertSchema(paywallSettings).o
 
 export type PaywallSettings = typeof paywallSettings.$inferSelect;
 export type InsertPaywallSettings = z.infer<typeof insertPaywallSettingsSchema>;
+
+// ============================================
+// EMAIL MANAGEMENT (Admin email system)
+// ============================================
+
+// Email templates - reusable email designs
+export const emailTemplates = pgTable("email_templates", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  subject: text("subject").notNull(),
+  htmlContent: text("html_content").notNull(),
+  textContent: text("text_content"), // Plain text fallback
+  category: text("category").notNull().default("general"), // welcome, marketing, notification, transactional
+  isActive: boolean("is_active").notNull().default(true),
+  createdBy: integer("created_by").references(() => adminUsers.id),
+  updatedBy: integer("updated_by").references(() => adminUsers.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"),
+});
+
+// Email campaigns - track sent email blasts
+export const emailCampaigns = pgTable("email_campaigns", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  subject: text("subject").notNull(),
+  htmlContent: text("html_content").notNull(),
+  textContent: text("text_content"),
+  templateId: integer("template_id").references(() => emailTemplates.id),
+  // Targeting
+  targetAudience: text("target_audience").notNull().default("all"), // all, active, inactive, subscribers, non_subscribers
+  targetFilters: json("target_filters").$type<Record<string, any>>(), // Additional filters
+  // Status & scheduling
+  status: text("status").notNull().default("draft"), // draft, scheduled, sending, sent, failed
+  scheduledAt: timestamp("scheduled_at"),
+  sentAt: timestamp("sent_at"),
+  // Stats
+  recipientCount: integer("recipient_count").default(0),
+  sentCount: integer("sent_count").default(0),
+  openCount: integer("open_count").default(0),
+  clickCount: integer("click_count").default(0),
+  bounceCount: integer("bounce_count").default(0),
+  // Tracking
+  createdBy: integer("created_by").references(() => adminUsers.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Email automation settings - configure automatic emails
+export const emailAutomations = pgTable("email_automations", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  triggerType: text("trigger_type").notNull().unique(), // welcome, streak_reminder, weekly_summary, inactivity_reminder
+  description: text("description"),
+  templateId: integer("template_id").references(() => emailTemplates.id),
+  isEnabled: boolean("is_enabled").notNull().default(false),
+  // Trigger configuration
+  triggerConfig: json("trigger_config").$type<Record<string, any>>(), // e.g., { days_inactive: 3 }
+  // Stats
+  sentCount: integer("sent_count").default(0),
+  lastSentAt: timestamp("last_sent_at"),
+  // Tracking
+  updatedBy: integer("updated_by").references(() => adminUsers.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Email send log - track individual email sends
+export const emailSendLog = pgTable("email_send_log", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id),
+  email: text("email").notNull(),
+  subject: text("subject").notNull(),
+  // Source
+  campaignId: integer("campaign_id").references(() => emailCampaigns.id),
+  automationId: integer("automation_id").references(() => emailAutomations.id),
+  // Status
+  status: text("status").notNull().default("pending"), // pending, sent, delivered, opened, clicked, bounced, failed
+  resendMessageId: text("resend_message_id"), // Resend's tracking ID
+  // Tracking
+  sentAt: timestamp("sent_at"),
+  openedAt: timestamp("opened_at"),
+  clickedAt: timestamp("clicked_at"),
+  bouncedAt: timestamp("bounced_at"),
+  errorMessage: text("error_message"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Insert schemas
+export const insertEmailTemplateSchema = createInsertSchema(emailTemplates).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertEmailCampaignSchema = createInsertSchema(emailCampaigns).omit({
+  id: true,
+  sentCount: true,
+  openCount: true,
+  clickCount: true,
+  bounceCount: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertEmailAutomationSchema = createInsertSchema(emailAutomations).omit({
+  id: true,
+  sentCount: true,
+  lastSentAt: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertEmailSendLogSchema = createInsertSchema(emailSendLog).omit({
+  id: true,
+  createdAt: true,
+});
+
+// Types
+export type EmailTemplate = typeof emailTemplates.$inferSelect;
+export type InsertEmailTemplate = z.infer<typeof insertEmailTemplateSchema>;
+export type EmailCampaign = typeof emailCampaigns.$inferSelect;
+export type InsertEmailCampaign = z.infer<typeof insertEmailCampaignSchema>;
+export type EmailAutomation = typeof emailAutomations.$inferSelect;
+export type InsertEmailAutomation = z.infer<typeof insertEmailAutomationSchema>;
+export type EmailSendLog = typeof emailSendLog.$inferSelect;
+export type InsertEmailSendLog = z.infer<typeof insertEmailSendLogSchema>;
