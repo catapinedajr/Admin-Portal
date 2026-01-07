@@ -49,7 +49,7 @@ export function InviteFriendsCard() {
 
   if (isLoading) {
     return (
-      <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border-orange-500/20">
+      <Card className="bg-black border border-zinc-700/50">
         <CardContent className="p-4">
           <div className="animate-pulse flex items-center gap-3">
             <div className="w-9 h-9 bg-zinc-700 rounded-lg"></div>
@@ -63,7 +63,7 @@ export function InviteFriendsCard() {
   }
 
   return (
-    <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border-orange-500/20">
+    <Card className="bg-black border border-zinc-700/50">
       <CardContent className="p-4">
         <div className="flex items-center gap-3 mb-3">
           <div className="p-2 bg-orange-500/20 rounded-lg shrink-0">
