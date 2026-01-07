@@ -2,13 +2,14 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { 
-  Shield, Check, Loader2, CreditCard, Lock, Unlock, DollarSign, Sparkles, 
-  Calculator, TrendingUp, ShieldCheck, Gauge, Wallet, ArrowLeftRight, Coins, FileText
+  Shield, Check, Loader2, CreditCard, Lock, Unlock, Sparkles,
+  ShieldCheck, Wallet, ArrowLeftRight, Coins, Calculator, TrendingUp, Zap
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Switch } from "@/components/ui/switch";
@@ -62,23 +63,24 @@ function AdminAuthGuard({ children }: { children: React.ReactNode }) {
 }
 
 interface PaywallSettings {
-  isPaywallEnabled: boolean;
-  freeTrialDays: number;
-  freeLessonsLimit: number;
+  id: number | null;
+  freeDayThreshold: number;
+  paywallEnabled: boolean;
   premiumFeatures: string[];
+  paywallTitle: string;
+  paywallMessage: string;
   availableFeatures: { key: string; label: string; description: string }[];
 }
 
 const FEATURE_ICONS: Record<string, any> = {
-  'dca_calculator': Calculator,
-  'hodl_simulator': TrendingUp,
-  'transaction_simulator': ArrowLeftRight,
-  'inflation_calculator': Coins,
-  'security_training': ShieldCheck,
-  'advanced_quizzes': FileText,
-  'community_forums': DollarSign,
-  'portfolio_tracker': Wallet,
-  'price_alerts': Gauge,
+  'safety': ShieldCheck,
+  'wallet': Wallet,
+  'transactions': ArrowLeftRight,
+  'transfer': Zap,
+  'hodl': TrendingUp,
+  'dca': Calculator,
+  'inflation': Coins,
+  'fees': Sparkles,
 };
 
 export default function RevenueControls() {
@@ -96,14 +98,16 @@ function PaywallSection() {
   const [hasChanges, setHasChanges] = useState(false);
 
   const { data: settings, isLoading } = useQuery<PaywallSettings>({
-    queryKey: ["/api/admin/paywall-settings"],
+    queryKey: ["/api/admin/paywall"],
   });
 
   const [localSettings, setLocalSettings] = useState<PaywallSettings>({
-    isPaywallEnabled: false,
-    freeTrialDays: 7,
-    freeLessonsLimit: 5,
+    id: null,
+    freeDayThreshold: 7,
+    paywallEnabled: true,
     premiumFeatures: [],
+    paywallTitle: 'Unlock Your Bitcoin Education',
+    paywallMessage: 'Subscribe to access all 336 days of Bitcoin mastery and premium tools.',
     availableFeatures: [],
   });
 
@@ -115,11 +119,12 @@ function PaywallSection() {
 
   const saveMutation = useMutation({
     mutationFn: async (data: Partial<PaywallSettings>) => {
-      return apiRequest('PATCH', '/api/admin/paywall-settings', data);
+      return apiRequest('POST', '/api/admin/paywall', data);
     },
     onSuccess: () => {
       toast({ title: "Settings saved", description: "Paywall configuration updated successfully." });
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/paywall-settings"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/paywall"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/paywall-config"] });
       setHasChanges(false);
     },
     onError: (error: any) => {
@@ -146,10 +151,11 @@ function PaywallSection() {
 
   const handleSave = () => {
     saveMutation.mutate({
-      isPaywallEnabled: localSettings.isPaywallEnabled,
-      freeTrialDays: localSettings.freeTrialDays,
-      freeLessonsLimit: localSettings.freeLessonsLimit,
+      freeDayThreshold: localSettings.freeDayThreshold,
+      paywallEnabled: localSettings.paywallEnabled,
       premiumFeatures: localSettings.premiumFeatures,
+      paywallTitle: localSettings.paywallTitle,
+      paywallMessage: localSettings.paywallMessage,
     });
   };
 
@@ -168,6 +174,21 @@ function PaywallSection() {
           <h1 className="text-2xl font-bold text-white">Revenue Controls</h1>
           <p className="text-zinc-400">Manage subscriptions, paywall settings, and premium features</p>
         </div>
+        {hasChanges && (
+          <Button
+            onClick={handleSave}
+            disabled={saveMutation.isPending}
+            className="bg-orange-500 hover:bg-orange-600"
+            data-testid="button-save-paywall"
+          >
+            {saveMutation.isPending ? (
+              <Loader2 className="w-4 h-4 animate-spin mr-2" />
+            ) : (
+              <Check className="w-4 h-4 mr-2" />
+            )}
+            Save Changes
+          </Button>
+        )}
       </div>
 
       <Card className="bg-zinc-800/30 border-zinc-700">
@@ -183,8 +204,8 @@ function PaywallSection() {
         <CardContent className="space-y-6">
           <div className="flex items-center justify-between p-4 bg-zinc-900/50 rounded-lg border border-zinc-700">
             <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg ${localSettings.isPaywallEnabled ? 'bg-orange-500/20' : 'bg-zinc-800'}`}>
-                {localSettings.isPaywallEnabled ? (
+              <div className={`p-2 rounded-lg ${localSettings.paywallEnabled ? 'bg-orange-500/20' : 'bg-zinc-800'}`}>
+                {localSettings.paywallEnabled ? (
                   <Lock className="w-5 h-5 text-orange-400" />
                 ) : (
                   <Unlock className="w-5 h-5 text-zinc-500" />
@@ -193,62 +214,65 @@ function PaywallSection() {
               <div>
                 <h4 className="font-medium text-white">Enable Paywall</h4>
                 <p className="text-sm text-zinc-500">
-                  {localSettings.isPaywallEnabled 
-                    ? 'Premium content requires subscription'
+                  {localSettings.paywallEnabled 
+                    ? 'Premium content requires subscription after free days'
                     : 'All content is freely accessible'
                   }
                 </p>
               </div>
             </div>
             <Switch
-              checked={localSettings.isPaywallEnabled}
-              onCheckedChange={(checked) => handleChange('isPaywallEnabled', checked)}
+              checked={localSettings.paywallEnabled}
+              onCheckedChange={(checked) => handleChange('paywallEnabled', checked)}
               data-testid="switch-paywall-enabled"
             />
           </div>
 
-          {localSettings.isPaywallEnabled && (
-            <>
-              <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between mb-2">
-                    <Label className="text-zinc-300">Free Trial Duration</Label>
-                    <span className="text-orange-400 font-medium">{localSettings.freeTrialDays} days</span>
-                  </div>
-                  <Slider
-                    value={[localSettings.freeTrialDays]}
-                    onValueChange={([value]) => handleChange('freeTrialDays', value)}
-                    min={0}
-                    max={30}
-                    step={1}
-                    className="w-full"
-                    data-testid="slider-free-trial"
-                  />
-                  <p className="text-xs text-zinc-500 mt-1">
-                    Number of days new users can access premium content for free
-                  </p>
+          {localSettings.paywallEnabled && (
+            <div className="space-y-6">
+              <div>
+                <div className="flex justify-between mb-2">
+                  <Label className="text-zinc-300">Free Days Before Paywall</Label>
+                  <span className="text-orange-400 font-medium">{localSettings.freeDayThreshold} days</span>
                 </div>
-
-                <div>
-                  <div className="flex justify-between mb-2">
-                    <Label className="text-zinc-300">Free Lessons Limit</Label>
-                    <span className="text-orange-400 font-medium">{localSettings.freeLessonsLimit} lessons</span>
-                  </div>
-                  <Slider
-                    value={[localSettings.freeLessonsLimit]}
-                    onValueChange={([value]) => handleChange('freeLessonsLimit', value)}
-                    min={0}
-                    max={50}
-                    step={1}
-                    className="w-full"
-                    data-testid="slider-free-lessons"
-                  />
-                  <p className="text-xs text-zinc-500 mt-1">
-                    Number of lessons available without subscription (after trial)
-                  </p>
-                </div>
+                <Slider
+                  value={[localSettings.freeDayThreshold]}
+                  onValueChange={([value]) => handleChange('freeDayThreshold', value)}
+                  min={0}
+                  max={30}
+                  step={1}
+                  className="w-full"
+                  data-testid="slider-free-days"
+                />
+                <p className="text-xs text-zinc-500 mt-1">
+                  Number of days new users can access content for free before seeing the paywall
+                </p>
               </div>
-            </>
+
+              <div>
+                <Label htmlFor="paywallTitle" className="text-zinc-300">Paywall Title</Label>
+                <Input
+                  id="paywallTitle"
+                  value={localSettings.paywallTitle}
+                  onChange={(e) => handleChange('paywallTitle', e.target.value)}
+                  className="bg-zinc-800 border-zinc-600 text-white mt-2"
+                  placeholder="Enter paywall title"
+                  data-testid="input-paywall-title"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="paywallMessage" className="text-zinc-300">Paywall Message</Label>
+                <Textarea
+                  id="paywallMessage"
+                  value={localSettings.paywallMessage}
+                  onChange={(e) => handleChange('paywallMessage', e.target.value)}
+                  className="bg-zinc-800 border-zinc-600 text-white mt-2 min-h-[80px]"
+                  placeholder="Enter the message shown to users when they hit the paywall"
+                  data-testid="input-paywall-message"
+                />
+              </div>
+            </div>
           )}
         </CardContent>
       </Card>
@@ -257,10 +281,10 @@ function PaywallSection() {
         <CardHeader>
           <CardTitle className="text-lg text-white flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-orange-500" />
-            Premium Features
+            Premium Simulators
           </CardTitle>
           <CardDescription className="text-zinc-400">
-            Select which tools and simulators require a subscription
+            Select which simulators require a subscription to access
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -305,26 +329,15 @@ function PaywallSection() {
               );
             })}
           </div>
+          
+          {(!localSettings.availableFeatures || localSettings.availableFeatures.length === 0) && (
+            <div className="text-center py-8 text-zinc-500">
+              <Sparkles className="w-12 h-12 mx-auto mb-3 opacity-50" />
+              <p>No simulators configured</p>
+            </div>
+          )}
         </CardContent>
       </Card>
-
-      {hasChanges && (
-        <div className="flex justify-end">
-          <Button
-            onClick={handleSave}
-            disabled={saveMutation.isPending}
-            className="bg-orange-500 hover:bg-orange-600"
-            data-testid="button-save-paywall"
-          >
-            {saveMutation.isPending ? (
-              <Loader2 className="w-4 h-4 animate-spin mr-2" />
-            ) : (
-              <Check className="w-4 h-4 mr-2" />
-            )}
-            Save Changes
-          </Button>
-        </div>
-      )}
     </div>
   );
 }
