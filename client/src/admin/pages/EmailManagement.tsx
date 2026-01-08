@@ -521,6 +521,21 @@ function EmailManagementContent() {
     templateType: "general",
   });
 
+  // AI template assistant state
+  const [showAiAssistant, setShowAiAssistant] = useState(false);
+  const [templateAiForm, setTemplateAiForm] = useState({
+    objective: "",
+    subjectIdeas: "",
+    notes: "",
+    tone: "friendly",
+  });
+  const [generatedTemplate, setGeneratedTemplate] = useState<{
+    name: string;
+    subject: string;
+    htmlContent: string;
+    textContent: string;
+  } | null>(null);
+
   // Queries
   const { data: stats, isLoading: statsLoading } = useQuery<EmailStats>({
     queryKey: ["/api/admin/email/stats"],
@@ -646,6 +661,26 @@ function EmailManagementContent() {
       });
       setTemplateDialogOpen(true);
       toast({ title: "Email generated", description: "Review and save as a template" });
+    },
+    onError: (err: any) => toast({ title: "Generation failed", description: err.message, variant: "destructive" }),
+  });
+
+  const generateTemplateAiMutation = useMutation({
+    mutationFn: (data: any) => apiRequest("POST", "/api/admin/email/generate", {
+      purpose: data.objective,
+      tone: data.tone,
+      keyPoints: `Subject ideas: ${data.subjectIdeas}\n\nAdditional notes: ${data.notes}`,
+      templateType: "general",
+    }),
+    onSuccess: (data: any) => {
+      setGeneratedTemplate({
+        name: templateAiForm.objective.slice(0, 50),
+        subject: data.subject,
+        htmlContent: data.html,
+        textContent: data.text,
+      });
+      setShowAiAssistant(false);
+      toast({ title: "Content generated", description: "Edit the content below and save" });
     },
     onError: (err: any) => toast({ title: "Generation failed", description: err.message, variant: "destructive" }),
   });
@@ -1209,20 +1244,120 @@ function EmailManagementContent() {
       </Tabs>
 
       {/* Template Dialog */}
-      <Dialog open={templateDialogOpen} onOpenChange={setTemplateDialogOpen}>
+      <Dialog open={templateDialogOpen} onOpenChange={(open) => {
+        setTemplateDialogOpen(open);
+        if (!open) {
+          setShowAiAssistant(false);
+          setGeneratedTemplate(null);
+          setTemplateAiForm({ objective: "", subjectIdeas: "", notes: "", tone: "friendly" });
+        }
+      }}>
         <DialogContent className="bg-zinc-900 border-zinc-700 max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-white">
-              {editingTemplate?.id ? "Edit Template" : "New Template"}
+            <DialogTitle className="text-white flex items-center justify-between">
+              <span>{editingTemplate?.id ? "Edit Template" : "New Template"}</span>
+              {!editingTemplate?.id && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowAiAssistant(!showAiAssistant)}
+                  className={`border-zinc-600 ${showAiAssistant ? 'bg-orange-500/20 border-orange-500' : ''}`}
+                >
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  AI Assistant
+                </Button>
+              )}
             </DialogTitle>
           </DialogHeader>
+
+          {/* AI Assistant Panel */}
+          {showAiAssistant && !editingTemplate?.id && (
+            <div className="p-4 bg-zinc-800/50 rounded-lg border border-orange-500/30 space-y-4">
+              <div className="flex items-center gap-2 text-orange-400">
+                <Sparkles className="w-4 h-4" />
+                <span className="text-sm font-medium">AI Template Generator</span>
+              </div>
+              <div>
+                <Label className="text-zinc-400">Objective / Purpose</Label>
+                <Input
+                  value={templateAiForm.objective}
+                  onChange={(e) => setTemplateAiForm({ ...templateAiForm, objective: e.target.value })}
+                  placeholder="e.g., Welcome new users and introduce HODLearn features"
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  data-testid="input-ai-objective"
+                />
+              </div>
+              <div>
+                <Label className="text-zinc-400">Subject Line Ideas</Label>
+                <Input
+                  value={templateAiForm.subjectIdeas}
+                  onChange={(e) => setTemplateAiForm({ ...templateAiForm, subjectIdeas: e.target.value })}
+                  placeholder="e.g., Welcome to the Bitcoin journey, Start learning today"
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  data-testid="input-ai-subject-ideas"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-zinc-400">Tone</Label>
+                  <Select value={templateAiForm.tone} onValueChange={(v) => setTemplateAiForm({ ...templateAiForm, tone: v })}>
+                    <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-zinc-800 border-zinc-700">
+                      <SelectItem value="friendly">Friendly</SelectItem>
+                      <SelectItem value="professional">Professional</SelectItem>
+                      <SelectItem value="urgent">Urgent</SelectItem>
+                      <SelectItem value="casual">Casual</SelectItem>
+                      <SelectItem value="motivational">Motivational</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-end">
+                  <Button
+                    type="button"
+                    onClick={() => generateTemplateAiMutation.mutate(templateAiForm)}
+                    disabled={generateTemplateAiMutation.isPending || !templateAiForm.objective}
+                    className="w-full bg-orange-500 hover:bg-orange-600"
+                    data-testid="button-generate-template"
+                  >
+                    {generateTemplateAiMutation.isPending ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        Generate
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+              <div>
+                <Label className="text-zinc-400">Additional Notes (optional)</Label>
+                <Textarea
+                  value={templateAiForm.notes}
+                  onChange={(e) => setTemplateAiForm({ ...templateAiForm, notes: e.target.value })}
+                  placeholder="Any specific points, CTAs, or content to include..."
+                  rows={2}
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  data-testid="input-ai-notes"
+                />
+              </div>
+            </div>
+          )}
+
           <form onSubmit={handleSaveTemplate} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label className="text-zinc-400">Name</Label>
                 <Input
                   name="name"
-                  defaultValue={editingTemplate?.name}
+                  defaultValue={generatedTemplate?.name || editingTemplate?.name}
+                  key={generatedTemplate?.name || editingTemplate?.name || 'new'}
                   required
                   className="bg-zinc-800 border-zinc-700 text-white"
                   data-testid="input-template-name"
@@ -1248,7 +1383,8 @@ function EmailManagementContent() {
               <Label className="text-zinc-400">Subject</Label>
               <Input
                 name="subject"
-                defaultValue={editingTemplate?.subject}
+                defaultValue={generatedTemplate?.subject || editingTemplate?.subject}
+                key={generatedTemplate?.subject || editingTemplate?.subject || 'new'}
                 required
                 className="bg-zinc-800 border-zinc-700 text-white"
                 data-testid="input-template-subject"
@@ -1258,7 +1394,8 @@ function EmailManagementContent() {
               <Label className="text-zinc-400">HTML Content</Label>
               <Textarea
                 name="htmlContent"
-                defaultValue={editingTemplate?.htmlContent}
+                defaultValue={generatedTemplate?.htmlContent || editingTemplate?.htmlContent}
+                key={generatedTemplate?.htmlContent || editingTemplate?.htmlContent || 'new'}
                 required
                 rows={12}
                 className="bg-zinc-800 border-zinc-700 text-white font-mono text-sm"
@@ -1269,7 +1406,8 @@ function EmailManagementContent() {
               <Label className="text-zinc-400">Plain Text (optional)</Label>
               <Textarea
                 name="textContent"
-                defaultValue={editingTemplate?.textContent || ""}
+                defaultValue={generatedTemplate?.textContent || editingTemplate?.textContent || ""}
+                key={generatedTemplate?.textContent || editingTemplate?.textContent || 'new'}
                 rows={4}
                 className="bg-zinc-800 border-zinc-700 text-white"
                 data-testid="input-template-text"
