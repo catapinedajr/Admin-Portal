@@ -1506,14 +1506,14 @@ function EmailManagementContent() {
                 <div>
                   <Label className="text-zinc-400">Template</Label>
                   <Select 
-                    value={automationForm.templateId?.toString() || ""} 
-                    onValueChange={(v) => setAutomationForm({ ...automationForm, templateId: v ? parseInt(v) : null })}
+                    value={automationForm.templateId?.toString() || "none"} 
+                    onValueChange={(v) => setAutomationForm({ ...automationForm, templateId: v === "none" ? null : parseInt(v) })}
                   >
                     <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
                       <SelectValue placeholder="Select a template" />
                     </SelectTrigger>
                     <SelectContent className="bg-zinc-800 border-zinc-700">
-                      <SelectItem value="">No template</SelectItem>
+                      <SelectItem value="none">No template</SelectItem>
                       {templates.map((t) => (
                         <SelectItem key={t.id} value={t.id.toString()}>{t.name}</SelectItem>
                       ))}
