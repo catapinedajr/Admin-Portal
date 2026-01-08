@@ -252,6 +252,21 @@ export function registerEmailRoutes(app: Express, requireAdminAuth: any) {
     }
   });
 
+  app.post("/api/admin/email/automations", requireAdminAuth, async (req: any, res) => {
+    try {
+      const [automation] = await db.insert(emailAutomations)
+        .values({
+          ...req.body,
+          createdBy: req.admin?.id,
+          updatedBy: req.admin?.id,
+        })
+        .returning();
+      res.json(automation);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
   app.patch("/api/admin/email/automations/:id", requireAdminAuth, async (req: any, res) => {
     try {
       const [automation] = await db.update(emailAutomations)
@@ -267,6 +282,21 @@ export function registerEmailRoutes(app: Express, requireAdminAuth: any) {
         return res.status(404).json({ message: "Automation not found" });
       }
       res.json(automation);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/admin/email/automations/:id", requireAdminAuth, async (req: any, res) => {
+    try {
+      const [automation] = await db.delete(emailAutomations)
+        .where(eq(emailAutomations.id, parseInt(req.params.id)))
+        .returning();
+      
+      if (!automation) {
+        return res.status(404).json({ message: "Automation not found" });
+      }
+      res.json({ message: "Automation deleted" });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }

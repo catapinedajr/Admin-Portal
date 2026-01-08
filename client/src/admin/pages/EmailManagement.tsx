@@ -425,12 +425,32 @@ interface EmailCampaign {
   createdAt: string;
 }
 
+interface TriggerConfig {
+  delayMinutes?: number;
+  streakDays?: number;
+  inactiveDays?: number;
+  lessonDay?: number;
+  customEvent?: string;
+}
+
+interface AudienceFilter {
+  subscriptionStatus?: 'all' | 'premium' | 'free' | 'trial';
+  minDay?: number;
+  maxDay?: number;
+  hasStreak?: boolean;
+  minStreak?: number;
+}
+
 interface EmailAutomation {
   id: number;
   name: string;
   triggerType: string;
   description: string | null;
+  templateId: number | null;
   isEnabled: boolean;
+  triggerConfig: TriggerConfig | null;
+  audienceFilter: AudienceFilter | null;
+  subjectOverride: string | null;
   sentCount: number;
   lastSentAt: string | null;
 }
@@ -460,6 +480,7 @@ function EmailManagementContent() {
   // Dialog states
   const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
   const [campaignDialogOpen, setCampaignDialogOpen] = useState(false);
+  const [automationDialogOpen, setAutomationDialogOpen] = useState(false);
   const [aiDialogOpen, setAiDialogOpen] = useState(false);
   const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
   const [previewHtml, setPreviewHtml] = useState("");
@@ -467,6 +488,30 @@ function EmailManagementContent() {
   // Form states
   const [editingTemplate, setEditingTemplate] = useState<EmailTemplate | null>(null);
   const [editingCampaign, setEditingCampaign] = useState<EmailCampaign | null>(null);
+  const [editingAutomation, setEditingAutomation] = useState<EmailAutomation | null>(null);
+  
+  // Automation form state
+  const [automationForm, setAutomationForm] = useState({
+    name: "",
+    triggerType: "welcome",
+    description: "",
+    templateId: null as number | null,
+    isEnabled: false,
+    subjectOverride: "",
+    triggerConfig: {
+      delayMinutes: 0,
+      streakDays: 7,
+      inactiveDays: 3,
+      lessonDay: 1,
+    },
+    audienceFilter: {
+      subscriptionStatus: "all" as 'all' | 'premium' | 'free' | 'trial',
+      minDay: undefined as number | undefined,
+      maxDay: undefined as number | undefined,
+      hasStreak: false,
+      minStreak: undefined as number | undefined,
+    },
+  });
   
   // AI generation form
   const [aiForm, setAiForm] = useState({
@@ -549,13 +594,37 @@ function EmailManagementContent() {
     onError: (err: any) => toast({ title: "Error", description: err.message, variant: "destructive" }),
   });
 
+  const createAutomationMutation = useMutation({
+    mutationFn: (data: any) => apiRequest("POST", "/api/admin/email/automations", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/email/automations"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/email/stats"] });
+      setAutomationDialogOpen(false);
+      setEditingAutomation(null);
+      toast({ title: "Automation created" });
+    },
+    onError: (err: any) => toast({ title: "Error", description: err.message, variant: "destructive" }),
+  });
+
   const updateAutomationMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: any }) => 
       apiRequest("PATCH", `/api/admin/email/automations/${id}`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/email/automations"] });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/email/stats"] });
+      setAutomationDialogOpen(false);
+      setEditingAutomation(null);
       toast({ title: "Automation updated" });
+    },
+    onError: (err: any) => toast({ title: "Error", description: err.message, variant: "destructive" }),
+  });
+
+  const deleteAutomationMutation = useMutation({
+    mutationFn: (id: number) => apiRequest("DELETE", `/api/admin/email/automations/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/email/automations"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/email/stats"] });
+      toast({ title: "Automation deleted" });
     },
     onError: (err: any) => toast({ title: "Error", description: err.message, variant: "destructive" }),
   });
@@ -624,6 +693,77 @@ function EmailManagementContent() {
       failed: "bg-red-600",
     };
     return <Badge className={styles[status] || "bg-zinc-600"}>{status}</Badge>;
+  };
+
+  const openAutomationDialog = (automation?: EmailAutomation) => {
+    if (automation) {
+      setEditingAutomation(automation);
+      setAutomationForm({
+        name: automation.name,
+        triggerType: automation.triggerType,
+        description: automation.description || "",
+        templateId: automation.templateId,
+        isEnabled: automation.isEnabled,
+        subjectOverride: automation.subjectOverride || "",
+        triggerConfig: {
+          delayMinutes: automation.triggerConfig?.delayMinutes || 0,
+          streakDays: automation.triggerConfig?.streakDays || 7,
+          inactiveDays: automation.triggerConfig?.inactiveDays || 3,
+          lessonDay: automation.triggerConfig?.lessonDay || 1,
+        },
+        audienceFilter: {
+          subscriptionStatus: automation.audienceFilter?.subscriptionStatus || "all",
+          minDay: automation.audienceFilter?.minDay,
+          maxDay: automation.audienceFilter?.maxDay,
+          hasStreak: automation.audienceFilter?.hasStreak || false,
+          minStreak: automation.audienceFilter?.minStreak,
+        },
+      });
+    } else {
+      setEditingAutomation(null);
+      setAutomationForm({
+        name: "",
+        triggerType: "welcome",
+        description: "",
+        templateId: null,
+        isEnabled: false,
+        subjectOverride: "",
+        triggerConfig: { delayMinutes: 0, streakDays: 7, inactiveDays: 3, lessonDay: 1 },
+        audienceFilter: { subscriptionStatus: "all", hasStreak: false, minDay: undefined, maxDay: undefined, minStreak: undefined },
+      });
+    }
+    setAutomationDialogOpen(true);
+  };
+
+  const handleSaveAutomation = () => {
+    const data = {
+      name: automationForm.name,
+      triggerType: automationForm.triggerType,
+      description: automationForm.description || null,
+      templateId: automationForm.templateId,
+      isEnabled: automationForm.isEnabled,
+      subjectOverride: automationForm.subjectOverride || null,
+      triggerConfig: automationForm.triggerConfig,
+      audienceFilter: automationForm.audienceFilter,
+    };
+
+    if (editingAutomation?.id) {
+      updateAutomationMutation.mutate({ id: editingAutomation.id, data });
+    } else {
+      createAutomationMutation.mutate(data);
+    }
+  };
+
+  const getTriggerLabel = (type: string) => {
+    const labels: Record<string, string> = {
+      welcome: "New User Signup",
+      streak_milestone: "Streak Milestone",
+      inactivity: "User Inactivity",
+      lesson_complete: "Lesson Completed",
+      referral_success: "Successful Referral",
+      custom: "Custom Event",
+    };
+    return labels[type] || type;
   };
 
   return (
@@ -965,6 +1105,17 @@ function EmailManagementContent() {
 
         {/* Automations Tab */}
         <TabsContent value="automations" className="space-y-4">
+          <div className="flex justify-end">
+            <Button 
+              onClick={() => openAutomationDialog()} 
+              className="bg-orange-500 hover:bg-orange-600"
+              data-testid="button-new-automation"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              New Automation
+            </Button>
+          </div>
+
           <Card className="bg-zinc-800/50 border-zinc-700">
             <CardHeader>
               <CardTitle className="text-white">Email Automations</CardTitle>
@@ -982,27 +1133,62 @@ function EmailManagementContent() {
                           <PowerOff className="w-5 h-5 text-zinc-400" />
                         )}
                       </div>
-                      <div>
-                        <h4 className="text-white font-medium">{automation.name}</h4>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-white font-medium">{automation.name}</h4>
+                          <Badge className="bg-orange-500/20 text-orange-400 text-xs">{getTriggerLabel(automation.triggerType)}</Badge>
+                        </div>
                         <p className="text-sm text-zinc-400">{automation.description}</p>
-                        <div className="flex gap-3 mt-1 text-xs text-zinc-500">
-                          <span>Trigger: {automation.triggerType}</span>
-                          <span>Sent: {automation.sentCount}</span>
+                        <div className="flex gap-4 mt-2 text-xs text-zinc-500">
+                          <span>Sent: {automation.sentCount} emails</span>
+                          {automation.audienceFilter?.subscriptionStatus && automation.audienceFilter.subscriptionStatus !== 'all' && (
+                            <span>Audience: {automation.audienceFilter.subscriptionStatus}</span>
+                          )}
+                          {automation.triggerConfig?.delayMinutes && automation.triggerConfig.delayMinutes > 0 && (
+                            <span>Delay: {automation.triggerConfig.delayMinutes}min</span>
+                          )}
                           {automation.lastSentAt && (
-                            <span>Last sent: {new Date(automation.lastSentAt).toLocaleDateString()}</span>
+                            <span>Last: {new Date(automation.lastSentAt).toLocaleDateString()}</span>
                           )}
                         </div>
                       </div>
                     </div>
-                    <Switch
-                      checked={automation.isEnabled}
-                      onCheckedChange={(checked) => 
-                        updateAutomationMutation.mutate({ id: automation.id, data: { isEnabled: checked } })
-                      }
-                      data-testid={`switch-automation-${automation.id}`}
-                    />
+                    <div className="flex items-center gap-3">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openAutomationDialog(automation)}
+                        className="border-zinc-600 hover:border-orange-500"
+                        data-testid={`button-edit-automation-${automation.id}`}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => deleteAutomationMutation.mutate(automation.id)}
+                        className="text-red-400 hover:text-red-300 hover:bg-red-900/20"
+                        data-testid={`button-delete-automation-${automation.id}`}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                      <Switch
+                        checked={automation.isEnabled}
+                        onCheckedChange={(checked) => 
+                          updateAutomationMutation.mutate({ id: automation.id, data: { isEnabled: checked } })
+                        }
+                        data-testid={`switch-automation-${automation.id}`}
+                      />
+                    </div>
                   </div>
                 ))}
+
+                {automations.length === 0 && (
+                  <div className="py-12 text-center">
+                    <Zap className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
+                    <p className="text-zinc-400">No automations yet. Create your first email automation.</p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -1013,7 +1199,7 @@ function EmailManagementContent() {
                 <div className="flex items-center gap-3">
                   <AlertCircle className="w-5 h-5 text-yellow-500" />
                   <p className="text-yellow-400">
-                    Automations require email service to be configured. Add RESEND_API_KEY in Settings.
+                    Automations require email service to be configured. Add RESEND_API_KEY in Integrations.
                   </p>
                 </div>
               </CardContent>
@@ -1288,6 +1474,271 @@ function EmailManagementContent() {
               title="Email Preview"
             />
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Automation Dialog */}
+      <Dialog open={automationDialogOpen} onOpenChange={setAutomationDialogOpen}>
+        <DialogContent className="bg-zinc-900 border-zinc-700 max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-white">
+              {editingAutomation ? "Edit Automation" : "New Automation"}
+            </DialogTitle>
+            <DialogDescription>
+              Configure when and to whom this automated email should be sent
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-6">
+            {/* Basic Info */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium text-orange-400">Basic Information</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-zinc-400">Name</Label>
+                  <Input
+                    value={automationForm.name}
+                    onChange={(e) => setAutomationForm({ ...automationForm, name: e.target.value })}
+                    placeholder="e.g., Welcome Email"
+                    className="bg-zinc-800 border-zinc-700 text-white"
+                    data-testid="input-automation-name"
+                  />
+                </div>
+                <div>
+                  <Label className="text-zinc-400">Template</Label>
+                  <Select 
+                    value={automationForm.templateId?.toString() || ""} 
+                    onValueChange={(v) => setAutomationForm({ ...automationForm, templateId: v ? parseInt(v) : null })}
+                  >
+                    <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                      <SelectValue placeholder="Select a template" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-zinc-800 border-zinc-700">
+                      <SelectItem value="">No template</SelectItem>
+                      {templates.map((t) => (
+                        <SelectItem key={t.id} value={t.id.toString()}>{t.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div>
+                <Label className="text-zinc-400">Description</Label>
+                <Input
+                  value={automationForm.description}
+                  onChange={(e) => setAutomationForm({ ...automationForm, description: e.target.value })}
+                  placeholder="Brief description of this automation"
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  data-testid="input-automation-description"
+                />
+              </div>
+            </div>
+
+            {/* Trigger Configuration */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium text-orange-400">Trigger Event</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-zinc-400">Trigger Type</Label>
+                  <Select 
+                    value={automationForm.triggerType} 
+                    onValueChange={(v) => setAutomationForm({ ...automationForm, triggerType: v })}
+                  >
+                    <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-zinc-800 border-zinc-700">
+                      <SelectItem value="welcome">New User Signup</SelectItem>
+                      <SelectItem value="streak_milestone">Streak Milestone</SelectItem>
+                      <SelectItem value="inactivity">User Inactivity</SelectItem>
+                      <SelectItem value="lesson_complete">Lesson Completed</SelectItem>
+                      <SelectItem value="referral_success">Successful Referral</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-zinc-400">Delay (minutes)</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={automationForm.triggerConfig.delayMinutes}
+                    onChange={(e) => setAutomationForm({
+                      ...automationForm,
+                      triggerConfig: { ...automationForm.triggerConfig, delayMinutes: parseInt(e.target.value) || 0 }
+                    })}
+                    className="bg-zinc-800 border-zinc-700 text-white"
+                    data-testid="input-automation-delay"
+                  />
+                </div>
+              </div>
+              
+              {/* Conditional trigger params */}
+              {automationForm.triggerType === "streak_milestone" && (
+                <div>
+                  <Label className="text-zinc-400">Streak Days (trigger at this milestone)</Label>
+                  <Input
+                    type="number"
+                    min="1"
+                    value={automationForm.triggerConfig.streakDays}
+                    onChange={(e) => setAutomationForm({
+                      ...automationForm,
+                      triggerConfig: { ...automationForm.triggerConfig, streakDays: parseInt(e.target.value) || 7 }
+                    })}
+                    className="bg-zinc-800 border-zinc-700 text-white"
+                  />
+                </div>
+              )}
+              {automationForm.triggerType === "inactivity" && (
+                <div>
+                  <Label className="text-zinc-400">Days Inactive (before triggering)</Label>
+                  <Input
+                    type="number"
+                    min="1"
+                    value={automationForm.triggerConfig.inactiveDays}
+                    onChange={(e) => setAutomationForm({
+                      ...automationForm,
+                      triggerConfig: { ...automationForm.triggerConfig, inactiveDays: parseInt(e.target.value) || 3 }
+                    })}
+                    className="bg-zinc-800 border-zinc-700 text-white"
+                  />
+                </div>
+              )}
+              {automationForm.triggerType === "lesson_complete" && (
+                <div>
+                  <Label className="text-zinc-400">Lesson Day Number</Label>
+                  <Input
+                    type="number"
+                    min="1"
+                    max="336"
+                    value={automationForm.triggerConfig.lessonDay}
+                    onChange={(e) => setAutomationForm({
+                      ...automationForm,
+                      triggerConfig: { ...automationForm.triggerConfig, lessonDay: parseInt(e.target.value) || 1 }
+                    })}
+                    className="bg-zinc-800 border-zinc-700 text-white"
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Audience Filter */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium text-orange-400">Audience Filter</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-zinc-400">Subscription Status</Label>
+                  <Select 
+                    value={automationForm.audienceFilter.subscriptionStatus} 
+                    onValueChange={(v: 'all' | 'premium' | 'free' | 'trial') => setAutomationForm({
+                      ...automationForm,
+                      audienceFilter: { ...automationForm.audienceFilter, subscriptionStatus: v }
+                    })}
+                  >
+                    <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-zinc-800 border-zinc-700">
+                      <SelectItem value="all">All Users</SelectItem>
+                      <SelectItem value="premium">Premium Only</SelectItem>
+                      <SelectItem value="free">Free Users Only</SelectItem>
+                      <SelectItem value="trial">Trial Users Only</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-zinc-400">Minimum Streak Days</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={automationForm.audienceFilter.minStreak || ""}
+                    onChange={(e) => setAutomationForm({
+                      ...automationForm,
+                      audienceFilter: { ...automationForm.audienceFilter, minStreak: e.target.value ? parseInt(e.target.value) : undefined }
+                    })}
+                    placeholder="Any"
+                    className="bg-zinc-800 border-zinc-700 text-white"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-zinc-400">Min Lesson Day</Label>
+                  <Input
+                    type="number"
+                    min="1"
+                    max="336"
+                    value={automationForm.audienceFilter.minDay || ""}
+                    onChange={(e) => setAutomationForm({
+                      ...automationForm,
+                      audienceFilter: { ...automationForm.audienceFilter, minDay: e.target.value ? parseInt(e.target.value) : undefined }
+                    })}
+                    placeholder="Any"
+                    className="bg-zinc-800 border-zinc-700 text-white"
+                  />
+                </div>
+                <div>
+                  <Label className="text-zinc-400">Max Lesson Day</Label>
+                  <Input
+                    type="number"
+                    min="1"
+                    max="336"
+                    value={automationForm.audienceFilter.maxDay || ""}
+                    onChange={(e) => setAutomationForm({
+                      ...automationForm,
+                      audienceFilter: { ...automationForm.audienceFilter, maxDay: e.target.value ? parseInt(e.target.value) : undefined }
+                    })}
+                    placeholder="Any"
+                    className="bg-zinc-800 border-zinc-700 text-white"
+                  />
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Switch
+                  checked={automationForm.audienceFilter.hasStreak}
+                  onCheckedChange={(checked) => setAutomationForm({
+                    ...automationForm,
+                    audienceFilter: { ...automationForm.audienceFilter, hasStreak: checked }
+                  })}
+                />
+                <Label className="text-zinc-400">Require Active Streak</Label>
+              </div>
+            </div>
+
+            {/* Subject Override */}
+            <div>
+              <Label className="text-zinc-400">Subject Override (optional)</Label>
+              <Input
+                value={automationForm.subjectOverride}
+                onChange={(e) => setAutomationForm({ ...automationForm, subjectOverride: e.target.value })}
+                placeholder="Leave blank to use template subject"
+                className="bg-zinc-800 border-zinc-700 text-white"
+              />
+            </div>
+
+            {/* Enable Toggle */}
+            <div className="flex items-center justify-between p-4 bg-zinc-800 rounded-lg">
+              <div>
+                <p className="text-white font-medium">Enable Automation</p>
+                <p className="text-sm text-zinc-400">Automation will start sending when enabled</p>
+              </div>
+              <Switch
+                checked={automationForm.isEnabled}
+                onCheckedChange={(checked) => setAutomationForm({ ...automationForm, isEnabled: checked })}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setAutomationDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              className="bg-orange-500 hover:bg-orange-600"
+              onClick={handleSaveAutomation}
+              disabled={createAutomationMutation.isPending || updateAutomationMutation.isPending || !automationForm.name || !automationForm.triggerType}
+              data-testid="button-save-automation"
+            >
+              {editingAutomation ? "Update" : "Create"} Automation
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

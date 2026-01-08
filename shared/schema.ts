@@ -1959,16 +1959,35 @@ export const emailCampaigns = pgTable("email_campaigns", {
 export const emailAutomations = pgTable("email_automations", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  triggerType: text("trigger_type").notNull().unique(), // welcome, streak_reminder, weekly_summary, inactivity_reminder
+  triggerType: text("trigger_type").notNull(), // welcome, streak_milestone, inactivity, lesson_complete, referral_success, custom
   description: text("description"),
   templateId: integer("template_id").references(() => emailTemplates.id),
   isEnabled: boolean("is_enabled").notNull().default(false),
   // Trigger configuration
-  triggerConfig: json("trigger_config").$type<Record<string, any>>(), // e.g., { days_inactive: 3 }
+  triggerConfig: json("trigger_config").$type<{
+    delayMinutes?: number; // Delay after trigger before sending
+    streakDays?: number; // For streak_milestone trigger
+    inactiveDays?: number; // For inactivity trigger
+    lessonDay?: number; // For lesson_complete trigger
+    customEvent?: string; // For custom triggers
+  }>(),
+  // Audience filter - who should receive this automation
+  audienceFilter: json("audience_filter").$type<{
+    subscriptionStatus?: 'all' | 'premium' | 'free' | 'trial';
+    minDay?: number; // Minimum lesson day
+    maxDay?: number; // Maximum lesson day
+    hasStreak?: boolean; // Must have active streak
+    minStreak?: number; // Minimum streak days
+    registeredAfter?: string; // ISO date
+    registeredBefore?: string; // ISO date
+  }>(),
+  // Email subject override (if different from template)
+  subjectOverride: text("subject_override"),
   // Stats
   sentCount: integer("sent_count").default(0),
   lastSentAt: timestamp("last_sent_at"),
   // Tracking
+  createdBy: integer("created_by").references(() => adminUsers.id),
   updatedBy: integer("updated_by").references(() => adminUsers.id),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
