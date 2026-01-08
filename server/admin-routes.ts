@@ -4,6 +4,7 @@ import rateLimit from "express-rate-limit";
 import { z } from "zod";
 import { adminAuthService } from "./admin-auth";
 import { db } from "./db";
+import { registerEmailRoutes } from "./email-routes";
 
 // Rate limiter for admin login (strict security)
 const adminLoginRateLimiter = rateLimit({
@@ -5069,4 +5070,7 @@ Return ONLY the post content, nothing else.`;
       res.status(500).json({ message: "Failed to permanently delete item" });
     }
   });
+
+  // Register email management routes
+  registerEmailRoutes(app, requireAdminAuth);
 }

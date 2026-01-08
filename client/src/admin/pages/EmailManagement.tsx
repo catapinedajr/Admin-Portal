@@ -1,0 +1,952 @@
+import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLocation } from "wouter";
+import { 
+  Mail, Send, Settings, FileText, Zap, BarChart3,
+  Plus, Edit, Trash2, Power, PowerOff, Sparkles,
+  CheckCircle, XCircle, Clock, AlertCircle, Eye
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import AdminLayout from "../components/AdminLayout";
+
+function AdminAuthGuard({ children }: { children: React.ReactNode }) {
+  const [, setLocation] = useLocation();
+  
+  const { data: adminUser, isLoading, error } = useQuery<{ id: number }>({
+    queryKey: ["/api/admin/me"],
+    retry: false,
+  });
+
+  useEffect(() => {
+    if (!isLoading && (error || !adminUser)) {
+      setLocation('/admin/login');
+    }
+  }, [isLoading, error, adminUser, setLocation]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+      </div>
+    );
+  }
+
+  if (!adminUser) return null;
+  return <>{children}</>;
+}
+
+interface EmailTemplate {
+  id: number;
+  name: string;
+  subject: string;
+  htmlContent: string;
+  textContent: string | null;
+  category: string;
+  isActive: boolean;
+  createdAt: string;
+}
+
+interface EmailCampaign {
+  id: number;
+  name: string;
+  subject: string;
+  htmlContent: string;
+  targetAudience: string;
+  status: string;
+  recipientCount: number;
+  sentCount: number;
+  openCount: number;
+  clickCount: number;
+  scheduledAt: string | null;
+  sentAt: string | null;
+  createdAt: string;
+}
+
+interface EmailAutomation {
+  id: number;
+  name: string;
+  triggerType: string;
+  description: string | null;
+  isEnabled: boolean;
+  sentCount: number;
+  lastSentAt: string | null;
+}
+
+interface EmailStats {
+  serviceStatus: {
+    configured: boolean;
+    fromEmail: string;
+    provider: string;
+    source: string;
+  };
+  stats: {
+    totalSent: number;
+    totalFailed: number;
+    totalTemplates: number;
+    totalCampaigns: number;
+    enabledAutomations: number;
+    totalAutomations: number;
+  };
+}
+
+function EmailManagementContent() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [activeTab, setActiveTab] = useState("overview");
+  
+  // Dialog states
+  const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
+  const [campaignDialogOpen, setCampaignDialogOpen] = useState(false);
+  const [aiDialogOpen, setAiDialogOpen] = useState(false);
+  const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
+  const [previewHtml, setPreviewHtml] = useState("");
+  
+  // Form states
+  const [editingTemplate, setEditingTemplate] = useState<EmailTemplate | null>(null);
+  const [editingCampaign, setEditingCampaign] = useState<EmailCampaign | null>(null);
+  
+  // AI generation form
+  const [aiForm, setAiForm] = useState({
+    purpose: "",
+    tone: "friendly",
+    keyPoints: "",
+    templateType: "general",
+  });
+
+  // Queries
+  const { data: stats, isLoading: statsLoading } = useQuery<EmailStats>({
+    queryKey: ["/api/admin/email/stats"],
+  });
+
+  const { data: templates = [] } = useQuery<EmailTemplate[]>({
+    queryKey: ["/api/admin/email/templates"],
+  });
+
+  const { data: campaigns = [] } = useQuery<EmailCampaign[]>({
+    queryKey: ["/api/admin/email/campaigns"],
+  });
+
+  const { data: automations = [] } = useQuery<EmailAutomation[]>({
+    queryKey: ["/api/admin/email/automations"],
+  });
+
+  // Mutations
+  const createTemplateMutation = useMutation({
+    mutationFn: (data: any) => apiRequest("POST", "/api/admin/email/templates", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/email/templates"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/email/stats"] });
+      setTemplateDialogOpen(false);
+      setEditingTemplate(null);
+      toast({ title: "Template created" });
+    },
+    onError: (err: any) => toast({ title: "Error", description: err.message, variant: "destructive" }),
+  });
+
+  const updateTemplateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: any }) => 
+      apiRequest("PATCH", `/api/admin/email/templates/${id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/email/templates"] });
+      setTemplateDialogOpen(false);
+      setEditingTemplate(null);
+      toast({ title: "Template updated" });
+    },
+    onError: (err: any) => toast({ title: "Error", description: err.message, variant: "destructive" }),
+  });
+
+  const deleteTemplateMutation = useMutation({
+    mutationFn: (id: number) => apiRequest("DELETE", `/api/admin/email/templates/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/email/templates"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/email/stats"] });
+      toast({ title: "Template deleted" });
+    },
+  });
+
+  const createCampaignMutation = useMutation({
+    mutationFn: (data: any) => apiRequest("POST", "/api/admin/email/campaigns", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/email/campaigns"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/email/stats"] });
+      setCampaignDialogOpen(false);
+      setEditingCampaign(null);
+      toast({ title: "Campaign created" });
+    },
+    onError: (err: any) => toast({ title: "Error", description: err.message, variant: "destructive" }),
+  });
+
+  const sendCampaignMutation = useMutation({
+    mutationFn: (id: number) => apiRequest("POST", `/api/admin/email/campaigns/${id}/send`),
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/email/campaigns"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/email/stats"] });
+      toast({ title: "Campaign sent", description: `Sent to ${data.sentCount} recipients` });
+    },
+    onError: (err: any) => toast({ title: "Error", description: err.message, variant: "destructive" }),
+  });
+
+  const updateAutomationMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: any }) => 
+      apiRequest("PATCH", `/api/admin/email/automations/${id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/email/automations"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/email/stats"] });
+      toast({ title: "Automation updated" });
+    },
+    onError: (err: any) => toast({ title: "Error", description: err.message, variant: "destructive" }),
+  });
+
+  const generateEmailMutation = useMutation({
+    mutationFn: (data: any) => apiRequest("POST", "/api/admin/email/generate", data),
+    onSuccess: (data: any) => {
+      setAiDialogOpen(false);
+      // Open template dialog with generated content
+      setEditingTemplate({
+        id: 0,
+        name: "",
+        subject: data.subject,
+        htmlContent: data.html,
+        textContent: data.text,
+        category: aiForm.templateType,
+        isActive: true,
+        createdAt: new Date().toISOString(),
+      });
+      setTemplateDialogOpen(true);
+      toast({ title: "Email generated", description: "Review and save as a template" });
+    },
+    onError: (err: any) => toast({ title: "Generation failed", description: err.message, variant: "destructive" }),
+  });
+
+  const handleSaveTemplate = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get("name"),
+      subject: formData.get("subject"),
+      htmlContent: formData.get("htmlContent"),
+      textContent: formData.get("textContent") || null,
+      category: formData.get("category"),
+      isActive: true,
+    };
+
+    if (editingTemplate?.id) {
+      updateTemplateMutation.mutate({ id: editingTemplate.id, data });
+    } else {
+      createTemplateMutation.mutate(data);
+    }
+  };
+
+  const handleSaveCampaign = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get("name"),
+      subject: formData.get("subject"),
+      htmlContent: formData.get("htmlContent"),
+      textContent: formData.get("textContent") || null,
+      targetAudience: formData.get("targetAudience"),
+      status: "draft",
+    };
+
+    createCampaignMutation.mutate(data);
+  };
+
+  const getStatusBadge = (status: string) => {
+    const styles: Record<string, string> = {
+      draft: "bg-zinc-600",
+      scheduled: "bg-blue-600",
+      sending: "bg-yellow-600",
+      sent: "bg-green-600",
+      failed: "bg-red-600",
+    };
+    return <Badge className={styles[status] || "bg-zinc-600"}>{status}</Badge>;
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Email Management</h1>
+          <p className="text-zinc-400">Manage email templates, campaigns, and automations</p>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            className="border-zinc-700"
+            onClick={() => setAiDialogOpen(true)}
+            data-testid="button-generate-ai-email"
+          >
+            <Sparkles className="w-4 h-4 mr-2" />
+            AI Generate
+          </Button>
+        </div>
+      </div>
+
+      {/* Service Status */}
+      {stats && (
+        <Card className={`${stats.serviceStatus.configured ? 'bg-green-900/20 border-green-700' : 'bg-yellow-900/20 border-yellow-700'}`}>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              {stats.serviceStatus.configured ? (
+                <CheckCircle className="w-5 h-5 text-green-500" />
+              ) : (
+                <AlertCircle className="w-5 h-5 text-yellow-500" />
+              )}
+              <div>
+                <p className={stats.serviceStatus.configured ? "text-green-400" : "text-yellow-400"}>
+                  {stats.serviceStatus.configured 
+                    ? `Email service connected via ${stats.serviceStatus.source}` 
+                    : "Email service not configured"}
+                </p>
+                <p className="text-sm text-zinc-400">
+                  {stats.serviceStatus.configured 
+                    ? `Sending from: ${stats.serviceStatus.fromEmail}` 
+                    : "Add RESEND_API_KEY in Settings > Integrations to enable sending"}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-500/20 rounded-lg">
+                <Send className="w-5 h-5 text-blue-500" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-white">{stats?.stats.totalSent || 0}</p>
+                <p className="text-sm text-zinc-400">Emails Sent</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-purple-500/20 rounded-lg">
+                <FileText className="w-5 h-5 text-purple-500" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-white">{stats?.stats.totalTemplates || 0}</p>
+                <p className="text-sm text-zinc-400">Templates</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-orange-500/20 rounded-lg">
+                <Mail className="w-5 h-5 text-orange-500" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-white">{stats?.stats.totalCampaigns || 0}</p>
+                <p className="text-sm text-zinc-400">Campaigns</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-green-500/20 rounded-lg">
+                <Zap className="w-5 h-5 text-green-500" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-white">
+                  {stats?.stats.enabledAutomations || 0}/{stats?.stats.totalAutomations || 0}
+                </p>
+                <p className="text-sm text-zinc-400">Automations Active</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="bg-zinc-800 border-zinc-700">
+          <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
+          <TabsTrigger value="templates" data-testid="tab-templates">Templates</TabsTrigger>
+          <TabsTrigger value="campaigns" data-testid="tab-campaigns">Campaigns</TabsTrigger>
+          <TabsTrigger value="automations" data-testid="tab-automations">Automations</TabsTrigger>
+        </TabsList>
+
+        {/* Overview Tab */}
+        <TabsContent value="overview" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Recent Campaigns */}
+            <Card className="bg-zinc-800/50 border-zinc-700">
+              <CardHeader>
+                <CardTitle className="text-white">Recent Campaigns</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {campaigns.length === 0 ? (
+                  <p className="text-zinc-400 text-center py-4">No campaigns yet</p>
+                ) : (
+                  <div className="space-y-3">
+                    {campaigns.slice(0, 5).map((campaign) => (
+                      <div key={campaign.id} className="flex items-center justify-between p-3 bg-zinc-900 rounded-lg">
+                        <div>
+                          <p className="text-white font-medium">{campaign.name}</p>
+                          <p className="text-sm text-zinc-400">{campaign.subject}</p>
+                        </div>
+                        {getStatusBadge(campaign.status)}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Automations Status */}
+            <Card className="bg-zinc-800/50 border-zinc-700">
+              <CardHeader>
+                <CardTitle className="text-white">Automations</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {automations.map((automation) => (
+                    <div key={automation.id} className="flex items-center justify-between p-3 bg-zinc-900 rounded-lg">
+                      <div>
+                        <p className="text-white font-medium">{automation.name}</p>
+                        <p className="text-sm text-zinc-400">{automation.description}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-zinc-400">{automation.sentCount} sent</span>
+                        <Switch
+                          checked={automation.isEnabled}
+                          onCheckedChange={(checked) => 
+                            updateAutomationMutation.mutate({ id: automation.id, data: { isEnabled: checked } })
+                          }
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Templates Tab */}
+        <TabsContent value="templates" className="space-y-4">
+          <div className="flex justify-end">
+            <Button
+              className="bg-orange-500 hover:bg-orange-600"
+              onClick={() => {
+                setEditingTemplate(null);
+                setTemplateDialogOpen(true);
+              }}
+              data-testid="button-new-template"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              New Template
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {templates.map((template) => (
+              <Card key={template.id} className="bg-zinc-800/50 border-zinc-700">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <CardTitle className="text-white text-lg">{template.name}</CardTitle>
+                      <CardDescription>{template.subject}</CardDescription>
+                    </div>
+                    <Badge variant="outline" className="border-zinc-600 text-zinc-400">
+                      {template.category}
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border-zinc-600"
+                      onClick={() => {
+                        setPreviewHtml(template.htmlContent);
+                        setPreviewDialogOpen(true);
+                      }}
+                      data-testid={`button-preview-template-${template.id}`}
+                    >
+                      <Eye className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border-zinc-600"
+                      onClick={() => {
+                        setEditingTemplate(template);
+                        setTemplateDialogOpen(true);
+                      }}
+                      data-testid={`button-edit-template-${template.id}`}
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border-red-600 text-red-400 hover:bg-red-900/20"
+                      onClick={() => deleteTemplateMutation.mutate(template.id)}
+                      data-testid={`button-delete-template-${template.id}`}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {templates.length === 0 && (
+            <Card className="bg-zinc-800/50 border-zinc-700">
+              <CardContent className="py-12 text-center">
+                <FileText className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
+                <p className="text-zinc-400">No templates yet. Create one or use AI to generate.</p>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        {/* Campaigns Tab */}
+        <TabsContent value="campaigns" className="space-y-4">
+          <div className="flex justify-end">
+            <Button
+              className="bg-orange-500 hover:bg-orange-600"
+              onClick={() => {
+                setEditingCampaign(null);
+                setCampaignDialogOpen(true);
+              }}
+              data-testid="button-new-campaign"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              New Campaign
+            </Button>
+          </div>
+
+          <div className="space-y-4">
+            {campaigns.map((campaign) => (
+              <Card key={campaign.id} className="bg-zinc-800/50 border-zinc-700">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <h3 className="text-white font-semibold">{campaign.name}</h3>
+                        {getStatusBadge(campaign.status)}
+                      </div>
+                      <p className="text-zinc-400 text-sm mt-1">{campaign.subject}</p>
+                      <div className="flex gap-4 mt-2 text-sm text-zinc-500">
+                        <span>Audience: {campaign.targetAudience}</span>
+                        {campaign.sentAt && <span>Sent: {new Date(campaign.sentAt).toLocaleDateString()}</span>}
+                        {campaign.sentCount > 0 && (
+                          <>
+                            <span>Recipients: {campaign.recipientCount}</span>
+                            <span>Sent: {campaign.sentCount}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-zinc-600"
+                        onClick={() => {
+                          setPreviewHtml(campaign.htmlContent);
+                          setPreviewDialogOpen(true);
+                        }}
+                        data-testid={`button-preview-campaign-${campaign.id}`}
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                      {campaign.status === "draft" && (
+                        <Button
+                          size="sm"
+                          className="bg-green-600 hover:bg-green-700"
+                          onClick={() => sendCampaignMutation.mutate(campaign.id)}
+                          disabled={!stats?.serviceStatus.configured}
+                          data-testid={`button-send-campaign-${campaign.id}`}
+                        >
+                          <Send className="w-4 h-4 mr-1" />
+                          Send
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {campaigns.length === 0 && (
+            <Card className="bg-zinc-800/50 border-zinc-700">
+              <CardContent className="py-12 text-center">
+                <Mail className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
+                <p className="text-zinc-400">No campaigns yet. Create your first email campaign.</p>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        {/* Automations Tab */}
+        <TabsContent value="automations" className="space-y-4">
+          <Card className="bg-zinc-800/50 border-zinc-700">
+            <CardHeader>
+              <CardTitle className="text-white">Email Automations</CardTitle>
+              <CardDescription>Configure automatic emails triggered by user actions</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {automations.map((automation) => (
+                  <div key={automation.id} className="flex items-center justify-between p-4 bg-zinc-900 rounded-lg border border-zinc-700">
+                    <div className="flex items-center gap-4">
+                      <div className={`p-3 rounded-lg ${automation.isEnabled ? 'bg-green-500/20' : 'bg-zinc-700'}`}>
+                        {automation.isEnabled ? (
+                          <Power className="w-5 h-5 text-green-500" />
+                        ) : (
+                          <PowerOff className="w-5 h-5 text-zinc-400" />
+                        )}
+                      </div>
+                      <div>
+                        <h4 className="text-white font-medium">{automation.name}</h4>
+                        <p className="text-sm text-zinc-400">{automation.description}</p>
+                        <div className="flex gap-3 mt-1 text-xs text-zinc-500">
+                          <span>Trigger: {automation.triggerType}</span>
+                          <span>Sent: {automation.sentCount}</span>
+                          {automation.lastSentAt && (
+                            <span>Last sent: {new Date(automation.lastSentAt).toLocaleDateString()}</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <Switch
+                      checked={automation.isEnabled}
+                      onCheckedChange={(checked) => 
+                        updateAutomationMutation.mutate({ id: automation.id, data: { isEnabled: checked } })
+                      }
+                      data-testid={`switch-automation-${automation.id}`}
+                    />
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {!stats?.serviceStatus.configured && (
+            <Card className="bg-yellow-900/20 border-yellow-700">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <AlertCircle className="w-5 h-5 text-yellow-500" />
+                  <p className="text-yellow-400">
+                    Automations require email service to be configured. Add RESEND_API_KEY in Settings.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+      </Tabs>
+
+      {/* Template Dialog */}
+      <Dialog open={templateDialogOpen} onOpenChange={setTemplateDialogOpen}>
+        <DialogContent className="bg-zinc-900 border-zinc-700 max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-white">
+              {editingTemplate?.id ? "Edit Template" : "New Template"}
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSaveTemplate} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label className="text-zinc-400">Name</Label>
+                <Input
+                  name="name"
+                  defaultValue={editingTemplate?.name}
+                  required
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  data-testid="input-template-name"
+                />
+              </div>
+              <div>
+                <Label className="text-zinc-400">Category</Label>
+                <Select name="category" defaultValue={editingTemplate?.category || "general"}>
+                  <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-800 border-zinc-700">
+                    <SelectItem value="general">General</SelectItem>
+                    <SelectItem value="welcome">Welcome</SelectItem>
+                    <SelectItem value="marketing">Marketing</SelectItem>
+                    <SelectItem value="notification">Notification</SelectItem>
+                    <SelectItem value="transactional">Transactional</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div>
+              <Label className="text-zinc-400">Subject</Label>
+              <Input
+                name="subject"
+                defaultValue={editingTemplate?.subject}
+                required
+                className="bg-zinc-800 border-zinc-700 text-white"
+                data-testid="input-template-subject"
+              />
+            </div>
+            <div>
+              <Label className="text-zinc-400">HTML Content</Label>
+              <Textarea
+                name="htmlContent"
+                defaultValue={editingTemplate?.htmlContent}
+                required
+                rows={12}
+                className="bg-zinc-800 border-zinc-700 text-white font-mono text-sm"
+                data-testid="input-template-html"
+              />
+            </div>
+            <div>
+              <Label className="text-zinc-400">Plain Text (optional)</Label>
+              <Textarea
+                name="textContent"
+                defaultValue={editingTemplate?.textContent || ""}
+                rows={4}
+                className="bg-zinc-800 border-zinc-700 text-white"
+                data-testid="input-template-text"
+              />
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setTemplateDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button 
+                type="submit" 
+                className="bg-orange-500 hover:bg-orange-600"
+                disabled={createTemplateMutation.isPending || updateTemplateMutation.isPending}
+                data-testid="button-save-template"
+              >
+                {editingTemplate?.id ? "Update" : "Create"} Template
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Campaign Dialog */}
+      <Dialog open={campaignDialogOpen} onOpenChange={setCampaignDialogOpen}>
+        <DialogContent className="bg-zinc-900 border-zinc-700 max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-white">New Campaign</DialogTitle>
+            <DialogDescription>Create an email campaign to send to your users</DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSaveCampaign} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label className="text-zinc-400">Campaign Name</Label>
+                <Input
+                  name="name"
+                  required
+                  className="bg-zinc-800 border-zinc-700 text-white"
+                  data-testid="input-campaign-name"
+                />
+              </div>
+              <div>
+                <Label className="text-zinc-400">Target Audience</Label>
+                <Select name="targetAudience" defaultValue="all">
+                  <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-800 border-zinc-700">
+                    <SelectItem value="all">All Users</SelectItem>
+                    <SelectItem value="active">Active Users (last 7 days)</SelectItem>
+                    <SelectItem value="inactive">Inactive Users</SelectItem>
+                    <SelectItem value="subscribers">Subscribers Only</SelectItem>
+                    <SelectItem value="non_subscribers">Non-Subscribers</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div>
+              <Label className="text-zinc-400">Subject</Label>
+              <Input
+                name="subject"
+                required
+                className="bg-zinc-800 border-zinc-700 text-white"
+                data-testid="input-campaign-subject"
+              />
+            </div>
+            <div>
+              <Label className="text-zinc-400">HTML Content</Label>
+              <Textarea
+                name="htmlContent"
+                required
+                rows={12}
+                className="bg-zinc-800 border-zinc-700 text-white font-mono text-sm"
+                placeholder="Paste your HTML email content here..."
+                data-testid="input-campaign-html"
+              />
+            </div>
+            <div>
+              <Label className="text-zinc-400">Plain Text (optional)</Label>
+              <Textarea
+                name="textContent"
+                rows={4}
+                className="bg-zinc-800 border-zinc-700 text-white"
+                data-testid="input-campaign-text"
+              />
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setCampaignDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button 
+                type="submit" 
+                className="bg-orange-500 hover:bg-orange-600"
+                disabled={createCampaignMutation.isPending}
+                data-testid="button-save-campaign"
+              >
+                Create Campaign
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* AI Generation Dialog */}
+      <Dialog open={aiDialogOpen} onOpenChange={setAiDialogOpen}>
+        <DialogContent className="bg-zinc-900 border-zinc-700">
+          <DialogHeader>
+            <DialogTitle className="text-white flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-orange-500" />
+              AI Email Generator
+            </DialogTitle>
+            <DialogDescription>Describe what you want and AI will draft an email for you</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label className="text-zinc-400">Purpose</Label>
+              <Textarea
+                value={aiForm.purpose}
+                onChange={(e) => setAiForm({ ...aiForm, purpose: e.target.value })}
+                placeholder="e.g., Re-engage users who haven't logged in for 7 days"
+                className="bg-zinc-800 border-zinc-700 text-white"
+                data-testid="input-ai-purpose"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label className="text-zinc-400">Tone</Label>
+                <Select value={aiForm.tone} onValueChange={(v) => setAiForm({ ...aiForm, tone: v })}>
+                  <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-800 border-zinc-700">
+                    <SelectItem value="friendly">Friendly</SelectItem>
+                    <SelectItem value="professional">Professional</SelectItem>
+                    <SelectItem value="urgent">Urgent</SelectItem>
+                    <SelectItem value="casual">Casual</SelectItem>
+                    <SelectItem value="motivational">Motivational</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-zinc-400">Template Type</Label>
+                <Select value={aiForm.templateType} onValueChange={(v) => setAiForm({ ...aiForm, templateType: v })}>
+                  <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-800 border-zinc-700">
+                    <SelectItem value="general">General</SelectItem>
+                    <SelectItem value="welcome">Welcome</SelectItem>
+                    <SelectItem value="marketing">Marketing</SelectItem>
+                    <SelectItem value="notification">Notification</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div>
+              <Label className="text-zinc-400">Key Points (optional)</Label>
+              <Textarea
+                value={aiForm.keyPoints}
+                onChange={(e) => setAiForm({ ...aiForm, keyPoints: e.target.value })}
+                placeholder="Any specific points you want included..."
+                className="bg-zinc-800 border-zinc-700 text-white"
+                data-testid="input-ai-keypoints"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setAiDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              className="bg-orange-500 hover:bg-orange-600"
+              onClick={() => generateEmailMutation.mutate(aiForm)}
+              disabled={generateEmailMutation.isPending || !aiForm.purpose}
+              data-testid="button-generate-email"
+            >
+              {generateEmailMutation.isPending ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Generate Email
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Preview Dialog */}
+      <Dialog open={previewDialogOpen} onOpenChange={setPreviewDialogOpen}>
+        <DialogContent className="bg-zinc-900 border-zinc-700 max-w-3xl max-h-[90vh]">
+          <DialogHeader>
+            <DialogTitle className="text-white">Email Preview</DialogTitle>
+          </DialogHeader>
+          <div className="bg-white rounded-lg overflow-auto max-h-[70vh]">
+            <iframe
+              srcDoc={previewHtml}
+              className="w-full h-[500px] border-0"
+              title="Email Preview"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+export default function EmailManagement() {
+  return (
+    <AdminAuthGuard>
+      <AdminLayout>
+        <EmailManagementContent />
+      </AdminLayout>
+    </AdminAuthGuard>
+  );
+}

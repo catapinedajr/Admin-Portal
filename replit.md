@@ -85,3 +85,6 @@ See `PRODUCTION_DEPLOYMENT.md` for comprehensive AWS deployment instructions inc
 
 ## Known Issues / Future Improvements
 - No current known issues. All admin portal CRUD operations are fully functional.
+
+## Pending Integrations
+- **Resend Email**: Email management system is built (templates, campaigns, automations) but needs `RESEND_API_KEY` secret to enable sending. User can set up Resend account at resend.com, verify their domain, and add the API key as a secret to enable email functionality.

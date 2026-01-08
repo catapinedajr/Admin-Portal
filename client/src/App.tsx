@@ -31,6 +31,7 @@ import KPIDashboard from "@/admin/pages/KPIDashboard";
 import IntegrationsManagement from "@/admin/pages/IntegrationsManagement";
 import RevenueControls from "@/admin/pages/RevenueControls";
 import DataGovernance from "@/admin/pages/DataGovernance";
+import EmailManagement from "@/admin/pages/EmailManagement";
 
 import { AppContextProvider } from "@/components/shared/AppContextProvider";
 import Onboarding from "@/pages/onboarding";
@@ -163,6 +164,7 @@ function Router() {
         <Route path="/admin/integrations" component={IntegrationsManagement} />
         <Route path="/admin/revenue" component={RevenueControls} />
         <Route path="/admin/data-governance" component={DataGovernance} />
+        <Route path="/admin/email" component={EmailManagement} />
         <Route path="/admin" component={KPIDashboard} />
         <Route path="/more" component={MorePage} />
         <Route path="/account" component={AccountPage} />
