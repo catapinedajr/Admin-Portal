@@ -93,6 +93,7 @@ const API_KEY_PRESETS = [
   { key: 'OPENAI_API_KEY', description: 'OpenAI API key for DALL-E image generation' },
   { key: 'STRIPE_SECRET_KEY', description: 'Stripe secret key for payment processing' },
   { key: 'STRIPE_WEBHOOK_SECRET', description: 'Stripe webhook signing secret' },
+  { key: 'RESEND_API_KEY', description: 'Resend API key for sending transactional and marketing emails' },
 ];
 
 export default function IntegrationsManagement() {
