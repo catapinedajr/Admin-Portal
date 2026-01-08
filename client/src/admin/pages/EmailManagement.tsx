@@ -4,7 +4,8 @@ import { useLocation } from "wouter";
 import { 
   Mail, Send, Settings, FileText, Zap, BarChart3,
   Plus, Edit, Trash2, Power, PowerOff, Sparkles,
-  CheckCircle, XCircle, Clock, AlertCircle, Eye
+  CheckCircle, XCircle, Clock, AlertCircle, Eye,
+  Lock, Unlock, RotateCcw, Loader2, Save
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
@@ -44,6 +55,347 @@ function AdminAuthGuard({ children }: { children: React.ReactNode }) {
 
   if (!adminUser) return null;
   return <>{children}</>;
+}
+
+// ============================================
+// DEFAULT EMAIL AI INSTRUCTIONS
+// ============================================
+
+const DEFAULT_EMAIL_INSTRUCTIONS = `# HODLearn Email Generation Instructions
+
+## BRAND VOICE
+You are writing emails for HODLearn, the premier Bitcoin education platform. Your tone should be:
+- **Educational**: Focus on teaching, not selling
+- **Trustworthy**: Use facts and data, avoid hype
+- **Encouraging**: Motivate continued learning
+- **Professional**: Maintain credibility while being approachable
+
+## EMAIL STRUCTURE
+
+### Subject Lines
+- Keep under 50 characters
+- Create curiosity without clickbait
+- Personalize when possible (use {{firstName}})
+- Avoid spam trigger words (FREE, URGENT, ACT NOW)
+
+### Email Body
+1. **Opening Hook**: Engage immediately with value or relevance
+2. **Core Content**: Deliver the main message clearly
+3. **Call-to-Action**: One clear, compelling action
+4. **Signature**: Warm close with HODLearn branding
+
+## CONTENT GUIDELINES
+
+**DO:**
+- Reference specific lessons or features
+- Use the learner's progress data when relevant
+- Include educational value in every email
+- Write for mobile-first (short paragraphs)
+- Use {{firstName}} for personalization
+
+**DON'T:**
+- Make price predictions or financial advice
+- Use overly salesy language
+- Include too many CTAs (stick to one)
+- Write walls of text
+- Reference time-sensitive events without dates
+
+## EMAIL TYPES
+
+### Welcome Emails
+- Warm, encouraging tone
+- Set expectations for the learning journey
+- Highlight the first lesson or quick win
+
+### Streak/Engagement Emails
+- Celebrate progress with specific milestones
+- Gentle re-engagement, not guilt-tripping
+- Offer easy "comeback" path
+
+### Educational Newsletters
+- Lead with an interesting Bitcoin fact
+- Connect to relevant HODLearn lessons
+- Encourage continued exploration
+
+### Promotional Emails
+- Focus on value, not discounts
+- Highlight learning outcomes
+- Social proof when available
+
+## TEMPLATE VARIABLES
+Available variables for personalization:
+- {{firstName}} - User's first name
+- {{lastName}} - User's last name  
+- {{currentDay}} - Current lesson day
+- {{streakCount}} - Current streak
+- {{totalPoints}} - HODLearn points balance
+
+## OUTPUT FORMAT
+Generate both HTML and plain text versions.
+HTML should use inline styles for email compatibility.`;
+
+// ============================================
+// EMAIL AI INSTRUCTIONS EDITOR
+// ============================================
+
+interface AiInstructionsData {
+  type: string;
+  name: string;
+  instructions: string;
+  isLocked: boolean;
+  exists: boolean;
+  updatedAt?: string;
+}
+
+function EmailAIInstructionsEditor() {
+  const { toast } = useToast();
+  const [isOpen, setIsOpen] = useState(false);
+  const [editedInstructions, setEditedInstructions] = useState("");
+  const [showUnlockConfirm, setShowUnlockConfirm] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
+
+  const { data: instructionsData, isLoading, error: instructionsError } = useQuery<AiInstructionsData>({
+    queryKey: ["/api/admin/ai-instructions/email"],
+  });
+
+  useEffect(() => {
+    if (instructionsData?.exists) {
+      setEditedInstructions(instructionsData.instructions);
+    } else {
+      setEditedInstructions(DEFAULT_EMAIL_INSTRUCTIONS);
+    }
+    setHasChanges(false);
+  }, [instructionsData]);
+
+  const handleTextChange = (value: string) => {
+    setEditedInstructions(value);
+    const originalValue = instructionsData?.exists ? instructionsData.instructions : DEFAULT_EMAIL_INSTRUCTIONS;
+    setHasChanges(value !== originalValue);
+  };
+
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/admin/ai-instructions/email", {
+        name: "Email AI Instructions",
+        instructions: editedInstructions
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/ai-instructions/email"] });
+      toast({ title: "Instructions saved successfully!" });
+      setHasChanges(false);
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to save", description: error.message, variant: "destructive" });
+    }
+  });
+
+  const lockMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/admin/ai-instructions/email/lock", {});
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/ai-instructions/email"] });
+      toast({ title: "Instructions locked" });
+    }
+  });
+
+  const unlockMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/admin/ai-instructions/email/unlock", { confirmed: true });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/ai-instructions/email"] });
+      toast({ title: "Instructions unlocked" });
+      setShowUnlockConfirm(false);
+    }
+  });
+
+  const resetMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/admin/ai-instructions/email/reset", { confirmed: true });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/ai-instructions/email"] });
+      setEditedInstructions(DEFAULT_EMAIL_INSTRUCTIONS);
+      toast({ title: "Instructions reset to default" });
+      setShowResetConfirm(false);
+      setHasChanges(false);
+    }
+  });
+
+  const isLocked = instructionsData?.isLocked ?? true;
+  const isUsingDefault = !instructionsData?.exists;
+
+  return (
+    <>
+      <Button
+        variant="outline"
+        onClick={() => setIsOpen(true)}
+        className="border-zinc-700 text-zinc-300 hover:bg-zinc-800"
+        data-testid="button-open-email-ai-instructions"
+      >
+        <Settings className="w-4 h-4 mr-2 text-orange-500" />
+        Email AI Instructions
+        {isLocked ? (
+          <Badge className="ml-2 bg-red-500/20 text-red-400 text-xs"><Lock className="w-3 h-3 mr-1" />Locked</Badge>
+        ) : (
+          <Badge className="ml-2 bg-green-500/20 text-green-400 text-xs"><Unlock className="w-3 h-3 mr-1" />Unlocked</Badge>
+        )}
+      </Button>
+
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="bg-zinc-900 border-zinc-800 max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-white flex items-center gap-2">
+              <Settings className="w-5 h-5 text-orange-500" />
+              Email AI Instructions
+              {isUsingDefault && (
+                <Badge className="bg-zinc-700 text-zinc-300 text-xs">Using Default</Badge>
+              )}
+            </DialogTitle>
+            <DialogDescription className="text-zinc-400">
+              Customize the AI instructions used when generating email content.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            {isLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="w-6 h-6 text-orange-500 animate-spin" />
+              </div>
+            ) : instructionsError ? (
+              <div className="p-4 border border-red-500/30 bg-red-500/10 rounded-md">
+                <div className="flex items-center gap-2 text-red-400 text-sm">
+                  <AlertCircle className="w-4 h-4" />
+                  Failed to load AI instructions. Please refresh the page.
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center justify-between">
+                  <div className="text-xs text-zinc-500">
+                    {instructionsData?.updatedAt && `Last updated: ${new Date(instructionsData.updatedAt).toLocaleDateString()}`}
+                  </div>
+                  <div className="flex gap-2">
+                    {isLocked ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowUnlockConfirm(true)}
+                        className="border-zinc-700 text-zinc-300 text-xs"
+                        data-testid="button-unlock-email-instructions"
+                      >
+                        <Unlock className="w-3 h-3 mr-1" />
+                        Unlock to Edit
+                      </Button>
+                    ) : (
+                      <>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setShowResetConfirm(true)}
+                          className="border-zinc-700 text-zinc-300 text-xs"
+                          data-testid="button-reset-email-instructions"
+                        >
+                          <RotateCcw className="w-3 h-3 mr-1" />
+                          Reset to Default
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => lockMutation.mutate()}
+                          disabled={lockMutation.isPending}
+                          className="border-zinc-700 text-zinc-300 text-xs"
+                          data-testid="button-lock-email-instructions"
+                        >
+                          <Lock className="w-3 h-3 mr-1" />
+                          Lock
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </div>
+                
+                <Textarea
+                  value={editedInstructions}
+                  onChange={(e) => handleTextChange(e.target.value)}
+                  disabled={isLocked}
+                  className={`bg-zinc-800 border-zinc-700 text-white font-mono text-xs min-h-[350px] ${isLocked ? 'opacity-60 cursor-not-allowed' : ''}`}
+                  placeholder="AI Instructions..."
+                  data-testid="input-email-ai-instructions"
+                />
+                
+                <div className="flex items-center justify-between">
+                  <div className="text-xs text-zinc-500">
+                    These instructions guide AI when generating email content.
+                  </div>
+                  {!isLocked && hasChanges && (
+                    <Button
+                      onClick={() => saveMutation.mutate()}
+                      disabled={saveMutation.isPending}
+                      className="bg-orange-500 hover:bg-orange-600 text-xs"
+                      data-testid="button-save-email-instructions"
+                    >
+                      {saveMutation.isPending ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Save className="w-3 h-3 mr-1" />}
+                      Save Changes
+                    </Button>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={showUnlockConfirm} onOpenChange={setShowUnlockConfirm}>
+        <AlertDialogContent className="bg-zinc-900 border-zinc-800">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Unlock AI Instructions?</AlertDialogTitle>
+            <AlertDialogDescription className="text-zinc-400">
+              Are you sure you want to unlock these instructions for editing? Changes to AI instructions will affect all future email content generation.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-zinc-700 text-zinc-300">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => unlockMutation.mutate()}
+              className="bg-orange-500 hover:bg-orange-600"
+              data-testid="button-confirm-unlock-email"
+            >
+              Yes, Unlock
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={showResetConfirm} onOpenChange={setShowResetConfirm}>
+        <AlertDialogContent className="bg-zinc-900 border-zinc-800">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Reset to Default Instructions?</AlertDialogTitle>
+            <AlertDialogDescription className="text-zinc-400">
+              Are you sure you want to reset to the default AI instructions? This will delete all custom changes.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-zinc-700 text-zinc-300">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => resetMutation.mutate()}
+              className="bg-red-500 hover:bg-red-600"
+              data-testid="button-confirm-reset-email"
+            >
+              Yes, Reset
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
 }
 
 interface EmailTemplate {
@@ -283,6 +635,7 @@ function EmailManagementContent() {
           <p className="text-zinc-400">Manage email templates, campaigns, and automations</p>
         </div>
         <div className="flex gap-2">
+          <EmailAIInstructionsEditor />
           <Button
             variant="outline"
             className="border-zinc-700"
