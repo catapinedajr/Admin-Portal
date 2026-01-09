@@ -9,6 +9,7 @@ import {
   UserCog,
   LogOut,
   ChevronRight,
+  ChevronDown,
   Menu,
   X,
   Twitter,
@@ -23,7 +24,10 @@ import {
   Mail,
   Coins,
   Shield,
-  Bell
+  Bell,
+  UsersRound,
+  TrendingUp,
+  Package
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -40,9 +44,17 @@ interface NavItem {
   superAdminOnly?: boolean;
 }
 
+interface NavGroup {
+  id: string;
+  label: string;
+  icon: any;
+  items: NavItem[];
+}
+
 interface NavSection {
   title: string;
-  items: NavItem[];
+  items?: NavItem[];
+  groups?: NavGroup[];
 }
 
 const navSections: NavSection[] = [
@@ -55,18 +67,39 @@ const navSections: NavSection[] = [
   },
   {
     title: "Operations",
-    items: [
-      { href: "/admin/users", label: "Users", icon: Users },
-      { href: "/admin/content", label: "Content", icon: BookOpen },
-      { href: "/admin/marketing", label: "Marketing", icon: Megaphone },
-      { href: "/admin/social", label: "Social", icon: Twitter },
-      { href: "/admin/email", label: "Email", icon: Mail },
-      { href: "/admin/store", label: "Store", icon: ShoppingBag },
-      { href: "/admin/points", label: "Points", icon: Coins },
-      { href: "/admin/community", label: "Community", icon: Shield },
-      { href: "/admin/push-notifications", label: "Push Notifications", icon: Bell },
-      { href: "/admin/crm", label: "B2B CRM", icon: Building2 },
-      { href: "/admin/roadmap", label: "Roadmap", icon: Map },
+    groups: [
+      {
+        id: "people",
+        label: "People Ops",
+        icon: UsersRound,
+        items: [
+          { href: "/admin/users", label: "Users", icon: Users },
+          { href: "/admin/community", label: "Community", icon: Shield },
+          { href: "/admin/crm", label: "B2B CRM", icon: Building2 },
+        ]
+      },
+      {
+        id: "growth",
+        label: "Growth Ops",
+        icon: TrendingUp,
+        items: [
+          { href: "/admin/marketing", label: "Marketing", icon: Megaphone },
+          { href: "/admin/social", label: "Social", icon: Twitter },
+          { href: "/admin/email", label: "Email", icon: Mail },
+        ]
+      },
+      {
+        id: "product",
+        label: "Product Ops",
+        icon: Package,
+        items: [
+          { href: "/admin/content", label: "Content", icon: BookOpen },
+          { href: "/admin/roadmap", label: "Roadmap", icon: Map },
+          { href: "/admin/store", label: "Store", icon: ShoppingBag },
+          { href: "/admin/points", label: "Points", icon: Coins },
+          { href: "/admin/push-notifications", label: "Notifications", icon: Bell },
+        ]
+      }
     ]
   },
   {
@@ -83,19 +116,49 @@ const navSections: NavSection[] = [
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const [location, setLocation] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(() => {
+    // Auto-expand the group containing the current route
+    for (const section of navSections) {
+      if (section.groups) {
+        for (const group of section.groups) {
+          if (group.items.some(item => location.startsWith(item.href) && item.href !== "/admin")) {
+            return new Set([group.id]);
+          }
+        }
+      }
+    }
+    return new Set(['product']); // Default to product ops expanded
+  });
 
   const { data: admin } = useQuery<{ firstName: string; lastName: string; email: string; role: string }>({
     queryKey: ["/api/admin/me"],
     retry: false,
   });
 
+  const toggleGroup = (groupId: string) => {
+    setExpandedGroups(prev => {
+      const next = new Set(prev);
+      if (next.has(groupId)) {
+        next.delete(groupId);
+      } else {
+        next.add(groupId);
+      }
+      return next;
+    });
+  };
+
   const getFilteredSections = () => {
-    return navSections.map(section => ({
-      ...section,
-      items: section.items.filter(item => 
-        !item.superAdminOnly || admin?.role === 'super_admin'
-      )
-    })).filter(section => section.items.length > 0);
+    return navSections.map(section => {
+      if (section.items) {
+        return {
+          ...section,
+          items: section.items.filter(item => 
+            !item.superAdminOnly || admin?.role === 'super_admin'
+          )
+        };
+      }
+      return section;
+    }).filter(section => (section.items && section.items.length > 0) || section.groups);
   };
 
   const handleLogout = async () => {
@@ -152,28 +215,85 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 <p className="px-3 mb-2 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                   {section.title}
                 </p>
-                <div className="space-y-1">
-                  {section.items.map((item) => (
-                    <Link 
-                      key={item.href} 
-                      href={item.href}
-                      onClick={() => setSidebarOpen(false)}
-                      className={cn(
-                        "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
-                        isActive(item.href)
-                          ? "bg-orange-500/20 text-orange-500"
-                          : "text-zinc-400 hover:text-white hover:bg-zinc-800"
-                      )}
-                      data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
-                    >
-                      <item.icon className="w-5 h-5" />
-                      <span>{item.label}</span>
-                      {isActive(item.href) && (
-                        <ChevronRight className="w-4 h-4 ml-auto" />
-                      )}
-                    </Link>
-                  ))}
-                </div>
+                
+                {/* Regular items */}
+                {section.items && (
+                  <div className="space-y-1">
+                    {section.items.map((item) => (
+                      <Link 
+                        key={item.href} 
+                        href={item.href}
+                        onClick={() => setSidebarOpen(false)}
+                        className={cn(
+                          "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
+                          isActive(item.href)
+                            ? "bg-orange-500/20 text-orange-500"
+                            : "text-zinc-400 hover:text-white hover:bg-zinc-800"
+                        )}
+                        data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                      >
+                        <item.icon className="w-5 h-5" />
+                        <span>{item.label}</span>
+                        {isActive(item.href) && (
+                          <ChevronRight className="w-4 h-4 ml-auto" />
+                        )}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+                
+                {/* Collapsible groups */}
+                {section.groups && (
+                  <div className="space-y-1">
+                    {section.groups.map((group) => {
+                      const isExpanded = expandedGroups.has(group.id);
+                      const hasActiveItem = group.items.some(item => isActive(item.href));
+                      
+                      return (
+                        <div key={group.id}>
+                          <button
+                            onClick={() => toggleGroup(group.id)}
+                            className={cn(
+                              "w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
+                              hasActiveItem
+                                ? "text-orange-400"
+                                : "text-zinc-400 hover:text-white hover:bg-zinc-800"
+                            )}
+                          >
+                            <group.icon className="w-5 h-5" />
+                            <span className="flex-1 text-left text-sm font-medium">{group.label}</span>
+                            <ChevronDown className={cn(
+                              "w-4 h-4 transition-transform",
+                              isExpanded ? "rotate-180" : ""
+                            )} />
+                          </button>
+                          
+                          {isExpanded && (
+                            <div className="ml-4 mt-1 space-y-1 border-l border-zinc-800 pl-3">
+                              {group.items.map((item) => (
+                                <Link 
+                                  key={item.href} 
+                                  href={item.href}
+                                  onClick={() => setSidebarOpen(false)}
+                                  className={cn(
+                                    "flex items-center gap-3 px-3 py-1.5 rounded-lg transition-colors text-sm",
+                                    isActive(item.href)
+                                      ? "bg-orange-500/20 text-orange-500"
+                                      : "text-zinc-400 hover:text-white hover:bg-zinc-800"
+                                  )}
+                                  data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                                >
+                                  <item.icon className="w-4 h-4" />
+                                  <span>{item.label}</span>
+                                </Link>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             ))}
           </nav>
