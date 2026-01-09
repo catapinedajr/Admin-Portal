@@ -872,6 +872,7 @@ export const contentSetUpQuestions = pgTable("content_set_up_questions", {
   icon: text("icon").notNull(),
   orderIndex: integer("order_index").notNull().default(0), // for multiple questions per day
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 
@@ -932,6 +933,7 @@ export const contentDaySummaries = pgTable("content_day_summaries", {
   keyConcepts: text("key_concepts").array().notNull(), // Array of concepts introduced
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 export const insertUserSchema = createInsertSchema(users).omit({

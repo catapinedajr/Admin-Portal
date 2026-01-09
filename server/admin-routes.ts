@@ -675,12 +675,22 @@ export function registerAdminRoutes(app: Express) {
   // Get all content days with counts
   app.get("/api/admin/content/days", requireAdminAuth, async (req: AdminRequest, res) => {
     try {
-      const days = await db.select().from(contentDays).orderBy(contentDays.dayIndex);
+      const includeArchived = req.query.includeArchived === 'true';
+      
+      // Filter by archived status
+      const daysQuery = includeArchived 
+        ? db.select().from(contentDays).orderBy(contentDays.dayIndex)
+        : db.select().from(contentDays).where(isNull(contentDays.archivedAt)).orderBy(contentDays.dayIndex);
+      
+      const days = await daysQuery;
       
       const daysWithCounts = await Promise.all(days.map(async (day) => {
-        const [questionsCount] = await db.select({ count: count() }).from(contentSetUpQuestions).where(eq(contentSetUpQuestions.dayId, day.id));
-        const [lessonsCount] = await db.select({ count: count() }).from(contentLessons).where(eq(contentLessons.dayId, day.id));
-        const [quizzesCount] = await db.select({ count: count() }).from(contentQuizzes).where(eq(contentQuizzes.dayId, day.id));
+        const [questionsCount] = await db.select({ count: count() }).from(contentSetUpQuestions)
+          .where(and(eq(contentSetUpQuestions.dayId, day.id), isNull(contentSetUpQuestions.archivedAt)));
+        const [lessonsCount] = await db.select({ count: count() }).from(contentLessons)
+          .where(and(eq(contentLessons.dayId, day.id), isNull(contentLessons.archivedAt)));
+        const [quizzesCount] = await db.select({ count: count() }).from(contentQuizzes)
+          .where(and(eq(contentQuizzes.dayId, day.id), isNull(contentQuizzes.archivedAt)));
         
         return {
           ...day,
@@ -713,7 +723,11 @@ export function registerAdminRoutes(app: Express) {
   app.get("/api/admin/content/quizzes/:dayId", requireAdminAuth, async (req: AdminRequest, res) => {
     try {
       const dayId = parseInt(req.params.dayId);
-      const quizzes = await db.select().from(contentQuizzes).where(eq(contentQuizzes.dayId, dayId));
+      const includeArchived = req.query.includeArchived === 'true';
+      
+      const quizzes = includeArchived
+        ? await db.select().from(contentQuizzes).where(eq(contentQuizzes.dayId, dayId))
+        : await db.select().from(contentQuizzes).where(and(eq(contentQuizzes.dayId, dayId), isNull(contentQuizzes.archivedAt)));
       res.json(quizzes);
     } catch (error) {
       console.error("Error fetching quizzes:", error);
@@ -725,7 +739,11 @@ export function registerAdminRoutes(app: Express) {
   app.get("/api/admin/content/questions/:dayId", requireAdminAuth, async (req: AdminRequest, res) => {
     try {
       const dayId = parseInt(req.params.dayId);
-      const questions = await db.select().from(contentSetUpQuestions).where(eq(contentSetUpQuestions.dayId, dayId)).orderBy(contentSetUpQuestions.orderIndex);
+      const includeArchived = req.query.includeArchived === 'true';
+      
+      const questions = includeArchived
+        ? await db.select().from(contentSetUpQuestions).where(eq(contentSetUpQuestions.dayId, dayId)).orderBy(contentSetUpQuestions.orderIndex)
+        : await db.select().from(contentSetUpQuestions).where(and(eq(contentSetUpQuestions.dayId, dayId), isNull(contentSetUpQuestions.archivedAt))).orderBy(contentSetUpQuestions.orderIndex);
       res.json(questions);
     } catch (error) {
       console.error("Error fetching questions:", error);
@@ -793,15 +811,31 @@ export function registerAdminRoutes(app: Express) {
     }
   });
 
-  // Delete a quiz
+  // Archive a quiz (soft delete)
   app.delete("/api/admin/content/quizzes/:id", requireAdminAuth, async (req: AdminRequest, res) => {
     try {
       const id = parseInt(req.params.id);
-      await db.delete(contentQuizzes).where(eq(contentQuizzes.id, id));
-      res.json({ success: true });
+      await db.update(contentQuizzes)
+        .set({ archivedAt: new Date() })
+        .where(eq(contentQuizzes.id, id));
+      res.json({ success: true, archived: true });
     } catch (error) {
-      console.error("Error deleting quiz:", error);
-      res.status(500).json({ message: "Failed to delete quiz" });
+      console.error("Error archiving quiz:", error);
+      res.status(500).json({ message: "Failed to archive quiz" });
+    }
+  });
+
+  // Restore an archived quiz
+  app.post("/api/admin/content/quizzes/:id/restore", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await db.update(contentQuizzes)
+        .set({ archivedAt: null })
+        .where(eq(contentQuizzes.id, id));
+      res.json({ success: true, restored: true });
+    } catch (error) {
+      console.error("Error restoring quiz:", error);
+      res.status(500).json({ message: "Failed to restore quiz" });
     }
   });
 
@@ -838,15 +872,31 @@ export function registerAdminRoutes(app: Express) {
     }
   });
 
-  // Delete a question
+  // Archive a question (soft delete)
   app.delete("/api/admin/content/questions/:id", requireAdminAuth, async (req: AdminRequest, res) => {
     try {
       const id = parseInt(req.params.id);
-      await db.delete(contentSetUpQuestions).where(eq(contentSetUpQuestions.id, id));
-      res.json({ success: true });
+      await db.update(contentSetUpQuestions)
+        .set({ archivedAt: new Date() })
+        .where(eq(contentSetUpQuestions.id, id));
+      res.json({ success: true, archived: true });
     } catch (error) {
-      console.error("Error deleting question:", error);
-      res.status(500).json({ message: "Failed to delete question" });
+      console.error("Error archiving question:", error);
+      res.status(500).json({ message: "Failed to archive question" });
+    }
+  });
+
+  // Restore an archived question
+  app.post("/api/admin/content/questions/:id/restore", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await db.update(contentSetUpQuestions)
+        .set({ archivedAt: null })
+        .where(eq(contentSetUpQuestions.id, id));
+      res.json({ success: true, restored: true });
+    } catch (error) {
+      console.error("Error restoring question:", error);
+      res.status(500).json({ message: "Failed to restore question" });
     }
   });
 
@@ -926,7 +976,7 @@ export function registerAdminRoutes(app: Express) {
     }
   });
 
-  // Delete a content day (cascade deletes all related content)
+  // Archive a content day (soft delete - cascade archives all related content)
   app.delete("/api/admin/content/days/:id", requireAdminAuth, async (req: AdminRequest, res) => {
     try {
       const id = parseInt(req.params.id);
@@ -937,24 +987,73 @@ export function registerAdminRoutes(app: Express) {
         return res.status(404).json({ message: "Day not found" });
       }
       
-      // Block deletion of live content
+      // Block archiving of live content
       if (day.status === 'live') {
         return res.status(400).json({ 
-          message: "Cannot delete live content. Please change status to Draft first." 
+          message: "Cannot archive live content. Please change status to Draft first." 
         });
       }
       
-      // Cascade delete all related content
-      await db.delete(contentDaySummaries).where(eq(contentDaySummaries.dayId, id));
-      await db.delete(contentQuizzes).where(eq(contentQuizzes.dayId, id));
-      await db.delete(contentSetUpQuestions).where(eq(contentSetUpQuestions.dayId, id));
-      await db.delete(contentLessons).where(eq(contentLessons.dayId, id));
-      await db.delete(contentDays).where(eq(contentDays.id, id));
+      const archivedAt = new Date();
       
-      res.json({ success: true, deletedDayIndex: day.dayIndex });
+      // Cascade archive all related content
+      await db.update(contentDaySummaries).set({ archivedAt }).where(eq(contentDaySummaries.dayId, id));
+      await db.update(contentQuizzes).set({ archivedAt }).where(eq(contentQuizzes.dayId, id));
+      await db.update(contentSetUpQuestions).set({ archivedAt }).where(eq(contentSetUpQuestions.dayId, id));
+      await db.update(contentLessons).set({ archivedAt }).where(eq(contentLessons.dayId, id));
+      await db.update(contentDays).set({ archivedAt }).where(eq(contentDays.id, id));
+      
+      res.json({ success: true, archived: true, archivedDayIndex: day.dayIndex });
     } catch (error) {
-      console.error("Error deleting content day:", error);
-      res.status(500).json({ message: "Failed to delete content day" });
+      console.error("Error archiving content day:", error);
+      res.status(500).json({ message: "Failed to archive content day" });
+    }
+  });
+
+  // Restore an archived content day (cascade restores all related content)
+  app.post("/api/admin/content/days/:id/restore", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      const [day] = await db.select().from(contentDays).where(eq(contentDays.id, id));
+      if (!day) {
+        return res.status(404).json({ message: "Day not found" });
+      }
+      
+      // Cascade restore all related content
+      await db.update(contentDaySummaries).set({ archivedAt: null }).where(eq(contentDaySummaries.dayId, id));
+      await db.update(contentQuizzes).set({ archivedAt: null }).where(eq(contentQuizzes.dayId, id));
+      await db.update(contentSetUpQuestions).set({ archivedAt: null }).where(eq(contentSetUpQuestions.dayId, id));
+      await db.update(contentLessons).set({ archivedAt: null }).where(eq(contentLessons.dayId, id));
+      await db.update(contentDays).set({ archivedAt: null }).where(eq(contentDays.id, id));
+      
+      res.json({ success: true, restored: true, restoredDayIndex: day.dayIndex });
+    } catch (error) {
+      console.error("Error restoring content day:", error);
+      res.status(500).json({ message: "Failed to restore content day" });
+    }
+  });
+
+  // Get archived content stats
+  app.get("/api/admin/content/archived-stats", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { not } = await import('drizzle-orm');
+      
+      const [archivedDays] = await db.select({ count: count() }).from(contentDays).where(not(isNull(contentDays.archivedAt)));
+      const [archivedQuizzes] = await db.select({ count: count() }).from(contentQuizzes).where(not(isNull(contentQuizzes.archivedAt)));
+      const [archivedQuestions] = await db.select({ count: count() }).from(contentSetUpQuestions).where(not(isNull(contentSetUpQuestions.archivedAt)));
+      const [archivedLessons] = await db.select({ count: count() }).from(contentLessons).where(not(isNull(contentLessons.archivedAt)));
+      
+      res.json({
+        days: archivedDays?.count || 0,
+        quizzes: archivedQuizzes?.count || 0,
+        questions: archivedQuestions?.count || 0,
+        lessons: archivedLessons?.count || 0,
+        total: (archivedDays?.count || 0) + (archivedQuizzes?.count || 0) + (archivedQuestions?.count || 0) + (archivedLessons?.count || 0),
+      });
+    } catch (error) {
+      console.error("Error getting archived stats:", error);
+      res.status(500).json({ message: "Failed to get archived stats" });
     }
   });
 
