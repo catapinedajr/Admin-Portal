@@ -33,6 +33,8 @@ import RevenueControls from "@/admin/pages/RevenueControls";
 import DataGovernance from "@/admin/pages/DataGovernance";
 import EmailManagement from "@/admin/pages/EmailManagement";
 import PointsManagement from "@/admin/pages/PointsManagement";
+import CommunityModeration from "@/admin/pages/CommunityModeration";
+import PushNotifications from "@/admin/pages/PushNotifications";
 
 import { AppContextProvider } from "@/components/shared/AppContextProvider";
 import Onboarding from "@/pages/onboarding";
@@ -167,6 +169,8 @@ function Router() {
         <Route path="/admin/data-governance" component={DataGovernance} />
         <Route path="/admin/email" component={EmailManagement} />
         <Route path="/admin/points" component={PointsManagement} />
+        <Route path="/admin/community" component={CommunityModeration} />
+        <Route path="/admin/push-notifications" component={PushNotifications} />
         <Route path="/admin" component={KPIDashboard} />
         <Route path="/more" component={MorePage} />
         <Route path="/account" component={AccountPage} />

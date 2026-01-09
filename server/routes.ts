@@ -9,7 +9,7 @@ import { authService } from "./auth";
 import { registerWalletRoutes } from "./wallet-routes";
 import { registerReferralRoutes } from "./referral-routes";
 import { awardPoints, getRewardConfig, checkAndAwardStreakMilestones, getUserLeaderboardPosition, getLeaderboardRankings, getActiveLeaderboardPeriods } from "./rewards-service";
-import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentGenerationSteps, userQuizAnswers, registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, dailyDiscussions, users, adCampaigns, adCreatives, adImpressions, adClicks, affiliateProducts, affiliateClicks, referralPartners, storeProducts, paywallSettings } from "@shared/schema";
+import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentGenerationSteps, userQuizAnswers, registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, dailyDiscussions, users, adCampaigns, adCreatives, adImpressions, adClicks, affiliateProducts, affiliateClicks, referralPartners, storeProducts, paywallSettings, abuseReports, forumPosts, forumReplies } from "@shared/schema";
 import { eq, sql, desc, and } from "drizzle-orm";
 import { v4 as uuidv4 } from 'uuid';
 import { randomUUID } from 'crypto';
@@ -2065,10 +2065,20 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Create forum post with rich media support
-  app.post("/api/community/forum-posts", setDefaultUser, async (req, res) => {
+  app.post("/api/community/forum-posts", requireAuth, async (req, res) => {
     try {
       const { title, content, categoryId, dayIndex, imageUrl, linkUrl, linkPreview, flair } = req.body;
       const userId = req.user.id;
+      
+      // Check if user is banned or muted
+      const [user] = await db.select().from(users).where(eq(users.id, userId));
+      if (user?.bannedAt) {
+        return res.status(403).json({ message: "Your account has been banned from posting" });
+      }
+      if (user?.mutedUntil && new Date(user.mutedUntil) > new Date()) {
+        const until = new Date(user.mutedUntil).toLocaleString();
+        return res.status(403).json({ message: `You are muted until ${until}` });
+      }
       
       const postData = {
         title,
@@ -2160,7 +2170,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Upvote forum post (upvote-only system for positive community)
-  app.post("/api/community/forum-posts/:postId/upvote", setDefaultUser, async (req, res) => {
+  app.post("/api/community/forum-posts/:postId/upvote", requireAuth, async (req, res) => {
     try {
       const { postId } = req.params;
       const userId = req.user.id;
@@ -2175,7 +2185,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Remove upvote from forum post
-  app.delete("/api/community/forum-posts/:postId/upvote", setDefaultUser, async (req, res) => {
+  app.delete("/api/community/forum-posts/:postId/upvote", requireAuth, async (req, res) => {
     try {
       const { postId } = req.params;
       const userId = req.user.id;
@@ -2203,11 +2213,21 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Create reply
-  app.post("/api/community/forum-posts/:postId/replies", setDefaultUser, async (req, res) => {
+  app.post("/api/community/forum-posts/:postId/replies", requireAuth, async (req, res) => {
     try {
       const { postId } = req.params;
       const { content, parentReplyId } = req.body;
       const userId = req.user.id;
+      
+      // Check if user is banned or muted
+      const [user] = await db.select().from(users).where(eq(users.id, userId));
+      if (user?.bannedAt) {
+        return res.status(403).json({ message: "Your account has been banned from posting" });
+      }
+      if (user?.mutedUntil && new Date(user.mutedUntil) > new Date()) {
+        const until = new Date(user.mutedUntil).toLocaleString();
+        return res.status(403).json({ message: `You are muted until ${until}` });
+      }
       
       const replyData = {
         postId: parseInt(postId),
@@ -2226,7 +2246,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Upvote reply (upvote-only system for positive community)
-  app.post("/api/community/forum-replies/:replyId/upvote", setDefaultUser, async (req, res) => {
+  app.post("/api/community/forum-replies/:replyId/upvote", requireAuth, async (req, res) => {
     try {
       const { replyId } = req.params;
       const userId = req.user.id;
@@ -2241,7 +2261,7 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
   });
 
   // Remove upvote from reply
-  app.delete("/api/community/forum-replies/:replyId/upvote", setDefaultUser, async (req, res) => {
+  app.delete("/api/community/forum-replies/:replyId/upvote", requireAuth, async (req, res) => {
     try {
       const { replyId } = req.params;
       const userId = req.user.id;
@@ -2263,6 +2283,58 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     } catch (error) {
       console.error("Error fetching user karma:", error);
       res.status(500).json({ message: "Failed to fetch user karma" });
+    }
+  });
+
+  // Report content (post, reply, or user)
+  app.post("/api/community/report", requireAuth, async (req, res) => {
+    try {
+      const { contentType, contentId, reportType, description } = req.body;
+      const userId = req.user.id;
+      
+      if (!['post', 'reply', 'user'].includes(contentType)) {
+        return res.status(400).json({ message: "Invalid content type" });
+      }
+      if (!['spam', 'harassment', 'misinformation', 'inappropriate', 'other'].includes(reportType)) {
+        return res.status(400).json({ message: "Invalid report type" });
+      }
+      
+      // Verify content exists
+      if (contentType === 'post') {
+        const [post] = await db.select().from(forumPosts).where(eq(forumPosts.id, contentId));
+        if (!post) return res.status(404).json({ message: "Post not found" });
+      } else if (contentType === 'reply') {
+        const [reply] = await db.select().from(forumReplies).where(eq(forumReplies.id, contentId));
+        if (!reply) return res.status(404).json({ message: "Reply not found" });
+      } else if (contentType === 'user') {
+        const [user] = await db.select().from(users).where(eq(users.id, contentId));
+        if (!user) return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Create abuse report
+      const [report] = await db.insert(abuseReports).values({
+        reporterId: userId,
+        contentType,
+        contentId,
+        reportType,
+        description: description || null,
+      }).returning();
+      
+      // Increment report count on the content
+      if (contentType === 'post') {
+        await db.update(forumPosts)
+          .set({ reportCount: sql`${forumPosts.reportCount} + 1` })
+          .where(eq(forumPosts.id, contentId));
+      } else if (contentType === 'reply') {
+        await db.update(forumReplies)
+          .set({ reportCount: sql`${forumReplies.reportCount} + 1` })
+          .where(eq(forumReplies.id, contentId));
+      }
+      
+      res.json({ success: true, reportId: report.id });
+    } catch (error) {
+      console.error("Error submitting report:", error);
+      res.status(500).json({ message: "Failed to submit report" });
     }
   });
 
@@ -2385,6 +2457,59 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
 
   // Register referral routes (use setDefaultUser for dev compatibility)
   registerReferralRoutes(app, setDefaultUser);
+
+  // ==================== PUSH NOTIFICATIONS (Mobile App) ====================
+  
+  // Register device token for push notifications
+  app.post('/api/device-tokens', setDefaultUser, async (req: any, res) => {
+    try {
+      const { token, platform, deviceId, appVersion, osVersion } = req.body;
+      const userId = req.user.id;
+      
+      if (!token || !platform) {
+        return res.status(400).json({ message: "Token and platform are required" });
+      }
+      
+      if (!['ios', 'android'].includes(platform)) {
+        return res.status(400).json({ message: "Platform must be 'ios' or 'android'" });
+      }
+      
+      const { registerDeviceToken } = await import('./push-notification-service');
+      await registerDeviceToken({
+        userId,
+        token,
+        platform,
+        deviceId,
+        appVersion,
+        osVersion,
+      });
+      
+      res.json({ success: true, message: "Device token registered" });
+    } catch (error) {
+      console.error("Error registering device token:", error);
+      res.status(500).json({ message: "Failed to register device token" });
+    }
+  });
+  
+  // Unregister device token
+  app.delete('/api/device-tokens', setDefaultUser, async (req: any, res) => {
+    try {
+      const { token } = req.body;
+      const userId = req.user.id;
+      
+      if (!token) {
+        return res.status(400).json({ message: "Token is required" });
+      }
+      
+      const { unregisterDeviceToken } = await import('./push-notification-service');
+      await unregisterDeviceToken(userId, token);
+      
+      res.json({ success: true, message: "Device token unregistered" });
+    } catch (error) {
+      console.error("Error unregistering device token:", error);
+      res.status(500).json({ message: "Failed to unregister device token" });
+    }
+  });
 
   // USER-FACING LEADERBOARD ROUTES
   app.get('/api/leaderboard/periods', async (req, res) => {

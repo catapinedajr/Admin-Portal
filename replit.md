@@ -86,6 +86,30 @@ API Endpoints:
 
 Categories for uploads: advertisers, social-media, content, store, misc
 
+### AWS SNS Push Notifications Configuration
+Required environment variables for push notifications:
+- `AWS_ACCESS_KEY_ID`: AWS IAM user access key (same as S3)
+- `AWS_SECRET_ACCESS_KEY`: AWS IAM user secret key (same as S3)
+- `AWS_SNS_IOS_PLATFORM_ARN`: SNS Platform Application ARN for Apple APNs
+- `AWS_SNS_ANDROID_PLATFORM_ARN`: SNS Platform Application ARN for Firebase FCM
+
+API Endpoints:
+- `POST /api/device-tokens`: Register mobile device token for push notifications
+- `DELETE /api/device-tokens`: Unregister device token
+- `GET /api/admin/push-notifications/stats`: Get device token statistics
+- `POST /api/admin/push-notifications`: Create/send push notification
+
+### Community Moderation
+All community mutation routes (post, reply, upvote, report) use session-based authentication with ban/mute enforcement:
+- Banned users (bannedAt set) receive 403 response
+- Muted users (mutedUntil in future) receive 403 with expiry time
+- Admin moderation available at /admin/community
+
+### PDF Invoice Generation
+Invoices can be generated as PDFs with HODLearn branding:
+- `POST /api/admin/marketing/invoices/:id/generate-pdf`: Generate and store PDF in S3
+- `GET /api/admin/marketing/invoices/:id/pdf`: Download invoice PDF
+
 ## Admin Portal
 - **URL**: `/admin`
 - **Default Credentials**: admin@hodlearn.com / admin123 (change immediately in production)

@@ -26,6 +26,13 @@ export const users = pgTable("users", {
   // Referral tracking
   referralCode: text("referral_code").unique(), // User's personal referral code
   referredByUserId: integer("referred_by_user_id"), // Who referred this user
+  // Moderation fields
+  bannedAt: timestamp("banned_at"), // When user was banned (null = not banned)
+  banReason: text("ban_reason"), // Reason for the ban
+  bannedBy: integer("banned_by"), // Admin who banned the user
+  mutedUntil: timestamp("muted_until"), // User can't post until this time (null = not muted)
+  muteReason: text("mute_reason"), // Reason for the mute
+  warningCount: integer("warning_count").notNull().default(0), // Number of warnings issued
   createdAt: timestamp("created_at").notNull().defaultNow(),
   archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
@@ -237,6 +244,9 @@ export const invoices = pgTable("invoices", {
   dueDate: timestamp("due_date"),
   paidAt: timestamp("paid_at"),
   notes: text("notes"),
+  pdfUrl: text("pdf_url"), // S3 URL for generated PDF
+  pdfKey: text("pdf_key"), // S3 key for PDF storage
+  pdfGeneratedAt: timestamp("pdf_generated_at"), // When PDF was last generated
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
   archivedAt: timestamp("archived_at"), // Soft delete - null means active
@@ -472,6 +482,10 @@ export const forumCategories = pgTable("forum_categories", {
 export const postFlairTypes = ['discussion', 'question', 'video', 'article', 'meme', 'security', 'news', 'chart'] as const;
 export type PostFlair = typeof postFlairTypes[number];
 
+// Moderation status types for community content
+export const moderationStatusTypes = ['pending', 'approved', 'flagged', 'removed'] as const;
+export type ModerationStatus = typeof moderationStatusTypes[number];
+
 // Forum posts
 export const forumPosts = pgTable("forum_posts", {
   id: serial("id").primaryKey(),
@@ -491,6 +505,11 @@ export const forumPosts = pgTable("forum_posts", {
   replyCount: integer("reply_count").notNull().default(0),
   lastReplyAt: timestamp("last_reply_at"),
   lastReplyUserId: integer("last_reply_user_id"),
+  moderationStatus: text("moderation_status").notNull().default('approved'), // pending, approved, flagged, removed
+  moderatedBy: integer("moderated_by").references(() => adminUsers.id),
+  moderatedAt: timestamp("moderated_at"),
+  moderationNote: text("moderation_note"), // Internal note for moderators
+  reportCount: integer("report_count").notNull().default(0), // Number of user reports
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
   archivedAt: timestamp("archived_at"), // Soft delete - null means active
@@ -503,9 +522,69 @@ export const forumReplies = pgTable("forum_replies", {
   userId: integer("user_id").notNull(),
   content: text("content").notNull(),
   isDeleted: boolean("is_deleted").notNull().default(false),
+  moderationStatus: text("moderation_status").notNull().default('approved'), // pending, approved, flagged, removed
+  moderatedBy: integer("moderated_by").references(() => adminUsers.id),
+  moderatedAt: timestamp("moderated_at"),
+  reportCount: integer("report_count").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
   archivedAt: timestamp("archived_at"), // Soft delete - null means active
+});
+
+// Abuse report types
+export const abuseReportTypes = ['spam', 'harassment', 'misinformation', 'inappropriate', 'other'] as const;
+export type AbuseReportType = typeof abuseReportTypes[number];
+
+// ============================================
+// PUSH NOTIFICATIONS TABLES
+// ============================================
+
+// Device tokens for push notifications
+export const deviceTokens = pgTable("device_tokens", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  token: text("token").notNull(),
+  platform: text("platform").notNull(), // 'ios', 'android'
+  deviceId: text("device_id"), // Unique device identifier
+  appVersion: text("app_version"), // App version for targeting
+  osVersion: text("os_version"), // iOS/Android version
+  isActive: boolean("is_active").notNull().default(true),
+  lastUsedAt: timestamp("last_used_at").notNull().defaultNow(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Push notification campaigns
+export const pushNotifications = pgTable("push_notifications", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  body: text("body").notNull(),
+  data: json("data"), // Custom payload data
+  targetAudience: text("target_audience").notNull().default('all'), // all, ios, android, specific_users
+  targetUserIds: integer("target_user_ids").array(), // For specific_users targeting
+  status: text("status").notNull().default('draft'), // draft, scheduled, sending, sent, failed
+  scheduledFor: timestamp("scheduled_for"), // For scheduled notifications
+  sentAt: timestamp("sent_at"),
+  sentCount: integer("sent_count").notNull().default(0),
+  failedCount: integer("failed_count").notNull().default(0),
+  createdBy: integer("created_by").references(() => adminUsers.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Abuse reports for user-submitted content reports
+export const abuseReports = pgTable("abuse_reports", {
+  id: serial("id").primaryKey(),
+  reporterId: integer("reporter_id").notNull().references(() => users.id), // User who submitted the report
+  contentType: text("content_type").notNull(), // 'post', 'reply', 'user'
+  contentId: integer("content_id").notNull(), // ID of the reported content
+  reportType: text("report_type").notNull(), // spam, harassment, misinformation, inappropriate, other
+  description: text("description"), // Optional description from reporter
+  status: text("status").notNull().default('pending'), // pending, reviewed, resolved, dismissed
+  reviewedBy: integer("reviewed_by").references(() => adminUsers.id),
+  reviewedAt: timestamp("reviewed_at"),
+  reviewNote: text("review_note"), // Admin note about resolution
+  actionTaken: text("action_taken"), // What action was taken (e.g., 'post_removed', 'user_warned', 'no_action')
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 // Enhanced curated video content with better categorization

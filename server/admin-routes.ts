@@ -28,7 +28,7 @@ const imageGenerationRateLimiter = rateLimit({
   keyGenerator: (req: AdminRequest) => req.admin?.id?.toString() || 'anonymous',
   validate: { xForwardedForHeader: false, default: true },
 });
-import { adminLoginSchema, adminUsers, adminSessions, adminPasswordResetTokens, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema, systemSettings, aiInstructions, insertAiInstructionsSchema, socialIntegrations, paywallSettings, advertisingClients, affiliateProducts, referralPartners, referralSignups, invoices, socialPosts, socialAccounts, forumCategories, rewardConfig, leaderboardPeriods, leaderboardEntries, walletEarnings, userWalletProgress } from "@shared/schema";
+import { adminLoginSchema, adminUsers, adminSessions, adminPasswordResetTokens, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema, systemSettings, aiInstructions, insertAiInstructionsSchema, socialIntegrations, paywallSettings, advertisingClients, affiliateProducts, referralPartners, referralSignups, invoices, socialPosts, socialAccounts, forumCategories, rewardConfig, leaderboardPeriods, leaderboardEntries, walletEarnings, userWalletProgress, abuseReports } from "@shared/schema";
 import { count, eq, sql, and, sum, isNull, desc, gte, lte } from "drizzle-orm";
 
 interface AdminRequest extends Request {
@@ -2097,6 +2097,123 @@ Return ONLY the JSON object, no markdown code blocks or additional text.`;
     } catch (error) {
       console.error("Error deleting invoice:", error);
       res.status(500).json({ message: "Failed to delete invoice" });
+    }
+  });
+
+  // Generate PDF for invoice
+  app.post("/api/admin/marketing/invoices/:id/generate-pdf", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { invoices, advertisingClients, adCampaigns } = await import('@shared/schema');
+      const { generateInvoicePDF, uploadInvoicePDF, isS3Configured } = await import('./pdf-invoice-service');
+      
+      const id = parseInt(req.params.id);
+      
+      // Get invoice with client and campaign info
+      const [invoice] = await db.select().from(invoices).where(eq(invoices.id, id));
+      if (!invoice) {
+        return res.status(404).json({ message: "Invoice not found" });
+      }
+      
+      const [client] = await db.select().from(advertisingClients).where(eq(advertisingClients.id, invoice.clientId));
+      if (!client) {
+        return res.status(404).json({ message: "Client not found" });
+      }
+      
+      let campaignName: string | undefined;
+      if (invoice.campaignId) {
+        const [campaign] = await db.select().from(adCampaigns).where(eq(adCampaigns.id, invoice.campaignId));
+        campaignName = campaign?.name;
+      }
+      
+      // Generate PDF
+      const pdfBuffer = await generateInvoicePDF({
+        invoiceNumber: invoice.invoiceNumber,
+        clientName: client.name,
+        clientEmail: client.email || '',
+        campaignName,
+        amountUsd: invoice.amountUsd,
+        dueDate: invoice.dueDate || undefined,
+        paidAt: invoice.paidAt || undefined,
+        status: invoice.status,
+        notes: invoice.notes || undefined,
+        createdAt: invoice.createdAt,
+      });
+      
+      // Upload to S3 if configured, otherwise return as download
+      if (isS3Configured()) {
+        const { url, key } = await uploadInvoicePDF(pdfBuffer, invoice.invoiceNumber);
+        
+        // Update invoice with PDF URL
+        await db.update(invoices)
+          .set({ pdfUrl: url, pdfKey: key, pdfGeneratedAt: new Date(), updatedAt: new Date() })
+          .where(eq(invoices.id, id));
+        
+        res.json({ success: true, pdfUrl: url });
+      } else {
+        // Return PDF directly if S3 not configured
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="invoice-${invoice.invoiceNumber}.pdf"`);
+        res.send(pdfBuffer);
+      }
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      res.status(500).json({ message: "Failed to generate PDF" });
+    }
+  });
+
+  // Download PDF for invoice (if already generated)
+  app.get("/api/admin/marketing/invoices/:id/pdf", requireAdminAuth, async (req: AdminRequest, res) => {
+    try {
+      const { invoices, advertisingClients, adCampaigns } = await import('@shared/schema');
+      const { generateInvoicePDF } = await import('./pdf-invoice-service');
+      
+      const id = parseInt(req.params.id);
+      
+      // Get invoice
+      const [invoice] = await db.select().from(invoices).where(eq(invoices.id, id));
+      if (!invoice) {
+        return res.status(404).json({ message: "Invoice not found" });
+      }
+      
+      // If PDF URL exists and was generated recently (within 24 hours), redirect to it
+      if (invoice.pdfUrl && invoice.pdfGeneratedAt) {
+        const hoursSinceGeneration = (Date.now() - invoice.pdfGeneratedAt.getTime()) / (1000 * 60 * 60);
+        if (hoursSinceGeneration < 24) {
+          return res.redirect(invoice.pdfUrl);
+        }
+      }
+      
+      // Otherwise, generate on the fly
+      const [client] = await db.select().from(advertisingClients).where(eq(advertisingClients.id, invoice.clientId));
+      if (!client) {
+        return res.status(404).json({ message: "Client not found" });
+      }
+      
+      let campaignName: string | undefined;
+      if (invoice.campaignId) {
+        const [campaign] = await db.select().from(adCampaigns).where(eq(adCampaigns.id, invoice.campaignId));
+        campaignName = campaign?.name;
+      }
+      
+      const pdfBuffer = await generateInvoicePDF({
+        invoiceNumber: invoice.invoiceNumber,
+        clientName: client.name,
+        clientEmail: client.email || '',
+        campaignName,
+        amountUsd: invoice.amountUsd,
+        dueDate: invoice.dueDate || undefined,
+        paidAt: invoice.paidAt || undefined,
+        status: invoice.status,
+        notes: invoice.notes || undefined,
+        createdAt: invoice.createdAt,
+      });
+      
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="invoice-${invoice.invoiceNumber}.pdf"`);
+      res.send(pdfBuffer);
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+      res.status(500).json({ message: "Failed to download PDF" });
     }
   });
 
@@ -4927,6 +5044,512 @@ Return ONLY the post content, nothing else.`;
     } catch (error) {
       console.error("Error fetching Stripe products:", error);
       res.json([]);
+    }
+  });
+
+  // ==================== COMMUNITY MODERATION ENDPOINTS ====================
+  
+  // Get all posts for moderation with filtering
+  app.get("/api/admin/community/posts", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { status, limit = '50', offset = '0' } = req.query;
+      
+      let query = db.select({
+        id: forumPosts.id,
+        title: forumPosts.title,
+        content: forumPosts.content,
+        userId: forumPosts.userId,
+        categoryId: forumPosts.categoryId,
+        flair: forumPosts.flair,
+        replyCount: forumPosts.replyCount,
+        moderationStatus: forumPosts.moderationStatus,
+        moderatedBy: forumPosts.moderatedBy,
+        moderatedAt: forumPosts.moderatedAt,
+        moderationNote: forumPosts.moderationNote,
+        reportCount: forumPosts.reportCount,
+        createdAt: forumPosts.createdAt,
+        archivedAt: forumPosts.archivedAt,
+      })
+      .from(forumPosts)
+      .where(isNull(forumPosts.archivedAt))
+      .orderBy(desc(forumPosts.createdAt))
+      .limit(parseInt(limit as string))
+      .offset(parseInt(offset as string));
+      
+      let posts = await query;
+      
+      // Filter by status if specified
+      if (status && status !== 'all') {
+        posts = posts.filter(p => p.moderationStatus === status);
+      }
+      
+      // Get user info for each post
+      const postsWithUsers = await Promise.all(posts.map(async (post) => {
+        const [user] = await db.select({
+          id: users.id,
+          username: users.username,
+          email: users.email,
+        }).from(users).where(eq(users.id, post.userId));
+        
+        const [category] = await db.select({
+          id: forumCategories.id,
+          name: forumCategories.name,
+        }).from(forumCategories).where(eq(forumCategories.id, post.categoryId));
+        
+        return {
+          ...post,
+          user,
+          category,
+        };
+      }));
+      
+      res.json(postsWithUsers);
+    } catch (error) {
+      console.error("Error fetching posts for moderation:", error);
+      res.status(500).json({ message: "Failed to fetch posts" });
+    }
+  });
+  
+  // Get moderation stats
+  app.get("/api/admin/community/stats", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const [totalPosts] = await db.select({ count: count() }).from(forumPosts).where(isNull(forumPosts.archivedAt));
+      const [pendingPosts] = await db.select({ count: count() }).from(forumPosts).where(and(isNull(forumPosts.archivedAt), eq(forumPosts.moderationStatus, 'pending')));
+      const [flaggedPosts] = await db.select({ count: count() }).from(forumPosts).where(and(isNull(forumPosts.archivedAt), eq(forumPosts.moderationStatus, 'flagged')));
+      const [removedPosts] = await db.select({ count: count() }).from(forumPosts).where(and(isNull(forumPosts.archivedAt), eq(forumPosts.moderationStatus, 'removed')));
+      const [totalReplies] = await db.select({ count: count() }).from(forumReplies).where(isNull(forumReplies.archivedAt));
+      const [reportedContent] = await db.select({ count: count() }).from(forumPosts).where(and(isNull(forumPosts.archivedAt), sql`${forumPosts.reportCount} > 0`));
+      
+      res.json({
+        totalPosts: Number(totalPosts?.count || 0),
+        pendingPosts: Number(pendingPosts?.count || 0),
+        flaggedPosts: Number(flaggedPosts?.count || 0),
+        removedPosts: Number(removedPosts?.count || 0),
+        totalReplies: Number(totalReplies?.count || 0),
+        reportedContent: Number(reportedContent?.count || 0),
+      });
+    } catch (error) {
+      console.error("Error fetching moderation stats:", error);
+      res.status(500).json({ message: "Failed to fetch stats" });
+    }
+  });
+  
+  // Moderate a post (approve, flag, remove)
+  app.post("/api/admin/community/posts/:id/moderate", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const postId = parseInt(req.params.id);
+      const { status, note } = req.body;
+      
+      if (!['pending', 'approved', 'flagged', 'removed'].includes(status)) {
+        return res.status(400).json({ message: "Invalid moderation status" });
+      }
+      
+      await db.update(forumPosts)
+        .set({
+          moderationStatus: status,
+          moderatedBy: req.adminUser?.id,
+          moderatedAt: new Date(),
+          moderationNote: note || null,
+          updatedAt: new Date(),
+        })
+        .where(eq(forumPosts.id, postId));
+      
+      res.json({ message: `Post ${status} successfully` });
+    } catch (error) {
+      console.error("Error moderating post:", error);
+      res.status(500).json({ message: "Failed to moderate post" });
+    }
+  });
+  
+  // Bulk moderate posts
+  app.post("/api/admin/community/posts/bulk-moderate", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { postIds, status, note } = req.body;
+      
+      if (!Array.isArray(postIds) || postIds.length === 0) {
+        return res.status(400).json({ message: "No posts selected" });
+      }
+      
+      if (!['pending', 'approved', 'flagged', 'removed'].includes(status)) {
+        return res.status(400).json({ message: "Invalid moderation status" });
+      }
+      
+      for (const postId of postIds) {
+        await db.update(forumPosts)
+          .set({
+            moderationStatus: status,
+            moderatedBy: req.adminUser?.id,
+            moderatedAt: new Date(),
+            moderationNote: note || null,
+            updatedAt: new Date(),
+          })
+          .where(eq(forumPosts.id, postId));
+      }
+      
+      res.json({ message: `${postIds.length} posts ${status} successfully` });
+    } catch (error) {
+      console.error("Error bulk moderating posts:", error);
+      res.status(500).json({ message: "Failed to bulk moderate posts" });
+    }
+  });
+  
+  // Get all replies for moderation
+  app.get("/api/admin/community/replies", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { status, limit = '50', offset = '0' } = req.query;
+      
+      let replies = await db.select({
+        id: forumReplies.id,
+        postId: forumReplies.postId,
+        content: forumReplies.content,
+        userId: forumReplies.userId,
+        moderationStatus: forumReplies.moderationStatus,
+        moderatedBy: forumReplies.moderatedBy,
+        moderatedAt: forumReplies.moderatedAt,
+        reportCount: forumReplies.reportCount,
+        createdAt: forumReplies.createdAt,
+      })
+      .from(forumReplies)
+      .where(isNull(forumReplies.archivedAt))
+      .orderBy(desc(forumReplies.createdAt))
+      .limit(parseInt(limit as string))
+      .offset(parseInt(offset as string));
+      
+      // Filter by status if specified
+      if (status && status !== 'all') {
+        replies = replies.filter(r => r.moderationStatus === status);
+      }
+      
+      // Get user and post info
+      const repliesWithDetails = await Promise.all(replies.map(async (reply) => {
+        const [user] = await db.select({
+          id: users.id,
+          username: users.username,
+        }).from(users).where(eq(users.id, reply.userId));
+        
+        const [post] = await db.select({
+          id: forumPosts.id,
+          title: forumPosts.title,
+        }).from(forumPosts).where(eq(forumPosts.id, reply.postId));
+        
+        return { ...reply, user, post };
+      }));
+      
+      res.json(repliesWithDetails);
+    } catch (error) {
+      console.error("Error fetching replies for moderation:", error);
+      res.status(500).json({ message: "Failed to fetch replies" });
+    }
+  });
+  
+  // Moderate a reply
+  app.post("/api/admin/community/replies/:id/moderate", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const replyId = parseInt(req.params.id);
+      const { status } = req.body;
+      
+      if (!['pending', 'approved', 'flagged', 'removed'].includes(status)) {
+        return res.status(400).json({ message: "Invalid moderation status" });
+      }
+      
+      await db.update(forumReplies)
+        .set({
+          moderationStatus: status,
+          moderatedBy: req.adminUser?.id,
+          moderatedAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .where(eq(forumReplies.id, replyId));
+      
+      res.json({ message: `Reply ${status} successfully` });
+    } catch (error) {
+      console.error("Error moderating reply:", error);
+      res.status(500).json({ message: "Failed to moderate reply" });
+    }
+  });
+
+  // ==================== USER MODERATION (BAN/MUTE) ====================
+  
+  // Ban a user
+  app.post("/api/admin/community/users/:id/ban", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const { reason } = req.body;
+      
+      await db.update(users)
+        .set({
+          bannedAt: new Date(),
+          banReason: reason || 'Banned by administrator',
+          bannedBy: req.adminUser?.id,
+        })
+        .where(eq(users.id, userId));
+      
+      res.json({ message: "User banned successfully" });
+    } catch (error) {
+      console.error("Error banning user:", error);
+      res.status(500).json({ message: "Failed to ban user" });
+    }
+  });
+  
+  // Unban a user
+  app.post("/api/admin/community/users/:id/unban", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const userId = parseInt(req.params.id);
+      
+      await db.update(users)
+        .set({
+          bannedAt: null,
+          banReason: null,
+          bannedBy: null,
+        })
+        .where(eq(users.id, userId));
+      
+      res.json({ message: "User unbanned successfully" });
+    } catch (error) {
+      console.error("Error unbanning user:", error);
+      res.status(500).json({ message: "Failed to unban user" });
+    }
+  });
+  
+  // Mute a user
+  app.post("/api/admin/community/users/:id/mute", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const { reason, durationHours = 24 } = req.body;
+      
+      const mutedUntil = new Date();
+      mutedUntil.setHours(mutedUntil.getHours() + durationHours);
+      
+      await db.update(users)
+        .set({
+          mutedUntil,
+          muteReason: reason || 'Muted by administrator',
+        })
+        .where(eq(users.id, userId));
+      
+      res.json({ message: `User muted for ${durationHours} hours` });
+    } catch (error) {
+      console.error("Error muting user:", error);
+      res.status(500).json({ message: "Failed to mute user" });
+    }
+  });
+  
+  // Unmute a user
+  app.post("/api/admin/community/users/:id/unmute", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const userId = parseInt(req.params.id);
+      
+      await db.update(users)
+        .set({
+          mutedUntil: null,
+          muteReason: null,
+        })
+        .where(eq(users.id, userId));
+      
+      res.json({ message: "User unmuted successfully" });
+    } catch (error) {
+      console.error("Error unmuting user:", error);
+      res.status(500).json({ message: "Failed to unmute user" });
+    }
+  });
+  
+  // Warn a user
+  app.post("/api/admin/community/users/:id/warn", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const userId = parseInt(req.params.id);
+      
+      await db.update(users)
+        .set({
+          warningCount: sql`${users.warningCount} + 1`,
+        })
+        .where(eq(users.id, userId));
+      
+      res.json({ message: "Warning issued" });
+    } catch (error) {
+      console.error("Error warning user:", error);
+      res.status(500).json({ message: "Failed to warn user" });
+    }
+  });
+
+  // ==================== ABUSE REPORTS ====================
+  
+  // Get all abuse reports
+  app.get("/api/admin/community/reports", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { status } = req.query;
+      
+      let query = db.select().from(abuseReports);
+      if (status && status !== 'all') {
+        query = query.where(eq(abuseReports.status, status as string)) as any;
+      }
+      
+      const reports = await query.orderBy(desc(abuseReports.createdAt));
+      
+      // Get reporter info
+      const reportsWithDetails = await Promise.all(reports.map(async (report) => {
+        const [reporter] = await db.select({
+          id: users.id,
+          username: users.username,
+        }).from(users).where(eq(users.id, report.reporterId));
+        
+        let contentPreview: string | undefined;
+        if (report.contentType === 'post') {
+          const [post] = await db.select({ title: forumPosts.title })
+            .from(forumPosts).where(eq(forumPosts.id, report.contentId));
+          contentPreview = post?.title;
+        } else if (report.contentType === 'reply') {
+          const [reply] = await db.select({ content: forumReplies.content })
+            .from(forumReplies).where(eq(forumReplies.id, report.contentId));
+          contentPreview = reply?.content?.substring(0, 100);
+        }
+        
+        return { ...report, reporter, contentPreview };
+      }));
+      
+      res.json(reportsWithDetails);
+    } catch (error) {
+      console.error("Error fetching abuse reports:", error);
+      res.status(500).json({ message: "Failed to fetch abuse reports" });
+    }
+  });
+  
+  // Review an abuse report
+  app.post("/api/admin/community/reports/:id/review", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const reportId = parseInt(req.params.id);
+      const { status, reviewNote, actionTaken } = req.body;
+      
+      if (!['reviewed', 'resolved', 'dismissed'].includes(status)) {
+        return res.status(400).json({ message: "Invalid status" });
+      }
+      
+      await db.update(abuseReports)
+        .set({
+          status,
+          reviewNote,
+          actionTaken,
+          reviewedBy: req.adminUser?.id,
+          reviewedAt: new Date(),
+        })
+        .where(eq(abuseReports.id, reportId));
+      
+      res.json({ message: "Report reviewed successfully" });
+    } catch (error) {
+      console.error("Error reviewing report:", error);
+      res.status(500).json({ message: "Failed to review report" });
+    }
+  });
+
+  // ==================== PUSH NOTIFICATIONS ====================
+  
+  // Get push notification stats
+  app.get("/api/admin/push-notifications/stats", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { getDeviceTokenStats, isSNSConfigured } = await import('./push-notification-service');
+      const { pushNotifications, deviceTokens } = await import('@shared/schema');
+      
+      const stats = await getDeviceTokenStats();
+      const notifications = await db.select().from(pushNotifications).orderBy(desc(pushNotifications.createdAt)).limit(10);
+      
+      res.json({
+        ...stats,
+        snsConfigured: isSNSConfigured(),
+        recentNotifications: notifications.length,
+      });
+    } catch (error) {
+      console.error("Error fetching push notification stats:", error);
+      res.status(500).json({ message: "Failed to fetch stats" });
+    }
+  });
+  
+  // Get all push notifications
+  app.get("/api/admin/push-notifications", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { pushNotifications } = await import('@shared/schema');
+      const notifications = await db.select()
+        .from(pushNotifications)
+        .orderBy(desc(pushNotifications.createdAt));
+      res.json(notifications);
+    } catch (error) {
+      console.error("Error fetching push notifications:", error);
+      res.status(500).json({ message: "Failed to fetch notifications" });
+    }
+  });
+  
+  // Create push notification
+  app.post("/api/admin/push-notifications", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { pushNotifications } = await import('@shared/schema');
+      const { title, body, data, targetAudience, targetUserIds, scheduledFor } = req.body;
+      
+      if (!title || !body) {
+        return res.status(400).json({ message: "Title and body are required" });
+      }
+      
+      const [notification] = await db.insert(pushNotifications).values({
+        title,
+        body,
+        data,
+        targetAudience: targetAudience || 'all',
+        targetUserIds,
+        scheduledFor: scheduledFor ? new Date(scheduledFor) : null,
+        createdBy: req.adminUser?.id,
+      }).returning();
+      
+      res.json(notification);
+    } catch (error) {
+      console.error("Error creating push notification:", error);
+      res.status(500).json({ message: "Failed to create notification" });
+    }
+  });
+  
+  // Send push notification
+  app.post("/api/admin/push-notifications/:id/send", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { sendBulkNotification, isSNSConfigured } = await import('./push-notification-service');
+      const id = parseInt(req.params.id);
+      
+      if (!isSNSConfigured()) {
+        return res.status(400).json({ 
+          message: "AWS SNS is not configured. Set AWS_SNS_IOS_PLATFORM_ARN and/or AWS_SNS_ANDROID_PLATFORM_ARN environment variables." 
+        });
+      }
+      
+      const result = await sendBulkNotification(id);
+      res.json({ 
+        success: true, 
+        sent: result.sent, 
+        failed: result.failed,
+        message: `Notification sent to ${result.sent} devices (${result.failed} failed)` 
+      });
+    } catch (error) {
+      console.error("Error sending push notification:", error);
+      res.status(500).json({ message: "Failed to send notification" });
+    }
+  });
+  
+  // Delete push notification
+  app.delete("/api/admin/push-notifications/:id", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { pushNotifications } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      await db.delete(pushNotifications).where(eq(pushNotifications.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting push notification:", error);
+      res.status(500).json({ message: "Failed to delete notification" });
+    }
+  });
+  
+  // Get all device tokens (for debugging)
+  app.get("/api/admin/device-tokens", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { deviceTokens } = await import('@shared/schema');
+      const tokens = await db.select().from(deviceTokens).orderBy(desc(deviceTokens.lastUsedAt));
+      res.json(tokens);
+    } catch (error) {
+      console.error("Error fetching device tokens:", error);
+      res.status(500).json({ message: "Failed to fetch device tokens" });
     }
   });
 
