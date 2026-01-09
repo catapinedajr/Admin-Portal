@@ -6,6 +6,7 @@ import {
   Trash2, Play, Pause, Building2, FileText, Receipt,
   ArrowLeft, Image, ChevronRight, TrendingUp, Send, Check
 } from "lucide-react";
+import S3ImageUpload from "../components/S3ImageUpload";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -1150,7 +1151,9 @@ function NewCreativeDialog({ open, onOpenChange, campaignId }: { open: boolean; 
     title: "",
     description: "",
     imageUrl: "",
+    imageKey: "",
     logoUrl: "",
+    logoKey: "",
     ctaText: "Learn More",
     ctaUrl: "",
     placement: "in_feed",
@@ -1162,7 +1165,9 @@ function NewCreativeDialog({ open, onOpenChange, campaignId }: { open: boolean; 
         campaignId,
         ...formData,
         imageUrl: formData.imageUrl || null,
+        imageKey: formData.imageKey || null,
         logoUrl: formData.logoUrl || null,
+        logoKey: formData.logoKey || null,
       });
       return res.json();
     },
@@ -1170,7 +1175,7 @@ function NewCreativeDialog({ open, onOpenChange, campaignId }: { open: boolean; 
       queryClient.invalidateQueries({ queryKey: ["/api/admin/marketing/creatives", campaignId] });
       toast({ title: "Creative created successfully" });
       onOpenChange(false);
-      setFormData({ title: "", description: "", imageUrl: "", logoUrl: "", ctaText: "Learn More", ctaUrl: "", placement: "in_feed" });
+      setFormData({ title: "", description: "", imageUrl: "", imageKey: "", logoUrl: "", logoKey: "", ctaText: "Learn More", ctaUrl: "", placement: "in_feed" });
     },
     onError: (error: Error) => {
       toast({ title: "Failed to create creative", description: error.message, variant: "destructive" });
@@ -1203,25 +1208,21 @@ function NewCreativeDialog({ open, onOpenChange, campaignId }: { open: boolean; 
               rows={3}
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="text-zinc-300">Image URL</Label>
-              <Input
-                value={formData.imageUrl}
-                onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                className="bg-zinc-800 border-zinc-700 text-white"
-                placeholder="https://..."
-              />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-zinc-300">Logo URL</Label>
-              <Input
-                value={formData.logoUrl}
-                onChange={(e) => setFormData({ ...formData, logoUrl: e.target.value })}
-                className="bg-zinc-800 border-zinc-700 text-white"
-                placeholder="https://..."
-              />
-            </div>
+          <div className="space-y-4">
+            <S3ImageUpload
+              value={formData.imageUrl}
+              onChange={(url, key) => setFormData({ ...formData, imageUrl: url, imageKey: key || "" })}
+              category="advertisers"
+              label="Ad Image"
+              placeholder="Enter image URL or upload"
+            />
+            <S3ImageUpload
+              value={formData.logoUrl}
+              onChange={(url, key) => setFormData({ ...formData, logoUrl: url, logoKey: key || "" })}
+              category="advertisers"
+              label="Brand Logo"
+              placeholder="Enter logo URL or upload"
+            />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">

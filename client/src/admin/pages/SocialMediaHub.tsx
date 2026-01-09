@@ -6,9 +6,10 @@ import {
   Twitter, Linkedin, Instagram, Facebook, Clock, ArrowRight, Edit2, Trash2,
   AlertCircle, CheckCircle2, Loader2, Link as LinkIcon, Sparkles,
   ChevronLeft, ChevronRight, X, Settings, Lock, Unlock, Save, RotateCcw,
-  Copy, Info, FileEdit, CalendarCheck, ExternalLink, Power, Zap, Image, Wand2
+  Copy, Info, FileEdit, CalendarCheck, ExternalLink, Power, Zap, Image, Wand2, Upload
 } from "lucide-react";
 import { useIntegrationManager } from "../hooks/useIntegrationManager";
+import S3ImageUpload from "../components/S3ImageUpload";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -715,6 +716,7 @@ function PostComposer({
   
   // Image generation state
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageKey, setImageKey] = useState<string | null>(null);
   const [imagePrompt, setImagePrompt] = useState("");
   const [imageStyle, setImageStyle] = useState("professional");
   const [imageSize, setImageSize] = useState("1024x1024");
@@ -737,6 +739,7 @@ function PostComposer({
           ctaGoal: (post as any).ctaGoal || "",
         });
         setImageUrl(post.imageUrl || null);
+        setImageKey((post as any).imageKey || null);
       } else {
         setFormData({
           content: "",
@@ -750,6 +753,7 @@ function PostComposer({
           ctaGoal: "",
         });
         setImageUrl(null);
+        setImageKey(null);
         setImagePrompt("");
         setShowImageGenerator(false);
       }
@@ -775,6 +779,7 @@ function PostComposer({
         platform: formData.platform,
         linkUrl: formData.linkUrl || null,
         imageUrl: imageUrl || null,
+        imageKey: imageKey || null,
         campaignId: formData.campaignId ? parseInt(formData.campaignId) : null,
         linkedDayIndex: formData.linkedDayIndex ? parseInt(formData.linkedDayIndex) : null,
         scheduledAt,
@@ -953,7 +958,10 @@ function PostComposer({
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setImageUrl(null)}
+                  onClick={() => {
+                    setImageUrl(null);
+                    setImageKey(null);
+                  }}
                   className="absolute top-2 right-2 bg-zinc-900/80 hover:bg-zinc-800 text-white h-7 px-2"
                   data-testid="button-remove-image"
                 >
@@ -1030,6 +1038,22 @@ function PostComposer({
                 <p className="text-xs text-zinc-500 text-center">
                   Images are generated using DALL-E 3. Standard quality, ~$0.04 per image.
                 </p>
+              </div>
+            )}
+            
+            {/* Manual Image Upload Option */}
+            {!showImageGenerator && !imageUrl && (
+              <div className="pt-2">
+                <S3ImageUpload
+                  value={imageUrl || ""}
+                  onChange={(url, key) => {
+                    setImageUrl(url || null);
+                    setImageKey(key || null);
+                  }}
+                  category="social-media"
+                  label=""
+                  placeholder="Enter image URL or upload from device"
+                />
               </div>
             )}
           </div>
