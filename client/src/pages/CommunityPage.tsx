@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
-import { MessageSquare, Video, ArrowBigUp, MessageCircle, Clock, TrendingUp, Flame, Plus, User as UserIcon, Wallet, Send, ChevronDown, ChevronUp, ExternalLink, Megaphone, Filter, Image, Link2, X, Loader2, Share2, ArrowLeft, Reply } from "lucide-react";
+import { MessageSquare, Video, ArrowBigUp, MessageCircle, Clock, TrendingUp, Flame, Plus, User as UserIcon, Wallet, Send, ChevronDown, ChevronUp, ExternalLink, Megaphone, Filter, Image, Link2, X, Loader2, Share2, ArrowLeft, Reply, Trophy, Medal, Crown, Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +11,7 @@ import BottomNavigation from "@/components/BottomNavigation";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from "@/lib/queryClient";
 
-type CommunityTab = "forums" | "videos";
+type CommunityTab = "forums" | "videos" | "leaderboard";
 type ForumFilter = "new" | "hot" | "trending";
 
 function extractYouTubeId(url: string): string | null {
@@ -194,32 +194,43 @@ export default function CommunityPage() {
 
           {/* Tab Navigation */}
           <div className="flex justify-center">
-            <div className="grid grid-cols-2 gap-2 bg-zinc-800/50 rounded-lg p-1.5 max-w-xs mx-auto">
+            <div className="grid grid-cols-3 gap-2 bg-zinc-800/50 rounded-lg p-1.5 max-w-md mx-auto">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setActiveTab("forums")}
-                className={`text-sm px-4 py-2 ${activeTab === "forums" ? "bg-orange-500/20 text-orange-400 border border-orange-500/30" : "text-zinc-400 hover:text-white"}`}
+                className={`text-sm px-3 py-2 ${activeTab === "forums" ? "bg-orange-500/20 text-orange-400 border border-orange-500/30" : "text-zinc-400 hover:text-white"}`}
                 data-testid="button-tab-forums"
               >
-                <MessageSquare className="w-4 h-4 mr-2" />
+                <MessageSquare className="w-4 h-4 mr-1.5" />
                 Forums
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setActiveTab("videos")}
-                className={`text-sm px-4 py-2 ${activeTab === "videos" ? "bg-orange-500/20 text-orange-400 border border-orange-500/30" : "text-zinc-400 hover:text-white"}`}
+                className={`text-sm px-3 py-2 ${activeTab === "videos" ? "bg-orange-500/20 text-orange-400 border border-orange-500/30" : "text-zinc-400 hover:text-white"}`}
                 data-testid="button-tab-videos"
               >
-                <Video className="w-4 h-4 mr-2" />
-                Expert Videos
+                <Video className="w-4 h-4 mr-1.5" />
+                Videos
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setActiveTab("leaderboard")}
+                className={`text-sm px-3 py-2 ${activeTab === "leaderboard" ? "bg-orange-500/20 text-orange-400 border border-orange-500/30" : "text-zinc-400 hover:text-white"}`}
+                data-testid="button-tab-leaderboard"
+              >
+                <Trophy className="w-4 h-4 mr-1.5" />
+                Rankings
               </Button>
             </div>
           </div>
 
           {activeTab === "forums" && <ForumsSection />}
           {activeTab === "videos" && <VideosSection />}
+          {activeTab === "leaderboard" && <LeaderboardSection />}
         </div>
       </main>
 
@@ -1458,6 +1469,269 @@ function VideosSection() {
           })}
         </div>
       </div>
+    </div>
+  );
+}
+
+interface LeaderboardPeriod {
+  id: number;
+  name: string;
+  type: string;
+  startDate: string;
+  endDate: string | null;
+  isActive: boolean;
+  prizePool: number | null;
+  prizeDescription: string | null;
+}
+
+interface LeaderboardRanking {
+  rank: number;
+  userId: number;
+  username: string;
+  displayName: string | null;
+  avatarUrl: string | null;
+  totalSatoshis: number;
+  streakDays: number;
+  quizzesCompleted: number;
+  isCurrentUser?: boolean;
+}
+
+interface UserPosition {
+  rank: number | null;
+  totalSatoshis: number;
+  nearbyUsers: LeaderboardRanking[];
+  periodName: string;
+}
+
+function LeaderboardSection() {
+  const [selectedPeriodId, setSelectedPeriodId] = useState<number | null>(null);
+
+  const { data: periods = [], isLoading: periodsLoading } = useQuery<LeaderboardPeriod[]>({
+    queryKey: ['/api/leaderboard/periods'],
+  });
+
+  const activePeriod = periods.find(p => p.isActive) || periods[0];
+  const currentPeriodId = selectedPeriodId || activePeriod?.id;
+
+  const { data: rankings = [], isLoading: rankingsLoading } = useQuery<LeaderboardRanking[]>({
+    queryKey: ['/api/leaderboard', currentPeriodId, 'rankings'],
+    queryFn: async () => {
+      if (!currentPeriodId) return [];
+      const res = await fetch(`/api/leaderboard/${currentPeriodId}/rankings?limit=50`);
+      return res.json();
+    },
+    enabled: !!currentPeriodId,
+  });
+
+  const { data: myPosition } = useQuery<UserPosition>({
+    queryKey: ['/api/leaderboard/my-position', currentPeriodId],
+    queryFn: async () => {
+      const url = currentPeriodId 
+        ? `/api/leaderboard/my-position?periodId=${currentPeriodId}`
+        : '/api/leaderboard/my-position';
+      const res = await fetch(url);
+      return res.json();
+    },
+  });
+
+  const getRankIcon = (rank: number) => {
+    if (rank === 1) return <Crown className="w-5 h-5 text-yellow-400" />;
+    if (rank === 2) return <Medal className="w-5 h-5 text-zinc-300" />;
+    if (rank === 3) return <Medal className="w-5 h-5 text-amber-600" />;
+    return <span className="w-5 h-5 flex items-center justify-center text-zinc-400 font-bold">{rank}</span>;
+  };
+
+  const getRankBg = (rank: number) => {
+    if (rank === 1) return "bg-gradient-to-r from-yellow-500/20 to-amber-500/10 border-yellow-500/30";
+    if (rank === 2) return "bg-gradient-to-r from-zinc-400/20 to-zinc-500/10 border-zinc-400/30";
+    if (rank === 3) return "bg-gradient-to-r from-amber-600/20 to-orange-600/10 border-amber-600/30";
+    return "bg-zinc-800/30 border-zinc-700/50";
+  };
+
+  const formatSats = (sats: number) => {
+    if (sats >= 1000000) return `${(sats / 1000000).toFixed(2)}M`;
+    if (sats >= 1000) return `${(sats / 1000).toFixed(1)}K`;
+    return sats.toString();
+  };
+
+  if (periodsLoading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Period Selector */}
+      {periods.length > 1 && (
+        <div className="flex justify-center">
+          <Select
+            value={currentPeriodId?.toString() || ""}
+            onValueChange={(v) => setSelectedPeriodId(parseInt(v))}
+          >
+            <SelectTrigger className="w-64 bg-zinc-800 border-zinc-700">
+              <SelectValue placeholder="Select period" />
+            </SelectTrigger>
+            <SelectContent className="bg-zinc-800 border-zinc-700">
+              {periods.map((period) => (
+                <SelectItem key={period.id} value={period.id.toString()}>
+                  {period.name} {period.isActive && "(Active)"}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+      {/* Prize Pool Banner */}
+      {activePeriod?.prizePool && (
+        <Card className="bg-gradient-to-r from-orange-500/20 to-amber-500/10 border-orange-500/30">
+          <CardContent className="p-4 text-center">
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <Trophy className="w-5 h-5 text-orange-400" />
+              <span className="text-lg font-bold text-orange-400">
+                {formatSats(activePeriod.prizePool)} sats Prize Pool
+              </span>
+            </div>
+            {activePeriod.prizeDescription && (
+              <p className="text-sm text-zinc-300">{activePeriod.prizeDescription}</p>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Your Position Card */}
+      {myPosition && myPosition.rank && (
+        <Card className="bg-gradient-to-r from-orange-500/10 to-zinc-800 border-orange-500/20">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center">
+                  <Star className="w-5 h-5 text-orange-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-zinc-400">Your Rank</p>
+                  <p className="text-2xl font-bold text-white">#{myPosition.rank}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-zinc-400">Total Earned</p>
+                <p className="text-xl font-bold text-orange-400">{formatSats(myPosition.totalSatoshis)} sats</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Rankings List */}
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+          <Trophy className="w-5 h-5 text-orange-400" />
+          Top Learners
+        </h3>
+        
+        {rankingsLoading ? (
+          <div className="flex items-center justify-center py-10">
+            <Loader2 className="w-6 h-6 animate-spin text-orange-500" />
+          </div>
+        ) : rankings.length === 0 ? (
+          <Card className="bg-zinc-800/30 border-zinc-700">
+            <CardContent className="p-8 text-center">
+              <Trophy className="w-12 h-12 text-zinc-600 mx-auto mb-3" />
+              <p className="text-zinc-400">No rankings yet. Be the first to earn sats!</p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-2">
+            {rankings.map((user) => (
+              <Card 
+                key={user.userId} 
+                className={`border transition-all ${getRankBg(user.rank)} ${user.isCurrentUser ? 'ring-2 ring-orange-500/50' : ''}`}
+              >
+                <CardContent className="p-3">
+                  <div className="flex items-center gap-3">
+                    {/* Rank */}
+                    <div className="w-8 flex-shrink-0 flex justify-center">
+                      {getRankIcon(user.rank)}
+                    </div>
+                    
+                    {/* Avatar */}
+                    <div className="w-10 h-10 rounded-full bg-zinc-700 flex items-center justify-center overflow-hidden flex-shrink-0">
+                      {user.avatarUrl ? (
+                        <img src={user.avatarUrl} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <UserIcon className="w-5 h-5 text-zinc-400" />
+                      )}
+                    </div>
+                    
+                    {/* User Info */}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-white truncate">
+                        {user.displayName || user.username}
+                        {user.isCurrentUser && <span className="text-orange-400 text-xs ml-2">(You)</span>}
+                      </p>
+                      <div className="flex items-center gap-3 text-xs text-zinc-400">
+                        <span className="flex items-center gap-1">
+                          <Flame className="w-3 h-3 text-orange-400" />
+                          {user.streakDays}d streak
+                        </span>
+                        <span>{user.quizzesCompleted} quizzes</span>
+                      </div>
+                    </div>
+                    
+                    {/* Sats */}
+                    <div className="text-right flex-shrink-0">
+                      <p className="font-bold text-orange-400">{formatSats(user.totalSatoshis)}</p>
+                      <p className="text-xs text-zinc-500">sats</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Nearby Competitors */}
+      {myPosition?.nearbyUsers && myPosition.nearbyUsers.length > 0 && myPosition.rank && myPosition.rank > 10 && (
+        <div className="space-y-2 mt-6">
+          <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-orange-400" />
+            Your Competition
+          </h3>
+          <p className="text-sm text-zinc-400 mb-3">Learners ranked near you</p>
+          <div className="space-y-2">
+            {myPosition.nearbyUsers.map((user) => (
+              <Card 
+                key={user.userId} 
+                className={`border transition-all ${user.isCurrentUser ? 'bg-orange-500/10 border-orange-500/30 ring-2 ring-orange-500/50' : 'bg-zinc-800/30 border-zinc-700/50'}`}
+              >
+                <CardContent className="p-3">
+                  <div className="flex items-center gap-3">
+                    <span className="w-8 text-center font-bold text-zinc-400">#{user.rank}</span>
+                    <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center overflow-hidden">
+                      {user.avatarUrl ? (
+                        <img src={user.avatarUrl} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <UserIcon className="w-4 h-4 text-zinc-400" />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-white truncate">
+                        {user.displayName || user.username}
+                        {user.isCurrentUser && <span className="text-orange-400 text-xs ml-2">(You)</span>}
+                      </p>
+                    </div>
+                    <p className="font-bold text-orange-400">{formatSats(user.totalSatoshis)} sats</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
