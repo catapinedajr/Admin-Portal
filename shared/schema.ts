@@ -120,6 +120,7 @@ export const storeProducts = pgTable("store_products", {
   priceUsd: decimal("price_usd", { precision: 10, scale: 2 }).notNull(),
   priceSats: integer("price_sats"),
   imageUrl: text("image_url"),
+  imageKey: text("image_key"), // S3 object key for managed uploads
   category: text("category"),
   stockQuantity: integer("stock_quantity").notNull().default(0),
   isActive: boolean("is_active").notNull().default(true),
@@ -162,6 +163,7 @@ export const affiliateProducts = pgTable("affiliate_products", {
   category: text("category").notNull(), // hardware_wallet, book, course, software
   affiliateUrl: text("affiliate_url").notNull(),
   imageUrl: text("image_url"),
+  imageKey: text("image_key"), // S3 object key for managed uploads
   vendor: text("vendor"), // Ledger, Trezor, Amazon, etc.
   commissionPercent: decimal("commission_percent", { precision: 5, scale: 2 }),
   commissionFlat: decimal("commission_flat", { precision: 10, scale: 2 }),
@@ -193,6 +195,7 @@ export const referralPartners = pgTable("referral_partners", {
   description: text("description"),
   referralUrl: text("referral_url").notNull(),
   logoUrl: text("logo_url"),
+  logoKey: text("logo_key"), // S3 object key for managed uploads
   contactName: text("contact_name"),
   contactEmail: text("contact_email"),
   referralFeeType: text("referral_fee_type").notNull().default("flat"), // flat, percent, tiered
@@ -259,6 +262,7 @@ export const socialPosts = pgTable("social_posts", {
   platform: text("platform").notNull().default("twitter"), // twitter, linkedin, instagram, facebook
   content: text("content").notNull(),
   imageUrl: text("image_url"),
+  imageKey: text("image_key"), // S3 object key for managed uploads
   linkUrl: text("link_url"),
   campaignId: integer("campaign_id").references(() => adCampaigns.id),
   linkedDayIndex: integer("linked_day_index"), // Link to curriculum day for content sourcing
@@ -481,6 +485,7 @@ export const forumPosts = pgTable("forum_posts", {
   isPinned: boolean("is_pinned").notNull().default(false), // Pinned posts appear at top
   flair: text("flair"), // Post type: discussion, question, video, article, meme, security, news, chart
   imageUrl: text("image_url"), // Direct image upload URL
+  imageKey: text("image_key"), // S3 object key for managed uploads
   linkUrl: text("link_url"), // External link (article, YouTube, etc.)
   linkPreview: json("link_preview"), // { title, description, image, siteName, type }
   replyCount: integer("reply_count").notNull().default(0),
@@ -681,7 +686,9 @@ export const adCreatives = pgTable("ad_creatives", {
   ctaText: text("cta_text").notNull(), // Button text like "Learn More", "Get Started"
   ctaUrl: text("cta_url").notNull(), // Destination URL
   imageUrl: text("image_url"), // Main creative image
+  imageKey: text("image_key"), // S3 object key for managed uploads
   logoUrl: text("logo_url"), // Brand logo
+  logoKey: text("logo_key"), // S3 object key for managed uploads
   category: text("category"), // Ad category for targeting (Security, Getting Started, etc.)
   placement: text("placement").notNull().default('in_feed'), // in_feed, sidebar, banner
   isActive: boolean("is_active").notNull().default(true),
