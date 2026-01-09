@@ -197,6 +197,50 @@ async function updateWalletProgress(userId: number, satoshisEarned: number): Pro
   }
 }
 
+export async function awardManualBonus(
+  userId: number,
+  satoshisAmount: number,
+  reason: string
+): Promise<RewardResult> {
+  if (satoshisAmount <= 0) {
+    return {
+      success: false,
+      satoshisEarned: 0,
+      usdValue: 0,
+      message: "Amount must be positive"
+    };
+  }
+
+  const bitcoinPrice = await getCurrentBitcoinPrice();
+  const usdValue = (satoshisAmount / 100000000) * bitcoinPrice;
+  const today = new Date().toISOString().split('T')[0];
+
+  const [earning] = await db
+    .insert(walletEarnings)
+    .values({
+      userId,
+      dayIndex: 0,
+      earningType: 'admin_bonus',
+      satoshisEarned: satoshisAmount,
+      streakMultiplier: "1.00",
+      bitcoinPriceUsd: bitcoinPrice.toString(),
+      usdValueAtEarning: usdValue.toFixed(6),
+      description: reason || 'Admin bonus award',
+      date: today,
+    })
+    .returning();
+
+  await updateWalletProgress(userId, satoshisAmount);
+
+  return {
+    success: true,
+    satoshisEarned: satoshisAmount,
+    usdValue,
+    message: `Manual bonus of ${satoshisAmount} sats awarded!`,
+    earningId: earning.id
+  };
+}
+
 export async function checkAndAwardStreakMilestones(userId: number, streakDays: number): Promise<RewardResult[]> {
   const results: RewardResult[] = [];
   

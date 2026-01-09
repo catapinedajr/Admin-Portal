@@ -138,6 +138,25 @@ function PointsManagementContent() {
     hasPrizes: false,
     prizeDescription: "",
     campaignTag: "",
+    prizeTiers: [
+      { rank: 1, prize: "", value: 0 },
+      { rank: 2, prize: "", value: 0 },
+      { rank: 3, prize: "", value: 0 },
+    ] as { rank: number; prize: string; value: number }[],
+  });
+
+  // Manual award state
+  const [manualAwardOpen, setManualAwardOpen] = useState(false);
+  const [userSearchQuery, setUserSearchQuery] = useState("");
+  const [selectedUser, setSelectedUser] = useState<{ id: number; username: string; email: string } | null>(null);
+  const [awardAmount, setAwardAmount] = useState("");
+  const [awardReason, setAwardReason] = useState("");
+
+  // User search query
+  const { data: searchResults = [] } = useQuery<{ id: number; username: string; email: string; displayName: string | null }[]>({
+    queryKey: ["/api/admin/users/search", userSearchQuery],
+    queryFn: () => fetch(`/api/admin/users/search?q=${encodeURIComponent(userSearchQuery)}`).then(r => r.json()),
+    enabled: userSearchQuery.length >= 2,
   });
 
   const { data: rewardConfigs = [], isLoading: configsLoading } = useQuery<RewardConfig[]>({
@@ -244,6 +263,25 @@ function PointsManagementContent() {
     },
     onError: (error: Error) => {
       toast({ title: "Failed to deliver", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const manualAwardMutation = useMutation({
+    mutationFn: async (data: { userId: number; amount: number; reason: string }) => {
+      const res = await apiRequest("POST", "/api/admin/rewards/manual-award", data);
+      return res.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/rewards/stats"] });
+      toast({ title: "Points Awarded", description: data.message });
+      setManualAwardOpen(false);
+      setSelectedUser(null);
+      setAwardAmount("");
+      setAwardReason("");
+      setUserSearchQuery("");
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to award", description: error.message, variant: "destructive" });
     },
   });
 
@@ -564,6 +602,28 @@ function PointsManagementContent() {
           </TabsContent>
 
           <TabsContent value="prizes" className="space-y-6">
+            {/* Manual Award Section */}
+            <Card className="bg-zinc-800/50 border-zinc-700">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-white flex items-center gap-2">
+                      <Zap className="w-5 h-5 text-yellow-500" />
+                      Manual Award Points
+                    </CardTitle>
+                    <CardDescription>Award bonus points to individual users</CardDescription>
+                  </div>
+                  <Button
+                    className="bg-orange-500 hover:bg-orange-600"
+                    onClick={() => setManualAwardOpen(true)}
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Award Points
+                  </Button>
+                </div>
+              </CardHeader>
+            </Card>
+
             <Card className="bg-zinc-800/50 border-zinc-700">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
@@ -869,6 +929,99 @@ function PointsManagementContent() {
               </Table>
             )}
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Manual Award Dialog */}
+      <Dialog open={manualAwardOpen} onOpenChange={setManualAwardOpen}>
+        <DialogContent className="bg-zinc-900 border-zinc-700">
+          <DialogHeader>
+            <DialogTitle className="text-white">Award Points to User</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label className="text-zinc-400">Search User</Label>
+              <Input
+                value={userSearchQuery}
+                onChange={(e) => {
+                  setUserSearchQuery(e.target.value);
+                  setSelectedUser(null);
+                }}
+                className="bg-zinc-800 border-zinc-700 text-white"
+                placeholder="Search by username or email..."
+              />
+              {searchResults.length > 0 && !selectedUser && (
+                <div className="mt-2 bg-zinc-800 border border-zinc-700 rounded-lg max-h-40 overflow-y-auto">
+                  {searchResults.map((user) => (
+                    <div
+                      key={user.id}
+                      className="p-2 hover:bg-zinc-700 cursor-pointer flex justify-between items-center"
+                      onClick={() => {
+                        setSelectedUser(user);
+                        setUserSearchQuery(user.username);
+                      }}
+                    >
+                      <span className="text-white">{user.username}</span>
+                      <span className="text-zinc-500 text-sm">{user.email}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {selectedUser && (
+                <div className="mt-2 p-2 bg-green-900/20 border border-green-700/50 rounded-lg flex justify-between items-center">
+                  <span className="text-green-400">Selected: {selectedUser.username}</span>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="text-zinc-400 hover:text-white"
+                    onClick={() => {
+                      setSelectedUser(null);
+                      setUserSearchQuery("");
+                    }}
+                  >
+                    Change
+                  </Button>
+                </div>
+              )}
+            </div>
+            <div>
+              <Label className="text-zinc-400">Amount (sats)</Label>
+              <Input
+                type="number"
+                value={awardAmount}
+                onChange={(e) => setAwardAmount(e.target.value)}
+                className="bg-zinc-800 border-zinc-700 text-white"
+                placeholder="e.g., 1000"
+              />
+            </div>
+            <div>
+              <Label className="text-zinc-400">Reason</Label>
+              <Textarea
+                value={awardReason}
+                onChange={(e) => setAwardReason(e.target.value)}
+                className="bg-zinc-800 border-zinc-700 text-white"
+                placeholder="e.g., Beta tester reward, Contest winner, Customer support gesture"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setManualAwardOpen(false)}>Cancel</Button>
+            <Button
+              className="bg-orange-500 hover:bg-orange-600"
+              onClick={() => {
+                if (selectedUser && awardAmount) {
+                  manualAwardMutation.mutate({
+                    userId: selectedUser.id,
+                    amount: parseInt(awardAmount),
+                    reason: awardReason,
+                  });
+                }
+              }}
+              disabled={!selectedUser || !awardAmount || manualAwardMutation.isPending}
+            >
+              {manualAwardMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Award Points"}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </AdminLayout>
