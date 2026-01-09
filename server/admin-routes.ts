@@ -6,6 +6,7 @@ import { adminAuthService } from "./admin-auth";
 import { db } from "./db";
 import { registerEmailRoutes } from "./email-routes";
 import * as s3Service from "./s3-service";
+import { awardPoints } from "./rewards-service";
 
 // Rate limiter for admin login (strict security)
 const adminLoginRateLimiter = rateLimit({
@@ -5569,6 +5570,103 @@ Return ONLY the post content, nothing else.`;
     } catch (error) {
       console.error("Error fetching pending prizes:", error);
       res.status(500).json({ message: "Failed to fetch pending prizes" });
+    }
+  });
+
+  // Manual award points to a user
+  app.post("/api/admin/rewards/manual-award", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { userId, amount, reason, category } = req.body;
+      
+      if (!userId || !amount || amount <= 0) {
+        return res.status(400).json({ message: "User ID and positive amount are required" });
+      }
+
+      // Get user info
+      const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Get current Bitcoin price for USD value calculation
+      let btcPrice = 100000; // Default fallback
+      try {
+        const priceRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+        const priceData = await priceRes.json();
+        btcPrice = priceData.bitcoin?.usd || 100000;
+      } catch (e) {
+        console.log("Using default BTC price for manual award");
+      }
+
+      const usdValue = (amount / 100000000) * btcPrice;
+
+      // Insert the earning record
+      await db.insert(walletEarnings).values({
+        userId,
+        earningType: 'admin_bonus',
+        satoshisEarned: amount,
+        usdValueAtEarning: usdValue.toFixed(6),
+        description: reason || `Manual award by admin`,
+        earnedAt: new Date(),
+      });
+
+      // Update user's total satoshis
+      const [existingProgress] = await db.select()
+        .from(userWalletProgress)
+        .where(eq(userWalletProgress.userId, userId))
+        .limit(1);
+
+      if (existingProgress) {
+        await db.update(userWalletProgress)
+          .set({
+            totalSatoshisEarned: existingProgress.totalSatoshisEarned + amount,
+            lastUpdated: new Date(),
+          })
+          .where(eq(userWalletProgress.userId, userId));
+      } else {
+        await db.insert(userWalletProgress).values({
+          userId,
+          totalSatoshisEarned: amount,
+          lastUpdated: new Date(),
+        });
+      }
+
+      res.json({
+        success: true,
+        message: `Awarded ${amount.toLocaleString()} sats to ${user.username}`,
+        satoshisAwarded: amount,
+        usdValue,
+        userId,
+        username: user.username,
+      });
+    } catch (error) {
+      console.error("Error awarding manual points:", error);
+      res.status(500).json({ message: "Failed to award points" });
+    }
+  });
+
+  // Search users for manual award
+  app.get("/api/admin/users/search", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const query = req.query.q as string;
+      if (!query || query.length < 2) {
+        return res.json([]);
+      }
+
+      const matchingUsers = await db.select({
+        id: users.id,
+        username: users.username,
+        email: users.email,
+        displayName: users.displayName,
+      })
+        .from(users)
+        .where(sql`${users.username} ILIKE ${'%' + query + '%'} OR ${users.email} ILIKE ${'%' + query + '%'}`)
+        .limit(10);
+
+      res.json(matchingUsers);
+    } catch (error) {
+      console.error("Error searching users:", error);
+      res.status(500).json({ message: "Failed to search users" });
     }
   });
 
