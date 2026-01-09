@@ -197,7 +197,20 @@ function PointsManagementContent() {
 
   const createLeaderboardMutation = useMutation({
     mutationFn: async (data: typeof newPeriod) => {
-      const res = await apiRequest("POST", "/api/admin/leaderboards", data);
+      // Transform prizeTiers to prizeConfig format for backend
+      const payload = {
+        name: data.name,
+        periodType: data.periodType,
+        startDate: data.startDate,
+        endDate: data.endDate,
+        hasPrizes: data.hasPrizes,
+        prizeDescription: data.prizeDescription,
+        campaignTag: data.campaignTag,
+        prizeConfig: data.hasPrizes && data.prizeTiers.length > 0
+          ? { positions: data.prizeTiers.filter(t => t.prize.trim() !== "").map(t => ({ rank: t.rank, prize: t.prize, value: t.value })) }
+          : null,
+      };
+      const res = await apiRequest("POST", "/api/admin/leaderboards", payload);
       return res.json();
     },
     onSuccess: () => {
@@ -212,6 +225,11 @@ function PointsManagementContent() {
         hasPrizes: false,
         prizeDescription: "",
         campaignTag: "",
+        prizeTiers: [
+          { rank: 1, prize: "", value: 0 },
+          { rank: 2, prize: "", value: 0 },
+          { rank: 3, prize: "", value: 0 },
+        ],
       });
     },
     onError: (error: Error) => {
@@ -566,10 +584,26 @@ function PointsManagementContent() {
                       <div className="text-sm text-zinc-400 mb-4">
                         <p>{new Date(period.startDate).toLocaleDateString()} - {new Date(period.endDate).toLocaleDateString()}</p>
                         {period.hasPrizes && (
+                          <>
                           <p className="text-orange-400 flex items-center gap-1 mt-1">
                             <Gift className="w-3 h-3" />
                             {period.prizeDescription}
                           </p>
+                          {period.prizeConfig?.positions && period.prizeConfig.positions.length > 0 && (
+                            <div className="mt-2 space-y-1">
+                              {period.prizeConfig.positions.slice(0, 3).map((pos) => (
+                                <div key={pos.rank} className="flex justify-between text-xs">
+                                  <span className="text-zinc-500">#{pos.rank}</span>
+                                  <span className="text-zinc-300">{pos.prize}</span>
+                                  {pos.value && <span className="text-green-400">${pos.value}</span>}
+                                </div>
+                              ))}
+                              {period.prizeConfig.positions.length > 3 && (
+                                <p className="text-xs text-zinc-500">+{period.prizeConfig.positions.length - 3} more prizes</p>
+                              )}
+                            </div>
+                          )}
+                          </>
                         )}
                       </div>
                       <div className="flex gap-2">
@@ -823,6 +857,7 @@ function PointsManagementContent() {
               />
             </div>
             {newPeriod.hasPrizes && (
+              <>
               <div>
                 <Label className="text-zinc-400">Prize Description</Label>
                 <Textarea
@@ -832,6 +867,80 @@ function PointsManagementContent() {
                   placeholder="Top 10 win hardware wallets"
                 />
               </div>
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <Label className="text-zinc-400">Prize Tiers</Label>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    className="border-zinc-600 text-zinc-400"
+                    onClick={() => setNewPeriod({
+                      ...newPeriod,
+                      prizeTiers: [...newPeriod.prizeTiers, { rank: newPeriod.prizeTiers.length + 1, prize: "", value: 0 }]
+                    })}
+                  >
+                    <Plus className="w-3 h-3 mr-1" /> Add Tier
+                  </Button>
+                </div>
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {newPeriod.prizeTiers.map((tier, idx) => (
+                    <div key={idx} className="flex gap-2 items-center">
+                      <div className="w-16">
+                        <Input
+                          type="number"
+                          value={tier.rank}
+                          onChange={(e) => {
+                            const updated = [...newPeriod.prizeTiers];
+                            updated[idx].rank = parseInt(e.target.value) || 0;
+                            setNewPeriod({ ...newPeriod, prizeTiers: updated });
+                          }}
+                          className="bg-zinc-800 border-zinc-700 text-white text-sm"
+                          placeholder="#"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <Input
+                          value={tier.prize}
+                          onChange={(e) => {
+                            const updated = [...newPeriod.prizeTiers];
+                            updated[idx].prize = e.target.value;
+                            setNewPeriod({ ...newPeriod, prizeTiers: updated });
+                          }}
+                          className="bg-zinc-800 border-zinc-700 text-white text-sm"
+                          placeholder="Prize name (e.g., Hardware Wallet)"
+                        />
+                      </div>
+                      <div className="w-24">
+                        <Input
+                          type="number"
+                          value={tier.value}
+                          onChange={(e) => {
+                            const updated = [...newPeriod.prizeTiers];
+                            updated[idx].value = parseInt(e.target.value) || 0;
+                            setNewPeriod({ ...newPeriod, prizeTiers: updated });
+                          }}
+                          className="bg-zinc-800 border-zinc-700 text-white text-sm"
+                          placeholder="Value $"
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        className="text-red-400 hover:text-red-300 p-1"
+                        onClick={() => {
+                          const updated = newPeriod.prizeTiers.filter((_, i) => i !== idx);
+                          setNewPeriod({ ...newPeriod, prizeTiers: updated });
+                        }}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              </>
             )}
           </div>
           <DialogFooter>
@@ -912,10 +1021,13 @@ function PointsManagementContent() {
                             size="sm"
                             variant="outline"
                             className="border-orange-600 text-orange-400"
-                            onClick={() => approvePrizeMutation.mutate({
-                              entryId: entry.id,
-                              prizeWon: `Rank #${entry.rank} Prize`
-                            })}
+                            onClick={() => {
+                              const prizeFromConfig = selectedPeriod?.prizeConfig?.positions?.find(p => p.rank === entry.rank);
+                              approvePrizeMutation.mutate({
+                                entryId: entry.id,
+                                prizeWon: prizeFromConfig?.prize || `Rank #${entry.rank} Prize`
+                              });
+                            }}
                           >
                             Approve
                           </Button>
