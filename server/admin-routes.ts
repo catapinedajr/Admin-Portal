@@ -4390,6 +4390,14 @@ Return ONLY the post content, nothing else.`;
     try {
       const { type } = req.params;
       
+      // Check if record exists
+      const [existing] = await db.select().from(aiInstructions).where(eq(aiInstructions.type, type));
+      
+      if (!existing) {
+        // Nothing to lock if no custom instructions exist
+        return res.status(400).json({ message: "No instructions to lock. Save instructions first." });
+      }
+      
       await db.update(aiInstructions)
         .set({ isLocked: true, updatedBy: req.admin?.id, updatedAt: new Date() })
         .where(eq(aiInstructions.type, type));
@@ -4411,9 +4419,23 @@ Return ONLY the post content, nothing else.`;
         return res.status(400).json({ message: "Confirmation required to unlock", requiresConfirmation: true });
       }
       
-      await db.update(aiInstructions)
-        .set({ isLocked: false, updatedBy: req.admin?.id, updatedAt: new Date() })
-        .where(eq(aiInstructions.type, type));
+      // Check if record exists, if not create it first in unlocked state
+      const [existing] = await db.select().from(aiInstructions).where(eq(aiInstructions.type, type));
+      
+      if (!existing) {
+        // Create a new unlocked record with empty instructions (frontend will use defaults)
+        await db.insert(aiInstructions).values({
+          type,
+          name: `${type.charAt(0).toUpperCase() + type.slice(1)} AI Instructions`,
+          instructions: '',
+          isLocked: false,
+          updatedBy: req.admin?.id,
+        });
+      } else {
+        await db.update(aiInstructions)
+          .set({ isLocked: false, updatedBy: req.admin?.id, updatedAt: new Date() })
+          .where(eq(aiInstructions.type, type));
+      }
       
       res.json({ message: "Instructions unlocked successfully", isLocked: false });
     } catch (error) {

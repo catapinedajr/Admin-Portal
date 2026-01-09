@@ -178,7 +178,7 @@ function AIInstructionsEditor({ type, defaultInstructions }: { type: 'content' |
   });
 
   useEffect(() => {
-    if (instructionsData?.exists) {
+    if (instructionsData?.exists && instructionsData.instructions) {
       setEditedInstructions(instructionsData.instructions);
     } else {
       setEditedInstructions(defaultInstructions);

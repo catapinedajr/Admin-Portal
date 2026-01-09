@@ -160,7 +160,7 @@ function EmailAIInstructionsEditor() {
   });
 
   useEffect(() => {
-    if (instructionsData?.exists) {
+    if (instructionsData?.exists && instructionsData.instructions) {
       setEditedInstructions(instructionsData.instructions);
     } else {
       setEditedInstructions(DEFAULT_EMAIL_INSTRUCTIONS);
