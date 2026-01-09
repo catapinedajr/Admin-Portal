@@ -1147,6 +1147,71 @@ export const streakInsurance = pgTable("streak_insurance", {
 });
 
 // ============================================
+// POINTS REWARD CONFIGURATION
+// ============================================
+
+// Configurable reward values for each earning type
+export const rewardConfig = pgTable("reward_config", {
+  id: serial("id").primaryKey(),
+  rewardType: text("reward_type").notNull().unique(), // quiz_correct, quiz_perfect, daily_complete, streak_7, streak_30, streak_365, simulator_complete, referral_signup, referral_streak_7, referral_subscription, community_post, community_upvote
+  displayName: text("display_name").notNull(),
+  description: text("description"),
+  category: text("category").notNull(), // 'learning', 'streak', 'referral', 'community', 'bonus'
+  baseSatoshis: integer("base_satoshis").notNull(), // Base reward amount
+  multiplierEligible: boolean("multiplier_eligible").notNull().default(true), // Whether streak multiplier applies
+  maxPerDay: integer("max_per_day"), // Daily limit (null = unlimited)
+  isActive: boolean("is_active").notNull().default(true),
+  sortOrder: integer("sort_order").notNull().default(0),
+  iconName: text("icon_name"), // Lucide icon name for UI
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Leaderboard periods - weekly, monthly campaigns with optional prizes
+export const leaderboardPeriods = pgTable("leaderboard_periods", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(), // "Week 1 Challenge", "January 2026 Competition"
+  periodType: text("period_type").notNull(), // 'weekly', 'monthly', 'custom', 'all_time'
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  isActive: boolean("is_active").notNull().default(true),
+  // Prize configuration
+  hasPrizes: boolean("has_prizes").notNull().default(false),
+  prizeDescription: text("prize_description"), // "Top 10 win hardware wallets"
+  prizeConfig: json("prize_config").$type<{
+    positions: { rank: number; prize: string; value?: number }[];
+  }>(),
+  // Campaign tagging for marketing
+  campaignTag: text("campaign_tag"), // "launch_week", "holiday_special"
+  createdBy: integer("created_by").references(() => adminUsers.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Leaderboard entries - computed periodically
+export const leaderboardEntries = pgTable("leaderboard_entries", {
+  id: serial("id").primaryKey(),
+  periodId: integer("period_id").notNull().references(() => leaderboardPeriods.id, { onDelete: 'cascade' }),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  totalSatoshis: integer("total_satoshis").notNull().default(0),
+  rank: integer("rank").notNull(),
+  // Breakdown by category
+  learningSatoshis: integer("learning_satoshis").notNull().default(0),
+  streakSatoshis: integer("streak_satoshis").notNull().default(0),
+  referralSatoshis: integer("referral_satoshis").notNull().default(0),
+  communitySatoshis: integer("community_satoshis").notNull().default(0),
+  // Prize status
+  prizeWon: text("prize_won"), // Prize description if winner
+  prizeApproved: boolean("prize_approved").default(false),
+  prizeApprovedBy: integer("prize_approved_by").references(() => adminUsers.id),
+  prizeApprovedAt: timestamp("prize_approved_at"),
+  prizeDelivered: boolean("prize_delivered").default(false),
+  prizeDeliveredAt: timestamp("prize_delivered_at"),
+  prizeNotes: text("prize_notes"), // Admin notes about delivery
+  lastUpdated: timestamp("last_updated").notNull().defaultNow(),
+});
+
+// ============================================
 // REFERRAL SYSTEM
 // ============================================
 
@@ -1213,6 +1278,23 @@ export const insertStreakInsuranceSchema = createInsertSchema(streakInsurance).o
   purchasedAt: true,
 });
 
+export const insertRewardConfigSchema = createInsertSchema(rewardConfig).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertLeaderboardPeriodSchema = createInsertSchema(leaderboardPeriods).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertLeaderboardEntrySchema = createInsertSchema(leaderboardEntries).omit({
+  id: true,
+  lastUpdated: true,
+});
+
 export type EmailCollection = typeof emailCollections.$inferSelect;
 export type InsertEmailCollection = z.infer<typeof insertEmailCollectionSchema>;
 export type UserWalletProgress = typeof userWalletProgress.$inferSelect;
@@ -1225,6 +1307,12 @@ export type StreakReward = typeof streakRewards.$inferSelect;
 export type InsertStreakReward = z.infer<typeof insertStreakRewardSchema>;
 export type StreakInsurance = typeof streakInsurance.$inferSelect;
 export type InsertStreakInsurance = z.infer<typeof insertStreakInsuranceSchema>;
+export type RewardConfig = typeof rewardConfig.$inferSelect;
+export type InsertRewardConfig = z.infer<typeof insertRewardConfigSchema>;
+export type LeaderboardPeriod = typeof leaderboardPeriods.$inferSelect;
+export type InsertLeaderboardPeriod = z.infer<typeof insertLeaderboardPeriodSchema>;
+export type LeaderboardEntry = typeof leaderboardEntries.$inferSelect;
+export type InsertLeaderboardEntry = z.infer<typeof insertLeaderboardEntrySchema>;
 export type ReferralCode = typeof referralCodes.$inferSelect;
 export type InsertReferralCode = z.infer<typeof insertReferralCodeSchema>;
 export type ReferralEvent = typeof referralEvents.$inferSelect;

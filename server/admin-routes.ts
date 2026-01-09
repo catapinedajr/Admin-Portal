@@ -27,8 +27,8 @@ const imageGenerationRateLimiter = rateLimit({
   keyGenerator: (req: AdminRequest) => req.admin?.id?.toString() || 'anonymous',
   validate: { xForwardedForHeader: false, default: true },
 });
-import { adminLoginSchema, adminUsers, adminSessions, adminPasswordResetTokens, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema, systemSettings, aiInstructions, insertAiInstructionsSchema, socialIntegrations, paywallSettings, advertisingClients, affiliateProducts, referralPartners, referralSignups, invoices, socialPosts, socialAccounts, forumCategories } from "@shared/schema";
-import { count, eq, sql, and, sum, isNull } from "drizzle-orm";
+import { adminLoginSchema, adminUsers, adminSessions, adminPasswordResetTokens, contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentDaySummaries, users, adCampaigns, storeProducts, storeOrders, crmCompanies, crmContacts, crmDeals, crmActivities, insertCrmCompanySchema, insertCrmContactSchema, insertCrmDealSchema, insertCrmActivitySchema, crmDealStages, crmOpportunityTypes, crmAccountTypes, roadmapIdeas, roadmapReleases, objectives, keyResults, keyResultUpdates, insertRoadmapIdeaSchema, insertRoadmapReleaseSchema, insertObjectiveSchema, insertKeyResultSchema, insertKeyResultUpdateSchema, userProgress, forumPosts, forumReplies, adImpressions, adClicks, kpiTargets, insertKpiTargetSchema, systemSettings, aiInstructions, insertAiInstructionsSchema, socialIntegrations, paywallSettings, advertisingClients, affiliateProducts, referralPartners, referralSignups, invoices, socialPosts, socialAccounts, forumCategories, rewardConfig, leaderboardPeriods, leaderboardEntries, walletEarnings, userWalletProgress } from "@shared/schema";
+import { count, eq, sql, and, sum, isNull, desc, gte, lte } from "drizzle-orm";
 
 interface AdminRequest extends Request {
   admin?: any;
@@ -5254,6 +5254,321 @@ Return ONLY the post content, nothing else.`;
     } catch (error) {
       console.error("Error deleting S3 object:", error);
       res.status(500).json({ message: "Failed to delete file" });
+    }
+  });
+
+  // ==================== POINTS & REWARDS MANAGEMENT ====================
+  
+  // Get all reward configurations
+  app.get("/api/admin/rewards/config", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const configs = await db.select().from(rewardConfig).orderBy(rewardConfig.sortOrder);
+      res.json(configs);
+    } catch (error) {
+      console.error("Error fetching reward configs:", error);
+      res.status(500).json({ message: "Failed to fetch reward configurations" });
+    }
+  });
+
+  // Update reward configuration
+  app.patch("/api/admin/rewards/config/:id", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { id } = req.params;
+      const { baseSatoshis, multiplierEligible, maxPerDay, isActive, displayName, description } = req.body;
+      
+      const [updated] = await db.update(rewardConfig)
+        .set({
+          ...(baseSatoshis !== undefined && { baseSatoshis }),
+          ...(multiplierEligible !== undefined && { multiplierEligible }),
+          ...(maxPerDay !== undefined && { maxPerDay }),
+          ...(isActive !== undefined && { isActive }),
+          ...(displayName !== undefined && { displayName }),
+          ...(description !== undefined && { description }),
+          updatedAt: new Date(),
+        })
+        .where(eq(rewardConfig.id, parseInt(id)))
+        .returning();
+      
+      if (!updated) {
+        return res.status(404).json({ message: "Reward config not found" });
+      }
+      
+      res.json(updated);
+    } catch (error) {
+      console.error("Error updating reward config:", error);
+      res.status(500).json({ message: "Failed to update reward configuration" });
+    }
+  });
+
+  // Get reward stats summary
+  app.get("/api/admin/rewards/stats", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      // Get total sats earned across all users
+      const [totalStats] = await db.select({
+        totalSatoshis: sql<number>`COALESCE(SUM(${walletEarnings.satoshisEarned}), 0)`,
+        totalEarnings: count(),
+      }).from(walletEarnings);
+
+      // Get top earners
+      const topEarners = await db.select({
+        userId: userWalletProgress.userId,
+        username: users.username,
+        totalSatoshis: userWalletProgress.totalSatoshisEarned,
+      })
+        .from(userWalletProgress)
+        .innerJoin(users, eq(users.id, userWalletProgress.userId))
+        .orderBy(desc(userWalletProgress.totalSatoshisEarned))
+        .limit(10);
+
+      // Get earnings by category
+      const earningsByType = await db.select({
+        earningType: walletEarnings.earningType,
+        totalSatoshis: sql<number>`COALESCE(SUM(${walletEarnings.satoshisEarned}), 0)`,
+        count: count(),
+      })
+        .from(walletEarnings)
+        .groupBy(walletEarnings.earningType);
+
+      res.json({
+        totalSatoshisEarned: totalStats?.totalSatoshis || 0,
+        totalEarnings: totalStats?.totalEarnings || 0,
+        topEarners,
+        earningsByType,
+      });
+    } catch (error) {
+      console.error("Error fetching reward stats:", error);
+      res.status(500).json({ message: "Failed to fetch reward stats" });
+    }
+  });
+
+  // ==================== LEADERBOARD MANAGEMENT ====================
+  
+  // Get all leaderboard periods
+  app.get("/api/admin/leaderboards", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const periods = await db.select().from(leaderboardPeriods).orderBy(desc(leaderboardPeriods.startDate));
+      res.json(periods);
+    } catch (error) {
+      console.error("Error fetching leaderboards:", error);
+      res.status(500).json({ message: "Failed to fetch leaderboards" });
+    }
+  });
+
+  // Create leaderboard period
+  app.post("/api/admin/leaderboards", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { name, periodType, startDate, endDate, hasPrizes, prizeDescription, prizeConfig, campaignTag } = req.body;
+      
+      const [period] = await db.insert(leaderboardPeriods).values({
+        name,
+        periodType,
+        startDate: new Date(startDate),
+        endDate: new Date(endDate),
+        hasPrizes: hasPrizes || false,
+        prizeDescription,
+        prizeConfig,
+        campaignTag,
+        createdBy: req.admin?.id,
+      }).returning();
+      
+      res.json(period);
+    } catch (error) {
+      console.error("Error creating leaderboard:", error);
+      res.status(500).json({ message: "Failed to create leaderboard period" });
+    }
+  });
+
+  // Update leaderboard period
+  app.patch("/api/admin/leaderboards/:id", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { id } = req.params;
+      const updates = { ...req.body, updatedAt: new Date() };
+      delete updates.id; // Don't allow ID update
+      
+      if (updates.startDate) updates.startDate = new Date(updates.startDate);
+      if (updates.endDate) updates.endDate = new Date(updates.endDate);
+      
+      const [period] = await db.update(leaderboardPeriods)
+        .set(updates)
+        .where(eq(leaderboardPeriods.id, parseInt(id)))
+        .returning();
+      
+      if (!period) {
+        return res.status(404).json({ message: "Leaderboard period not found" });
+      }
+      
+      res.json(period);
+    } catch (error) {
+      console.error("Error updating leaderboard:", error);
+      res.status(500).json({ message: "Failed to update leaderboard period" });
+    }
+  });
+
+  // Get leaderboard entries for a period
+  app.get("/api/admin/leaderboards/:id/entries", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { id } = req.params;
+      
+      const entries = await db.select({
+        entry: leaderboardEntries,
+        user: {
+          id: users.id,
+          username: users.username,
+          email: users.email,
+        }
+      })
+        .from(leaderboardEntries)
+        .innerJoin(users, eq(users.id, leaderboardEntries.userId))
+        .where(eq(leaderboardEntries.periodId, parseInt(id)))
+        .orderBy(leaderboardEntries.rank);
+      
+      res.json(entries.map(e => ({ ...e.entry, user: e.user })));
+    } catch (error) {
+      console.error("Error fetching leaderboard entries:", error);
+      res.status(500).json({ message: "Failed to fetch leaderboard entries" });
+    }
+  });
+
+  // Compute/refresh leaderboard entries for a period
+  app.post("/api/admin/leaderboards/:id/compute", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { id } = req.params;
+      
+      // Get the period
+      const [period] = await db.select().from(leaderboardPeriods).where(eq(leaderboardPeriods.id, parseInt(id)));
+      if (!period) {
+        return res.status(404).json({ message: "Leaderboard period not found" });
+      }
+
+      // Get all users with earnings in this period
+      const userEarnings = await db.select({
+        userId: walletEarnings.userId,
+        totalSatoshis: sql<number>`COALESCE(SUM(${walletEarnings.satoshisEarned}), 0)`,
+        learningSatoshis: sql<number>`COALESCE(SUM(CASE WHEN ${walletEarnings.earningType} IN ('quiz_question', 'quiz_completion', 'simulator') THEN ${walletEarnings.satoshisEarned} ELSE 0 END), 0)`,
+        streakSatoshis: sql<number>`COALESCE(SUM(CASE WHEN ${walletEarnings.earningType} LIKE 'streak%' THEN ${walletEarnings.satoshisEarned} ELSE 0 END), 0)`,
+        referralSatoshis: sql<number>`COALESCE(SUM(CASE WHEN ${walletEarnings.earningType} LIKE 'referral%' THEN ${walletEarnings.satoshisEarned} ELSE 0 END), 0)`,
+        communitySatoshis: sql<number>`COALESCE(SUM(CASE WHEN ${walletEarnings.earningType} LIKE 'community%' THEN ${walletEarnings.satoshisEarned} ELSE 0 END), 0)`,
+      })
+        .from(walletEarnings)
+        .where(and(
+          gte(walletEarnings.earnedAt, period.startDate),
+          lte(walletEarnings.earnedAt, period.endDate)
+        ))
+        .groupBy(walletEarnings.userId)
+        .orderBy(desc(sql`SUM(${walletEarnings.satoshisEarned})`));
+
+      // Clear existing entries for this period
+      await db.delete(leaderboardEntries).where(eq(leaderboardEntries.periodId, parseInt(id)));
+
+      // Insert new entries with ranks
+      if (userEarnings.length > 0) {
+        const entries = userEarnings.map((earning, index) => ({
+          periodId: parseInt(id),
+          userId: earning.userId,
+          totalSatoshis: earning.totalSatoshis,
+          rank: index + 1,
+          learningSatoshis: earning.learningSatoshis,
+          streakSatoshis: earning.streakSatoshis,
+          referralSatoshis: earning.referralSatoshis,
+          communitySatoshis: earning.communitySatoshis,
+        }));
+
+        await db.insert(leaderboardEntries).values(entries);
+      }
+
+      res.json({ 
+        message: `Leaderboard computed with ${userEarnings.length} entries`,
+        entryCount: userEarnings.length,
+      });
+    } catch (error) {
+      console.error("Error computing leaderboard:", error);
+      res.status(500).json({ message: "Failed to compute leaderboard" });
+    }
+  });
+
+  // ==================== PRIZE MANAGEMENT ====================
+  
+  // Approve prize for a leaderboard entry
+  app.post("/api/admin/leaderboards/entries/:entryId/approve-prize", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { entryId } = req.params;
+      const { prizeWon } = req.body;
+      
+      const [entry] = await db.update(leaderboardEntries)
+        .set({
+          prizeWon,
+          prizeApproved: true,
+          prizeApprovedBy: req.admin?.id,
+          prizeApprovedAt: new Date(),
+        })
+        .where(eq(leaderboardEntries.id, parseInt(entryId)))
+        .returning();
+      
+      if (!entry) {
+        return res.status(404).json({ message: "Leaderboard entry not found" });
+      }
+      
+      res.json(entry);
+    } catch (error) {
+      console.error("Error approving prize:", error);
+      res.status(500).json({ message: "Failed to approve prize" });
+    }
+  });
+
+  // Mark prize as delivered
+  app.post("/api/admin/leaderboards/entries/:entryId/deliver-prize", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { entryId } = req.params;
+      const { prizeNotes } = req.body;
+      
+      const [entry] = await db.update(leaderboardEntries)
+        .set({
+          prizeDelivered: true,
+          prizeDeliveredAt: new Date(),
+          prizeNotes,
+        })
+        .where(eq(leaderboardEntries.id, parseInt(entryId)))
+        .returning();
+      
+      if (!entry) {
+        return res.status(404).json({ message: "Leaderboard entry not found" });
+      }
+      
+      res.json(entry);
+    } catch (error) {
+      console.error("Error delivering prize:", error);
+      res.status(500).json({ message: "Failed to mark prize as delivered" });
+    }
+  });
+
+  // Get all pending prizes (approved but not delivered)
+  app.get("/api/admin/rewards/pending-prizes", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const pendingPrizes = await db.select({
+        entry: leaderboardEntries,
+        user: {
+          id: users.id,
+          username: users.username,
+          email: users.email,
+        },
+        period: {
+          id: leaderboardPeriods.id,
+          name: leaderboardPeriods.name,
+        }
+      })
+        .from(leaderboardEntries)
+        .innerJoin(users, eq(users.id, leaderboardEntries.userId))
+        .innerJoin(leaderboardPeriods, eq(leaderboardPeriods.id, leaderboardEntries.periodId))
+        .where(and(
+          eq(leaderboardEntries.prizeApproved, true),
+          eq(leaderboardEntries.prizeDelivered, false)
+        ))
+        .orderBy(leaderboardEntries.prizeApprovedAt);
+      
+      res.json(pendingPrizes.map(p => ({ ...p.entry, user: p.user, period: p.period })));
+    } catch (error) {
+      console.error("Error fetching pending prizes:", error);
+      res.status(500).json({ message: "Failed to fetch pending prizes" });
     }
   });
 
