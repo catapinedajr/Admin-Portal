@@ -21,9 +21,7 @@ interface WalletData {
 interface LeaderboardPosition {
   rank: number | null;
   totalSatoshis: number;
-  percentile: number | null;
-  totalParticipants: number;
-  periodName: string | null;
+  periodName: string;
   nearbyUsers: {
     rank: number;
     userId: number;
@@ -31,6 +29,8 @@ interface LeaderboardPosition {
     displayName: string | null;
     avatarUrl: string | null;
     totalSatoshis: number;
+    streakDays: number;
+    quizzesCompleted: number;
     isCurrentUser: boolean;
   }[];
 }
@@ -156,17 +156,12 @@ export default function WalletSummaryCard() {
             <div className="flex items-center gap-2">
               <Trophy className="w-4 h-4 text-orange-400" />
               <span className="text-sm font-semibold text-white">
-                #{leaderboardPosition.rank}
+                Rank #{leaderboardPosition.rank}
               </span>
-              {leaderboardPosition.percentile && leaderboardPosition.percentile <= 10 && (
-                <Badge className="bg-orange-500/30 text-orange-300 border-orange-500/40 text-xs px-1.5 py-0">
-                  Top {leaderboardPosition.percentile}%
-                </Badge>
-              )}
             </div>
 
             {/* Next rival info */}
-            {nextRival && satsToRival !== null && (
+            {nextRival && satsToRival !== null && satsToRival > 0 && (
               <div className="flex items-center gap-2 text-xs">
                 {nextRival.avatarUrl ? (
                   <img 
@@ -185,8 +180,8 @@ export default function WalletSummaryCard() {
               </div>
             )}
 
-            {/* Fallback: show total participants */}
-            {!nextRival && leaderboardPosition.rank === 1 && (
+            {/* Show "Leading!" when #1 */}
+            {leaderboardPosition.rank === 1 && (
               <div className="flex items-center gap-1 text-xs text-orange-300">
                 <Star className="w-3 h-3" />
                 <span>Leading!</span>
