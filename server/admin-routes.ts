@@ -5440,6 +5440,41 @@ Return ONLY the post content, nothing else.`;
     }
   });
 
+  // ==================== INTEGRATIONS STATUS ====================
+  
+  // Get integration status overview
+  app.get("/api/admin/integrations/status", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { isSNSConfigured } = await import('./push-notification-service');
+      
+      res.json({
+        aws_s3: {
+          configured: !!(process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY && process.env.AWS_S3_BUCKET),
+          bucket: process.env.AWS_S3_BUCKET,
+          region: process.env.AWS_REGION || 'us-east-1',
+          cloudfront: process.env.AWS_CLOUDFRONT_DOMAIN,
+        },
+        aws_sns: {
+          configured: isSNSConfigured(),
+          ios_configured: !!process.env.AWS_SNS_IOS_PLATFORM_ARN,
+          android_configured: !!process.env.AWS_SNS_ANDROID_PLATFORM_ARN,
+        },
+        resend: {
+          configured: !!process.env.RESEND_API_KEY,
+        },
+        stripe: {
+          configured: !!process.env.STRIPE_SECRET_KEY,
+        },
+        anthropic: {
+          configured: !!(process.env.ANTHROPIC_API_KEY || process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY),
+        },
+      });
+    } catch (error) {
+      console.error("Error fetching integration status:", error);
+      res.status(500).json({ message: "Failed to fetch integration status" });
+    }
+  });
+
   // ==================== PUSH NOTIFICATIONS ====================
   
   // Get push notification stats

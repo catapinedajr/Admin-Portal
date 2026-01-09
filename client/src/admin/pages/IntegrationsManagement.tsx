@@ -3,7 +3,8 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { 
   Key, Shield, AlertTriangle, Check, Eye, EyeOff, Plus, Trash2,
-  Twitter, Linkedin, Instagram, Facebook, CheckCircle2, XCircle, Loader2, Power, RefreshCw
+  Twitter, Linkedin, Instagram, Facebook, CheckCircle2, XCircle, Loader2, Power, RefreshCw,
+  Cloud, Bell, Mail, CreditCard, Brain, Activity
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -199,12 +200,34 @@ function IntegrationsContent() {
     preset => !settings.some(s => s.key === preset.key)
   );
 
+  const { data: integrationStatus } = useQuery<{
+    aws_s3: { configured: boolean; bucket?: string; region?: string; cloudfront?: string };
+    aws_sns: { configured: boolean; ios_configured: boolean; android_configured: boolean };
+    resend: { configured: boolean };
+    stripe: { configured: boolean };
+    anthropic: { configured: boolean };
+  }>({
+    queryKey: ["/api/admin/integrations/status"],
+  });
+
+  const configuredCount = integrationStatus ? [
+    integrationStatus.aws_s3?.configured,
+    integrationStatus.aws_sns?.configured,
+    integrationStatus.resend?.configured,
+    integrationStatus.stripe?.configured,
+    integrationStatus.anthropic?.configured
+  ].filter(Boolean).length : 0;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Integrations</h1>
           <p className="text-zinc-400">Manage API keys and external service connections</p>
+        </div>
+        <div className="bg-zinc-800 rounded-lg px-4 py-2 border border-zinc-700">
+          <span className="text-zinc-400 text-sm">Status: </span>
+          <span className="text-white font-medium">{configuredCount}/5 Connected</span>
         </div>
       </div>
 
@@ -235,8 +258,12 @@ function IntegrationsContent() {
         </Card>
       )}
 
-      <Tabs defaultValue="api-keys" className="w-full">
+      <Tabs defaultValue="status" className="w-full">
         <TabsList className="bg-zinc-800/50 border border-zinc-700 p-1 mb-6">
+          <TabsTrigger value="status" className="data-[state=active]:bg-orange-500 data-[state=active]:text-white">
+            <Activity className="w-4 h-4 mr-2" />
+            Status
+          </TabsTrigger>
           <TabsTrigger value="api-keys" className="data-[state=active]:bg-orange-500 data-[state=active]:text-white">
             <Key className="w-4 h-4 mr-2" />
             API Keys
@@ -246,6 +273,149 @@ function IntegrationsContent() {
             Social Platforms
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="status" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <Card className={`border ${integrationStatus?.aws_s3?.configured ? 'border-green-500/30' : 'border-orange-500/30'}`}>
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-lg ${integrationStatus?.aws_s3?.configured ? 'bg-green-500/10' : 'bg-orange-500/10'}`}>
+                    <Cloud className={`h-5 w-5 ${integrationStatus?.aws_s3?.configured ? 'text-green-500' : 'text-orange-500'}`} />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base">AWS S3</CardTitle>
+                    <CardDescription>Media storage</CardDescription>
+                  </div>
+                  {integrationStatus?.aws_s3?.configured ? (
+                    <CheckCircle2 className="h-5 w-5 text-green-500 ml-auto" />
+                  ) : (
+                    <XCircle className="h-5 w-5 text-orange-500 ml-auto" />
+                  )}
+                </div>
+              </CardHeader>
+              {integrationStatus?.aws_s3?.configured && (
+                <CardContent className="pt-0">
+                  <p className="text-xs text-zinc-400">Bucket: {integrationStatus.aws_s3.bucket}</p>
+                </CardContent>
+              )}
+            </Card>
+
+            <Card className={`border ${integrationStatus?.aws_sns?.configured ? 'border-green-500/30' : 'border-orange-500/30'}`}>
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-lg ${integrationStatus?.aws_sns?.configured ? 'bg-green-500/10' : 'bg-orange-500/10'}`}>
+                    <Bell className={`h-5 w-5 ${integrationStatus?.aws_sns?.configured ? 'text-green-500' : 'text-orange-500'}`} />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base">Push Notifications</CardTitle>
+                    <CardDescription>AWS SNS</CardDescription>
+                  </div>
+                  {integrationStatus?.aws_sns?.configured ? (
+                    <CheckCircle2 className="h-5 w-5 text-green-500 ml-auto" />
+                  ) : (
+                    <XCircle className="h-5 w-5 text-orange-500 ml-auto" />
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="flex gap-3 text-xs">
+                  <span className={integrationStatus?.aws_sns?.ios_configured ? 'text-green-400' : 'text-zinc-500'}>
+                    iOS: {integrationStatus?.aws_sns?.ios_configured ? 'Ready' : 'Not configured'}
+                  </span>
+                  <span className={integrationStatus?.aws_sns?.android_configured ? 'text-green-400' : 'text-zinc-500'}>
+                    Android: {integrationStatus?.aws_sns?.android_configured ? 'Ready' : 'Not configured'}
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className={`border ${integrationStatus?.resend?.configured ? 'border-green-500/30' : 'border-orange-500/30'}`}>
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-lg ${integrationStatus?.resend?.configured ? 'bg-green-500/10' : 'bg-orange-500/10'}`}>
+                    <Mail className={`h-5 w-5 ${integrationStatus?.resend?.configured ? 'text-green-500' : 'text-orange-500'}`} />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base">Email</CardTitle>
+                    <CardDescription>Resend</CardDescription>
+                  </div>
+                  {integrationStatus?.resend?.configured ? (
+                    <CheckCircle2 className="h-5 w-5 text-green-500 ml-auto" />
+                  ) : (
+                    <XCircle className="h-5 w-5 text-orange-500 ml-auto" />
+                  )}
+                </div>
+              </CardHeader>
+            </Card>
+
+            <Card className={`border ${integrationStatus?.stripe?.configured ? 'border-green-500/30' : 'border-orange-500/30'}`}>
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-lg ${integrationStatus?.stripe?.configured ? 'bg-green-500/10' : 'bg-orange-500/10'}`}>
+                    <CreditCard className={`h-5 w-5 ${integrationStatus?.stripe?.configured ? 'text-green-500' : 'text-orange-500'}`} />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base">Payments</CardTitle>
+                    <CardDescription>Stripe</CardDescription>
+                  </div>
+                  {integrationStatus?.stripe?.configured ? (
+                    <CheckCircle2 className="h-5 w-5 text-green-500 ml-auto" />
+                  ) : (
+                    <XCircle className="h-5 w-5 text-orange-500 ml-auto" />
+                  )}
+                </div>
+              </CardHeader>
+            </Card>
+
+            <Card className={`border ${integrationStatus?.anthropic?.configured ? 'border-green-500/30' : 'border-orange-500/30'}`}>
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-lg ${integrationStatus?.anthropic?.configured ? 'bg-green-500/10' : 'bg-orange-500/10'}`}>
+                    <Brain className={`h-5 w-5 ${integrationStatus?.anthropic?.configured ? 'text-green-500' : 'text-orange-500'}`} />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base">AI Content</CardTitle>
+                    <CardDescription>Anthropic Claude</CardDescription>
+                  </div>
+                  {integrationStatus?.anthropic?.configured ? (
+                    <CheckCircle2 className="h-5 w-5 text-green-500 ml-auto" />
+                  ) : (
+                    <XCircle className="h-5 w-5 text-orange-500 ml-auto" />
+                  )}
+                </div>
+              </CardHeader>
+            </Card>
+          </div>
+
+          <Card className="bg-zinc-900/50 border-zinc-700">
+            <CardHeader>
+              <CardTitle className="text-base">Environment Variables Reference</CardTitle>
+              <CardDescription>Required secrets for each integration</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4 text-sm">
+              <div>
+                <p className="text-zinc-300 font-medium mb-1">AWS S3 (Media Storage)</p>
+                <code className="text-orange-400 text-xs">AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET</code>
+              </div>
+              <div>
+                <p className="text-zinc-300 font-medium mb-1">AWS SNS (Push Notifications)</p>
+                <code className="text-orange-400 text-xs">AWS_SNS_IOS_PLATFORM_ARN, AWS_SNS_ANDROID_PLATFORM_ARN</code>
+              </div>
+              <div>
+                <p className="text-zinc-300 font-medium mb-1">Resend (Email)</p>
+                <code className="text-orange-400 text-xs">RESEND_API_KEY</code>
+              </div>
+              <div>
+                <p className="text-zinc-300 font-medium mb-1">Stripe (Payments)</p>
+                <code className="text-orange-400 text-xs">STRIPE_SECRET_KEY</code>
+              </div>
+              <div>
+                <p className="text-zinc-300 font-medium mb-1">Anthropic (AI)</p>
+                <code className="text-orange-400 text-xs">ANTHROPIC_API_KEY or AI_INTEGRATIONS_ANTHROPIC_API_KEY</code>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         <TabsContent value="api-keys" className="space-y-6">
           <div className="flex justify-end">
