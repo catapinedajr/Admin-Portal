@@ -5,6 +5,7 @@ import { z } from "zod";
 import { adminAuthService } from "./admin-auth";
 import { db } from "./db";
 import { registerEmailRoutes } from "./email-routes";
+import * as s3Service from "./s3-service";
 
 // Rate limiter for admin login (strict security)
 const adminLoginRateLimiter = rateLimit({
@@ -5167,6 +5168,70 @@ Return ONLY the post content, nothing else.`;
     } catch (error) {
       console.error("Error permanently deleting item:", error);
       res.status(500).json({ message: "Failed to permanently delete item" });
+    }
+  });
+
+  // ============ S3 MEDIA UPLOAD ROUTES ============
+  
+  app.get("/api/admin/media/s3-status", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    res.json({ 
+      configured: s3Service.isS3Configured(),
+      bucket: process.env.AWS_S3_BUCKET || null,
+      region: process.env.AWS_REGION || "us-east-1",
+      cdnDomain: process.env.AWS_CLOUDFRONT_DOMAIN || null,
+    });
+  });
+  
+  app.post("/api/admin/media/presigned-upload", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      if (!s3Service.isS3Configured()) {
+        return res.status(503).json({ 
+          message: "S3 storage not configured. Please set AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and AWS_S3_BUCKET environment variables." 
+        });
+      }
+      
+      const { filename, contentType, category } = req.body;
+      
+      if (!filename || !contentType || !category) {
+        return res.status(400).json({ message: "Missing required fields: filename, contentType, category" });
+      }
+      
+      const validCategories = ["advertisers", "social-media", "content", "store", "misc"];
+      if (!validCategories.includes(category)) {
+        return res.status(400).json({ message: `Invalid category. Must be one of: ${validCategories.join(", ")}` });
+      }
+      
+      const validContentTypes = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml"];
+      if (!validContentTypes.includes(contentType)) {
+        return res.status(400).json({ message: `Invalid content type. Must be one of: ${validContentTypes.join(", ")}` });
+      }
+      
+      const result = await s3Service.generatePresignedUploadUrl(
+        category as s3Service.ImageCategory,
+        filename,
+        contentType
+      );
+      
+      res.json(result);
+    } catch (error) {
+      console.error("Error generating presigned upload URL:", error);
+      res.status(500).json({ message: "Failed to generate upload URL" });
+    }
+  });
+  
+  app.delete("/api/admin/media/:key", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      if (!s3Service.isS3Configured()) {
+        return res.status(503).json({ message: "S3 storage not configured" });
+      }
+      
+      const key = decodeURIComponent(req.params.key);
+      await s3Service.deleteS3Object(key);
+      
+      res.json({ success: true, deleted: key });
+    } catch (error) {
+      console.error("Error deleting S3 object:", error);
+      res.status(500).json({ message: "Failed to delete file" });
     }
   });
 

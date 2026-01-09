@@ -69,6 +69,22 @@ This is a full-stack web application designed for daily learning and knowledge a
 - **CoinGecko API**: Real-time Bitcoin price data integration.
 - **Anthropic Claude API**: AI-powered content generation for curriculum and social media (uses `AI_INTEGRATIONS_ANTHROPIC_API_KEY` in Replit, `ANTHROPIC_API_KEY` in production).
 - **Stripe**: Payment processing and subscription management.
+- **AWS S3**: Image and media storage with presigned upload URLs.
+
+### AWS S3 Media Storage Configuration
+Required environment variables for S3 image uploads:
+- `AWS_ACCESS_KEY_ID`: AWS IAM user access key
+- `AWS_SECRET_ACCESS_KEY`: AWS IAM user secret key
+- `AWS_S3_BUCKET`: S3 bucket name (e.g., "hodlearn-assets")
+- `AWS_REGION`: AWS region (default: "us-east-1")
+- `AWS_CLOUDFRONT_DOMAIN`: (Optional) CloudFront CDN domain for faster delivery
+
+API Endpoints:
+- `GET /api/admin/media/s3-status`: Check if S3 is configured
+- `POST /api/admin/media/presigned-upload`: Generate presigned upload URL
+- `DELETE /api/admin/media/:key`: Delete an S3 object
+
+Categories for uploads: advertisers, social-media, content, store, misc
 
 ## Admin Portal
 - **URL**: `/admin`
