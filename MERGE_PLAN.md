@@ -7,6 +7,30 @@
 
 ---
 
+## For Our Development Partners
+
+This merge will be executed using Replit's AI-assisted development environment. Here's what that means for you:
+
+### What Replit AI Can Do
+- **Read and analyze entire codebases** - Both yours and ours simultaneously
+- **Compare files side-by-side** - Schemas, routes, auth implementations, dependencies
+- **Generate detailed reports** - Conflict identification, reconciliation recommendations
+- **Execute code changes** - With approval, implement the merge directly
+- **Test and validate** - Run the application and verify integrations work
+
+### What We Need From You
+1. **Export your codebase** - Zip file or repository access
+2. **Answer 7 questions** (listed at the end of this document)
+3. **Review and approve** - The AI will propose changes for your sign-off
+
+### How This Speeds Up the Merge
+Traditional merge: Manual file-by-file comparison, days of back-and-forth
+AI-assisted merge: Automated analysis, clear conflict reports, faster execution
+
+The AI has full context of both codebases and can identify issues humans might miss.
+
+---
+
 ## Executive Summary
 
 This document outlines how to merge the external development team's backend/authentication work into this feature-complete codebase. All analysis and reconciliation will happen **within this project** using the `/external-codebase/` folder for direct AI-powered comparison.
