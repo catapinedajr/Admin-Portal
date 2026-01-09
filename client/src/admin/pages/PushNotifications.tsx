@@ -3,7 +3,8 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { 
   Bell, Send, Smartphone, Users, Plus, Trash2, 
-  RefreshCw, AlertCircle, CheckCircle, Clock, TrendingUp
+  RefreshCw, AlertCircle, CheckCircle, Clock, TrendingUp,
+  FileText, Sparkles, Edit, Eye, Copy
 } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -15,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdminLayout from "../components/AdminLayout";
 
 function AdminAuthGuard({ children }: { children: React.ReactNode }) {
@@ -76,6 +78,8 @@ function StatusBadge({ status }: { status: string }) {
     sending: { color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30', label: 'Sending' },
     sent: { color: 'bg-green-500/20 text-green-400 border-green-500/30', label: 'Sent' },
     failed: { color: 'bg-red-500/20 text-red-400 border-red-500/30', label: 'Failed' },
+    approved: { color: 'bg-green-500/20 text-green-400 border-green-500/30', label: 'Approved' },
+    archived: { color: 'bg-zinc-600/20 text-zinc-500 border-zinc-600/30', label: 'Archived' },
   };
   
   const variant = variants[status] || variants.draft;
@@ -87,14 +91,58 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
+interface NotificationTemplate {
+  id: number;
+  name: string;
+  category: string;
+  title: string;
+  body: string;
+  placeholders: string[] | null;
+  status: string;
+  priority: number;
+  minStreakDays: number | null;
+  maxStreakDays: number | null;
+  stuckTier: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+const CATEGORIES = [
+  { value: 'morning_spark', label: 'Morning Spark', description: 'Daily lesson teaser' },
+  { value: 'streak_coach', label: 'Streak Coach', description: 'Streak motivation' },
+  { value: 're_engagement', label: 'Re-engagement', description: 'Bring back inactive users' },
+  { value: 'price_alert', label: 'Price Alert', description: 'BTC price movements' },
+  { value: 'milestone', label: 'Milestone', description: 'Achievement celebrations' },
+];
+
+const PLACEHOLDERS = [
+  { name: 'firstName', description: "User's first name" },
+  { name: 'currentStreak', description: 'Current streak in days' },
+  { name: 'lessonTitle', description: 'Current lesson title' },
+  { name: 'btcPrice', description: 'Current Bitcoin price' },
+  { name: 'dayNumber', description: 'Curriculum day number' },
+];
+
 function PushNotificationsContent() {
   const { toast } = useToast();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showTemplateDialog, setShowTemplateDialog] = useState(false);
+  const [showGenerateDialog, setShowGenerateDialog] = useState(false);
+  const [editingTemplate, setEditingTemplate] = useState<NotificationTemplate | null>(null);
   const [newNotification, setNewNotification] = useState({
     title: '',
     body: '',
     targetAudience: 'all',
   });
+  const [newTemplate, setNewTemplate] = useState({
+    name: '',
+    category: 'morning_spark',
+    title: '',
+    body: '',
+    status: 'draft',
+  });
+  const [generateCategory, setGenerateCategory] = useState('morning_spark');
+  const [generateContext, setGenerateContext] = useState('');
   
   const { data: stats, isLoading: statsLoading, refetch: refetchStats } = useQuery<PushStats>({
     queryKey: ['/api/admin/push-notifications/stats'],
@@ -102,6 +150,10 @@ function PushNotificationsContent() {
   
   const { data: notifications = [], isLoading: notificationsLoading, refetch: refetchNotifications } = useQuery<PushNotification[]>({
     queryKey: ['/api/admin/push-notifications'],
+  });
+  
+  const { data: templates = [], isLoading: templatesLoading, refetch: refetchTemplates } = useQuery<NotificationTemplate[]>({
+    queryKey: ['/api/admin/notification-templates'],
   });
   
   const createMutation = useMutation({
@@ -146,9 +198,92 @@ function PushNotificationsContent() {
     },
   });
   
+  const createTemplateMutation = useMutation({
+    mutationFn: async (data: typeof newTemplate) => {
+      return apiRequest('POST', '/api/admin/notification-templates', data);
+    },
+    onSuccess: () => {
+      toast({ title: "Template created" });
+      setShowTemplateDialog(false);
+      setNewTemplate({ name: '', category: 'morning_spark', title: '', body: '', status: 'draft' });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/notification-templates'] });
+    },
+    onError: () => {
+      toast({ title: "Failed to create template", variant: "destructive" });
+    },
+  });
+  
+  const updateTemplateMutation = useMutation({
+    mutationFn: async ({ id, ...data }: { id: number } & Partial<typeof newTemplate>) => {
+      return apiRequest('PATCH', `/api/admin/notification-templates/${id}`, data);
+    },
+    onSuccess: () => {
+      toast({ title: "Template updated" });
+      setEditingTemplate(null);
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/notification-templates'] });
+    },
+    onError: () => {
+      toast({ title: "Failed to update template", variant: "destructive" });
+    },
+  });
+  
+  const deleteTemplateMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest('DELETE', `/api/admin/notification-templates/${id}`);
+    },
+    onSuccess: () => {
+      toast({ title: "Template deleted" });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/notification-templates'] });
+    },
+    onError: () => {
+      toast({ title: "Failed to delete template", variant: "destructive" });
+    },
+  });
+  
+  const generateMutation = useMutation({
+    mutationFn: async (data: { category: string; context?: string }) => {
+      return apiRequest('POST', '/api/admin/notification-templates/generate', data);
+    },
+    onSuccess: (response: any) => {
+      toast({ title: `Generated ${response.templates?.length || 0} templates` });
+      setShowGenerateDialog(false);
+    },
+    onError: () => {
+      toast({ title: "Failed to generate templates", variant: "destructive" });
+    },
+  });
+  
   const handleRefresh = () => {
     refetchStats();
     refetchNotifications();
+    refetchTemplates();
+  };
+  
+  const handleSaveGeneratedTemplate = async (template: { name: string; title: string; body: string; placeholders: string[] }) => {
+    await createTemplateMutation.mutateAsync({
+      name: template.name,
+      category: generateCategory,
+      title: template.title,
+      body: template.body,
+      status: 'draft',
+    });
+  };
+  
+  const getCategoryLabel = (category: string) => {
+    return CATEGORIES.find(c => c.value === category)?.label || category;
+  };
+  
+  const renderPlaceholderPreview = (text: string) => {
+    return text.replace(/\{\{(\w+)\}\}/g, (match, name) => {
+      const examples: Record<string, string> = {
+        firstName: 'Alex',
+        currentStreak: '14',
+        lessonTitle: 'Why Bitcoin Matters',
+        btcPrice: '$97,250',
+        dayNumber: '23',
+      };
+      return examples[name] || match;
+    });
   };
   
   return (
@@ -156,21 +291,35 @@ function PushNotificationsContent() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Push Notifications</h1>
-          <p className="text-zinc-400 mt-1">Send notifications to mobile app users</p>
+          <p className="text-zinc-400 mt-1">Send notifications and manage automated templates</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={handleRefresh}>
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Refresh
-          </Button>
-          <Button className="bg-orange-500 hover:bg-orange-600" onClick={() => setShowCreateDialog(true)}>
-            <Plus className="w-4 h-4 mr-2" />
-            New Notification
-          </Button>
-        </div>
+        <Button variant="outline" onClick={handleRefresh}>
+          <RefreshCw className="w-4 h-4 mr-2" />
+          Refresh
+        </Button>
       </div>
       
-      {!stats?.snsConfigured && (
+      <Tabs defaultValue="send" className="w-full">
+        <TabsList className="bg-zinc-800/50 border border-zinc-700 p-1 mb-6">
+          <TabsTrigger value="send" className="data-[state=active]:bg-orange-500 data-[state=active]:text-white">
+            <Send className="w-4 h-4 mr-2" />
+            Send
+          </TabsTrigger>
+          <TabsTrigger value="templates" className="data-[state=active]:bg-orange-500 data-[state=active]:text-white">
+            <FileText className="w-4 h-4 mr-2" />
+            Templates ({templates.length})
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="send" className="space-y-6">
+          <div className="flex justify-end">
+            <Button className="bg-orange-500 hover:bg-orange-600" onClick={() => setShowCreateDialog(true)}>
+              <Plus className="w-4 h-4 mr-2" />
+              New Notification
+            </Button>
+          </div>
+          
+          {!stats?.snsConfigured && (
         <Card className="bg-yellow-500/10 border-yellow-500/30">
           <CardContent className="p-4 flex items-start gap-3">
             <AlertCircle className="w-5 h-5 text-yellow-400 mt-0.5" />
@@ -320,6 +469,104 @@ function PushNotificationsContent() {
           )}
         </CardContent>
       </Card>
+        </TabsContent>
+        
+        <TabsContent value="templates" className="space-y-6">
+          <div className="flex justify-between items-center">
+            <p className="text-zinc-400">Reusable templates for automated notifications</p>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setShowGenerateDialog(true)}>
+                <Sparkles className="w-4 h-4 mr-2" />
+                AI Generate
+              </Button>
+              <Button className="bg-orange-500 hover:bg-orange-600" onClick={() => setShowTemplateDialog(true)}>
+                <Plus className="w-4 h-4 mr-2" />
+                New Template
+              </Button>
+            </div>
+          </div>
+          
+          <div className="grid gap-4">
+            {CATEGORIES.map(category => {
+              const categoryTemplates = templates.filter(t => t.category === category.value);
+              if (categoryTemplates.length === 0) return null;
+              
+              return (
+                <Card key={category.value} className="bg-zinc-800/50 border-zinc-700">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base text-white flex items-center gap-2">
+                      {category.label}
+                      <Badge className="bg-zinc-700 text-xs">{categoryTemplates.length}</Badge>
+                    </CardTitle>
+                    <CardDescription>{category.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    {categoryTemplates.map(template => (
+                      <div key={template.id} className="p-3 bg-zinc-900/50 rounded-lg border border-zinc-700">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="font-medium text-white text-sm">{template.name}</span>
+                              <StatusBadge status={template.status} />
+                            </div>
+                            <p className="text-orange-400 text-sm font-medium">{template.title}</p>
+                            <p className="text-zinc-400 text-xs mt-1 line-clamp-2">{template.body}</p>
+                            <div className="mt-2 p-2 bg-zinc-800 rounded text-xs">
+                              <p className="text-zinc-500 mb-1">Preview:</p>
+                              <p className="text-green-400">{renderPlaceholderPreview(template.title)}</p>
+                              <p className="text-zinc-300">{renderPlaceholderPreview(template.body)}</p>
+                            </div>
+                          </div>
+                          <div className="flex gap-1">
+                            <Button 
+                              size="sm" 
+                              variant="ghost"
+                              onClick={() => updateTemplateMutation.mutate({ 
+                                id: template.id, 
+                                status: template.status === 'approved' ? 'draft' : 'approved' 
+                              })}
+                            >
+                              {template.status === 'approved' ? 'Unapprove' : 'Approve'}
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="ghost" 
+                              className="text-red-400"
+                              onClick={() => deleteTemplateMutation.mutate(template.id)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              );
+            })}
+            
+            {templates.length === 0 && (
+              <Card className="bg-zinc-800/50 border-zinc-700">
+                <CardContent className="py-12 text-center">
+                  <FileText className="w-12 h-12 mx-auto text-zinc-600 mb-4" />
+                  <h3 className="text-lg font-semibold text-white">No Templates Yet</h3>
+                  <p className="text-zinc-400 mt-1">Create templates for automated notifications</p>
+                  <div className="flex gap-2 justify-center mt-4">
+                    <Button variant="outline" onClick={() => setShowGenerateDialog(true)}>
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      AI Generate
+                    </Button>
+                    <Button className="bg-orange-500 hover:bg-orange-600" onClick={() => setShowTemplateDialog(true)}>
+                      <Plus className="w-4 h-4 mr-2" />
+                      Create Manually
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </TabsContent>
+      </Tabs>
       
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogContent className="bg-zinc-900 border-zinc-700">
@@ -376,6 +623,172 @@ function PushNotificationsContent() {
               disabled={!newNotification.title || !newNotification.body || createMutation.isPending}
             >
               Create Notification
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      <Dialog open={showTemplateDialog} onOpenChange={setShowTemplateDialog}>
+        <DialogContent className="bg-zinc-900 border-zinc-700">
+          <DialogHeader>
+            <DialogTitle className="text-white">Create Template</DialogTitle>
+            <DialogDescription>
+              Create a reusable notification template with placeholders
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label className="text-zinc-400">Template Name</Label>
+              <Input
+                value={newTemplate.name}
+                onChange={(e) => setNewTemplate({ ...newTemplate, name: e.target.value })}
+                placeholder="e.g., Morning Spark - Price Hook"
+                className="bg-zinc-800 border-zinc-700 mt-1"
+              />
+            </div>
+            <div>
+              <Label className="text-zinc-400">Category</Label>
+              <Select 
+                value={newTemplate.category} 
+                onValueChange={(value) => setNewTemplate({ ...newTemplate, category: value })}
+              >
+                <SelectTrigger className="bg-zinc-800 border-zinc-700 mt-1">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {CATEGORIES.map(cat => (
+                    <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-zinc-400">Title (with placeholders)</Label>
+              <Input
+                value={newTemplate.title}
+                onChange={(e) => setNewTemplate({ ...newTemplate, title: e.target.value })}
+                placeholder="e.g., Hey {{firstName}}, your streak is on fire!"
+                className="bg-zinc-800 border-zinc-700 mt-1"
+              />
+            </div>
+            <div>
+              <Label className="text-zinc-400">Body (with placeholders)</Label>
+              <Textarea
+                value={newTemplate.body}
+                onChange={(e) => setNewTemplate({ ...newTemplate, body: e.target.value })}
+                placeholder="e.g., Day {{dayNumber}} awaits - {{lessonTitle}}"
+                className="bg-zinc-800 border-zinc-700 mt-1"
+                rows={3}
+              />
+            </div>
+            <div className="p-3 bg-zinc-800 rounded-lg">
+              <p className="text-xs text-zinc-500 mb-2">Available placeholders:</p>
+              <div className="flex flex-wrap gap-2">
+                {PLACEHOLDERS.map(p => (
+                  <Badge key={p.name} className="bg-zinc-700 text-xs cursor-pointer" 
+                    onClick={() => setNewTemplate({ ...newTemplate, body: newTemplate.body + `{{${p.name}}}` })}>
+                    {`{{${p.name}}}`}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+            {(newTemplate.title || newTemplate.body) && (
+              <div className="p-3 bg-zinc-800/50 rounded-lg border border-zinc-700">
+                <p className="text-xs text-zinc-500 mb-1">Preview:</p>
+                <p className="text-green-400 text-sm">{renderPlaceholderPreview(newTemplate.title)}</p>
+                <p className="text-zinc-300 text-sm">{renderPlaceholderPreview(newTemplate.body)}</p>
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setShowTemplateDialog(false)}>
+              Cancel
+            </Button>
+            <Button 
+              className="bg-orange-500 hover:bg-orange-600"
+              onClick={() => createTemplateMutation.mutate(newTemplate)}
+              disabled={!newTemplate.name || !newTemplate.title || !newTemplate.body || createTemplateMutation.isPending}
+            >
+              Create Template
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      <Dialog open={showGenerateDialog} onOpenChange={setShowGenerateDialog}>
+        <DialogContent className="bg-zinc-900 border-zinc-700 max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-white flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-orange-400" />
+              AI Generate Templates
+            </DialogTitle>
+            <DialogDescription>
+              Use AI to draft notification templates - you'll review and save the ones you like
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label className="text-zinc-400">Category</Label>
+              <Select value={generateCategory} onValueChange={setGenerateCategory}>
+                <SelectTrigger className="bg-zinc-800 border-zinc-700 mt-1">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {CATEGORIES.map(cat => (
+                    <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-zinc-400">Additional Context (optional)</Label>
+              <Textarea
+                value={generateContext}
+                onChange={(e) => setGenerateContext(e.target.value)}
+                placeholder="e.g., Focus on scarcity messaging, or emphasize price momentum"
+                className="bg-zinc-800 border-zinc-700 mt-1"
+                rows={2}
+              />
+            </div>
+            
+            {generateMutation.data?.templates && (
+              <div className="space-y-3 mt-4">
+                <p className="text-sm text-zinc-400">Generated templates - click to save:</p>
+                {generateMutation.data.templates.map((t: any, i: number) => (
+                  <div key={i} className="p-3 bg-zinc-800 rounded-lg border border-zinc-700">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <p className="text-white text-sm font-medium">{t.name}</p>
+                        <p className="text-orange-400 text-sm mt-1">{t.title}</p>
+                        <p className="text-zinc-400 text-xs mt-1">{t.body}</p>
+                      </div>
+                      <Button 
+                        size="sm" 
+                        className="bg-green-600 hover:bg-green-700"
+                        onClick={() => handleSaveGeneratedTemplate(t)}
+                        disabled={createTemplateMutation.isPending}
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => {
+              setShowGenerateDialog(false);
+              generateMutation.reset();
+            }}>
+              Close
+            </Button>
+            <Button 
+              className="bg-orange-500 hover:bg-orange-600"
+              onClick={() => generateMutation.mutate({ category: generateCategory, context: generateContext })}
+              disabled={generateMutation.isPending}
+            >
+              {generateMutation.isPending ? 'Generating...' : 'Generate 3 Templates'}
             </Button>
           </DialogFooter>
         </DialogContent>

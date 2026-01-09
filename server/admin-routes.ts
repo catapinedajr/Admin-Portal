@@ -5575,6 +5575,153 @@ Return ONLY the post content, nothing else.`;
       res.status(500).json({ message: "Failed to delete notification" });
     }
   });
+
+  // ==================== NOTIFICATION TEMPLATES ====================
+  
+  // Get all notification templates
+  app.get("/api/admin/notification-templates", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { notificationTemplates } = await import('@shared/schema');
+      const templates = await db.select()
+        .from(notificationTemplates)
+        .orderBy(notificationTemplates.category, notificationTemplates.priority);
+      res.json(templates);
+    } catch (error) {
+      console.error("Error fetching notification templates:", error);
+      res.status(500).json({ message: "Failed to fetch templates" });
+    }
+  });
+
+  // Create notification template
+  app.post("/api/admin/notification-templates", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { notificationTemplates } = await import('@shared/schema');
+      const { name, category, title, body, placeholders, status, priority, minStreakDays, maxStreakDays, stuckTier } = req.body;
+      
+      if (!name || !category || !title || !body) {
+        return res.status(400).json({ message: "Name, category, title, and body are required" });
+      }
+      
+      const [template] = await db.insert(notificationTemplates).values({
+        name,
+        category,
+        title,
+        body,
+        placeholders: placeholders || [],
+        status: status || 'draft',
+        priority: priority || 0,
+        minStreakDays,
+        maxStreakDays,
+        stuckTier,
+        createdBy: req.adminUser?.id,
+      }).returning();
+      
+      res.json(template);
+    } catch (error) {
+      console.error("Error creating notification template:", error);
+      res.status(500).json({ message: "Failed to create template" });
+    }
+  });
+
+  // Update notification template
+  app.patch("/api/admin/notification-templates/:id", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { notificationTemplates } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      const updates = req.body;
+      
+      const [template] = await db.update(notificationTemplates)
+        .set({ ...updates, updatedAt: new Date() })
+        .where(eq(notificationTemplates.id, id))
+        .returning();
+      
+      res.json(template);
+    } catch (error) {
+      console.error("Error updating notification template:", error);
+      res.status(500).json({ message: "Failed to update template" });
+    }
+  });
+
+  // Delete notification template
+  app.delete("/api/admin/notification-templates/:id", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { notificationTemplates } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      await db.delete(notificationTemplates).where(eq(notificationTemplates.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting notification template:", error);
+      res.status(500).json({ message: "Failed to delete template" });
+    }
+  });
+
+  // AI-assisted template drafting
+  app.post("/api/admin/notification-templates/generate", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const Anthropic = (await import('@anthropic-ai/sdk')).default;
+      const { category, context } = req.body;
+      
+      const apiKey = process.env.ANTHROPIC_API_KEY || process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY;
+      if (!apiKey) {
+        return res.status(400).json({ message: "Anthropic API key not configured" });
+      }
+      
+      const client = new Anthropic({ apiKey });
+      
+      const categoryDescriptions: Record<string, string> = {
+        morning_spark: "Daily morning lesson teaser to engage users with their Bitcoin learning journey",
+        streak_coach: "Encouraging message about maintaining or celebrating learning streaks",
+        re_engagement: "Re-engage users who haven't opened the app recently",
+        price_alert: "Notification about significant Bitcoin price movements tied to educational content",
+        milestone: "Celebration of user achievements and learning milestones",
+      };
+      
+      const prompt = `Generate 3 push notification templates for a Bitcoin education app called HODLearn. 
+Category: ${category} - ${categoryDescriptions[category] || 'General notification'}
+${context ? `Additional context: ${context}` : ''}
+
+The app teaches Bitcoin to young professionals. Tone should be engaging, curious, and not preachy.
+
+Available placeholders:
+- {{firstName}} - User's first name
+- {{currentStreak}} - Current learning streak in days
+- {{lessonTitle}} - Title of current/next lesson
+- {{btcPrice}} - Current Bitcoin price
+- {{dayNumber}} - Current curriculum day number
+
+Return a JSON array of 3 templates, each with:
+- name: Internal name for admin reference
+- title: Notification title (max 50 chars, can include placeholders)
+- body: Notification body (max 140 chars, can include placeholders)
+- placeholders: Array of placeholder names used
+
+Example format:
+[{"name": "Morning Spark - Price Hook", "title": "BTC at {{btcPrice}} - Why it matters", "body": "Hey {{firstName}}, today's lesson explains what moves the price. Your {{currentStreak}}-day streak awaits!", "placeholders": ["btcPrice", "firstName", "currentStreak"]}]`;
+
+      const response = await client.messages.create({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1024,
+        messages: [{ role: 'user', content: prompt }],
+      });
+      
+      const content = response.content[0];
+      if (content.type !== 'text') {
+        return res.status(500).json({ message: "Unexpected response format" });
+      }
+      
+      // Extract JSON from response
+      const jsonMatch = content.text.match(/\[[\s\S]*\]/);
+      if (!jsonMatch) {
+        return res.status(500).json({ message: "Could not parse AI response" });
+      }
+      
+      const templates = JSON.parse(jsonMatch[0]);
+      res.json({ templates, category });
+    } catch (error) {
+      console.error("Error generating templates:", error);
+      res.status(500).json({ message: "Failed to generate templates" });
+    }
+  });
   
   // Get all device tokens (for debugging)
   app.get("/api/admin/device-tokens", requireAdminAuth, async (req: AdminRequest, res: Response) => {

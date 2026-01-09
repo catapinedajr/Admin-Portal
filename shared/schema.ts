@@ -33,6 +33,12 @@ export const users = pgTable("users", {
   mutedUntil: timestamp("muted_until"), // User can't post until this time (null = not muted)
   muteReason: text("mute_reason"), // Reason for the mute
   warningCount: integer("warning_count").notNull().default(0), // Number of warnings issued
+  // Push notification preferences
+  notificationsEnabled: boolean("notifications_enabled").notNull().default(true),
+  notificationTime: text("notification_time").default('morning'), // morning, afternoon, evening
+  quietHoursStart: integer("quiet_hours_start"), // Hour (0-23) when quiet hours start
+  quietHoursEnd: integer("quiet_hours_end"), // Hour (0-23) when quiet hours end
+  timezone: text("timezone").default('America/New_York'), // User's timezone
   createdAt: timestamp("created_at").notNull().defaultNow(),
   archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
@@ -569,6 +575,37 @@ export const pushNotifications = pgTable("push_notifications", {
   createdBy: integer("created_by").references(() => adminUsers.id),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Notification templates for automated messaging
+export const notificationTemplates = pgTable("notification_templates", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(), // Internal name for admin reference
+  category: text("category").notNull(), // morning_spark, streak_coach, re_engagement, price_alert, milestone
+  title: text("title").notNull(), // Notification title with placeholders
+  body: text("body").notNull(), // Notification body with placeholders
+  placeholders: text("placeholders").array(), // List of placeholders used: firstName, currentStreak, lessonTitle, btcPrice, etc.
+  status: text("status").notNull().default('draft'), // draft, approved, archived
+  priority: integer("priority").notNull().default(0), // For ordering within category
+  minStreakDays: integer("min_streak_days"), // Only send if streak >= this
+  maxStreakDays: integer("max_streak_days"), // Only send if streak <= this
+  stuckTier: text("stuck_tier"), // soft, medium, hard - for re-engagement targeting
+  createdBy: integer("created_by").references(() => adminUsers.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Track which automated notifications were sent to users
+export const automatedNotificationLog = pgTable("automated_notification_log", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  templateId: integer("template_id").notNull().references(() => notificationTemplates.id),
+  category: text("category").notNull(),
+  renderedTitle: text("rendered_title").notNull(),
+  renderedBody: text("rendered_body").notNull(),
+  sentAt: timestamp("sent_at").notNull().defaultNow(),
+  deliveryStatus: text("delivery_status").notNull().default('sent'), // sent, delivered, failed
+  openedAt: timestamp("opened_at"), // Track if notification was opened
 });
 
 // Abuse reports for user-submitted content reports
@@ -1373,6 +1410,22 @@ export const insertLeaderboardEntrySchema = createInsertSchema(leaderboardEntrie
   id: true,
   lastUpdated: true,
 });
+
+export const insertNotificationTemplateSchema = createInsertSchema(notificationTemplates).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertAutomatedNotificationLogSchema = createInsertSchema(automatedNotificationLog).omit({
+  id: true,
+  sentAt: true,
+});
+
+export type NotificationTemplate = typeof notificationTemplates.$inferSelect;
+export type InsertNotificationTemplate = z.infer<typeof insertNotificationTemplateSchema>;
+export type AutomatedNotificationLog = typeof automatedNotificationLog.$inferSelect;
+export type InsertAutomatedNotificationLog = z.infer<typeof insertAutomatedNotificationLogSchema>;
 
 export type EmailCollection = typeof emailCollections.$inferSelect;
 export type InsertEmailCollection = z.infer<typeof insertEmailCollectionSchema>;
