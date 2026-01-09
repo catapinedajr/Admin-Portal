@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { storage } from "./storage";
 import { z } from "zod";
+import { getActiveRewardConfigs } from "./rewards-service";
 
 // Wallet earning schema for validation
 const walletEarningSchema = z.object({
@@ -28,6 +29,26 @@ function setDefaultUser(req: any, res: any, next: any) {
 }
 
 export function registerWalletRoutes(app: Express, requireAuth: any) {
+  // Get public reward configuration (for displaying earning opportunities to users)
+  app.get("/api/rewards/config", async (_req, res) => {
+    try {
+      const configs = await getActiveRewardConfigs();
+      // Transform to a more frontend-friendly format
+      const configMap: Record<string, { satoshis: number; description: string; dailyLimit: number | null }> = {};
+      for (const config of configs) {
+        configMap[config.rewardType] = {
+          satoshis: config.baseSatoshis,
+          description: config.description || '',
+          dailyLimit: config.maxPerDay,
+        };
+      }
+      res.json(configMap);
+    } catch (error) {
+      console.error("Error fetching reward config:", error);
+      res.status(500).json({ message: "Failed to get reward config" });
+    }
+  });
+
   // Get user's wallet progress
   app.get("/api/wallet/progress", setDefaultUser, async (req: any, res) => {
     try {

@@ -81,6 +81,18 @@ export default function WalletPage() {
     refetchOnWindowFocus: false,
   });
 
+  // Get reward configuration for display
+  const { data: rewardConfig } = useQuery<Record<string, { satoshis: number; description: string; dailyLimit: number | null }>>({
+    queryKey: ['/api/rewards/config'],
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+
+  // Helper to get reward amount from config with fallback
+  const getRewardAmount = (type: string, fallback: number) => {
+    return rewardConfig?.[type]?.satoshis ?? fallback;
+  };
+
   const formatSats = (sats: number) => {
     return sats.toLocaleString();
   };
@@ -729,21 +741,35 @@ export default function WalletPage() {
                         <div className="font-semibold text-sm mb-1">Answer Quiz Questions</div>
                         <div className="text-xs text-gray-400 mb-2">Test your Bitcoin knowledge</div>
                         <div className="flex items-center gap-2">
-                          <Badge variant="secondary" className="text-xs">100 points per correct answer</Badge>
+                          <Badge variant="secondary" className="text-xs">{formatSats(getRewardAmount('quiz_correct', 100))} points per correct answer</Badge>
                         </div>
                       </div>
                     </div>
 
-                    {/* Quiz Completion */}
+                    {/* Perfect Quiz */}
                     <div className="flex items-start gap-3 p-4 bg-zinc-800/50 rounded-lg">
                       <div className="p-2 bg-green-500/20 rounded-lg shrink-0">
                         <CheckCircle className="w-5 h-5 text-green-500" />
                       </div>
                       <div className="flex-1">
-                        <div className="font-semibold text-sm mb-1">Complete Daily Quiz</div>
-                        <div className="text-xs text-gray-400 mb-2">Finish all questions in a day</div>
+                        <div className="font-semibold text-sm mb-1">Perfect Quiz Score</div>
+                        <div className="text-xs text-gray-400 mb-2">Get all answers right</div>
                         <div className="flex items-center gap-2">
-                          <Badge variant="secondary" className="text-xs">500 points completion bonus</Badge>
+                          <Badge variant="secondary" className="text-xs">{formatSats(getRewardAmount('quiz_perfect', 500))} points bonus</Badge>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Daily Complete */}
+                    <div className="flex items-start gap-3 p-4 bg-zinc-800/50 rounded-lg">
+                      <div className="p-2 bg-orange-500/20 rounded-lg shrink-0">
+                        <Zap className="w-5 h-5 text-orange-500" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-sm mb-1">Complete Daily Lesson</div>
+                        <div className="text-xs text-gray-400 mb-2">Finish the full day's content</div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="secondary" className="text-xs">{formatSats(getRewardAmount('daily_complete', 1000))} points completion bonus</Badge>
                         </div>
                       </div>
                     </div>
@@ -773,7 +799,7 @@ export default function WalletPage() {
                         </div>
                       </div>
                       <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/20">
-                        2,000 points
+                        {formatSats(getRewardAmount('streak_7', 2000))} points
                       </Badge>
                     </div>
 
@@ -789,7 +815,23 @@ export default function WalletPage() {
                         </div>
                       </div>
                       <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/20">
-                        10,000 points
+                        {formatSats(getRewardAmount('streak_30', 10000))} points
+                      </Badge>
+                    </div>
+
+                    {/* 100 Day Streak */}
+                    <div className="flex items-center justify-between p-4 bg-zinc-800/50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-green-500/20 rounded-lg">
+                          <Trophy className="w-5 h-5 text-green-500" />
+                        </div>
+                        <div>
+                          <div className="font-semibold text-sm">100-Day Streak</div>
+                          <div className="text-xs text-gray-400">Reach 100 consecutive days</div>
+                        </div>
+                      </div>
+                      <Badge className="bg-green-500/20 text-green-400 border-green-500/20">
+                        {formatSats(getRewardAmount('streak_100', 50000))} points
                       </Badge>
                     </div>
 
@@ -805,7 +847,7 @@ export default function WalletPage() {
                         </div>
                       </div>
                       <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/20">
-                        100,000 points
+                        {formatSats(getRewardAmount('streak_365', 100000))} points
                       </Badge>
                     </div>
                   </div>
