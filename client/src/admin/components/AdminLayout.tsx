@@ -20,7 +20,8 @@ import {
   Plug,
   Lock,
   Archive,
-  Mail
+  Mail,
+  Coins
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -59,6 +60,7 @@ const navSections: NavSection[] = [
       { href: "/admin/social", label: "Social", icon: Twitter },
       { href: "/admin/email", label: "Email", icon: Mail },
       { href: "/admin/store", label: "Store", icon: ShoppingBag },
+      { href: "/admin/points", label: "Points", icon: Coins },
       { href: "/admin/crm", label: "B2B CRM", icon: Building2 },
       { href: "/admin/roadmap", label: "Roadmap", icon: Map },
     ]
