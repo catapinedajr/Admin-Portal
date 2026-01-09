@@ -24,7 +24,9 @@ import {
   BookOpen,
   Users,
   Brain,
-  Flame
+  Flame,
+  Gift,
+  MessageSquare
 } from "@/lib/icons";
 import { ReferralStatsCompact } from "@/components/InviteFriendsCard";
 import { useLocation } from "wouter";
@@ -116,13 +118,71 @@ export default function WalletPage() {
     switch (type) {
       case 'quiz_correct':
         return 'Quiz Answer';
+      case 'quiz_perfect':
+        return 'Perfect Quiz';
       case 'lesson_complete':
         return 'Lesson Complete';
+      case 'daily_complete':
+        return 'Daily Complete';
       case 'streak_bonus':
         return 'Streak Bonus';
+      case 'streak_7':
+        return '7-Day Streak';
+      case 'streak_30':
+        return '30-Day Streak';
+      case 'streak_100':
+        return '100-Day Streak';
+      case 'streak_365':
+        return '365-Day Streak';
+      case 'referral_signup':
+        return 'Referral Signup';
+      case 'referral_verified':
+        return 'Referral Verified';
+      case 'referral_active':
+        return 'Referral Active';
+      case 'forum_post':
+        return 'Forum Post';
+      case 'forum_upvote':
+        return 'Upvote Received';
+      case 'admin_bonus':
+        return 'Bonus Reward';
+      case 'leaderboard_prize':
+        return 'Leaderboard Prize';
       default:
-        return type;
+        return type.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
     }
+  };
+
+  const getEarningTypeIcon = (type: string) => {
+    if (type.startsWith('quiz')) {
+      return <CheckCircle className="w-4 h-4 text-blue-500" />;
+    }
+    if (type.startsWith('streak') || type === 'daily_complete') {
+      return <Zap className="w-4 h-4 text-orange-500" />;
+    }
+    if (type.startsWith('referral')) {
+      return <Users className="w-4 h-4 text-green-500" />;
+    }
+    if (type.startsWith('forum')) {
+      return <MessageSquare className="w-4 h-4 text-purple-500" />;
+    }
+    if (type === 'admin_bonus') {
+      return <Gift className="w-4 h-4 text-yellow-500" />;
+    }
+    if (type === 'leaderboard_prize') {
+      return <Trophy className="w-4 h-4 text-orange-500" />;
+    }
+    return <CheckCircle className="w-4 h-4 text-green-500" />;
+  };
+
+  const getEarningTypeBgColor = (type: string) => {
+    if (type.startsWith('quiz')) return 'bg-blue-500/20';
+    if (type.startsWith('streak') || type === 'daily_complete') return 'bg-orange-500/20';
+    if (type.startsWith('referral')) return 'bg-green-500/20';
+    if (type.startsWith('forum')) return 'bg-purple-500/20';
+    if (type === 'admin_bonus') return 'bg-yellow-500/20';
+    if (type === 'leaderboard_prize') return 'bg-orange-500/20';
+    return 'bg-green-500/20';
   };
 
   if (isLoading) {
@@ -588,8 +648,8 @@ export default function WalletPage() {
               {walletData.recentEarnings.slice(0, 10).map((earning, index) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-zinc-800/50 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-green-500/20 rounded-lg">
-                      <CheckCircle className="w-4 h-4 text-green-500" />
+                    <div className={`p-2 ${getEarningTypeBgColor(earning.earningType)} rounded-lg`}>
+                      {getEarningTypeIcon(earning.earningType)}
                     </div>
                     <div>
                       <div className="text-sm font-medium">{getEarningTypeDisplay(earning.earningType)}</div>
