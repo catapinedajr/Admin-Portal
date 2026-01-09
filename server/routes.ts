@@ -8,6 +8,7 @@ import { communityStorage } from "./community";
 import { authService } from "./auth";
 import { registerWalletRoutes } from "./wallet-routes";
 import { registerReferralRoutes } from "./referral-routes";
+import { awardPoints, getRewardConfig, checkAndAwardStreakMilestones, getUserLeaderboardPosition, getLeaderboardRankings, getActiveLeaderboardPeriods } from "./rewards-service";
 import { contentDays, contentSetUpQuestions, contentLessons, contentQuizzes, contentGenerationSteps, userQuizAnswers, registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, dailyDiscussions, users, adCampaigns, adCreatives, adImpressions, adClicks, affiliateProducts, affiliateClicks, referralPartners, storeProducts, paywallSettings } from "@shared/schema";
 import { eq, sql, desc, and } from "drizzle-orm";
 import { v4 as uuidv4 } from 'uuid';
@@ -1576,71 +1577,64 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
       };
 
       if (isCorrect) {
-        // Get current Bitcoin price for USD calculations
-        const priceResponse = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
-        const priceData = await priceResponse.json();
-        const currentBitcoinPrice = priceData.bitcoin?.usd || 100000; // Fallback price
-
-        // Find the day index for this question
         const dayIndex = question.dayId || 1;
 
-        // Award 100 sats per correct answer
-        const questionReward = await storage.addWalletEarning({
-          userId,
+        // Award sats per correct answer using configurable reward system
+        const questionRewardResult = await awardPoints(userId, 'quiz_correct', {
           dayIndex,
-          earningType: 'question_correct',
-          satoshisEarned: 100,
-          streakMultiplier: "1.00",
-          bitcoinPriceUsd: currentBitcoinPrice.toString(),
-          usdValueAtEarning: ((100 / 100000000) * currentBitcoinPrice).toString(),
-          description: "Correct quiz answer",
-          date: date
+          description: "Correct quiz answer"
         });
 
-        rewards.questionReward = 100;
-        rewards.totalEarned += 100;
+        if (questionRewardResult.success) {
+          rewards.questionReward = questionRewardResult.satoshisEarned;
+          rewards.totalEarned += questionRewardResult.satoshisEarned;
+        }
 
         // Check if this completes the quiz for the day
         const dayQuestions = await storage.getContentQuizzes(dayIndex);
         const userAnswers = await storage.getUserQuizAnswers(userId, date);
         const correctAnswers = userAnswers.filter(ans => ans.isCorrect).length;
         
-        // If this is the last question in the quiz, award completion bonus
+        // If this is the last question in the quiz
         if (userAnswers.length === dayQuestions.length) {
           rewards.quizCompleted = true;
           
-          // Award 500 sats for quiz completion
-          const completionReward = await storage.addWalletEarning({
-            userId,
+          // Check if all answers were correct for perfect score bonus
+          if (correctAnswers === dayQuestions.length) {
+            const perfectRewardResult = await awardPoints(userId, 'quiz_perfect', {
+              dayIndex,
+              description: "Perfect quiz score!"
+            });
+            if (perfectRewardResult.success) {
+              rewards.quizCompletionReward = perfectRewardResult.satoshisEarned;
+              rewards.totalEarned += perfectRewardResult.satoshisEarned;
+            }
+          }
+
+          // Award daily completion bonus
+          const dailyCompleteResult = await awardPoints(userId, 'daily_complete', {
             dayIndex,
-            earningType: 'quiz_complete',
-            satoshisEarned: 500,
-            streakMultiplier: "1.00",
-            bitcoinPriceUsd: currentBitcoinPrice.toString(),
-            usdValueAtEarning: ((500 / 100000000) * currentBitcoinPrice).toString(),
-            description: "Quiz completion bonus",
-            date: date
+            description: "Daily lesson completed"
           });
+          if (dailyCompleteResult.success) {
+            rewards.totalEarned += dailyCompleteResult.satoshisEarned;
+          }
 
-          rewards.quizCompletionReward = 500;
-          rewards.totalEarned += 500;
-
-          // Update user streak and check for streak bonuses
+          // Update user streak and check for streak milestones
           await storage.updateUserStreak(userId, dayIndex);
-          const streakBonuses = await storage.checkAndAwardStreakBonuses(userId, dayIndex, currentBitcoinPrice);
+          const user = await storage.getUser(userId);
+          const currentStreak = user?.currentStreak || 0;
           
-          if (streakBonuses.length > 0) {
-            rewards.streakBonuses = streakBonuses.map(bonus => ({
-              type: bonus.earningType,
+          const streakMilestones = await checkAndAwardStreakMilestones(userId, currentStreak);
+          if (streakMilestones.length > 0) {
+            (rewards as any).streakBonuses = streakMilestones.map(bonus => ({
+              type: 'streak_bonus',
               amount: bonus.satoshisEarned,
-              description: bonus.description
+              description: bonus.message
             }));
-            rewards.totalEarned += streakBonuses.reduce((sum, bonus) => sum + bonus.satoshisEarned, 0);
+            rewards.totalEarned += streakMilestones.reduce((sum, bonus) => sum + bonus.satoshisEarned, 0);
           }
         }
-
-        // Update wallet totals
-        await storage.updateWalletTotals(userId);
       }
 
       res.json({
@@ -2391,6 +2385,41 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
 
   // Register referral routes (use setDefaultUser for dev compatibility)
   registerReferralRoutes(app, setDefaultUser);
+
+  // USER-FACING LEADERBOARD ROUTES
+  app.get('/api/leaderboard/periods', async (req, res) => {
+    try {
+      const periods = await getActiveLeaderboardPeriods();
+      res.json(periods);
+    } catch (error) {
+      console.error('Error fetching leaderboard periods:', error);
+      res.status(500).json({ message: "Failed to fetch leaderboard periods" });
+    }
+  });
+
+  app.get('/api/leaderboard/:periodId/rankings', async (req, res) => {
+    try {
+      const periodId = parseInt(req.params.periodId);
+      const limit = parseInt(req.query.limit as string) || 20;
+      const rankings = await getLeaderboardRankings(periodId, limit);
+      res.json(rankings);
+    } catch (error) {
+      console.error('Error fetching leaderboard rankings:', error);
+      res.status(500).json({ message: "Failed to fetch rankings" });
+    }
+  });
+
+  app.get('/api/leaderboard/my-position', setDefaultUser, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const periodId = req.query.periodId ? parseInt(req.query.periodId as string) : undefined;
+      const position = await getUserLeaderboardPosition(userId, periodId);
+      res.json(position);
+    } catch (error) {
+      console.error('Error fetching user position:', error);
+      res.status(500).json({ message: "Failed to fetch position" });
+    }
+  });
 
   // CONTENT VALIDATION PROTECTION ROUTES
   // Add new day content (with framework validation)
