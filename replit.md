@@ -99,6 +99,36 @@ API Endpoints:
 - `GET /api/admin/push-notifications/stats`: Get device token statistics
 - `POST /api/admin/push-notifications`: Create/send push notification
 
+### Automated Notification Templates
+Database-driven template system for scheduled notifications with AI-assisted content generation:
+
+Template Categories:
+- `morning_spark`: Daily lesson teasers sent each morning
+- `streak_coach`: Motivation for users with active streaks
+- `reengagement_soft`: Gentle nudge for users idle 3-7 days
+- `reengagement_medium`: Stronger message for users idle 7-14 days
+- `reengagement_hard`: Last-chance message for users idle 14+ days
+- `price_alert`: BTC price movements tied to education
+- `milestone`: Achievement and learning milestone celebrations
+
+Placeholders:
+- `{{firstName}}`: User's first name
+- `{{currentStreak}}`: Current streak in days
+- `{{lessonTitle}}`: Current lesson title
+- `{{btcPrice}}`: Live Bitcoin price
+- `{{dayNumber}}`: Current curriculum day
+
+API Endpoints:
+- `GET /api/admin/notification-templates`: List all templates
+- `POST /api/admin/notification-templates`: Create template
+- `PATCH /api/admin/notification-templates/:id`: Update template
+- `DELETE /api/admin/notification-templates/:id`: Delete template
+- `POST /api/admin/notification-templates/generate`: AI-generate templates (Claude)
+- `POST /api/admin/notification-templates/seed`: Seed 16 starter templates
+- `POST /api/admin/notification-scheduler/run`: Run batch send for a category
+- `GET /api/admin/notification-scheduler/stats`: Get automation stats
+- `GET /api/admin/notification-scheduler/logs`: Get sent notification logs
+
 ### Community Moderation
 All community mutation routes (post, reply, upvote, report) use session-based authentication with ban/mute enforcement:
 - Banned users (bannedAt set) receive 403 response
