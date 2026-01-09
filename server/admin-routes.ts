@@ -5723,6 +5723,101 @@ Example format:
     }
   });
   
+  // Seed starter templates
+  app.post("/api/admin/notification-templates/seed", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const existingTemplates = await db.select().from(notificationTemplates);
+      if (existingTemplates.length > 0) {
+        return res.json({ message: "Templates already exist", count: existingTemplates.length });
+      }
+      
+      const starterTemplates = [
+        // Morning Spark (curriculum teasers)
+        { name: "Morning Spark - Price Hook", category: "morning_spark", title: "BTC at {{btcPrice}} today", body: "Hey {{firstName}}, Day {{dayNumber}} explains why price moves like this. Your {{currentStreak}}-day streak awaits!", status: "approved", priority: 1 },
+        { name: "Morning Spark - Curiosity", category: "morning_spark", title: "Why banks fear Bitcoin", body: "Good morning {{firstName}}! Today's lesson reveals something banks don't want you to know. Tap to learn.", status: "approved", priority: 2 },
+        { name: "Morning Spark - Lesson Preview", category: "morning_spark", title: "Today: {{lessonTitle}}", body: "{{firstName}}, your Day {{dayNumber}} lesson is ready. 3 mins to level up your Bitcoin knowledge.", status: "approved", priority: 3 },
+        { name: "Morning Spark - Scarcity", category: "morning_spark", title: "Only 21 million ever", body: "Hey {{firstName}} - today we explore why Bitcoin's fixed supply changes everything. Ready for Day {{dayNumber}}?", status: "approved", priority: 4 },
+        
+        // Streak Coach (motivation)
+        { name: "Streak Coach - On Fire", category: "streak_coach", title: "{{currentStreak}} days and counting!", body: "You're on fire {{firstName}}! Keep the momentum - today's lesson is waiting.", status: "approved", priority: 1 },
+        { name: "Streak Coach - Don't Break", category: "streak_coach", title: "Don't break your streak!", body: "{{firstName}}, you've built a {{currentStreak}}-day streak. Just 3 mins today to keep it alive!", status: "approved", priority: 2 },
+        { name: "Streak Coach - Almost There", category: "streak_coach", title: "Almost at a milestone!", body: "{{firstName}}, a few more days and you'll hit a major streak milestone. Keep going!", status: "approved", priority: 3 },
+        
+        // Re-engagement Soft (3-4 days idle)
+        { name: "Re-engage Soft - Miss You", category: "reengagement_soft", title: "We miss you {{firstName}}!", body: "Bitcoin didn't stop moving and neither should your learning. Pick up where you left off?", status: "approved", priority: 1 },
+        { name: "Re-engage Soft - Quick Win", category: "reengagement_soft", title: "3 mins to restart", body: "Hey {{firstName}}, just 3 minutes to get back on track. Your Bitcoin journey awaits!", status: "approved", priority: 2 },
+        
+        // Re-engagement Medium (7-10 days idle)
+        { name: "Re-engage Medium - Fresh Start", category: "reengagement_medium", title: "Fresh start today?", body: "{{firstName}}, it's been a while. No judgment - just tap to restart your Bitcoin education.", status: "approved", priority: 1 },
+        { name: "Re-engage Medium - Price Move", category: "reengagement_medium", title: "BTC moved while you were away", body: "Bitcoin at {{btcPrice}} now. Understand why with today's lesson. Welcome back {{firstName}}!", status: "approved", priority: 2 },
+        
+        // Re-engagement Hard (14+ days idle)
+        { name: "Re-engage Hard - Last Try", category: "reengagement_hard", title: "Still interested in Bitcoin?", body: "{{firstName}}, we're here when you're ready. One tap to continue your journey.", status: "approved", priority: 1 },
+        
+        // Price Alert
+        { name: "Price Alert - Major Move", category: "price_alert", title: "BTC: {{btcPrice}}", body: "{{firstName}}, Bitcoin just made a move. Today's lesson explains what drives these swings.", status: "approved", priority: 1 },
+        { name: "Price Alert - New High", category: "price_alert", title: "Bitcoin making headlines", body: "At {{btcPrice}}, everyone's talking about BTC. Make sure you understand why, {{firstName}}.", status: "approved", priority: 2 },
+        
+        // Milestone
+        { name: "Milestone - Week Complete", category: "milestone", title: "1 Week of Learning!", body: "{{firstName}}, you've completed your first week! You now know more about Bitcoin than 95% of people.", status: "approved", priority: 1 },
+        { name: "Milestone - Month Complete", category: "milestone", title: "30 Days Strong!", body: "Incredible {{firstName}}! A full month of Bitcoin education. You're becoming a true Bitcoiner.", status: "approved", priority: 2 },
+      ];
+      
+      for (const template of starterTemplates) {
+        await db.insert(notificationTemplates).values(template);
+      }
+      
+      res.json({ message: "Seeded starter templates", count: starterTemplates.length });
+    } catch (error) {
+      console.error("Error seeding templates:", error);
+      res.status(500).json({ message: "Failed to seed templates" });
+    }
+  });
+  
+  // Run scheduled notification batch (for testing/manual trigger)
+  app.post("/api/admin/notification-scheduler/run", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { runScheduledNotificationBatch } = await import('./push-notification-service');
+      const { category } = req.body;
+      
+      if (!category) {
+        return res.status(400).json({ message: "Category is required" });
+      }
+      
+      const result = await runScheduledNotificationBatch(category);
+      res.json(result);
+    } catch (error) {
+      console.error("Error running scheduler:", error);
+      res.status(500).json({ message: "Failed to run scheduler" });
+    }
+  });
+  
+  // Get automated notification stats
+  app.get("/api/admin/notification-scheduler/stats", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { getAutomatedNotificationStats } = await import('./push-notification-service');
+      const stats = await getAutomatedNotificationStats();
+      res.json(stats);
+    } catch (error) {
+      console.error("Error getting scheduler stats:", error);
+      res.status(500).json({ message: "Failed to get scheduler stats" });
+    }
+  });
+  
+  // Get automated notification logs
+  app.get("/api/admin/notification-scheduler/logs", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const logs = await db.select()
+        .from(automatedNotificationLog)
+        .orderBy(desc(automatedNotificationLog.sentAt))
+        .limit(100);
+      res.json(logs);
+    } catch (error) {
+      console.error("Error fetching notification logs:", error);
+      res.status(500).json({ message: "Failed to fetch logs" });
+    }
+  });
+  
   // Get all device tokens (for debugging)
   app.get("/api/admin/device-tokens", requireAdminAuth, async (req: AdminRequest, res: Response) => {
     try {

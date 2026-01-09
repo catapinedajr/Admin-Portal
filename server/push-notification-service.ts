@@ -284,3 +284,221 @@ export async function getDeviceTokenStats(): Promise<{
     active: allTokens.filter(t => t.isActive).length,
   };
 }
+
+// Notification Scheduler - Automated template-based notifications
+
+import { notificationTemplates, automatedNotificationLog, userProgress, contentDays } from '@shared/schema';
+import { desc } from 'drizzle-orm';
+
+export interface SchedulerUserContext {
+  userId: number;
+  firstName: string;
+  currentStreak: number;
+  currentDay: number;
+  lastActivityDate: string | null;
+  notificationsEnabled: boolean;
+  notificationTime: string;
+  quietHoursStart: number | null;
+  quietHoursEnd: number | null;
+  timezone: string;
+}
+
+export async function getEligibleUsersForNotification(category: string): Promise<SchedulerUserContext[]> {
+  const now = new Date();
+
+  const allUsers = await db.select({
+    id: users.id,
+    firstName: users.firstName,
+    currentStreak: users.currentStreak,
+    lastActivityDate: users.lastActivityDate,
+    notificationsEnabled: users.notificationsEnabled,
+    notificationTime: users.notificationTime,
+    quietHoursStart: users.quietHoursStart,
+    quietHoursEnd: users.quietHoursEnd,
+    timezone: users.timezone,
+  })
+  .from(users)
+  .where(eq(users.notificationsEnabled, true));
+
+  const userContexts: SchedulerUserContext[] = [];
+
+  for (const user of allUsers) {
+    const progress = await db.select()
+      .from(userProgress)
+      .where(eq(userProgress.userId, user.id))
+      .orderBy(desc(userProgress.dayIndex))
+      .limit(1);
+
+    const currentStreak = user.currentStreak || 0;
+    const currentDay = progress[0]?.dayIndex || 1;
+    const lastActivityDate = user.lastActivityDate || null;
+
+    let eligible = false;
+    let daysSinceActive = 0;
+    
+    if (lastActivityDate) {
+      const lastActive = new Date(lastActivityDate);
+      daysSinceActive = (now.getTime() - lastActive.getTime()) / (24 * 60 * 60 * 1000);
+    }
+
+    switch (category) {
+      case 'morning_spark':
+        eligible = true;
+        break;
+      case 'streak_coach':
+        eligible = currentStreak > 0;
+        break;
+      case 'reengagement_soft':
+        eligible = daysSinceActive >= 3 && daysSinceActive < 7;
+        break;
+      case 'reengagement_medium':
+        eligible = daysSinceActive >= 7 && daysSinceActive < 14;
+        break;
+      case 'reengagement_hard':
+        eligible = daysSinceActive >= 14;
+        break;
+      case 'price_alert':
+        eligible = true;
+        break;
+      case 'milestone':
+        eligible = currentDay % 7 === 0 || [30, 60, 90, 180, 336].includes(currentDay);
+        break;
+      default:
+        eligible = true;
+    }
+
+    if (eligible) {
+      userContexts.push({
+        userId: user.id,
+        firstName: user.firstName || 'Learner',
+        currentStreak,
+        currentDay,
+        lastActivityDate,
+        notificationsEnabled: user.notificationsEnabled ?? true,
+        notificationTime: user.notificationTime || 'morning',
+        quietHoursStart: user.quietHoursStart || null,
+        quietHoursEnd: user.quietHoursEnd || null,
+        timezone: user.timezone || 'America/New_York',
+      });
+    }
+  }
+
+  return userContexts;
+}
+
+export function renderTemplate(template: string, context: Record<string, string>): string {
+  return template.replace(/\{\{(\w+)\}\}/g, (match, key) => {
+    return context[key] || match;
+  });
+}
+
+export async function sendScheduledNotification(
+  templateId: number,
+  userId: number,
+  context: Record<string, string>
+): Promise<{ success: boolean; error?: string }> {
+  const template = await db.select()
+    .from(notificationTemplates)
+    .where(eq(notificationTemplates.id, templateId))
+    .limit(1);
+
+  if (!template[0] || template[0].status !== 'approved') {
+    return { success: false, error: 'Template not found or not approved' };
+  }
+
+  const renderedTitle = renderTemplate(template[0].title, context);
+  const renderedBody = renderTemplate(template[0].body, context);
+
+  const result = await sendNotificationToUser(userId, {
+    title: renderedTitle,
+    body: renderedBody,
+    data: { templateId, category: template[0].category },
+  });
+
+  await db.insert(automatedNotificationLog).values({
+    templateId,
+    userId,
+    category: template[0].category,
+    renderedTitle,
+    renderedBody,
+    deliveryStatus: result.sent > 0 ? 'sent' : 'failed',
+    sentAt: new Date(),
+  });
+
+  return { success: result.sent > 0 };
+}
+
+export async function runScheduledNotificationBatch(category: string): Promise<{
+  processed: number;
+  sent: number;
+  failed: number;
+}> {
+  const approvedTemplates = await db.select()
+    .from(notificationTemplates)
+    .where(and(
+      eq(notificationTemplates.category, category),
+      eq(notificationTemplates.status, 'approved')
+    ));
+
+  if (approvedTemplates.length === 0) {
+    return { processed: 0, sent: 0, failed: 0 };
+  }
+
+  const eligibleUsers = await getEligibleUsersForNotification(category);
+  let sent = 0;
+  let failed = 0;
+
+  for (const user of eligibleUsers) {
+    const template = approvedTemplates[Math.floor(Math.random() * approvedTemplates.length)];
+    
+    const todaysLesson = await db.select()
+      .from(contentDays)
+      .where(eq(contentDays.dayIndex, user.currentDay))
+      .limit(1);
+
+    const context = {
+      firstName: user.firstName,
+      currentStreak: String(user.currentStreak),
+      dayNumber: String(user.currentDay),
+      lessonTitle: todaysLesson[0]?.title || 'Your Next Bitcoin Lesson',
+      btcPrice: '$97,250', // This would be fetched from CoinGecko in production
+    };
+
+    const result = await sendScheduledNotification(template.id, user.userId, context);
+    
+    if (result.success) {
+      sent++;
+    } else {
+      failed++;
+    }
+  }
+
+  return { processed: eligibleUsers.length, sent, failed };
+}
+
+export async function getAutomatedNotificationStats(): Promise<{
+  totalSent: number;
+  last24Hours: number;
+  byCategory: Record<string, number>;
+}> {
+  const allLogs = await db.select().from(automatedNotificationLog);
+  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  
+  const byCategory: Record<string, number> = {};
+  let last24Hours = 0;
+  
+  for (const log of allLogs) {
+    if (log.category) {
+      byCategory[log.category] = (byCategory[log.category] || 0) + 1;
+    }
+    if (new Date(log.sentAt!) > oneDayAgo) {
+      last24Hours++;
+    }
+  }
+  
+  return {
+    totalSent: allLogs.filter(l => l.deliveryStatus === 'sent').length,
+    last24Hours,
+    byCategory,
+  };
+}
