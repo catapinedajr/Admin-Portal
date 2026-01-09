@@ -12,6 +12,64 @@ This document outlines the strategy for merging the external development team's 
 
 ---
 
+## Phase 0: AI-Powered Gap Analysis (Recommended)
+
+### 0.1 Setup for Side-by-Side Analysis
+
+The external team's code can be placed in this project for direct AI comparison:
+
+```
+/external-codebase/    <- Place their code here (already configured)
+├── server/            <- Their server code
+├── client/            <- Their client code
+├── shared/            <- Their schemas/types
+├── package.json       <- Their dependencies
+└── ...
+```
+
+**Already Configured:**
+- [x] Folder excluded from TypeScript compilation
+- [x] Folder excluded from git tracking
+- [x] Build process ignores this folder
+
+### 0.2 How to Import Their Code
+
+**Option A: Direct Copy**
+1. Download/export their codebase as a zip
+2. Extract contents into `/external-codebase/`
+
+**Option B: Git Clone (if accessible)**
+```bash
+cd external-codebase
+git clone <their-repo-url> .
+```
+
+### 0.3 AI Analysis Commands
+
+Once their code is in place, the AI can perform:
+
+1. **Dependency Comparison**
+   - Compare `package.json` vs `external-codebase/package.json`
+   - Identify version conflicts and missing packages
+
+2. **Schema Reconciliation**
+   - Compare `shared/schema.ts` vs `external-codebase/shared/schema.ts`
+   - Map table/column differences
+
+3. **API Endpoint Mapping**
+   - Compare `server/routes.ts` vs their route files
+   - Document overlapping and unique endpoints
+
+4. **Authentication Deep Dive**
+   - Compare auth implementations side-by-side
+   - Identify migration requirements
+
+5. **Generate Reconciliation Report**
+   - Automated gap analysis document
+   - Specific file-by-file merge recommendations
+
+---
+
 ## Phase 1: Pre-Merge Analysis
 
 ### 1.1 External Team Codebase Audit
