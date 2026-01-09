@@ -72,6 +72,13 @@ export default function WalletPage() {
     refetchOnWindowFocus: false,
   });
 
+  // Get leaderboard position
+  const { data: leaderboardPosition } = useQuery<{ rank: number | null; totalSatoshis: number; periodName: string }>({
+    queryKey: ['/api/leaderboard/my-position'],
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+
   const formatSats = (sats: number) => {
     return sats.toLocaleString();
   };
@@ -467,6 +474,32 @@ export default function WalletPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Leaderboard Rank Badge */}
+      {leaderboardPosition && leaderboardPosition.rank && (
+        <Card 
+          className="cursor-pointer hover:border-orange-500/50 transition-colors bg-gradient-to-r from-orange-500/10 to-zinc-800 border-orange-500/20"
+          onClick={() => setLocation('/community?tab=leaderboard')}
+        >
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-orange-500/20 rounded-lg">
+                  <Trophy className="w-5 h-5 text-orange-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-zinc-400">Your Rank</p>
+                  <p className="text-xl font-bold text-white">#{leaderboardPosition.rank}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-zinc-500">{leaderboardPosition.periodName || 'Current Period'}</p>
+                <p className="text-sm text-orange-400 font-medium">View Rankings →</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Quick Stats */}
       <div className="grid grid-cols-2 gap-4">

@@ -139,7 +139,14 @@ function getSessionId() {
 
 export default function CommunityPage() {
   const [, setLocation] = useLocation();
-  const [activeTab, setActiveTab] = useState<CommunityTab>("forums");
+  const [activeTab, setActiveTab] = useState<CommunityTab>(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    if (tabParam === 'leaderboard' || tabParam === 'videos' || tabParam === 'forums') {
+      return tabParam as CommunityTab;
+    }
+    return "forums";
+  });
 
   return (
     <div className="min-h-screen bg-zinc-900">

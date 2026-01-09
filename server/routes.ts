@@ -2397,11 +2397,12 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
-  app.get('/api/leaderboard/:periodId/rankings', async (req, res) => {
+  app.get('/api/leaderboard/:periodId/rankings', setDefaultUser, async (req: any, res) => {
     try {
       const periodId = parseInt(req.params.periodId);
       const limit = parseInt(req.query.limit as string) || 20;
-      const rankings = await getLeaderboardRankings(periodId, limit);
+      const userId = req.user?.id;
+      const rankings = await getLeaderboardRankings(periodId, limit, userId);
       res.json(rankings);
     } catch (error) {
       console.error('Error fetching leaderboard rankings:', error);

@@ -223,9 +223,21 @@ export async function checkAndAwardStreakMilestones(userId: number, streakDays: 
 export async function getUserLeaderboardPosition(userId: number, periodId?: number): Promise<{
   rank: number | null;
   totalSatoshis: number;
-  nearbyUsers: Array<{ rank: number; username: string; totalSatoshis: number; isCurrentUser: boolean }>;
+  periodName: string;
+  nearbyUsers: Array<{ 
+    rank: number; 
+    userId: number;
+    username: string; 
+    displayName: string | null;
+    avatarUrl: string | null;
+    totalSatoshis: number; 
+    streakDays: number;
+    quizzesCompleted: number;
+    isCurrentUser: boolean;
+  }>;
 }> {
   let activePeriodId = periodId;
+  let periodName = 'Current Period';
   
   if (!activePeriodId) {
     const [activePeriod] = await db
@@ -236,9 +248,13 @@ export async function getUserLeaderboardPosition(userId: number, periodId?: numb
       .limit(1);
     
     if (!activePeriod) {
-      return { rank: null, totalSatoshis: 0, nearbyUsers: [] };
+      return { rank: null, totalSatoshis: 0, periodName, nearbyUsers: [] };
     }
     activePeriodId = activePeriod.id;
+    periodName = activePeriod.name;
+  } else {
+    const [period] = await db.select().from(leaderboardPeriods).where(eq(leaderboardPeriods.id, periodId)).limit(1);
+    if (period) periodName = period.name;
   }
   
   const [userEntry] = await db
@@ -257,6 +273,8 @@ export async function getUserLeaderboardPosition(userId: number, periodId?: numb
         userId: leaderboardEntries.userId,
         totalSatoshis: leaderboardEntries.totalSatoshis,
         username: users.username,
+        streakDays: users.currentStreak,
+        quizzesCompleted: users.completedLessons,
       })
       .from(leaderboardEntries)
       .innerJoin(users, eq(users.id, leaderboardEntries.userId))
@@ -267,10 +285,16 @@ export async function getUserLeaderboardPosition(userId: number, periodId?: numb
     return {
       rank: null,
       totalSatoshis: 0,
+      periodName,
       nearbyUsers: topEntries.map(e => ({
         rank: e.rank,
+        userId: e.userId,
         username: e.username,
+        displayName: null,
+        avatarUrl: null,
         totalSatoshis: e.totalSatoshis,
+        streakDays: e.streakDays,
+        quizzesCompleted: e.quizzesCompleted,
         isCurrentUser: false
       }))
     };
@@ -282,6 +306,8 @@ export async function getUserLeaderboardPosition(userId: number, periodId?: numb
       userId: leaderboardEntries.userId,
       totalSatoshis: leaderboardEntries.totalSatoshis,
       username: users.username,
+      streakDays: users.currentStreak,
+      quizzesCompleted: users.completedLessons,
     })
     .from(leaderboardEntries)
     .innerJoin(users, eq(users.id, leaderboardEntries.userId))
@@ -295,41 +321,53 @@ export async function getUserLeaderboardPosition(userId: number, periodId?: numb
   return {
     rank: userEntry.rank,
     totalSatoshis: userEntry.totalSatoshis,
+    periodName,
     nearbyUsers: nearbyEntries.map(e => ({
       rank: e.rank,
+      userId: e.userId,
       username: e.username,
+      displayName: null,
+      avatarUrl: null,
       totalSatoshis: e.totalSatoshis,
+      streakDays: e.streakDays,
+      quizzesCompleted: e.quizzesCompleted,
       isCurrentUser: e.userId === userId
     }))
   };
 }
 
-export async function getLeaderboardRankings(periodId: number, limit: number = 20): Promise<Array<{
+export async function getLeaderboardRankings(periodId: number, limit: number = 20, currentUserId?: number): Promise<Array<{
   rank: number;
   userId: number;
   username: string;
+  displayName: string | null;
+  avatarUrl: string | null;
   totalSatoshis: number;
-  learningSatoshis: number;
-  streakSatoshis: number;
-  referralSatoshis: number;
-  communitySatoshis: number;
+  streakDays: number;
+  quizzesCompleted: number;
+  isCurrentUser: boolean;
 }>> {
-  return db
+  const entries = await db
     .select({
       rank: leaderboardEntries.rank,
       userId: leaderboardEntries.userId,
       username: users.username,
       totalSatoshis: leaderboardEntries.totalSatoshis,
-      learningSatoshis: leaderboardEntries.learningSatoshis,
-      streakSatoshis: leaderboardEntries.streakSatoshis,
-      referralSatoshis: leaderboardEntries.referralSatoshis,
-      communitySatoshis: leaderboardEntries.communitySatoshis,
+      streakDays: users.currentStreak,
+      quizzesCompleted: users.completedLessons,
     })
     .from(leaderboardEntries)
     .innerJoin(users, eq(users.id, leaderboardEntries.userId))
     .where(eq(leaderboardEntries.periodId, periodId))
     .orderBy(asc(leaderboardEntries.rank))
     .limit(limit);
+  
+  return entries.map(e => ({
+    ...e,
+    displayName: null,
+    avatarUrl: null,
+    isCurrentUser: currentUserId ? e.userId === currentUserId : false
+  }));
 }
 
 export async function getActiveLeaderboardPeriods() {
