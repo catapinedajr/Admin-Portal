@@ -65,6 +65,7 @@ interface ContentDay {
   approvedBy: string | null;
   approvedAt: string | null;
   publishedAt: string | null;
+  archivedAt: string | null;
   questionsCount: number;
   lessonsCount: number;
   quizzesCount: number;
@@ -171,24 +172,37 @@ function AdminAuthGuard({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-function ContentDayCard({ day, onEdit }: { day: ContentDay; onEdit: () => void }) {
+function ContentDayCard({ day, onEdit, onRestore, isRestoring }: { 
+  day: ContentDay; 
+  onEdit: () => void; 
+  onRestore?: () => void;
+  isRestoring?: boolean;
+}) {
   const statusConfig = STATUS_CONFIG[day.status] || STATUS_CONFIG.draft;
+  const isArchived = !!day.archivedAt;
   
   return (
-    <Card className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors cursor-pointer" onClick={onEdit}>
+    <Card className={`${isArchived ? 'bg-red-950/30 border-red-900/50' : 'bg-zinc-900 border-zinc-800'} hover:border-zinc-700 transition-colors cursor-pointer`} onClick={onEdit}>
       <CardContent className="p-4">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1 flex-wrap">
               <span className="text-orange-500 font-bold">Day {day.dayIndex}</span>
-              <Badge className={`${statusConfig.bgColor} ${statusConfig.color} border-0`}>
-                {statusConfig.label}
-              </Badge>
-              {!day.isActive && (
+              {isArchived ? (
+                <Badge className="bg-red-600/20 text-red-400 border-0">
+                  <Trash2 className="w-3 h-3 mr-1" />
+                  Archived
+                </Badge>
+              ) : (
+                <Badge className={`${statusConfig.bgColor} ${statusConfig.color} border-0`}>
+                  {statusConfig.label}
+                </Badge>
+              )}
+              {!day.isActive && !isArchived && (
                 <Badge className="bg-zinc-700 text-zinc-400 border-0">Inactive</Badge>
               )}
             </div>
-            <h3 className="text-white font-medium">{day.title}</h3>
+            <h3 className={`font-medium ${isArchived ? 'text-zinc-400 line-through' : 'text-white'}`}>{day.title}</h3>
             
             <div className="flex items-center gap-3 mt-2 text-xs text-zinc-500 flex-wrap">
               <span className="flex items-center gap-1">
@@ -221,15 +235,32 @@ function ContentDayCard({ day, onEdit }: { day: ContentDay; onEdit: () => void }
             </div>
           </div>
           
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={(e) => { e.stopPropagation(); onEdit(); }}
-            className="text-zinc-400 hover:text-white"
-            data-testid={`button-edit-day-${day.dayIndex}`}
-          >
-            <Edit className="w-4 h-4" />
-          </Button>
+          <div className="flex items-center gap-1">
+            {isArchived && onRestore && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => { e.stopPropagation(); onRestore(); }}
+                className="text-green-400 hover:text-green-300 hover:bg-green-500/10"
+                disabled={isRestoring}
+              >
+                {isRestoring ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <RotateCcw className="w-4 h-4" />
+                )}
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => { e.stopPropagation(); onEdit(); }}
+              className="text-zinc-400 hover:text-white"
+              data-testid={`button-edit-day-${day.dayIndex}`}
+            >
+              <Edit className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -2505,13 +2536,39 @@ export default function ContentManagement() {
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [aiGenerateDialogOpen, setAiGenerateDialogOpen] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
   const [expandedYears, setExpandedYears] = useState<Set<number>>(new Set([1]));
   const [expandedMonths, setExpandedMonths] = useState<Set<string>>(new Set(['1-1'])); // "year-month" format
   const [expandedWeeks, setExpandedWeeks] = useState<Set<string>>(new Set(['1-1-1'])); // "year-month-week" format
   const [selectedLevel, setSelectedLevel] = useState<{ type: 'year' | 'month' | 'week'; year: number; month?: number; week?: number } | null>({ type: 'week', year: 1, month: 1, week: 1 });
+  const { toast } = useToast();
 
   const { data: contentDays, isLoading } = useQuery<ContentDay[]>({
-    queryKey: ["/api/admin/content/days"],
+    queryKey: ["/api/admin/content/days", showArchived],
+    queryFn: async () => {
+      const response = await fetch(`/api/admin/content/days?includeArchived=${showArchived}`);
+      if (!response.ok) throw new Error('Failed to fetch days');
+      return response.json();
+    },
+  });
+
+  const { data: archivedStats } = useQuery<{ days: number; quizzes: number; questions: number; lessons: number; total: number }>({
+    queryKey: ["/api/admin/content/archived-stats"],
+  });
+
+  const restoreDayMutation = useMutation({
+    mutationFn: async (dayId: number) => {
+      const response = await apiRequest("POST", `/api/admin/content/days/${dayId}/restore`);
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({ title: "Day Restored", description: "The day and its content have been restored." });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/days"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/archived-stats"] });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to restore day.", variant: "destructive" });
+    },
   });
 
   const filteredDays = contentDays?.filter(day => 
@@ -2654,15 +2711,28 @@ export default function ContentManagement() {
             </div>
           </div>
 
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-            <Input
-              placeholder="Search by title, theme, or day number..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-zinc-900 border-zinc-800 text-white"
-              data-testid="input-search-content"
-            />
+          <div className="flex items-center gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+              <Input
+                placeholder="Search by title, theme, or day number..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 bg-zinc-900 border-zinc-800 text-white"
+                data-testid="input-search-content"
+              />
+            </div>
+            <Button
+              variant={showArchived ? "default" : "outline"}
+              size="sm"
+              onClick={() => setShowArchived(!showArchived)}
+              className={showArchived 
+                ? "bg-red-600 hover:bg-red-700 text-white" 
+                : "border-zinc-700 text-zinc-400 hover:bg-zinc-800"}
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              {showArchived ? `Showing Archived (${archivedStats?.days || 0})` : `View Archived (${archivedStats?.days || 0})`}
+            </Button>
           </div>
 
           <div className="flex gap-6">
@@ -2863,6 +2933,8 @@ export default function ContentManagement() {
                       key={day.id} 
                       day={day} 
                       onEdit={() => handleEdit(day)}
+                      onRestore={day.archivedAt ? () => restoreDayMutation.mutate(day.id) : undefined}
+                      isRestoring={restoreDayMutation.isPending}
                     />
                   ))
                 ) : (
