@@ -343,6 +343,10 @@ export async function getLeaderboardRankings(periodId: number, limit: number = 2
   displayName: string | null;
   avatarUrl: string | null;
   totalSatoshis: number;
+  learningSatoshis: number;
+  streakSatoshis: number;
+  referralSatoshis: number;
+  communitySatoshis: number;
   streakDays: number;
   quizzesCompleted: number;
   isCurrentUser: boolean;
@@ -353,6 +357,10 @@ export async function getLeaderboardRankings(periodId: number, limit: number = 2
       userId: leaderboardEntries.userId,
       username: users.username,
       totalSatoshis: leaderboardEntries.totalSatoshis,
+      learningSatoshis: leaderboardEntries.learningSatoshis,
+      streakSatoshis: leaderboardEntries.streakSatoshis,
+      referralSatoshis: leaderboardEntries.referralSatoshis,
+      communitySatoshis: leaderboardEntries.communitySatoshis,
       streakDays: users.currentStreak,
       quizzesCompleted: users.completedLessons,
     })

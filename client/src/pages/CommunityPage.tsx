@@ -1483,12 +1483,13 @@ function VideosSection() {
 interface LeaderboardPeriod {
   id: number;
   name: string;
-  type: string;
+  periodType: string;
   startDate: string;
   endDate: string | null;
   isActive: boolean;
-  prizePool: number | null;
+  hasPrizes: boolean;
   prizeDescription: string | null;
+  prizeConfig: { positions?: { rank: number; prize: string; value?: number }[]; totalPool?: number } | null;
 }
 
 interface LeaderboardRanking {
@@ -1593,13 +1594,15 @@ function LeaderboardSection() {
       )}
 
       {/* Prize Pool Banner */}
-      {activePeriod?.prizePool && (
+      {activePeriod?.hasPrizes && (
         <Card className="bg-gradient-to-r from-orange-500/20 to-amber-500/10 border-orange-500/30">
           <CardContent className="p-4 text-center">
             <div className="flex items-center justify-center gap-2 mb-1">
               <Trophy className="w-5 h-5 text-orange-400" />
               <span className="text-lg font-bold text-orange-400">
-                {formatSats(activePeriod.prizePool)} sats Prize Pool
+                {activePeriod.prizeConfig?.totalPool 
+                  ? `${formatSats(activePeriod.prizeConfig.totalPool)} sats Prize Pool`
+                  : 'Prizes Available!'}
               </span>
             </div>
             {activePeriod.prizeDescription && (
