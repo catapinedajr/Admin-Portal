@@ -5671,7 +5671,9 @@ Return ONLY the post content, nothing else.`;
       const categoryDescriptions: Record<string, string> = {
         morning_spark: "Daily morning lesson teaser to engage users with their Bitcoin learning journey",
         streak_coach: "Encouraging message about maintaining or celebrating learning streaks",
-        re_engagement: "Re-engage users who haven't opened the app recently",
+        reengagement_soft: "Gentle nudge for users who have been idle for 3-7 days - welcoming tone, easy win",
+        reengagement_medium: "Stronger message for users idle 7-14 days - fresh start, no judgment",
+        reengagement_hard: "Last-chance message for users idle 14+ days - still here when ready",
         price_alert: "Notification about significant Bitcoin price movements tied to educational content",
         milestone: "Celebration of user achievements and learning milestones",
       };

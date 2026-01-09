@@ -108,11 +108,13 @@ interface NotificationTemplate {
 }
 
 const CATEGORIES = [
-  { value: 'morning_spark', label: 'Morning Spark', description: 'Daily lesson teaser' },
-  { value: 'streak_coach', label: 'Streak Coach', description: 'Streak motivation' },
-  { value: 're_engagement', label: 'Re-engagement', description: 'Bring back inactive users' },
-  { value: 'price_alert', label: 'Price Alert', description: 'BTC price movements' },
-  { value: 'milestone', label: 'Milestone', description: 'Achievement celebrations' },
+  { value: 'morning_spark', label: 'Morning Spark', description: 'Daily lesson teaser sent each morning' },
+  { value: 'streak_coach', label: 'Streak Coach', description: 'Motivation for users with active streaks' },
+  { value: 'reengagement_soft', label: 'Re-engage (3-7 days)', description: 'Gentle nudge for users idle 3-7 days' },
+  { value: 'reengagement_medium', label: 'Re-engage (7-14 days)', description: 'Stronger message for users idle 7-14 days' },
+  { value: 'reengagement_hard', label: 'Re-engage (14+ days)', description: 'Last-chance message for users idle 14+ days' },
+  { value: 'price_alert', label: 'Price Alert', description: 'BTC price movements tied to education' },
+  { value: 'milestone', label: 'Milestone', description: 'Achievement and learning milestone celebrations' },
 ];
 
 const PLACEHOLDERS = [
