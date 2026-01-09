@@ -2000,6 +2000,7 @@ export const emailAutomations = pgTable("email_automations", {
   updatedBy: integer("updated_by").references(() => adminUsers.id),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  archivedAt: timestamp("archived_at"), // Soft delete - null means active
 });
 
 // Email send log - track individual email sends

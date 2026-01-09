@@ -245,6 +245,7 @@ export function registerEmailRoutes(app: Express, requireAdminAuth: any) {
     try {
       const automations = await db.select()
         .from(emailAutomations)
+        .where(isNull(emailAutomations.archivedAt))
         .orderBy(emailAutomations.triggerType);
       res.json(automations);
     } catch (error: any) {
@@ -289,14 +290,15 @@ export function registerEmailRoutes(app: Express, requireAdminAuth: any) {
 
   app.delete("/api/admin/email/automations/:id", requireAdminAuth, async (req: any, res) => {
     try {
-      const [automation] = await db.delete(emailAutomations)
+      const [automation] = await db.update(emailAutomations)
+        .set({ archivedAt: new Date() })
         .where(eq(emailAutomations.id, parseInt(req.params.id)))
         .returning();
       
       if (!automation) {
         return res.status(404).json({ message: "Automation not found" });
       }
-      res.json({ message: "Automation deleted" });
+      res.json({ message: "Automation archived" });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
