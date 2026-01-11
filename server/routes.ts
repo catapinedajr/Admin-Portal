@@ -2353,6 +2353,28 @@ Bitcoin works like the internet - it's everywhere and nowhere at the same time. 
     }
   });
 
+  // Public resources endpoint (published only)
+  app.get("/api/resources", async (req, res) => {
+    try {
+      const { resourceLinks } = await import('@shared/schema');
+      const { type } = req.query;
+      
+      const conditions = [eq(resourceLinks.isPublished, true)];
+      if (type && type !== 'all') {
+        conditions.push(eq(resourceLinks.type, type as string));
+      }
+      
+      const resources = await db.select().from(resourceLinks)
+        .where(and(...conditions))
+        .orderBy(resourceLinks.sortOrder, resourceLinks.createdAt);
+      
+      res.json(resources);
+    } catch (error) {
+      console.error("Error fetching resources:", error);
+      res.status(500).json({ message: "Failed to fetch resources" });
+    }
+  });
+
   // Record video view
   app.post("/api/community/video-view", setDefaultUser, async (req, res) => {
     try {

@@ -16,6 +16,7 @@ import AccountPage from "@/pages/AccountPage";
 import WalletPage from "@/pages/WalletPage";
 import AdminAdsPage from "@/pages/AdminAdsPage";
 import LandingPage from "@/pages/LandingPage";
+import ResourcesPage from "@/pages/ResourcesPage";
 
 import AdminLoginPage from "@/admin/pages/AdminLoginPage";
 import ContentManagement from "@/admin/pages/ContentManagement";
@@ -153,6 +154,7 @@ function Router() {
         <Route path="/money" component={FinancePage} />
         <Route path="/simulators" component={SimulatorsPage} />
         <Route path="/community" component={CommunityPage} />
+        <Route path="/resources" component={ResourcesPage} />
         <Route path="/admin/login" component={AdminLoginPage} />
         <Route path="/admin/content" component={ContentManagement} />
         <Route path="/admin/marketing" component={MarketingManagement} />
