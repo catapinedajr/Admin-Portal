@@ -608,6 +608,21 @@ export const automatedNotificationLog = pgTable("automated_notification_log", {
   openedAt: timestamp("opened_at"), // Track if notification was opened
 });
 
+// Resource links for curated external educational content (videos, articles, documents)
+export const resourceLinks = pgTable("resource_links", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  url: text("url").notNull(), // External URL (YouTube, article, whitepaper, etc.)
+  type: text("type").notNull(), // video, article, document, other
+  category: text("category"), // Optional grouping (e.g., "Bitcoin Basics", "Economics")
+  thumbnailUrl: text("thumbnail_url"), // Optional custom thumbnail
+  sortOrder: integer("sort_order").notNull().default(0),
+  isPublished: boolean("is_published").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 // Abuse reports for user-submitted content reports
 export const abuseReports = pgTable("abuse_reports", {
   id: serial("id").primaryKey(),
@@ -1421,6 +1436,15 @@ export const insertAutomatedNotificationLogSchema = createInsertSchema(automated
   id: true,
   sentAt: true,
 });
+
+export const insertResourceLinkSchema = createInsertSchema(resourceLinks).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type ResourceLink = typeof resourceLinks.$inferSelect;
+export type InsertResourceLink = z.infer<typeof insertResourceLinkSchema>;
 
 export type NotificationTemplate = typeof notificationTemplates.$inferSelect;
 export type InsertNotificationTemplate = z.infer<typeof insertNotificationTemplateSchema>;
