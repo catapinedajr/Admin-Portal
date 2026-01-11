@@ -21,7 +21,8 @@ import {
   Mail,
   Coins,
   Shield,
-  Bell
+  Bell,
+  Library
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -55,6 +56,7 @@ const navSections: NavSection[] = [
     title: "Workbench",
     items: [
       { href: "/admin/content", label: "Content", icon: BookOpen },
+      { href: "/admin/resources", label: "Resources", icon: Library },
       { href: "/admin/users", label: "Users", icon: Users },
       { href: "/admin/community", label: "Community", icon: Shield },
       { href: "/admin/store", label: "Store", icon: ShoppingBag },
