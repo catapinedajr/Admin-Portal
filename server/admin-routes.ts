@@ -5832,6 +5832,124 @@ Example format:
     }
   });
 
+  // ==================== RESOURCE LINKS ENDPOINTS ====================
+  // List all resource links with optional filtering
+  app.get("/api/admin/resources", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { resourceLinks } = await import('@shared/schema');
+      const { type, category, published } = req.query;
+      
+      let query = db.select().from(resourceLinks);
+      
+      // Apply filters if provided
+      const conditions = [];
+      if (type && type !== 'all') {
+        conditions.push(eq(resourceLinks.type, type as string));
+      }
+      if (category) {
+        conditions.push(eq(resourceLinks.category, category as string));
+      }
+      if (published === 'true') {
+        conditions.push(eq(resourceLinks.isPublished, true));
+      } else if (published === 'false') {
+        conditions.push(eq(resourceLinks.isPublished, false));
+      }
+      
+      const resources = conditions.length > 0
+        ? await db.select().from(resourceLinks).where(and(...conditions)).orderBy(resourceLinks.sortOrder, resourceLinks.createdAt)
+        : await db.select().from(resourceLinks).orderBy(resourceLinks.sortOrder, resourceLinks.createdAt);
+      
+      res.json(resources);
+    } catch (error) {
+      console.error("Error fetching resource links:", error);
+      res.status(500).json({ message: "Failed to fetch resource links" });
+    }
+  });
+  
+  // Create a new resource link
+  app.post("/api/admin/resources", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { resourceLinks } = await import('@shared/schema');
+      const { title, description, url, type, category, thumbnailUrl, sortOrder, isPublished } = req.body;
+      
+      if (!title || !url || !type) {
+        return res.status(400).json({ message: "Title, URL, and type are required" });
+      }
+      
+      const [resource] = await db.insert(resourceLinks).values({
+        title,
+        description: description || null,
+        url,
+        type,
+        category: category || null,
+        thumbnailUrl: thumbnailUrl || null,
+        sortOrder: sortOrder ?? 0,
+        isPublished: isPublished ?? false,
+      }).returning();
+      
+      res.status(201).json(resource);
+    } catch (error) {
+      console.error("Error creating resource link:", error);
+      res.status(500).json({ message: "Failed to create resource link" });
+    }
+  });
+  
+  // Update a resource link
+  app.patch("/api/admin/resources/:id", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { resourceLinks } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      const updates = req.body;
+      
+      const [resource] = await db.update(resourceLinks)
+        .set({ ...updates, updatedAt: new Date() })
+        .where(eq(resourceLinks.id, id))
+        .returning();
+      
+      res.json(resource);
+    } catch (error) {
+      console.error("Error updating resource link:", error);
+      res.status(500).json({ message: "Failed to update resource link" });
+    }
+  });
+  
+  // Delete a resource link
+  app.delete("/api/admin/resources/:id", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { resourceLinks } = await import('@shared/schema');
+      const id = parseInt(req.params.id);
+      
+      await db.delete(resourceLinks).where(eq(resourceLinks.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting resource link:", error);
+      res.status(500).json({ message: "Failed to delete resource link" });
+    }
+  });
+  
+  // Bulk update sort order
+  app.post("/api/admin/resources/reorder", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { resourceLinks } = await import('@shared/schema');
+      const { items } = req.body; // Array of { id, sortOrder }
+      
+      if (!Array.isArray(items)) {
+        return res.status(400).json({ message: "Items array is required" });
+      }
+      
+      for (const item of items) {
+        await db.update(resourceLinks)
+          .set({ sortOrder: item.sortOrder, updatedAt: new Date() })
+          .where(eq(resourceLinks.id, item.id));
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error reordering resources:", error);
+      res.status(500).json({ message: "Failed to reorder resources" });
+    }
+  });
+
   // ==================== ARCHIVE/RESTORE ENDPOINTS ====================
   // Define archivable entities with name field for display
   interface ArchivableEntity {
