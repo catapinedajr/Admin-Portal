@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
-import { MessageSquare, Video, ArrowBigUp, MessageCircle, Clock, TrendingUp, Flame, Plus, User as UserIcon, Wallet, Send, ChevronDown, ChevronUp, ExternalLink, Megaphone, Filter, Image, Link2, X, Loader2, Share2, ArrowLeft, Reply, Trophy, Medal, Crown, Star } from "lucide-react";
+import { MessageSquare, Video, ArrowBigUp, MessageCircle, Clock, TrendingUp, Flame, Plus, User as UserIcon, Wallet, Send, ChevronDown, ChevronUp, ExternalLink, Megaphone, Filter, Image, Link2, X, Loader2, Share2, ArrowLeft, Reply, Trophy, Medal, Crown, Star, FileText } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -1304,178 +1304,163 @@ function CreatePostForm({ categories, onSuccess }: { categories: any[]; onSucces
   );
 }
 
-function VideosSection() {
-  const [activeCategory, setActiveCategory] = useState("foundation");
-  
-  const videoCategories: Record<string, { title: string; description: string; videos: Array<{ title: string; creator: string; duration: string; note: string; url: string }> }> = {
-    foundation: {
-      title: "Foundation Level",
-      description: "Getting Started & Core Concepts",
-      videos: [
-        {
-          title: "Introduction to Bitcoin",
-          creator: "Andreas Antonopoulos",
-          duration: "30 mins",
-          note: "This is where my journey started - perfect entry point",
-          url: "https://www.youtube.com/watch?v=l1si5ZWLgy0"
-        },
-        {
-          title: "Bitcoin on Lex Fridman",
-          creator: "Michael Saylor",
-          duration: "20 min segments",
-          note: "4-hour masterclass broken into digestible parts",
-          url: "https://www.youtube.com/watch?v=mC43pZkpTec"
-        },
-        {
-          title: "What is Money? (Part 1)",
-          creator: "Saifedean Ammous",
-          duration: "25 mins",
-          note: "Essential economic foundation before diving into Bitcoin",
-          url: "https://www.youtube.com/watch?v=1WBrdLQhUrg"
-        },
-        {
-          title: "21 Lessons Introduction",
-          creator: "Gigi",
-          duration: "20 mins",
-          note: "Philosophy meets practicality - changed my perspective",
-          url: "https://www.youtube.com/watch?v=F-EHF8oFyLE"
-        }
-      ]
-    },
-    economics: {
-      title: "Economics & Macro",
-      description: "Understanding the Why",
-      videos: [
-        {
-          title: "What is Money? Episode 1",
-          creator: "Saylor & Breedlove",
-          duration: "45 mins",
-          note: "Deep dive that solidified my conviction",
-          url: "https://www.youtube.com/watch?v=Vp7Q_3E_gzU"
-        },
-        {
-          title: "Bitcoin vs Gold",
-          creator: "Lyn Alden",
-          duration: "30 mins",
-          note: "Best comparison of store of value assets",
-          url: "https://www.youtube.com/watch?v=VdPkpxmN9g4"
-        },
-        {
-          title: "AI, Deflation, and Bitcoin",
-          creator: "Jeff Booth",
-          duration: "25 mins",
-          note: "Future economics explained brilliantly",
-          url: "https://www.youtube.com/watch?v=O3hq2vIhtz8"
-        }
-      ]
-    },
-    technical: {
-      title: "Technical & Advanced",
-      description: "How Bitcoin Works",
-      videos: [
-        {
-          title: "How Bitcoin Works",
-          creator: "Andreas Antonopoulos",
-          duration: "40 mins",
-          note: "Technical concepts made accessible",
-          url: "https://www.youtube.com/watch?v=l1si5ZWLgy0"
-        },
-        {
-          title: "Lightning Network Explained",
-          creator: "Andreas Antonopoulos",
-          duration: "25 mins",
-          note: "Scaling solution that makes sense",
-          url: "https://www.youtube.com/watch?v=rrr_zPmEiME"
-        },
-        {
-          title: "Self-Custody Basics",
-          creator: "Andreas Antonopoulos",
-          duration: "20 mins",
-          note: "Not your keys, not your Bitcoin - essential",
-          url: "https://www.youtube.com/watch?v=F12lpqnug-0"
-        }
-      ]
-    },
-    realworld: {
-      title: "Real World & Future",
-      description: "Bitcoin in Practice",
-      videos: [
-        {
-          title: "Bitcoin in El Salvador",
-          creator: "Alex Gladstein",
-          duration: "25 mins",
-          note: "Nation-state adoption lessons learned",
-          url: "https://www.youtube.com/watch?v=xLYYh4aPXAM"
-        },
-        {
-          title: "Hyper-Bitcoinized World",
-          creator: "Jeff Booth",
-          duration: "30 mins",
-          note: "What happens when Bitcoin wins",
-          url: "https://www.youtube.com/watch?v=O3hq2vIhtz8"
-        }
-      ]
-    }
+interface ResourceLink {
+  id: number;
+  title: string;
+  description: string | null;
+  url: string;
+  type: string;
+  category: string | null;
+  thumbnailUrl: string | null;
+}
+
+function getCategoryLabel(category: string | null): string {
+  if (!category) return '';
+  const labels: Record<string, string> = {
+    'bitcoin-basics': 'Bitcoin Basics',
+    'economics': 'Economics',
+    'security': 'Security',
+    'technical': 'Technical',
+    'history': 'History',
+    'reference': 'Reference',
   };
+  return labels[category] || category;
+}
+
+function VideosSection() {
+  const [typeFilter, setTypeFilter] = useState<string>('all');
+  
+  const { data: resources = [], isLoading } = useQuery<ResourceLink[]>({
+    queryKey: ["/api/resources", typeFilter],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (typeFilter !== 'all') params.append('type', typeFilter);
+      const res = await fetch(`/api/resources?${params}`);
+      if (!res.ok) throw new Error('Failed to fetch resources');
+      return res.json();
+    }
+  });
+
+  const filterOptions = [
+    { value: 'all', label: 'All' },
+    { value: 'video', label: 'Videos' },
+    { value: 'article', label: 'Articles' },
+    { value: 'document', label: 'Documents' },
+  ];
 
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold mb-2">Expert Videos</h2>
-        <p className="text-zinc-400 text-sm">Curated Bitcoin education from trusted voices</p>
+        <h2 className="text-2xl font-bold mb-2">Resources</h2>
+        <p className="text-zinc-400 text-sm">Curated videos, articles, and documents to deepen your Bitcoin knowledge</p>
       </div>
 
       <div className="flex justify-center">
-        <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2 max-w-2xl">
-          {Object.entries(videoCategories).map(([key, category]) => (
+        <div className="flex flex-wrap justify-center gap-2 bg-zinc-800/50 rounded-lg p-2">
+          {filterOptions.map(option => (
             <Button
-              key={key}
-              variant={activeCategory === key ? "secondary" : "ghost"}
+              key={option.value}
+              variant={typeFilter === option.value ? "default" : "ghost"}
               size="sm"
-              onClick={() => setActiveCategory(key)}
-              className="text-xs px-3 py-1.5"
-              data-testid={`button-video-category-${key}`}
+              onClick={() => setTypeFilter(option.value)}
+              className={typeFilter === option.value 
+                ? "bg-orange-500 hover:bg-orange-600 text-xs px-3 py-1.5" 
+                : "text-xs px-3 py-1.5"
+              }
+              data-testid={`button-resource-filter-${option.value}`}
             >
-              {category.title}
+              {option.label}
             </Button>
           ))}
         </div>
       </div>
 
-      <div className="space-y-4">
-        <div className="text-center">
-          <h3 className="text-xl font-semibold mb-1">{videoCategories[activeCategory].title}</h3>
-          <p className="text-zinc-400 text-sm">{videoCategories[activeCategory].description}</p>
-        </div>
-
+      {isLoading ? (
         <div className="grid md:grid-cols-2 gap-4">
-          {videoCategories[activeCategory].videos.map((video, index) => {
-            const videoId = extractYouTubeId(video.url);
+          {[1, 2, 3, 4].map(i => (
+            <Card key={i} className="bg-zinc-800/30 border-zinc-700 overflow-hidden">
+              <div className="aspect-video bg-zinc-900 animate-pulse" />
+              <CardContent className="p-4 space-y-2">
+                <div className="h-5 bg-zinc-800 rounded animate-pulse w-3/4" />
+                <div className="h-4 bg-zinc-800 rounded animate-pulse w-full" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : resources.length === 0 ? (
+        <div className="text-center py-12">
+          <ExternalLink className="w-12 h-12 mx-auto mb-4 text-zinc-600" />
+          <h3 className="text-lg font-medium text-zinc-400 mb-2">No resources yet</h3>
+          <p className="text-zinc-500 text-sm">Check back soon for curated learning materials</p>
+        </div>
+      ) : (
+        <div className="grid md:grid-cols-2 gap-4">
+          {resources.map((resource) => {
+            const videoId = resource.type === 'video' ? extractYouTubeId(resource.url) : null;
             return (
               <Card 
-                key={index} 
-                className="bg-zinc-800/30 border-zinc-700 overflow-hidden"
-                data-testid={`card-video-${index}`}
+                key={resource.id} 
+                className="bg-zinc-800/30 border-zinc-700 overflow-hidden hover:border-zinc-600 transition-colors"
+                data-testid={`card-resource-${resource.id}`}
               >
-                {videoId && (
-                  <YouTubeEmbed videoId={videoId} title={video.title} />
+                {videoId ? (
+                  <YouTubeEmbed videoId={videoId} title={resource.title} />
+                ) : resource.thumbnailUrl ? (
+                  <div className="aspect-video relative overflow-hidden">
+                    <img 
+                      src={resource.thumbnailUrl} 
+                      alt={resource.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute bottom-2 left-2 bg-black/70 px-2 py-0.5 rounded text-xs text-white flex items-center gap-1">
+                      {resource.type === 'article' ? <FileText className="w-3 h-3" /> : <ExternalLink className="w-3 h-3" />}
+                      {resource.type.charAt(0).toUpperCase() + resource.type.slice(1)}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="aspect-video bg-zinc-900 flex items-center justify-center">
+                    {resource.type === 'article' ? (
+                      <FileText className="w-12 h-12 text-zinc-600" />
+                    ) : resource.type === 'document' ? (
+                      <FileText className="w-12 h-12 text-zinc-600" />
+                    ) : (
+                      <ExternalLink className="w-12 h-12 text-zinc-600" />
+                    )}
+                  </div>
                 )}
                 <CardContent className="p-4">
-                  <h4 className="font-semibold text-white mb-1 line-clamp-2">
-                    {video.title}
-                  </h4>
-                  <p className="text-zinc-400 text-sm mb-2">
-                    {video.creator} • {video.duration}
-                  </p>
-                  <div className="bg-zinc-900/50 p-2 rounded text-xs text-zinc-300 italic">
-                    "{video.note}"
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <h4 className="font-semibold text-white line-clamp-2">
+                      {resource.title}
+                    </h4>
+                    {!videoId && (
+                      <a 
+                        href={resource.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex-shrink-0 p-1.5 rounded-lg bg-zinc-700 hover:bg-zinc-600 transition-colors"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    )}
                   </div>
+                  {resource.description && (
+                    <p className="text-zinc-400 text-sm mb-2 line-clamp-2">
+                      {resource.description}
+                    </p>
+                  )}
+                  {resource.category && (
+                    <Badge variant="outline" className="text-xs text-zinc-400 border-zinc-600">
+                      {getCategoryLabel(resource.category)}
+                    </Badge>
+                  )}
                 </CardContent>
               </Card>
             );
           })}
         </div>
-      </div>
+      )}
     </div>
   );
 }
