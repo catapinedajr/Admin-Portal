@@ -90,7 +90,7 @@ function ResourcesPage() {
     description: '',
     url: '',
     type: 'video',
-    category: '',
+    category: 'none',
     thumbnailUrl: '',
     isPublished: false,
   });
@@ -166,7 +166,7 @@ function ResourcesPage() {
       description: '',
       url: '',
       type: 'video',
-      category: '',
+      category: 'none',
       thumbnailUrl: '',
       isPublished: false,
     });
@@ -185,7 +185,7 @@ function ResourcesPage() {
       description: resource.description || '',
       url: resource.url,
       type: resource.type,
-      category: resource.category || '',
+      category: resource.category || 'none',
       thumbnailUrl: resource.thumbnailUrl || '',
       isPublished: resource.isPublished,
     });
@@ -198,10 +198,15 @@ function ResourcesPage() {
       return;
     }
 
+    const submitData = {
+      ...formData,
+      category: formData.category === 'none' ? '' : formData.category,
+    };
+
     if (editingResource) {
-      updateMutation.mutate({ id: editingResource.id, data: formData });
+      updateMutation.mutate({ id: editingResource.id, data: submitData });
     } else {
-      createMutation.mutate(formData);
+      createMutation.mutate(submitData);
     }
   };
 
@@ -421,7 +426,7 @@ function ResourcesPage() {
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">None</SelectItem>
+                      <SelectItem value="none">None</SelectItem>
                       {CATEGORIES.map(cat => (
                         <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
                       ))}
