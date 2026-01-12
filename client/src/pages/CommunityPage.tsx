@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
-import { MessageSquare, Video, ArrowBigUp, MessageCircle, Clock, TrendingUp, Flame, Plus, User as UserIcon, Wallet, Send, ChevronDown, ChevronUp, ExternalLink, Megaphone, Filter, Image, Link2, X, Loader2, Share2, ArrowLeft, Reply, Trophy, Medal, Crown, Star, FileText } from "lucide-react";
+import { MessageSquare, Video, ArrowBigUp, MessageCircle, Clock, TrendingUp, Flame, Plus, User as UserIcon, Wallet, Send, ChevronDown, ChevronUp, ExternalLink, Megaphone, Filter, Image, Link2, X, Loader2, Share2, ArrowLeft, Reply, Trophy, Medal, Crown, Star, FileText, Library } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +11,7 @@ import BottomNavigation from "@/components/BottomNavigation";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from "@/lib/queryClient";
 
-type CommunityTab = "forums" | "videos" | "leaderboard";
+type CommunityTab = "forums" | "resources" | "leaderboard";
 type ForumFilter = "new" | "hot" | "trending";
 
 function extractYouTubeId(url: string): string | null {
@@ -142,7 +142,7 @@ export default function CommunityPage() {
   const [activeTab, setActiveTab] = useState<CommunityTab>(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
-    if (tabParam === 'leaderboard' || tabParam === 'videos' || tabParam === 'forums') {
+    if (tabParam === 'leaderboard' || tabParam === 'resources' || tabParam === 'forums') {
       return tabParam as CommunityTab;
     }
     return "forums";
@@ -215,12 +215,12 @@ export default function CommunityPage() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setActiveTab("videos")}
-                className={`text-sm px-3 py-2 ${activeTab === "videos" ? "bg-orange-500/20 text-orange-400 border border-orange-500/30" : "text-zinc-400 hover:text-white"}`}
-                data-testid="button-tab-videos"
+                onClick={() => setActiveTab("resources")}
+                className={`text-sm px-3 py-2 ${activeTab === "resources" ? "bg-orange-500/20 text-orange-400 border border-orange-500/30" : "text-zinc-400 hover:text-white"}`}
+                data-testid="button-tab-resources"
               >
-                <Video className="w-4 h-4 mr-1.5" />
-                Videos
+                <Library className="w-4 h-4 mr-1.5" />
+                Resources
               </Button>
               <Button
                 variant="ghost"
@@ -236,7 +236,7 @@ export default function CommunityPage() {
           </div>
 
           {activeTab === "forums" && <ForumsSection />}
-          {activeTab === "videos" && <VideosSection />}
+          {activeTab === "resources" && <VideosSection />}
           {activeTab === "leaderboard" && <LeaderboardSection />}
         </div>
       </main>
