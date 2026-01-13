@@ -2546,7 +2546,10 @@ export default function ContentManagement() {
   const { data: contentDays, isLoading } = useQuery<ContentDay[]>({
     queryKey: ["/api/admin/content/days", showArchived],
     queryFn: async () => {
-      const response = await fetch(`/api/admin/content/days?includeArchived=${showArchived}`);
+      const sessionId = localStorage.getItem('admin_session');
+      const response = await fetch(`/api/admin/content/days?includeArchived=${showArchived}`, {
+        headers: { Authorization: `Bearer ${sessionId}` }
+      });
       if (!response.ok) throw new Error('Failed to fetch days');
       return response.json();
     },
