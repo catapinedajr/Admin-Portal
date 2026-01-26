@@ -161,7 +161,7 @@ function QuestionSchedulerTab() {
   });
 
   const { data: previewData, isLoading: previewLoading, refetch: refetchPreview } = useQuery<QuestionPreview>({
-    queryKey: ['/api/admin/notification-scheduler/preview-questions', previewDay],
+    queryKey: [`/api/admin/notification-scheduler/preview-questions/${previewDay}`],
     enabled: !!previewDay,
   });
 
