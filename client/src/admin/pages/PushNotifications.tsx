@@ -151,13 +151,46 @@ interface HybridResult {
   lapsedUsers: { processed: number; sent: number; failed: number };
 }
 
+interface SchedulerSettings {
+  id?: number;
+  morningTime: string;
+  noonTime: string;
+  eveningTime: string;
+  morningEnabled: boolean;
+  noonEnabled: boolean;
+  eveningEnabled: boolean;
+  lapsedThresholdDays: number;
+  defaultTimezone: string;
+}
+
 function QuestionSchedulerTab() {
   const { toast } = useToast();
   const [previewDay, setPreviewDay] = useState('1');
   const [selectedSlot, setSelectedSlot] = useState<'morning' | 'noon' | 'evening'>('morning');
+  const [editingSettings, setEditingSettings] = useState(false);
+  const [localSettings, setLocalSettings] = useState<SchedulerSettings | null>(null);
 
   const { data: activeUsersData, isLoading: activeUsersLoading, refetch: refetchActiveUsers } = useQuery<ActiveUsersResponse>({
     queryKey: ['/api/admin/notification-scheduler/active-users-count'],
+  });
+
+  const { data: settingsData, isLoading: settingsLoading, refetch: refetchSettings } = useQuery<SchedulerSettings>({
+    queryKey: ['/api/admin/notification-scheduler/settings'],
+  });
+
+  const updateSettingsMutation = useMutation({
+    mutationFn: async (settings: Partial<SchedulerSettings>) => {
+      return apiRequest('PATCH', '/api/admin/notification-scheduler/settings', settings);
+    },
+    onSuccess: () => {
+      toast({ title: "Settings Updated", description: "Scheduler settings have been saved." });
+      setEditingSettings(false);
+      refetchSettings();
+      refetchActiveUsers();
+    },
+    onError: () => {
+      toast({ title: "Failed to update settings", variant: "destructive" });
+    },
   });
 
   const { data: previewData, isLoading: previewLoading, refetch: refetchPreview } = useQuery<QuestionPreview>({
@@ -407,6 +440,181 @@ function QuestionSchedulerTab() {
           </CardContent>
         </Card>
       )}
+
+      <Card className="bg-zinc-800/50 border-zinc-700">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-white flex items-center gap-2">
+                <Clock className="w-5 h-5" />
+                Scheduler Settings
+              </CardTitle>
+              <CardDescription>
+                Configure notification send times and user activity thresholds
+              </CardDescription>
+            </div>
+            {!editingSettings && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  setLocalSettings(settingsData || null);
+                  setEditingSettings(true);
+                }}
+              >
+                <Edit className="w-4 h-4 mr-2" />
+                Edit
+              </Button>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent>
+          {settingsLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <RefreshCw className="w-6 h-6 animate-spin text-zinc-500" />
+            </div>
+          ) : editingSettings && localSettings ? (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-zinc-300 flex items-center gap-2">
+                    <span className="text-lg">☀️</span> Morning Time
+                  </Label>
+                  <Input
+                    type="time"
+                    value={localSettings.morningTime}
+                    onChange={(e) => setLocalSettings({ ...localSettings, morningTime: e.target.value })}
+                    className="bg-zinc-900 border-zinc-700"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-zinc-300 flex items-center gap-2">
+                    <span className="text-lg">🌤️</span> Noon Time
+                  </Label>
+                  <Input
+                    type="time"
+                    value={localSettings.noonTime}
+                    onChange={(e) => setLocalSettings({ ...localSettings, noonTime: e.target.value })}
+                    className="bg-zinc-900 border-zinc-700"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-zinc-300 flex items-center gap-2">
+                    <span className="text-lg">🌙</span> Evening Time
+                  </Label>
+                  <Input
+                    type="time"
+                    value={localSettings.eveningTime}
+                    onChange={(e) => setLocalSettings({ ...localSettings, eveningTime: e.target.value })}
+                    className="bg-zinc-900 border-zinc-700"
+                  />
+                </div>
+              </div>
+
+              <div className="p-4 bg-zinc-900/50 rounded-lg border border-zinc-700">
+                <Label className="text-zinc-300 mb-3 block">
+                  Lapsed User Threshold: <span className="text-orange-400 font-bold">{localSettings.lapsedThresholdDays} days</span>
+                </Label>
+                <p className="text-xs text-zinc-500 mb-3">
+                  Users inactive for this many days will receive re-engagement templates instead of questions.
+                </p>
+                <input
+                  type="range"
+                  min={1}
+                  max={30}
+                  value={localSettings.lapsedThresholdDays}
+                  onChange={(e) => setLocalSettings({ ...localSettings, lapsedThresholdDays: parseInt(e.target.value) })}
+                  className="w-full accent-orange-500"
+                />
+                <div className="flex justify-between text-xs text-zinc-500 mt-1">
+                  <span>1 day</span>
+                  <span>15 days</span>
+                  <span>30 days</span>
+                </div>
+              </div>
+
+              <div className="flex gap-2 justify-end">
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setEditingSettings(false);
+                    setLocalSettings(null);
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  className="bg-orange-500 hover:bg-orange-600"
+                  onClick={() => {
+                    if (localSettings) {
+                      updateSettingsMutation.mutate({
+                        morningTime: localSettings.morningTime,
+                        noonTime: localSettings.noonTime,
+                        eveningTime: localSettings.eveningTime,
+                        lapsedThresholdDays: localSettings.lapsedThresholdDays,
+                      });
+                    }
+                  }}
+                  disabled={updateSettingsMutation.isPending}
+                >
+                  {updateSettingsMutation.isPending ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                      Save Settings
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          ) : settingsData ? (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-3 bg-zinc-900/50 rounded-lg border border-zinc-700">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-lg">☀️</span>
+                    <span className="text-sm text-zinc-400">Morning</span>
+                  </div>
+                  <p className="text-white font-mono text-lg">{settingsData.morningTime}</p>
+                </div>
+                <div className="p-3 bg-zinc-900/50 rounded-lg border border-zinc-700">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-lg">🌤️</span>
+                    <span className="text-sm text-zinc-400">Noon</span>
+                  </div>
+                  <p className="text-white font-mono text-lg">{settingsData.noonTime}</p>
+                </div>
+                <div className="p-3 bg-zinc-900/50 rounded-lg border border-zinc-700">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-lg">🌙</span>
+                    <span className="text-sm text-zinc-400">Evening</span>
+                  </div>
+                  <p className="text-white font-mono text-lg">{settingsData.eveningTime}</p>
+                </div>
+              </div>
+              
+              <div className="p-3 bg-zinc-900/50 rounded-lg border border-zinc-700">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-zinc-400">Lapsed User Threshold</p>
+                    <p className="text-white font-medium">
+                      {settingsData.lapsedThresholdDays} days of inactivity
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-zinc-500">Users active within {settingsData.lapsedThresholdDays} days → Questions</p>
+                    <p className="text-xs text-zinc-500">Users inactive {settingsData.lapsedThresholdDays}+ days → Re-engagement</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
+        </CardContent>
+      </Card>
     </div>
   );
 }

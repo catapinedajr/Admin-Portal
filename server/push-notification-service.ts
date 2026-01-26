@@ -552,8 +552,48 @@ export async function getSetUpQuestionsForDay(dayIndex: number): Promise<SetUpQu
   }));
 }
 
+export async function getSchedulerSettings(): Promise<{
+  morningTime: string;
+  noonTime: string;
+  eveningTime: string;
+  morningEnabled: boolean;
+  noonEnabled: boolean;
+  eveningEnabled: boolean;
+  lapsedThresholdDays: number;
+  defaultTimezone: string;
+}> {
+  const { notificationSchedulerSettings } = await import('@shared/schema');
+  const settings = await db.select().from(notificationSchedulerSettings).limit(1);
+  
+  if (settings.length === 0) {
+    return {
+      morningTime: '08:00',
+      noonTime: '12:00',
+      eveningTime: '18:00',
+      morningEnabled: true,
+      noonEnabled: true,
+      eveningEnabled: true,
+      lapsedThresholdDays: 7,
+      defaultTimezone: 'America/New_York',
+    };
+  }
+  
+  return {
+    morningTime: settings[0].morningTime,
+    noonTime: settings[0].noonTime,
+    eveningTime: settings[0].eveningTime,
+    morningEnabled: settings[0].morningEnabled,
+    noonEnabled: settings[0].noonEnabled,
+    eveningEnabled: settings[0].eveningEnabled,
+    lapsedThresholdDays: settings[0].lapsedThresholdDays,
+    defaultTimezone: settings[0].defaultTimezone,
+  };
+}
+
 export async function getActiveUsersForQuestionNotifications(): Promise<SchedulerUserContext[]> {
   const now = new Date();
+  const settings = await getSchedulerSettings();
+  const lapsedThreshold = settings.lapsedThresholdDays;
 
   const allUsers = await db.select({
     id: users.id,
@@ -587,9 +627,9 @@ export async function getActiveUsersForQuestionNotifications(): Promise<Schedule
       daysSinceActive = (now.getTime() - lastActive.getTime()) / (24 * 60 * 60 * 1000);
     }
 
-    // Only include ACTIVE users (idle < 7 days) for question notifications
-    // Lapsed users (7+ days) get template-based re-engagement notifications
-    if (daysSinceActive < 7) {
+    // Only include ACTIVE users (idle < threshold days) for question notifications
+    // Lapsed users (threshold+ days) get template-based re-engagement notifications
+    if (daysSinceActive < lapsedThreshold) {
       userContexts.push({
         userId: user.id,
         firstName: user.firstName || 'Learner',

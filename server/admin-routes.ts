@@ -5907,6 +5907,75 @@ Example format:
     }
   });
 
+  // Get notification scheduler settings
+  app.get("/api/admin/notification-scheduler/settings", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { notificationSchedulerSettings } = await import('@shared/schema');
+      const settings = await db.select().from(notificationSchedulerSettings).limit(1);
+      
+      if (settings.length === 0) {
+        return res.json({
+          morningTime: '08:00',
+          noonTime: '12:00',
+          eveningTime: '18:00',
+          morningEnabled: true,
+          noonEnabled: true,
+          eveningEnabled: true,
+          lapsedThresholdDays: 7,
+          defaultTimezone: 'America/New_York',
+        });
+      }
+      
+      res.json(settings[0]);
+    } catch (error) {
+      console.error("Error fetching scheduler settings:", error);
+      res.status(500).json({ message: "Failed to fetch scheduler settings" });
+    }
+  });
+
+  // Update notification scheduler settings
+  app.patch("/api/admin/notification-scheduler/settings", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { notificationSchedulerSettings } = await import('@shared/schema');
+      const { morningTime, noonTime, eveningTime, morningEnabled, noonEnabled, eveningEnabled, lapsedThresholdDays, defaultTimezone } = req.body;
+      
+      const existing = await db.select().from(notificationSchedulerSettings).limit(1);
+      
+      const updateData: Record<string, any> = { updatedAt: new Date() };
+      if (morningTime !== undefined) updateData.morningTime = morningTime;
+      if (noonTime !== undefined) updateData.noonTime = noonTime;
+      if (eveningTime !== undefined) updateData.eveningTime = eveningTime;
+      if (morningEnabled !== undefined) updateData.morningEnabled = morningEnabled;
+      if (noonEnabled !== undefined) updateData.noonEnabled = noonEnabled;
+      if (eveningEnabled !== undefined) updateData.eveningEnabled = eveningEnabled;
+      if (lapsedThresholdDays !== undefined) updateData.lapsedThresholdDays = lapsedThresholdDays;
+      if (defaultTimezone !== undefined) updateData.defaultTimezone = defaultTimezone;
+      if (req.adminUser?.id) updateData.updatedBy = req.adminUser.id;
+      
+      if (existing.length === 0) {
+        const inserted = await db.insert(notificationSchedulerSettings).values({
+          ...updateData,
+          morningTime: morningTime || '08:00',
+          noonTime: noonTime || '12:00',
+          eveningTime: eveningTime || '18:00',
+          lapsedThresholdDays: lapsedThresholdDays || 7,
+          defaultTimezone: defaultTimezone || 'America/New_York',
+        }).returning();
+        return res.json(inserted[0]);
+      }
+      
+      const updated = await db.update(notificationSchedulerSettings)
+        .set(updateData)
+        .where(eq(notificationSchedulerSettings.id, existing[0].id))
+        .returning();
+      
+      res.json(updated[0]);
+    } catch (error) {
+      console.error("Error updating scheduler settings:", error);
+      res.status(500).json({ message: "Failed to update scheduler settings" });
+    }
+  });
+
   // ==================== RESOURCE LINKS ENDPOINTS ====================
   // List all resource links with optional filtering
   app.get("/api/admin/resources", requireAdminAuth, async (req: AdminRequest, res: Response) => {
