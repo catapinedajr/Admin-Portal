@@ -125,6 +125,292 @@ const PLACEHOLDERS = [
   { name: 'dayNumber', description: 'Curriculum day number' },
 ];
 
+interface QuestionPreview {
+  dayIndex: number;
+  dayTitle: string;
+  questions: Array<{
+    slot: 'morning' | 'noon' | 'evening';
+    title: string;
+    content: string;
+    category: string;
+  }>;
+}
+
+interface ActiveUsersResponse {
+  count: number;
+  users: Array<{
+    userId: number;
+    firstName: string;
+    currentDay: number;
+    currentStreak: number;
+  }>;
+}
+
+interface HybridResult {
+  activeUsers: { processed: number; sent: number; failed: number };
+  lapsedUsers: { processed: number; sent: number; failed: number };
+}
+
+function QuestionSchedulerTab() {
+  const { toast } = useToast();
+  const [previewDay, setPreviewDay] = useState('1');
+  const [selectedSlot, setSelectedSlot] = useState<'morning' | 'noon' | 'evening'>('morning');
+
+  const { data: activeUsersData, isLoading: activeUsersLoading, refetch: refetchActiveUsers } = useQuery<ActiveUsersResponse>({
+    queryKey: ['/api/admin/notification-scheduler/active-users-count'],
+  });
+
+  const { data: previewData, isLoading: previewLoading, refetch: refetchPreview } = useQuery<QuestionPreview>({
+    queryKey: ['/api/admin/notification-scheduler/preview-questions', previewDay],
+    enabled: !!previewDay,
+  });
+
+  const runHybridMutation = useMutation({
+    mutationFn: async (slot: 'morning' | 'noon' | 'evening') => {
+      return apiRequest('POST', '/api/admin/notification-scheduler/run-hybrid', { slot });
+    },
+    onSuccess: async (response: Response) => {
+      const result: HybridResult = await response.json();
+      toast({ 
+        title: "Hybrid Scheduler Complete",
+        description: `Active: ${result.activeUsers.sent}/${result.activeUsers.processed} sent. Lapsed: ${result.lapsedUsers.sent}/${result.lapsedUsers.processed} sent.`
+      });
+      refetchActiveUsers();
+    },
+    onError: () => {
+      toast({ title: "Failed to run scheduler", variant: "destructive" });
+    },
+  });
+
+  const runQuestionsMutation = useMutation({
+    mutationFn: async (slot: 'morning' | 'noon' | 'evening') => {
+      return apiRequest('POST', '/api/admin/notification-scheduler/run-questions', { slot });
+    },
+    onSuccess: async (response: Response) => {
+      const result = await response.json();
+      toast({ 
+        title: "Questions Sent",
+        description: `${result.sent}/${result.processed} notifications sent`
+      });
+      refetchActiveUsers();
+    },
+    onError: () => {
+      toast({ title: "Failed to send questions", variant: "destructive" });
+    },
+  });
+
+  const slotInfo = {
+    morning: { label: 'Morning (8am)', icon: '☀️', description: 'First question of the day' },
+    noon: { label: 'Noon (12pm)', icon: '🌤️', description: 'Midday check-in question' },
+    evening: { label: 'Evening (6pm)', icon: '🌙', description: 'End of day question' },
+  };
+
+  return (
+    <div className="space-y-6">
+      <Card className="bg-gradient-to-r from-orange-500/10 to-amber-500/10 border-orange-500/30">
+        <CardContent className="p-4">
+          <div className="flex items-start gap-3">
+            <Sparkles className="w-5 h-5 text-orange-400 mt-0.5" />
+            <div>
+              <h3 className="font-semibold text-orange-400">Hybrid Notification System</h3>
+              <p className="text-zinc-400 text-sm mt-1">
+                Send the 3 daily set-up questions to active users at 3 times per day. 
+                Lapsed users (7+ days inactive) receive re-engagement templates instead.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardContent className="p-4">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm text-zinc-400">Active Users</p>
+                <p className="text-2xl font-bold text-white mt-1">
+                  {activeUsersLoading ? '...' : activeUsersData?.count || 0}
+                </p>
+                <p className="text-xs text-zinc-500 mt-1">Idle less than 7 days</p>
+              </div>
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-green-500/20 text-green-400">
+                <Users className="w-5 h-5" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardContent className="p-4">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm text-zinc-400">Notifications/Day</p>
+                <p className="text-2xl font-bold text-white mt-1">
+                  {activeUsersLoading ? '...' : (activeUsersData?.count || 0) * 3}
+                </p>
+                <p className="text-xs text-zinc-500 mt-1">3 questions × active users</p>
+              </div>
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-orange-500/20 text-orange-400">
+                <Bell className="w-5 h-5" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardContent className="p-4">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm text-zinc-400">Time Slots</p>
+                <p className="text-2xl font-bold text-white mt-1">3</p>
+                <p className="text-xs text-zinc-500 mt-1">8am, 12pm, 6pm</p>
+              </div>
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-blue-500/20 text-blue-400">
+                <Clock className="w-5 h-5" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="bg-zinc-800/50 border-zinc-700">
+        <CardHeader>
+          <CardTitle className="text-white flex items-center gap-2">
+            <Eye className="w-5 h-5" />
+            Preview Questions by Day
+          </CardTitle>
+          <CardDescription>
+            See which set-up questions will be sent for any curriculum day
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center gap-2">
+              <Label className="text-zinc-400">Day:</Label>
+              <Input
+                type="number"
+                min={1}
+                max={336}
+                value={previewDay}
+                onChange={(e) => setPreviewDay(e.target.value)}
+                className="w-20 bg-zinc-900 border-zinc-700"
+              />
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => refetchPreview()}
+              disabled={previewLoading}
+            >
+              <RefreshCw className={`w-4 h-4 mr-2 ${previewLoading ? 'animate-spin' : ''}`} />
+              Preview
+            </Button>
+          </div>
+
+          {previewData && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-zinc-400">Day {previewData.dayIndex}:</span>
+                <span className="text-white font-medium">{previewData.dayTitle}</span>
+              </div>
+              
+              {previewData.questions.length > 0 ? (
+                <div className="grid gap-3">
+                  {previewData.questions.map((q, i) => (
+                    <div key={i} className="p-3 bg-zinc-900/50 rounded-lg border border-zinc-700">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-lg">{slotInfo[q.slot].icon}</span>
+                        <span className="text-sm font-medium text-zinc-300">{slotInfo[q.slot].label}</span>
+                        <Badge className="bg-zinc-700 text-xs">{q.category}</Badge>
+                      </div>
+                      <p className="text-orange-400 font-medium">{q.title}</p>
+                      <p className="text-zinc-400 text-sm mt-1">{q.content}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-4 bg-zinc-900/30 rounded-lg border border-zinc-700 text-center">
+                  <AlertCircle className="w-8 h-8 mx-auto text-zinc-600 mb-2" />
+                  <p className="text-zinc-400">No set-up questions found for this day</p>
+                  <p className="text-zinc-500 text-sm mt-1">Add questions in Content Management</p>
+                </div>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card className="bg-zinc-800/50 border-zinc-700">
+        <CardHeader>
+          <CardTitle className="text-white flex items-center gap-2">
+            <Send className="w-5 h-5" />
+            Manual Trigger
+          </CardTitle>
+          <CardDescription>
+            Manually send question notifications for a specific time slot
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {(['morning', 'noon', 'evening'] as const).map(slot => (
+              <div key={slot} className="p-4 bg-zinc-900/50 rounded-lg border border-zinc-700">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-2xl">{slotInfo[slot].icon}</span>
+                  <div>
+                    <p className="font-medium text-white">{slotInfo[slot].label}</p>
+                    <p className="text-xs text-zinc-500">{slotInfo[slot].description}</p>
+                  </div>
+                </div>
+                <div className="flex gap-2 mt-3">
+                  <Button 
+                    size="sm"
+                    variant="outline"
+                    onClick={() => runQuestionsMutation.mutate(slot)}
+                    disabled={runQuestionsMutation.isPending}
+                  >
+                    Questions Only
+                  </Button>
+                  <Button 
+                    size="sm"
+                    className="bg-orange-500 hover:bg-orange-600"
+                    onClick={() => runHybridMutation.mutate(slot)}
+                    disabled={runHybridMutation.isPending}
+                  >
+                    Full Hybrid
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-zinc-500 mt-4">
+            "Questions Only" sends set-up questions to active users. 
+            "Full Hybrid" also sends re-engagement templates to lapsed users (morning slot only).
+          </p>
+        </CardContent>
+      </Card>
+
+      {activeUsersData && activeUsersData.users.length > 0 && (
+        <Card className="bg-zinc-800/50 border-zinc-700">
+          <CardHeader>
+            <CardTitle className="text-white text-base">Sample Active Users</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+              {activeUsersData.users.map(user => (
+                <div key={user.userId} className="p-2 bg-zinc-900/50 rounded border border-zinc-700 text-center">
+                  <p className="text-white text-sm font-medium">{user.firstName}</p>
+                  <p className="text-xs text-zinc-500">Day {user.currentDay}</p>
+                  <p className="text-xs text-orange-400">{user.currentStreak}🔥</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
+
 function PushNotificationsContent() {
   const { toast } = useToast();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -310,6 +596,10 @@ function PushNotificationsContent() {
           <TabsTrigger value="templates" className="data-[state=active]:bg-orange-500 data-[state=active]:text-white">
             <FileText className="w-4 h-4 mr-2" />
             Templates ({templates.length})
+          </TabsTrigger>
+          <TabsTrigger value="questions" className="data-[state=active]:bg-orange-500 data-[state=active]:text-white">
+            <Sparkles className="w-4 h-4 mr-2" />
+            Question Scheduler
           </TabsTrigger>
         </TabsList>
         
@@ -567,6 +857,10 @@ function PushNotificationsContent() {
               </Card>
             )}
           </div>
+        </TabsContent>
+
+        <TabsContent value="questions" className="space-y-6">
+          <QuestionSchedulerTab />
         </TabsContent>
       </Tabs>
       

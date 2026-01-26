@@ -5832,6 +5832,81 @@ Example format:
     }
   });
 
+  // ==================== HYBRID NOTIFICATION SCHEDULER ====================
+  // Run hybrid notification batch (questions for active users, templates for lapsed)
+  app.post("/api/admin/notification-scheduler/run-hybrid", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { runHybridNotificationScheduler } = await import('./push-notification-service');
+      const { slot } = req.body;
+      
+      if (!slot || !['morning', 'noon', 'evening'].includes(slot)) {
+        return res.status(400).json({ message: "Slot must be 'morning', 'noon', or 'evening'" });
+      }
+      
+      const result = await runHybridNotificationScheduler(slot);
+      res.json(result);
+    } catch (error) {
+      console.error("Error running hybrid scheduler:", error);
+      res.status(500).json({ message: "Failed to run hybrid scheduler" });
+    }
+  });
+
+  // Run set up question batch only (for active users)
+  app.post("/api/admin/notification-scheduler/run-questions", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { runSetUpQuestionBatch } = await import('./push-notification-service');
+      const { slot } = req.body;
+      
+      if (!slot || !['morning', 'noon', 'evening'].includes(slot)) {
+        return res.status(400).json({ message: "Slot must be 'morning', 'noon', or 'evening'" });
+      }
+      
+      const result = await runSetUpQuestionBatch(slot);
+      res.json(result);
+    } catch (error) {
+      console.error("Error running question scheduler:", error);
+      res.status(500).json({ message: "Failed to run question scheduler" });
+    }
+  });
+
+  // Preview questions for a specific day
+  app.get("/api/admin/notification-scheduler/preview-questions/:dayIndex", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { previewQuestionsForDay } = await import('./push-notification-service');
+      const dayIndex = parseInt(req.params.dayIndex);
+      
+      if (isNaN(dayIndex) || dayIndex < 1) {
+        return res.status(400).json({ message: "Invalid day index" });
+      }
+      
+      const preview = await previewQuestionsForDay(dayIndex);
+      res.json(preview);
+    } catch (error) {
+      console.error("Error previewing questions:", error);
+      res.status(500).json({ message: "Failed to preview questions" });
+    }
+  });
+
+  // Get eligible active users count (for dashboard display)
+  app.get("/api/admin/notification-scheduler/active-users-count", requireAdminAuth, async (req: AdminRequest, res: Response) => {
+    try {
+      const { getActiveUsersForQuestionNotifications } = await import('./push-notification-service');
+      const activeUsers = await getActiveUsersForQuestionNotifications();
+      res.json({ 
+        count: activeUsers.length,
+        users: activeUsers.slice(0, 10).map(u => ({
+          userId: u.userId,
+          firstName: u.firstName,
+          currentDay: u.currentDay,
+          currentStreak: u.currentStreak,
+        }))
+      });
+    } catch (error) {
+      console.error("Error fetching active users:", error);
+      res.status(500).json({ message: "Failed to fetch active users count" });
+    }
+  });
+
   // ==================== RESOURCE LINKS ENDPOINTS ====================
   // List all resource links with optional filtering
   app.get("/api/admin/resources", requireAdminAuth, async (req: AdminRequest, res: Response) => {

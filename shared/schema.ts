@@ -599,13 +599,14 @@ export const notificationTemplates = pgTable("notification_templates", {
 export const automatedNotificationLog = pgTable("automated_notification_log", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
-  templateId: integer("template_id").notNull().references(() => notificationTemplates.id),
+  templateId: integer("template_id").references(() => notificationTemplates.id), // Nullable for question-based notifications
   category: text("category").notNull(),
   renderedTitle: text("rendered_title").notNull(),
   renderedBody: text("rendered_body").notNull(),
   sentAt: timestamp("sent_at").notNull().defaultNow(),
   deliveryStatus: text("delivery_status").notNull().default('sent'), // sent, delivered, failed
   openedAt: timestamp("opened_at"), // Track if notification was opened
+  questionId: integer("question_id"), // For set-up question notifications
 });
 
 // Resource links for curated external educational content (videos, articles, documents)
