@@ -102,7 +102,7 @@ export default function LandingPage() {
                 </div>
                 
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-8 leading-tight">
-                  <span>Stop Wondering.</span>
+                  <span>Stop Wondering About Bitcoin.</span>
                   <br />
                   <span>Start Learning.</span>
                   <br />
