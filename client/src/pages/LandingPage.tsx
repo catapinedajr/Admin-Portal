@@ -104,7 +104,7 @@ export default function LandingPage() {
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-8 leading-tight">
                   <span>Stop Wondering About Bitcoin.</span>
                   <br />
-                  <span>Start Learning.</span>
+                  <span className="text-zinc-400">Start Learning.</span>
                   <br />
                   <span className="text-orange-500">This is HODLearn.</span>
                 </h1>
