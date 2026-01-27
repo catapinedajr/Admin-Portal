@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import appScreenshot from "@/assets/IMG_5093.PNG";
 import { 
   Users, 
   Gamepad2, 
@@ -197,40 +198,11 @@ export default function LandingPage() {
                 <div className="relative">
                   <div className="w-64 h-[520px] bg-zinc-950 rounded-[3rem] border-4 border-zinc-700 shadow-2xl overflow-hidden p-2">
                     <div className="w-full h-full rounded-[2.5rem] overflow-hidden bg-zinc-900">
-                      {/* To use a real screenshot: 
-                          1. Take a screenshot of the app on your phone
-                          2. Save it to: client/src/assets/app-screenshot.png
-                          3. Import it at the top: import appScreenshot from "@/assets/app-screenshot.png"
-                          4. Replace the div below with: <img src={appScreenshot} alt="HODLearn App" className="w-full h-full object-cover object-top" />
-                      */}
-                      <div className="h-full bg-gradient-to-b from-zinc-900 to-zinc-800 p-4 flex flex-col">
-                        <div className="flex items-center gap-2 mb-6 pt-6">
-                          <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-xs">HL</div>
-                          <span className="font-semibold text-sm">HODLearn</span>
-                        </div>
-                        
-                        <div className="bg-zinc-700/50 rounded-2xl p-4 mb-4">
-                          <p className="text-xs text-zinc-400 mb-1">Day 1</p>
-                          <h3 className="font-semibold text-sm mb-2">What is Bitcoin?</h3>
-                          <div className="w-full bg-zinc-600 rounded-full h-1.5">
-                            <div className="bg-orange-500 h-1.5 rounded-full w-1/4"></div>
-                          </div>
-                        </div>
-                        
-                        <div className="bg-gradient-to-r from-orange-500/20 to-orange-600/20 border border-orange-500/30 rounded-2xl p-4 mb-4">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Wallet className="w-4 h-4 text-orange-400" />
-                            <span className="text-xs text-orange-400">HODLearn Points</span>
-                          </div>
-                          <p className="text-lg font-bold">2,450 pts</p>
-                          <p className="text-xs text-zinc-500">Pegged to BTC</p>
-                        </div>
-                        
-                        <div className="flex items-center justify-center gap-2 text-orange-400 mt-auto pb-4">
-                          <Trophy className="w-5 h-5" />
-                          <span className="font-semibold">5 Day Streak!</span>
-                        </div>
-                      </div>
+                      <img 
+                        src={appScreenshot} 
+                        alt="HODLearn App" 
+                        className="w-full h-full object-cover object-top" 
+                      />
                     </div>
                   </div>
                   <div className="absolute -z-10 inset-0 bg-orange-500/20 blur-3xl rounded-full scale-75" />
