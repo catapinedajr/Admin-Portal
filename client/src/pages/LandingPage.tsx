@@ -158,7 +158,7 @@ export default function LandingPage() {
                       <img 
                         src={appScreenshot} 
                         alt="HODLearn App" 
-                        className="w-full h-full object-cover object-top" 
+                        className="w-full h-full object-contain" 
                       />
                     </div>
                   </div>
