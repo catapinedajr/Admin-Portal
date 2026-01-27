@@ -101,11 +101,9 @@ export default function LandingPage() {
                   <span>Now available on the App Store</span>
                 </div>
                 
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-8 leading-tight">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-8 flex flex-col gap-2 md:gap-3">
                   <span>Stop Wondering About Bitcoin.</span>
-                  <br />
                   <span className="text-zinc-400">Start Learning.</span>
-                  <br />
                   <span className="text-orange-500">This is HODLearn.</span>
                 </h1>
                 
