@@ -5,8 +5,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import appScreenshot from "@/assets/IMG_5095.PNG";
 import { 
   Users, 
-  Gamepad2, 
-  BookOpen, 
   Shield, 
   Wallet,
   Calendar,
@@ -14,7 +12,6 @@ import {
   ArrowRight,
   CheckCircle,
   Sparkles,
-  Target,
   ShoppingBag,
   MessageSquare,
   TrendingUp
@@ -104,12 +101,12 @@ export default function LandingPage() {
                   <span>Now available on the App Store</span>
                 </div>
                 
-                <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-8 leading-relaxed">
-                  <span className="whitespace-nowrap">Stop Wondering About Bitcoin.</span>
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-8 leading-tight">
+                  <span>Stop Wondering.</span>
                   <br />
-                  <span className="whitespace-nowrap">Start Learning.</span>
+                  <span>Start Learning.</span>
                   <br />
-                  <span className="text-orange-500 whitespace-nowrap">This is HODLearn.</span>
+                  <span className="text-orange-500">This is HODLearn.</span>
                 </h1>
                 
                 <p className="text-zinc-400 text-base md:text-lg max-w-lg mb-8">
@@ -269,48 +266,22 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="py-16 md:py-24">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-2xl md:text-3xl font-bold mb-4">How It Works</h2>
-              <p className="text-zinc-400">Simple, structured, effective</p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-orange-500/15 border border-orange-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <BookOpen className="w-8 h-8 text-orange-500" />
+        <section className="py-16 md:py-20 bg-zinc-900">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="relative bg-zinc-800/50 border border-zinc-700 rounded-2xl p-8 md:p-12">
+              <div className="absolute -top-4 left-8 text-6xl text-orange-500/30 font-serif">"</div>
+              <blockquote className="text-xl md:text-2xl text-zinc-200 leading-relaxed mb-6">
+                I tried watching YouTube videos and reading articles, but nothing stuck. 
+                HODLearn's daily lessons finally made it click for me.
+              </blockquote>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center">
+                  <span className="text-orange-500 font-bold">MK</span>
                 </div>
-                <div className="text-orange-500 font-bold text-sm mb-2">Step 1</div>
-                <h3 className="font-semibold text-lg mb-2">Learn Daily</h3>
-                <p className="text-zinc-400 text-sm">
-                  Complete one lesson per day. Each takes just 5-10 minutes 
-                  and builds on previous knowledge.
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="w-16 h-16 bg-orange-500/15 border border-orange-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Gamepad2 className="w-8 h-8 text-orange-500" />
+                <div>
+                  <p className="font-semibold text-white">Michael K.</p>
+                  <p className="text-zinc-500 text-sm">Beta user since Day 1</p>
                 </div>
-                <div className="text-orange-500 font-bold text-sm mb-2">Step 2</div>
-                <h3 className="font-semibold text-lg mb-2">Practice Safely</h3>
-                <p className="text-zinc-400 text-sm">
-                  Use interactive simulators to practice what you learn. 
-                  No real money, no risk, full experience.
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="w-16 h-16 bg-orange-500/15 border border-orange-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Target className="w-8 h-8 text-orange-500" />
-                </div>
-                <div className="text-orange-500 font-bold text-sm mb-2">Step 3</div>
-                <h3 className="font-semibold text-lg mb-2">Build Conviction</h3>
-                <p className="text-zinc-400 text-sm">
-                  Over time, you'll understand Bitcoin deeply. 
-                  Make informed decisions with confidence.
-                </p>
               </div>
             </div>
           </div>
