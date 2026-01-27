@@ -31,23 +31,53 @@ export default function AdminLoginPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/admin/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      // Create form data for x-www-form-urlencoded
+      const formData = new URLSearchParams();
+      formData.append('client_id', 'hodlearn-auth');
+      formData.append('client_secret', 'V5Uc0rGSWIOnO2l9iZEB3WkhGRdvXtMR');
+      formData.append('grant_type', 'password');
+      formData.append('username', email);
+      formData.append('password', password);
+
+      const response = await fetch('https://dauth.hodlearn.io/realms/hodlearn-auth/protocol/openid-connect/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formData.toString(),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Login failed");
+        throw new Error(data.error_description || data.error || "Login failed");
       }
 
-      localStorage.setItem("admin_session", data.sessionId);
+      // Store the access token
+      localStorage.setItem("admin_session", data.access_token);
+      
+      // Get user details
+      const userResponse = await fetch('https://dapi.hodlearn.io/api/v1/users/me', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${data.access_token}`,
+        },
+      });
+
+      const userData = await userResponse.json();
+
+      if (!userResponse.ok) {
+        throw new Error("Failed to fetch user details");
+      }
+
+      // Store user details if needed
+      localStorage.setItem("admin_user", JSON.stringify(userData));
+      
       toast({
         title: "Welcome back",
-        description: `Logged in as ${data.admin.firstName}`,
+        description: `Successfully logged in as ${userData.firstName} ${userData.lastName}`,
       });
+      
       setLocation("/admin");
     } catch (error: any) {
       toast({

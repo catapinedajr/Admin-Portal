@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useLocation } from "wouter";
 import { 
   UserCog, Plus, Shield, ShieldCheck, Mail, Calendar,
   Clock, Archive, ArchiveRestore, Edit, X, Check, Eye, EyeOff
@@ -16,47 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import AdminLayout from "../components/AdminLayout";
-
-function AdminAuthGuard({ children }: { children: React.ReactNode }) {
-  const [, setLocation] = useLocation();
-  
-  const { data: adminUser, isLoading, error } = useQuery<{ id: number; role: string }>({
-    queryKey: ["/api/admin/me"],
-    retry: false,
-  });
-
-  useEffect(() => {
-    if (!isLoading && (error || !adminUser)) {
-      setLocation('/admin/login');
-    }
-  }, [isLoading, error, adminUser, setLocation]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
-      </div>
-    );
-  }
-
-  if (!adminUser) return null;
-  
-  if (adminUser.role !== 'super_admin') {
-    return (
-      <AdminLayout>
-        <div className="flex flex-col items-center justify-center min-h-[60vh]">
-          <Shield className="w-16 h-16 text-zinc-600 mb-4" />
-          <h2 className="text-xl font-bold text-white mb-2">Access Restricted</h2>
-          <p className="text-zinc-400 text-center max-w-md">
-            Only Super Admins can manage admin users. Contact your system administrator for access.
-          </p>
-        </div>
-      </AdminLayout>
-    );
-  }
-  
-  return <>{children}</>;
-}
+import { AdminAuthGuard } from "../components/AdminAuthGuard";
 
 interface AdminUser {
   id: number;
@@ -219,9 +178,17 @@ export default function AdminUsersManagement() {
     newPassword: '',
   });
 
-  const { data: currentAdmin } = useQuery<{ id: number; role: string }>({
-    queryKey: ["/api/admin/me"],
-  });
+  // Get admin user from localStorage instead of API
+  const getCurrentAdmin = () => {
+    try {
+      const adminUser = localStorage.getItem("admin_user");
+      return adminUser ? JSON.parse(adminUser) : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const currentAdmin = getCurrentAdmin();
 
   const { data: admins, isLoading } = useQuery<AdminUser[]>({
     queryKey: ["/api/admin/admin-users"],

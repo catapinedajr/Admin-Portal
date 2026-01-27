@@ -1,6 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useLocation } from "wouter";
 import { 
   Plus, Calendar, Send, MousePointerClick, Users, TrendingUp,
   Twitter, Linkedin, Instagram, Facebook, Clock, ArrowRight, Edit2, Trash2,
@@ -24,6 +23,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import AdminLayout from "../components/AdminLayout";
+import { AdminAuthGuard } from "../components/AdminAuthGuard";
 import { format, addDays, startOfWeek, startOfMonth, isSameDay, isSameMonth, parseISO, addMonths, subMonths } from "date-fns";
 
 // ============================================
@@ -72,36 +72,6 @@ interface SocialStats {
   approved: number;
   totalClicks: number;
   totalSignups: number;
-}
-
-// ============================================
-// AUTH GUARD
-// ============================================
-
-function AdminAuthGuard({ children }: { children: React.ReactNode }) {
-  const [, setLocation] = useLocation();
-  
-  const { data: adminUser, isLoading, error } = useQuery<{ id: number }>({
-    queryKey: ["/api/admin/me"],
-    retry: false,
-  });
-
-  useEffect(() => {
-    if (!isLoading && (error || !adminUser)) {
-      setLocation('/admin/login');
-    }
-  }, [isLoading, error, adminUser, setLocation]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
-      </div>
-    );
-  }
-
-  if (!adminUser) return null;
-  return <>{children}</>;
 }
 
 // ============================================

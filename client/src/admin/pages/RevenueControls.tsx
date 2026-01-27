@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useLocation } from "wouter";
 import { 
   Shield, Check, Loader2, CreditCard, Lock, Unlock, Sparkles,
   ShieldCheck, Wallet, ArrowLeftRight, Coins, Calculator, TrendingUp, Zap
@@ -15,51 +14,12 @@ import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import AdminLayout from "../components/AdminLayout";
+import { AdminAuthGuard } from "../components/AdminAuthGuard";
 
-function AdminAuthGuard({ children }: { children: React.ReactNode }) {
-  const [, setLocation] = useLocation();
-  
-  const { data: adminUser, isLoading, error } = useQuery<{ id: number; role: string }>({
-    queryKey: ["/api/admin/me"],
-    retry: false,
-  });
-
-  useEffect(() => {
-    if (!isLoading && (error || !adminUser)) {
-      setLocation('/admin/login');
-    }
-  }, [isLoading, error, adminUser, setLocation]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
-      </div>
-    );
-  }
-
-  if (!adminUser) return null;
-  
-  if (adminUser.role !== 'super_admin') {
-    return (
-      <AdminLayout>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <Card className="bg-zinc-800/50 border-zinc-700 max-w-md">
-            <CardContent className="p-8 text-center">
-              <Shield className="w-12 h-12 text-orange-500 mx-auto mb-4" />
-              <h2 className="text-xl font-bold text-white mb-2">Access Restricted</h2>
-              <p className="text-zinc-400">
-                This page is only accessible to Super Administrators. 
-                Contact your system administrator if you need access.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </AdminLayout>
-    );
-  }
-  
-  return <>{children}</>;
+interface RevenueFeature {
+  key: string;
+  label: string;
+  description: string;
 }
 
 interface PaywallSettings {

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLocation } from "wouter";
 import { 
   Mail, Send, Settings, FileText, Zap, BarChart3,
   Plus, Edit, Trash2, Power, PowerOff, Sparkles,
@@ -30,31 +29,18 @@ import { Switch } from "@/components/ui/switch";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import AdminLayout from "../components/AdminLayout";
+import { AdminAuthGuard } from "../components/AdminAuthGuard";
 
-function AdminAuthGuard({ children }: { children: React.ReactNode }) {
-  const [, setLocation] = useLocation();
-  
-  const { data: adminUser, isLoading, error } = useQuery<{ id: number }>({
-    queryKey: ["/api/admin/me"],
-    retry: false,
-  });
-
-  useEffect(() => {
-    if (!isLoading && (error || !adminUser)) {
-      setLocation('/admin/login');
-    }
-  }, [isLoading, error, adminUser, setLocation]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
-      </div>
-    );
-  }
-
-  if (!adminUser) return null;
-  return <>{children}</>;
+interface EmailTemplate {
+  id: number;
+  name: string;
+  subject: string;
+  body: string;
+  variables: string[];
+  category: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // ============================================
@@ -398,16 +384,6 @@ function EmailAIInstructionsEditor() {
   );
 }
 
-interface EmailTemplate {
-  id: number;
-  name: string;
-  subject: string;
-  htmlContent: string;
-  textContent: string | null;
-  category: string;
-  isActive: boolean;
-  createdAt: string;
-}
 
 interface EmailCampaign {
   id: number;
@@ -653,11 +629,12 @@ function EmailManagementContent() {
         id: 0,
         name: "",
         subject: data.subject,
-        htmlContent: data.html,
-        textContent: data.text,
+        body: data.html,
+        variables: [],
         category: aiForm.templateType,
         isActive: true,
         createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       });
       setTemplateDialogOpen(true);
       toast({ title: "Email generated", description: "Review and save as a template" });
@@ -1014,7 +991,7 @@ function EmailManagementContent() {
                       variant="outline"
                       className="border-zinc-600"
                       onClick={() => {
-                        setPreviewHtml(template.htmlContent);
+                        setPreviewHtml(template.body);
                         setPreviewDialogOpen(true);
                       }}
                       data-testid={`button-preview-template-${template.id}`}
@@ -1394,8 +1371,8 @@ function EmailManagementContent() {
               <Label className="text-zinc-400">HTML Content</Label>
               <Textarea
                 name="htmlContent"
-                defaultValue={generatedTemplate?.htmlContent || editingTemplate?.htmlContent}
-                key={generatedTemplate?.htmlContent || editingTemplate?.htmlContent || 'new'}
+                defaultValue={generatedTemplate?.htmlContent || editingTemplate?.body}
+                key={generatedTemplate?.htmlContent || editingTemplate?.body || 'new'}
                 required
                 rows={12}
                 className="bg-zinc-800 border-zinc-700 text-white font-mono text-sm"
@@ -1406,8 +1383,8 @@ function EmailManagementContent() {
               <Label className="text-zinc-400">Plain Text (optional)</Label>
               <Textarea
                 name="textContent"
-                defaultValue={generatedTemplate?.textContent || editingTemplate?.textContent || ""}
-                key={generatedTemplate?.textContent || editingTemplate?.textContent || 'new'}
+                defaultValue={generatedTemplate?.textContent || editingTemplate?.body || ""}
+                key={generatedTemplate?.textContent || editingTemplate?.body || 'new'}
                 rows={4}
                 className="bg-zinc-800 border-zinc-700 text-white"
                 data-testid="input-template-text"

@@ -25,7 +25,7 @@ import {
   Library
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
 import { cn } from "@/lib/utils";
 
 interface AdminLayoutProps {
@@ -83,17 +83,48 @@ const navSections: NavSection[] = [
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const [location, setLocation] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
 
-  const { data: admin } = useQuery<{ firstName: string; lastName: string; email: string; role: string }>({
-    queryKey: ["/api/admin/me"],
-    retry: false,
+  // Get admin user from localStorage instead of API
+  const getAdminFromStorage = () => {
+    try {
+      const adminUser = localStorage.getItem("admin_user");
+      return adminUser ? JSON.parse(adminUser) : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const admin = getAdminFromStorage();
+
+  // Preserve sidebar scroll position on navigation
+  useLayoutEffect(() => {
+    const savedScroll = sessionStorage.getItem('admin_sidebar_scroll');
+    if (navRef.current && savedScroll) {
+      const scrollPos = parseInt(savedScroll, 10);
+      navRef.current.scrollTop = scrollPos;
+      // Retry restoration after a short delay to handle any async rendering
+      requestAnimationFrame(() => {
+        if (navRef.current) {
+          navRef.current.scrollTop = scrollPos;
+        }
+      });
+    }
   });
+
+  const handleNavClick = () => {
+    // Capture scroll position before navigation
+    if (navRef.current) {
+      sessionStorage.setItem('admin_sidebar_scroll', navRef.current.scrollTop.toString());
+    }
+    setSidebarOpen(false);
+  };
 
   const getFilteredSections = () => {
     return navSections.map(section => ({
       ...section,
       items: section.items.filter(item => 
-        !item.superAdminOnly || admin?.role === 'super_admin'
+        !item.superAdminOnly || admin?.user_type === 'ADMIN'
       )
     })).filter(section => section.items.length > 0);
   };
@@ -119,7 +150,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex">
+    <div className="min-h-screen bg-zinc-950 flex h-screen overflow-hidden">
       {/* Mobile menu button */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -131,12 +162,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
       {/* Sidebar */}
       <aside className={cn(
-        "fixed lg:static inset-y-0 left-0 z-40 w-64 bg-zinc-900 border-r border-zinc-800 transform transition-transform duration-200 ease-in-out",
+        "fixed lg:static inset-y-0 left-0 z-40 w-64 bg-zinc-900 border-r border-zinc-800 transform transition-transform duration-200 ease-in-out h-screen flex flex-col",
         sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="p-4 border-b border-zinc-800">
+          <div className="p-4 border-b border-zinc-800 flex-shrink-0">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-sm">
                 HL
@@ -146,7 +177,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-4 overflow-y-auto">
+          <nav 
+            ref={navRef}
+            className="flex-1 p-4 space-y-4 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-transparent"
+          >
             {getFilteredSections().map((section) => (
               <div key={section.title}>
                 <p className="px-3 mb-2 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
@@ -157,7 +191,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     <Link 
                       key={item.href} 
                       href={item.href}
-                      onClick={() => setSidebarOpen(false)}
+                      onClick={handleNavClick}
                       className={cn(
                         "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
                         isActive(item.href)
@@ -179,7 +213,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </nav>
 
           {/* User section */}
-          <div className="p-4 border-t border-zinc-800">
+          <div className="p-4 border-t border-zinc-800 flex-shrink-0">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-8 h-8 bg-zinc-700 rounded-full flex items-center justify-center text-sm font-medium text-white">
                 {admin?.firstName?.[0] || "A"}
@@ -214,7 +248,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       )}
 
       {/* Main content */}
-      <main className="flex-1 lg:ml-0 min-h-screen">
+      <main className="flex-1 lg:ml-0 overflow-y-auto">
         <div className="p-4 lg:p-8">
           {children}
         </div>

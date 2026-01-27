@@ -73,10 +73,17 @@ export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const [timeRange, setTimeRange] = useState("30");
   
-  const { data: adminUser, isLoading: authLoading, error: authError } = useQuery<{ id: number; email: string; firstName: string; lastName: string }>({
-    queryKey: ["/api/admin/me"],
-    retry: false,
-  });
+  // Get admin user from localStorage instead of API
+  const getAdminUser = () => {
+    try {
+      const adminUser = localStorage.getItem("admin_user");
+      return adminUser ? JSON.parse(adminUser) : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const adminUser = getAdminUser();
   
   const { data: stats } = useQuery<{ contentDays: number; activeUsers: number; activeCampaigns: number; storeProducts: number }>({
     queryKey: ["/api/admin/stats"],

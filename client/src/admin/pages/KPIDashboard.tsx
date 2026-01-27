@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts";
 import { useEffect } from "react";
 import { Link, useLocation } from "wouter";
+import { AdminAuthGuard } from "../components/AdminAuthGuard";
 
 interface KPIData {
   users: {
@@ -97,33 +98,6 @@ interface TrendData {
   signups: number;
   completions: number;
   forumPosts: number;
-}
-
-function AdminAuthGuard({ children }: { children: React.ReactNode }) {
-  const [, setLocation] = useLocation();
-  const { data: admin, isLoading } = useQuery({
-    queryKey: ["/api/admin/me"],
-  });
-
-  useEffect(() => {
-    if (!isLoading && !admin) {
-      setLocation("/admin/login");
-    }
-  }, [admin, isLoading, setLocation]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-zinc-950">
-        <Loader2 className="h-8 w-8 animate-spin text-orange-500" />
-      </div>
-    );
-  }
-
-  if (!admin) {
-    return null;
-  }
-
-  return <>{children}</>;
 }
 
 function HeroMetric({ 
