@@ -153,7 +153,7 @@ export default function LandingPage() {
 
               <div className="hidden md:flex justify-center">
                 <div className="relative">
-                  <div className="w-64 h-[520px] bg-zinc-950 rounded-[3rem] border-4 border-zinc-700 shadow-2xl overflow-hidden p-2">
+                  <div className="w-72 lg:w-80 h-[580px] lg:h-[640px] bg-zinc-950 rounded-[3rem] border-4 border-zinc-700 shadow-2xl overflow-hidden p-2">
                     <div className="w-full h-full rounded-[2.5rem] overflow-hidden bg-zinc-900">
                       <img 
                         src={appScreenshot} 
