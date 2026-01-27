@@ -324,7 +324,7 @@ export default function LandingPage() {
                 </div>
                 <h3 className="font-semibold mb-2">Education First</h3>
                 <p className="text-zinc-400 text-sm">
-                  Learn before you act. Understand before you invest.
+                  Learn at your own pace. Build your own conviction.
                 </p>
               </div>
 
