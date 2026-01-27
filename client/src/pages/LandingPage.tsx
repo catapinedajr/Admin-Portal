@@ -70,6 +70,12 @@ export default function LandingPage() {
 
   const appStoreUrl = "https://apps.apple.com/app/hodlearn";
   const playStoreUrl = "https://play.google.com/store/apps/details?id=com.hodlearn";
+  
+  const socialLinks = {
+    twitter: "https://x.com/hodlosophy",
+    instagram: "https://instagram.com/hodlosophy", 
+    tiktok: "https://tiktok.com/@hodlosophy",
+  };
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -182,32 +188,41 @@ export default function LandingPage() {
 
               <div className="hidden md:flex justify-center">
                 <div className="relative">
-                  <div className="w-64 h-[500px] bg-zinc-800 rounded-[3rem] border-4 border-zinc-700 shadow-2xl overflow-hidden">
-                    <div className="h-full bg-gradient-to-b from-zinc-900 to-zinc-800 p-4 flex flex-col">
-                      <div className="flex items-center gap-2 mb-6 pt-8">
-                        <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-xs">HL</div>
-                        <span className="font-semibold text-sm">HODLearn</span>
-                      </div>
-                      
-                      <div className="bg-zinc-700/50 rounded-2xl p-4 mb-4">
-                        <p className="text-xs text-zinc-400 mb-1">Day 1</p>
-                        <h3 className="font-semibold text-sm mb-2">What is Bitcoin?</h3>
-                        <div className="w-full bg-zinc-600 rounded-full h-1.5">
-                          <div className="bg-orange-500 h-1.5 rounded-full w-1/4"></div>
+                  <div className="w-64 h-[520px] bg-zinc-950 rounded-[3rem] border-4 border-zinc-700 shadow-2xl overflow-hidden p-2">
+                    <div className="w-full h-full rounded-[2.5rem] overflow-hidden bg-zinc-900">
+                      {/* To use a real screenshot: 
+                          1. Take a screenshot of the app on your phone
+                          2. Save it to: client/src/assets/app-screenshot.png
+                          3. Import it at the top: import appScreenshot from "@/assets/app-screenshot.png"
+                          4. Replace the div below with: <img src={appScreenshot} alt="HODLearn App" className="w-full h-full object-cover object-top" />
+                      */}
+                      <div className="h-full bg-gradient-to-b from-zinc-900 to-zinc-800 p-4 flex flex-col">
+                        <div className="flex items-center gap-2 mb-6 pt-6">
+                          <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-xs">HL</div>
+                          <span className="font-semibold text-sm">HODLearn</span>
                         </div>
-                      </div>
-                      
-                      <div className="bg-gradient-to-r from-orange-500/20 to-orange-600/20 border border-orange-500/30 rounded-2xl p-4 mb-4">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Wallet className="w-4 h-4 text-orange-400" />
-                          <span className="text-xs text-orange-400">Proof-of-Learning</span>
+                        
+                        <div className="bg-zinc-700/50 rounded-2xl p-4 mb-4">
+                          <p className="text-xs text-zinc-400 mb-1">Day 1</p>
+                          <h3 className="font-semibold text-sm mb-2">What is Bitcoin?</h3>
+                          <div className="w-full bg-zinc-600 rounded-full h-1.5">
+                            <div className="bg-orange-500 h-1.5 rounded-full w-1/4"></div>
+                          </div>
                         </div>
-                        <p className="text-lg font-bold">2,450 sats</p>
-                      </div>
-                      
-                      <div className="flex items-center justify-center gap-2 text-orange-400 mt-auto pb-4">
-                        <Trophy className="w-5 h-5" />
-                        <span className="font-semibold">5 Day Streak!</span>
+                        
+                        <div className="bg-gradient-to-r from-orange-500/20 to-orange-600/20 border border-orange-500/30 rounded-2xl p-4 mb-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Wallet className="w-4 h-4 text-orange-400" />
+                            <span className="text-xs text-orange-400">HODLearn Points</span>
+                          </div>
+                          <p className="text-lg font-bold">2,450 pts</p>
+                          <p className="text-xs text-zinc-500">Pegged to BTC</p>
+                        </div>
+                        
+                        <div className="flex items-center justify-center gap-2 text-orange-400 mt-auto pb-4">
+                          <Trophy className="w-5 h-5" />
+                          <span className="font-semibold">5 Day Streak!</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -250,10 +265,10 @@ export default function LandingPage() {
                   <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
                     <Wallet className="w-6 h-6 text-orange-500" />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">Proof-of-Learning Wallet</h3>
+                  <h3 className="font-semibold text-lg mb-2">HODLearn Points</h3>
                   <p className="text-zinc-400 text-sm">
-                    Earn sats for every lesson completed and quiz passed. 
-                    Track your learning progress in real Bitcoin terms.
+                    Earn points pegged to Bitcoin for every lesson and quiz. 
+                    Learn to think in Bitcoin while tracking your progress.
                   </p>
                 </CardContent>
               </Card>
@@ -360,6 +375,55 @@ export default function LandingPage() {
           </div>
         </section>
 
+        <section className="py-16 md:py-20 border-t border-zinc-800">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4">
+                Join a <span className="text-orange-500">Trusted Community</span>
+              </h2>
+              <p className="text-zinc-400 max-w-2xl mx-auto">
+                We're building more than an app - we're building a community of learners 
+                who support each other on the journey to Bitcoin understanding.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6 mb-12">
+              <div className="text-center p-6 bg-zinc-800/30 rounded-2xl border border-zinc-700">
+                <div className="w-14 h-14 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users className="w-7 h-7 text-orange-500" />
+                </div>
+                <h3 className="font-semibold text-lg mb-2">Active Community</h3>
+                <p className="text-zinc-400 text-sm">
+                  Connect with fellow learners, ask questions, and share your journey 
+                  in our moderated community forums.
+                </p>
+              </div>
+
+              <div className="text-center p-6 bg-zinc-800/30 rounded-2xl border border-zinc-700">
+                <div className="w-14 h-14 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Shield className="w-7 h-7 text-orange-500" />
+                </div>
+                <h3 className="font-semibold text-lg mb-2">Trusted Content</h3>
+                <p className="text-zinc-400 text-sm">
+                  Expert-curated curriculum designed for accuracy and clarity. 
+                  No hype, no scams - just Bitcoin education done right.
+                </p>
+              </div>
+
+              <div className="text-center p-6 bg-zinc-800/30 rounded-2xl border border-zinc-700">
+                <div className="w-14 h-14 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Sparkles className="w-7 h-7 text-orange-500" />
+                </div>
+                <h3 className="font-semibold text-lg mb-2">Vetted Resources</h3>
+                <p className="text-zinc-400 text-sm">
+                  Access our curated library of trusted Bitcoin products, tools, 
+                  and resources from verified partners.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section id="about" className="py-16 md:py-24 bg-zinc-950/50">
           <div className="max-w-4xl mx-auto px-4">
             <div className="text-center mb-12">
@@ -385,22 +449,22 @@ export default function LandingPage() {
                 
                 <p>
                   HODLearn is the "Duolingo of Bitcoin Education" - structured daily lessons 
-                  that fit into your life, gamified rewards that keep you motivated, and a 
-                  supportive community of fellow learners.
+                  that fit into your life, HODLearn Points that teach you to think in Bitcoin, 
+                  and a supportive community of fellow learners.
                 </p>
 
                 <div className="pt-4 flex flex-wrap gap-4 justify-center">
                   <div className="flex items-center gap-2 text-sm">
                     <Zap className="w-5 h-5 text-orange-500" />
-                    <span>Ongoing curriculum</span>
+                    <span>Daily lessons</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
-                    <Shield className="w-5 h-5 text-orange-500" />
-                    <span>Safe, risk-free learning</span>
+                    <Wallet className="w-5 h-5 text-orange-500" />
+                    <span>BTC-pegged rewards</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     <Users className="w-5 h-5 text-orange-500" />
-                    <span>Active community</span>
+                    <span>Trusted community</span>
                   </div>
                 </div>
               </div>
@@ -570,11 +634,14 @@ export default function LandingPage() {
               &copy; {new Date().getFullYear()} HODLearn. All rights reserved.
             </p>
             <div className="flex items-center gap-4">
-              <a href="https://twitter.com/hodlearn" target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-orange-400 transition-colors">
+              <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-orange-400 transition-colors" aria-label="X (Twitter)">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
               </a>
-              <a href="https://instagram.com/hodlearn" target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-orange-400 transition-colors">
+              <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-orange-400 transition-colors" aria-label="Instagram">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+              </a>
+              <a href={socialLinks.tiktok} target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-orange-400 transition-colors" aria-label="TikTok">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
               </a>
             </div>
           </div>
