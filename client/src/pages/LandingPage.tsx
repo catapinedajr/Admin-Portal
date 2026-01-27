@@ -16,7 +16,8 @@ import {
   Sparkles,
   Target,
   ShoppingBag,
-  MessageSquare
+  MessageSquare,
+  TrendingUp
 } from "lucide-react";
 
 function captureUtmParams() {
