@@ -1,10 +1,7 @@
 import { useLocation } from "wouter";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import appScreenshot from "@/assets/IMG_5095.PNG";
 import { 
   Users, 
@@ -15,15 +12,11 @@ import {
   Wallet,
   Calendar,
   Trophy,
-  MessageCircle,
-  Mail,
   ArrowRight,
   CheckCircle,
   Sparkles,
-  Target,
-  Zap
+  Target
 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 
 function getDeviceType(): 'ios' | 'android' | 'desktop' {
   const userAgent = navigator.userAgent;
@@ -61,9 +54,6 @@ function captureUtmParams() {
 export default function LandingPage() {
   const [, setLocation] = useLocation();
   const deviceType = getDeviceType();
-  const { toast } = useToast();
-  const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   
   useEffect(() => {
     captureUtmParams();
@@ -78,19 +68,6 @@ export default function LandingPage() {
     tiktok: "https://tiktok.com/@hodlosophy",
   };
 
-  const handleContactSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: "Message sent!",
-      description: "We'll get back to you within 24 hours.",
-    });
-    setContactForm({ name: '', email: '', message: '' });
-    setIsSubmitting(false);
-  };
 
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -149,8 +126,8 @@ export default function LandingPage() {
                 </h1>
                 
                 <p className="text-zinc-400 text-base md:text-lg max-w-lg mb-8">
-                  One lesson a day. Five minutes. That's all it takes to build real conviction. 
-                  Tools to learn, a community to grow with, and support when you need it most.
+                  Daily lessons. 8 interactive simulators. Community forums. 
+                  Everything you need to understand Bitcoin - five minutes at a time.
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start mb-8">
@@ -182,12 +159,12 @@ export default function LandingPage() {
 
                 <div className="flex items-center justify-center md:justify-start gap-6 text-sm text-zinc-500">
                   <span className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                    Free to start
+                    <Users className="w-4 h-4 text-orange-500" />
+                    Join 1,000+ learners
                   </span>
                   <span className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    No crypto needed
+                    Free to start
                   </span>
                 </div>
               </div>
@@ -229,10 +206,23 @@ export default function LandingPage() {
                   <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
                     <Calendar className="w-6 h-6 text-orange-500" />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">Daily Curriculum</h3>
+                  <h3 className="font-semibold text-lg mb-2">Daily Lessons</h3>
                   <p className="text-zinc-400 text-sm">
-                    A complete Bitcoin education journey. One lesson per day, 
-                    5-10 minutes each. Build knowledge progressively.
+                    One lesson per day, 5 minutes each. Build knowledge 
+                    step by step without feeling overwhelmed.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-all hover:-translate-y-1">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
+                    <Shield className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">8 Practice Simulators</h3>
+                  <p className="text-zinc-400 text-sm">
+                    DCA Calculator, HODL Simulator, Security Training, and more. 
+                    Practice without risking real money.
                   </p>
                 </CardContent>
               </Card>
@@ -244,34 +234,8 @@ export default function LandingPage() {
                   </div>
                   <h3 className="font-semibold text-lg mb-2">HODLearn Points</h3>
                   <p className="text-zinc-400 text-sm">
-                    Earn points pegged to Bitcoin for every lesson and quiz. 
-                    Learn to think in Bitcoin while tracking your progress.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-all hover:-translate-y-1">
-                <CardContent className="p-6">
-                  <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
-                    <Shield className="w-6 h-6 text-orange-500" />
-                  </div>
-                  <h3 className="font-semibold text-lg mb-2">8 Interactive Simulators</h3>
-                  <p className="text-zinc-400 text-sm">
-                    DCA Calculator, HODL Simulator, Security Training, Wallet Practice, 
-                    and more. Build confidence before using real Bitcoin.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-all hover:-translate-y-1">
-                <CardContent className="p-6">
-                  <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
-                    <Users className="w-6 h-6 text-orange-500" />
-                  </div>
-                  <h3 className="font-semibold text-lg mb-2">Community Forums</h3>
-                  <p className="text-zinc-400 text-sm">
-                    Join thousands of learners. Ask questions, share insights, 
-                    and build conviction together.
+                    Earn points tied to Bitcoin for every lesson. 
+                    Start thinking in Bitcoin while you learn.
                   </p>
                 </CardContent>
               </Card>
@@ -281,23 +245,23 @@ export default function LandingPage() {
                   <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
                     <Trophy className="w-6 h-6 text-orange-500" />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">Streaks & Achievements</h3>
+                  <h3 className="font-semibold text-lg mb-2">Streaks & Progress</h3>
                   <p className="text-zinc-400 text-sm">
-                    Stay motivated with daily streaks, milestone badges, 
-                    and progress tracking. Make learning a habit.
+                    Daily streaks keep you motivated. Track your progress 
+                    and make learning a lasting habit.
                   </p>
                 </CardContent>
               </Card>
 
-              <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-all hover:-translate-y-1">
+              <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-all hover:-translate-y-1 md:col-span-2 lg:col-span-1">
                 <CardContent className="p-6">
                   <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
                     <TrendingUp className="w-6 h-6 text-orange-500" />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">Live Bitcoin Data</h3>
+                  <h3 className="font-semibold text-lg mb-2">Live Bitcoin Price</h3>
                   <p className="text-zinc-400 text-sm">
-                    Real-time price tracking and market insights. 
-                    Understand how Bitcoin fits into the bigger picture.
+                    Real-time price tracking built right in. See how 
+                    your learning connects to the real world.
                   </p>
                 </CardContent>
               </Card>
@@ -352,173 +316,64 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="py-16 md:py-20 border-t border-zinc-800">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                Join a <span className="text-orange-500">Trusted Community</span>
+        <section id="about" className="py-16 md:py-24 border-t border-zinc-800">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="text-center mb-10">
+              <h2 className="text-2xl md:text-4xl font-bold mb-4">
+                Why <span className="text-orange-500">HODLearn</span>?
               </h2>
               <p className="text-zinc-400 max-w-2xl mx-auto">
-                We're building more than an app - we're building a community of learners 
-                who support each other on the journey to Bitcoin understanding.
+                We're not just teaching Bitcoin. We're building a place where you can 
+                learn at your own pace and find support when you need it.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-6 mb-12">
-              <div className="text-center p-6 bg-zinc-800/30 rounded-2xl border border-zinc-700">
-                <div className="w-14 h-14 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-7 h-7 text-orange-500" />
-                </div>
-                <h3 className="font-semibold text-lg mb-2">Active Community</h3>
-                <p className="text-zinc-400 text-sm">
-                  Connect with fellow learners, ask questions, and share your journey 
-                  in our moderated community forums.
-                </p>
-              </div>
-
-              <div className="text-center p-6 bg-zinc-800/30 rounded-2xl border border-zinc-700">
-                <div className="w-14 h-14 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Shield className="w-7 h-7 text-orange-500" />
-                </div>
-                <h3 className="font-semibold text-lg mb-2">Trusted Content</h3>
-                <p className="text-zinc-400 text-sm">
-                  Expert-curated curriculum designed for accuracy and clarity. 
-                  No hype, no scams - just Bitcoin education done right.
-                </p>
-              </div>
-
-              <div className="text-center p-6 bg-zinc-800/30 rounded-2xl border border-zinc-700">
-                <div className="w-14 h-14 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Sparkles className="w-7 h-7 text-orange-500" />
-                </div>
-                <h3 className="font-semibold text-lg mb-2">Vetted Resources</h3>
-                <p className="text-zinc-400 text-sm">
-                  Access our curated library of trusted Bitcoin products, tools, 
-                  and resources from verified partners.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="about" className="py-16 md:py-24 bg-zinc-950/50">
-          <div className="max-w-4xl mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-2xl md:text-4xl font-bold mb-4">
-                Build <span className="text-orange-500">Conviction</span> That Lasts
-              </h2>
-            </div>
-
-            <div className="bg-zinc-800/40 border border-zinc-700 rounded-2xl p-8 md:p-12">
-              <div className="space-y-6 text-zinc-300 leading-relaxed">
+            <div className="bg-zinc-800/40 border border-zinc-700 rounded-2xl p-8 md:p-10 mb-10">
+              <div className="space-y-5 text-zinc-300 leading-relaxed">
                 <p>
-                  Bitcoin is paradigm-shifting monetary technology. Understanding it deeply 
-                  takes time - and your conviction will be tested along the way.
+                  Bitcoin can be confusing. And when prices drop or someone tells you it's a scam, 
+                  you'll have questions. <span className="text-orange-400 font-medium">We're here to help you find answers</span> - 
+                  today and years from now.
                 </p>
                 
                 <p>
-                  That's why we built HODLearn. We give you the 
-                  <span className="text-orange-400 font-medium"> tools to develop your own conviction</span>, 
-                  and when that conviction is tested - by market volatility, by skeptics, by doubt - 
-                  <span className="text-orange-400 font-medium"> our community will be here to support you</span>.
+                  Bitcoin keeps evolving. New companies, new uses, new ways people are adopting it every day. 
+                  <span className="text-orange-400 font-medium">We'll help you keep up</span> so you always understand what's happening 
+                  and why it matters.
                 </p>
-                
-                <p>
-                  Bitcoin never stops evolving. New businesses are being built with it, around it, 
-                  and on top of it. We'll keep you informed as the world learns to use and adopt 
-                  this technology in new ways - so your understanding grows with the ecosystem.
-                </p>
-
-                <div className="pt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="text-center p-4 bg-zinc-900/50 rounded-xl">
-                    <Zap className="w-6 h-6 text-orange-500 mx-auto mb-2" />
-                    <span className="text-sm">Daily learning habit</span>
-                  </div>
-                  <div className="text-center p-4 bg-zinc-900/50 rounded-xl">
-                    <Users className="w-6 h-6 text-orange-500 mx-auto mb-2" />
-                    <span className="text-sm">Community support</span>
-                  </div>
-                  <div className="text-center p-4 bg-zinc-900/50 rounded-xl">
-                    <TrendingUp className="w-6 h-6 text-orange-500 mx-auto mb-2" />
-                    <span className="text-sm">Evolving education</span>
-                  </div>
-                </div>
               </div>
             </div>
-          </div>
-        </section>
 
-        <section id="contact" className="py-16 md:py-24">
-          <div className="max-w-2xl mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-2xl md:text-4xl font-bold mb-4">
-                Get in <span className="text-orange-500">Touch</span>
-              </h2>
-              <p className="text-zinc-400">
-                Questions, feedback, or partnership inquiries? We'd love to hear from you.
-              </p>
-            </div>
+            <div className="grid md:grid-cols-3 gap-5">
+              <div className="text-center p-5 bg-zinc-800/30 rounded-2xl border border-zinc-700">
+                <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Shield className="w-6 h-6 text-orange-500" />
+                </div>
+                <h3 className="font-semibold mb-2">No Hype, No Scams</h3>
+                <p className="text-zinc-400 text-sm">
+                  Honest, expert-curated content. Just real education.
+                </p>
+              </div>
 
-            <Card className="bg-zinc-800/40 border-zinc-700">
-              <CardContent className="p-6 md:p-8">
-                <form onSubmit={handleContactSubmit} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name" className="text-zinc-300">Name</Label>
-                      <Input
-                        id="name"
-                        value={contactForm.name}
-                        onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                        placeholder="Your name"
-                        className="bg-zinc-900 border-zinc-700 focus:border-orange-500"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email" className="text-zinc-300">Email</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={contactForm.email}
-                        onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                        placeholder="your@email.com"
-                        className="bg-zinc-900 border-zinc-700 focus:border-orange-500"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="message" className="text-zinc-300">Message</Label>
-                    <Textarea
-                      id="message"
-                      value={contactForm.message}
-                      onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                      placeholder="How can we help?"
-                      rows={4}
-                      className="bg-zinc-900 border-zinc-700 focus:border-orange-500 resize-none"
-                      required
-                    />
-                  </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-orange-500 hover:bg-orange-600"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? (
-                      <>Sending...</>
-                    ) : (
-                      <>
-                        <Mail className="w-4 h-4 mr-2" />
-                        Send Message
-                      </>
-                    )}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+              <div className="text-center p-5 bg-zinc-800/30 rounded-2xl border border-zinc-700">
+                <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Users className="w-6 h-6 text-orange-500" />
+                </div>
+                <h3 className="font-semibold mb-2">Community Support</h3>
+                <p className="text-zinc-400 text-sm">
+                  Ask questions, share your journey, learn together.
+                </p>
+              </div>
 
-            <div className="mt-8 text-center text-zinc-500 text-sm">
-              <p>Or email us directly at <a href="mailto:info@hodlearn.io" className="text-orange-400 hover:underline">info@hodlearn.io</a></p>
+              <div className="text-center p-5 bg-zinc-800/30 rounded-2xl border border-zinc-700">
+                <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <TrendingUp className="w-6 h-6 text-orange-500" />
+                </div>
+                <h3 className="font-semibold mb-2">Always Current</h3>
+                <p className="text-zinc-400 text-sm">
+                  Stay informed as Bitcoin and its ecosystem evolve.
+                </p>
+              </div>
             </div>
           </div>
         </section>
@@ -599,11 +454,11 @@ export default function LandingPage() {
             </div>
             
             <div>
-              <h4 className="font-semibold mb-4 text-zinc-300">Legal</h4>
+              <h4 className="font-semibold mb-4 text-zinc-300">Legal & Contact</h4>
               <ul className="space-y-2 text-sm text-zinc-500">
                 <li><a href="/privacy" className="hover:text-orange-400 transition-colors">Privacy Policy</a></li>
                 <li><a href="/terms" className="hover:text-orange-400 transition-colors">Terms of Service</a></li>
-                <li><button onClick={() => scrollToSection('contact')} className="hover:text-orange-400 transition-colors">Contact</button></li>
+                <li><a href="mailto:info@hodlearn.io" className="hover:text-orange-400 transition-colors">info@hodlearn.io</a></li>
               </ul>
             </div>
           </div>
