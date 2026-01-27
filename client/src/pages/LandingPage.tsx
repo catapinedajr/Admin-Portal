@@ -390,7 +390,10 @@ export default function LandingPage() {
               <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-sm">
                 HL
               </div>
-              <span className="text-lg font-bold">HODLearn™</span>
+              <div>
+                <span className="text-lg font-bold">HODLearn™</span>
+                <p className="text-xs text-zinc-400">How-to-learn BTC</p>
+              </div>
             </div>
             
             <div className="flex items-center gap-6 text-sm text-zinc-500">
