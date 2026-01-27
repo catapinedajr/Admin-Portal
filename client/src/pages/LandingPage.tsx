@@ -1,8 +1,28 @@
 import { useLocation } from "wouter";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Users, Gamepad2, TrendingUp, BookOpen, Shield, MessageCircle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { 
+  Users, 
+  Gamepad2, 
+  TrendingUp, 
+  BookOpen, 
+  Shield, 
+  Wallet,
+  Calendar,
+  Trophy,
+  MessageCircle,
+  Mail,
+  ArrowRight,
+  CheckCircle,
+  Sparkles,
+  Target,
+  Zap
+} from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 function getDeviceType(): 'ios' | 'android' | 'desktop' {
   const userAgent = navigator.userAgent;
@@ -40,6 +60,9 @@ function captureUtmParams() {
 export default function LandingPage() {
   const [, setLocation] = useLocation();
   const deviceType = getDeviceType();
+  const { toast } = useToast();
+  const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   useEffect(() => {
     captureUtmParams();
@@ -48,247 +71,510 @@ export default function LandingPage() {
   const appStoreUrl = "https://apps.apple.com/app/hodlearn";
   const playStoreUrl = "https://play.google.com/store/apps/details?id=com.hodlearn";
 
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    toast({
+      title: "Message sent!",
+      description: "We'll get back to you within 24 hours.",
+    });
+    setContactForm({ name: '', email: '', message: '' });
+    setIsSubmitting(false);
+  };
+
+  const scrollToSection = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen bg-zinc-900 text-white">
-      {/* Header */}
-      <header className="border-b border-zinc-800 bg-black/50 backdrop-blur-lg sticky top-0 z-50">
+      <header className="border-b border-zinc-800 bg-black/80 backdrop-blur-lg sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-3 md:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-sm">
                 HL
               </div>
-              <span className="text-lg md:text-xl font-bold">HODLearn™</span>
+              <span className="text-lg md:text-xl font-bold">HODLearn</span>
             </div>
-            <Button
-              onClick={() => setLocation('/auth')}
-              variant="ghost"
-              size="sm"
-              className="text-zinc-300 hover:text-white hover:bg-zinc-800"
-              data-testid="button-login-header"
-            >
-              Log In
-            </Button>
+            <nav className="hidden md:flex items-center gap-6 text-sm text-zinc-400">
+              <button onClick={() => scrollToSection('features')} className="hover:text-white transition-colors">Features</button>
+              <button onClick={() => scrollToSection('about')} className="hover:text-white transition-colors">About</button>
+              <button onClick={() => scrollToSection('contact')} className="hover:text-white transition-colors">Contact</button>
+            </nav>
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={() => setLocation('/auth')}
+                variant="ghost"
+                size="sm"
+                className="text-zinc-300 hover:text-white hover:bg-zinc-800"
+              >
+                Log In
+              </Button>
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4">
-        {/* Hero Section */}
-        <section className="py-12 md:py-24 text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-5 leading-tight px-2">
-            Stop Wondering About Bitcoin.
-            <br />
-            <span className="text-orange-500">Start Learning.</span>
-          </h1>
-          <p className="text-base md:text-xl text-orange-400/90 font-medium mb-4 md:mb-6">
-            This is HODLearn
-          </p>
-          <p className="text-zinc-400 text-sm md:text-lg max-w-lg mx-auto mb-5 md:mb-8 px-4">
-            Daily Bitcoin lessons, safe simulators, and an active community — all in one place.
-          </p>
-          
-          {/* Social Proof */}
-          <div className="flex items-center justify-center gap-4 md:gap-8 text-xs md:text-sm text-zinc-500 mb-6 md:mb-10">
-            <span className="flex items-center gap-1.5 md:gap-2">
-              <Users className="w-4 h-4 md:w-5 md:h-5 text-orange-500/70" />
-              <span>Active community</span>
-            </span>
-            <span className="w-1 h-1 rounded-full bg-zinc-600" />
-            <span className="flex items-center gap-1.5 md:gap-2">
-              <MessageCircle className="w-4 h-4 md:w-5 md:h-5 text-orange-500/70" />
-              <span>Learn together</span>
-            </span>
-          </div>
+      <main>
+        <section className="py-16 md:py-28 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-orange-500/5 via-transparent to-transparent" />
+          <div className="max-w-6xl mx-auto px-4 relative">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div className="text-center md:text-left">
+                <div className="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 rounded-full px-4 py-1.5 text-sm text-orange-400 mb-6">
+                  <Sparkles className="w-4 h-4" />
+                  <span>Now available on the App Store</span>
+                </div>
+                
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-5 leading-tight">
+                  Master Bitcoin
+                  <br />
+                  <span className="text-orange-500">One Day at a Time</span>
+                </h1>
+                
+                <p className="text-zinc-400 text-base md:text-lg max-w-lg mb-8">
+                  A 336-day curriculum that transforms curiosity into conviction. 
+                  Daily lessons, risk-free simulators, and a community of learners.
+                </p>
+                
+                <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start mb-8">
+                  <a
+                    href={appStoreUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-3 bg-white text-black hover:bg-zinc-100 rounded-xl px-6 py-4 transition-colors font-medium"
+                  >
+                    <svg viewBox="0 0 24 24" className="w-6 h-6" fill="currentColor">
+                      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                    </svg>
+                    <div className="text-left">
+                      <div className="text-xs opacity-70">Download on the</div>
+                      <div className="text-base font-semibold">App Store</div>
+                    </div>
+                  </a>
+                  
+                  <Button
+                    onClick={() => setLocation('/auth?mode=register')}
+                    variant="outline"
+                    size="lg"
+                    className="border-zinc-600 bg-zinc-800/50 hover:bg-zinc-800 text-white px-6 py-4 h-auto"
+                  >
+                    Try Web Version
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
 
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4 sm:px-0">
-            <Button
-              onClick={() => setLocation('/auth?mode=register')}
-              size="lg"
-              className="bg-orange-500 hover:bg-orange-600 text-white px-6 md:px-10 py-5 md:py-6 text-base md:text-lg w-full sm:w-auto"
-              data-testid="button-get-started"
-            >
-              Get Started Free
-            </Button>
-            <Button
-              onClick={() => setLocation('/auth')}
-              size="lg"
-              variant="outline"
-              className="border-zinc-700 bg-zinc-800/50 hover:bg-zinc-800 text-white px-6 md:px-10 py-5 md:py-6 text-base md:text-lg w-full sm:w-auto"
-              data-testid="button-login-hero"
-            >
-              Log In
-            </Button>
+                <div className="flex items-center justify-center md:justify-start gap-6 text-sm text-zinc-500">
+                  <span className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    Free to start
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    No crypto needed
+                  </span>
+                </div>
+              </div>
+
+              <div className="hidden md:flex justify-center">
+                <div className="relative">
+                  <div className="w-64 h-[500px] bg-zinc-800 rounded-[3rem] border-4 border-zinc-700 shadow-2xl overflow-hidden">
+                    <div className="h-full bg-gradient-to-b from-zinc-900 to-zinc-800 p-4 flex flex-col">
+                      <div className="flex items-center gap-2 mb-6 pt-8">
+                        <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-xs">HL</div>
+                        <span className="font-semibold text-sm">HODLearn</span>
+                      </div>
+                      
+                      <div className="bg-zinc-700/50 rounded-2xl p-4 mb-4">
+                        <p className="text-xs text-zinc-400 mb-1">Day 1 of 336</p>
+                        <h3 className="font-semibold text-sm mb-2">What is Bitcoin?</h3>
+                        <div className="w-full bg-zinc-600 rounded-full h-1.5">
+                          <div className="bg-orange-500 h-1.5 rounded-full w-1/4"></div>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-gradient-to-r from-orange-500/20 to-orange-600/20 border border-orange-500/30 rounded-2xl p-4 mb-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Wallet className="w-4 h-4 text-orange-400" />
+                          <span className="text-xs text-orange-400">Proof-of-Learning</span>
+                        </div>
+                        <p className="text-lg font-bold">2,450 sats</p>
+                      </div>
+                      
+                      <div className="flex items-center justify-center gap-2 text-orange-400 mt-auto pb-4">
+                        <Trophy className="w-5 h-5" />
+                        <span className="font-semibold">5 Day Streak!</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="absolute -z-10 inset-0 bg-orange-500/20 blur-3xl rounded-full scale-75" />
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* How It Works - 3 Steps */}
-        <section className="py-10 md:py-16 border-t border-zinc-800">
-          <h2 className="text-lg md:text-2xl font-semibold text-center mb-8 md:mb-12 text-zinc-300">
-            How It Works
-          </h2>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
-            {/* Step 1: Learn */}
-            <div className="text-center max-w-[200px] md:max-w-[240px]">
-              <div className="w-14 h-14 md:w-16 md:h-16 bg-orange-500/15 border border-orange-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <BookOpen className="w-7 h-7 md:w-8 md:h-8 text-orange-500" />
-              </div>
-              <h3 className="font-semibold mb-2 text-white text-base md:text-lg">Learn</h3>
-              <p className="text-sm md:text-base text-zinc-400">
-                Daily bite-sized lessons. 5-10 minutes. No jargon.
+        <section id="features" className="py-16 md:py-24 bg-zinc-950/50">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="text-center mb-12 md:mb-16">
+              <h2 className="text-2xl md:text-4xl font-bold mb-4">
+                Everything You Need to 
+                <span className="text-orange-500"> Learn Bitcoin</span>
+              </h2>
+              <p className="text-zinc-400 max-w-2xl mx-auto">
+                From complete beginner to confident holder. Our structured curriculum 
+                and interactive tools make learning Bitcoin intuitive and engaging.
               </p>
             </div>
 
-            {/* Arrow */}
-            <div className="hidden md:block text-zinc-600 text-2xl">→</div>
-            <div className="md:hidden text-zinc-600 text-xl">↓</div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-all hover:-translate-y-1">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
+                    <Calendar className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">336-Day Curriculum</h3>
+                  <p className="text-zinc-400 text-sm">
+                    A complete Bitcoin education journey. One lesson per day, 
+                    5-10 minutes each. Build knowledge progressively.
+                  </p>
+                </CardContent>
+              </Card>
 
-            {/* Step 2: Practice */}
-            <div className="text-center max-w-[200px] md:max-w-[240px]">
-              <div className="w-14 h-14 md:w-16 md:h-16 bg-orange-500/15 border border-orange-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-7 h-7 md:w-8 md:h-8 text-orange-500" />
-              </div>
-              <h3 className="font-semibold mb-2 text-white text-base md:text-lg">Practice</h3>
-              <p className="text-sm md:text-base text-zinc-400">
-                Risk-free simulators. Learn before using real Bitcoin.
-              </p>
-            </div>
+              <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-all hover:-translate-y-1">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
+                    <Wallet className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Proof-of-Learning Wallet</h3>
+                  <p className="text-zinc-400 text-sm">
+                    Earn sats for every lesson completed and quiz passed. 
+                    Track your learning progress in real Bitcoin terms.
+                  </p>
+                </CardContent>
+              </Card>
 
-            {/* Arrow */}
-            <div className="hidden md:block text-zinc-600 text-2xl">→</div>
-            <div className="md:hidden text-zinc-600 text-xl">↓</div>
+              <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-all hover:-translate-y-1">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
+                    <Shield className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Risk-Free Simulators</h3>
+                  <p className="text-zinc-400 text-sm">
+                    Practice DCA strategies, wallet security, and transactions 
+                    without risking real money. Learn by doing.
+                  </p>
+                </CardContent>
+              </Card>
 
-            {/* Step 3: Connect */}
-            <div className="text-center max-w-[200px] md:max-w-[240px]">
-              <div className="w-14 h-14 md:w-16 md:h-16 bg-orange-500/15 border border-orange-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Users className="w-7 h-7 md:w-8 md:h-8 text-orange-500" />
-              </div>
-              <h3 className="font-semibold mb-2 text-white text-base md:text-lg">Connect</h3>
-              <p className="text-sm md:text-base text-zinc-400">
-                Join a community of learners. Ask questions. Build conviction.
-              </p>
+              <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-all hover:-translate-y-1">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
+                    <Users className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Community Forums</h3>
+                  <p className="text-zinc-400 text-sm">
+                    Join thousands of learners. Ask questions, share insights, 
+                    and build conviction together.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-all hover:-translate-y-1">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
+                    <Trophy className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Streaks & Achievements</h3>
+                  <p className="text-zinc-400 text-sm">
+                    Stay motivated with daily streaks, milestone badges, 
+                    and progress tracking. Make learning a habit.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-all hover:-translate-y-1">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
+                    <TrendingUp className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Live Bitcoin Data</h3>
+                  <p className="text-zinc-400 text-sm">
+                    Real-time price tracking and market insights. 
+                    Understand how Bitcoin fits into the bigger picture.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
 
-        {/* Value Grid - 3 Cards */}
-        <section className="py-10 md:py-16 border-t border-zinc-800/50">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
-            {/* Community Card - First */}
-            <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-colors">
-              <CardContent className="p-5 md:p-7">
-                <div className="w-11 h-11 md:w-12 md:h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
-                  <Users className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />
-                </div>
-                <h3 className="font-semibold mb-2 text-white text-base md:text-lg">Community</h3>
-                <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
-                  Learn alongside others on the same journey. Discuss ideas, ask questions, and build conviction together.
-                </p>
-              </CardContent>
-            </Card>
+        <section className="py-16 md:py-24">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4">How It Works</h2>
+              <p className="text-zinc-400">Simple, structured, effective</p>
+            </div>
 
-            {/* Practice Card */}
-            <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-colors">
-              <CardContent className="p-5 md:p-7">
-                <div className="w-11 h-11 md:w-12 md:h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
-                  <Gamepad2 className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-orange-500/15 border border-orange-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <BookOpen className="w-8 h-8 text-orange-500" />
                 </div>
-                <h3 className="font-semibold mb-2 text-white text-base md:text-lg">Practice</h3>
-                <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
-                  Try wallets, security training, and DCA strategies in safe simulators — no real money at risk.
+                <div className="text-orange-500 font-bold text-sm mb-2">Step 1</div>
+                <h3 className="font-semibold text-lg mb-2">Learn Daily</h3>
+                <p className="text-zinc-400 text-sm">
+                  Complete one lesson per day. Each takes just 5-10 minutes 
+                  and builds on previous knowledge.
                 </p>
-              </CardContent>
-            </Card>
+              </div>
 
-            {/* Track Card */}
-            <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-colors">
-              <CardContent className="p-5 md:p-7">
-                <div className="w-11 h-11 md:w-12 md:h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
-                  <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />
+              <div className="text-center">
+                <div className="w-16 h-16 bg-orange-500/15 border border-orange-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Gamepad2 className="w-8 h-8 text-orange-500" />
                 </div>
-                <h3 className="font-semibold mb-2 text-white text-base md:text-lg">Track</h3>
-                <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
-                  Real-time Bitcoin prices and insights. See how inflation impacts your purchasing power.
+                <div className="text-orange-500 font-bold text-sm mb-2">Step 2</div>
+                <h3 className="font-semibold text-lg mb-2">Practice Safely</h3>
+                <p className="text-zinc-400 text-sm">
+                  Use interactive simulators to practice what you learn. 
+                  No real money, no risk, full experience.
                 </p>
-              </CardContent>
-            </Card>
+              </div>
+
+              <div className="text-center">
+                <div className="w-16 h-16 bg-orange-500/15 border border-orange-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Target className="w-8 h-8 text-orange-500" />
+                </div>
+                <div className="text-orange-500 font-bold text-sm mb-2">Step 3</div>
+                <h3 className="font-semibold text-lg mb-2">Build Conviction</h3>
+                <p className="text-zinc-400 text-sm">
+                  After 336 days, you'll understand Bitcoin deeply. 
+                  Make informed decisions with confidence.
+                </p>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* Final CTA */}
-        <section className="py-12 md:py-20 text-center border-t border-zinc-800/50">
-          <p className="text-zinc-400 text-sm md:text-base mb-5">Ready to start?</p>
-          <Button
-            onClick={() => setLocation('/auth?mode=register')}
-            size="lg"
-            className="bg-orange-500 hover:bg-orange-600 text-white px-8 md:px-12 py-5 md:py-6 text-base md:text-lg"
-            data-testid="button-cta-bottom"
-          >
-            Join the Community & Start Learning
-          </Button>
-        </section>
-      </main>
+        <section id="about" className="py-16 md:py-24 bg-zinc-950/50">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-4xl font-bold mb-4">
+                Why We Built <span className="text-orange-500">HODLearn</span>
+              </h2>
+            </div>
 
-      {/* Footer */}
-      <footer className="border-t border-zinc-800 py-8 md:py-12 bg-zinc-900/50">
-        <div className="max-w-6xl mx-auto px-4">
-          {/* App Download */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center mb-8">
-            {(deviceType === 'ios' || deviceType === 'desktop') && (
+            <div className="bg-zinc-800/40 border border-zinc-700 rounded-2xl p-8 md:p-12">
+              <div className="space-y-6 text-zinc-300 leading-relaxed">
+                <p>
+                  Bitcoin isn't just another investment. It's a fundamental shift in how 
+                  money works. But most people don't understand it - and that's a problem.
+                </p>
+                
+                <p>
+                  Traditional finance education is boring, academic, and disconnected from 
+                  real life. We believe the best way to learn Bitcoin is through 
+                  <span className="text-orange-400 font-medium"> daily practice</span>, 
+                  <span className="text-orange-400 font-medium"> immediate relevance</span>, and 
+                  <span className="text-orange-400 font-medium"> hands-on experience</span>.
+                </p>
+                
+                <p>
+                  HODLearn is the "Duolingo of Bitcoin Education" - structured daily lessons 
+                  that fit into your life, gamified rewards that keep you motivated, and a 
+                  supportive community of fellow learners.
+                </p>
+
+                <div className="pt-4 flex flex-wrap gap-4 justify-center">
+                  <div className="flex items-center gap-2 text-sm">
+                    <Zap className="w-5 h-5 text-orange-500" />
+                    <span>336 days of curriculum</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Shield className="w-5 h-5 text-orange-500" />
+                    <span>Safe, risk-free learning</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Users className="w-5 h-5 text-orange-500" />
+                    <span>Active community</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="contact" className="py-16 md:py-24">
+          <div className="max-w-2xl mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-4xl font-bold mb-4">
+                Get in <span className="text-orange-500">Touch</span>
+              </h2>
+              <p className="text-zinc-400">
+                Questions, feedback, or partnership inquiries? We'd love to hear from you.
+              </p>
+            </div>
+
+            <Card className="bg-zinc-800/40 border-zinc-700">
+              <CardContent className="p-6 md:p-8">
+                <form onSubmit={handleContactSubmit} className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="name" className="text-zinc-300">Name</Label>
+                      <Input
+                        id="name"
+                        value={contactForm.name}
+                        onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                        placeholder="Your name"
+                        className="bg-zinc-900 border-zinc-700 focus:border-orange-500"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email" className="text-zinc-300">Email</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={contactForm.email}
+                        onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                        placeholder="your@email.com"
+                        className="bg-zinc-900 border-zinc-700 focus:border-orange-500"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="message" className="text-zinc-300">Message</Label>
+                    <Textarea
+                      id="message"
+                      value={contactForm.message}
+                      onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                      placeholder="How can we help?"
+                      rows={4}
+                      className="bg-zinc-900 border-zinc-700 focus:border-orange-500 resize-none"
+                      required
+                    />
+                  </div>
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-orange-500 hover:bg-orange-600"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>Sending...</>
+                    ) : (
+                      <>
+                        <Mail className="w-4 h-4 mr-2" />
+                        Send Message
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+
+            <div className="mt-8 text-center text-zinc-500 text-sm">
+              <p>Or email us directly at <a href="mailto:hello@hodlearn.com" className="text-orange-400 hover:underline">hello@hodlearn.com</a></p>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 md:py-20 bg-gradient-to-b from-zinc-900 to-zinc-950">
+          <div className="max-w-4xl mx-auto px-4 text-center">
+            <h2 className="text-2xl md:text-4xl font-bold mb-4">
+              Ready to Start Your Bitcoin Journey?
+            </h2>
+            <p className="text-zinc-400 mb-8 max-w-xl mx-auto">
+              Download HODLearn today and join thousands of learners building 
+              their Bitcoin knowledge one day at a time.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href={appStoreUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-xl px-5 py-3 transition-colors text-sm"
-                data-testid="link-app-store"
+                className="inline-flex items-center justify-center gap-3 bg-white text-black hover:bg-zinc-100 rounded-xl px-8 py-4 transition-colors font-medium"
               >
-                <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
+                <svg viewBox="0 0 24 24" className="w-6 h-6" fill="currentColor">
                   <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
                 </svg>
-                <span>App Store</span>
+                <div className="text-left">
+                  <div className="text-xs opacity-70">Download on the</div>
+                  <div className="text-base font-semibold">App Store</div>
+                </div>
               </a>
-            )}
-            {(deviceType === 'android' || deviceType === 'desktop') && (
-              <a
-                href={playStoreUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-xl px-5 py-3 transition-colors text-sm"
-                data-testid="link-play-store"
-              >
-                <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
-                  <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/>
-                </svg>
-                <span>Google Play</span>
-              </a>
-            )}
+              
+              {deviceType !== 'ios' && (
+                <a
+                  href={playStoreUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-3 bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 rounded-xl px-8 py-4 transition-colors font-medium"
+                >
+                  <svg viewBox="0 0 24 24" className="w-6 h-6" fill="currentColor">
+                    <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/>
+                  </svg>
+                  <div className="text-left">
+                    <div className="text-xs opacity-70">Get it on</div>
+                    <div className="text-base font-semibold">Google Play</div>
+                  </div>
+                </a>
+              )}
+            </div>
           </div>
+        </section>
+      </main>
 
-          {/* Footer Links */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs md:text-sm text-zinc-500">
-            <p>© HODLearn</p>
-            <div className="flex gap-6">
-              <a 
-                href="/terms" 
-                className="hover:text-orange-500 transition-colors"
-                data-testid="link-terms"
-              >
-                Terms
+      <footer className="border-t border-zinc-800 py-12 bg-black">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div className="md:col-span-2">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-sm">
+                  HL
+                </div>
+                <span className="text-lg font-bold">HODLearn</span>
+              </div>
+              <p className="text-zinc-500 text-sm max-w-sm">
+                The smarter way to learn Bitcoin. Daily lessons, safe practice, 
+                and a community of learners on the same journey.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4 text-zinc-300">Product</h4>
+              <ul className="space-y-2 text-sm text-zinc-500">
+                <li><button onClick={() => scrollToSection('features')} className="hover:text-orange-400 transition-colors">Features</button></li>
+                <li><button onClick={() => scrollToSection('about')} className="hover:text-orange-400 transition-colors">About</button></li>
+                <li><a href={appStoreUrl} className="hover:text-orange-400 transition-colors">Download App</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4 text-zinc-300">Legal</h4>
+              <ul className="space-y-2 text-sm text-zinc-500">
+                <li><a href="/privacy" className="hover:text-orange-400 transition-colors">Privacy Policy</a></li>
+                <li><a href="/terms" className="hover:text-orange-400 transition-colors">Terms of Service</a></li>
+                <li><button onClick={() => scrollToSection('contact')} className="hover:text-orange-400 transition-colors">Contact</button></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="pt-8 border-t border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-zinc-600 text-sm">
+              &copy; {new Date().getFullYear()} HODLearn. All rights reserved.
+            </p>
+            <div className="flex items-center gap-4">
+              <a href="https://twitter.com/hodlearn" target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-orange-400 transition-colors">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
               </a>
-              <a 
-                href="/privacy" 
-                className="hover:text-orange-500 transition-colors"
-                data-testid="link-privacy"
-              >
-                Privacy
-              </a>
-              <a 
-                href="/about" 
-                className="hover:text-orange-500 transition-colors"
-                data-testid="link-about"
-              >
-                About
+              <a href="https://instagram.com/hodlearn" target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-orange-400 transition-colors">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
               </a>
             </div>
           </div>
