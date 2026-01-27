@@ -137,8 +137,8 @@ export default function LandingPage() {
                 </h1>
                 
                 <p className="text-zinc-400 text-base md:text-lg max-w-lg mb-8">
-                  A 336-day curriculum that transforms curiosity into conviction. 
-                  Daily lessons, risk-free simulators, and a community of learners.
+                  A daily learning journey that transforms curiosity into conviction. 
+                  Bite-sized lessons, risk-free simulators, and a community of learners.
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start mb-8">
@@ -190,7 +190,7 @@ export default function LandingPage() {
                       </div>
                       
                       <div className="bg-zinc-700/50 rounded-2xl p-4 mb-4">
-                        <p className="text-xs text-zinc-400 mb-1">Day 1 of 336</p>
+                        <p className="text-xs text-zinc-400 mb-1">Day 1</p>
                         <h3 className="font-semibold text-sm mb-2">What is Bitcoin?</h3>
                         <div className="w-full bg-zinc-600 rounded-full h-1.5">
                           <div className="bg-orange-500 h-1.5 rounded-full w-1/4"></div>
@@ -237,7 +237,7 @@ export default function LandingPage() {
                   <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
                     <Calendar className="w-6 h-6 text-orange-500" />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">336-Day Curriculum</h3>
+                  <h3 className="font-semibold text-lg mb-2">Daily Curriculum</h3>
                   <p className="text-zinc-400 text-sm">
                     A complete Bitcoin education journey. One lesson per day, 
                     5-10 minutes each. Build knowledge progressively.
@@ -352,7 +352,7 @@ export default function LandingPage() {
                 <div className="text-orange-500 font-bold text-sm mb-2">Step 3</div>
                 <h3 className="font-semibold text-lg mb-2">Build Conviction</h3>
                 <p className="text-zinc-400 text-sm">
-                  After 336 days, you'll understand Bitcoin deeply. 
+                  Over time, you'll understand Bitcoin deeply. 
                   Make informed decisions with confidence.
                 </p>
               </div>
@@ -392,7 +392,7 @@ export default function LandingPage() {
                 <div className="pt-4 flex flex-wrap gap-4 justify-center">
                   <div className="flex items-center gap-2 text-sm">
                     <Zap className="w-5 h-5 text-orange-500" />
-                    <span>336 days of curriculum</span>
+                    <span>Ongoing curriculum</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     <Shield className="w-5 h-5 text-orange-500" />
@@ -478,7 +478,7 @@ export default function LandingPage() {
             </Card>
 
             <div className="mt-8 text-center text-zinc-500 text-sm">
-              <p>Or email us directly at <a href="mailto:hello@hodlearn.com" className="text-orange-400 hover:underline">hello@hodlearn.com</a></p>
+              <p>Or email us directly at <a href="mailto:info@hodlearn.io" className="text-orange-400 hover:underline">info@hodlearn.io</a></p>
             </div>
           </div>
         </section>
