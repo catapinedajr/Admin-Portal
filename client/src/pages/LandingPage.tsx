@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import appScreenshot from "@/assets/IMG_5095.PNG";
 import { 
-  Users, 
   Shield, 
   Wallet,
   Calendar,
@@ -14,7 +13,8 @@ import {
   Sparkles,
   ShoppingBag,
   MessageSquare,
-  TrendingUp
+  TrendingUp,
+  Users
 } from "lucide-react";
 
 function captureUtmParams() {
@@ -143,12 +143,12 @@ export default function LandingPage() {
 
                 <div className="flex items-center justify-center md:justify-start gap-6 text-sm text-zinc-500">
                   <span className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-orange-500" />
-                    Join 1,000+ learners
-                  </span>
-                  <span className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
                     Free to start
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-orange-500" />
+                    5 minutes a day
                   </span>
                 </div>
               </div>
@@ -271,16 +271,20 @@ export default function LandingPage() {
             <div className="relative bg-zinc-800/50 border border-zinc-700 rounded-2xl p-8 md:p-12">
               <div className="absolute -top-4 left-8 text-6xl text-orange-500/30 font-serif">"</div>
               <blockquote className="text-xl md:text-2xl text-zinc-200 leading-relaxed mb-6">
-                I tried watching YouTube videos and reading articles, but nothing stuck. 
-                HODLearn's daily lessons finally made it click for me.
+                After 5+ years of studying Bitcoin, I realized the secret wasn't reading whitepapers 
+                or watching endless videos. It was learning a little bit each day, having a community 
+                to ask questions, and tools to practice before touching real money. I built HODLearn 
+                to bring it all together — trusted content, real tools, vetted products, and people 
+                on the same journey. So when someone asks "How did you learn so much about Bitcoin?" 
+                the answer is simple: HODLearn.
               </blockquote>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center">
-                  <span className="text-orange-500 font-bold">MK</span>
+                  <span className="text-orange-500 font-bold">HL</span>
                 </div>
                 <div>
-                  <p className="font-semibold text-white">Michael K.</p>
-                  <p className="text-zinc-500 text-sm">Beta user since Day 1</p>
+                  <p className="font-semibold text-white">Founder</p>
+                  <p className="text-zinc-500 text-sm">HODLearn</p>
                 </div>
               </div>
             </div>
