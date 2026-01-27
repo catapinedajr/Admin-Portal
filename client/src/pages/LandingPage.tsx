@@ -379,45 +379,24 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer className="border-t border-zinc-800 py-12 bg-black">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div className="md:col-span-2">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-sm">
-                  HL
-                </div>
-                <div>
-                  <span className="text-lg font-bold">HODLearn™</span>
-                  <p className="text-xs text-zinc-500">How-to-learn BTC</p>
-                </div>
+      <footer className="border-t border-zinc-800 py-10 bg-black">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-sm">
+                HL
               </div>
-              <p className="text-zinc-500 text-sm max-w-sm">
-                Stop wondering about Bitcoin. Start learning. Daily lessons, safe practice, 
-                and a community of learners on the same journey.
-              </p>
+              <span className="text-lg font-bold">HODLearn™</span>
             </div>
             
-            <div>
-              <h4 className="font-semibold mb-4 text-zinc-300">Product</h4>
-              <ul className="space-y-2 text-sm text-zinc-500">
-                <li><button onClick={() => scrollToSection('features')} className="hover:text-orange-400 transition-colors">Features</button></li>
-                <li><button onClick={() => scrollToSection('about')} className="hover:text-orange-400 transition-colors">About</button></li>
-                <li><a href={appStoreUrl} className="hover:text-orange-400 transition-colors">Download App</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4 text-zinc-300">Legal & Contact</h4>
-              <ul className="space-y-2 text-sm text-zinc-500">
-                <li><a href="/privacy" className="hover:text-orange-400 transition-colors">Privacy Policy</a></li>
-                <li><a href="/terms" className="hover:text-orange-400 transition-colors">Terms of Service</a></li>
-                <li><a href="mailto:info@hodlearn.io" className="hover:text-orange-400 transition-colors">info@hodlearn.io</a></li>
-              </ul>
+            <div className="flex items-center gap-6 text-sm text-zinc-500">
+              <a href="/privacy" className="hover:text-orange-400 transition-colors">Privacy</a>
+              <a href="/terms" className="hover:text-orange-400 transition-colors">Terms</a>
+              <a href="mailto:info@hodlearn.io" className="hover:text-orange-400 transition-colors">info@hodlearn.io</a>
             </div>
           </div>
           
-          <div className="pt-8 border-t border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-zinc-800">
             <p className="text-zinc-600 text-sm">
               &copy; {new Date().getFullYear()} HODLearn. All rights reserved.
             </p>
