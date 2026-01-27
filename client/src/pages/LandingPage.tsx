@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import appScreenshot from "@/assets/IMG_5093.PNG";
+import appScreenshot from "@/assets/IMG_5094.PNG";
 import { 
   Users, 
   Gamepad2, 
@@ -140,12 +140,12 @@ export default function LandingPage() {
                   <span>Now available on the App Store</span>
                 </div>
                 
-                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-8 leading-relaxed">
-                  Stop Wondering About Bitcoin.
+                <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-8 leading-relaxed">
+                  <span className="whitespace-nowrap">Stop Wondering About Bitcoin.</span>
                   <br />
-                  Start Learning.
+                  <span className="whitespace-nowrap">Start Learning.</span>
                   <br />
-                  <span className="text-orange-500">This is HODLearn.</span>
+                  <span className="text-orange-500 whitespace-nowrap">This is HODLearn.</span>
                 </h1>
                 
                 <p className="text-zinc-400 text-base md:text-lg max-w-lg mb-8">
