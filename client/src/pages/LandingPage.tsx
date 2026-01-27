@@ -6,7 +6,6 @@ import appScreenshot from "@/assets/IMG_5095.PNG";
 import { 
   Users, 
   Gamepad2, 
-  TrendingUp, 
   BookOpen, 
   Shield, 
   Wallet,
@@ -15,7 +14,9 @@ import {
   ArrowRight,
   CheckCircle,
   Sparkles,
-  Target
+  Target,
+  ShoppingBag,
+  MessageSquare
 } from "lucide-react";
 
 function captureUtmParams() {
@@ -231,23 +232,36 @@ export default function LandingPage() {
                   <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
                     <Trophy className="w-6 h-6 text-orange-500" />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">Streaks & Progress</h3>
+                  <h3 className="font-semibold text-lg mb-2">Learning Competitions</h3>
                   <p className="text-zinc-400 text-sm">
-                    Daily streaks keep you motivated. Track your progress 
-                    and make learning a lasting habit.
+                    Compete with other learners in challenges. 
+                    Win real prizes while leveling up your knowledge.
                   </p>
                 </CardContent>
               </Card>
 
-              <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-all hover:-translate-y-1 md:col-span-2 lg:col-span-1">
+              <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-all hover:-translate-y-1">
                 <CardContent className="p-6">
                   <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
-                    <TrendingUp className="w-6 h-6 text-orange-500" />
+                    <MessageSquare className="w-6 h-6 text-orange-500" />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">Live Bitcoin Price</h3>
+                  <h3 className="font-semibold text-lg mb-2">Community Forums</h3>
                   <p className="text-zinc-400 text-sm">
-                    Real-time price tracking built right in. See how 
-                    your learning connects to the real world.
+                    Ask questions, share your journey, and learn 
+                    from fellow Bitcoin enthusiasts.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-all hover:-translate-y-1">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
+                    <ShoppingBag className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Curated Store</h3>
+                  <p className="text-zinc-400 text-sm">
+                    Tested and reviewed Bitcoin products and services. 
+                    We've vetted them so you don't have to.
                   </p>
                 </CardContent>
               </Card>
