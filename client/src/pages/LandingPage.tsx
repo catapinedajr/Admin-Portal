@@ -78,7 +78,6 @@ export default function LandingPage() {
             <nav className="hidden md:flex items-center gap-6 text-sm text-zinc-400">
               <button onClick={() => scrollToSection('features')} className="hover:text-white transition-colors">Features</button>
               <button onClick={() => scrollToSection('about')} className="hover:text-white transition-colors">About</button>
-              <button onClick={() => scrollToSection('contact')} className="hover:text-white transition-colors">Contact</button>
             </nav>
             <div className="flex items-center gap-3">
               <Button
