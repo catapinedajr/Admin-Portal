@@ -322,9 +322,9 @@ export default function LandingPage() {
                 <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
                   <Shield className="w-6 h-6 text-orange-500" />
                 </div>
-                <h3 className="font-semibold mb-2">No Hype, No Scams</h3>
+                <h3 className="font-semibold mb-2">Education First</h3>
                 <p className="text-zinc-400 text-sm">
-                  Honest, expert-curated content. Just real education.
+                  Learn before you act. Understand before you invest.
                 </p>
               </div>
 
