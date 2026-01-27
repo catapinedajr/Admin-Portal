@@ -149,8 +149,8 @@ export default function LandingPage() {
                 </h1>
                 
                 <p className="text-zinc-400 text-base md:text-lg max-w-lg mb-8">
-                  A daily learning journey that transforms curiosity into conviction. 
-                  Bite-sized lessons, risk-free simulators, and a community of learners.
+                  One lesson a day. Five minutes. That's all it takes to build real conviction. 
+                  Tools to learn, a community to grow with, and support when you need it most.
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start mb-8">
@@ -255,10 +255,10 @@ export default function LandingPage() {
                   <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
                     <Shield className="w-6 h-6 text-orange-500" />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">Risk-Free Simulators</h3>
+                  <h3 className="font-semibold text-lg mb-2">8 Interactive Simulators</h3>
                   <p className="text-zinc-400 text-sm">
-                    Practice DCA strategies, wallet security, and transactions 
-                    without risking real money. Learn by doing.
+                    DCA Calculator, HODL Simulator, Security Training, Wallet Practice, 
+                    and more. Build confidence before using real Bitcoin.
                   </p>
                 </CardContent>
               </Card>
@@ -405,43 +405,42 @@ export default function LandingPage() {
           <div className="max-w-4xl mx-auto px-4">
             <div className="text-center mb-12">
               <h2 className="text-2xl md:text-4xl font-bold mb-4">
-                Why We Built <span className="text-orange-500">HODLearn</span>
+                Build <span className="text-orange-500">Conviction</span> That Lasts
               </h2>
             </div>
 
             <div className="bg-zinc-800/40 border border-zinc-700 rounded-2xl p-8 md:p-12">
               <div className="space-y-6 text-zinc-300 leading-relaxed">
                 <p>
-                  Bitcoin isn't just another investment. It's a fundamental shift in how 
-                  money works. But most people don't understand it - and that's a problem.
+                  Bitcoin is paradigm-shifting monetary technology. Understanding it deeply 
+                  takes time - and your conviction will be tested along the way.
                 </p>
                 
                 <p>
-                  Traditional finance education is boring, academic, and disconnected from 
-                  real life. We believe the best way to learn Bitcoin is through 
-                  <span className="text-orange-400 font-medium"> daily practice</span>, 
-                  <span className="text-orange-400 font-medium"> immediate relevance</span>, and 
-                  <span className="text-orange-400 font-medium"> hands-on experience</span>.
+                  That's why we built HODLearn. We give you the 
+                  <span className="text-orange-400 font-medium"> tools to develop your own conviction</span>, 
+                  and when that conviction is tested - by market volatility, by skeptics, by doubt - 
+                  <span className="text-orange-400 font-medium"> our community will be here to support you</span>.
                 </p>
                 
                 <p>
-                  HODLearn is the "Duolingo of Bitcoin Education" - structured daily lessons 
-                  that fit into your life, HODLearn Points that teach you to think in Bitcoin, 
-                  and a supportive community of fellow learners.
+                  Bitcoin never stops evolving. New businesses are being built with it, around it, 
+                  and on top of it. We'll keep you informed as the world learns to use and adopt 
+                  this technology in new ways - so your understanding grows with the ecosystem.
                 </p>
 
-                <div className="pt-4 flex flex-wrap gap-4 justify-center">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Zap className="w-5 h-5 text-orange-500" />
-                    <span>Daily lessons</span>
+                <div className="pt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="text-center p-4 bg-zinc-900/50 rounded-xl">
+                    <Zap className="w-6 h-6 text-orange-500 mx-auto mb-2" />
+                    <span className="text-sm">Daily learning habit</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Wallet className="w-5 h-5 text-orange-500" />
-                    <span>BTC-pegged rewards</span>
+                  <div className="text-center p-4 bg-zinc-900/50 rounded-xl">
+                    <Users className="w-6 h-6 text-orange-500 mx-auto mb-2" />
+                    <span className="text-sm">Community support</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Users className="w-5 h-5 text-orange-500" />
-                    <span>Trusted community</span>
+                  <div className="text-center p-4 bg-zinc-900/50 rounded-xl">
+                    <TrendingUp className="w-6 h-6 text-orange-500 mx-auto mb-2" />
+                    <span className="text-sm">Evolving education</span>
                   </div>
                 </div>
               </div>
