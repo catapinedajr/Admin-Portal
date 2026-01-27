@@ -104,7 +104,10 @@ export default function LandingPage() {
               <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-sm">
                 HL
               </div>
-              <span className="text-lg md:text-xl font-bold">HODLearn</span>
+              <div>
+                <span className="text-lg md:text-xl font-bold">HODLearn™</span>
+                <p className="text-xs text-zinc-400 hidden sm:block">How-to-learn BTC</p>
+              </div>
             </div>
             <nav className="hidden md:flex items-center gap-6 text-sm text-zinc-400">
               <button onClick={() => scrollToSection('features')} className="hover:text-white transition-colors">Features</button>
@@ -137,10 +140,14 @@ export default function LandingPage() {
                 </div>
                 
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-5 leading-tight">
-                  Master Bitcoin
+                  Stop Wondering About Bitcoin.
                   <br />
-                  <span className="text-orange-500">One Day at a Time</span>
+                  <span className="text-orange-500">Start Learning.</span>
                 </h1>
+                
+                <p className="text-base md:text-xl text-orange-400/90 font-medium mb-3">
+                  This is HODLearn.
+                </p>
                 
                 <p className="text-zinc-400 text-base md:text-lg max-w-lg mb-8">
                   A daily learning journey that transforms curiosity into conviction. 
@@ -602,10 +609,13 @@ export default function LandingPage() {
                 <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-sm">
                   HL
                 </div>
-                <span className="text-lg font-bold">HODLearn</span>
+                <div>
+                  <span className="text-lg font-bold">HODLearn™</span>
+                  <p className="text-xs text-zinc-500">How-to-learn BTC</p>
+                </div>
               </div>
               <p className="text-zinc-500 text-sm max-w-sm">
-                The smarter way to learn Bitcoin. Daily lessons, safe practice, 
+                Stop wondering about Bitcoin. Start learning. Daily lessons, safe practice, 
                 and a community of learners on the same journey.
               </p>
             </div>
