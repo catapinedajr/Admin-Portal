@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import appScreenshot from "@/assets/IMG_5094.PNG";
+import appScreenshot from "@/assets/IMG_5095.PNG";
 import { 
   Users, 
   Gamepad2, 
