@@ -265,15 +265,13 @@ export default function LandingPage() {
               <div className="relative bg-zinc-800/50 border border-zinc-700 rounded-2xl p-6 md:p-8">
                 <div className="absolute -top-4 left-6 text-5xl text-orange-500/30 font-serif">"</div>
                 <blockquote className="text-lg md:text-xl text-zinc-200 leading-relaxed mb-6">
-                  I spent my academic career studying economics and monetary systems, then built my 
-                  career on the technology side of Capital Markets. When I discovered Bitcoin, I 
-                  immediately understood its implications — this is a technology that's good for 
-                  everyone. But learning it felt impossible. The secret wasn't a specific video or 
-                  book. It was consistency. Small, digestible lessons. A community to engage with. 
-                  Ways to practice before touching real money. And a single trusted place to do it 
-                  all. Information about Bitcoin is everywhere, but there's no good place to learn 
-                  it all in one spot — until now. If you want to learn about Bitcoin, this is how 
-                  to learn. HODLearn.
+                  I studied economics and monetary systems academically, then spent my career on 
+                  the technology side of Capital Markets. When I discovered Bitcoin, I immediately 
+                  understood its implications — this is a technology that's good for everyone. But 
+                  learning about it was overwhelming. So many rabbit holes. So many opinions. The 
+                  secret wasn't a specific video or book. It was consistency. Digestible lessons. 
+                  A community. Ways to practice before touching real money. And one trusted place 
+                  to do it all. If you want to learn about Bitcoin, this is how to learn. HODLearn.
                 </blockquote>
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
