@@ -2,7 +2,7 @@ import { useLocation } from "wouter";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import appScreenshot from "@/assets/IMG_5095.PNG";
+import appScreenshot from "@/assets/IMG_5099.PNG";
 import { 
   Shield, 
   Wallet,
