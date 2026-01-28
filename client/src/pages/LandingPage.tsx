@@ -259,23 +259,48 @@ export default function LandingPage() {
         </section>
 
         <section className="py-16 md:py-20 bg-zinc-900">
-          <div className="max-w-4xl mx-auto px-4">
-            <div className="relative bg-zinc-800/50 border border-zinc-700 rounded-2xl p-8 md:p-12">
-              <div className="absolute -top-4 left-8 text-6xl text-orange-500/30 font-serif">"</div>
-              <blockquote className="text-xl md:text-2xl text-zinc-200 leading-relaxed mb-6">
-                After years of studying economics and monetary systems, Bitcoin was the lightbulb 
-                that finally made everything click. But the real breakthrough wasn't whitepapers 
-                or endless videos — it was learning a little each day, with community support and 
-                tools to practice safely. I built HODLearn so others could experience that same 
-                clarity without the years of struggle.
-              </blockquote>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center">
-                  <span className="text-orange-500 font-bold">HL</span>
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+              {/* Jared's Quote */}
+              <div className="relative bg-zinc-800/50 border border-zinc-700 rounded-2xl p-6 md:p-8">
+                <div className="absolute -top-4 left-6 text-5xl text-orange-500/30 font-serif">"</div>
+                <blockquote className="text-lg md:text-xl text-zinc-200 leading-relaxed mb-6">
+                  After years of studying economics and monetary systems, Bitcoin was the lightbulb 
+                  that finally made everything click. But the real breakthrough wasn't whitepapers 
+                  or endless videos — it was learning a little each day, with community support and 
+                  tools to practice safely. I built HODLearn so others could experience that same 
+                  clarity without the years of struggle.
+                </blockquote>
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                    <span className="text-orange-500 font-bold text-sm">J</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-white">Jared, Founder</p>
+                    <p className="text-zinc-500 text-sm">HODLearn</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-semibold text-white">Jared, Founder</p>
-                  <p className="text-zinc-500 text-sm">HODLearn</p>
+              </div>
+
+              {/* Max's Quote */}
+              <div className="relative bg-zinc-800/50 border border-zinc-700 rounded-2xl p-6 md:p-8">
+                <div className="absolute -top-4 left-6 text-5xl text-orange-500/30 font-serif">"</div>
+                <blockquote className="text-lg md:text-xl text-zinc-200 leading-relaxed mb-6">
+                  As a financial advisor in traditional finance, I've spent my career evaluating assets. 
+                  Bitcoin stood out not because of speculation, but because of its unique monetary properties 
+                  and its role as a scarce asset in a changing financial system. When I went looking for 
+                  clear, unbiased education on Bitcoin, I found a landscape dominated by hype, fear, or 
+                  sales agendas. That gap is exactly why we built this app — to provide clear, objective 
+                  education that empowers people to think critically and make informed decisions for themselves.
+                </blockquote>
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                    <span className="text-orange-500 font-bold text-sm">M</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-white">Max, Co-Founder</p>
+                    <p className="text-zinc-500 text-sm">HODLearn</p>
+                  </div>
                 </div>
               </div>
             </div>
