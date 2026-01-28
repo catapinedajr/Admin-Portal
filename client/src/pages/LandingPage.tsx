@@ -280,8 +280,8 @@ export default function LandingPage() {
                     <span className="text-orange-500 font-bold text-sm">J</span>
                   </div>
                   <div>
-                    <p className="font-semibold text-white">Jared, Founder</p>
-                    <p className="text-zinc-500 text-sm">HODLearn</p>
+                    <p className="font-semibold text-white">Jared</p>
+                    <p className="text-zinc-500 text-sm">Founder, HODLearn</p>
                   </div>
                 </div>
               </div>
@@ -302,8 +302,8 @@ export default function LandingPage() {
                     <span className="text-orange-500 font-bold text-sm">M</span>
                   </div>
                   <div>
-                    <p className="font-semibold text-white">Max, Co-Founder</p>
-                    <p className="text-zinc-500 text-sm">HODLearn</p>
+                    <p className="font-semibold text-white">Max</p>
+                    <p className="text-zinc-500 text-sm">Co-Founder, HODLearn</p>
                   </div>
                 </div>
               </div>
