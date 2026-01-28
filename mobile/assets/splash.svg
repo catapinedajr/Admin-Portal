@@ -12,7 +12,7 @@
   
   <!-- HODLearn text -->
   <text x="540" y="1100" text-anchor="middle" fill="#ffffff" font-size="48" font-weight="bold">HODLearn</text>
-  <text x="540" y="1140" text-anchor="middle" fill="#f97316" font-size="20">How-to-learn BTC</text>
+  <text x="540" y="1140" text-anchor="middle" fill="#f97316" font-size="20">How-to-Learn BTC</text>
   
   <!-- Tagline -->
   <text x="540" y="1200" text-anchor="middle" fill="#a1a1aa" font-size="18">Building conviction through community</text>
