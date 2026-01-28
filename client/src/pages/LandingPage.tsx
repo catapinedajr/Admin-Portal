@@ -384,7 +384,7 @@ export default function LandingPage() {
               </div>
               <div>
                 <span className="text-lg font-bold">HODLearn™</span>
-                <p className="text-xs text-zinc-400">How-to-Learn BTC</p>
+                <p className="text-xs text-zinc-400">how-to-learn BTC</p>
               </div>
             </div>
             

@@ -31,7 +31,7 @@ export default function MorePage() {
                 </div>
                 <div>
                   <h1 className="text-xl font-bold">HODLearn™</h1>
-                  <p className="text-xs text-zinc-400">How-to-Learn BTC</p>
+                  <p className="text-xs text-zinc-400">how-to-learn BTC</p>
                 </div>
               </div>
             </div>
