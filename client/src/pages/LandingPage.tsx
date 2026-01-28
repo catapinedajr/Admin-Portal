@@ -68,7 +68,7 @@ export default function LandingPage() {
               </div>
               <div>
                 <span className="text-lg md:text-xl font-bold">HODLearn™</span>
-                <p className="text-xs text-zinc-400 hidden sm:block">How-to-Learn BTC</p>
+                <p className="text-xs text-zinc-400">how-to-learn BTC</p>
               </div>
             </div>
             <nav className="hidden md:flex items-center gap-6 text-sm text-zinc-400">
