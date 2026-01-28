@@ -264,11 +264,8 @@ export default function LandingPage() {
               <div className="absolute -top-4 left-8 text-6xl text-orange-500/30 font-serif">"</div>
               <blockquote className="text-xl md:text-2xl text-zinc-200 leading-relaxed mb-6">
                 After 5+ years of studying Bitcoin, I realized the secret wasn't reading whitepapers 
-                or watching endless videos. It was learning a little bit each day, having a community 
-                to ask questions, and tools to practice before touching real money. I built HODLearn 
-                to bring it all together — trusted content, real tools, vetted products, and people 
-                on the same journey. So when someone asks "How did you learn so much about Bitcoin?" 
-                the answer is simple: HODLearn.
+                or watching endless videos. It was learning a little bit each day, with a community 
+                to lean on and tools to practice before touching real money. That's why I built HODLearn.
               </blockquote>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center">
