@@ -104,8 +104,8 @@ export default function LandingPage() {
                 </h1>
                 
                 <p className="text-zinc-400 text-base md:text-lg max-w-lg mb-8">
-                  Daily lessons. 8 interactive simulators. Community forums. 
-                  Everything you need to understand Bitcoin - five minutes at a time.
+                  Finally understand Bitcoin — without the confusion. Daily lessons. 
+                  Hands-on practice. A community to grow with. Five minutes a day.
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start mb-8">
