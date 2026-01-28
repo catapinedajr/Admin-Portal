@@ -216,7 +216,6 @@ function LearnPage() {
             {import.meta.env.DEV && (
               <div className="flex justify-center">
                 <div className="flex items-center gap-2 px-3 py-1 bg-zinc-900/50 rounded text-xs">
-                  <span className="text-zinc-500">Dev:</span>
                   <Button
                     variant="ghost"
                     size="sm"
