@@ -275,7 +275,7 @@ export default function LandingPage() {
                   <span className="text-orange-500 font-bold">HL</span>
                 </div>
                 <div>
-                  <p className="font-semibold text-white">Founder</p>
+                  <p className="font-semibold text-white">Jared, Founder</p>
                   <p className="text-zinc-500 text-sm">HODLearn</p>
                 </div>
               </div>
