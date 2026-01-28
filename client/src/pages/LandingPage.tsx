@@ -45,6 +45,8 @@ export default function LandingPage() {
     captureUtmParams();
   }, []);
 
+  // TODO: Replace with production App Store URL once app is approved
+  // Current placeholder will need updating after Apple approval
   const appStoreUrl = "https://apps.apple.com/app/hodlearn";
   
   const socialLinks = {
