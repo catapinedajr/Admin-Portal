@@ -10,7 +10,6 @@ import {
   Trophy,
   ArrowRight,
   CheckCircle,
-  Sparkles,
   ShoppingBag,
   MessageSquare,
   TrendingUp,
@@ -96,12 +95,7 @@ export default function LandingPage() {
           <div className="max-w-6xl mx-auto px-4 relative">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="text-center md:text-left">
-                <div className="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 rounded-full px-4 py-1.5 text-sm text-orange-400 mb-6">
-                  <Sparkles className="w-4 h-4" />
-                  <span>Now available on the App Store</span>
-                </div>
-                
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-8 flex flex-col gap-2 md:gap-3">
+<h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-8 flex flex-col gap-2 md:gap-3">
                   <span>Stop Wondering About Bitcoin</span>
                   <span className="text-zinc-400">Start Learning</span>
                   <span className="text-orange-500 whitespace-nowrap">This is HODLearn<sup className="text-[0.5em]">™</sup></span>
