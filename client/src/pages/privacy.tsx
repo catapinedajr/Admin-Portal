@@ -16,7 +16,7 @@ export function PrivacyPage() {
             </Link>
             <div>
               <h1 className="text-2xl font-bold text-orange-500">HODLearn Privacy Policy</h1>
-              <p className="text-sm text-zinc-400">Last updated: January 2025</p>
+              <p className="text-sm text-zinc-400">Last updated: January 2026</p>
             </div>
           </div>
         </div>

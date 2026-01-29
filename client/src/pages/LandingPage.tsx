@@ -480,7 +480,7 @@ export default function LandingPage() {
             <div className="p-6 overflow-y-auto max-h-[calc(80vh-80px)] text-zinc-300 text-sm leading-relaxed space-y-4">
               {activeModal === 'privacy' ? (
                 <>
-                  <p className="text-zinc-400 text-xs">Last updated: January 2025</p>
+                  <p className="text-zinc-400 text-xs">Last updated: January 2026</p>
                   
                   <h3 className="font-semibold text-white">1. Information We Collect</h3>
                   <p><strong>Account Information:</strong> When you create an account, we collect your email address, username, first name, and last name.</p>
@@ -521,7 +521,7 @@ export default function LandingPage() {
                 </>
               ) : (
                 <>
-                  <p className="text-zinc-400 text-xs">Last updated: January 2025</p>
+                  <p className="text-zinc-400 text-xs">Last updated: January 2026</p>
                   
                   <h3 className="font-semibold text-white">1. Acceptance of Terms</h3>
                   <p>By accessing or using HODLearn, you agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree, please do not use our services.</p>
