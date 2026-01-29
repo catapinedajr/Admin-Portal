@@ -481,31 +481,85 @@ export default function LandingPage() {
               {activeModal === 'privacy' ? (
                 <>
                   <p className="text-zinc-400 text-xs">Last updated: January 2025</p>
+                  
                   <h3 className="font-semibold text-white">1. Information We Collect</h3>
-                  <p>We collect information you provide directly, such as your email address when you create an account, and usage data to improve your learning experience.</p>
+                  <p><strong>Account Information:</strong> When you create an account, we collect your email address, username, first name, and last name.</p>
+                  <p><strong>Learning Data:</strong> We track your learning progress including completed lessons, quiz scores, streaks, and activity dates to personalize your experience.</p>
+                  <p><strong>Device Information:</strong> If you enable push notifications, we collect device tokens to send you reminders and updates. We also collect your timezone and notification preferences.</p>
+                  <p><strong>Usage Data:</strong> We collect information about how you interact with our app, including pages visited, features used, and time spent learning.</p>
+                  <p><strong>Marketing Attribution:</strong> We may collect referral codes and campaign tracking data (UTM parameters) when you arrive from marketing links.</p>
+                  
                   <h3 className="font-semibold text-white">2. How We Use Your Information</h3>
-                  <p>Your information is used to provide and personalize our educational services, track your learning progress, and communicate important updates about HODLearn.</p>
-                  <h3 className="font-semibold text-white">3. Data Security</h3>
-                  <p>We implement industry-standard security measures to protect your personal information. Your data is encrypted in transit and at rest.</p>
-                  <h3 className="font-semibold text-white">4. Third-Party Services</h3>
-                  <p>We may use third-party services for analytics and payment processing. These services have their own privacy policies governing the use of your information.</p>
-                  <h3 className="font-semibold text-white">5. Contact Us</h3>
+                  <p>We use your information to: provide and personalize our educational services; track your learning progress and maintain streaks; send push notifications and email communications (with your consent); process purchases and subscriptions; improve our app and develop new features; prevent fraud and enforce our terms.</p>
+                  
+                  <h3 className="font-semibold text-white">3. Third-Party Services</h3>
+                  <p><strong>Analytics:</strong> We use Google Analytics to understand how users interact with our app. Google may collect information about your device and usage patterns.</p>
+                  <p><strong>Payment Processing:</strong> Payments are processed by Stripe. We do not store your full credit card information — Stripe handles all payment data securely.</p>
+                  <p><strong>Push Notifications:</strong> We use AWS SNS to deliver push notifications to your device.</p>
+                  <p><strong>Cloud Storage:</strong> Media files are stored on AWS S3.</p>
+                  
+                  <h3 className="font-semibold text-white">4. Cookies and Tracking</h3>
+                  <p>We use cookies and similar technologies to maintain your session, remember your preferences, and analyze usage patterns. You can control cookie settings through your browser.</p>
+                  
+                  <h3 className="font-semibold text-white">5. Data Security</h3>
+                  <p>We implement industry-standard security measures including encryption in transit (HTTPS) and at rest. Passwords are hashed and never stored in plain text. However, no system is 100% secure.</p>
+                  
+                  <h3 className="font-semibold text-white">6. Data Retention</h3>
+                  <p>We retain your data for as long as your account is active. If you delete your account, we will delete your personal data within 30 days, except where we are required to retain it for legal or business purposes.</p>
+                  
+                  <h3 className="font-semibold text-white">7. Your Rights</h3>
+                  <p>You have the right to: access your personal data; correct inaccurate data; delete your account and data; opt out of marketing communications; export your data. To exercise these rights, contact us at <a href="mailto:info@hodlearn.io" className="text-orange-400 hover:underline">info@hodlearn.io</a>.</p>
+                  
+                  <h3 className="font-semibold text-white">8. Children's Privacy</h3>
+                  <p>HODLearn is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13. If you believe we have collected such information, please contact us immediately.</p>
+                  
+                  <h3 className="font-semibold text-white">9. Changes to This Policy</h3>
+                  <p>We may update this Privacy Policy from time to time. We will notify you of material changes by email or through the app.</p>
+                  
+                  <h3 className="font-semibold text-white">10. Contact Us</h3>
                   <p>For privacy-related questions, contact us at <a href="mailto:info@hodlearn.io" className="text-orange-400 hover:underline">info@hodlearn.io</a>.</p>
                 </>
               ) : (
                 <>
                   <p className="text-zinc-400 text-xs">Last updated: January 2025</p>
+                  
                   <h3 className="font-semibold text-white">1. Acceptance of Terms</h3>
-                  <p>By accessing or using HODLearn, you agree to be bound by these Terms of Service. If you do not agree, please do not use our services.</p>
-                  <h3 className="font-semibold text-white">2. Educational Purpose</h3>
-                  <p>HODLearn provides educational content about Bitcoin. Nothing in our app constitutes financial, investment, or legal advice. Always do your own research before making financial decisions.</p>
-                  <h3 className="font-semibold text-white">3. User Accounts</h3>
-                  <p>You are responsible for maintaining the security of your account and all activities that occur under it. Notify us immediately of any unauthorized use.</p>
-                  <h3 className="font-semibold text-white">4. Intellectual Property</h3>
-                  <p>All content, including lessons, quizzes, and materials, is owned by HODLearn and protected by copyright law. You may not reproduce or distribute our content without permission.</p>
-                  <h3 className="font-semibold text-white">5. Limitation of Liability</h3>
-                  <p>HODLearn is provided "as is" without warranties. We are not liable for any financial decisions you make based on our educational content.</p>
-                  <h3 className="font-semibold text-white">6. Contact</h3>
+                  <p>By accessing or using HODLearn, you agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree, please do not use our services.</p>
+                  
+                  <h3 className="font-semibold text-white">2. Eligibility</h3>
+                  <p>You must be at least 13 years old to use HODLearn. By using our services, you represent that you meet this age requirement.</p>
+                  
+                  <h3 className="font-semibold text-white">3. Educational Purpose Only</h3>
+                  <p>HODLearn provides educational content about Bitcoin for informational purposes only. <strong>Nothing in our app constitutes financial, investment, tax, or legal advice.</strong> We are not financial advisors. Always do your own research and consult qualified professionals before making any financial decisions. Past performance of Bitcoin is not indicative of future results.</p>
+                  
+                  <h3 className="font-semibold text-white">4. HODLearn Points</h3>
+                  <p>HODLearn Points are virtual rewards earned through learning activities. <strong>HODLearn Points are NOT real Bitcoin, cryptocurrency, or money.</strong> They have no cash value and cannot be exchanged for real currency. Points are for educational and gamification purposes only and may be modified or reset at our discretion.</p>
+                  
+                  <h3 className="font-semibold text-white">5. User Accounts</h3>
+                  <p>You are responsible for maintaining the confidentiality of your account credentials and for all activities under your account. You must provide accurate information and keep it updated. Notify us immediately of any unauthorized use.</p>
+                  
+                  <h3 className="font-semibold text-white">6. Community Guidelines</h3>
+                  <p>When using our community features, you agree not to: post spam, hate speech, harassment, or illegal content; impersonate others or spread misinformation; share financial advice or promote specific investments; violate others' privacy or intellectual property. We reserve the right to remove content and suspend or ban users who violate these guidelines.</p>
+                  
+                  <h3 className="font-semibold text-white">7. Subscriptions and Payments</h3>
+                  <p>Some features require a paid subscription. By subscribing, you authorize us to charge your payment method on a recurring basis. You can cancel anytime through your account settings. Refunds are handled according to App Store policies or on a case-by-case basis for web subscriptions.</p>
+                  
+                  <h3 className="font-semibold text-white">8. Intellectual Property</h3>
+                  <p>All content, including lessons, quizzes, graphics, and materials, is owned by HODLearn and protected by copyright law. You may not reproduce, distribute, or create derivative works without our written permission.</p>
+                  
+                  <h3 className="font-semibold text-white">9. Account Termination</h3>
+                  <p>We reserve the right to suspend or terminate your account at any time for violations of these terms, fraudulent activity, or any other reason at our sole discretion. You may delete your account at any time through your account settings.</p>
+                  
+                  <h3 className="font-semibold text-white">10. Limitation of Liability</h3>
+                  <p>HODLearn is provided "as is" without warranties of any kind. To the maximum extent permitted by law, we are not liable for any indirect, incidental, or consequential damages. We are not responsible for any financial decisions you make based on our educational content.</p>
+                  
+                  <h3 className="font-semibold text-white">11. Changes to Terms</h3>
+                  <p>We may modify these terms at any time. We will notify you of material changes by email or through the app. Continued use after changes constitutes acceptance of the new terms.</p>
+                  
+                  <h3 className="font-semibold text-white">12. Governing Law</h3>
+                  <p>These terms are governed by the laws of the State of Delaware, United States, without regard to conflict of law principles.</p>
+                  
+                  <h3 className="font-semibold text-white">13. Contact</h3>
                   <p>Questions about these terms? Contact us at <a href="mailto:info@hodlearn.io" className="text-orange-400 hover:underline">info@hodlearn.io</a>.</p>
                 </>
               )}
