@@ -403,6 +403,21 @@ export default function LandingPage() {
         </section>
       </main>
 
+      {/* Join Us CTA */}
+      <section className="py-12 bg-zinc-900/50 border-t border-zinc-800">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <p className="text-zinc-300 text-lg">
+            Passionate about Bitcoin education?{' '}
+            <a 
+              href="mailto:join@hodlearn.io" 
+              className="text-orange-500 hover:text-orange-400 transition-colors underline underline-offset-2"
+            >
+              We'd love to hear from you.
+            </a>
+          </p>
+        </div>
+      </section>
+
       <footer className="border-t border-zinc-800 py-10 bg-black">
         <div className="max-w-4xl mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
