@@ -332,7 +332,7 @@ export default function LandingPage() {
                 </p>
                 
                 <p>
-                  Bitcoin keeps evolving. New companies, new uses, new ways people are adopting it every day. 
+                  Bitcoin keeps evolving. New companies, new uses, new ways people are adopting it every day.{' '}
                   <span className="text-orange-400 font-medium">We'll help you keep up</span> so you always understand what's happening 
                   and why it matters.
                 </p>
