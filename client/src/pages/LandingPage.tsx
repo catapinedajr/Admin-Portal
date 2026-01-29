@@ -1,5 +1,5 @@
 import { useLocation } from "wouter";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import appScreenshot from "@/assets/IMG_5101.PNG";
@@ -13,7 +13,8 @@ import {
   ShoppingBag,
   MessageSquare,
   TrendingUp,
-  Users
+  Users,
+  X
 } from "lucide-react";
 
 function captureUtmParams() {
@@ -40,6 +41,7 @@ function captureUtmParams() {
 
 export default function LandingPage() {
   const [, setLocation] = useLocation();
+  const [activeModal, setActiveModal] = useState<'privacy' | 'terms' | null>(null);
   
   useEffect(() => {
     captureUtmParams();
@@ -432,8 +434,8 @@ export default function LandingPage() {
             </div>
             
             <div className="flex items-center gap-6 text-sm text-zinc-500">
-              <a href="/privacy" className="hover:text-orange-400 transition-colors">Privacy</a>
-              <a href="/terms" className="hover:text-orange-400 transition-colors">Terms</a>
+              <button onClick={() => setActiveModal('privacy')} className="hover:text-orange-400 transition-colors">Privacy</button>
+              <button onClick={() => setActiveModal('terms')} className="hover:text-orange-400 transition-colors">Terms</button>
               <a href="mailto:info@hodlearn.io" className="hover:text-orange-400 transition-colors">info@hodlearn.io</a>
             </div>
           </div>
@@ -453,6 +455,64 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* Privacy & Terms Modal */}
+      {activeModal && (
+        <div 
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setActiveModal(null)}
+        >
+          <div 
+            className="bg-zinc-900 border border-zinc-700 rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-4 border-b border-zinc-700">
+              <h2 className="text-xl font-bold">
+                {activeModal === 'privacy' ? 'Privacy Policy' : 'Terms of Service'}
+              </h2>
+              <button 
+                onClick={() => setActiveModal(null)}
+                className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto max-h-[calc(80vh-80px)] text-zinc-300 text-sm leading-relaxed space-y-4">
+              {activeModal === 'privacy' ? (
+                <>
+                  <p className="text-zinc-400 text-xs">Last updated: January 2025</p>
+                  <h3 className="font-semibold text-white">1. Information We Collect</h3>
+                  <p>We collect information you provide directly, such as your email address when you create an account, and usage data to improve your learning experience.</p>
+                  <h3 className="font-semibold text-white">2. How We Use Your Information</h3>
+                  <p>Your information is used to provide and personalize our educational services, track your learning progress, and communicate important updates about HODLearn.</p>
+                  <h3 className="font-semibold text-white">3. Data Security</h3>
+                  <p>We implement industry-standard security measures to protect your personal information. Your data is encrypted in transit and at rest.</p>
+                  <h3 className="font-semibold text-white">4. Third-Party Services</h3>
+                  <p>We may use third-party services for analytics and payment processing. These services have their own privacy policies governing the use of your information.</p>
+                  <h3 className="font-semibold text-white">5. Contact Us</h3>
+                  <p>For privacy-related questions, contact us at <a href="mailto:info@hodlearn.io" className="text-orange-400 hover:underline">info@hodlearn.io</a>.</p>
+                </>
+              ) : (
+                <>
+                  <p className="text-zinc-400 text-xs">Last updated: January 2025</p>
+                  <h3 className="font-semibold text-white">1. Acceptance of Terms</h3>
+                  <p>By accessing or using HODLearn, you agree to be bound by these Terms of Service. If you do not agree, please do not use our services.</p>
+                  <h3 className="font-semibold text-white">2. Educational Purpose</h3>
+                  <p>HODLearn provides educational content about Bitcoin. Nothing in our app constitutes financial, investment, or legal advice. Always do your own research before making financial decisions.</p>
+                  <h3 className="font-semibold text-white">3. User Accounts</h3>
+                  <p>You are responsible for maintaining the security of your account and all activities that occur under it. Notify us immediately of any unauthorized use.</p>
+                  <h3 className="font-semibold text-white">4. Intellectual Property</h3>
+                  <p>All content, including lessons, quizzes, and materials, is owned by HODLearn and protected by copyright law. You may not reproduce or distribute our content without permission.</p>
+                  <h3 className="font-semibold text-white">5. Limitation of Liability</h3>
+                  <p>HODLearn is provided "as is" without warranties. We are not liable for any financial decisions you make based on our educational content.</p>
+                  <h3 className="font-semibold text-white">6. Contact</h3>
+                  <p>Questions about these terms? Contact us at <a href="mailto:info@hodlearn.io" className="text-orange-400 hover:underline">info@hodlearn.io</a>.</p>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
