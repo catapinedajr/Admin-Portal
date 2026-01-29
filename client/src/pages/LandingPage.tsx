@@ -199,8 +199,8 @@ export default function LandingPage() {
                   </div>
                   <h3 className="font-semibold text-lg mb-2">8 Practice Simulators</h3>
                   <p className="text-zinc-400 text-sm">
-                    DCA Calculator, HODL Simulator, Security Training, and more. 
-                    Practice without risking real money.
+                    From DCA calculators to our hands-on Transaction Simulator — 
+                    practice real Bitcoin mechanics without real money.
                   </p>
                 </CardContent>
               </Card>
