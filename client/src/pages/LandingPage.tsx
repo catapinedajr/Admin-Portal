@@ -407,7 +407,7 @@ export default function LandingPage() {
       <section className="py-12 bg-zinc-900/50 border-t border-zinc-800">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <p className="text-zinc-300 text-lg">
-            Passionate about Bitcoin education? We're always looking for contributors, educators, and builders.{' '}
+            Love Bitcoin education as much as we do? We're building something special and always looking for contributors, educators, and builders.{' '}
             <a 
               href="mailto:info@hodlearn.io" 
               className="text-orange-500 hover:text-orange-400 transition-colors underline underline-offset-2"
