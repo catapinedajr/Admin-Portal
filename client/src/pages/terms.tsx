@@ -204,7 +204,7 @@ export function TermsPage() {
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-orange-400 mb-4">15. Governing Law</h2>
             <p className="mb-4">
-              These Terms are governed by and construed in accordance with the laws of the State of Delaware, United States, 
+              These Terms are governed by and construed in accordance with the laws of the State of Florida, United States, 
               without regard to conflict of law principles.
             </p>
           </section>

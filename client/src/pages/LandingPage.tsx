@@ -557,7 +557,7 @@ export default function LandingPage() {
                   <p>We may modify these terms at any time. We will notify you of material changes by email or through the app. Continued use after changes constitutes acceptance of the new terms.</p>
                   
                   <h3 className="font-semibold text-white">12. Governing Law</h3>
-                  <p>These terms are governed by the laws of the State of Delaware, United States, without regard to conflict of law principles.</p>
+                  <p>These terms are governed by the laws of the State of Florida, United States, without regard to conflict of law principles.</p>
                   
                   <h3 className="font-semibold text-white">13. Contact</h3>
                   <p>Questions about these terms? Contact us at <a href="mailto:info@hodlearn.io" className="text-orange-400 hover:underline">info@hodlearn.io</a>.</p>
