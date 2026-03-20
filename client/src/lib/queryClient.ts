@@ -1,4 +1,5 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
+import { apiUrl } from "./api";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -31,11 +32,11 @@ export async function apiRequest(
   } catch (error) {
   }
 
-  const res = await fetch(url, {
+  const res = await fetch(apiUrl(url), {
     method,
     headers,
     body: data ? JSON.stringify(data) : undefined,
-    credentials: "same-origin", // Better Safari compatibility
+    credentials: "include",
   });
 
   await throwIfResNotOk(res);
@@ -68,9 +69,9 @@ export const getQueryFn: <T>(options: {
     } catch (error) {
     }
 
-    const res = await fetch(url, {
+    const res = await fetch(apiUrl(url), {
       headers,
-      credentials: "same-origin", // Better Safari compatibility
+      credentials: "include",
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {

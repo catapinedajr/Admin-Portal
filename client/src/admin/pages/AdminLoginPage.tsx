@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { apiFetch } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,7 +32,7 @@ export default function AdminLoginPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/admin/login", {
+      const response = await apiFetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -65,7 +66,7 @@ export default function AdminLoginPage() {
     setForgotLoading(true);
 
     try {
-      const response = await fetch("/api/admin/forgot-password", {
+      const response = await apiFetch("/api/admin/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: forgotEmail }),
@@ -121,7 +122,7 @@ export default function AdminLoginPage() {
     setResetLoading(true);
 
     try {
-      const response = await fetch("/api/admin/reset-password", {
+      const response = await apiFetch("/api/admin/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token: resetToken, newPassword }),

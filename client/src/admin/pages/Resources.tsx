@@ -6,6 +6,7 @@ import {
   Edit, Eye, EyeOff, ExternalLink, GripVertical
 } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { apiFetch } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -100,7 +101,7 @@ function ResourcesPage() {
     queryFn: async () => {
       const params = new URLSearchParams();
       if (typeFilter !== 'all') params.append('type', typeFilter);
-      const res = await fetch(`/api/admin/resources?${params}`, {
+      const res = await apiFetch(`/api/admin/resources?${params}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('admin_session')}` }
       });
       return res.json();

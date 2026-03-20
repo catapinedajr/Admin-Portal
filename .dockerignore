@@ -1,0 +1,14 @@
+node_modules
+dist
+.git
+.github
+*.md
+.env*
+server/
+archive/
+docs/
+mobile/
+seed-community.ts
+drizzle.config.ts
+*.log
+.DS_Store

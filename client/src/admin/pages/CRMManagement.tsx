@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
+import { apiFetch } from "@/lib/api";
 import { 
   Plus, Building2, Users, DollarSign, TrendingUp,
   Archive, Edit2, Phone, Mail, ChevronRight, GripVertical,
@@ -313,7 +314,7 @@ function CRMManagementContent() {
 
   const fetchDealDetails = async (dealId: number) => {
     const sessionId = localStorage.getItem("admin_session");
-    const response = await fetch(`/api/admin/crm/deals/${dealId}`, {
+    const response = await apiFetch(`/api/admin/crm/deals/${dealId}`, {
       headers: { Authorization: `Bearer ${sessionId}` },
     });
     const data = await response.json();

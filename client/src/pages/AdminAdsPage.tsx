@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { apiFetch } from "@/lib/api";
 import { ArrowLeft, Plus, BarChart3, DollarSign, Eye, MousePointerClick, Trash2, Edit, Image, Link, Play, Pause } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -485,7 +486,7 @@ function CampaignDetail({ campaignId, onBack }: { campaignId: number; onBack: ()
   const { data: creatives = [], isLoading: creativesLoading } = useQuery<Creative[]>({
     queryKey: ['/api/admin/ads/creatives', campaignId],
     queryFn: async () => {
-      const res = await fetch(`/api/admin/ads/creatives?campaignId=${campaignId}`);
+      const res = await apiFetch(`/api/admin/ads/creatives?campaignId=${campaignId}`);
       return res.json();
     }
   });
@@ -493,7 +494,7 @@ function CampaignDetail({ campaignId, onBack }: { campaignId: number; onBack: ()
   const { data: analytics } = useQuery<Analytics>({
     queryKey: ['/api/admin/ads/analytics', campaignId],
     queryFn: async () => {
-      const res = await fetch(`/api/admin/ads/analytics?campaignId=${campaignId}`);
+      const res = await apiFetch(`/api/admin/ads/analytics?campaignId=${campaignId}`);
       if (!res.ok) return { totalImpressions: 0, totalClicks: 0, ctr: 0, spend: 0 };
       const data = await res.json();
       return {
@@ -604,7 +605,7 @@ export default function AdminAdsPage() {
   const { data: overallAnalytics } = useQuery<Analytics>({
     queryKey: ['/api/admin/ads/analytics'],
     queryFn: async () => {
-      const res = await fetch('/api/admin/ads/analytics');
+      const res = await apiFetch('/api/admin/ads/analytics');
       if (!res.ok) return { totalImpressions: 0, totalClicks: 0, ctr: 0, spend: 0 };
       const data = await res.json();
       return {

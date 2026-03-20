@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiFetch } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -58,7 +59,7 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning, dayComple
   const today = new Date().toISOString().split('T')[0];
   
   // Get authenticated user
-  const { data: user } = useQuery({
+  const { data: user } = useQuery<{ id: number; firstName?: string; username?: string }>({
     queryKey: ["/api/user"],
     retry: false,
   });
@@ -69,7 +70,7 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning, dayComple
   const { data: questions = [], isLoading: loadingQuestions, error: questionsError } = useQuery({
     queryKey: ['/api/quiz/daily', dayIndex],
     queryFn: async () => {
-      const res = await fetch(`/api/quiz/daily/${dayIndex}`);
+      const res = await apiFetch(`/api/quiz/daily/${dayIndex}`);
       if (!res.ok) {
         throw new Error(`Failed to load quiz questions: ${res.status}`);
       }
@@ -91,9 +92,9 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning, dayComple
         headers['Authorization'] = `Bearer ${sessionId}`;
       }
       
-      return fetch(`/api/quiz/answers/${userId}/${today}`, { 
+      return apiFetch(`/api/quiz/answers/${userId}/${today}`, { 
         headers,
-        credentials: 'same-origin' 
+        credentials: 'include' 
       }).then(res => res.json()) as Promise<QuizAnswer[]>;
     }
   });
@@ -109,9 +110,9 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning, dayComple
         headers['Authorization'] = `Bearer ${sessionId}`;
       }
       
-      return fetch(`/api/quiz/score/${userId}/${today}?dayIndex=${dayIndex}`, { 
+      return apiFetch(`/api/quiz/score/${userId}/${today}?dayIndex=${dayIndex}`, { 
         headers,
-        credentials: 'same-origin' 
+        credentials: 'include' 
       }).then(res => res.json()) as Promise<QuizScore>;
     },
     enabled: userAnswers.length > 0
@@ -128,11 +129,11 @@ export default function DailyQuiz({ dayIndex, onCompletion, onEarning, dayComple
           headers['Authorization'] = `Bearer ${sessionId}`;
         }
         
-        const response = await fetch('/api/quiz/submit', {
+        const response = await apiFetch('/api/quiz/submit', {
           method: 'POST',
           headers,
           body: JSON.stringify(answer),
-          credentials: 'same-origin'
+          credentials: 'include'
         });
         
         if (!response.ok) {

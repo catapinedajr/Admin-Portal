@@ -172,7 +172,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     queryKey: ['/api/next-available-day', user?.id],
     queryFn: () => {
       const sessionId = localStorage.getItem('hodlearn_session');
-      return fetch(`/api/next-available-day/${user?.id}`, {
+      return apiFetch(`/api/next-available-day/${user?.id}`, {
         headers: { 'Authorization': `Bearer ${sessionId}` }
       }).then(res => res.json());
     },
@@ -188,7 +188,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     queryKey: ['/api/day-access', user?.id, currentDayIndex],
     queryFn: () => {
       const sessionId = localStorage.getItem('hodlearn_session');
-      return fetch(`/api/day-access/${user?.id}/${currentDayIndex}`, {
+      return apiFetch(`/api/day-access/${user?.id}/${currentDayIndex}`, {
         headers: { 'Authorization': `Bearer ${sessionId}` }
       }).then(res => res.json());
     },
@@ -199,7 +199,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     queryKey: ['/api/day-access-info', user?.id, currentDayIndex],
     queryFn: () => {
       const sessionId = localStorage.getItem('hodlearn_session');
-      return fetch(`/api/day-access-info/${user?.id}/${currentDayIndex}`, {
+      return apiFetch(`/api/day-access-info/${user?.id}/${currentDayIndex}`, {
         headers: { 'Authorization': `Bearer ${sessionId}` }
       }).then(res => res.json());
     },
@@ -211,7 +211,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     queryKey: ['/api/day-completed', user?.id, currentDayIndex],
     queryFn: () => {
       const sessionId = localStorage.getItem('hodlearn_session');
-      return fetch(`/api/day-completed/${user?.id}/${currentDayIndex}`, {
+      return apiFetch(`/api/day-completed/${user?.id}/${currentDayIndex}`, {
         headers: { 'Authorization': `Bearer ${sessionId}` }
       }).then(res => res.json());
     },
@@ -222,7 +222,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     queryKey: ['/api/next-available-day', user?.id],
     queryFn: () => {
       const sessionId = localStorage.getItem('hodlearn_session');
-      return fetch(`/api/next-available-day/${user?.id}`, {
+      return apiFetch(`/api/next-available-day/${user?.id}`, {
         headers: { 'Authorization': `Bearer ${sessionId}` }
       }).then(res => res.json());
     },
@@ -235,7 +235,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const markDayCompletedMutation = useMutation({
     mutationFn: (dayIndex: number) => {
       const sessionId = localStorage.getItem('hodlearn_session');
-      return fetch('/api/mark-day-completed', {
+      return apiFetch('/api/mark-day-completed', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

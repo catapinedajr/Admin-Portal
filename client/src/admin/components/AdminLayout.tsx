@@ -1,5 +1,6 @@
 import { useLocation, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { apiFetch } from "@/lib/api";
 import { 
   LayoutDashboard, 
   BookOpen, 
@@ -101,7 +102,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const handleLogout = async () => {
     const sessionId = localStorage.getItem("admin_session");
     if (sessionId) {
-      await fetch("/api/admin/logout", {
+      await apiFetch("/api/admin/logout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
