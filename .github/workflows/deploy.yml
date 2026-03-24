@@ -58,7 +58,9 @@ jobs:
             docker run -d \
               --name ${{ env.CONTAINER_NAME }} \
               --restart unless-stopped \
-              -p 80:80 \
+              -p 80:80 -p 443:443 \
+              -v /etc/nginx/ssl/api-cf-origin-cert.crt:/etc/nginx/ssl/api-cf-origin-cert.crt:ro \
+              -v /etc/nginx/ssl/api-cf-origin-key.crt:/etc/nginx/ssl/api-cf-origin-key.crt:ro \
               ${{ env.IMAGE_NAME }}:latest
             docker image prune -f
             rm -f /tmp/image.tar.gz
