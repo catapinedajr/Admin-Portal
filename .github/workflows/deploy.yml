@@ -3,6 +3,7 @@ name: Deploy Client to AWS
 on:
   push:
     branches: [develop, main]
+  workflow_dispatch:
 
 env:
   IMAGE_NAME: hodlearn-client
