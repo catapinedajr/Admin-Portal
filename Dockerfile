@@ -28,12 +28,9 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copy built SPA assets
 COPY --from=builder /app/dist/public /usr/share/nginx/html
 
-# Create sites-enabled directory and copy config
-RUN mkdir -p /etc/nginx/sites-enabled && \
-    sed -i 's|include /etc/nginx/conf.d/\*.conf;|include /etc/nginx/sites-enabled/*.conf;|' /etc/nginx/nginx.conf
-COPY nginx.conf /etc/nginx/sites-enabled/admin.hodlearn.io.conf
-RUN rm -f /etc/nginx/conf.d/default.conf
+# Use default conf.d directory
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80 443
+EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
