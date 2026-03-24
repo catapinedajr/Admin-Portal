@@ -599,13 +599,14 @@ export const notificationTemplates = pgTable("notification_templates", {
 export const automatedNotificationLog = pgTable("automated_notification_log", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
-  templateId: integer("template_id").notNull().references(() => notificationTemplates.id),
+  templateId: integer("template_id").references(() => notificationTemplates.id), // Nullable for question-based notifications
   category: text("category").notNull(),
   renderedTitle: text("rendered_title").notNull(),
   renderedBody: text("rendered_body").notNull(),
   sentAt: timestamp("sent_at").notNull().defaultNow(),
   deliveryStatus: text("delivery_status").notNull().default('sent'), // sent, delivered, failed
   openedAt: timestamp("opened_at"), // Track if notification was opened
+  questionId: integer("question_id"), // For set-up question notifications
 });
 
 // Resource links for curated external educational content (videos, articles, documents)
@@ -2160,6 +2161,34 @@ export const insertPaywallSettingsSchema = createInsertSchema(paywallSettings).o
 
 export type PaywallSettings = typeof paywallSettings.$inferSelect;
 export type InsertPaywallSettings = z.infer<typeof insertPaywallSettingsSchema>;
+
+// ============================================
+// NOTIFICATION SCHEDULER SETTINGS
+// ============================================
+
+export const notificationSchedulerSettings = pgTable("notification_scheduler_settings", {
+  id: serial("id").primaryKey(),
+  morningTime: text("morning_time").notNull().default("08:00"),
+  noonTime: text("noon_time").notNull().default("12:00"),
+  eveningTime: text("evening_time").notNull().default("18:00"),
+  morningEnabled: boolean("morning_enabled").notNull().default(true),
+  noonEnabled: boolean("noon_enabled").notNull().default(true),
+  eveningEnabled: boolean("evening_enabled").notNull().default(true),
+  lapsedThresholdDays: integer("lapsed_threshold_days").notNull().default(7),
+  defaultTimezone: text("default_timezone").notNull().default("America/New_York"),
+  updatedBy: integer("updated_by").references(() => adminUsers.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertNotificationSchedulerSettingsSchema = createInsertSchema(notificationSchedulerSettings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type NotificationSchedulerSettings = typeof notificationSchedulerSettings.$inferSelect;
+export type InsertNotificationSchedulerSettings = z.infer<typeof insertNotificationSchedulerSettingsSchema>;
 
 // ============================================
 // EMAIL MANAGEMENT (Admin email system)

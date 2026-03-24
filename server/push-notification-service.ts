@@ -287,7 +287,7 @@ export async function getDeviceTokenStats(): Promise<{
 
 // Notification Scheduler - Automated template-based notifications
 
-import { notificationTemplates, automatedNotificationLog, userProgress, contentDays } from '@shared/schema';
+import { notificationTemplates, automatedNotificationLog, userProgress, contentDays, contentSetUpQuestions } from '@shared/schema';
 import { desc } from 'drizzle-orm';
 
 export interface SchedulerUserContext {
@@ -500,5 +500,300 @@ export async function getAutomatedNotificationStats(): Promise<{
     totalSent: allLogs.filter(l => l.deliveryStatus === 'sent').length,
     last24Hours,
     byCategory,
+  };
+}
+
+// ============================================
+// SET UP QUESTIONS NOTIFICATION SYSTEM
+// Hybrid approach: Questions for active users, Templates for lapsed users
+// ============================================
+
+export interface SetUpQuestionNotificationConfig {
+  morningTime: string;  // e.g., "08:00"
+  noonTime: string;     // e.g., "12:00"
+  eveningTime: string;  // e.g., "18:00"
+  enabled: boolean;
+}
+
+export interface SetUpQuestion {
+  id: number;
+  title: string;
+  content: string;
+  category: string;
+  icon: string;
+  orderIndex: number;
+}
+
+export async function getSetUpQuestionsForDay(dayIndex: number): Promise<SetUpQuestion[]> {
+  const day = await db.select()
+    .from(contentDays)
+    .where(eq(contentDays.dayIndex, dayIndex))
+    .limit(1);
+  
+  if (!day[0]) {
+    return [];
+  }
+
+  const questions = await db.select()
+    .from(contentSetUpQuestions)
+    .where(and(
+      eq(contentSetUpQuestions.dayId, day[0].id),
+      sql`${contentSetUpQuestions.archivedAt} IS NULL`
+    ))
+    .orderBy(contentSetUpQuestions.orderIndex);
+
+  return questions.map(q => ({
+    id: q.id,
+    title: q.title,
+    content: q.content,
+    category: q.category,
+    icon: q.icon,
+    orderIndex: q.orderIndex,
+  }));
+}
+
+export async function getSchedulerSettings(): Promise<{
+  morningTime: string;
+  noonTime: string;
+  eveningTime: string;
+  morningEnabled: boolean;
+  noonEnabled: boolean;
+  eveningEnabled: boolean;
+  lapsedThresholdDays: number;
+  defaultTimezone: string;
+}> {
+  const { notificationSchedulerSettings } = await import('@shared/schema');
+  const settings = await db.select().from(notificationSchedulerSettings).limit(1);
+  
+  if (settings.length === 0) {
+    return {
+      morningTime: '08:00',
+      noonTime: '12:00',
+      eveningTime: '18:00',
+      morningEnabled: true,
+      noonEnabled: true,
+      eveningEnabled: true,
+      lapsedThresholdDays: 7,
+      defaultTimezone: 'America/New_York',
+    };
+  }
+  
+  return {
+    morningTime: settings[0].morningTime,
+    noonTime: settings[0].noonTime,
+    eveningTime: settings[0].eveningTime,
+    morningEnabled: settings[0].morningEnabled,
+    noonEnabled: settings[0].noonEnabled,
+    eveningEnabled: settings[0].eveningEnabled,
+    lapsedThresholdDays: settings[0].lapsedThresholdDays,
+    defaultTimezone: settings[0].defaultTimezone,
+  };
+}
+
+export async function getActiveUsersForQuestionNotifications(): Promise<SchedulerUserContext[]> {
+  const now = new Date();
+  const settings = await getSchedulerSettings();
+  const lapsedThreshold = settings.lapsedThresholdDays;
+
+  const allUsers = await db.select({
+    id: users.id,
+    firstName: users.firstName,
+    currentStreak: users.currentStreak,
+    lastActivityDate: users.lastActivityDate,
+    notificationsEnabled: users.notificationsEnabled,
+    notificationTime: users.notificationTime,
+    quietHoursStart: users.quietHoursStart,
+    quietHoursEnd: users.quietHoursEnd,
+    timezone: users.timezone,
+  })
+  .from(users)
+  .where(eq(users.notificationsEnabled, true));
+
+  const userContexts: SchedulerUserContext[] = [];
+
+  for (const user of allUsers) {
+    const progress = await db.select()
+      .from(userProgress)
+      .where(eq(userProgress.userId, user.id))
+      .orderBy(desc(userProgress.dayIndex))
+      .limit(1);
+
+    const currentDay = progress[0]?.dayIndex || 1;
+    const lastActivityDate = user.lastActivityDate || null;
+
+    let daysSinceActive = 0;
+    if (lastActivityDate) {
+      const lastActive = new Date(lastActivityDate);
+      daysSinceActive = (now.getTime() - lastActive.getTime()) / (24 * 60 * 60 * 1000);
+    }
+
+    // Only include ACTIVE users (idle < threshold days) for question notifications
+    // Lapsed users (threshold+ days) get template-based re-engagement notifications
+    if (daysSinceActive < lapsedThreshold) {
+      userContexts.push({
+        userId: user.id,
+        firstName: user.firstName || 'Learner',
+        currentStreak: user.currentStreak || 0,
+        currentDay,
+        lastActivityDate,
+        notificationsEnabled: user.notificationsEnabled ?? true,
+        notificationTime: user.notificationTime || 'morning',
+        quietHoursStart: user.quietHoursStart || null,
+        quietHoursEnd: user.quietHoursEnd || null,
+        timezone: user.timezone || 'America/New_York',
+      });
+    }
+  }
+
+  return userContexts;
+}
+
+export type QuestionSlot = 'morning' | 'noon' | 'evening';
+
+export async function sendSetUpQuestionNotification(
+  userId: number,
+  firstName: string,
+  question: SetUpQuestion,
+  dayIndex: number,
+  slot: QuestionSlot
+): Promise<{ success: boolean; error?: string }> {
+  // Format the notification - question title as notification title, content as body
+  const title = question.title;
+  const body = question.content.length > 150 
+    ? question.content.substring(0, 147) + '...' 
+    : question.content;
+
+  const result = await sendNotificationToUser(userId, {
+    title,
+    body,
+    data: { 
+      type: 'setup_question',
+      questionId: question.id,
+      dayIndex,
+      slot,
+      category: question.category,
+    },
+  });
+
+  // Log the notification
+  await db.insert(automatedNotificationLog).values({
+    userId,
+    category: `setup_question_${slot}`,
+    renderedTitle: title,
+    renderedBody: body,
+    deliveryStatus: result.sent > 0 ? 'sent' : 'failed',
+    sentAt: new Date(),
+    questionId: question.id,
+  });
+
+  return { success: result.sent > 0 };
+}
+
+export async function runSetUpQuestionBatch(slot: QuestionSlot): Promise<{
+  processed: number;
+  sent: number;
+  failed: number;
+  questionsUsed: number;
+}> {
+  const activeUsers = await getActiveUsersForQuestionNotifications();
+  
+  let sent = 0;
+  let failed = 0;
+  const questionsUsed = new Set<number>();
+
+  for (const user of activeUsers) {
+    const questions = await getSetUpQuestionsForDay(user.currentDay);
+    
+    if (questions.length === 0) {
+      continue;
+    }
+
+    // Map slot to question index (morning=0, noon=1, evening=2)
+    const slotIndex = slot === 'morning' ? 0 : slot === 'noon' ? 1 : 2;
+    const question = questions[slotIndex] || questions[0]; // Fallback to first if fewer than 3
+
+    if (question) {
+      questionsUsed.add(question.id);
+      const result = await sendSetUpQuestionNotification(
+        user.userId,
+        user.firstName,
+        question,
+        user.currentDay,
+        slot
+      );
+
+      if (result.success) {
+        sent++;
+      } else {
+        failed++;
+      }
+    }
+  }
+
+  return { 
+    processed: activeUsers.length, 
+    sent, 
+    failed, 
+    questionsUsed: questionsUsed.size 
+  };
+}
+
+export async function runHybridNotificationScheduler(slot: QuestionSlot): Promise<{
+  activeUsers: { processed: number; sent: number; failed: number };
+  lapsedUsers: { processed: number; sent: number; failed: number };
+}> {
+  // Run set up questions for active users
+  const activeResult = await runSetUpQuestionBatch(slot);
+
+  // Run template-based re-engagement for lapsed users (7+ days)
+  // Only run re-engagement during morning slot to avoid spam
+  let lapsedResult = { processed: 0, sent: 0, failed: 0 };
+  
+  if (slot === 'morning') {
+    // Soft re-engagement (3-7 days)
+    const softResult = await runScheduledNotificationBatch('reengagement_soft');
+    
+    // Medium re-engagement (7-14 days)  
+    const mediumResult = await runScheduledNotificationBatch('reengagement_medium');
+    
+    // Hard re-engagement (14+ days)
+    const hardResult = await runScheduledNotificationBatch('reengagement_hard');
+    
+    lapsedResult = {
+      processed: softResult.processed + mediumResult.processed + hardResult.processed,
+      sent: softResult.sent + mediumResult.sent + hardResult.sent,
+      failed: softResult.failed + mediumResult.failed + hardResult.failed,
+    };
+  }
+
+  return { activeUsers: activeResult, lapsedUsers: lapsedResult };
+}
+
+export async function previewQuestionsForDay(dayIndex: number): Promise<{
+  dayIndex: number;
+  dayTitle: string;
+  questions: { slot: QuestionSlot; title: string; content: string; category: string }[];
+}> {
+  const day = await db.select()
+    .from(contentDays)
+    .where(eq(contentDays.dayIndex, dayIndex))
+    .limit(1);
+
+  if (!day[0]) {
+    return { dayIndex, dayTitle: 'Day not found', questions: [] };
+  }
+
+  const questions = await getSetUpQuestionsForDay(dayIndex);
+  const slots: QuestionSlot[] = ['morning', 'noon', 'evening'];
+
+  return {
+    dayIndex,
+    dayTitle: day[0].title,
+    questions: questions.slice(0, 3).map((q, i) => ({
+      slot: slots[i] || 'morning',
+      title: q.title,
+      content: q.content,
+      category: q.category,
+    })),
   };
 }

@@ -1,19 +1,21 @@
 import { useLocation } from "wouter";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Users, Gamepad2, TrendingUp, BookOpen, Shield, MessageCircle } from "lucide-react";
-
-function getDeviceType(): 'ios' | 'android' | 'desktop' {
-  const userAgent = navigator.userAgent;
-  if (/iPad|iPhone|iPod/.test(userAgent)) {
-    return 'ios';
-  }
-  if (/Android/.test(userAgent)) {
-    return 'android';
-  }
-  return 'desktop';
-}
+import appScreenshot from "@/assets/IMG_5101.PNG";
+import { 
+  Shield, 
+  Wallet,
+  Calendar,
+  Trophy,
+  ArrowRight,
+  CheckCircle,
+  ShoppingBag,
+  MessageSquare,
+  TrendingUp,
+  Users,
+  X
+} from "lucide-react";
 
 function captureUtmParams() {
   try {
@@ -39,261 +41,532 @@ function captureUtmParams() {
 
 export default function LandingPage() {
   const [, setLocation] = useLocation();
-  const deviceType = getDeviceType();
+  const [activeModal, setActiveModal] = useState<'privacy' | 'terms' | null>(null);
   
   useEffect(() => {
     captureUtmParams();
   }, []);
 
+  // TODO: Replace with production App Store URL once app is approved
+  // Current placeholder will need updating after Apple approval
   const appStoreUrl = "https://apps.apple.com/app/hodlearn";
-  const playStoreUrl = "https://play.google.com/store/apps/details?id=com.hodlearn";
+  
+  const socialLinks = {
+    twitter: "https://x.com/thehodlearn",
+    instagram: "https://instagram.com/hodlearn",
+  };
+
+
+  const scrollToSection = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <div className="min-h-screen bg-zinc-900 text-white">
-      {/* Header */}
-      <header className="border-b border-zinc-800 bg-black/50 backdrop-blur-lg sticky top-0 z-50">
+      <header className="border-b border-zinc-800 bg-black/80 backdrop-blur-lg sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-3 md:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-sm">
                 HL
               </div>
-              <span className="text-lg md:text-xl font-bold">HODLearn™</span>
+              <div>
+                <span className="text-lg md:text-xl font-bold">HODLearn™</span>
+                <p className="text-xs text-zinc-400">How-to-Learn BTC</p>
+              </div>
             </div>
-            <Button
-              onClick={() => setLocation('/auth')}
-              variant="ghost"
-              size="sm"
-              className="text-zinc-300 hover:text-white hover:bg-zinc-800"
-              data-testid="button-login-header"
-            >
-              Log In
-            </Button>
+            <nav className="hidden md:flex items-center gap-6 text-sm text-zinc-400">
+              <button onClick={() => scrollToSection('features')} className="hover:text-white transition-colors">Features</button>
+              <button onClick={() => scrollToSection('about')} className="hover:text-white transition-colors">About</button>
+            </nav>
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={() => setLocation('/auth')}
+                variant="ghost"
+                size="sm"
+                className="text-zinc-300 hover:text-white hover:bg-zinc-800"
+              >
+                Log In
+              </Button>
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4">
-        {/* Hero Section */}
-        <section className="py-12 md:py-24 text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-5 leading-tight px-2">
-            Stop Wondering About Bitcoin.
-            <br />
-            <span className="text-orange-500">Start Learning.</span>
-          </h1>
-          <p className="text-base md:text-xl text-orange-400/90 font-medium mb-4 md:mb-6">
-            This is HODLearn
-          </p>
-          <p className="text-zinc-400 text-sm md:text-lg max-w-lg mx-auto mb-5 md:mb-8 px-4">
-            Daily Bitcoin lessons, safe simulators, and an active community — all in one place.
-          </p>
-          
-          {/* Social Proof */}
-          <div className="flex items-center justify-center gap-4 md:gap-8 text-xs md:text-sm text-zinc-500 mb-6 md:mb-10">
-            <span className="flex items-center gap-1.5 md:gap-2">
-              <Users className="w-4 h-4 md:w-5 md:h-5 text-orange-500/70" />
-              <span>Active community</span>
-            </span>
-            <span className="w-1 h-1 rounded-full bg-zinc-600" />
-            <span className="flex items-center gap-1.5 md:gap-2">
-              <MessageCircle className="w-4 h-4 md:w-5 md:h-5 text-orange-500/70" />
-              <span>Learn together</span>
-            </span>
-          </div>
+      <main>
+        <section className="py-16 md:py-28 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-orange-500/5 via-transparent to-transparent" />
+          <div className="max-w-6xl mx-auto px-4 relative">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div className="text-center md:text-left">
+<h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-8 flex flex-col gap-2 md:gap-3">
+                  <span>Stop Wondering About Bitcoin</span>
+                  <span className="text-zinc-400">Start Learning</span>
+                  <span className="text-orange-500 whitespace-nowrap">This is HODLearn<sup className="text-[0.5em]">™</sup></span>
+                </h1>
+                
+                <p className="text-zinc-400 text-base md:text-lg max-w-lg mb-8">
+                  Finally understand Bitcoin — without the confusion. Daily lessons. 
+                  Hands-on practice. A community to grow with. Five minutes a day.
+                </p>
+                
+                <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start mb-8">
+                  <a
+                    href={appStoreUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-3 bg-white text-black hover:bg-zinc-100 rounded-xl px-6 py-4 transition-colors font-medium"
+                  >
+                    <svg viewBox="0 0 24 24" className="w-6 h-6" fill="currentColor">
+                      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                    </svg>
+                    <div className="text-left">
+                      <div className="text-xs opacity-70">Download on the</div>
+                      <div className="text-base font-semibold">App Store</div>
+                    </div>
+                  </a>
+                  
+                  <Button
+                    onClick={() => setLocation('/auth?mode=register')}
+                    variant="outline"
+                    size="lg"
+                    className="border-zinc-600 bg-zinc-800/50 hover:bg-zinc-800 text-white px-6 py-4 h-auto"
+                  >
+                    Try Web Version
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
 
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4 sm:px-0">
-            <Button
-              onClick={() => setLocation('/auth?mode=register')}
-              size="lg"
-              className="bg-orange-500 hover:bg-orange-600 text-white px-6 md:px-10 py-5 md:py-6 text-base md:text-lg w-full sm:w-auto"
-              data-testid="button-get-started"
-            >
-              Get Started Free
-            </Button>
-            <Button
-              onClick={() => setLocation('/auth')}
-              size="lg"
-              variant="outline"
-              className="border-zinc-700 bg-zinc-800/50 hover:bg-zinc-800 text-white px-6 md:px-10 py-5 md:py-6 text-base md:text-lg w-full sm:w-auto"
-              data-testid="button-login-hero"
-            >
-              Log In
-            </Button>
-          </div>
-        </section>
-
-        {/* How It Works - 3 Steps */}
-        <section className="py-10 md:py-16 border-t border-zinc-800">
-          <h2 className="text-lg md:text-2xl font-semibold text-center mb-8 md:mb-12 text-zinc-300">
-            How It Works
-          </h2>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
-            {/* Step 1: Learn */}
-            <div className="text-center max-w-[200px] md:max-w-[240px]">
-              <div className="w-14 h-14 md:w-16 md:h-16 bg-orange-500/15 border border-orange-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <BookOpen className="w-7 h-7 md:w-8 md:h-8 text-orange-500" />
+                <div className="flex items-center justify-center md:justify-start gap-6 text-sm text-zinc-500">
+                  <span className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    Free to start
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-orange-500" />
+                    5 minutes a day
+                  </span>
+                </div>
               </div>
-              <h3 className="font-semibold mb-2 text-white text-base md:text-lg">Learn</h3>
-              <p className="text-sm md:text-base text-zinc-400">
-                Daily bite-sized lessons. 5-10 minutes. No jargon.
-              </p>
-            </div>
 
-            {/* Arrow */}
-            <div className="hidden md:block text-zinc-600 text-2xl">→</div>
-            <div className="md:hidden text-zinc-600 text-xl">↓</div>
-
-            {/* Step 2: Practice */}
-            <div className="text-center max-w-[200px] md:max-w-[240px]">
-              <div className="w-14 h-14 md:w-16 md:h-16 bg-orange-500/15 border border-orange-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-7 h-7 md:w-8 md:h-8 text-orange-500" />
+              <div className="hidden md:flex justify-center">
+                <div className="relative">
+                  <div className="w-64 lg:w-72 h-[540px] lg:h-[600px] bg-zinc-950 rounded-[3rem] border-4 border-zinc-700 shadow-2xl overflow-hidden p-2">
+                    <div className="w-full h-full rounded-[2.5rem] overflow-hidden bg-zinc-900">
+                      <img 
+                        src={appScreenshot} 
+                        alt="HODLearn App" 
+                        className="w-full h-full object-cover" 
+                      />
+                    </div>
+                  </div>
+                  <div className="absolute -z-10 inset-0 bg-orange-500/20 blur-3xl rounded-full scale-75" />
+                </div>
               </div>
-              <h3 className="font-semibold mb-2 text-white text-base md:text-lg">Practice</h3>
-              <p className="text-sm md:text-base text-zinc-400">
-                Risk-free simulators. Learn before using real Bitcoin.
-              </p>
-            </div>
-
-            {/* Arrow */}
-            <div className="hidden md:block text-zinc-600 text-2xl">→</div>
-            <div className="md:hidden text-zinc-600 text-xl">↓</div>
-
-            {/* Step 3: Connect */}
-            <div className="text-center max-w-[200px] md:max-w-[240px]">
-              <div className="w-14 h-14 md:w-16 md:h-16 bg-orange-500/15 border border-orange-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Users className="w-7 h-7 md:w-8 md:h-8 text-orange-500" />
-              </div>
-              <h3 className="font-semibold mb-2 text-white text-base md:text-lg">Connect</h3>
-              <p className="text-sm md:text-base text-zinc-400">
-                Join a community of learners. Ask questions. Build conviction.
-              </p>
             </div>
           </div>
         </section>
 
-        {/* Value Grid - 3 Cards */}
-        <section className="py-10 md:py-16 border-t border-zinc-800/50">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
-            {/* Community Card - First */}
-            <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-colors">
-              <CardContent className="p-5 md:p-7">
-                <div className="w-11 h-11 md:w-12 md:h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
-                  <Users className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />
-                </div>
-                <h3 className="font-semibold mb-2 text-white text-base md:text-lg">Community</h3>
-                <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
-                  Learn alongside others on the same journey. Discuss ideas, ask questions, and build conviction together.
-                </p>
-              </CardContent>
-            </Card>
+        <section id="features" className="py-16 md:py-24 bg-zinc-950/50">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="text-center mb-12 md:mb-16">
+              <h2 className="text-2xl md:text-4xl font-bold mb-4">
+                Everything You Need to 
+                <span className="text-orange-500"> Learn Bitcoin</span>
+              </h2>
+              <p className="text-zinc-400 max-w-2xl mx-auto">
+                From complete beginner to confident holder. Our structured curriculum 
+                and interactive tools make learning Bitcoin intuitive and engaging.
+              </p>
+            </div>
 
-            {/* Practice Card */}
-            <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-colors">
-              <CardContent className="p-5 md:p-7">
-                <div className="w-11 h-11 md:w-12 md:h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
-                  <Gamepad2 className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />
-                </div>
-                <h3 className="font-semibold mb-2 text-white text-base md:text-lg">Practice</h3>
-                <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
-                  Try wallets, security training, and DCA strategies in safe simulators — no real money at risk.
-                </p>
-              </CardContent>
-            </Card>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-all hover:-translate-y-1">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
+                    <Calendar className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Daily Lessons</h3>
+                  <p className="text-zinc-400 text-sm">
+                    One lesson per day, 5 minutes each. Build knowledge 
+                    step by step without feeling overwhelmed.
+                  </p>
+                </CardContent>
+              </Card>
 
-            {/* Track Card */}
-            <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-colors">
-              <CardContent className="p-5 md:p-7">
-                <div className="w-11 h-11 md:w-12 md:h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
-                  <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />
-                </div>
-                <h3 className="font-semibold mb-2 text-white text-base md:text-lg">Track</h3>
-                <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
-                  Real-time Bitcoin prices and insights. See how inflation impacts your purchasing power.
-                </p>
-              </CardContent>
-            </Card>
+              <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-all hover:-translate-y-1">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
+                    <Shield className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">8 Practice Simulators</h3>
+                  <p className="text-zinc-400 text-sm">
+                    From DCA calculators to our hands-on Transaction Simulator — 
+                    practice real Bitcoin mechanics without real money.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-all hover:-translate-y-1">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
+                    <Wallet className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">HODLearn Points</h3>
+                  <p className="text-zinc-400 text-sm">
+                    Earn points tied to Bitcoin for every lesson. 
+                    Start thinking in Bitcoin while you learn.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-all hover:-translate-y-1">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
+                    <Trophy className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Learning Competitions</h3>
+                  <p className="text-zinc-400 text-sm">
+                    Compete with other learners in challenges. 
+                    Win real prizes while leveling up your knowledge.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-all hover:-translate-y-1">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
+                    <MessageSquare className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Community Forums</h3>
+                  <p className="text-zinc-400 text-sm">
+                    Ask questions, share your journey, and learn 
+                    from fellow Bitcoin enthusiasts.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-zinc-800/40 border-zinc-700 hover:border-orange-500/40 transition-all hover:-translate-y-1">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
+                    <ShoppingBag className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Curated Store</h3>
+                  <p className="text-zinc-400 text-sm">
+                    Tested and reviewed Bitcoin products and services. 
+                    We've vetted them so you don't have to.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </section>
 
-        {/* Final CTA */}
-        <section className="py-12 md:py-20 text-center border-t border-zinc-800/50">
-          <p className="text-zinc-400 text-sm md:text-base mb-5">Ready to start?</p>
-          <Button
-            onClick={() => setLocation('/auth?mode=register')}
-            size="lg"
-            className="bg-orange-500 hover:bg-orange-600 text-white px-8 md:px-12 py-5 md:py-6 text-base md:text-lg"
-            data-testid="button-cta-bottom"
-          >
-            Join the Community & Start Learning
-          </Button>
-        </section>
-      </main>
+        <section className="py-16 md:py-20 bg-zinc-900">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+              {/* Jared's Quote */}
+              <div className="relative bg-zinc-800/50 border border-zinc-700 rounded-2xl p-6 md:p-8">
+                <div className="absolute -top-4 left-6 text-5xl text-orange-500/30 font-serif">"</div>
+                <blockquote className="text-lg md:text-xl text-zinc-200 leading-relaxed mb-6">
+                  I studied economics and monetary systems academically, then spent my career on 
+                  the technology side of Capital Markets. When I discovered Bitcoin, I immediately 
+                  understood its implications — this is a technology that's good for everyone. But 
+                  learning about it was overwhelming. So many rabbit holes. So many opinions. The 
+                  secret wasn't a specific video or book. It was consistency. Digestible lessons. 
+                  A community. Ways to practice before touching real money. And one trusted place 
+                  to do it all. If you want to learn about Bitcoin, this is how to learn. HODLearn.
+                </blockquote>
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                    <span className="text-orange-500 font-bold text-sm">J</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-white">Jared</p>
+                    <p className="text-zinc-500 text-sm">Founder, HODLearn</p>
+                  </div>
+                </div>
+              </div>
 
-      {/* Footer */}
-      <footer className="border-t border-zinc-800 py-8 md:py-12 bg-zinc-900/50">
-        <div className="max-w-6xl mx-auto px-4">
-          {/* App Download */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center mb-8">
-            {(deviceType === 'ios' || deviceType === 'desktop') && (
+              {/* Max's Quote */}
+              <div className="relative bg-zinc-800/50 border border-zinc-700 rounded-2xl p-6 md:p-8">
+                <div className="absolute -top-4 left-6 text-5xl text-orange-500/30 font-serif">"</div>
+                <blockquote className="text-lg md:text-xl text-zinc-200 leading-relaxed mb-6">
+                  As a financial advisor in traditional finance, I've spent my career evaluating assets. 
+                  Bitcoin stood out not because of speculation, but because of its unique monetary properties 
+                  and its role as a scarce asset in a changing financial system. When I went looking for 
+                  clear, unbiased education on Bitcoin, I found a landscape dominated by hype, fear, or 
+                  sales agendas. That gap is exactly why we built this app — to provide clear, objective 
+                  education that empowers people to think critically and make informed decisions for themselves.
+                </blockquote>
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                    <span className="text-orange-500 font-bold text-sm">M</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-white">Max</p>
+                    <p className="text-zinc-500 text-sm">Co-Founder, HODLearn</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="about" className="py-16 md:py-24 border-t border-zinc-800">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="text-center mb-10">
+              <h2 className="text-2xl md:text-4xl font-bold mb-4">
+                Why <span className="text-orange-500">HODLearn</span>?
+              </h2>
+              <p className="text-zinc-400 max-w-2xl mx-auto">
+                We're not just teaching Bitcoin. We're building a place where you can 
+                learn at your own pace and find support when you need it.
+              </p>
+            </div>
+
+            <div className="bg-zinc-800/40 border border-zinc-700 rounded-2xl p-8 md:p-10 mb-10">
+              <div className="space-y-5 text-zinc-300 leading-relaxed">
+                <p>
+                  Bitcoin can be confusing. And when prices drop or someone tells you it's a scam, 
+                  you'll have questions. <span className="text-orange-400 font-medium">We're here to help you find answers</span> - 
+                  today and years from now.
+                </p>
+                
+                <p>
+                  Bitcoin keeps evolving. New companies, new uses, new ways people are adopting it every day.{' '}
+                  <span className="text-orange-400 font-medium">We'll help you keep up</span> so you always understand what's happening 
+                  and why it matters.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-5">
+              <div className="text-center p-5 bg-zinc-800/30 rounded-2xl border border-zinc-700">
+                <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Shield className="w-6 h-6 text-orange-500" />
+                </div>
+                <h3 className="font-semibold mb-2">Education First</h3>
+                <p className="text-zinc-400 text-sm">
+                  Learn at your own pace. Build your own conviction.
+                </p>
+              </div>
+
+              <div className="text-center p-5 bg-zinc-800/30 rounded-2xl border border-zinc-700">
+                <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Users className="w-6 h-6 text-orange-500" />
+                </div>
+                <h3 className="font-semibold mb-2">Community Support</h3>
+                <p className="text-zinc-400 text-sm">
+                  Ask questions, share your journey, learn together.
+                </p>
+              </div>
+
+              <div className="text-center p-5 bg-zinc-800/30 rounded-2xl border border-zinc-700">
+                <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <TrendingUp className="w-6 h-6 text-orange-500" />
+                </div>
+                <h3 className="font-semibold mb-2">Always Current</h3>
+                <p className="text-zinc-400 text-sm">
+                  Stay informed as Bitcoin and its ecosystem evolve.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 md:py-20 bg-gradient-to-b from-zinc-900 to-zinc-950">
+          <div className="max-w-4xl mx-auto px-4 text-center">
+            <h2 className="text-2xl md:text-4xl font-bold mb-4">
+              Ready to Start Your Bitcoin Journey?
+            </h2>
+            <p className="text-zinc-400 mb-8 max-w-xl mx-auto">
+              Download HODLearn today and join thousands of learners building 
+              their Bitcoin knowledge one day at a time.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href={appStoreUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-xl px-5 py-3 transition-colors text-sm"
-                data-testid="link-app-store"
+                className="inline-flex items-center justify-center gap-3 bg-white text-black hover:bg-zinc-100 rounded-xl px-8 py-4 transition-colors font-medium"
               >
-                <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
+                <svg viewBox="0 0 24 24" className="w-6 h-6" fill="currentColor">
                   <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
                 </svg>
-                <span>App Store</span>
+                <div className="text-left">
+                  <div className="text-xs opacity-70">Download on the</div>
+                  <div className="text-base font-semibold">App Store</div>
+                </div>
               </a>
-            )}
-            {(deviceType === 'android' || deviceType === 'desktop') && (
-              <a
-                href={playStoreUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-xl px-5 py-3 transition-colors text-sm"
-                data-testid="link-play-store"
-              >
-                <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
-                  <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/>
-                </svg>
-                <span>Google Play</span>
-              </a>
-            )}
+            </div>
           </div>
+        </section>
+      </main>
 
-          {/* Footer Links */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs md:text-sm text-zinc-500">
-            <p>© HODLearn</p>
-            <div className="flex gap-6">
-              <a 
-                href="/terms" 
-                className="hover:text-orange-500 transition-colors"
-                data-testid="link-terms"
-              >
-                Terms
+      {/* Join Us CTA */}
+      <section className="py-12 bg-zinc-900/50 border-t border-zinc-800">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <p className="text-zinc-300 text-lg">
+            Love Bitcoin education as much as we do? We're building something special and always looking for contributors, educators, and builders.{' '}
+            <a 
+              href="mailto:info@hodlearn.io" 
+              className="text-orange-500 hover:text-orange-400 transition-colors underline underline-offset-2"
+            >
+              Get in touch.
+            </a>
+          </p>
+        </div>
+      </section>
+
+      <footer className="border-t border-zinc-800 py-10 bg-black">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-sm">
+                HL
+              </div>
+              <div>
+                <span className="text-lg font-bold">HODLearn™</span>
+                <p className="text-xs text-zinc-400">How-to-Learn BTC</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-6 text-sm text-zinc-500">
+              <button onClick={() => setActiveModal('privacy')} className="hover:text-orange-400 transition-colors">Privacy</button>
+              <button onClick={() => setActiveModal('terms')} className="hover:text-orange-400 transition-colors">Terms</button>
+              <a href="mailto:info@hodlearn.io" className="hover:text-orange-400 transition-colors">info@hodlearn.io</a>
+            </div>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-zinc-800">
+            <p className="text-zinc-600 text-sm">
+              &copy; {new Date().getFullYear()} HODLearn. All rights reserved.
+            </p>
+            <div className="flex items-center gap-4">
+              <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-orange-400 transition-colors" aria-label="X (Twitter)">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
               </a>
-              <a 
-                href="/privacy" 
-                className="hover:text-orange-500 transition-colors"
-                data-testid="link-privacy"
-              >
-                Privacy
-              </a>
-              <a 
-                href="/about" 
-                className="hover:text-orange-500 transition-colors"
-                data-testid="link-about"
-              >
-                About
+              <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-orange-400 transition-colors" aria-label="Instagram">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
               </a>
             </div>
           </div>
         </div>
       </footer>
+
+      {/* Privacy & Terms Modal */}
+      {activeModal && (
+        <div 
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setActiveModal(null)}
+        >
+          <div 
+            className="bg-zinc-900 border border-zinc-700 rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-4 border-b border-zinc-700">
+              <h2 className="text-xl font-bold">
+                {activeModal === 'privacy' ? 'Privacy Policy' : 'Terms of Service'}
+              </h2>
+              <button 
+                onClick={() => setActiveModal(null)}
+                className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto max-h-[calc(80vh-80px)] text-zinc-300 text-sm leading-relaxed space-y-4">
+              {activeModal === 'privacy' ? (
+                <>
+                  <p className="text-zinc-400 text-xs">Last updated: January 2026</p>
+                  
+                  <h3 className="font-semibold text-white">1. Information We Collect</h3>
+                  <p><strong>Account Information:</strong> When you create an account, we collect your email address, username, first name, and last name.</p>
+                  <p><strong>Learning Data:</strong> We track your learning progress including completed lessons, quiz scores, streaks, and activity dates to personalize your experience.</p>
+                  <p><strong>Device Information:</strong> If you enable push notifications, we collect device tokens to send you reminders and updates. We also collect your timezone and notification preferences.</p>
+                  <p><strong>Usage Data:</strong> We collect information about how you interact with our app, including pages visited, features used, and time spent learning.</p>
+                  <p><strong>Marketing Attribution:</strong> We may collect referral codes and campaign tracking data (UTM parameters) when you arrive from marketing links.</p>
+                  
+                  <h3 className="font-semibold text-white">2. How We Use Your Information</h3>
+                  <p>We use your information to: provide and personalize our educational services; track your learning progress and maintain streaks; send push notifications and email communications (with your consent); process purchases and subscriptions; improve our app and develop new features; prevent fraud and enforce our terms.</p>
+                  
+                  <h3 className="font-semibold text-white">3. Third-Party Services</h3>
+                  <p><strong>Analytics:</strong> We use Google Analytics to understand how users interact with our app. Google may collect information about your device and usage patterns.</p>
+                  <p><strong>Payment Processing:</strong> Payments are processed by Stripe. We do not store your full credit card information — Stripe handles all payment data securely.</p>
+                  <p><strong>Push Notifications:</strong> We use AWS SNS to deliver push notifications to your device.</p>
+                  <p><strong>Cloud Storage:</strong> Media files are stored on AWS S3.</p>
+                  
+                  <h3 className="font-semibold text-white">4. Cookies and Tracking</h3>
+                  <p>We use cookies and similar technologies to maintain your session, remember your preferences, and analyze usage patterns. You can control cookie settings through your browser.</p>
+                  
+                  <h3 className="font-semibold text-white">5. Data Security</h3>
+                  <p>We implement industry-standard security measures including encryption in transit (HTTPS) and at rest. Passwords are hashed and never stored in plain text. However, no system is 100% secure.</p>
+                  
+                  <h3 className="font-semibold text-white">6. Data Retention</h3>
+                  <p>We retain your data for as long as your account is active. If you delete your account, we will delete your personal data within 30 days, except where we are required to retain it for legal or business purposes.</p>
+                  
+                  <h3 className="font-semibold text-white">7. Your Rights</h3>
+                  <p>You have the right to: access your personal data; correct inaccurate data; delete your account and data; opt out of marketing communications; export your data. To exercise these rights, contact us at <a href="mailto:info@hodlearn.io" className="text-orange-400 hover:underline">info@hodlearn.io</a>.</p>
+                  
+                  <h3 className="font-semibold text-white">8. Children's Privacy</h3>
+                  <p>HODLearn is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13. If you believe we have collected such information, please contact us immediately.</p>
+                  
+                  <h3 className="font-semibold text-white">9. Changes to This Policy</h3>
+                  <p>We may update this Privacy Policy from time to time. We will notify you of material changes by email or through the app.</p>
+                  
+                  <h3 className="font-semibold text-white">10. Contact Us</h3>
+                  <p>For privacy-related questions, contact us at <a href="mailto:info@hodlearn.io" className="text-orange-400 hover:underline">info@hodlearn.io</a>.</p>
+                </>
+              ) : (
+                <>
+                  <p className="text-zinc-400 text-xs">Last updated: January 2026</p>
+                  
+                  <h3 className="font-semibold text-white">1. Acceptance of Terms</h3>
+                  <p>By accessing or using HODLearn, you agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree, please do not use our services.</p>
+                  
+                  <h3 className="font-semibold text-white">2. Eligibility</h3>
+                  <p>You must be at least 13 years old to use HODLearn. By using our services, you represent that you meet this age requirement.</p>
+                  
+                  <h3 className="font-semibold text-white">3. Educational Purpose Only</h3>
+                  <p>HODLearn provides educational content about Bitcoin for informational purposes only. <strong>Nothing in our app constitutes financial, investment, tax, or legal advice.</strong> We are not financial advisors. Always do your own research and consult qualified professionals before making any financial decisions. Past performance of Bitcoin is not indicative of future results.</p>
+                  
+                  <h3 className="font-semibold text-white">4. HODLearn Points</h3>
+                  <p>HODLearn Points are virtual rewards earned through learning activities. <strong>HODLearn Points are NOT real Bitcoin, cryptocurrency, or money.</strong> They have no cash value and cannot be exchanged for real currency. Points are for educational and gamification purposes only and may be modified or reset at our discretion.</p>
+                  
+                  <h3 className="font-semibold text-white">5. User Accounts</h3>
+                  <p>You are responsible for maintaining the confidentiality of your account credentials and for all activities under your account. You must provide accurate information and keep it updated. Notify us immediately of any unauthorized use.</p>
+                  
+                  <h3 className="font-semibold text-white">6. Community Guidelines</h3>
+                  <p>When using our community features, you agree not to: post spam, hate speech, harassment, or illegal content; impersonate others or spread misinformation; share financial advice or promote specific investments; violate others' privacy or intellectual property. We reserve the right to remove content and suspend or ban users who violate these guidelines.</p>
+                  
+                  <h3 className="font-semibold text-white">7. Subscriptions and Payments</h3>
+                  <p>Some features require a paid subscription. By subscribing, you authorize us to charge your payment method on a recurring basis. You can cancel anytime through your account settings. Refunds are handled according to App Store policies or on a case-by-case basis for web subscriptions.</p>
+                  
+                  <h3 className="font-semibold text-white">8. Intellectual Property</h3>
+                  <p>All content, including lessons, quizzes, graphics, and materials, is owned by HODLearn and protected by copyright law. You may not reproduce, distribute, or create derivative works without our written permission.</p>
+                  
+                  <h3 className="font-semibold text-white">9. Account Termination</h3>
+                  <p>We reserve the right to suspend or terminate your account at any time for violations of these terms, fraudulent activity, or any other reason at our sole discretion. You may delete your account at any time through your account settings.</p>
+                  
+                  <h3 className="font-semibold text-white">10. Limitation of Liability</h3>
+                  <p>HODLearn is provided "as is" without warranties of any kind. To the maximum extent permitted by law, we are not liable for any indirect, incidental, or consequential damages. We are not responsible for any financial decisions you make based on our educational content.</p>
+                  
+                  <h3 className="font-semibold text-white">11. Changes to Terms</h3>
+                  <p>We may modify these terms at any time. We will notify you of material changes by email or through the app. Continued use after changes constitutes acceptance of the new terms.</p>
+                  
+                  <h3 className="font-semibold text-white">12. Governing Law</h3>
+                  <p>These terms are governed by the laws of the State of Florida, United States, without regard to conflict of law principles.</p>
+                  
+                  <h3 className="font-semibold text-white">13. Contact</h3>
+                  <p>Questions about these terms? Contact us at <a href="mailto:info@hodlearn.io" className="text-orange-400 hover:underline">info@hodlearn.io</a>.</p>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

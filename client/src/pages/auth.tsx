@@ -263,7 +263,7 @@ export function AuthPage() {
             <div className="text-center space-y-1 mt-8">
               <p className="text-xl md:text-2xl font-bold text-orange-400">This is</p>
               <p className="text-3xl md:text-4xl font-bold text-orange-400">HODLearn</p>
-              <p className="text-xs md:text-sm text-zinc-400">How-to-learn BTC</p>
+              <p className="text-xs md:text-sm text-zinc-400">How-to-Learn BTC</p>
             </div>
           </div>
         </div>

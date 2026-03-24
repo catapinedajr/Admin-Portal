@@ -1,0 +1,7 @@
+<svg width="180" height="48" viewBox="0 0 180 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="180" height="48" fill="#18181b"/>
+  <rect x="4" y="8" width="32" height="32" rx="8" fill="#f97316"/>
+  <text x="20" y="30" text-anchor="middle" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="bold">HL</text>
+  <text x="44" y="24" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="bold">HODLearn™</text>
+  <text x="44" y="38" fill="#a1a1aa" font-family="system-ui, -apple-system, sans-serif" font-size="10">How-to-Learn BTC</text>
+</svg>
