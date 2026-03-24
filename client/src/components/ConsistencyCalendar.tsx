@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { apiFetch } from "@/lib/api";
 import { Card, CardContent } from "@/components/ui/card";
 import { type DailyActivity } from "@shared/schema";
 
@@ -26,7 +27,7 @@ export function ConsistencyCalendar({ userId }: ConsistencyCalendarProps) {
   const { data: activities = [], isLoading } = useQuery({
     queryKey: ["/api/activities", userId, "calendar"],
     queryFn: async () => {
-      const response = await fetch(`/api/activities/${userId}/calendar?weeks=3`, {
+      const response = await apiFetch(`/api/activities/${userId}/calendar?weeks=3`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`
         }

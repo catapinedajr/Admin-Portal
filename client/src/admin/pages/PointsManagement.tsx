@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
+import { apiFetch } from "@/lib/api";
 import { 
   Coins, Trophy, Award, Users, Settings, 
   Plus, Edit2, Gift, CheckCircle, Clock,
@@ -155,7 +156,7 @@ function PointsManagementContent() {
   // User search query
   const { data: searchResults = [] } = useQuery<{ id: number; username: string; email: string; displayName: string | null }[]>({
     queryKey: ["/api/admin/users/search", userSearchQuery],
-    queryFn: () => fetch(`/api/admin/users/search?q=${encodeURIComponent(userSearchQuery)}`).then(r => r.json()),
+    queryFn: () => apiFetch(`/api/admin/users/search?q=${encodeURIComponent(userSearchQuery)}`).then(r => r.json()),
     enabled: userSearchQuery.length >= 2,
   });
 

@@ -6,6 +6,7 @@ import {
   Edit, Eye, EyeOff, ExternalLink, GripVertical
 } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { apiFetch } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -75,8 +76,8 @@ function AdminAuthGuard({ children }: { children: React.ReactNode }) {
     ];
 
     function getTypeIcon(type: string) {
-    const typeConfig = RESOURCE_TYPES.find(t => t.value === type);
-    return typeConfig?.icon || Link2;
+        const typeConfig = RESOURCE_TYPES.find(t => t.value === type);
+        return typeConfig?.icon || Link2;
     }
 
     function ResourcesPage() {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { TrendingUp } from "@/lib/icons";
+import { apiFetch } from "@/lib/api";
 import BitcoinPriceChart from "./BitcoinPriceChart";
 
 interface BitcoinPriceData {
@@ -19,7 +20,7 @@ export default function BitcoinPriceDisplay() {
 
   const fetchBitcoinPrice = async () => {
     try {
-      const response = await fetch('/api/bitcoin-price');
+      const response = await apiFetch('/api/bitcoin-price');
       const data = await response.json();
       setPriceData(data);
       setLoading(false);

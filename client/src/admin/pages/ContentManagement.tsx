@@ -1,6 +1,7 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { useEffect, useState } from "react";
+import { apiFetch } from "@/lib/api";
 import AdminLayout from "../components/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -2547,7 +2548,7 @@ export default function ContentManagement() {
     queryKey: ["/api/admin/content/days", showArchived],
     queryFn: async () => {
       const sessionId = localStorage.getItem('admin_session');
-      const response = await fetch(`/api/admin/content/days?includeArchived=${showArchived}`, {
+      const response = await apiFetch(`/api/admin/content/days?includeArchived=${showArchived}`, {
         headers: { Authorization: `Bearer ${sessionId}` }
       });
       if (!response.ok) throw new Error('Failed to fetch days');

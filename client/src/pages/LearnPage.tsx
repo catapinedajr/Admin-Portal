@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
+import { apiFetch } from "@/lib/api";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { Crown, Gem, User as UserIcon, ChevronDown, ChevronUp, Wallet, Clock, CheckCircle, Key, GraduationCap, Brain, TrendingUp, Zap, Award, Sparkles, Trophy, Coins } from "@/lib/icons";
@@ -48,19 +49,19 @@ function LearnPage() {
   // Get day metadata
   const { data: dayMetadata } = useQuery({
     queryKey: ['/api/day-metadata', currentDayIndex],
-    queryFn: () => fetch(`/api/day-metadata/${currentDayIndex}`).then(res => res.json())
+    queryFn: () => apiFetch(`/api/day-metadata/${currentDayIndex}`).then(res => res.json())
   });
 
   // Get lesson data
   const { data: lesson, isLoading: lessonLoading } = useQuery<LessonWithKeyTakeaways>({
     queryKey: ['/api/lesson', currentDayIndex],
-    queryFn: () => fetch(`/api/lesson/${currentDayIndex}`).then(res => res.json())
+    queryFn: () => apiFetch(`/api/lesson/${currentDayIndex}`).then(res => res.json())
   });
 
   // Get daily facts
   const { data: dailyFacts } = useQuery({
     queryKey: ['/api/daily-facts', currentDayIndex],
-    queryFn: () => fetch(`/api/daily-facts/${currentDayIndex}`).then(res => res.json())
+    queryFn: () => apiFetch(`/api/daily-facts/${currentDayIndex}`).then(res => res.json())
   });
 
 
@@ -75,20 +76,21 @@ function LearnPage() {
   };
 
   // Helper function to get user's first name
-  const { data: user } = useQuery({
+  const { data: user } = useQuery<{ id: number; firstName?: string; username?: string }>({
     queryKey: ['/api/user'],
-    queryFn: () => fetch('/api/user').then(res => res.json())
+    queryFn: () => apiFetch('/api/user').then(res => res.json())
   });
 
   // Get quiz score for today to determine completion status
   const today = new Date().toISOString().split('T')[0];
   const userId = user?.id || 1; // Fallback to user ID 1 for testing
-  const { data: quizScore } = useQuery({
+  const { data: quizScore } = useQuery<{ total: number; correct: number; date: string } | null>({
     queryKey: ['/api/quiz/score', userId, today],
     queryFn: () => {
       const sessionId = localStorage.getItem('hodlearn_session');
-      return fetch(`/api/quiz/score/${userId}/${today}?dayIndex=${currentDayIndex}`, {
-        headers: sessionId ? { 'Authorization': `Bearer ${sessionId}` } : {}
+      return apiFetch(`/api/quiz/score/${userId}/${today}?dayIndex=${currentDayIndex}`, {
+        headers: sessionId ? { 'Authorization': `Bearer ${sessionId}` } : {},
+        credentials: 'include'
       }).then(res => {
         if (!res.ok) return null;
         return res.json();
@@ -101,7 +103,7 @@ function LearnPage() {
   const isQuizCompleted = quizScore && quizScore.total > 0;
 
   // Get wallet data for learning progress (demo mode)
-  const { data: walletData } = useQuery({
+  const { data: walletData } = useQuery<{ totalSatoshisEarned: number; totalUsdValue: number; currentStreakMultiplier: number } | null>({
     queryKey: ['/api/wallet/progress'],
     retry: false,
     refetchOnWindowFocus: false,
@@ -145,7 +147,7 @@ function LearnPage() {
     try {
       const today = new Date().toISOString().split('T')[0];
       
-      await fetch('/api/wallet/earn', {
+      await apiFetch('/api/wallet/earn', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -156,7 +158,7 @@ function LearnPage() {
           description: `Correct answer on Day ${currentDayIndex} quiz`,
           date: today
         }),
-        credentials: 'same-origin'
+        credentials: 'include'
       });
       
       // Refresh wallet data after earning

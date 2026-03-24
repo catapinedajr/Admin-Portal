@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
+import { apiFetch } from "@/lib/api";
 import { MessageSquare, Video, ArrowBigUp, MessageCircle, Clock, TrendingUp, Flame, Plus, User as UserIcon, Wallet, Send, ChevronDown, ChevronUp, ExternalLink, Megaphone, Filter, Image, Link2, X, Loader2, Share2, ArrowLeft, Reply, Trophy, Medal, Crown, Star, FileText, Library } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -242,8 +243,8 @@ export default function CommunityPage() {
       </main>
 
       <BottomNavigation 
-        currentSection="connect" 
-        setCurrentSection={(section) => {
+        activeSection="connect" 
+        onSectionChange={(section: string) => {
           if (section === "home") setLocation('/');
           else if (section === "learn") setLocation('/learn');
           else if (section === "simulators") setLocation('/simulators');
@@ -263,7 +264,7 @@ function ForumsSection() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data: categories = [] } = useQuery({
+  const { data: categories = [] } = useQuery<{ id: number; name: string; description?: string }[]>({
     queryKey: ['/api/community/forum-categories'],
   });
 
@@ -273,19 +274,19 @@ function ForumsSection() {
       let url = `/api/community/forum-posts?sortBy=${filter}`;
       if (selectedCategory) url += `&categoryId=${selectedCategory}`;
       if (selectedTag) url += `&flair=${selectedTag}`;
-      const res = await fetch(url);
+      const res = await apiFetch(url);
       return res.json();
     }
   });
 
-  const { data: userKarma } = useQuery({
+  const { data: userKarma } = useQuery<{ totalKarma: number }>({
     queryKey: ['/api/community/karma', 1],
   });
 
   const { data: activeAds = [] } = useQuery<SponsoredPost[]>({
     queryKey: ['/api/ads/active'],
     queryFn: async () => {
-      const res = await fetch('/api/ads/active?placement=in_feed');
+      const res = await apiFetch('/api/ads/active?placement=in_feed');
       if (!res.ok) return [];
       return res.json();
     }
@@ -671,7 +672,7 @@ function SponsoredPostCard({ ad }: { ad: SponsoredPost }) {
             hasTrackedImpression.current = true;
             
             if (typeof ad.id === 'number' && ad.campaignId) {
-              fetch('/api/ads/impression', {
+              apiFetch('/api/ads/impression', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -694,7 +695,7 @@ function SponsoredPostCard({ ad }: { ad: SponsoredPost }) {
 
   const handleClick = () => {
     if (typeof ad.id === 'number' && ad.campaignId) {
-      fetch('/api/ads/click', {
+      apiFetch('/api/ads/click', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -772,7 +773,7 @@ function PostDetailView({ postId, onBack }: { postId: number; onBack: () => void
   const { data: post, isLoading: postLoading } = useQuery({
     queryKey: ['/api/community/forum-posts', postId],
     queryFn: async () => {
-      const res = await fetch(`/api/community/forum-posts/${postId}`);
+      const res = await apiFetch(`/api/community/forum-posts/${postId}`);
       if (!res.ok) throw new Error('Post not found');
       return res.json();
     }
@@ -781,7 +782,7 @@ function PostDetailView({ postId, onBack }: { postId: number; onBack: () => void
   const { data: replies = [], isLoading: repliesLoading } = useQuery({
     queryKey: ['/api/community/forum-posts', postId, 'replies'],
     queryFn: async () => {
-      const res = await fetch(`/api/community/forum-posts/${postId}/replies`);
+      const res = await apiFetch(`/api/community/forum-posts/${postId}/replies`);
       return res.json();
     }
   });
@@ -1118,7 +1119,7 @@ function CreatePostForm({ categories, onSuccess }: { categories: any[]; onSucces
     }
     setIsLoadingPreview(true);
     try {
-      const response = await fetch('/api/community/link-preview', {
+      const response = await apiFetch('/api/community/link-preview', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url })
@@ -1335,7 +1336,7 @@ function VideosSection() {
     queryFn: async () => {
       const params = new URLSearchParams();
       if (typeFilter !== 'all') params.append('type', typeFilter);
-      const res = await fetch(`/api/resources?${params}`);
+      const res = await apiFetch(`/api/resources?${params}`);
       if (!res.ok) throw new Error('Failed to fetch resources');
       return res.json();
     }
@@ -1510,7 +1511,7 @@ function LeaderboardSection() {
     queryKey: ['/api/leaderboard', currentPeriodId, 'rankings'],
     queryFn: async () => {
       if (!currentPeriodId) return [];
-      const res = await fetch(`/api/leaderboard/${currentPeriodId}/rankings?limit=50`);
+      const res = await apiFetch(`/api/leaderboard/${currentPeriodId}/rankings?limit=50`);
       return res.json();
     },
     enabled: !!currentPeriodId,
@@ -1522,7 +1523,7 @@ function LeaderboardSection() {
       const url = currentPeriodId 
         ? `/api/leaderboard/my-position?periodId=${currentPeriodId}`
         : '/api/leaderboard/my-position';
-      const res = await fetch(url);
+      const res = await apiFetch(url);
       return res.json();
     },
   });

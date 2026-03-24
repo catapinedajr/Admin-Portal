@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { apiFetch } from "@/lib/api";
 
 interface DashboardData {
   user: {
@@ -39,7 +40,7 @@ export function useDashboard(userId: number = 1) {
   return useQuery<DashboardData>({
     queryKey: ['/api/dashboard', userId],
     queryFn: async () => {
-      const response = await fetch(`/api/dashboard/${userId}`);
+      const response = await apiFetch(`/api/dashboard/${userId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch dashboard data');
       }

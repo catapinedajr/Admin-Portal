@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiFetch } from '@/lib/api';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -40,7 +41,7 @@ export function DCASimulator() {
   useEffect(() => {
     const fetchBitcoinPrice = async () => {
       try {
-        const response = await fetch('/api/bitcoin-price');
+        const response = await apiFetch('/api/bitcoin-price');
         if (response.ok) {
           const data = await response.json();
           const price = parseFloat(data.price);
