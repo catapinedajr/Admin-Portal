@@ -117,6 +117,7 @@ const PERIOD_TYPES = [
 ];
 
 function formatSats(sats: number): string {
+  if (!sats) return "0";
   if (sats >= 1000000) return `${(sats / 1000000).toFixed(2)}M`;
   if (sats >= 1000) return `${(sats / 1000).toFixed(1)}K`;
   return sats.toString();
@@ -993,8 +994,8 @@ function PointsManagementContent() {
                       </TableCell>
                       <TableCell>
                         <div>
-                          <p className="text-white">{entry.user.username}</p>
-                          <p className="text-zinc-500 text-sm">{entry.user.email}</p>
+                          <p className="text-white">{entry.user?.username}</p>
+                          <p className="text-zinc-500 text-sm">{entry.user?.email}</p>
                         </div>
                       </TableCell>
                       <TableCell className="text-right text-orange-400 font-mono">
