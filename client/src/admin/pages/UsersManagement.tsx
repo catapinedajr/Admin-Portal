@@ -369,10 +369,10 @@ export default function UsersManagement() {
 
   const filteredUsers = users.filter(user => {
     const matchesSearch = 
-      user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.lastName.toLowerCase().includes(searchQuery.toLowerCase());
+      user.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.lastName?.toLowerCase().includes(searchQuery.toLowerCase());
     
     const isActive = user.lastActivityDate && 
       new Date(user.lastActivityDate) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);

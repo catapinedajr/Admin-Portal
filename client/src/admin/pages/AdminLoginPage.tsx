@@ -38,7 +38,7 @@ export default function AdminLoginPage() {
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: new URLSearchParams({
                     grant_type: "password",
-                    client_id: "hodlearn", 
+                    client_id: "hodlearn-client", 
                     client_secret: "xJyqOjzfzfcHNkZ1Wd15BocIdoFhBeQA",  // replace with your actual client ID
                     username: email,
                     password: password,

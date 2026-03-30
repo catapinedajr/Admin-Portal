@@ -141,7 +141,7 @@ interface ContentQuestion {
   id: number;
   dayId: number;
   title: string;
-  content: string;
+  question: string;
   category: string;
   icon: string;
   orderIndex: number;
@@ -269,1009 +269,1023 @@ function ContentDayCard({ day, onEdit, onRestore, isRestoring }: {
 }
 
 function EditDayDialog({ day, open, onOpenChange }: { 
-  day: ContentDay | null; 
-  open: boolean; 
-  onOpenChange: (open: boolean) => void;
+    day: ContentDay | null; 
+    open: boolean; 
+    onOpenChange: (open: boolean) => void;
 }) {
-  const { toast } = useToast();
+    const { toast } = useToast();
+    
+    const [detailsLocked, setDetailsLocked] = useState(true);
+    const [lessonLocked, setLessonLocked] = useState(true);
+    const [questionsLocked, setQuestionsLocked] = useState(true);
+    const [quizzesLocked, setQuizzesLocked] = useState(true);
+    
+    const [formData, setFormData] = useState({
+        title: "",
+        theme: "",
+        readingLevel: "",
+        culturalStage: "",
+        status: "draft" as 'draft' | 'review' | 'approved' | 'live',
+        isActive: true,
+        isApproved: false,
+        reviewerNotes: "",
+    });
   
-  const [detailsLocked, setDetailsLocked] = useState(true);
-  const [lessonLocked, setLessonLocked] = useState(true);
-  const [questionsLocked, setQuestionsLocked] = useState(true);
-  const [quizzesLocked, setQuizzesLocked] = useState(true);
+    const [lessonForm, setLessonForm] = useState({
+        title: "",
+        content: "",
+        keyTakeaways: ["", "", ""],
+        whyItMatters: "",
+        estimatedReadTime: 3,
+    });
+    
+    const [editingQuiz, setEditingQuiz] = useState<ContentQuiz | null>(null);
+    const [newQuiz, setNewQuiz] = useState({ question: "", options: ["", "", "", ""], correctAnswer: 0, explanation: "" });
+    const [showNewQuiz, setShowNewQuiz] = useState(false);
+    
+    const [editingQuestion, setEditingQuestion] = useState<ContentQuestion | null>(null);
+    const [newQuestion, setNewQuestion] = useState({ title: "", question: "", category: "financial", icon: "💰" });
+    const [showPreview, setShowPreview] = useState(false);
+    const [showNewQuestion, setShowNewQuestion] = useState(false);
+    
+    // Delete confirmation state
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [deleteStep, setDeleteStep] = useState(1);
+    const [deleteConfirmText, setDeleteConfirmText] = useState("");
+    const [deleteAcknowledged, setDeleteAcknowledged] = useState(false);
   
-  const [formData, setFormData] = useState({
-    title: "",
-    theme: "",
-    readingLevel: "",
-    culturalStage: "",
-    status: "draft" as 'draft' | 'review' | 'approved' | 'live',
-    isActive: true,
-    isApproved: false,
-    reviewerNotes: "",
-  });
-  
-  const [lessonForm, setLessonForm] = useState({
-    title: "",
-    content: "",
-    keyTakeaways: ["", "", ""],
-    whyItMatters: "",
-    estimatedReadTime: 3,
-  });
-  
-  const [editingQuiz, setEditingQuiz] = useState<ContentQuiz | null>(null);
-  const [newQuiz, setNewQuiz] = useState({ question: "", options: ["", "", "", ""], correctAnswer: 0, explanation: "" });
-  const [showNewQuiz, setShowNewQuiz] = useState(false);
-  
-  const [editingQuestion, setEditingQuestion] = useState<ContentQuestion | null>(null);
-  const [newQuestion, setNewQuestion] = useState({ title: "", content: "", category: "financial", icon: "💰" });
-  const [showPreview, setShowPreview] = useState(false);
-  const [showNewQuestion, setShowNewQuestion] = useState(false);
-  
-  // Delete confirmation state
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [deleteStep, setDeleteStep] = useState(1);
-  const [deleteConfirmText, setDeleteConfirmText] = useState("");
-  const [deleteAcknowledged, setDeleteAcknowledged] = useState(false);
-  
-  const { data: lesson, isLoading: lessonLoading } = useQuery<ContentLesson>({
-    queryKey: ["/api/admin/content/lessons", day?.id],
-    queryFn: async () => {
-      const res = await apiRequest("GET", `/api/admin/content/lessons/${day?.id}`);
-      return res.json();
-    },
-    enabled: !!day?.id && open,
-  });
-  
-  const { data: quizzes, isLoading: quizzesLoading } = useQuery<ContentQuiz[]>({
-    queryKey: ["/api/admin/content/quizzes", day?.id],
-    queryFn: async () => {
-      const res = await apiRequest("GET", `/api/admin/content/quizzes/${day?.id}`);
-      return res.json();
-    },
-    enabled: !!day?.id && open,
-  });
-  
-  const { data: questions, isLoading: questionsLoading } = useQuery<ContentQuestion[]>({
-    queryKey: ["/api/admin/content/questions", day?.id],
-    queryFn: async () => {
-      const res = await apiRequest("GET", `/api/admin/content/questions/${day?.id}`);
-      return res.json();
-    },
-    enabled: !!day?.id && open,
-  });
+    const { data: lesson, isLoading: lessonLoading } = useQuery<ContentLesson>({
+        queryKey: ["/api/admin/content/lessons/day", day?.id],
+        queryFn: async () => {
+        const res = await apiRequest("GET", `/api/admin/content/lessons/day/${day?.id}`);
+        return res.json();
+        },
+        enabled: !!day?.id && open,
+    });
+    
+    const { data: quizzes, isLoading: quizzesLoading } = useQuery<ContentQuiz[]>({
+        queryKey: ["/api/admin/content/quizzes/day", day?.id],
+        queryFn: async () => {
+        const res = await apiRequest("GET", `/api/admin/content/quizzes/day/${day?.id}`);
+        return res.json();
+        },
+        enabled: !!day?.id && open,
+    });
 
-  const updateDayMutation = useMutation({
-    mutationFn: async (data: Partial<ContentDay>) => {
-      const res = await apiRequest("PATCH", `/api/admin/content/days/${day?.id}`, data);
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/days"] });
-      toast({ title: "Day details updated" });
-    },
-    onError: (error: Error) => {
-      toast({ title: "Failed to update", description: error.message, variant: "destructive" });
-    },
-  });
+    const { data: questions, isLoading: questionsLoading } = useQuery<ContentQuestion[]>({
+        queryKey: ["/api/admin/content/questions/day", day?.id],
+        queryFn: async () => {
+            const res = await apiRequest("GET", `/api/admin/content/questions/day/${day?.id}`);
+            return res.json();
+        },
+        // enabled: !!day?.id && open,
+        enabled: true, // Load questions immediately for faster access in the Questions tab, even if the dialog isn't open yet
+        staleTime: 0,
+        refetchOnMount: "always" // Cache questions for 5 minutes to avoid refetching when switching tabs or reopening the dialog shortly after closing
+    });
 
-  const saveLessonMutation = useMutation({
-    mutationFn: async (data: typeof lessonForm) => {
-      const res = await apiRequest("PUT", `/api/admin/content/lessons/${day?.id}`, {
-        ...data,
-        keyTakeaways: data.keyTakeaways.filter(t => t.trim() !== ""),
-      });
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/lessons", day?.id] });
-      toast({ title: "Lesson saved" });
-    },
-    onError: (error: Error) => {
-      toast({ title: "Failed to save lesson", description: error.message, variant: "destructive" });
-    },
-  });
+    console.log('Fetched questions:', questions);
 
-  const createQuizMutation = useMutation({
-    mutationFn: async (data: typeof newQuiz) => {
-      const res = await apiRequest("POST", `/api/admin/content/quizzes/${day?.id}`, data);
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/quizzes", day?.id] });
-      toast({ title: "Quiz added" });
-      setNewQuiz({ question: "", options: ["", "", "", ""], correctAnswer: 0, explanation: "" });
-      setShowNewQuiz(false);
-    },
-  });
+    const updateDayMutation = useMutation({
+        mutationFn: async (data: Partial<ContentDay>) => {
+        const res = await apiRequest("PATCH", `/api/admin/content/days/${day?.id}`, data);
+        return res.json();
+        },
+        onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["/api/admin/content/days"] });
+        toast({ title: "Day details updated" });
+        },
+        onError: (error: Error) => {
+        toast({ title: "Failed to update", description: error.message, variant: "destructive" });
+        },
+    });
 
-  const updateQuizMutation = useMutation({
-    mutationFn: async ({ id, ...data }: Partial<ContentQuiz> & { id: number }) => {
-      const res = await apiRequest("PATCH", `/api/admin/content/quizzes/${id}`, data);
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/quizzes", day?.id] });
-      toast({ title: "Quiz updated" });
-      setEditingQuiz(null);
-    },
-  });
+    const saveLessonMutation = useMutation({
+        mutationFn: async (data: typeof lessonForm) => {
+        const res = await apiRequest("PATCH", `/api/admin/content/lessons/${day?.id}`, {
+            ...data,
+            keyTakeaways: data.keyTakeaways.filter(t => t.trim() !== ""),
+        });
+        return res.json();
+        },
+        onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["/api/admin/content/lessons", day?.id] });
+        toast({ title: "Lesson saved" });
+        },
+        onError: (error: Error) => {
+        toast({ title: "Failed to save lesson", description: error.message, variant: "destructive" });
+        },
+    });
 
-  const deleteQuizMutation = useMutation({
-    mutationFn: async (id: number) => {
-      const res = await apiRequest("DELETE", `/api/admin/content/quizzes/${id}`);
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/quizzes", day?.id] });
-      toast({ title: "Quiz deleted" });
-    },
-  });
+    const createQuizMutation = useMutation({
+        mutationFn: async (data: typeof newQuiz) => {
+            console.log('Creating Quiz with data:', data);
+            const res = await apiRequest("POST", `/api/admin/content/quizzes/${day?.id}`, data);
+            return res.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["/api/admin/content/quizzes", day?.id] });
+            toast({ title: "Quiz added" });
+            setNewQuiz({ question: "", options: ["", "", "", ""], correctAnswer: 0, explanation: "" });
+            setShowNewQuiz(false);
+        },
+    });
 
-  const createQuestionMutation = useMutation({
-    mutationFn: async (data: typeof newQuestion) => {
-      const res = await apiRequest("POST", `/api/admin/content/questions/${day?.id}`, data);
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/questions", day?.id] });
-      toast({ title: "Question added" });
-      setNewQuestion({ title: "", content: "", category: "financial", icon: "💰" });
-      setShowNewQuestion(false);
-    },
-  });
+    const updateQuizMutation = useMutation({
+        mutationFn: async ({ id, ...data }: Partial<ContentQuiz> & { id: number }) => {
+        const res = await apiRequest("PATCH", `/api/admin/content/quizzes/${id}`, data);
+        return res.json();
+        },
+        onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["/api/admin/content/quizzes", day?.id] });
+        toast({ title: "Quiz updated" });
+        setEditingQuiz(null);
+        },
+    });
 
-  const updateQuestionMutation = useMutation({
-    mutationFn: async ({ id, ...data }: Partial<ContentQuestion> & { id: number }) => {
-      const res = await apiRequest("PATCH", `/api/admin/content/questions/${id}`, data);
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/questions", day?.id] });
-      toast({ title: "Question updated" });
-      setEditingQuestion(null);
-    },
-  });
+    const deleteQuizMutation = useMutation({
+        mutationFn: async (id: number) => {
+        const res = await apiRequest("DELETE", `/api/admin/content/quizzes/${id}`);
+        return res.json();
+        },
+        onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["/api/admin/content/quizzes", day?.id] });
+        toast({ title: "Quiz deleted" });
+        },
+    });
 
-  const deleteQuestionMutation = useMutation({
-    mutationFn: async (id: number) => {
-      const res = await apiRequest("DELETE", `/api/admin/content/questions/${id}`);
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/questions", day?.id] });
-      toast({ title: "Question deleted" });
-    },
-  });
+    const createQuestionMutation = useMutation({
+        mutationFn: async (data: typeof newQuestion) => {
+        const res = await apiRequest("POST", `/api/admin/content/questions/${day?.id}`, data);
+        return res.json();
+        },
+        onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["/api/admin/content/questions", day?.id] });
+        toast({ title: "Question added" });
+        setNewQuestion({ title: "", question: "", category: "financial", icon: "💰" });
+        setShowNewQuestion(false);
+        },
+    });
 
-  const deleteDayMutation = useMutation({
-    mutationFn: async () => {
-      const res = await apiRequest("DELETE", `/api/admin/content/days/${day?.id}`);
-      return res.json();
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/days"] });
-      toast({ title: `Day ${data.deletedDayIndex} deleted successfully` });
-      onOpenChange(false);
-      resetDeleteState();
-    },
-    onError: (error: Error) => {
-      toast({ title: "Failed to delete", description: error.message, variant: "destructive" });
-    },
-  });
+    const updateQuestionMutation = useMutation({
+        mutationFn: async ({ id, ...data }: Partial<ContentQuestion> & { id: number }) => {
+        const res = await apiRequest("PATCH", `/api/admin/content/questions/${id}`, data);
+        return res.json();
+        },
+        onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["/api/admin/content/questions", day?.id] });
+        toast({ title: "Question updated" });
+        setEditingQuestion(null);
+        },
+    });
 
-  const resetDeleteState = () => {
-    setShowDeleteConfirm(false);
-    setDeleteStep(1);
-    setDeleteConfirmText("");
-    setDeleteAcknowledged(false);
-  };
+    const deleteQuestionMutation = useMutation({
+        mutationFn: async (id: number) => {
+        const res = await apiRequest("DELETE", `/api/admin/content/questions/${id}`);
+        return res.json();
+        },
+        onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["/api/admin/content/questions", day?.id] });
+        toast({ title: "Question deleted" });
+        },
+    });
 
-  useEffect(() => {
-    if (day) {
-      setFormData({
-        title: day.title,
-        theme: day.theme,
-        readingLevel: day.readingLevel,
-        culturalStage: day.culturalStage,
-        status: day.status || 'draft',
-        isActive: day.isActive,
-        isApproved: day.isApproved,
-        reviewerNotes: day.reviewerNotes || '',
-      });
-    }
-  }, [day]);
+    const deleteDayMutation = useMutation({
+        mutationFn: async () => {
+        const res = await apiRequest("DELETE", `/api/admin/content/days/${day?.id}`);
+        return res.json();
+        },
+        onSuccess: (data) => {
+        queryClient.invalidateQueries({ queryKey: ["/api/admin/content/days"] });
+        toast({ title: `Day ${data.deletedDayIndex} deleted successfully` });
+        onOpenChange(false);
+        resetDeleteState();
+        },
+        onError: (error: Error) => {
+        toast({ title: "Failed to delete", description: error.message, variant: "destructive" });
+        },
+    });
 
-  useEffect(() => {
-    if (lesson) {
-      setLessonForm({
-        title: lesson.title,
-        content: lesson.content,
-        keyTakeaways: lesson.keyTakeaways?.length >= 3 ? lesson.keyTakeaways : [...(lesson.keyTakeaways || []), "", "", ""].slice(0, 3),
-        whyItMatters: lesson.whyItMatters || "",
-        estimatedReadTime: lesson.estimatedReadTime,
-      });
-    }
-  }, [lesson]);
+    const resetDeleteState = () => {
+        setShowDeleteConfirm(false);
+        setDeleteStep(1);
+        setDeleteConfirmText("");
+        setDeleteAcknowledged(false);
+    };
 
-  if (!day) return null;
+    useEffect(() => {
+        if (day) {
+        setFormData({
+            title: day.title,
+            theme: day.theme,
+            readingLevel: day.readingLevel,
+            culturalStage: day.culturalStage,
+            status: day.status || 'draft',
+            isActive: day.isActive,
+            isApproved: day.isApproved,
+            reviewerNotes: day.reviewerNotes || '',
+        });
+        }
+    }, [day]);
 
-  const isLoading = lessonLoading || quizzesLoading || questionsLoading;
+    useEffect(() => {
+        if (lesson) {
+        setLessonForm({
+            title: lesson.title,
+            content: lesson.content,
+            keyTakeaways: lesson.keyTakeaways?.length >= 3 ? lesson.keyTakeaways : [...(lesson.keyTakeaways || []), "", "", ""].slice(0, 3),
+            whyItMatters: lesson.whyItMatters || "",
+            estimatedReadTime: lesson.estimatedReadTime,
+        });
+        }
+    }, [lesson]);
 
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-zinc-900 border-zinc-800 max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-white">Edit Day {day.dayIndex}</DialogTitle>
-          <DialogDescription className="text-zinc-400">
-            Manage all content for this curriculum day
-          </DialogDescription>
-        </DialogHeader>
-        
-        <Tabs defaultValue="details" className="mt-4">
-          <TabsList className="bg-zinc-800 border-zinc-700">
-            <TabsTrigger value="details" className="data-[state=active]:bg-orange-500">Details</TabsTrigger>
-            <TabsTrigger value="questions" className="data-[state=active]:bg-orange-500">Learning Preview ({questions?.length || 0})</TabsTrigger>
-            <TabsTrigger value="lesson" className="data-[state=active]:bg-orange-500">Today's Lesson</TabsTrigger>
-            <TabsTrigger value="quizzes" className="data-[state=active]:bg-orange-500">Knowledge Check ({quizzes?.length || 0})</TabsTrigger>
-          </TabsList>
+    if (!day) return null;
 
-          <TabsContent value="details" className="space-y-4 mt-4">
-            <div className="flex items-center justify-between mb-4">
-              <Label className="text-zinc-300 text-sm font-medium">Day Details</Label>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setDetailsLocked(!detailsLocked)}
-                className={`${detailsLocked ? 'border-zinc-600 text-zinc-400' : 'border-orange-500 text-orange-500'}`}
-              >
-                {detailsLocked ? <Lock className="w-4 h-4 mr-1" /> : <Unlock className="w-4 h-4 mr-1" />}
-                {detailsLocked ? "Locked" : "Editing"}
-              </Button>
-            </div>
+    const isLoading = lessonLoading || quizzesLoading || questionsLoading;
+
+    return (
+        <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="bg-zinc-900 border-zinc-800 max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+            <DialogTitle className="text-white">Edit Day {day.dayIndex}</DialogTitle>
+            <DialogDescription className="text-zinc-400">
+                Manage all content for this curriculum day
+            </DialogDescription>
+            </DialogHeader>
             
-            <div className={`grid grid-cols-2 gap-4 ${detailsLocked ? 'opacity-60 pointer-events-none' : ''}`}>
-              <div className="space-y-2">
-                <Label className="text-zinc-300">Title</Label>
-                <Input 
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="bg-zinc-800 border-zinc-700 text-white"
-                  disabled={detailsLocked}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-zinc-300">Theme</Label>
-                <Input 
-                  value={formData.theme}
-                  onChange={(e) => setFormData({ ...formData, theme: e.target.value })}
-                  className="bg-zinc-800 border-zinc-700 text-white"
-                  disabled={detailsLocked}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-zinc-300">Reading Level</Label>
-                <Input 
-                  value={formData.readingLevel}
-                  onChange={(e) => setFormData({ ...formData, readingLevel: e.target.value })}
-                  className="bg-zinc-800 border-zinc-700 text-white"
-                  placeholder="e.g., 8th grade"
-                  disabled={detailsLocked}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-zinc-300">Cultural Stage</Label>
-                <Input 
-                  value={formData.culturalStage}
-                  onChange={(e) => setFormData({ ...formData, culturalStage: e.target.value })}
-                  className="bg-zinc-800 border-zinc-700 text-white"
-                  placeholder="e.g., Normie → Pre-coiner"
-                  disabled={detailsLocked}
-                />
-              </div>
-            </div>
+            <Tabs defaultValue="details" className="mt-4">
+            <TabsList className="bg-zinc-800 border-zinc-700">
+                <TabsTrigger value="details" className="data-[state=active]:bg-orange-500">Details</TabsTrigger>
+                <TabsTrigger value="questions" className="data-[state=active]:bg-orange-500">Learning Preview ({questions?.length || 0})</TabsTrigger>
+                <TabsTrigger value="lesson" className="data-[state=active]:bg-orange-500">Today's Lesson</TabsTrigger>
+                <TabsTrigger value="quizzes" className="data-[state=active]:bg-orange-500">Knowledge Check ({quizzes?.length || 0})</TabsTrigger>
+            </TabsList>
 
-            {/* Status Pipeline */}
-            <div className={`space-y-3 ${detailsLocked ? 'opacity-60 pointer-events-none' : ''}`}>
-              <Label className="text-zinc-300">Content Status</Label>
-              <div className="flex items-center gap-2">
-                {(['draft', 'review', 'approved', 'live'] as const).map((status, index) => {
-                  const config = STATUS_CONFIG[status];
-                  const isCurrentStatus = formData.status === status;
-                  const isPastStatus = ['draft', 'review', 'approved', 'live'].indexOf(formData.status) > index;
-                  return (
-                    <div key={status} className="flex items-center">
-                      <button
-                        type="button"
-                        onClick={() => !detailsLocked && setFormData({ ...formData, status })}
-                        disabled={detailsLocked}
-                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                          isCurrentStatus 
-                            ? `${config.bgColor} ${config.color} ring-2 ring-offset-2 ring-offset-zinc-900 ring-${status === 'draft' ? 'zinc' : status === 'review' ? 'yellow' : status === 'approved' ? 'blue' : 'green'}-500/50`
-                            : isPastStatus
-                              ? 'bg-zinc-700/50 text-zinc-400'
-                              : 'bg-zinc-800 text-zinc-500 hover:bg-zinc-700'
-                        }`}
-                        data-testid={`button-status-${status}`}
-                      >
-                        {config.label}
-                      </button>
-                      {index < 3 && (
-                        <div className={`w-6 h-0.5 mx-1 ${isPastStatus || isCurrentStatus ? 'bg-zinc-600' : 'bg-zinc-800'}`} />
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Reviewer Notes (shown when in review or approved) */}
-            {(formData.status === 'review' || formData.status === 'approved') && (
-              <div className={`space-y-2 ${detailsLocked ? 'opacity-60 pointer-events-none' : ''}`}>
-                <Label className="text-zinc-300">Reviewer Notes</Label>
-                <Textarea
-                  value={formData.reviewerNotes}
-                  onChange={(e) => setFormData({ ...formData, reviewerNotes: e.target.value })}
-                  className="bg-zinc-800 border-zinc-700 text-white min-h-[80px]"
-                  placeholder="Add notes about changes needed or approval details..."
-                  disabled={detailsLocked}
-                />
-              </div>
-            )}
-
-            <div className={`flex gap-4 ${detailsLocked ? 'opacity-60 pointer-events-none' : ''}`}>
-              <label className="flex items-center gap-2 text-zinc-300">
-                <input 
-                  type="checkbox" 
-                  checked={formData.isActive}
-                  onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="rounded"
-                  disabled={detailsLocked}
-                />
-                Active
-              </label>
-            </div>
-
-            {!detailsLocked && (
-              <div className="flex justify-end gap-2 pt-4">
-                <Button 
-                  onClick={() => { updateDayMutation.mutate(formData); setDetailsLocked(true); }}
-                  className="bg-orange-500 hover:bg-orange-600"
-                  disabled={updateDayMutation.isPending}
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  {updateDayMutation.isPending ? "Saving..." : "Save Details"}
-                </Button>
-              </div>
-            )}
-
-            {/* Delete Section */}
-            <div className="border-t border-zinc-800 pt-4 mt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-zinc-400">Danger Zone</p>
-                  <p className="text-xs text-zinc-500 mt-1">
-                    {day.status === 'live' 
-                      ? "Change status to Draft and save before deleting" 
-                      : "Delete this day and all its content"}
-                  </p>
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowDeleteConfirm(true)}
-                  disabled={day.status === 'live'}
-                  className="border-red-500/50 text-red-400 hover:bg-red-500/10 hover:text-red-300 disabled:opacity-50"
-                  data-testid="button-delete-day"
-                >
-                  <Trash2 className="w-4 h-4 mr-1" />
-                  Delete Day
-                </Button>
-              </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="lesson" className="mt-4 space-y-4">
-            <div className="flex items-center justify-between mb-4">
-              <Label className="text-zinc-300 text-sm font-medium flex items-center gap-2">
-                <BookOpen className="w-4 h-4 text-orange-500" />
-                {lesson ? "Lesson Content" : "Create New Lesson"}
-              </Label>
-              <div className="flex gap-2">
-                {lesson && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowPreview(true)}
-                    className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
-                    data-testid="button-preview-lesson"
-                  >
-                    <Eye className="w-4 h-4 mr-1" />
-                    Preview
-                  </Button>
-                )}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setLessonLocked(!lessonLocked)}
-                  className={`${lessonLocked ? 'border-zinc-600 text-zinc-400' : 'border-orange-500 text-orange-500'}`}
-                >
-                  {lessonLocked ? <Lock className="w-4 h-4 mr-1" /> : <Unlock className="w-4 h-4 mr-1" />}
-                  {lessonLocked ? "Locked" : "Editing"}
-                </Button>
-              </div>
-            </div>
-            
-            <Card className="bg-zinc-800 border-zinc-700">
-              <CardContent className={`p-4 space-y-4 ${lessonLocked ? 'opacity-60' : ''}`}>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-zinc-300">Lesson Title</Label>
-                    <Input 
-                      value={lessonForm.title}
-                      onChange={(e) => setLessonForm({ ...lessonForm, title: e.target.value })}
-                      className="bg-zinc-900 border-zinc-700 text-white"
-                      placeholder="Enter lesson title..."
-                      disabled={lessonLocked}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-zinc-300">Read Time (minutes)</Label>
-                    <Input 
-                      type="number"
-                      value={lessonForm.estimatedReadTime}
-                      onChange={(e) => setLessonForm({ ...lessonForm, estimatedReadTime: parseInt(e.target.value) || 3 })}
-                      className="bg-zinc-900 border-zinc-700 text-white"
-                      min={1}
-                      max={30}
-                      disabled={lessonLocked}
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label className="text-zinc-300">Lesson Content</Label>
-                  <Textarea 
-                    value={lessonForm.content}
-                    onChange={(e) => setLessonForm({ ...lessonForm, content: e.target.value })}
-                    className="bg-zinc-900 border-zinc-700 text-white min-h-[200px]"
-                    placeholder="Write the full lesson content here..."
-                    disabled={lessonLocked}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label className="text-zinc-300">Key Takeaways (3 points)</Label>
-                  {lessonForm.keyTakeaways.map((takeaway, i) => (
-                    <div key={i} className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <Input 
-                        value={takeaway}
-                        onChange={(e) => {
-                          const updated = [...lessonForm.keyTakeaways];
-                          updated[i] = e.target.value;
-                          setLessonForm({ ...lessonForm, keyTakeaways: updated });
-                        }}
-                        className="bg-zinc-900 border-zinc-700 text-white"
-                        placeholder={`Key takeaway ${i + 1}...`}
-                        disabled={lessonLocked}
-                      />
-                    </div>
-                  ))}
-                </div>
-                
-                <div className="space-y-2">
-                  <Label className="text-zinc-300">Why It Matters</Label>
-                  <Textarea 
-                    value={lessonForm.whyItMatters}
-                    onChange={(e) => setLessonForm({ ...lessonForm, whyItMatters: e.target.value })}
-                    className="bg-zinc-900 border-zinc-700 text-white min-h-[100px]"
-                    placeholder="Explain why this lesson matters to the learner..."
-                    disabled={lessonLocked}
-                  />
-                </div>
-                
-                {!lessonLocked && (
-                  <div className="flex justify-end pt-4">
-                    <Button 
-                      onClick={() => { saveLessonMutation.mutate(lessonForm); setLessonLocked(true); }}
-                      className="bg-orange-500 hover:bg-orange-600"
-                      disabled={saveLessonMutation.isPending || !lessonForm.title || !lessonForm.content}
+            <TabsContent value="details" className="space-y-4 mt-4">
+                <div className="flex items-center justify-between mb-4">
+                    <Label className="text-zinc-300 text-sm font-medium">Day Details</Label>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setDetailsLocked(!detailsLocked)}
+                        className={`${detailsLocked ? 'border-zinc-600 text-zinc-400' : 'border-orange-500 text-orange-500'}`}
                     >
-                      <Save className="w-4 h-4 mr-2" />
-                      {saveLessonMutation.isPending ? "Saving..." : "Save Lesson"}
+                        {detailsLocked ? <Lock className="w-4 h-4 mr-1" /> : <Unlock className="w-4 h-4 mr-1" />}
+                        {detailsLocked ? "Locked" : "Editing"}
                     </Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="questions" className="mt-4 space-y-4">
-            <div className="flex justify-between items-center">
-              <Label className="text-zinc-300 text-sm font-medium flex items-center gap-2">
-                <HelpCircle className="w-4 h-4 text-orange-500" />
-                Today's Learning Preview
-              </Label>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setQuestionsLocked(!questionsLocked)}
-                  className={`${questionsLocked ? 'border-zinc-600 text-zinc-400' : 'border-orange-500 text-orange-500'}`}
-                >
-                  {questionsLocked ? <Lock className="w-4 h-4 mr-1" /> : <Unlock className="w-4 h-4 mr-1" />}
-                  {questionsLocked ? "Locked" : "Editing"}
-                </Button>
-                {!questionsLocked && (
-                  <Button 
-                    size="sm" 
-                    onClick={() => setShowNewQuestion(true)}
-                    className="bg-orange-500 hover:bg-orange-600"
-                  >
-                    <Plus className="w-4 h-4 mr-1" /> Add
-                  </Button>
-                )}
-              </div>
-            </div>
-
-            {!questionsLocked && showNewQuestion && (
-              <Card className="bg-zinc-800 border-orange-500/50">
-                <CardContent className="p-4 space-y-3">
-                  <Input 
-                    value={newQuestion.title}
-                    onChange={(e) => setNewQuestion({ ...newQuestion, title: e.target.value })}
-                    className="bg-zinc-900 border-zinc-700 text-white"
-                    placeholder="Question title..."
-                  />
-                  <Textarea 
-                    value={newQuestion.content}
-                    onChange={(e) => setNewQuestion({ ...newQuestion, content: e.target.value })}
-                    className="bg-zinc-900 border-zinc-700 text-white"
-                    placeholder="Question content..."
-                  />
-                  <div className="flex gap-2">
-                    <Input 
-                      value={newQuestion.category}
-                      onChange={(e) => setNewQuestion({ ...newQuestion, category: e.target.value })}
-                      className="bg-zinc-900 border-zinc-700 text-white"
-                      placeholder="Category (e.g., financial)"
-                    />
-                    <Input 
-                      value={newQuestion.icon}
-                      onChange={(e) => setNewQuestion({ ...newQuestion, icon: e.target.value })}
-                      className="bg-zinc-900 border-zinc-700 text-white w-20"
-                      placeholder="Icon"
-                    />
-                  </div>
-                  <div className="flex justify-end gap-2">
-                    <Button variant="ghost" size="sm" onClick={() => setShowNewQuestion(false)}>
-                      <X className="w-4 h-4" />
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      onClick={() => createQuestionMutation.mutate(newQuestion)}
-                      disabled={createQuestionMutation.isPending || !newQuestion.title || !newQuestion.content}
-                      className="bg-green-600 hover:bg-green-700"
-                    >
-                      <Save className="w-4 h-4 mr-1" /> Save
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {isLoading ? (
-              <div className="flex justify-center py-8">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-500"></div>
-              </div>
-            ) : questions && questions.length > 0 ? (
-              <div className={`space-y-3 ${questionsLocked ? 'opacity-70' : ''}`}>
-                {questions.map((q, idx) => (
-                  <Card key={q.id} className="bg-zinc-800 border-zinc-700">
-                    <CardContent className="p-4">
-                      {!questionsLocked && editingQuestion?.id === q.id ? (
-                        <div className="space-y-3">
-                          <Input 
-                            value={editingQuestion.title}
-                            onChange={(e) => setEditingQuestion({ ...editingQuestion, title: e.target.value })}
-                            className="bg-zinc-900 border-zinc-700 text-white"
-                          />
-                          <Textarea 
-                            value={editingQuestion.content}
-                            onChange={(e) => setEditingQuestion({ ...editingQuestion, content: e.target.value })}
-                            className="bg-zinc-900 border-zinc-700 text-white"
-                          />
-                          <div className="flex gap-2">
-                            <Input 
-                              value={editingQuestion.category}
-                              onChange={(e) => setEditingQuestion({ ...editingQuestion, category: e.target.value })}
-                              className="bg-zinc-900 border-zinc-700 text-white"
-                            />
-                            <Input 
-                              value={editingQuestion.icon}
-                              onChange={(e) => setEditingQuestion({ ...editingQuestion, icon: e.target.value })}
-                              className="bg-zinc-900 border-zinc-700 text-white w-20"
-                            />
-                          </div>
-                          <div className="flex justify-end gap-2">
-                            <Button variant="ghost" size="sm" onClick={() => setEditingQuestion(null)}>Cancel</Button>
-                            <Button 
-                              size="sm" 
-                              onClick={() => updateQuestionMutation.mutate(editingQuestion)}
-                              className="bg-green-600 hover:bg-green-700"
-                            >
-                              Save
-                            </Button>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="flex items-start gap-3">
-                          <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center text-orange-500 font-bold text-sm">
-                            {idx + 1}
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="text-white font-medium">{q.title}</h4>
-                            <p className="text-sm text-zinc-400 mt-1">{q.content}</p>
-                            <div className="flex items-center gap-2 mt-2 text-xs text-zinc-500">
-                              <Badge variant="outline" className="border-zinc-600 text-zinc-400">{q.category}</Badge>
-                              <span>{q.icon}</span>
-                            </div>
-                          </div>
-                          {!questionsLocked && (
-                            <div className="flex gap-1">
-                              <Button variant="ghost" size="sm" onClick={() => setEditingQuestion(q)}>
-                                <Edit className="w-4 h-4 text-zinc-400" />
-                              </Button>
-                              <Button variant="ghost" size="sm" onClick={() => deleteQuestionMutation.mutate(q.id)}>
-                                <Trash2 className="w-4 h-4 text-red-400" />
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8 text-zinc-400">
-                {questionsLocked ? "No questions for this day. Unlock to add some." : "No questions for this day. Add some above!"}
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="quizzes" className="mt-4 space-y-4">
-            <div className="flex justify-between items-center">
-              <Label className="text-zinc-300 text-sm font-medium flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-orange-500" />
-                Knowledge Check Quiz
-              </Label>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setQuizzesLocked(!quizzesLocked)}
-                  className={`${quizzesLocked ? 'border-zinc-600 text-zinc-400' : 'border-orange-500 text-orange-500'}`}
-                >
-                  {quizzesLocked ? <Lock className="w-4 h-4 mr-1" /> : <Unlock className="w-4 h-4 mr-1" />}
-                  {quizzesLocked ? "Locked" : "Editing"}
-                </Button>
-                {!quizzesLocked && (
-                  <Button 
-                    size="sm" 
-                    onClick={() => setShowNewQuiz(true)}
-                    className="bg-orange-500 hover:bg-orange-600"
-                  >
-                    <Plus className="w-4 h-4 mr-1" /> Add
-                  </Button>
-                )}
-              </div>
-            </div>
-
-            {!quizzesLocked && showNewQuiz && (
-              <Card className="bg-zinc-800 border-orange-500/50">
-                <CardContent className="p-4 space-y-3">
-                  <Input 
-                    value={newQuiz.question}
-                    onChange={(e) => setNewQuiz({ ...newQuiz, question: e.target.value })}
-                    className="bg-zinc-900 border-zinc-700 text-white"
-                    placeholder="Question..."
-                  />
-                  <div className="grid grid-cols-2 gap-2">
-                    {newQuiz.options.map((opt, i) => (
-                      <div key={i} className="flex items-center gap-2">
-                        <input 
-                          type="radio" 
-                          checked={newQuiz.correctAnswer === i}
-                          onChange={() => setNewQuiz({ ...newQuiz, correctAnswer: i })}
-                        />
+                </div>
+                
+                <div className={`grid grid-cols-2 gap-4 ${detailsLocked ? 'opacity-60 pointer-events-none' : ''}`}>
+                    <div className="space-y-2">
+                        <Label className="text-zinc-300">Title</Label>
                         <Input 
-                          value={opt}
-                          onChange={(e) => {
-                            const updated = [...newQuiz.options];
-                            updated[i] = e.target.value;
-                            setNewQuiz({ ...newQuiz, options: updated });
-                          }}
-                          className="bg-zinc-900 border-zinc-700 text-white"
-                          placeholder={`Option ${String.fromCharCode(65 + i)}`}
+                        value={formData.title}
+                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        className="bg-zinc-800 border-zinc-700 text-white"
+                        disabled={detailsLocked}
                         />
-                      </div>
-                    ))}
-                  </div>
-                  <Textarea 
-                    value={newQuiz.explanation}
-                    onChange={(e) => setNewQuiz({ ...newQuiz, explanation: e.target.value })}
-                    className="bg-zinc-900 border-zinc-700 text-white"
-                    placeholder="Explanation for correct answer..."
-                  />
-                  <div className="flex justify-end gap-2">
-                    <Button variant="ghost" size="sm" onClick={() => setShowNewQuiz(false)}>
-                      <X className="w-4 h-4" />
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      onClick={() => createQuizMutation.mutate(newQuiz)}
-                      disabled={createQuizMutation.isPending || !newQuiz.question || newQuiz.options.some(o => !o)}
-                      className="bg-green-600 hover:bg-green-700"
-                    >
-                      <Save className="w-4 h-4 mr-1" /> Save
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                    </div>
+                    <div className="space-y-2">
+                        <Label className="text-zinc-300">Theme</Label>
+                        <Input 
+                        value={formData.theme}
+                        onChange={(e) => setFormData({ ...formData, theme: e.target.value })}
+                        className="bg-zinc-800 border-zinc-700 text-white"
+                        disabled={detailsLocked}
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label className="text-zinc-300">Reading Level</Label>
+                        <Input 
+                        value={formData.readingLevel}
+                        onChange={(e) => setFormData({ ...formData, readingLevel: e.target.value })}
+                        className="bg-zinc-800 border-zinc-700 text-white"
+                        placeholder="e.g., 8th grade"
+                        disabled={detailsLocked}
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label className="text-zinc-300">Cultural Stage</Label>
+                        <Input 
+                        value={formData.culturalStage}
+                        onChange={(e) => setFormData({ ...formData, culturalStage: e.target.value })}
+                        className="bg-zinc-800 border-zinc-700 text-white"
+                        placeholder="e.g., Normie → Pre-coiner"
+                        disabled={detailsLocked}
+                        />
+                    </div>
+                </div>
 
-            {isLoading ? (
-              <div className="flex justify-center py-8">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-500"></div>
-              </div>
-            ) : quizzes && quizzes.length > 0 ? (
-              <div className={`space-y-4 ${quizzesLocked ? 'opacity-70' : ''}`}>
-                {quizzes.map((quiz, idx) => (
-                  <Card key={quiz.id} className="bg-zinc-800 border-zinc-700">
-                    <CardContent className="p-4">
-                      {!quizzesLocked && editingQuiz?.id === quiz.id ? (
-                        <div className="space-y-3">
-                          <Input 
-                            value={editingQuiz.question}
-                            onChange={(e) => setEditingQuiz({ ...editingQuiz, question: e.target.value })}
+                {/* Status Pipeline */}
+                <div className={`space-y-3 ${detailsLocked ? 'opacity-60 pointer-events-none' : ''}`}>
+                    <Label className="text-zinc-300">Content Status</Label>
+                    <div className="flex items-center gap-2">
+                        {(['draft', 'review', 'approved', 'live'] as const).map((status, index) => {
+                        const config = STATUS_CONFIG[status];
+                        const isCurrentStatus = formData.status === status;
+                        const isPastStatus = ['draft', 'review', 'approved', 'live'].indexOf(formData.status) > index;
+                        return (
+                            <div key={status} className="flex items-center">
+                            <button
+                                type="button"
+                                onClick={() => !detailsLocked && setFormData({ ...formData, status })}
+                                disabled={detailsLocked}
+                                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                                isCurrentStatus 
+                                    ? `${config.bgColor} ${config.color} ring-2 ring-offset-2 ring-offset-zinc-900 ring-${status === 'draft' ? 'zinc' : status === 'review' ? 'yellow' : status === 'approved' ? 'blue' : 'green'}-500/50`
+                                    : isPastStatus
+                                    ? 'bg-zinc-700/50 text-zinc-400'
+                                    : 'bg-zinc-800 text-zinc-500 hover:bg-zinc-700'
+                                }`}
+                                data-testid={`button-status-${status}`}
+                            >
+                                {config.label}
+                            </button>
+                            {index < 3 && (
+                                <div className={`w-6 h-0.5 mx-1 ${isPastStatus || isCurrentStatus ? 'bg-zinc-600' : 'bg-zinc-800'}`} />
+                            )}
+                            </div>
+                        );
+                        })}
+                    </div>
+                </div>
+
+                {/* Reviewer Notes (shown when in review or approved) */}
+                {(formData.status === 'review' || formData.status === 'approved') && (
+                <div className={`space-y-2 ${detailsLocked ? 'opacity-60 pointer-events-none' : ''}`}>
+                    <Label className="text-zinc-300">Reviewer Notes</Label>
+                    <Textarea
+                        value={formData.reviewerNotes}
+                        onChange={(e) => setFormData({ ...formData, reviewerNotes: e.target.value })}
+                        className="bg-zinc-800 border-zinc-700 text-white min-h-[80px]"
+                        placeholder="Add notes about changes needed or approval details..."
+                        disabled={detailsLocked}
+                    />
+                </div>
+                )}
+
+                <div className={`flex gap-4 ${detailsLocked ? 'opacity-60 pointer-events-none' : ''}`}>
+                    <label className="flex items-center gap-2 text-zinc-300">
+                        <input 
+                            type="checkbox" 
+                            checked={formData.isActive}
+                            onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                            className="rounded"
+                            disabled={detailsLocked}
+                        />
+                        Active
+                    </label>
+                </div>
+
+                {!detailsLocked && (
+                <div className="flex justify-end gap-2 pt-4">
+                    <Button 
+                        onClick={() => { updateDayMutation.mutate(formData); setDetailsLocked(true); }}
+                        className="bg-orange-500 hover:bg-orange-600"
+                        disabled={updateDayMutation.isPending}
+                    >
+                        <Save className="w-4 h-4 mr-2" />
+                        {updateDayMutation.isPending ? "Saving..." : "Save Details"}
+                    </Button>
+                </div>
+                )}
+
+                {/* Delete Section */}
+                <div className="border-t border-zinc-800 pt-4 mt-6">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-zinc-400">Danger Zone</p>
+                            <p className="text-xs text-zinc-500 mt-1">
+                                {day.status === 'live' 
+                                ? "Change status to Draft and save before deleting" 
+                                : "Delete this day and all its content"}
+                            </p>
+                        </div>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowDeleteConfirm(true)}
+                            disabled={day.status === 'live'}
+                            className="border-red-500/50 text-red-400 hover:bg-red-500/10 hover:text-red-300 disabled:opacity-50"
+                            data-testid="button-delete-day"
+                        >
+                            <Trash2 className="w-4 h-4 mr-1" />
+                            Delete Day
+                        </Button>
+                    </div>
+                </div>
+            </TabsContent>
+
+            <TabsContent value="lesson" className="mt-4 space-y-4">
+                <div className="flex items-center justify-between mb-4">
+                    <Label className="text-zinc-300 text-sm font-medium flex items-center gap-2">
+                        <BookOpen className="w-4 h-4 text-orange-500" />
+                        {lesson ? "Lesson Content" : "Create New Lesson"}
+                    </Label>
+                    <div className="flex gap-2">
+                        {lesson && (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowPreview(true)}
+                            className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+                            data-testid="button-preview-lesson"
+                        >
+                            <Eye className="w-4 h-4 mr-1" />
+                            Preview
+                        </Button>
+                        )}
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setLessonLocked(!lessonLocked)}
+                            className={`${lessonLocked ? 'border-zinc-600 text-zinc-400' : 'border-orange-500 text-orange-500'}`}
+                        >
+                        {lessonLocked ? <Lock className="w-4 h-4 mr-1" /> : <Unlock className="w-4 h-4 mr-1" />}
+                        {lessonLocked ? "Locked" : "Editing"}
+                        </Button>
+                    </div>
+                </div>
+                
+                <Card className="bg-zinc-800 border-zinc-700">
+                    <CardContent className={`p-4 space-y-4 ${lessonLocked ? 'opacity-60' : ''}`}>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label className="text-zinc-300">Lesson Title</Label>
+                                <Input 
+                                value={lessonForm.title}
+                                onChange={(e) => setLessonForm({ ...lessonForm, title: e.target.value })}
+                                className="bg-zinc-900 border-zinc-700 text-white"
+                                placeholder="Enter lesson title..."
+                                disabled={lessonLocked}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-zinc-300">Read Time (minutes)</Label>
+                                <Input 
+                                type="number"
+                                value={lessonForm.estimatedReadTime}
+                                onChange={(e) => setLessonForm({ ...lessonForm, estimatedReadTime: parseInt(e.target.value) || 3 })}
+                                className="bg-zinc-900 border-zinc-700 text-white"
+                                min={1}
+                                max={30}
+                                disabled={lessonLocked}
+                                />
+                            </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                        <Label className="text-zinc-300">Lesson Content</Label>
+                        <Textarea 
+                            value={lessonForm.content}
+                            onChange={(e) => setLessonForm({ ...lessonForm, content: e.target.value })}
+                            className="bg-zinc-900 border-zinc-700 text-white min-h-[200px]"
+                            placeholder="Write the full lesson content here..."
+                            disabled={lessonLocked}
+                        />
+                        </div>
+                        
+                        <div className="space-y-2">
+                        <Label className="text-zinc-300">Key Takeaways (3 points)</Label>
+                        {lessonForm.keyTakeaways.map((takeaway, i) => (
+                            <div key={i} className="flex items-center gap-2">
+                            <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            <Input 
+                                value={takeaway}
+                                onChange={(e) => {
+                                const updated = [...lessonForm.keyTakeaways];
+                                updated[i] = e.target.value;
+                                setLessonForm({ ...lessonForm, keyTakeaways: updated });
+                                }}
+                                className="bg-zinc-900 border-zinc-700 text-white"
+                                placeholder={`Key takeaway ${i + 1}...`}
+                                disabled={lessonLocked}
+                            />
+                            </div>
+                        ))}
+                        </div>
+                        
+                        <div className="space-y-2">
+                        <Label className="text-zinc-300">Why It Matters</Label>
+                        <Textarea 
+                            value={lessonForm.whyItMatters}
+                            onChange={(e) => setLessonForm({ ...lessonForm, whyItMatters: e.target.value })}
+                            className="bg-zinc-900 border-zinc-700 text-white min-h-[100px]"
+                            placeholder="Explain why this lesson matters to the learner..."
+                            disabled={lessonLocked}
+                        />
+                        </div>
+                        
+                        {!lessonLocked && (
+                        <div className="flex justify-end pt-4">
+                            <Button 
+                            onClick={() => { saveLessonMutation.mutate(lessonForm); setLessonLocked(true); }}
+                            className="bg-orange-500 hover:bg-orange-600"
+                            disabled={saveLessonMutation.isPending || !lessonForm.title || !lessonForm.content}
+                            >
+                            <Save className="w-4 h-4 mr-2" />
+                            {saveLessonMutation.isPending ? "Saving..." : "Save Lesson"}
+                            </Button>
+                        </div>
+                        )}
+                    </CardContent>
+                </Card>
+            </TabsContent>
+
+
+
+
+
+            <TabsContent value="questions" className="mt-4 space-y-4">
+                <div className="flex justify-between items-center">
+                    <Label className="text-zinc-300 text-sm font-medium flex items-center gap-2">
+                        <HelpCircle className="w-4 h-4 text-orange-500" />
+                        Today's Learning Preview
+                    </Label>
+                    <div className="flex gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setQuestionsLocked(!questionsLocked)}
+                            className={`${questionsLocked ? 'border-zinc-600 text-zinc-400' : 'border-orange-500 text-orange-500'}`}
+                        >
+                            {questionsLocked ? <Lock className="w-4 h-4 mr-1" /> : <Unlock className="w-4 h-4 mr-1" />}
+                            {questionsLocked ? "Locked" : "Editing"}
+                        </Button>
+                        {!questionsLocked && (
+                        <Button 
+                            size="sm" 
+                            onClick={() => setShowNewQuestion(true)}
+                            className="bg-orange-500 hover:bg-orange-600"
+                        >
+                            <Plus className="w-4 h-4 mr-1" /> Add
+                        </Button>
+                        )}
+                    </div>
+                </div>
+
+                {!questionsLocked && showNewQuestion && (
+                <Card className="bg-zinc-800 border-orange-500/50">
+                    <CardContent className="p-4 space-y-3">
+                        <Input 
+                            value={newQuestion.title}
+                            onChange={(e) => setNewQuestion({ ...newQuestion, title: e.target.value })}
                             className="bg-zinc-900 border-zinc-700 text-white"
-                          />
-                          <div className="grid grid-cols-2 gap-2">
-                            {editingQuiz.options.map((opt, i) => (
-                              <div key={i} className="flex items-center gap-2">
-                                <input 
-                                  type="radio" 
-                                  checked={editingQuiz.correctAnswer === i}
-                                  onChange={() => setEditingQuiz({ ...editingQuiz, correctAnswer: i })}
+                            placeholder="Question title..."
+                        />
+                        <Textarea 
+                            value={newQuestion.question}
+                            onChange={(e) => setNewQuestion({ ...newQuestion, question: e.target.value })}
+                            className="bg-zinc-900 border-zinc-700 text-white"
+                            placeholder="Question content..."
+                        />
+                        <div className="flex gap-2">
+                            <Input 
+                            value={newQuestion.category}
+                            onChange={(e) => setNewQuestion({ ...newQuestion, category: e.target.value })}
+                            className="bg-zinc-900 border-zinc-700 text-white"
+                            placeholder="Category (e.g., financial)"
+                            />
+                            <Input 
+                            value={newQuestion.icon}
+                            onChange={(e) => setNewQuestion({ ...newQuestion, icon: e.target.value })}
+                            className="bg-zinc-900 border-zinc-700 text-white w-20"
+                            placeholder="Icon"
+                            />
+                        </div>
+                        <div className="flex justify-end gap-2">
+                            <Button variant="ghost" size="sm" onClick={() => setShowNewQuestion(false)}>
+                                <X className="w-4 h-4" />
+                            </Button>
+                            <Button 
+                                size="sm" 
+                                onClick={() => createQuestionMutation.mutate(newQuestion)}
+                                disabled={createQuestionMutation.isPending || !newQuestion.title || !newQuestion.question}
+                                className="bg-green-600 hover:bg-green-700"
+                            >
+                                <Save className="w-4 h-4 mr-1" /> Save
+                            </Button>
+                        </div>
+                    </CardContent>
+                </Card>
+                )}
+
+                {isLoading ? (
+                <div className="flex justify-center py-8">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-500"></div>
+                </div>
+                ) : questions && questions.length > 0 ? (
+                <div className={`space-y-3 ${questionsLocked ? 'opacity-70' : ''}`}>
+                    {questions.map((q, idx) => (
+                    <Card key={q.id} className="bg-zinc-800 border-zinc-700">
+                        <CardContent className="p-4">
+                        {!questionsLocked && editingQuestion?.id === q.id ? (
+                            <div className="space-y-3">
+                            <Input 
+                                value={editingQuestion.title}
+                                onChange={(e) => setEditingQuestion({ ...editingQuestion, title: e.target.value })}
+                                className="bg-zinc-900 border-zinc-700 text-white"
+                            />
+                            <Textarea 
+                                value={editingQuestion.question}
+                                onChange={(e) => setEditingQuestion({ ...editingQuestion, question: e.target.value })}
+                                className="bg-zinc-900 border-zinc-700 text-white"
+                            />
+                            <div className="flex gap-2">
+                                <Input 
+                                value={editingQuestion.category}
+                                onChange={(e) => setEditingQuestion({ ...editingQuestion, category: e.target.value })}
+                                className="bg-zinc-900 border-zinc-700 text-white"
                                 />
                                 <Input 
-                                  value={opt}
-                                  onChange={(e) => {
-                                    const updated = [...editingQuiz.options];
-                                    updated[i] = e.target.value;
-                                    setEditingQuiz({ ...editingQuiz, options: updated });
-                                  }}
-                                  className="bg-zinc-900 border-zinc-700 text-white"
+                                value={editingQuestion.icon}
+                                onChange={(e) => setEditingQuestion({ ...editingQuestion, icon: e.target.value })}
+                                className="bg-zinc-900 border-zinc-700 text-white w-20"
                                 />
-                              </div>
-                            ))}
-                          </div>
-                          <Textarea 
-                            value={editingQuiz.explanation}
-                            onChange={(e) => setEditingQuiz({ ...editingQuiz, explanation: e.target.value })}
-                            className="bg-zinc-900 border-zinc-700 text-white"
-                          />
-                          <div className="flex justify-end gap-2">
-                            <Button variant="ghost" size="sm" onClick={() => setEditingQuiz(null)}>Cancel</Button>
-                            <Button 
-                              size="sm" 
-                              onClick={() => updateQuizMutation.mutate(editingQuiz)}
-                              className="bg-green-600 hover:bg-green-700"
-                            >
-                              Save
-                            </Button>
-                          </div>
-                        </div>
-                      ) : (
-                        <div>
-                          <div className="flex items-start justify-between">
-                            <p className="text-white font-medium mb-3">Q{idx + 1}: {quiz.question}</p>
-                            {!quizzesLocked && (
-                              <div className="flex gap-1">
-                                <Button variant="ghost" size="sm" onClick={() => setEditingQuiz(quiz)}>
-                                  <Edit className="w-4 h-4 text-zinc-400" />
+                            </div>
+                            <div className="flex justify-end gap-2">
+                                <Button variant="ghost" size="sm" onClick={() => setEditingQuestion(null)}>Cancel</Button>
+                                <Button 
+                                size="sm" 
+                                onClick={() => updateQuestionMutation.mutate(editingQuestion)}
+                                className="bg-green-600 hover:bg-green-700"
+                                >
+                                Save
                                 </Button>
-                                <Button variant="ghost" size="sm" onClick={() => deleteQuizMutation.mutate(quiz.id)}>
-                                  <Trash2 className="w-4 h-4 text-red-400" />
+                            </div>
+                            </div>
+                        ) : (
+                            <div className="flex items-start gap-3">
+                            <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center text-orange-500 font-bold text-sm">
+                                {idx + 1}
+                            </div>
+                            <div className="flex-1">
+                                <h4 className="text-white font-medium">{q.title}</h4>
+                                <p className="text-sm text-zinc-400 mt-1">{q.question}</p>
+                                <div className="flex items-center gap-2 mt-2 text-xs text-zinc-500">
+                                    <Badge variant="outline" className="border-zinc-600 text-zinc-400">{q.category}</Badge>
+                                <span>{q.icon}</span>
+                                </div>
+                            </div>
+                            {!questionsLocked && (
+                                <div className="flex gap-1">
+                                <Button variant="ghost" size="sm" onClick={() => setEditingQuestion(q)}>
+                                    <Edit className="w-4 h-4 text-zinc-400" />
                                 </Button>
-                              </div>
+                                <Button variant="ghost" size="sm" onClick={() => deleteQuestionMutation.mutate(q.id)}>
+                                    <Trash2 className="w-4 h-4 text-red-400" />
+                                </Button>
+                                </div>
                             )}
-                          </div>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            {quiz.options.map((opt, i) => (
-                              <div 
-                                key={i} 
-                                className={`p-2 rounded text-sm ${i === quiz.correctAnswer ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-zinc-900 text-zinc-400'}`}
-                              >
-                                <span className="font-bold mr-2">{String.fromCharCode(65 + i)}.</span>
-                                {opt}
-                              </div>
-                            ))}
-                          </div>
-                          <div className="mt-3 p-2 bg-zinc-900 rounded text-xs text-zinc-400">
-                            <span className="text-zinc-500">Explanation:</span> {quiz.explanation}
-                          </div>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8 text-zinc-400">
-                {quizzesLocked ? "No quizzes for this day. Unlock to add some." : "No quizzes for this day. Add some above!"}
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
-      </DialogContent>
+                            </div>
+                        )}
+                        </CardContent>
+                    </Card>
+                    ))}
+                </div>
+                ) : (
+                <div className="text-center py-8 text-zinc-400">
+                    {questionsLocked ? "No questions for this day. Unlock to add some." : "No questions for this day. Add some above!"}
+                </div>
+                )}
+            </TabsContent>
 
-      {/* Mobile Preview Dialog */}
-      <Dialog open={showPreview} onOpenChange={setShowPreview}>
-        <DialogContent className="bg-zinc-950 border-zinc-800 max-w-sm p-0 overflow-hidden">
-          <div className="bg-zinc-900 px-4 py-3 flex items-center justify-between border-b border-zinc-800">
-            <div className="flex items-center gap-2">
-              <Smartphone className="w-4 h-4 text-orange-500" />
-              <span className="text-sm font-medium text-white">Mobile Preview</span>
-            </div>
-            <Badge className="bg-orange-500/20 text-orange-400 border-0 text-xs">
-              Day {day?.dayIndex}
-            </Badge>
-          </div>
-          
-          {/* Mock Mobile Frame */}
-          <div className="bg-zinc-950 max-h-[70vh] overflow-y-auto">
-            <div className="p-4 space-y-4">
-              {/* Day Header */}
-              <div className="text-center pb-4 border-b border-zinc-800">
-                <h2 className="text-lg font-bold text-white">{day?.title}</h2>
-                <p className="text-sm text-zinc-400 mt-1">{day?.theme}</p>
-              </div>
-              
-              {/* Lesson Content */}
-              {lesson && (
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="text-md font-semibold text-white mb-2">{lessonForm.title || lesson.title}</h3>
-                    <div className="flex items-center gap-2 text-xs text-zinc-500">
-                      <Clock className="w-3 h-3" />
-                      <span>{lessonForm.estimatedReadTime || lesson.estimatedReadTime} min read</span>
-                    </div>
-                  </div>
-                  
-                  <div className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap">
-                    {lessonForm.content || lesson.content}
-                  </div>
-                  
-                  {/* Key Takeaways */}
-                  {(lessonForm.keyTakeaways?.some(t => t) || lesson.keyTakeaways?.length > 0) && (
-                    <div className="bg-zinc-900 rounded-lg p-4 space-y-2">
-                      <h4 className="text-sm font-medium text-orange-400">Key Takeaways</h4>
-                      {(lessonForm.keyTakeaways || lesson.keyTakeaways)?.filter(t => t).map((takeaway, i) => (
-                        <div key={i} className="flex items-start gap-2 text-sm text-zinc-300">
-                          <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
-                          <span>{takeaway}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  
-                  {/* Why It Matters */}
-                  {(lessonForm.whyItMatters || lesson.whyItMatters) && (
-                    <div className="bg-orange-500/10 rounded-lg p-4">
-                      <h4 className="text-sm font-medium text-orange-400 mb-2">Why This Matters</h4>
-                      <p className="text-sm text-zinc-300">{lessonForm.whyItMatters || lesson.whyItMatters}</p>
-                    </div>
-                  )}
-                </div>
-              )}
-              
-              {!lesson && (
-                <div className="text-center py-8 text-zinc-500">
-                  <BookOpen className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">No lesson content yet</p>
-                </div>
-              )}
-            </div>
-          </div>
-          
-          <div className="bg-zinc-900 px-4 py-3 border-t border-zinc-800">
-            <Button 
-              onClick={() => setShowPreview(false)}
-              className="w-full bg-zinc-800 hover:bg-zinc-700 text-white"
-            >
-              Close Preview
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
 
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog open={showDeleteConfirm} onOpenChange={(open) => { if (!open) resetDeleteState(); else setShowDeleteConfirm(true); }}>
-        <AlertDialogContent className="bg-zinc-900 border-zinc-800">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-white flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-red-500" />
-              Delete Day {day?.dayIndex}?
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-zinc-400">
-              {deleteStep === 1 && (
-                <div className="space-y-3">
-                  <p>This will permanently delete:</p>
-                  <ul className="list-disc list-inside space-y-1 text-zinc-300">
-                    <li>The day "{day?.title}"</li>
-                    <li>{lesson ? "1 lesson" : "No lessons"}</li>
-                    <li>{quizzes?.length || 0} quiz question(s)</li>
-                    <li>{questions?.length || 0} setup question(s)</li>
-                  </ul>
-                  <p className="text-red-400 font-medium mt-4">This action cannot be undone.</p>
+
+
+
+            <TabsContent value="quizzes" className="mt-4 space-y-4">
+                <div className="flex justify-between items-center">
+                <Label className="text-zinc-300 text-sm font-medium flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-orange-500" />
+                    Knowledge Check Quiz
+                </Label>
+                <div className="flex gap-2">
+                    <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setQuizzesLocked(!quizzesLocked)}
+                    className={`${quizzesLocked ? 'border-zinc-600 text-zinc-400' : 'border-orange-500 text-orange-500'}`}
+                    >
+                    {quizzesLocked ? <Lock className="w-4 h-4 mr-1" /> : <Unlock className="w-4 h-4 mr-1" />}
+                    {quizzesLocked ? "Locked" : "Editing"}
+                    </Button>
+                    {!quizzesLocked && (
+                    <Button 
+                        size="sm" 
+                        onClick={() => setShowNewQuiz(true)}
+                        className="bg-orange-500 hover:bg-orange-600"
+                    >
+                        <Plus className="w-4 h-4 mr-1" /> Add
+                    </Button>
+                    )}
                 </div>
-              )}
-              {deleteStep === 2 && (
-                <div className="space-y-4">
-                  <p>To confirm deletion, type <span className="font-mono text-orange-400">Day {day?.dayIndex}</span> below:</p>
-                  <Input
-                    value={deleteConfirmText}
-                    onChange={(e) => setDeleteConfirmText(e.target.value)}
-                    placeholder={`Type "Day ${day?.dayIndex}" to confirm`}
-                    className="bg-zinc-800 border-zinc-700 text-white"
-                    data-testid="input-delete-confirm"
-                  />
-                  <label className="flex items-start gap-2 text-zinc-300">
-                    <input
-                      type="checkbox"
-                      checked={deleteAcknowledged}
-                      onChange={(e) => setDeleteAcknowledged(e.target.checked)}
-                      className="mt-1 rounded"
+                </div>
+
+                {!quizzesLocked && showNewQuiz && (
+                <Card className="bg-zinc-800 border-orange-500/50">
+                    <CardContent className="p-4 space-y-3">
+                    <Input 
+                        value={newQuiz.question}
+                        onChange={(e) => setNewQuiz({ ...newQuiz, question: e.target.value })}
+                        className="bg-zinc-900 border-zinc-700 text-white"
+                        placeholder="Question..."
                     />
-                    <span className="text-sm">I understand this will permanently delete all content for this day and cannot be undone.</span>
-                  </label>
+                    <div className="grid grid-cols-2 gap-2">
+                        {newQuiz.options.map((opt, i) => (
+                        <div key={i} className="flex items-center gap-2">
+                            <input 
+                            type="radio" 
+                            checked={newQuiz.correctAnswer === i}
+                            onChange={() => setNewQuiz({ ...newQuiz, correctAnswer: i })}
+                            />
+                            <Input 
+                            value={opt}
+                            onChange={(e) => {
+                                const updated = [...newQuiz.options];
+                                updated[i] = e.target.value;
+                                setNewQuiz({ ...newQuiz, options: updated });
+                            }}
+                            className="bg-zinc-900 border-zinc-700 text-white"
+                            placeholder={`Option ${String.fromCharCode(65 + i)}`}
+                            />
+                        </div>
+                        ))}
+                    </div>
+                    <Textarea 
+                        value={newQuiz.explanation}
+                        onChange={(e) => setNewQuiz({ ...newQuiz, explanation: e.target.value })}
+                        className="bg-zinc-900 border-zinc-700 text-white"
+                        placeholder="Explanation for correct answer..."
+                    />
+                    <div className="flex justify-end gap-2">
+                        <Button variant="ghost" size="sm" onClick={() => setShowNewQuiz(false)}>
+                            <X className="w-4 h-4" />
+                        </Button>
+                        <Button 
+                            size="sm" 
+                            onClick={() => createQuizMutation.mutate(newQuiz)}
+                            disabled={createQuizMutation.isPending || !newQuiz.question || newQuiz.options.some(o => !o)}
+                            className="bg-green-600 hover:bg-green-700"
+                        >
+                        <Save className="w-4 h-4 mr-1" /> Save
+                        </Button>
+                    </div>
+                    </CardContent>
+                </Card>
+                )}
+
+                {isLoading ? (
+                <div className="flex justify-center py-8">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-500"></div>
                 </div>
-              )}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel 
-              onClick={resetDeleteState}
-              className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700"
-            >
-              Cancel
-            </AlertDialogCancel>
-            {deleteStep === 1 && (
-              <Button
-                onClick={() => setDeleteStep(2)}
-                className="bg-red-600 hover:bg-red-700 text-white"
-              >
-                Continue
-              </Button>
-            )}
-            {deleteStep === 2 && (
-              <Button
-                onClick={() => deleteDayMutation.mutate()}
-                disabled={deleteConfirmText !== `Day ${day?.dayIndex}` || !deleteAcknowledged || deleteDayMutation.isPending}
-                className="bg-red-600 hover:bg-red-700 text-white disabled:opacity-50"
-                data-testid="button-confirm-delete"
-              >
-                {deleteDayMutation.isPending ? "Deleting..." : "Delete Forever"}
-              </Button>
-            )}
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </Dialog>
-  );
+                ) : quizzes && quizzes.length > 0 ? (
+                <div className={`space-y-4 ${quizzesLocked ? 'opacity-70' : ''}`}>
+                    {quizzes.map((quiz, idx) => (
+                    <Card key={quiz.id} className="bg-zinc-800 border-zinc-700">
+                        <CardContent className="p-4">
+                        {!quizzesLocked && editingQuiz?.id === quiz.id ? (
+                            <div className="space-y-3">
+                            <Input 
+                                value={editingQuiz.question}
+                                onChange={(e) => setEditingQuiz({ ...editingQuiz, question: e.target.value })}
+                                className="bg-zinc-900 border-zinc-700 text-white"
+                            />
+                            <div className="grid grid-cols-2 gap-2">
+                                {editingQuiz.options.map((opt, i) => (
+                                <div key={i} className="flex items-center gap-2">
+                                    <input 
+                                    type="radio" 
+                                    checked={editingQuiz.correctAnswer === i}
+                                    onChange={() => setEditingQuiz({ ...editingQuiz, correctAnswer: i })}
+                                    />
+                                    <Input 
+                                    value={opt}
+                                    onChange={(e) => {
+                                        const updated = [...editingQuiz.options];
+                                        updated[i] = e.target.value;
+                                        setEditingQuiz({ ...editingQuiz, options: updated });
+                                    }}
+                                    className="bg-zinc-900 border-zinc-700 text-white"
+                                    />
+                                </div>
+                                ))}
+                            </div>
+                            <Textarea 
+                                value={editingQuiz.explanation}
+                                onChange={(e) => setEditingQuiz({ ...editingQuiz, explanation: e.target.value })}
+                                className="bg-zinc-900 border-zinc-700 text-white"
+                            />
+                            <div className="flex justify-end gap-2">
+                                <Button variant="ghost" size="sm" onClick={() => setEditingQuiz(null)}>Cancel</Button>
+                                <Button 
+                                    size="sm" 
+                                    onClick={() => updateQuizMutation.mutate(editingQuiz)}
+                                    className="bg-green-600 hover:bg-green-700"
+                                >
+                                Save
+                                </Button>
+                            </div>
+                            </div>
+                        ) : (
+                            <div>
+                            <div className="flex items-start justify-between">
+                                <p className="text-white font-medium mb-3">Q{idx + 1}: {quiz.question}</p>
+                                {!quizzesLocked && (
+                                <div className="flex gap-1">
+                                    <Button variant="ghost" size="sm" onClick={() => setEditingQuiz(quiz)}>
+                                        <Edit className="w-4 h-4 text-zinc-400" />
+                                    </Button>
+                                    <Button variant="ghost" size="sm" onClick={() => deleteQuizMutation.mutate(quiz.id)}>
+                                        <Trash2 className="w-4 h-4 text-red-400" />
+                                    </Button>
+                                </div>
+                                )}
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                {quiz.options.map((opt, i) => (
+                                <div 
+                                    key={i} 
+                                    className={`p-2 rounded text-sm ${i === quiz.correctAnswer ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-zinc-900 text-zinc-400'}`}
+                                >
+                                    <span className="font-bold mr-2">{String.fromCharCode(65 + i)}.</span>
+                                    {opt}
+                                </div>
+                                ))}
+                            </div>
+                            <div className="mt-3 p-2 bg-zinc-900 rounded text-xs text-zinc-400">
+                                <span className="text-zinc-500">Explanation:</span> {quiz.explanation}
+                            </div>
+                            </div>
+                        )}
+                        </CardContent>
+                    </Card>
+                    ))}
+                </div>
+                ) : (
+                <div className="text-center py-8 text-zinc-400">
+                    {quizzesLocked ? "No quizzes for this day. Unlock to add some." : "No quizzes for this day. Add some above!"}
+                </div>
+                )}
+            </TabsContent>
+            </Tabs>
+        </DialogContent>
+
+        {/* Mobile Preview Dialog */}
+        <Dialog open={showPreview} onOpenChange={setShowPreview}>
+            <DialogContent className="bg-zinc-950 border-zinc-800 max-w-sm p-0 overflow-hidden">
+            <div className="bg-zinc-900 px-4 py-3 flex items-center justify-between border-b border-zinc-800">
+                <div className="flex items-center gap-2">
+                <Smartphone className="w-4 h-4 text-orange-500" />
+                <span className="text-sm font-medium text-white">Mobile Preview</span>
+                </div>
+                <Badge className="bg-orange-500/20 text-orange-400 border-0 text-xs">
+                Day {day?.dayIndex}
+                </Badge>
+            </div>
+            
+            {/* Mock Mobile Frame */}
+            <div className="bg-zinc-950 max-h-[70vh] overflow-y-auto">
+                <div className="p-4 space-y-4">
+                {/* Day Header */}
+                <div className="text-center pb-4 border-b border-zinc-800">
+                    <h2 className="text-lg font-bold text-white">{day?.title}</h2>
+                    <p className="text-sm text-zinc-400 mt-1">{day?.theme}</p>
+                </div>
+                
+                {/* Lesson Content */}
+                {lesson && (
+                    <div className="space-y-4">
+                    <div>
+                        <h3 className="text-md font-semibold text-white mb-2">{lessonForm.title || lesson.title}</h3>
+                        <div className="flex items-center gap-2 text-xs text-zinc-500">
+                        <Clock className="w-3 h-3" />
+                        <span>{lessonForm.estimatedReadTime || lesson.estimatedReadTime} min read</span>
+                        </div>
+                    </div>
+                    
+                    <div className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap">
+                        {lessonForm.content || lesson.content}
+                    </div>
+                    
+                    {/* Key Takeaways */}
+                    {(lessonForm.keyTakeaways?.some(t => t) || lesson.keyTakeaways?.length > 0) && (
+                        <div className="bg-zinc-900 rounded-lg p-4 space-y-2">
+                        <h4 className="text-sm font-medium text-orange-400">Key Takeaways</h4>
+                        {(lessonForm.keyTakeaways || lesson.keyTakeaways)?.filter(t => t).map((takeaway, i) => (
+                            <div key={i} className="flex items-start gap-2 text-sm text-zinc-300">
+                            <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+                            <span>{takeaway}</span>
+                            </div>
+                        ))}
+                        </div>
+                    )}
+                    
+                    {/* Why It Matters */}
+                    {(lessonForm.whyItMatters || lesson.whyItMatters) && (
+                        <div className="bg-orange-500/10 rounded-lg p-4">
+                        <h4 className="text-sm font-medium text-orange-400 mb-2">Why This Matters</h4>
+                        <p className="text-sm text-zinc-300">{lessonForm.whyItMatters || lesson.whyItMatters}</p>
+                        </div>
+                    )}
+                    </div>
+                )}
+                
+                {!lesson && (
+                    <div className="text-center py-8 text-zinc-500">
+                    <BookOpen className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No lesson content yet</p>
+                    </div>
+                )}
+                </div>
+            </div>
+            
+            <div className="bg-zinc-900 px-4 py-3 border-t border-zinc-800">
+                <Button 
+                onClick={() => setShowPreview(false)}
+                className="w-full bg-zinc-800 hover:bg-zinc-700 text-white"
+                >
+                Close Preview
+                </Button>
+            </div>
+            </DialogContent>
+        </Dialog>
+
+        {/* Delete Confirmation Dialog */}
+        <AlertDialog open={showDeleteConfirm} onOpenChange={(open) => { if (!open) resetDeleteState(); else setShowDeleteConfirm(true); }}>
+            <AlertDialogContent className="bg-zinc-900 border-zinc-800">
+            <AlertDialogHeader>
+                <AlertDialogTitle className="text-white flex items-center gap-2">
+                <AlertCircle className="w-5 h-5 text-red-500" />
+                Delete Day {day?.dayIndex}?
+                </AlertDialogTitle>
+                <AlertDialogDescription className="text-zinc-400">
+                {deleteStep === 1 && (
+                    <div className="space-y-3">
+                    <p>This will permanently delete:</p>
+                    <ul className="list-disc list-inside space-y-1 text-zinc-300">
+                        <li>The day "{day?.title}"</li>
+                        <li>{lesson ? "1 lesson" : "No lessons"}</li>
+                        <li>{quizzes?.length || 0} quiz question(s)</li>
+                        <li>{questions?.length || 0} setup question(s)</li>
+                    </ul>
+                    <p className="text-red-400 font-medium mt-4">This action cannot be undone.</p>
+                    </div>
+                )}
+                {deleteStep === 2 && (
+                    <div className="space-y-4">
+                    <p>To confirm deletion, type <span className="font-mono text-orange-400">Day {day?.dayIndex}</span> below:</p>
+                    <Input
+                        value={deleteConfirmText}
+                        onChange={(e) => setDeleteConfirmText(e.target.value)}
+                        placeholder={`Type "Day ${day?.dayIndex}" to confirm`}
+                        className="bg-zinc-800 border-zinc-700 text-white"
+                        data-testid="input-delete-confirm"
+                    />
+                    <label className="flex items-start gap-2 text-zinc-300">
+                        <input
+                        type="checkbox"
+                        checked={deleteAcknowledged}
+                        onChange={(e) => setDeleteAcknowledged(e.target.checked)}
+                        className="mt-1 rounded"
+                        />
+                        <span className="text-sm">I understand this will permanently delete all content for this day and cannot be undone.</span>
+                    </label>
+                    </div>
+                )}
+                </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+                <AlertDialogCancel 
+                onClick={resetDeleteState}
+                className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700"
+                >
+                Cancel
+                </AlertDialogCancel>
+                {deleteStep === 1 && (
+                <Button
+                    onClick={() => setDeleteStep(2)}
+                    className="bg-red-600 hover:bg-red-700 text-white"
+                >
+                    Continue
+                </Button>
+                )}
+                {deleteStep === 2 && (
+                <Button
+                    onClick={() => deleteDayMutation.mutate()}
+                    disabled={deleteConfirmText !== `Day ${day?.dayIndex}` || !deleteAcknowledged || deleteDayMutation.isPending}
+                    className="bg-red-600 hover:bg-red-700 text-white disabled:opacity-50"
+                    data-testid="button-confirm-delete"
+                >
+                    {deleteDayMutation.isPending ? "Deleting..." : "Delete Forever"}
+                </Button>
+                )}
+            </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+        </Dialog>
+    );
 }
 
 interface GeneratedContent {
@@ -2098,6 +2112,7 @@ function CreateDayDialog({ open, onOpenChange, nextDayIndex }: {
 }) {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
+    weekIndex: Math.floor(nextDayIndex / 7) + 1,
     dayIndex: nextDayIndex,
     title: "",
     theme: "",
@@ -2119,6 +2134,7 @@ function CreateDayDialog({ open, onOpenChange, nextDayIndex }: {
       toast({ title: "Content day created successfully" });
       onOpenChange(false);
       setFormData({
+        weekIndex: Math.floor(nextDayIndex / 7) + 1,
         dayIndex: nextDayIndex + 1,
         title: "",
         theme: "",

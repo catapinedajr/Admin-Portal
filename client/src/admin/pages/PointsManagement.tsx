@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import { apiFetch } from "@/lib/api";
 import { 
   Coins, Trophy, Award, Users, Settings, 
-  Plus, Edit2, Gift, CheckCircle, Clock,
+  Plus, Edit2, Gift, CheckCircle, Trash2,
   TrendingUp, Crown, Zap, Calculator, Loader2, RefreshCw
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -491,7 +491,7 @@ function PointsManagementContent() {
                               </div>
                             </TableCell>
                             <TableCell className="text-right text-orange-400 font-mono">
-                              {config.baseSatoshis.toLocaleString()}
+                              {config.baseSatoshis?.toLocaleString()}
                             </TableCell>
                             <TableCell className="text-center">
                               {config.multiplierEligible ? (

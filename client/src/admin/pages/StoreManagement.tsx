@@ -586,7 +586,7 @@ function ReferralPartnerCard({ partner, signupCount, onEdit }: { partner: Referr
             )}
             <div>
               <h3 className="font-semibold text-white">{partner.name}</h3>
-              <p className="text-sm text-zinc-400 capitalize">{partner.category.replace('_', ' ')}</p>
+              <p className="text-sm text-zinc-400 capitalize">{partner.category?.replace('_', ' ')}</p>
             </div>
           </div>
           <Badge className={

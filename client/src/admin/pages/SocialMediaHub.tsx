@@ -42,7 +42,7 @@ interface SocialPost {
   publishStatus: 'planned' | 'posted';
   scheduledAt: string | null;
   publishedAt: string | null;
-  createdAt: string;
+  dateCreated: string;
 }
 
 interface SocialPostWithMetrics extends SocialPost {
@@ -470,206 +470,208 @@ function PostCard({
   onMarkPosted: (livePostUrl?: string) => void;
   onApprove: () => void;
 }) {
-  const { toast } = useToast();
-  const [showMarkPostedDialog, setShowMarkPostedDialog] = useState(false);
-  const [livePostUrl, setLivePostUrl] = useState("");
-  
-  const handleCopyToClipboard = async () => {
-    try {
-      await navigator.clipboard.writeText(post.content);
-      toast({ title: "Copied to clipboard!", description: "Ready to paste into your social platform" });
-    } catch (err) {
-      toast({ title: "Failed to copy", variant: "destructive" });
-    }
-  };
-
-  const handleMarkPosted = () => {
-    onMarkPosted(livePostUrl || undefined);
-    setShowMarkPostedDialog(false);
-    setLivePostUrl("");
-  };
-
-  // Content status styles: drafted (gray), approved (purple)
-  const contentStatusStyles: Record<string, string> = {
-    drafted: "bg-zinc-600/20 text-zinc-400 border-zinc-500/30",
-    approved: "bg-purple-500/20 text-purple-400 border-purple-500/30",
-  };
-  
-  // Publish status styles: planned (blue), posted (green)
-  const publishStatusStyles: Record<string, string> = {
-    planned: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-    posted: "bg-green-500/20 text-green-400 border-green-500/30",
-  };
-
-  const scheduledDate = post.scheduledAt ? parseISO(post.scheduledAt) : null;
-  const createdDate = parseISO(post.createdAt);
-  const contentStatus = post.contentStatus || 'drafted';
-  const publishStatus = post.publishStatus || 'planned';
-  const canMarkPosted = publishStatus !== 'posted';
-  const canApprove = contentStatus !== 'approved';
-
-  // Get platform icon component
-  const getPlatformIcon = () => {
-    const iconMap: Record<string, { icon: any; color: string }> = {
-      twitter: { icon: Twitter, color: "text-blue-400" },
-      linkedin: { icon: Linkedin, color: "text-blue-600" },
-      instagram: { icon: Instagram, color: "text-pink-500" },
-      facebook: { icon: Facebook, color: "text-blue-500" },
+    const { toast } = useToast();
+    const [showMarkPostedDialog, setShowMarkPostedDialog] = useState(false);
+    const [livePostUrl, setLivePostUrl] = useState("");
+    
+    const handleCopyToClipboard = async () => {
+        try {
+        await navigator.clipboard.writeText(post.content);
+        toast({ title: "Copied to clipboard!", description: "Ready to paste into your social platform" });
+        } catch (err) {
+        toast({ title: "Failed to copy", variant: "destructive" });
+        }
     };
-    return iconMap[post.platform] || iconMap.twitter;
-  };
-  const { icon: PlatformIcon, color: platformColor } = getPlatformIcon();
 
-  return (
-    <Card className="bg-zinc-800/50 border-zinc-700 hover:border-zinc-600 transition-all" data-testid={`card-post-${post.id}`}>
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-2 flex-wrap">
-              <PlatformIcon className={`w-4 h-4 ${platformColor}`} />
-              <Badge className={contentStatusStyles[contentStatus] || contentStatusStyles.drafted}>
-                {contentStatus === 'approved' ? (
-                  <CheckCircle2 className="w-3 h-3 mr-1" />
-                ) : (
-                  <Edit2 className="w-3 h-3 mr-1" />
+    const handleMarkPosted = () => {
+        onMarkPosted(livePostUrl || undefined);
+        setShowMarkPostedDialog(false);
+        setLivePostUrl("");
+    };
+
+    // Content status styles: drafted (gray), approved (purple)
+    const contentStatusStyles: Record<string, string> = {
+        drafted: "bg-zinc-600/20 text-zinc-400 border-zinc-500/30",
+        approved: "bg-purple-500/20 text-purple-400 border-purple-500/30",
+    };
+    
+    // Publish status styles: planned (blue), posted (green)
+    const publishStatusStyles: Record<string, string> = {
+        planned: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+        posted: "bg-green-500/20 text-green-400 border-green-500/30",
+    };
+
+    console.log('post in PostCard:', post.dateCreated, post.scheduledAt, post.publishedAt);
+    
+    const scheduledDate = post?.scheduledAt ? parseISO(post.scheduledAt) : null;
+    const createdDate = post?.dateCreated ? parseISO(post.dateCreated) : null;
+    const contentStatus = post.contentStatus || 'drafted';
+    const publishStatus = post.publishStatus || 'planned';
+    const canMarkPosted = publishStatus !== 'posted';
+    const canApprove = contentStatus !== 'approved';
+
+    // Get platform icon component
+    const getPlatformIcon = () => {
+        const iconMap: Record<string, { icon: any; color: string }> = {
+        twitter: { icon: Twitter, color: "text-blue-400" },
+        linkedin: { icon: Linkedin, color: "text-blue-600" },
+        instagram: { icon: Instagram, color: "text-pink-500" },
+        facebook: { icon: Facebook, color: "text-blue-500" },
+        };
+        return iconMap[post.platform] || iconMap.twitter;
+    };
+    const { icon: PlatformIcon, color: platformColor } = getPlatformIcon();
+
+    return (
+        <Card className="bg-zinc-800/50 border-zinc-700 hover:border-zinc-600 transition-all" data-testid={`card-post-${post.id}`}>
+        <CardContent className="p-4">
+            <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
+                <PlatformIcon className={`w-4 h-4 ${platformColor}`} />
+                <Badge className={contentStatusStyles[contentStatus] || contentStatusStyles.drafted}>
+                    {contentStatus === 'approved' ? (
+                    <CheckCircle2 className="w-3 h-3 mr-1" />
+                    ) : (
+                    <Edit2 className="w-3 h-3 mr-1" />
+                    )}
+                    {contentStatus}
+                </Badge>
+                <Badge className={publishStatusStyles[publishStatus] || publishStatusStyles.planned}>
+                    {publishStatus === 'posted' ? (
+                    <CheckCircle2 className="w-3 h-3 mr-1" />
+                    ) : (
+                    <Clock className="w-3 h-3 mr-1" />
+                    )}
+                    {publishStatus}
+                </Badge>
+                {scheduledDate && (
+                    <span className="text-xs text-zinc-500">
+                    {format(scheduledDate, "MMM d, h:mm a")}
+                    </span>
                 )}
-                {contentStatus}
-              </Badge>
-              <Badge className={publishStatusStyles[publishStatus] || publishStatusStyles.planned}>
-                {publishStatus === 'posted' ? (
-                  <CheckCircle2 className="w-3 h-3 mr-1" />
-                ) : (
-                  <Clock className="w-3 h-3 mr-1" />
+                </div>
+                <p className="text-white text-sm line-clamp-2">{post.content}</p>
+                {post.linkUrl && (
+                <div className="flex items-center gap-1 mt-2 text-xs text-zinc-500">
+                    <LinkIcon className="w-3 h-3" />
+                    <span className="truncate">{post.linkUrl}</span>
+                </div>
                 )}
-                {publishStatus}
-              </Badge>
-              {scheduledDate && (
-                <span className="text-xs text-zinc-500">
-                  {format(scheduledDate, "MMM d, h:mm a")}
-                </span>
-              )}
+                {(post as any).livePostUrl && (
+                <a 
+                    href={(post as any).livePostUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 mt-2 text-xs text-green-400 hover:text-green-300"
+                >
+                    <ExternalLink className="w-3 h-3" />
+                    <span className="truncate">View live post</span>
+                </a>
+                )}
             </div>
-            <p className="text-white text-sm line-clamp-2">{post.content}</p>
-            {post.linkUrl && (
-              <div className="flex items-center gap-1 mt-2 text-xs text-zinc-500">
-                <LinkIcon className="w-3 h-3" />
-                <span className="truncate">{post.linkUrl}</span>
-              </div>
-            )}
-            {(post as any).livePostUrl && (
-              <a 
-                href={(post as any).livePostUrl} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 mt-2 text-xs text-green-400 hover:text-green-300"
-              >
-                <ExternalLink className="w-3 h-3" />
-                <span className="truncate">View live post</span>
-              </a>
-            )}
-          </div>
-        </div>
+            </div>
 
-        <div className="mt-4 pt-3 border-t border-zinc-700">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-zinc-500">
-              Created {format(createdDate, "MMM d, yyyy")}
-            </span>
-          </div>
-          <div className="flex flex-wrap gap-1">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={handleCopyToClipboard}
-              className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 h-8 px-2"
-              data-testid={`button-copy-${post.id}`}
-            >
-              <Copy className="w-4 h-4 mr-1" />
-              Copy
-            </Button>
-            {canApprove && (
-              <Button 
+            <div className="mt-4 pt-3 border-t border-zinc-700">
+            <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-zinc-500">
+                Created {createdDate ? format(createdDate, "MMM d, yyyy") : "Unknown"}
+                </span>
+            </div>
+            <div className="flex flex-wrap gap-1">
+                <Button 
                 variant="ghost" 
                 size="sm" 
-                onClick={onApprove}
-                className="text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 h-8 px-2"
-                data-testid={`button-approve-${post.id}`}
-              >
-                <CheckCircle2 className="w-4 h-4 mr-1" />
-                Approve
-              </Button>
-            )}
-            {canMarkPosted && (
-              <Popover open={showMarkPostedDialog} onOpenChange={setShowMarkPostedDialog}>
-                <PopoverTrigger asChild>
-                  <Button 
+                onClick={handleCopyToClipboard}
+                className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 h-8 px-2"
+                data-testid={`button-copy-${post.id}`}
+                >
+                <Copy className="w-4 h-4 mr-1" />
+                Copy
+                </Button>
+                {canApprove && (
+                <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="text-green-400 hover:text-green-300 hover:bg-green-500/10 h-8 px-2"
-                    data-testid={`button-mark-posted-${post.id}`}
-                  >
+                    onClick={onApprove}
+                    className="text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 h-8 px-2"
+                    data-testid={`button-approve-${post.id}`}
+                >
                     <CheckCircle2 className="w-4 h-4 mr-1" />
-                    Posted
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-80 bg-zinc-800 border-zinc-700" align="end">
-                  <div className="space-y-3">
-                    <div className="space-y-1">
-                      <Label className="text-zinc-300 text-sm">Live Post URL (optional)</Label>
-                      <Input
-                        value={livePostUrl}
-                        onChange={(e) => setLivePostUrl(e.target.value)}
-                        className="bg-zinc-900 border-zinc-700 text-white text-sm"
-                        placeholder="https://x.com/yourhandle/status/..."
-                        data-testid={`input-live-url-${post.id}`}
-                      />
-                      <p className="text-xs text-zinc-500">Paste the link to your published post</p>
+                    Approve
+                </Button>
+                )}
+                {canMarkPosted && (
+                <Popover open={showMarkPostedDialog} onOpenChange={setShowMarkPostedDialog}>
+                    <PopoverTrigger asChild>
+                    <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="text-green-400 hover:text-green-300 hover:bg-green-500/10 h-8 px-2"
+                        data-testid={`button-mark-posted-${post.id}`}
+                    >
+                        <CheckCircle2 className="w-4 h-4 mr-1" />
+                        Posted
+                    </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80 bg-zinc-800 border-zinc-700" align="end">
+                    <div className="space-y-3">
+                        <div className="space-y-1">
+                        <Label className="text-zinc-300 text-sm">Live Post URL (optional)</Label>
+                        <Input
+                            value={livePostUrl}
+                            onChange={(e) => setLivePostUrl(e.target.value)}
+                            className="bg-zinc-900 border-zinc-700 text-white text-sm"
+                            placeholder="https://x.com/yourhandle/status/..."
+                            data-testid={`input-live-url-${post.id}`}
+                        />
+                        <p className="text-xs text-zinc-500">Paste the link to your published post</p>
+                        </div>
+                        <div className="flex gap-2">
+                        <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setShowMarkPostedDialog(false)}
+                            className="flex-1 border-zinc-700 text-zinc-300"
+                        >
+                            Cancel
+                        </Button>
+                        <Button 
+                            size="sm"
+                            onClick={handleMarkPosted}
+                            className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                            data-testid={`button-confirm-posted-${post.id}`}
+                        >
+                            Confirm Posted
+                        </Button>
+                        </div>
                     </div>
-                    <div className="flex gap-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => setShowMarkPostedDialog(false)}
-                        className="flex-1 border-zinc-700 text-zinc-300"
-                      >
-                        Cancel
-                      </Button>
-                      <Button 
-                        size="sm"
-                        onClick={handleMarkPosted}
-                        className="flex-1 bg-green-600 hover:bg-green-700 text-white"
-                        data-testid={`button-confirm-posted-${post.id}`}
-                      >
-                        Confirm Posted
-                      </Button>
-                    </div>
-                  </div>
-                </PopoverContent>
-              </Popover>
-            )}
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={onEdit}
-              className="text-zinc-400 hover:text-white h-8 px-2"
-              data-testid={`button-edit-post-${post.id}`}
-            >
-              <Edit2 className="w-4 h-4" />
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={onDelete}
-              className="text-zinc-400 hover:text-red-400 h-8 px-2"
-              data-testid={`button-delete-post-${post.id}`}
-            >
-              <Trash2 className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
+                    </PopoverContent>
+                </Popover>
+                )}
+                <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={onEdit}
+                className="text-zinc-400 hover:text-white h-8 px-2"
+                data-testid={`button-edit-post-${post.id}`}
+                >
+                <Edit2 className="w-4 h-4" />
+                </Button>
+                <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={onDelete}
+                className="text-zinc-400 hover:text-red-400 h-8 px-2"
+                data-testid={`button-delete-post-${post.id}`}
+                >
+                <Trash2 className="w-4 h-4" />
+                </Button>
+            </div>
+            </div>
+        </CardContent>
+        </Card>
+    );
 }
 
 // ============================================
@@ -1486,7 +1488,7 @@ function SocialCalendar({
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-zinc-300 truncate">{post.content}</p>
                     <span className="text-xs text-zinc-500">
-                      Created {format(parseISO(post.createdAt), "MMM d, yyyy")}
+                        {post.dateCreated ? format(post.dateCreated, "MMM d, yyyy") : "Unknown"}
                     </span>
                   </div>
                   <Button
