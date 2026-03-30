@@ -32,14 +32,27 @@ export default function AdminLoginPage() {
         e.preventDefault();
         setIsLoading(true);
 
+        const keycloakUrl = import.meta.env.VITE_KEYCLOAK_URL;
+        const realm = import.meta.env.VITE_KEYCLOAK_REALM || 'hodlearn';
+        const clientId = import.meta.env.VITE_KEYCLOAK_CLIENT_ID || 'hodlearn-client';
+
+        if (!keycloakUrl) {
+            toast({
+                title: "Configuration error",
+                description: "Keycloak URL is not configured",
+                variant: "destructive",
+            });
+            setIsLoading(false);
+            return;
+        }
+
         try {
-            const response = await fetch("/realms/hodlearn/protocol/openid-connect/token", {
+            const response = await fetch(`${keycloakUrl}/realms/${realm}/protocol/openid-connect/token`, {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: new URLSearchParams({
                     grant_type: "password",
-                    client_id: "hodlearn-client", 
-                    client_secret: "xJyqOjzfzfcHNkZ1Wd15BocIdoFhBeQA",  // replace with your actual client ID
+                    client_id: clientId,
                     username: email,
                     password: password,
                 }),

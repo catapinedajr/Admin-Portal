@@ -21,15 +21,22 @@ jobs:
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "VITE_API_BASE_URL=${{ secrets.PROD_API_BASE_URL }}" >> $GITHUB_ENV
             echo "DEPLOY_HOST=${{ secrets.PROD_EC2_HOST }}" >> $GITHUB_ENV
+            echo "VITE_KEYCLOAK_URL=${{ secrets.PROD_KEYCLOAK_URL }}" >> $GITHUB_ENV
           else
             echo "VITE_API_BASE_URL=${{ secrets.STAGING_API_BASE_URL }}" >> $GITHUB_ENV
             echo "DEPLOY_HOST=${{ secrets.STAGING_EC2_HOST }}" >> $GITHUB_ENV
+            echo "VITE_KEYCLOAK_URL=${{ secrets.STAGING_KEYCLOAK_URL }}" >> $GITHUB_ENV
           fi
+          echo "VITE_KEYCLOAK_REALM=${{ secrets.KEYCLOAK_REALM }}" >> $GITHUB_ENV
+          echo "VITE_KEYCLOAK_CLIENT_ID=${{ secrets.KEYCLOAK_CLIENT_ID }}" >> $GITHUB_ENV
 
       - name: Build Docker image
         run: |
           docker build \
             --build-arg VITE_API_BASE_URL=${{ env.VITE_API_BASE_URL }} \
+            --build-arg VITE_KEYCLOAK_URL=${{ env.VITE_KEYCLOAK_URL }} \
+            --build-arg VITE_KEYCLOAK_REALM=${{ env.VITE_KEYCLOAK_REALM }} \
+            --build-arg VITE_KEYCLOAK_CLIENT_ID=${{ env.VITE_KEYCLOAK_CLIENT_ID }} \
             -t ${{ env.IMAGE_NAME }}:${{ github.sha }} \
             -t ${{ env.IMAGE_NAME }}:latest \
             .

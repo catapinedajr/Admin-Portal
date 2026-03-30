@@ -49,9 +49,19 @@ async function initStripe() {
   }
 }
 
-// Safari-specific headers and CORS
+// CORS configuration
+const allowedOrigins = (process.env.CORS_ORIGINS || '').split(',').filter(Boolean).concat([
+  'https://admin.hodlearn.io',
+  'https://app.hodlearn.io',
+  'https://hodlearn.io',
+  'https://www.hodlearn.io',
+]);
+
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');

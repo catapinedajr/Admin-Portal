@@ -13,9 +13,18 @@ COPY shared/ shared/
 COPY attached_assets/ attached_assets/
 COPY vite.config.ts tsconfig.json tailwind.config.ts postcss.config.js components.json ./
 
-# Build arg — set at build time via --build-arg or GitHub Actions
+# Build args — set at build time via --build-arg or GitHub Actions
 ARG VITE_API_BASE_URL
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+
+ARG VITE_KEYCLOAK_URL
+ENV VITE_KEYCLOAK_URL=$VITE_KEYCLOAK_URL
+
+ARG VITE_KEYCLOAK_REALM
+ENV VITE_KEYCLOAK_REALM=$VITE_KEYCLOAK_REALM
+
+ARG VITE_KEYCLOAK_CLIENT_ID
+ENV VITE_KEYCLOAK_CLIENT_ID=$VITE_KEYCLOAK_CLIENT_ID
 
 RUN npx vite build
 
