@@ -19,7 +19,7 @@ import AdminLayout from "../components/AdminLayout";
 function AdminAuthGuard({ children }: { children: React.ReactNode }) {
   const [, setLocation] = useLocation();
   
-  const { data: adminUser, isLoading, error } = useQuery<{ id: number; role: string }>({
+  const { data: adminUser, isLoading, error } = useQuery<{ id: number; userType: string }>({
     queryKey: ["/api/admin/me"],
     retry: false,
   });
@@ -40,7 +40,7 @@ function AdminAuthGuard({ children }: { children: React.ReactNode }) {
 
   if (!adminUser) return null;
   
-  if (adminUser.role !== 'super_admin') {
+  if (adminUser.userType !== 'SUPER_ADMIN') {
     return (
       <AdminLayout>
         <div className="flex items-center justify-center min-h-[60vh]">

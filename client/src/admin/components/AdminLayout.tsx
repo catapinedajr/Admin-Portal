@@ -85,7 +85,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const [location, setLocation] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const { data: admin } = useQuery<{ firstName: string; lastName: string; email: string; role: string }>({
+  const { data: admin } = useQuery<{ firstName: string; lastName: string; email: string; userType: string }>({
     queryKey: ["/api/admin/me"],
     retry: false,
   });
@@ -94,7 +94,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     return navSections.map(section => ({
       ...section,
       items: section.items.filter(item => 
-        !item.superAdminOnly || admin?.role === 'super_admin'
+        !item.superAdminOnly || admin?.userType === 'SUPER_ADMIN'
       )
     })).filter(section => section.items.length > 0);
   };

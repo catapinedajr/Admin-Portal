@@ -171,19 +171,13 @@ function RoadmapManagementContent() {
     queryKey: ["/api/admin/roadmap/stats"],
   });
 
-  console.log("Fetched stats:", stats);
-
   const { data: ideas = [] } = useQuery<RoadmapIdea[]>({
     queryKey: ["/api/admin/roadmap/ideas"],
   });
 
-  console.log("Fetched ideas:", ideas);
-
   const { data: releases = [] } = useQuery<RoadmapRelease[]>({
     queryKey: ["/api/admin/roadmap/releases"],
   });
-
-  console.log("Fetched releases:", releases);
 
   const createIdeaMutation = useMutation({
     mutationFn: (data: any) => apiRequest("POST", "/api/admin/roadmap/ideas", data),

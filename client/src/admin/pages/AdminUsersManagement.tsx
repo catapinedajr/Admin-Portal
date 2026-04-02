@@ -20,7 +20,7 @@ import AdminLayout from "../components/AdminLayout";
 function AdminAuthGuard({ children }: { children: React.ReactNode }) {
   const [, setLocation] = useLocation();
   
-  const { data: adminUser, isLoading, error } = useQuery<{ id: number; role: string }>({
+  const { data: adminUser, isLoading, error } = useQuery<{ id: number; userType: string }>({
     queryKey: ["/api/admin/me"],
     retry: false,
   });
@@ -41,7 +41,7 @@ function AdminAuthGuard({ children }: { children: React.ReactNode }) {
 
   if (!adminUser) return null;
   
-  if (adminUser.role !== 'super_admin') {
+  if (adminUser.userType !== 'SUPER_ADMIN') {
     return (
       <AdminLayout>
         <div className="flex flex-col items-center justify-center min-h-[60vh]">
@@ -63,10 +63,10 @@ interface AdminUser {
   email: string;
   firstName: string;
   lastName: string;
-  role: string;
+  userType : string;
   isActive: boolean;
   lastLoginAt: string | null;
-  createdAt: string;
+  dateCreated: string;
 }
 
 interface CreateAdminForm {
@@ -74,13 +74,13 @@ interface CreateAdminForm {
   password: string;
   firstName: string;
   lastName: string;
-  role: 'admin' | 'super_admin';
+  userType: 'ADMIN' | 'SUPER_ADMIN';
 }
 
 interface EditAdminForm {
   firstName: string;
   lastName: string;
-  role: 'admin' | 'super_admin';
+  userType: 'ADMIN' | 'SUPER_ADMIN';
   isActive: boolean;
   newPassword?: string;
 }
@@ -106,9 +106,9 @@ function AdminUserCard({
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-              admin.role === 'super_admin' ? 'bg-orange-500/20' : 'bg-zinc-700'
+              admin.userType === 'SUPER_ADMIN' ? 'bg-orange-500/20' : 'bg-zinc-700'
             }`}>
-              {admin.role === 'super_admin' ? (
+              {admin.userType === 'SUPER_ADMIN' ? (
                 <ShieldCheck className="w-6 h-6 text-orange-500" />
               ) : (
                 <Shield className="w-6 h-6 text-zinc-400" />
@@ -133,11 +133,11 @@ function AdminUserCard({
           </div>
           <div className="flex items-center gap-2">
             <Badge 
-              variant={admin.role === 'super_admin' ? 'default' : 'secondary'}
-              className={admin.role === 'super_admin' ? 'bg-orange-500' : ''}
-              data-testid={`badge-role-${admin.id}`}
+              variant={admin.userType === 'SUPER_ADMIN' ? 'default' : 'secondary'}
+              className={admin.userType === 'SUPER_ADMIN' ? 'bg-orange-500' : ''}
+              data-testid={`badge-userType-${admin.id}`}
             >
-              {admin.role === 'super_admin' ? 'Super Admin' : 'Admin'}
+              {admin.userType === 'SUPER_ADMIN' ? 'Super Admin' : 'Admin'}
             </Badge>
             {!admin.isActive && (
               <Badge variant="destructive" data-testid={`badge-inactive-${admin.id}`}>Inactive</Badge>
@@ -149,7 +149,7 @@ function AdminUserCard({
           <div className="flex items-center gap-4 text-xs text-zinc-500">
             <div className="flex items-center gap-1">
               <Calendar className="w-3 h-3" />
-              Created: {new Date(admin.createdAt).toLocaleDateString()}
+              Created: {new Date(admin.dateCreated).toLocaleDateString()}
             </div>
             {admin.lastLoginAt && (
               <div className="flex items-center gap-1">
@@ -208,18 +208,18 @@ export default function AdminUsersManagement() {
     password: '',
     firstName: '',
     lastName: '',
-    role: 'admin',
+    userType: 'ADMIN',
   });
   
   const [editForm, setEditForm] = useState<EditAdminForm>({
     firstName: '',
     lastName: '',
-    role: 'admin',
+    userType: 'ADMIN',
     isActive: true,
     newPassword: '',
   });
 
-  const { data: currentAdmin } = useQuery<{ id: number; role: string }>({
+  const { data: currentAdmin } = useQuery<{ id: number; userType: string }>({
     queryKey: ["/api/admin/me"],
   });
 
@@ -235,7 +235,7 @@ export default function AdminUsersManagement() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/admin-users"] });
       setShowCreateDialog(false);
-      setCreateForm({ email: '', password: '', firstName: '', lastName: '', role: 'admin' });
+      setCreateForm({ email: '', password: '', firstName: '', lastName: '', userType: 'ADMIN' });
       toast({ title: "Admin Created", description: "New admin user has been created successfully." });
     },
     onError: (error: any) => {
@@ -245,7 +245,7 @@ export default function AdminUsersManagement() {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<EditAdminForm> }) => {
-      const res = await apiRequest('PATCH', `/api/admin/admin-users/${id}`, data);
+      const res = await apiRequest('PUT', `/api/admin/admin-users/${id}`, data);
       return res.json();
     },
     onSuccess: () => {
@@ -291,7 +291,7 @@ export default function AdminUsersManagement() {
     setEditForm({
       firstName: admin.firstName,
       lastName: admin.lastName,
-      role: admin.role as 'admin' | 'super_admin',
+      userType: admin.userType as 'ADMIN' | 'SUPER_ADMIN',
       isActive: admin.isActive,
       newPassword: '',
     });
@@ -309,7 +309,7 @@ export default function AdminUsersManagement() {
     const data: Partial<EditAdminForm> = {
       firstName: editForm.firstName,
       lastName: editForm.lastName,
-      role: editForm.role,
+      userType: editForm.userType,
       isActive: editForm.isActive,
     };
     
@@ -365,7 +365,7 @@ export default function AdminUsersManagement() {
                   <div>
                     <p className="text-sm text-zinc-400">Super Admins</p>
                     <p className="text-2xl font-bold text-white">
-                      {admins?.filter(a => a.role === 'super_admin' && a.isActive).length || 0}
+                      {admins?.filter(a => a.userType === 'SUPER_ADMIN' && a.isActive).length || 0}
                     </p>
                   </div>
                   <ShieldCheck className="w-8 h-8 text-orange-500" />
@@ -496,15 +496,15 @@ export default function AdminUsersManagement() {
                 <div className="space-y-2">
                   <Label htmlFor="role" className="text-zinc-300">Role</Label>
                   <Select 
-                    value={createForm.role} 
-                    onValueChange={(value: 'admin' | 'super_admin') => setCreateForm({ ...createForm, role: value })}
+                    value={createForm.userType} 
+                    onValueChange={(value: 'ADMIN' | 'SUPER_ADMIN') => setCreateForm({ ...createForm, userType: value })}
                   >
                     <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white" data-testid="select-role">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-zinc-800 border-zinc-700">
-                      <SelectItem value="admin">Admin</SelectItem>
-                      <SelectItem value="super_admin">Super Admin</SelectItem>
+                      <SelectItem value="ADMIN">Admin</SelectItem>
+                      <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-zinc-500">
@@ -568,16 +568,16 @@ export default function AdminUsersManagement() {
                 <div className="space-y-2">
                   <Label htmlFor="editRole" className="text-zinc-300">Role</Label>
                   <Select 
-                    value={editForm.role} 
-                    onValueChange={(value: 'admin' | 'super_admin') => setEditForm({ ...editForm, role: value })}
+                    value={editForm.userType} 
+                    onValueChange={(value: 'ADMIN' | 'SUPER_ADMIN') => setEditForm({ ...editForm, userType: value })}
                     disabled={editingAdmin?.id === currentAdmin?.id}
                   >
                     <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white" data-testid="select-edit-role">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-zinc-800 border-zinc-700">
-                      <SelectItem value="admin">Admin</SelectItem>
-                      <SelectItem value="super_admin">Super Admin</SelectItem>
+                      <SelectItem value="ADMIN">Admin</SelectItem>
+                      <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
                     </SelectContent>
                   </Select>
                   {editingAdmin?.id === currentAdmin?.id && (

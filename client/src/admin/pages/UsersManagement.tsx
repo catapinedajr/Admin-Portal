@@ -52,10 +52,12 @@ interface User {
   currentStreak: number;
   longestStreak: number;
   completedLessons: number;
+  isActive: boolean;
   lastActivityDate: string | null;
   createdAt: string;
   subscriptionStatus?: string;
   subscriptionTier?: string;
+  userType: string;
 }
 
 interface UserStats {
@@ -130,11 +132,11 @@ function UserCard({ user, onSelect }: { user: User; onSelect: () => void }) {
               </Badge>
             )}
             <Badge className={
-              isActive 
+              user?.isActive 
                 ? 'bg-green-500/20 text-green-400 border-green-500/30'
                 : 'bg-zinc-600/20 text-zinc-400 border-zinc-500/30'
             }>
-              {isActive ? 'Active' : 'Inactive'}
+              {user?.isActive ? 'Active' : 'Inactive'}
             </Badge>
           </div>
         </div>
@@ -385,7 +387,7 @@ export default function UsersManagement() {
       (tierFilter === "paid" && isPaid) ||
       (tierFilter === "free" && !isPaid);
 
-    return matchesSearch && matchesStatus && matchesTier;
+    return matchesSearch && matchesStatus && matchesTier && user.userType == "LEARNER";
   });
 
   const handleSelectUser = (user: User) => {
