@@ -41,7 +41,7 @@ export function SubscriptionProvider({ children }: SubscriptionProviderProps) {
   const [subscriptionTier, setSubscriptionTierState] = useState<SubscriptionTier>('free');
 
   const { data: paywallConfig, isLoading: isPaywallConfigLoading } = useQuery<PaywallConfig>({
-    queryKey: ['/api/paywall-config'],
+    queryKey: ['/api/v1/public/paywall-config'],
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });

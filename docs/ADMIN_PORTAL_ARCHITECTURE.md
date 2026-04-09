@@ -119,7 +119,7 @@ This document provides a comprehensive architecture overview of the HODLearn adm
 | `/api/day-completed/:userId/:dayIndex` | GET/POST | Day completion status | Yes* |
 | `/api/wallet/dashboard` | GET | Wallet summary | Yes* |
 | `/api/bitcoin-price` | GET | Current BTC price | No |
-| `/api/paywall-config` | GET | Paywall settings | No |
+| `/api/v1/public/paywall-config` | GET | Paywall settings | No |
 
 **\* Note:** Currently using `setDefaultUser` middleware (hardcoded user ID 1) for development. **MUST be replaced with proper authentication for production.**
 
