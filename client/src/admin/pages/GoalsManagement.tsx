@@ -110,6 +110,7 @@ const QUARTERS = [
 ];
 
 const KR_STATUSES = [
+    { value: 'not_started', label: 'Not Started', color: 'bg-gray-600' },
     { value: 'on_track', label: 'On Track', color: 'bg-green-600' },
     { value: 'at_risk', label: 'At Risk', color: 'bg-yellow-600' },
     { value: 'behind', label: 'Behind', color: 'bg-red-600' },
@@ -679,7 +680,7 @@ function GoalsManagementContent() {
 
     const getKRProgress = (kr: KeyResult) => {
         if (kr.targetValue === 0) return 0;
-        return Math.min(Math.round((kr.currentValue / kr.targetValue) * 100), 100);
+        return  Math.min(Math.round((kr.currentValue / kr.targetValue) * 100), 100);
     };
 
     const activeTargets = targets.filter(t => t.status === 'active');
