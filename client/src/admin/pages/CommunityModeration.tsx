@@ -67,7 +67,7 @@ interface Post {
   moderatedAt: string | null;
   moderationNote: string | null;
   reportCount: number;
-  createdAt: string;
+  dateCreated: string;
   user?: { id: number; username: string; email: string };
   category?: { id: number; name: string };
 }
@@ -191,7 +191,7 @@ function PostCard({
                   {post.reportCount} reports
                 </span>
               )}
-              <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+              <span>{new Date(post.dateCreated).toLocaleDateString()}</span>
             </div>
             
             <div className="flex items-center gap-2 mt-3">
@@ -300,6 +300,7 @@ function CommunityModerationContent() {
   
   const moderateReplyMutation = useMutation({
     mutationFn: async ({ replyId, status }: { replyId: number; status: string }) => {
+        console.log("Moderating reply", { replyId, status });
       return apiRequest('POST', `/api/admin/community/replies/${replyId}/moderate`, { status });
     },
     onSuccess: () => {
