@@ -4,7 +4,7 @@
 
 ### **Logo & Typography**
 - **Primary Logo**: "HL" monogram in orange square with "HODLearn" wordmark
-- **Tagline**: "How-to-learn BTC" / "Understanding Bitcoin takes time. Building conviction takes community."
+- **Tagline**: "How-to-Learn BTC" / "Understanding Bitcoin takes time. Building conviction takes community."
 - **Brand Voice**: Professional, approachable, urgency-driven without being alarmist
 
 ## Typography System
