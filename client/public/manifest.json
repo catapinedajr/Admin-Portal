@@ -2,7 +2,7 @@
   "name": "HODLearn - Bitcoin Education",
   "short_name": "HODLearn",
   "description": "Learn Bitcoin through bite-sized daily lessons and build lasting conviction",
-  "start_url": "/",
+  "start_url": "/admin/",
   "display": "standalone",
   "background_color": "#09090b",
   "theme_color": "#f97316",

@@ -1,7 +1,7 @@
 // HODLearn Service Worker with Enhanced Error Recovery
 const CACHE_NAME = 'hodlearn-v2'; // Incremented to force cache refresh
 const urlsToCache = [
-  '/',
+  '/admin/',
   '/manifest.json',
   '/icon.svg',
   '/icon-192x192.png',
@@ -51,7 +51,7 @@ self.addEventListener('fetch', (event) => {
         
         // For navigation requests, return the cached root page to prevent white screen
         if (event.request.mode === 'navigate') {
-          return caches.match('/').then((response) => {
+          return caches.match('/admin/').then((response) => {
             return response || new Response(
               '<!DOCTYPE html><html><body><h1>HODLearn</h1><p>Loading...</p><script>window.location.reload();</script></body></html>',
               { headers: { 'Content-Type': 'text/html' } }
@@ -109,6 +109,6 @@ self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   
   event.waitUntil(
-    clients.openWindow('/')
+    clients.openWindow('/admin/')
   );
 });
