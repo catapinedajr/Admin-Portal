@@ -56,6 +56,7 @@ function Router() {
       <ScrollToTop />
       <Switch>
         <Route path="/terms" component={TermsPage} />
+        <Route path="/privacy" component={PrivacyPage} />
         <Route path="/policy" component={PrivacyPage} />
         <Route path="/admin/login" component={AdminLoginPage} />
         <Route path="/admin/content" component={ContentManagement} />
