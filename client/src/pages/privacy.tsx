@@ -200,13 +200,6 @@ export function PrivacyPage() {
 
         </div>
 
-        <div className="mt-12 pt-8 border-t border-zinc-700">
-          <Link href="/auth">
-            <Button className="bg-orange-500 hover:bg-orange-600">
-              Return to Registration
-            </Button>
-          </Link>
-        </div>
       </div>
     </div>
   );
