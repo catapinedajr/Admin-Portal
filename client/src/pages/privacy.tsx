@@ -8,12 +8,6 @@ export function PrivacyPage() {
       <div className="bg-zinc-800 border-b border-zinc-700">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
-            <Link href="/auth">
-              <Button variant="ghost" size="sm" className="text-zinc-400 hover:text-zinc-200">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Registration
-              </Button>
-            </Link>
             <div>
               <h1 className="text-2xl font-bold text-orange-500">HODLearn Privacy Policy</h1>
               <p className="text-sm text-zinc-400">Last updated: January 2026</p>
