@@ -7,7 +7,6 @@ import { useLocation } from "wouter";
 import { 
   Flame, 
   Trophy, 
-  Target, 
   Zap, 
   Crown,
   ChevronRight,
@@ -15,6 +14,8 @@ import {
   ArrowRight,
   BookOpen
 } from "@/lib/icons";
+import { userApi as userConfig } from '@/config';
+import { createHttpClient } from '@/lib/http-client';
 
 interface WalletData {
   totalSatoshisEarned: number;

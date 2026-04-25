@@ -50,7 +50,7 @@ export default function HomeSection({
 
   // Get wallet data for streak information
   const { data: walletData, isLoading } = useQuery<WalletData>({
-    queryKey: ['/api/wallet/dashboard'],
+    queryKey: ['/api/v1/wallet/dashboard'],
     retry: false,
     refetchOnWindowFocus: false,
   });
