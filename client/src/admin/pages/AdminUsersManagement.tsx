@@ -320,6 +320,8 @@ export default function AdminUsersManagement() {
     updateMutation.mutate({ id: editingAdmin.id, data });
   };
 
+  console.log("Admins:", admins);
+
   const activeAdmins = admins?.filter(a => a.isActive) || [];
   const inactiveAdmins = admins?.filter(a => !a.isActive) || [];
 
