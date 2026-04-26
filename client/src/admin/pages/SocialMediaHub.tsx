@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { 
-  Plus, Calendar, Send, MousePointerClick, Users, TrendingUp,
+  Plus, Calendar, Send, TrendingUp,
   Twitter, Linkedin, Instagram, Facebook, Clock, ArrowRight, Edit2, Trash2,
   AlertCircle, CheckCircle2, Loader2, Link as LinkIcon, Sparkles,
   ChevronLeft, ChevronRight, X, Settings, Lock, Unlock, Save, RotateCcw,
@@ -18,7 +18,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -31,47 +30,47 @@ import { format, addDays, startOfWeek, startOfMonth, isSameDay, isSameMonth, par
 // ============================================
 
 interface SocialPost {
-  id: number;
-  platform: string;
-  content: string;
-  imageUrl: string | null;
-  linkUrl: string | null;
-  campaignId: number | null;
-  linkedDayIndex: number | null;
-  contentStatus: 'drafted' | 'approved';
-  publishStatus: 'planned' | 'posted';
-  scheduledAt: string | null;
-  publishedAt: string | null;
-  dateCreated: string;
+    id: number;
+    platform: string;
+    content: string;
+    imageUrl: string | null;
+    linkUrl: string | null;
+    campaignId: number | null;
+    linkedDayIndex: number | null;
+    contentStatus: 'drafted' | 'approved';
+    publishStatus: 'planned' | 'posted';
+    scheduledAt: string | null;
+    publishedAt: string | null;
+    dateCreated: string;
 }
 
 interface SocialPostWithMetrics extends SocialPost {
-  metrics?: {
-    impressions: number;
-    clicks: number;
-    engagements: number;
-  } | null;
-  signups?: number;
+    metrics?: {
+        impressions: number;
+        clicks: number;
+        engagements: number;
+    } | null;
+    signups?: number;
 }
 
 interface Campaign {
-  id: number;
-  name: string;
+    id: number;
+    name: string;
 }
 
 interface ContentDay {
-  id: number;
-  dayIndex: number;
-  title: string;
+    id: number;
+    dayIndex: number;
+    title: string;
 }
 
 interface SocialStats {
-  planned: number;
-  posted: number;
-  drafted: number;
-  approved: number;
-  totalClicks: number;
-  totalSignups: number;
+    planned: number;
+    posted: number;
+    drafted: number;
+    approved: number;
+    totalClicks: number;
+    totalSignups: number;
 }
 
 // ============================================
@@ -79,29 +78,29 @@ interface SocialStats {
 // ============================================
 
 function AdminAuthGuard({ children }: { children: React.ReactNode }) {
-  const [, setLocation] = useLocation();
-  
-  const { data: adminUser, isLoading, error } = useQuery<{ id: number }>({
-    queryKey: ["/api/admin/me"],
-    retry: false,
-  });
+    const [, setLocation] = useLocation();
+    
+    const { data: adminUser, isLoading, error } = useQuery<{ id: number }>({
+        queryKey: ["/api/admin/me"],
+        retry: false,
+    });
 
-  useEffect(() => {
-    if (!isLoading && (error || !adminUser)) {
-      setLocation('/admin/login');
+    useEffect(() => {
+        if (!isLoading && (error || !adminUser)) {
+        setLocation('/admin/login');
+        }
+    }, [isLoading, error, adminUser, setLocation]);
+
+    if (isLoading) {
+        return (
+        <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+        </div>
+        );
     }
-  }, [isLoading, error, adminUser, setLocation]);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
-      </div>
-    );
-  }
-
-  if (!adminUser) return null;
-  return <>{children}</>;
+    if (!adminUser) return null;
+    return <>{children}</>;
 }
 
 // ============================================
@@ -157,263 +156,263 @@ Create social posts that:
 // ============================================
 
 interface AiInstructionsData {
-  type: string;
-  name: string;
-  instructions: string;
-  isLocked: boolean;
-  exists: boolean;
-  updatedAt?: string;
+    type: string;
+    name: string;
+    instructions: string;
+    isLocked: boolean;
+    exists: boolean;
+    updatedAt?: string;
 }
 
 function AIInstructionsEditor({ type, defaultInstructions }: { type: 'content' | 'social'; defaultInstructions: string }) {
-  const { toast } = useToast();
-  const [isOpen, setIsOpen] = useState(false);
-  const [editedInstructions, setEditedInstructions] = useState("");
-  const [showUnlockConfirm, setShowUnlockConfirm] = useState(false);
-  const [showResetConfirm, setShowResetConfirm] = useState(false);
-  const [hasChanges, setHasChanges] = useState(false);
+    const { toast } = useToast();
+    const [isOpen, setIsOpen] = useState(false);
+    const [editedInstructions, setEditedInstructions] = useState("");
+    const [showUnlockConfirm, setShowUnlockConfirm] = useState(false);
+    const [showResetConfirm, setShowResetConfirm] = useState(false);
+    const [hasChanges, setHasChanges] = useState(false);
 
-  const { data: instructionsData, isLoading, error: instructionsError } = useQuery<AiInstructionsData>({
-    queryKey: [`/api/admin/ai-instructions/${type}`],
-  });
+    const { data: instructionsData, isLoading, error: instructionsError } = useQuery<AiInstructionsData>({
+        queryKey: [`/api/admin/ai-instructions/${type}`],
+    });
 
-  useEffect(() => {
-    if (instructionsData?.exists && instructionsData.instructions) {
-      setEditedInstructions(instructionsData.instructions);
-    } else {
-      setEditedInstructions(defaultInstructions);
-    }
-    setHasChanges(false);
-  }, [instructionsData, defaultInstructions]);
+    useEffect(() => {
+        if (instructionsData?.exists && instructionsData.instructions) {
+            setEditedInstructions(instructionsData.instructions);
+        } else {
+            setEditedInstructions(defaultInstructions);
+        }
+        setHasChanges(false);
+    }, [instructionsData, defaultInstructions]);
 
-  const handleTextChange = (value: string) => {
-    setEditedInstructions(value);
-    const originalValue = instructionsData?.exists ? instructionsData.instructions : defaultInstructions;
-    setHasChanges(value !== originalValue);
-  };
+    const handleTextChange = (value: string) => {
+        setEditedInstructions(value);
+        const originalValue = instructionsData?.exists ? instructionsData.instructions : defaultInstructions;
+        setHasChanges(value !== originalValue);
+    };
 
-  const saveMutation = useMutation({
-    mutationFn: async () => {
-      const res = await apiRequest("POST", `/api/admin/ai-instructions/${type}`, {
-        name: type === 'content' ? 'Content AI Instructions' : 'Social AI Instructions',
-        instructions: editedInstructions
-      });
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/admin/ai-instructions/${type}`] });
-      toast({ title: "Instructions saved successfully!" });
-      setHasChanges(false);
-    },
-    onError: (error: Error) => {
-      toast({ title: "Failed to save", description: error.message, variant: "destructive" });
-    }
-  });
+    const saveMutation = useMutation({
+        mutationFn: async () => {
+        const res = await apiRequest("POST", `/api/admin/ai-instructions/${type}`, {
+            name: type === 'content' ? 'Content AI Instructions' : 'Social AI Instructions',
+            instructions: editedInstructions
+        });
+        return res.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [`/api/admin/ai-instructions/${type}`] });
+            toast({ title: "Instructions saved successfully!" });
+            setHasChanges(false);
+        },
+        onError: (error: Error) => {
+            toast({ title: "Failed to save", description: error.message, variant: "destructive" });
+        }
+    });
 
-  const lockMutation = useMutation({
-    mutationFn: async () => {
-      const res = await apiRequest("POST", `/api/admin/ai-instructions/${type}/lock`, {});
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/admin/ai-instructions/${type}`] });
-      toast({ title: "Instructions locked" });
-    }
-  });
+    const lockMutation = useMutation({
+        mutationFn: async () => {
+            const res = await apiRequest("POST", `/api/admin/ai-instructions/${type}/lock`, {});
+            return res.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [`/api/admin/ai-instructions/${type}`] });
+            toast({ title: "Instructions locked" });
+        }
+    });
 
-  const unlockMutation = useMutation({
-    mutationFn: async () => {
-      const res = await apiRequest("POST", `/api/admin/ai-instructions/${type}/unlock`, { confirmed: true });
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/admin/ai-instructions/${type}`] });
-      toast({ title: "Instructions unlocked" });
-      setShowUnlockConfirm(false);
-    }
-  });
+    const unlockMutation = useMutation({
+        mutationFn: async () => {
+            const res = await apiRequest("POST", `/api/admin/ai-instructions/${type}/unlock`, { confirmed: true });
+            return res.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [`/api/admin/ai-instructions/${type}`] });
+            toast({ title: "Instructions unlocked" });
+            setShowUnlockConfirm(false);
+        }
+    });
 
-  const resetMutation = useMutation({
-    mutationFn: async () => {
-      const res = await apiRequest("POST", `/api/admin/ai-instructions/${type}/reset`, { confirmed: true });
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/admin/ai-instructions/${type}`] });
-      setEditedInstructions(defaultInstructions);
-      toast({ title: "Instructions reset to default" });
-      setShowResetConfirm(false);
-      setHasChanges(false);
-    }
-  });
+    const resetMutation = useMutation({
+        mutationFn: async () => {
+            const res = await apiRequest("POST", `/api/admin/ai-instructions/${type}/reset`, { confirmed: true });
+            return res.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [`/api/admin/ai-instructions/${type}`] });
+            setEditedInstructions(defaultInstructions);
+            toast({ title: "Instructions reset to default" });
+            setShowResetConfirm(false);
+            setHasChanges(false);
+        }
+    });
 
-  const isLocked = instructionsData?.isLocked ?? true;
-  const isUsingDefault = !instructionsData?.exists;
+    const isLocked = instructionsData?.isLocked ?? true;
+    const isUsingDefault = !instructionsData?.exists;
 
-  return (
-    <>
-      <Button
-        variant="outline"
-        onClick={() => setIsOpen(true)}
-        className="border-zinc-700 text-zinc-300 hover:bg-zinc-800"
-        data-testid={`button-open-${type}-ai-instructions`}
-      >
-        <Settings className="w-4 h-4 mr-2 text-orange-500" />
-        Social AI Instructions
-        {isLocked ? (
-          <Badge className="ml-2 bg-red-500/20 text-red-400 text-xs"><Lock className="w-3 h-3 mr-1" />Locked</Badge>
-        ) : (
-          <Badge className="ml-2 bg-green-500/20 text-green-400 text-xs"><Unlock className="w-3 h-3 mr-1" />Unlocked</Badge>
-        )}
-      </Button>
-
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="bg-zinc-900 border-zinc-800 max-w-3xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-white flex items-center gap-2">
-              <Settings className="w-5 h-5 text-orange-500" />
-              Social AI Instructions
-              {isUsingDefault && (
-                <Badge className="bg-zinc-700 text-zinc-300 text-xs">Using Default</Badge>
-              )}
-            </DialogTitle>
-            <DialogDescription className="text-zinc-400">
-              Customize the AI instructions used when generating social media posts.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4 py-4">
-            {isLoading ? (
-              <div className="flex items-center justify-center py-8">
-                <Loader2 className="w-6 h-6 text-orange-500 animate-spin" />
-              </div>
-            ) : instructionsError ? (
-              <div className="p-4 border border-red-500/30 bg-red-500/10 rounded-md">
-                <div className="flex items-center gap-2 text-red-400 text-sm">
-                  <AlertCircle className="w-4 h-4" />
-                  Failed to load AI instructions. Please refresh the page.
-                </div>
-              </div>
+    return (
+        <>
+        <Button
+            variant="outline"
+            onClick={() => setIsOpen(true)}
+            className="border-zinc-700 text-zinc-300 hover:bg-zinc-800"
+            data-testid={`button-open-${type}-ai-instructions`}
+        >
+            <Settings className="w-4 h-4 mr-2 text-orange-500" />
+            Social AI Instructions
+            {isLocked ? (
+            <Badge className="ml-2 bg-red-500/20 text-red-400 text-xs"><Lock className="w-3 h-3 mr-1" />Locked</Badge>
             ) : (
-              <>
-                <div className="flex items-center justify-between">
-                  <div className="text-xs text-zinc-500">
-                    {instructionsData?.updatedAt && `Last updated: ${new Date(instructionsData.updatedAt).toLocaleDateString()}`}
-                  </div>
-                  <div className="flex gap-2">
-                    {isLocked ? (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setShowUnlockConfirm(true)}
-                        className="border-zinc-700 text-zinc-300 text-xs"
-                        data-testid="button-unlock-social-instructions"
-                      >
-                        <Unlock className="w-3 h-3 mr-1" />
-                        Unlock to Edit
-                      </Button>
-                    ) : (
-                      <>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setShowResetConfirm(true)}
-                          className="border-zinc-700 text-zinc-300 text-xs"
-                          data-testid="button-reset-social-instructions"
-                        >
-                          <RotateCcw className="w-3 h-3 mr-1" />
-                          Reset to Default
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => lockMutation.mutate()}
-                          disabled={lockMutation.isPending}
-                          className="border-zinc-700 text-zinc-300 text-xs"
-                          data-testid="button-lock-social-instructions"
-                        >
-                          <Lock className="w-3 h-3 mr-1" />
-                          Lock
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                </div>
-                
-                <Textarea
-                  value={editedInstructions}
-                  onChange={(e) => handleTextChange(e.target.value)}
-                  disabled={isLocked}
-                  className={`bg-zinc-800 border-zinc-700 text-white font-mono text-xs min-h-[350px] ${isLocked ? 'opacity-60 cursor-not-allowed' : ''}`}
-                  placeholder="AI Instructions..."
-                  data-testid="input-social-ai-instructions"
-                />
-                
-                <div className="flex items-center justify-between">
-                  <div className="text-xs text-zinc-500">
-                    These instructions guide AI when generating social media posts.
-                  </div>
-                  {!isLocked && hasChanges && (
-                    <Button
-                      onClick={() => saveMutation.mutate()}
-                      disabled={saveMutation.isPending}
-                      className="bg-orange-500 hover:bg-orange-600 text-xs"
-                      data-testid="button-save-social-instructions"
-                    >
-                      {saveMutation.isPending ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Save className="w-3 h-3 mr-1" />}
-                      Save Changes
-                    </Button>
-                  )}
-                </div>
-              </>
+            <Badge className="ml-2 bg-green-500/20 text-green-400 text-xs"><Unlock className="w-3 h-3 mr-1" />Unlocked</Badge>
             )}
-          </div>
-        </DialogContent>
-      </Dialog>
+        </Button>
 
-      <AlertDialog open={showUnlockConfirm} onOpenChange={setShowUnlockConfirm}>
-        <AlertDialogContent className="bg-zinc-900 border-zinc-800">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-white">Unlock AI Instructions?</AlertDialogTitle>
-            <AlertDialogDescription className="text-zinc-400">
-              Are you sure you want to unlock these instructions for editing? Changes to AI instructions will affect all future social media content generation.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="border-zinc-700 text-zinc-300">Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => unlockMutation.mutate()}
-              className="bg-orange-500 hover:bg-orange-600"
-              data-testid="button-confirm-unlock-social"
-            >
-              Yes, Unlock
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogContent className="bg-zinc-900 border-zinc-800 max-w-3xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+                <DialogTitle className="text-white flex items-center gap-2">
+                <Settings className="w-5 h-5 text-orange-500" />
+                Social AI Instructions
+                {isUsingDefault && (
+                    <Badge className="bg-zinc-700 text-zinc-300 text-xs">Using Default</Badge>
+                )}
+                </DialogTitle>
+                <DialogDescription className="text-zinc-400">
+                Customize the AI instructions used when generating social media posts.
+                </DialogDescription>
+            </DialogHeader>
 
-      <AlertDialog open={showResetConfirm} onOpenChange={setShowResetConfirm}>
-        <AlertDialogContent className="bg-zinc-900 border-zinc-800">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-white">Reset to Default Instructions?</AlertDialogTitle>
-            <AlertDialogDescription className="text-zinc-400">
-              Are you sure you want to reset to the default AI instructions? This will delete all custom changes.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="border-zinc-700 text-zinc-300">Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => resetMutation.mutate()}
-              className="bg-red-500 hover:bg-red-600"
-              data-testid="button-confirm-reset-social"
-            >
-              Yes, Reset
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
-  );
+            <div className="space-y-4 py-4">
+                {isLoading ? (
+                <div className="flex items-center justify-center py-8">
+                    <Loader2 className="w-6 h-6 text-orange-500 animate-spin" />
+                </div>
+                ) : instructionsError ? (
+                <div className="p-4 border border-red-500/30 bg-red-500/10 rounded-md">
+                    <div className="flex items-center gap-2 text-red-400 text-sm">
+                    <AlertCircle className="w-4 h-4" />
+                    Failed to load AI instructions. Please refresh the page.
+                    </div>
+                </div>
+                ) : (
+                <>
+                    <div className="flex items-center justify-between">
+                    <div className="text-xs text-zinc-500">
+                        {instructionsData?.updatedAt && `Last updated: ${new Date(instructionsData.updatedAt).toLocaleDateString()}`}
+                    </div>
+                    <div className="flex gap-2">
+                        {isLocked ? (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowUnlockConfirm(true)}
+                            className="border-zinc-700 text-zinc-300 text-xs"
+                            data-testid="button-unlock-social-instructions"
+                        >
+                            <Unlock className="w-3 h-3 mr-1" />
+                            Unlock to Edit
+                        </Button>
+                        ) : (
+                        <>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setShowResetConfirm(true)}
+                                className="border-zinc-700 text-zinc-300 text-xs"
+                                data-testid="button-reset-social-instructions"
+                            >
+                                <RotateCcw className="w-3 h-3 mr-1" />
+                                Reset to Default
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => lockMutation.mutate()}
+                                disabled={lockMutation.isPending}
+                                className="border-zinc-700 text-zinc-300 text-xs"
+                                data-testid="button-lock-social-instructions"
+                            >
+                                <Lock className="w-3 h-3 mr-1" />
+                                Lock
+                            </Button>
+                        </>
+                        )}
+                    </div>
+                    </div>
+                    
+                    <Textarea
+                        value={editedInstructions}
+                        onChange={(e) => handleTextChange(e.target.value)}
+                        disabled={isLocked}
+                        className={`bg-zinc-800 border-zinc-700 text-white font-mono text-xs min-h-[350px] ${isLocked ? 'opacity-60 cursor-not-allowed' : ''}`}
+                        placeholder="AI Instructions..."
+                        data-testid="input-social-ai-instructions"
+                    />
+                    
+                    <div className="flex items-center justify-between">
+                    <div className="text-xs text-zinc-500">
+                        These instructions guide AI when generating social media posts.
+                    </div>
+                    {!isLocked && hasChanges && (
+                        <Button
+                            onClick={() => saveMutation.mutate()}
+                            disabled={saveMutation.isPending}
+                            className="bg-orange-500 hover:bg-orange-600 text-xs"
+                            data-testid="button-save-social-instructions"
+                        >
+                            {saveMutation.isPending ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Save className="w-3 h-3 mr-1" />}
+                            Save Changes
+                        </Button>
+                    )}
+                    </div>
+                </>
+                )}
+            </div>
+            </DialogContent>
+        </Dialog>
+
+        <AlertDialog open={showUnlockConfirm} onOpenChange={setShowUnlockConfirm}>
+            <AlertDialogContent className="bg-zinc-900 border-zinc-800">
+            <AlertDialogHeader>
+                <AlertDialogTitle className="text-white">Unlock AI Instructions?</AlertDialogTitle>
+                <AlertDialogDescription className="text-zinc-400">
+                    Are you sure you want to unlock these instructions for editing? Changes to AI instructions will affect all future social media content generation.
+                </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+                <AlertDialogCancel className="border-zinc-700 text-zinc-300">Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                    onClick={() => unlockMutation.mutate()}
+                    className="bg-orange-500 hover:bg-orange-600"
+                    data-testid="button-confirm-unlock-social"
+                >
+                    Yes, Unlock
+                </AlertDialogAction>
+            </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog open={showResetConfirm} onOpenChange={setShowResetConfirm}>
+            <AlertDialogContent className="bg-zinc-900 border-zinc-800">
+            <AlertDialogHeader>
+                <AlertDialogTitle className="text-white">Reset to Default Instructions?</AlertDialogTitle>
+                <AlertDialogDescription className="text-zinc-400">
+                    Are you sure you want to reset to the default AI instructions? This will delete all custom changes.
+                </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+                <AlertDialogCancel className="border-zinc-700 text-zinc-300">Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                    onClick={() => resetMutation.mutate()}
+                    className="bg-red-500 hover:bg-red-600"
+                    data-testid="button-confirm-reset-social"
+                >
+                    Yes, Reset
+                </AlertDialogAction>
+            </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+        </>
+    );
 }
 
 // ============================================
@@ -421,36 +420,36 @@ function AIInstructionsEditor({ type, defaultInstructions }: { type: 'content' |
 // ============================================
 
 function StatCard({ title, value, icon: Icon, color, subtext }: { 
-  title: string; 
-  value: number | string; 
-  icon: any; 
-  color: string;
-  subtext?: string;
+    title: string; 
+    value: number | string; 
+    icon: any; 
+    color: string;
+    subtext?: string;
 }) {
-  const colorClasses: Record<string, string> = {
-    blue: "bg-blue-500/20 text-blue-400",
-    green: "bg-green-500/20 text-green-400",
-    purple: "bg-purple-500/20 text-purple-400",
-    orange: "bg-orange-500/20 text-orange-400",
-    zinc: "bg-zinc-600/20 text-zinc-400",
-  };
+    const colorClasses: Record<string, string> = {
+        blue: "bg-blue-500/20 text-blue-400",
+        green: "bg-green-500/20 text-green-400",
+        purple: "bg-purple-500/20 text-purple-400",
+        orange: "bg-orange-500/20 text-orange-400",
+        zinc: "bg-zinc-600/20 text-zinc-400",
+    };
 
-  return (
-    <Card className="bg-zinc-800/50 border-zinc-700">
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-zinc-400 text-sm">{title}</p>
-            <p className="text-2xl font-bold text-white">{value}</p>
-            {subtext && <p className="text-xs text-zinc-500">{subtext}</p>}
-          </div>
-          <div className={`p-3 rounded-lg ${colorClasses[color]}`}>
-            <Icon className="w-5 h-5" />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
+    return (
+        <Card className="bg-zinc-800/50 border-zinc-700">
+        <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+            <div>
+                <p className="text-zinc-400 text-sm">{title}</p>
+                <p className="text-2xl font-bold text-white">{value}</p>
+                {subtext && <p className="text-xs text-zinc-500">{subtext}</p>}
+            </div>
+            <div className={`p-3 rounded-lg ${colorClasses[color]}`}>
+                <Icon className="w-5 h-5" />
+            </div>
+            </div>
+        </CardContent>
+        </Card>
+    );
 }
 
 // ============================================
@@ -458,17 +457,17 @@ function StatCard({ title, value, icon: Icon, color, subtext }: {
 // ============================================
 
 function PostCard({ 
-  post, 
-  onEdit, 
-  onDelete, 
-  onMarkPosted,
-  onApprove
+    post, 
+    onEdit, 
+    onDelete, 
+    onMarkPosted,
+    onApprove
 }: { 
-  post: SocialPostWithMetrics; 
-  onEdit: () => void;
-  onDelete: () => void;
-  onMarkPosted: (livePostUrl?: string) => void;
-  onApprove: () => void;
+    post: SocialPostWithMetrics; 
+    onEdit: () => void;
+    onDelete: () => void;
+    onMarkPosted: (livePostUrl?: string) => void;
+    onApprove: () => void;
 }) {
     const { toast } = useToast();
     const [showMarkPostedDialog, setShowMarkPostedDialog] = useState(false);
@@ -476,10 +475,10 @@ function PostCard({
     
     const handleCopyToClipboard = async () => {
         try {
-        await navigator.clipboard.writeText(post.content);
-        toast({ title: "Copied to clipboard!", description: "Ready to paste into your social platform" });
+            await navigator.clipboard.writeText(post.content);
+            toast({ title: "Copied to clipboard!", description: "Ready to paste into your social platform" });
         } catch (err) {
-        toast({ title: "Failed to copy", variant: "destructive" });
+            toast({ title: "Failed to copy", variant: "destructive" });
         }
     };
 
@@ -501,8 +500,6 @@ function PostCard({
         posted: "bg-green-500/20 text-green-400 border-green-500/30",
     };
 
-    console.log('post in PostCard:', post.dateCreated, post.scheduledAt, post.publishedAt);
-    
     const scheduledDate = post?.scheduledAt ? parseISO(post.scheduledAt) : null;
     const createdDate = post?.dateCreated ? parseISO(post.dateCreated) : null;
     const contentStatus = post.contentStatus || 'drafted';
@@ -680,133 +677,133 @@ function PostCard({
 
 // Platform configuration with icons and limits
 const PLATFORM_CONFIG: Record<string, { icon: any; label: string; maxChars: number; color: string }> = {
-  twitter: { icon: Twitter, label: "Twitter/X", maxChars: 280, color: "text-blue-400" },
-  linkedin: { icon: Linkedin, label: "LinkedIn", maxChars: 3000, color: "text-blue-600" },
-  instagram: { icon: Instagram, label: "Instagram", maxChars: 2200, color: "text-pink-500" },
-  facebook: { icon: Facebook, label: "Facebook", maxChars: 63206, color: "text-blue-500" },
+    twitter: { icon: Twitter, label: "Twitter/X", maxChars: 280, color: "text-blue-400" },
+    linkedin: { icon: Linkedin, label: "LinkedIn", maxChars: 3000, color: "text-blue-600" },
+    instagram: { icon: Instagram, label: "Instagram", maxChars: 2200, color: "text-pink-500" },
+    facebook: { icon: Facebook, label: "Facebook", maxChars: 63206, color: "text-blue-500" },
 };
 
 function PostComposer({ 
-  open, 
-  onClose, 
-  post,
-  campaigns,
-  contentDays 
+    open, 
+    onClose, 
+    post,
+    campaigns,
+    contentDays 
 }: { 
-  open: boolean; 
-  onClose: () => void;
-  post?: SocialPost | null;
-  campaigns: Campaign[];
-  contentDays: ContentDay[];
+    open: boolean; 
+    onClose: () => void;
+    post?: SocialPost | null;
+    campaigns: Campaign[];
+    contentDays: ContentDay[];
 }) {
-  const { toast } = useToast();
-  
-  // Dynamic max chars based on platform
-  const getMaxChars = (platform: string) => PLATFORM_CONFIG[platform]?.maxChars || 280;
-  
-  const [formData, setFormData] = useState({
-    content: "",
-    platform: "twitter",
-    linkUrl: "",
-    campaignId: "",
-    linkedDayIndex: "",
-    scheduledDate: "",
-    scheduledTime: "",
-    notes: "",
-    ctaGoal: "",
-  });
-  
-  // Image generation state
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [imageKey, setImageKey] = useState<string | null>(null);
-  const [imagePrompt, setImagePrompt] = useState("");
-  const [imageStyle, setImageStyle] = useState("professional");
-  const [imageSize, setImageSize] = useState("1024x1024");
-  const [showImageGenerator, setShowImageGenerator] = useState(false);
+    const { toast } = useToast();
+    
+    // Dynamic max chars based on platform
+    const getMaxChars = (platform: string) => PLATFORM_CONFIG[platform]?.maxChars || 280;
+    
+    const [formData, setFormData] = useState({
+        content: "",
+        platform: "twitter",
+        linkUrl: "",
+        campaignId: "",
+        linkedDayIndex: "",
+        scheduledDate: "",
+        scheduledTime: "",
+        notes: "",
+        ctaGoal: "",
+    });
+    
+    // Image generation state
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
+    const [imageKey, setImageKey] = useState<string | null>(null);
+    const [imagePrompt, setImagePrompt] = useState("");
+    const [imageStyle, setImageStyle] = useState("professional");
+    const [imageSize, setImageSize] = useState("1024x1024");
+    const [showImageGenerator, setShowImageGenerator] = useState(false);
 
-  // Reset form when dialog opens/closes or post changes
-  useEffect(() => {
-    if (open) {
-      if (post) {
-        const scheduledDate = post.scheduledAt ? parseISO(post.scheduledAt) : null;
-        setFormData({
-          content: post.content,
-          platform: post.platform,
-          linkUrl: post.linkUrl || "",
-          campaignId: post.campaignId?.toString() || "",
-          linkedDayIndex: post.linkedDayIndex?.toString() || "",
-          scheduledDate: scheduledDate ? format(scheduledDate, "yyyy-MM-dd") : "",
-          scheduledTime: scheduledDate ? format(scheduledDate, "HH:mm") : "",
-          notes: (post as any).notes || "",
-          ctaGoal: (post as any).ctaGoal || "",
-        });
-        setImageUrl(post.imageUrl || null);
-        setImageKey((post as any).imageKey || null);
-      } else {
-        setFormData({
-          content: "",
-          platform: "twitter",
-          linkUrl: "",
-          campaignId: "",
-          linkedDayIndex: "",
-          scheduledDate: "",
-          scheduledTime: "",
-          notes: "",
-          ctaGoal: "",
-        });
-        setImageUrl(null);
-        setImageKey(null);
-        setImagePrompt("");
-        setShowImageGenerator(false);
-      }
-    }
-  }, [open, post]);
+    // Reset form when dialog opens/closes or post changes
+    useEffect(() => {
+        if (open) {
+            if (post) {
+                const scheduledDate = post.scheduledAt ? parseISO(post.scheduledAt) : null;
+                setFormData({
+                content: post.content,
+                platform: post.platform,
+                linkUrl: post.linkUrl || "",
+                campaignId: post.campaignId?.toString() || "",
+                linkedDayIndex: post.linkedDayIndex?.toString() || "",
+                scheduledDate: scheduledDate ? format(scheduledDate, "yyyy-MM-dd") : "",
+                scheduledTime: scheduledDate ? format(scheduledDate, "HH:mm") : "",
+                notes: (post as any).notes || "",
+                ctaGoal: (post as any).ctaGoal || "",
+                });
+                setImageUrl(post.imageUrl || null);
+                setImageKey((post as any).imageKey || null);
+            } else {
+                setFormData({
+                content: "",
+                platform: "twitter",
+                linkUrl: "",
+                campaignId: "",
+                linkedDayIndex: "",
+                scheduledDate: "",
+                scheduledTime: "",
+                notes: "",
+                ctaGoal: "",
+                });
+                setImageUrl(null);
+                setImageKey(null);
+                setImagePrompt("");
+                setShowImageGenerator(false);
+            }
+        }
+    }, [open, post]);
 
-  const maxChars = getMaxChars(formData.platform);
-  const charCount = formData.content.length;
-  const isOverLimit = charCount > maxChars;
-  const currentPlatformConfig = PLATFORM_CONFIG[formData.platform] || PLATFORM_CONFIG.twitter;
+    const maxChars = getMaxChars(formData.platform);
+    const charCount = formData.content.length;
+    const isOverLimit = charCount > maxChars;
+    const currentPlatformConfig = PLATFORM_CONFIG[formData.platform] || PLATFORM_CONFIG.twitter;
 
-  const saveMutation = useMutation({
-    mutationFn: async () => {
-      // Build scheduledAt from date + time
-      let scheduledAt: string | null = null;
-      if (formData.scheduledDate) {
-        const timeStr = formData.scheduledTime || "12:00";
-        scheduledAt = new Date(`${formData.scheduledDate}T${timeStr}`).toISOString();
-      }
+    const saveMutation = useMutation({
+        mutationFn: async () => {
+        // Build scheduledAt from date + time
+        let scheduledAt: string | null = null;
+        if (formData.scheduledDate) {
+            const timeStr = formData.scheduledTime || "12:00";
+            scheduledAt = new Date(`${formData.scheduledDate}T${timeStr}`).toISOString();
+        }
 
-      const payload = {
-        content: formData.content,
-        platform: formData.platform,
-        linkUrl: formData.linkUrl || null,
-        imageUrl: imageUrl || null,
-        imageKey: imageKey || null,
-        campaignId: formData.campaignId ? parseInt(formData.campaignId) : null,
-        linkedDayIndex: formData.linkedDayIndex ? parseInt(formData.linkedDayIndex) : null,
-        scheduledAt,
-        notes: formData.notes || null,
-        ctaGoal: formData.ctaGoal || null,
-        contentStatus: 'drafted', // New posts start as drafted
-        publishStatus: 'planned', // New posts start as planned
-      };
+        const payload = {
+            content: formData.content,
+            platform: formData.platform,
+            linkUrl: formData.linkUrl || null,
+            imageUrl: imageUrl || null,
+            imageKey: imageKey || null,
+            campaignId: formData.campaignId ? parseInt(formData.campaignId) : null,
+            linkedDayIndex: formData.linkedDayIndex ? parseInt(formData.linkedDayIndex) : null,
+            scheduledAt,
+            notes: formData.notes || null,
+            ctaGoal: formData.ctaGoal || null,
+            contentStatus: 'drafted', // New posts start as drafted
+            publishStatus: 'planned', // New posts start as planned
+        };
 
-      if (post) {
-        await apiRequest("PATCH", `/api/admin/social/posts/${post.id}`, payload);
-      } else {
-        await apiRequest("POST", "/api/admin/social/posts", payload);
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/social/posts"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/social/stats"] });
-      toast({ title: post ? "Post updated" : "Post created" });
-      onClose();
-    },
-    onError: (error: Error) => {
-      toast({ title: "Failed to save post", description: error.message, variant: "destructive" });
-    },
-  });
+        if (post) {
+            await apiRequest("PATCH", `/api/admin/social/posts/${post.id}`, payload);
+        } else {
+            await apiRequest("POST", "/api/admin/social/posts", payload);
+        }
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["/api/admin/social/posts"] });
+            queryClient.invalidateQueries({ queryKey: ["/api/admin/social/stats"] });
+            toast({ title: post ? "Post updated" : "Post created" });
+            onClose();
+        },
+        onError: (error: Error) => {
+            toast({ title: "Failed to save post", description: error.message, variant: "destructive" });
+        },
+    });
 
   const generateMutation = useMutation({
     mutationFn: async () => {
