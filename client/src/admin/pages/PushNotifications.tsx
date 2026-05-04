@@ -696,16 +696,16 @@ function PushNotificationsContent() {
     
     const createTemplateMutation = useMutation({
         mutationFn: async (data: typeof newTemplate) => {
-        return apiRequest('POST', '/api/admin/notification-templates', data);
+            return apiRequest('POST', '/api/admin/notification-templates', data);
         },
         onSuccess: () => {
-        toast({ title: "Template created" });
-        setShowTemplateDialog(false);
-        setNewTemplate({ name: '', category: 'morning_spark', title: '', body: '', status: 'draft' });
-        queryClient.invalidateQueries({ queryKey: ['/api/admin/notification-templates'] });
+            toast({ title: "Template created" });
+            setShowTemplateDialog(false);
+            setNewTemplate({ name: '', category: 'morning_spark', title: '', body: '', status: 'draft' });
+            queryClient.invalidateQueries({ queryKey: ['/api/admin/notification-templates'] });
         },
         onError: () => {
-        toast({ title: "Failed to create template", variant: "destructive" });
+            toast({ title: "Failed to create template", variant: "destructive" });
         },
     });
     
@@ -738,14 +738,16 @@ function PushNotificationsContent() {
     
     const generateMutation = useMutation({
         mutationFn: async (data: { category: string; context?: string }) => {
-        return apiRequest('POST', '/api/admin/notification-templates/generate', data);
+            return apiRequest('POST', '/api/admin/notification-templates/generate', data);
         },
-        onSuccess: (response: any) => {
-        toast({ title: `Generated ${response.templates?.length || 0} templates` });
-        setShowGenerateDialog(false);
+        onSuccess: async (response: any) => {
+            const json = await response.json();
+            console.log('Generated templates:', json);
+            toast({ title: `Generated ${json.templates?.length || 0} templates` });
+            setShowGenerateDialog(false);
         },
         onError: () => {
-        toast({ title: "Failed to generate templates", variant: "destructive" });
+            toast({ title: "Failed to generate templates", variant: "destructive" });
         },
     });
     
@@ -757,11 +759,11 @@ function PushNotificationsContent() {
     
     const handleSaveGeneratedTemplate = async (template: { name: string; title: string; body: string; placeholders: string[] }) => {
         await createTemplateMutation.mutateAsync({
-        name: template.name,
-        category: generateCategory,
-        title: template.title,
-        body: template.body,
-        status: 'draft',
+            name: template.name,
+            category: generateCategory,
+            title: template.title,
+            body: template.body,
+            status: 'draft',
         });
     };
     
@@ -1282,15 +1284,15 @@ function PushNotificationsContent() {
             </div>
             <DialogFooter>
                 <Button variant="ghost" onClick={() => {
-                setShowGenerateDialog(false);
-                generateMutation.reset();
+                    setShowGenerateDialog(false);
+                    generateMutation.reset();
                 }}>
                 Close
                 </Button>
                 <Button 
-                className="bg-orange-500 hover:bg-orange-600"
-                onClick={() => generateMutation.mutate({ category: generateCategory, context: generateContext })}
-                disabled={generateMutation.isPending}
+                    className="bg-orange-500 hover:bg-orange-600"
+                    onClick={() => generateMutation.mutate({ category: generateCategory, context: generateContext })}
+                    disabled={generateMutation.isPending}
                 >
                 {generateMutation.isPending ? 'Generating...' : 'Generate 3 Templates'}
                 </Button>

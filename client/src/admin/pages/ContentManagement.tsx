@@ -1626,78 +1626,78 @@ function AIGenerateDialog({ open, onOpenChange, nextDayIndex }: {
   }, [open]);
 
   const generateMutation = useMutation({
-    mutationFn: async () => {
-      const res = await apiRequest("POST", "/api/admin/content/generate-draft", {
-        dayIndex,
-        theme: themeOverride || undefined,
-        notes: notes || undefined
-      });
-      return res.json() as Promise<GenerateResponse>;
-    },
-    onSuccess: (data) => {
-      setGeneratedData(data);
-      setEditedContent(data.content);
-      setStep('preview');
-    },
-    onError: (error: Error) => {
-      toast({ title: "Generation failed", description: error.message, variant: "destructive" });
-      setStep('input');
-    },
+        mutationFn: async () => {
+            const res = await apiRequest("POST", "/api/admin/content/generate-draft", {
+                dayIndex,
+                theme: themeOverride || undefined,
+                notes: notes || undefined
+            });
+            return res.json() as Promise<GenerateResponse>;
+        },
+        onSuccess: (data) => {
+            setGeneratedData(data);
+            setEditedContent(data.content);
+            setStep('preview');
+        },
+        onError: (error: Error) => {
+            toast({ title: "Generation failed", description: error.message, variant: "destructive" });
+            setStep('input');
+        },
   });
 
   const saveMutation = useMutation({
-    mutationFn: async () => {
-      if (!editedContent) throw new Error("No content to save");
-      
-      const payload = {
-        dayIndex,
-        title: editedContent.title,
-        theme: editedContent.theme,
-        readingLevel: editedContent.readingLevel,
-        culturalStage: editedContent.culturalStage,
-        questions: editedContent.setup_questions.map((q, idx) => ({
-          title: `Question ${idx + 1}`,
-          content: q.content,
-          category: q.category,
-          icon: q.icon,
-          orderIndex: idx
-        })),
-        lesson: {
-          title: editedContent.lesson.title,
-          content: editedContent.lesson.content,
-          keyTakeaways: editedContent.lesson.keyTakeaways,
-          whyItMatters: editedContent.lesson.whyItMatters,
-          estimatedReadTime: editedContent.lesson.estimatedReadTime
+        mutationFn: async () => {
+        if (!editedContent) throw new Error("No content to save");
+        
+        const payload = {
+            dayIndex,
+            title: editedContent.title,
+            theme: editedContent.theme,
+            readingLevel: editedContent.readingLevel,
+            culturalStage: editedContent.culturalStage,
+            questions: editedContent.setup_questions.map((q, idx) => ({
+            title: `Question ${idx + 1}`,
+            content: q.content,
+            category: q.category,
+            icon: q.icon,
+            orderIndex: idx
+            })),
+            lesson: {
+            title: editedContent.lesson.title,
+            content: editedContent.lesson.content,
+            keyTakeaways: editedContent.lesson.keyTakeaways,
+            whyItMatters: editedContent.lesson.whyItMatters,
+            estimatedReadTime: editedContent.lesson.estimatedReadTime
+            },
+            quizzes: editedContent.quiz_questions.map(q => ({
+            question: q.question,
+            options: [q.optionA, q.optionB, q.optionC, q.optionD],
+            correctAnswer: q.correctAnswer,
+            explanation: q.explanation
+            }))
+        };
+        
+        const res = await apiRequest("POST", "/api/admin/content/bulk-import", payload);
+        return res.json();
         },
-        quizzes: editedContent.quiz_questions.map(q => ({
-          question: q.question,
-          options: [q.optionA, q.optionB, q.optionC, q.optionD],
-          correctAnswer: q.correctAnswer,
-          explanation: q.explanation
-        }))
-      };
-      
-      const res = await apiRequest("POST", "/api/admin/content/bulk-import", payload);
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/content/days"] });
-      toast({ title: "Content saved successfully!" });
-      onOpenChange(false);
-    },
-    onError: (error: Error) => {
-      toast({ title: "Failed to save", description: error.message, variant: "destructive" });
-    },
+        onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["/api/admin/content/days"] });
+        toast({ title: "Content saved successfully!" });
+        onOpenChange(false);
+        },
+        onError: (error: Error) => {
+        toast({ title: "Failed to save", description: error.message, variant: "destructive" });
+        },
   });
 
   const handleGenerate = () => {
-    setStep('generating');
-    generateMutation.mutate();
+        setStep('generating');
+        generateMutation.mutate();
   };
 
   const handleRegenerate = () => {
-    setStep('generating');
-    generateMutation.mutate();
+        setStep('generating');
+        generateMutation.mutate();
   };
 
   return (

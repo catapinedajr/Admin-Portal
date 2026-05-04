@@ -646,21 +646,25 @@ function EmailManagementContent() {
 
     const generateEmailMutation = useMutation({
         mutationFn: (data: any) => apiRequest("POST", "/api/admin/email/generate", data),
-        onSuccess: (data: any) => {
-        setAiDialogOpen(false);
-        // Open template dialog with generated content
-        setEditingTemplate({
-            id: 0,
-            name: "",
-            subject: data.subject,
-            htmlContent: data.html,
-            textContent: data.text,
-            category: aiForm.templateType,
-            isActive: true,
-            createdAt: new Date().toISOString(),
-        });
-        setTemplateDialogOpen(true);
-        toast({ title: "Email generated", description: "Review and save as a template" });
+        onSuccess: async (data: any) => {
+
+            const json = await data.json();
+            console.log("Generated email data:", json);
+
+            setAiDialogOpen(false);
+            // Open template dialog with generated content
+            setEditingTemplate({
+                id: 0,
+                name: "",
+                subject: json.subject,
+                htmlContent: json.html,
+                textContent: json.text,
+                category: aiForm.templateType,
+                isActive: true,
+                createdAt: new Date().toISOString(),
+            });
+            setTemplateDialogOpen(true);
+            toast({ title: "Email generated", description: "Review and save as a template" });
         },
         onError: (err: any) => toast({ title: "Generation failed", description: err.message, variant: "destructive" }),
     });
