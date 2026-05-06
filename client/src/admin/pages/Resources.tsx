@@ -101,6 +101,9 @@ function ResourcesPage() {
         
         queryKey: ["/api/admin/resources", typeFilter],
         queryFn: async () => {
+
+            console.log('fetching resources with filter:', typeFilter);
+
             const params = new URLSearchParams();
             if (typeFilter !== 'all') params.append('type', typeFilter);
             
