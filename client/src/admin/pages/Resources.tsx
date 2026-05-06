@@ -106,11 +106,14 @@ function ResourcesPage() {
 
             const params = new URLSearchParams();
             if (typeFilter !== 'all') params.append('type', typeFilter);
+
+            console.log('fetching params:', params.toString());
             
             const token = localStorage.getItem('admin_session');
             const res = await fetch(`/api/admin/resources?${params}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
+            console.log('fetch response:', res);
             const json = await res.json();
             console.log('hit api with filter:', typeFilter, 'response:', json);
             return json;
