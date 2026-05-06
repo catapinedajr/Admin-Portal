@@ -557,23 +557,23 @@ function EmailManagementContent() {
     const createTemplateMutation = useMutation({
         mutationFn: (data: any) => apiRequest("POST", "/api/admin/email/templates", data),
         onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["/api/admin/email/templates"] });
-        queryClient.invalidateQueries({ queryKey: ["/api/admin/email/stats"] });
-        setTemplateDialogOpen(false);
-        setEditingTemplate(null);
-        toast({ title: "Template created" });
+            queryClient.invalidateQueries({ queryKey: ["/api/admin/email/templates"] });
+            queryClient.invalidateQueries({ queryKey: ["/api/admin/email/stats"] });
+            setTemplateDialogOpen(false);
+            setEditingTemplate(null);
+            toast({ title: "Template created" });
         },
         onError: (err: any) => toast({ title: "Error", description: err.message, variant: "destructive" }),
     });
 
     const updateTemplateMutation = useMutation({
         mutationFn: ({ id, data }: { id: number; data: any }) => 
-        apiRequest("PATCH", `/api/admin/email/templates/${id}`, data),
+            apiRequest("PATCH", `/api/admin/email/templates/${id}`, data),
         onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["/api/admin/email/templates"] });
-        setTemplateDialogOpen(false);
-        setEditingTemplate(null);
-        toast({ title: "Template updated" });
+            queryClient.invalidateQueries({ queryKey: ["/api/admin/email/templates"] });
+            setTemplateDialogOpen(false);
+            setEditingTemplate(null);
+            toast({ title: "Template updated" });
         },
         onError: (err: any) => toast({ title: "Error", description: err.message, variant: "destructive" }),
     });
