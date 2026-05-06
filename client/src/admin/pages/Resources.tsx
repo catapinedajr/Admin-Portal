@@ -97,6 +97,19 @@ function ResourcesPage() {
         isPublished: false,
     });
 
+    
+    // const { data: resources = [], isLoading } = useQuery<ResourceLink[]>({
+    //     queryKey: ["/api/admin/resources", typeFilter],
+    //     queryFn: async () => {
+    //         const sessionId = localStorage.getItem('admin_session');
+    //         const response = await apiFetch(`/api/admin/resources?${params}`, {
+    //         headers: { Authorization: `Bearer ${sessionId}` }
+    //         });
+    //         if (!response.ok) throw new Error('Failed to fetch days');
+    //         return response.json();
+    //     },
+    // });
+
     const { data: resources = [], isLoading } = useQuery<ResourceLink[]>({
         
         queryKey: ["/api/admin/resources", typeFilter],
@@ -112,10 +125,16 @@ function ResourcesPage() {
             const token = localStorage.getItem('admin_session');
             console.log('token from localStorage:', token);
 
-            const res = await fetch(`/api/admin/resources?${params}`, {
+            const res = await apiFetch(`/api/admin/resources?${params}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
+
+            // const res = await fetch(`/api/admin/resources?${params}`, {
+            //     headers: { Authorization: `Bearer ${token}` }
+            // });
+
             console.log('fetch response:', res);
+            
             const json = await res.json();
             console.log('hit api with filter:', typeFilter, 'response:', json);
             return json;
