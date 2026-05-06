@@ -110,6 +110,8 @@ function ResourcesPage() {
             console.log('fetching params:', params.toString());
             
             const token = localStorage.getItem('admin_session');
+            console.log('token from localStorage:', token);
+
             const res = await fetch(`/api/admin/resources?${params}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
