@@ -20,6 +20,7 @@ import { Switch } from "@/components/ui/switch";
 import AdminLayout from "../components/AdminLayout";
 
 function AdminAuthGuard({ children }: { children: React.ReactNode }) {
+    
     const [, setLocation] = useLocation();
     
     const { data: adminUser, isLoading, error } = useQuery<{ id: number }>({
@@ -43,9 +44,9 @@ function AdminAuthGuard({ children }: { children: React.ReactNode }) {
 
     if (!adminUser) return null;
     return <>{children}</>;
-    }
+}
 
-    interface ResourceLink {
+interface ResourceLink {
     id: number;
     title: string;
     description: string | null;
@@ -57,30 +58,30 @@ function AdminAuthGuard({ children }: { children: React.ReactNode }) {
     isPublished: boolean;
     createdAt: string;
     updatedAt: string;
-    }
+}
 
-    const RESOURCE_TYPES = [
+const RESOURCE_TYPES = [
     { value: 'video', label: 'Video', icon: Video },
     { value: 'article', label: 'Article', icon: FileText },
     { value: 'document', label: 'Document', icon: File },
     { value: 'other', label: 'Other', icon: Link2 },
-    ];
+];
 
-    const CATEGORIES = [
+const CATEGORIES = [
     { value: 'bitcoin-basics', label: 'Bitcoin Basics' },
     { value: 'economics', label: 'Economics' },
     { value: 'security', label: 'Security' },
     { value: 'technical', label: 'Technical' },
     { value: 'history', label: 'History' },
     { value: 'reference', label: 'Reference' },
-    ];
+];
 
-    function getTypeIcon(type: string) {
-        const typeConfig = RESOURCE_TYPES.find(t => t.value === type);
-        return typeConfig?.icon || Link2;
-    }
+function getTypeIcon(type: string) {
+    const typeConfig = RESOURCE_TYPES.find(t => t.value === type);
+    return typeConfig?.icon || Link2;
+}
 
-    function ResourcesPage() {
+function ResourcesPage() {
     const { toast } = useToast();
     const [typeFilter, setTypeFilter] = useState<string>('all');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -100,12 +101,16 @@ function AdminAuthGuard({ children }: { children: React.ReactNode }) {
         
         queryKey: ["/api/admin/resources", typeFilter],
         queryFn: async () => {
-        const params = new URLSearchParams();
-        if (typeFilter !== 'all') params.append('type', typeFilter);
-        const res = await fetch(`/api/admin/resources?${params}`, {
-            headers: { Authorization: `Bearer ${localStorage.getItem('admin_session')}` }
-        });
-        return res.json();
+            const params = new URLSearchParams();
+            if (typeFilter !== 'all') params.append('type', typeFilter);
+            
+            const token = localStorage.getItem('admin_session');
+            const res = await fetch(`/api/admin/resources?${params}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const json = await res.json();
+            console.log('hit api with filter:', typeFilter, 'response:', json);
+            return json;
         }
     });
 
@@ -113,66 +118,66 @@ function AdminAuthGuard({ children }: { children: React.ReactNode }) {
 
     const createMutation = useMutation({
         mutationFn: async (data: typeof formData) => {
-        return apiRequest('POST', '/api/admin/resources', data);
+            return apiRequest('POST', '/api/admin/resources', data);
         },
         onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["/api/admin/resources"] });
-        setIsDialogOpen(false);
-        resetForm();
-        toast({ title: "Resource created successfully" });
+            queryClient.invalidateQueries({ queryKey: ["/api/admin/resources"] });
+            setIsDialogOpen(false);
+            resetForm();
+            toast({ title: "Resource created successfully" });
         },
         onError: () => {
-        toast({ title: "Failed to create resource", variant: "destructive" });
+            toast({ title: "Failed to create resource", variant: "destructive" });
         }
     });
 
     const updateMutation = useMutation({
         mutationFn: async ({ id, data }: { id: number; data: Partial<typeof formData> }) => {
-        return apiRequest('PATCH', `/api/admin/resources/${id}`, data);
+            return apiRequest('PATCH', `/api/admin/resources/${id}`, data);
         },
         onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["/api/admin/resources"] });
-        setIsDialogOpen(false);
-        setEditingResource(null);
-        resetForm();
-        toast({ title: "Resource updated successfully" });
+            queryClient.invalidateQueries({ queryKey: ["/api/admin/resources"] });
+            setIsDialogOpen(false);
+            setEditingResource(null);
+            resetForm();
+            toast({ title: "Resource updated successfully" });
         },
         onError: () => {
-        toast({ title: "Failed to update resource", variant: "destructive" });
+            toast({ title: "Failed to update resource", variant: "destructive" });
         }
     });
 
     const deleteMutation = useMutation({
         mutationFn: async (id: number) => {
-        return apiRequest('DELETE', `/api/admin/resources/${id}`);
+            return apiRequest('DELETE', `/api/admin/resources/${id}`);
         },
         onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["/api/admin/resources"] });
-        toast({ title: "Resource deleted" });
+            queryClient.invalidateQueries({ queryKey: ["/api/admin/resources"] });
+            toast({ title: "Resource deleted" });
         },
         onError: () => {
-        toast({ title: "Failed to delete resource", variant: "destructive" });
+            toast({ title: "Failed to delete resource", variant: "destructive" });
         }
     });
 
     const togglePublishMutation = useMutation({
         mutationFn: async ({ id, isPublished }: { id: number; isPublished: boolean }) => {
-        return apiRequest('PATCH', `/api/admin/resources/${id}`, { isPublished });
+            return apiRequest('PATCH', `/api/admin/resources/${id}`, { isPublished });
         },
         onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["/api/admin/resources"] });
+            queryClient.invalidateQueries({ queryKey: ["/api/admin/resources"] });
         }
     });
 
     const resetForm = () => {
         setFormData({
-        title: '',
-        description: '',
-        url: '',
-        type: 'video',
-        category: 'none',
-        thumbnailUrl: '',
-        isPublished: false,
+            title: '',
+            description: '',
+            url: '',
+            type: 'video',
+            category: 'none',
+            thumbnailUrl: '',
+            isPublished: false,
         });
     };
 
@@ -185,13 +190,13 @@ function AdminAuthGuard({ children }: { children: React.ReactNode }) {
     const openEditDialog = (resource: ResourceLink) => {
         setEditingResource(resource);
         setFormData({
-        title: resource.title,
-        description: resource.description || '',
-        url: resource.url,
-        type: resource.type,
-        category: resource.category || 'none',
-        thumbnailUrl: resource.thumbnailUrl || '',
-        isPublished: resource.isPublished,
+            title: resource.title,
+            description: resource.description || '',
+            url: resource.url,
+            type: resource.type,
+            category: resource.category || 'none',
+            thumbnailUrl: resource.thumbnailUrl || '',
+            isPublished: resource.isPublished,
         });
         setIsDialogOpen(true);
     };
