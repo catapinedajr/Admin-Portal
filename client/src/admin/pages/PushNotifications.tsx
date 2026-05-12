@@ -639,7 +639,8 @@ function PushNotificationsContent() {
     });
     const [generateCategory, setGenerateCategory] = useState('morning_spark');
     const [generateContext, setGenerateContext] = useState('');
-    
+    const [aiTemplates, setAiTemplates] = useState<NotificationTemplate[]>();
+
     const { data: stats, isLoading: statsLoading, refetch: refetchStats } = useQuery<PushStats>({
         queryKey: ['/api/admin/push-notifications/stats'],
     });
@@ -738,19 +739,18 @@ function PushNotificationsContent() {
     
     const generateMutation = useMutation({
         mutationFn: async (data: { category: string; context?: string }) => {
-            return apiRequest('POST', '/api/admin/notification-templates/generate', data);
+            return await apiRequest('POST', '/api/admin/notification-templates/generate', data);
         },
         onSuccess: async (response: any) => {
             const json = await response.json();
-            console.log('Generated templates:', json);
             toast({ title: `Generated ${json.templates?.length || 0} templates` });
-            setShowGenerateDialog(false);
+            setAiTemplates(json.templates || []);
         },
         onError: () => {
             toast({ title: "Failed to generate templates", variant: "destructive" });
         },
     });
-    
+
     const handleRefresh = () => {
         refetchStats();
         refetchNotifications();
@@ -1257,10 +1257,10 @@ function PushNotificationsContent() {
                 />
                 </div>
                 
-                {generateMutation.data?.templates && (
+                {aiTemplates && (
                 <div className="space-y-3 mt-4">
                     <p className="text-sm text-zinc-400">Generated templates - click to save:</p>
-                    {generateMutation.data.templates.map((t: any, i: number) => (
+                    {aiTemplates.map((t: any, i: number) => (
                     <div key={i} className="p-3 bg-zinc-800 rounded-lg border border-zinc-700">
                         <div className="flex items-start justify-between gap-3">
                         <div className="flex-1">

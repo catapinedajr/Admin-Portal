@@ -649,8 +649,7 @@ function EmailManagementContent() {
         onSuccess: async (data: any) => {
 
             const json = await data.json();
-            console.log("Generated email data:", json);
-
+            
             setAiDialogOpen(false);
             // Open template dialog with generated content
             setEditingTemplate({
