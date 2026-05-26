@@ -140,7 +140,7 @@ interface ContentQuestion {
     id: number;
     dayId: number;
     title: string;
-    question: string;
+    content: string;
     category: string;
     icon: string;
     orderIndex: number;
@@ -278,7 +278,7 @@ function EditDayDialog({ day, open, onOpenChange }: {
     const [lessonLocked, setLessonLocked] = useState(true);
     const [questionsLocked, setQuestionsLocked] = useState(true);
     const [quizzesLocked, setQuizzesLocked] = useState(true);
-    
+
     const [formData, setFormData] = useState({
         title: "",
         theme: "",
@@ -290,6 +290,22 @@ function EditDayDialog({ day, open, onOpenChange }: {
         reviewerNotes: "",
     });
   
+    const [showLiveConfirm, setShowLiveConfirm] = useState(false);
+    const handlePipelineClick = (status: 'draft' | 'review' | 'approved' | 'live') => {
+        if (detailsLocked) return;
+        if (status === 'live') {
+            setShowLiveConfirm(true);
+            return;
+        }
+
+        setFormData({ ...formData, status });
+    };
+
+    const handleLiveClick = (status: 'live') => {
+        setFormData({ ...formData, status });
+        setShowLiveConfirm(false);
+    };
+
     const [lessonForm, setLessonForm] = useState({
         title: "",
         content: "",
@@ -303,7 +319,7 @@ function EditDayDialog({ day, open, onOpenChange }: {
     const [showNewQuiz, setShowNewQuiz] = useState(false);
     
     const [editingQuestion, setEditingQuestion] = useState<ContentQuestion | null>(null);
-    const [newQuestion, setNewQuestion] = useState({ title: "", question: "", category: "financial", icon: "💰" });
+    const [newQuestion, setNewQuestion] = useState({ title: "", content: "", category: "financial", icon: "💰" });
     const [showPreview, setShowPreview] = useState(false);
     const [showNewQuestion, setShowNewQuestion] = useState(false);
     
@@ -312,7 +328,7 @@ function EditDayDialog({ day, open, onOpenChange }: {
     const [deleteStep, setDeleteStep] = useState(1);
     const [deleteConfirmText, setDeleteConfirmText] = useState("");
     const [deleteAcknowledged, setDeleteAcknowledged] = useState(false);
-  
+
     const { data: lesson, isLoading: lessonLoading } = useQuery<ContentLesson>({
         queryKey: ["/api/admin/content/lessons/day", day?.id],
         queryFn: async () => {
@@ -389,7 +405,6 @@ function EditDayDialog({ day, open, onOpenChange }: {
 
     const updateQuizMutation = useMutation({
         mutationFn: async ({ id, ...data }: Partial<ContentQuiz> & { id: number }) => {
-            console.log("Updating quiz with data:", data);
             const res = await apiRequest("PATCH", `/api/admin/content/quizzes/${id}`, data);
             return res.json();
         },
@@ -419,7 +434,7 @@ function EditDayDialog({ day, open, onOpenChange }: {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/admin/content/questions/day", day?.id] });
             toast({ title: "Question added" });
-            setNewQuestion({ title: "", question: "", category: "financial", icon: "💰" });
+            setNewQuestion({ title: "", content: "", category: "financial", icon: "💰" });
             setShowNewQuestion(false);
         },
     });
@@ -438,7 +453,7 @@ function EditDayDialog({ day, open, onOpenChange }: {
 
     const deleteQuestionMutation = useMutation({
         mutationFn: async (id: number) => {
-            const res = await apiRequest("DELETE", `/api/admin/content/questions/${id}`);
+            const res = await apiRequest("DELETE", `/api/admin/content/questions/day/${id}`);
             return res.json();
         },
         onSuccess: () => {
@@ -586,7 +601,7 @@ function EditDayDialog({ day, open, onOpenChange }: {
                                 <div key={status} className="flex items-center">
                                     <button
                                         type="button"
-                                        onClick={() => !detailsLocked && setFormData({ ...formData, status })}
+                                        onClick={() => handlePipelineClick(status)}
                                         disabled={detailsLocked}
                                         className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                                         isCurrentStatus 
@@ -828,8 +843,8 @@ function EditDayDialog({ day, open, onOpenChange }: {
                                 placeholder="Question title..."
                             />
                             <Textarea 
-                                value={newQuestion.question}
-                                onChange={(e) => setNewQuestion({ ...newQuestion, question: e.target.value })}
+                                value={newQuestion.content}
+                                onChange={(e) => setNewQuestion({ ...newQuestion, content: e.target.value })}
                                 className="bg-zinc-900 border-zinc-700 text-white"
                                 placeholder="Question content..."
                             />
@@ -854,7 +869,7 @@ function EditDayDialog({ day, open, onOpenChange }: {
                                 <Button 
                                     size="sm" 
                                     onClick={() => createQuestionMutation.mutate(newQuestion)}
-                                    disabled={createQuestionMutation.isPending || !newQuestion.title || !newQuestion.question}
+                                    disabled={createQuestionMutation.isPending || !newQuestion.title || !newQuestion.content}
                                     className="bg-green-600 hover:bg-green-700"
                                 >
                                     <Save className="w-4 h-4 mr-1" /> Save
@@ -881,8 +896,8 @@ function EditDayDialog({ day, open, onOpenChange }: {
                                     className="bg-zinc-900 border-zinc-700 text-white"
                                 />
                                 <Textarea 
-                                    value={editingQuestion.question}
-                                    onChange={(e) => setEditingQuestion({ ...editingQuestion, question: e.target.value })}
+                                    value={editingQuestion.content}
+                                    onChange={(e) => setEditingQuestion({ ...editingQuestion, content: e.target.value })}
                                     className="bg-zinc-900 border-zinc-700 text-white"
                                 />
                                 <div className="flex gap-2">
@@ -915,7 +930,7 @@ function EditDayDialog({ day, open, onOpenChange }: {
                                 </div>
                                 <div className="flex-1">
                                     <h4 className="text-white font-medium">{q.title}</h4>
-                                    <p className="text-sm text-zinc-400 mt-1">{q.question}</p>
+                                    <p className="text-sm text-zinc-400 mt-1">{q.content}</p>
                                     <div className="flex items-center gap-2 mt-2 text-xs text-zinc-500">
                                         <Badge variant="outline" className="border-zinc-600 text-zinc-400">{q.category}</Badge>
                                     <span>{q.icon}</span>
@@ -1270,6 +1285,35 @@ function EditDayDialog({ day, open, onOpenChange }: {
                             {deleteDayMutation.isPending ? "Deleting..." : "Delete Forever"}
                         </Button>
                         )}
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            {/* Set Live Confirmation Dialog */}
+            <AlertDialog open={showLiveConfirm}>
+                <AlertDialogContent className="bg-zinc-900 border-zinc-800">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="text-white flex items-center gap-2">
+                        <AlertCircle className="w-5 h-5 text-red-500" />
+                            Set to Live
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="text-zinc-400">
+                        
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel 
+                            onClick={() => setShowLiveConfirm(false)}
+                            className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700"
+                        >
+                            Cancel
+                        </AlertDialogCancel>
+                        <Button
+                            onClick={() => handleLiveClick('live')}
+                            className="bg-red-600 hover:bg-red-700 text-white"
+                        >
+                            Continue
+                        </Button>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
@@ -1629,7 +1673,6 @@ function AIGenerateDialog({ open, onOpenChange, nextDayIndex }: {
         setStep('preview');
     },
     onError: (error: Error) => {
-        console.log('here...');
         toast({ title: "Generation failed", description: error.message, variant: "destructive" });
         setStep('input');
     },
@@ -1637,37 +1680,37 @@ function AIGenerateDialog({ open, onOpenChange, nextDayIndex }: {
 
   const saveMutation = useMutation({
         mutationFn: async () => {
-        if (!editedContent) throw new Error("No content to save");
+            if (!editedContent) throw new Error("No content to save");
+
+            const payload = {
+                dayIndex,
+                title: editedContent.title,
+                theme: editedContent.theme,
+                readingLevel: editedContent.readingLevel,
+                culturalStage: editedContent.culturalStage,
+                questions: editedContent.setup_questions.map((q, idx) => ({
+                    title: q.content,
+                    content: q.content,
+                    category: q.category,
+                    icon: q.icon,
+                    orderIndex: idx
+                })),
+                lesson: {
+                    title: editedContent.lesson.title,
+                    content: editedContent.lesson.content,
+                    keyTakeaways: editedContent.lesson.keyTakeaways,
+                    whyItMatters: editedContent.lesson.whyItMatters,
+                    estimatedReadTime: editedContent.lesson.estimatedReadTime
+                },
+                quizzes: editedContent.quiz_questions.map(q => ({
+                    question: q.question,
+                    options: [q.optionA, q.optionB, q.optionC, q.optionD],
+                    correctAnswer: q.correctAnswer,
+                    explanation: q.explanation
+                }))
+            };
         
-        const payload = {
-            dayIndex,
-            title: editedContent.title,
-            theme: editedContent.theme,
-            readingLevel: editedContent.readingLevel,
-            culturalStage: editedContent.culturalStage,
-            questions: editedContent.setup_questions.map((q, idx) => ({
-                title: `Question ${idx + 1}`,
-                content: q.content,
-                category: q.category,
-                icon: q.icon,
-                orderIndex: idx
-            })),
-            lesson: {
-                title: editedContent.lesson.title,
-                content: editedContent.lesson.content,
-                keyTakeaways: editedContent.lesson.keyTakeaways,
-                whyItMatters: editedContent.lesson.whyItMatters,
-                estimatedReadTime: editedContent.lesson.estimatedReadTime
-            },
-            quizzes: editedContent.quiz_questions.map(q => ({
-                question: q.question,
-                options: [q.optionA, q.optionB, q.optionC, q.optionD],
-                correctAnswer: q.correctAnswer,
-                explanation: q.explanation
-            }))
-        };
-        
-        const res = await apiRequest("POST", "/api/admin/content/bulk-import", payload);
+            const res = await apiRequest("POST", "/api/admin/content/bulk-import", payload);
             return res.json();
         },
         onSuccess: () => {
@@ -2076,7 +2119,9 @@ function AIGenerateDialog({ open, onOpenChange, nextDayIndex }: {
                 Cancel
               </Button>
               <Button 
-                onClick={() => saveMutation.mutate()}
+                onClick={() => {
+                  saveMutation.mutate();
+                }}
                 className="bg-orange-500 hover:bg-orange-600"
                 disabled={saveMutation.isPending}
                 data-testid="button-save-content"
