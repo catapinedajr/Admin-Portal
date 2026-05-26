@@ -227,7 +227,7 @@ function CRMManagementContent() {
   });
 
   const archiveCompanyMutation = useMutation({
-    mutationFn: (id: number) => apiRequest("POST", `/api/admin/archive/crm-companies/${id}`),
+    mutationFn: (id: number) => apiRequest("DELETE", `/api/admin/crm/companies/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/crm/companies"] });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/crm/stats"] });
@@ -241,7 +241,7 @@ function CRMManagementContent() {
   });
 
   const archiveDealMutation = useMutation({
-    mutationFn: (id: number) => apiRequest("POST", `/api/admin/archive/crm-deals/${id}`),
+    mutationFn: (id: number) => apiRequest("DELETE", `/api/admin/crm/deals/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/crm/deals"] });
       setShowDealModal(false);
